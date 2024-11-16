@@ -1,0 +1,7 @@
+{
+  "title": "Flutter App",
+  "helloWorld": "Hello World!",
+  "searchHint": "Search...",
+  "clearHistory": "Clear History",
+  "settings": "Settings"
+}
