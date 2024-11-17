@@ -1,5 +1,3 @@
-// file: lib/views/tab_view.dart
-
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:honyomi/services/base_service.dart';
@@ -15,7 +13,8 @@ class TabView extends StatefulWidget {
   _TabViewState createState() => _TabViewState();
 }
 
-class _TabViewState extends State<TabView> {
+class _TabViewState extends State<TabView>
+    with AutomaticKeepAliveClientMixin<TabView> {
   late Future<Iterable<BasicSection>> _data;
 
   @override
@@ -25,7 +24,12 @@ class _TabViewState extends State<TabView> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return FutureBuilder<Iterable<BasicSection>>(
       future: _data,
       builder: (context, snapshot) {
