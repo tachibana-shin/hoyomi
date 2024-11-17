@@ -56,8 +56,9 @@ class MainApp extends StatelessWidget {
                       redirect: (context, state) => ("/home"),
                       routes: [
                         GoRoute(
-                            path: ":slug",
+                            path: ":sourceId/:slug",
                             builder: (context, state) => DetailsComic(
+                                sourceId: state.pathParameters['sourceId']!,
                                 slug: state.pathParameters['slug']!))
                       ]),
                 ]),

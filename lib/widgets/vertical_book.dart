@@ -5,14 +5,15 @@ import 'package:honyomi/utils/format_time_ago.dart';
 
 class VerticalBook extends StatelessWidget {
   final BasicBook book;
+  final String source;
 
-  const VerticalBook({super.key, required this.book});
+  const VerticalBook({super.key, required this.book, required this.source});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          context.go("/details_comic/${book.slug}");
+          context.go("/details_comic/$source/${book.slug}");
         },
         splashColor: Colors.white70.withOpacity(0.3),
         highlightColor: Colors.white70.withOpacity(0.1),
@@ -90,7 +91,7 @@ class VerticalBook extends StatelessWidget {
                                 ]))),
 
                   // bottom
-                  if (book.rate != null || book.notice != null)
+                  if (book.timeAgo != null)
                     Positioned(
                       bottom: 0,
                       left: 0,
@@ -110,7 +111,7 @@ class VerticalBook extends StatelessWidget {
                             borderRadius: BorderRadius.circular(4.0),
                           ),
                           child: Text(
-                            formatTimeAgo(book.timeAgo),
+                            formatTimeAgo(book.timeAgo!),
                             style: TextStyle(
                                 fontSize: 12.0, color: Colors.blueGrey.shade50),
                           )),

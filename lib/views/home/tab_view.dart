@@ -13,8 +13,8 @@ class TabView extends StatefulWidget {
   _TabViewState createState() => _TabViewState();
 }
 
-class _TabViewState extends State<TabView>
-    with AutomaticKeepAliveClientMixin<TabView> {
+class _TabViewState extends State<TabView> // with AutomaticKeepAliveClientMixin
+{
   late Future<Iterable<BasicSection>> _data;
 
   @override
@@ -23,12 +23,12 @@ class _TabViewState extends State<TabView>
     _data = widget.service.home();
   }
 
-  @override
-  bool get wantKeepAlive => true;
+  // @override
+  // bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    // super.build(context);
 
     return FutureBuilder<Iterable<BasicSection>>(
       future: _data,
@@ -95,7 +95,8 @@ class _TabViewState extends State<TabView>
                     itemCount: section.books.length,
                     builder: (context, bookIndex) {
                       final book = section.books.elementAt(bookIndex);
-                      return VerticalBook(book: book);
+                      return VerticalBook(
+                          book: book, source: widget.service.uid);
                     },
                   ),
                 ],

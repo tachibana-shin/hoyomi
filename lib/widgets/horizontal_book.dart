@@ -108,7 +108,7 @@ class HorizontalBook extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4.0),
                       ),
                       child: Text(
-                        formatTimeAgo(book.timeAgo),
+                        formatTimeAgo(book.timeAgo!),
                         style: TextStyle(
                             fontSize: 12.0, color: Colors.blueGrey.shade50),
                       ),
