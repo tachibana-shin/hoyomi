@@ -13,7 +13,7 @@ class VerticalBook extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          context.go("/details_comic/$source/${book.slug}");
+          context.push("/details_comic/$source/${book.slug}");
         },
         splashColor: Colors.white70.withOpacity(0.3),
         highlightColor: Colors.white70.withOpacity(0.1),

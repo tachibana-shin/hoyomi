@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:go_transitions/go_transitions.dart';
 
 import 'pages/details_comic/[slug].page.dart';
 import 'pages/home_page.dart';
@@ -17,35 +18,44 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// Set default transition values for the entire app.
+    GoTransition.defaultCurve = Curves.easeInOut;
+    GoTransition.defaultDuration = const Duration(milliseconds: 600);
+
     final GoRouter router = GoRouter(
       initialLocation: '/home',
+      observers: [GoTransition.observer],
       routes: [
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
+            if (state.fullPath?.startsWith("/details_comic/") ?? false) {
+              return Scaffold(body: navigationShell);
+            }
+
             return ScaffoldWithNestedNavigation(
                 navigationShell: navigationShell);
           },
           branches: [
             StatefulShellBranch(routes: [
               GoRoute(
-                  path: '/home',
-                  pageBuilder: (context, state) => const NoTransitionPage(
-                        child: HomePage(),
-                      )),
+                path: '/home',
+                pageBuilder: GoTransitions.material.call,
+                builder: (context, state) => HomePage(),
+              )
             ]),
             StatefulShellBranch(routes: [
               GoRoute(
-                  path: '/search',
-                  pageBuilder: (context, state) => NoTransitionPage(
-                        child: SearchPage(),
-                      )),
+                path: '/search',
+                pageBuilder: GoTransitions.material.call,
+                builder: (context, state) => SearchPage(),
+              ),
             ]),
             StatefulShellBranch(routes: [
               GoRoute(
-                  path: '/profile',
-                  pageBuilder: (context, state) => NoTransitionPage(
-                        child: ProfilePage(),
-                      )),
+                path: '/profile',
+                pageBuilder: GoTransitions.material.call,
+                builder: (context, state) => ProfilePage(),
+              ),
             ]),
             StatefulShellBranch(
                 // navigatorKey: _shellNavigatorAKey,
@@ -53,13 +63,21 @@ class MainApp extends StatelessWidget {
                   // features
                   GoRoute(
                       path: "/details_comic",
-                      redirect: (context, state) => ("/home"),
+                      pageBuilder: GoTransitions.material.call,
                       routes: [
                         GoRoute(
-                            path: ":sourceId/:slug",
-                            builder: (context, state) => DetailsComic(
-                                sourceId: state.pathParameters['sourceId']!,
-                                slug: state.pathParameters['slug']!))
+                            path: ":sourceId",
+                            pageBuilder: GoTransitions.material.call,
+                            routes: [
+                              GoRoute(
+                                path: ":slug",
+                                pageBuilder: GoTransitions.material.call,
+                                builder: (context, state) => DetailsComic(
+                                    sourceId:
+                                        state.pathParameters['sourceId']!,
+                                    slug: state.pathParameters['slug']!)
+                              )
+                            ])
                       ]),
                 ]),
           ],

@@ -101,6 +101,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.6.0"
+  go_transitions:
+    dependency: "direct main"
+    description:
+      name: go_transitions
+      sha256: "5169964eef054ebb8f02de8f94824735bd8b68f5105fa570917787f4297189a7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0"
   html:
     dependency: "direct main"
     description:
@@ -292,4 +300,4 @@ packages:
     version: "1.1.0"
 sdks:
   dart: ">=3.5.4 <4.0.0"
-  flutter: ">=3.19.0"
+  flutter: ">=3.24.0"

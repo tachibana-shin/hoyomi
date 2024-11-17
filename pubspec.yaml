@@ -13,6 +13,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   go_router: ^14.6.0
+  go_transitions: ^0.7.0
   html: ^0.15.5
   http: ^1.2.2
   intl: any
