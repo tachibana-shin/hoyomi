@@ -14,7 +14,8 @@ BasicBook parseBasicBook(Element itemBook, String referer) {
   final $image = itemBook.querySelector("img")!;
   final BasicImage image = BasicImage(
       src: $image.attributes["data-src"]!, headers: {"referer": referer});
-  final String name = itemBook.querySelector(".book_name")!.text;
+  final String name = itemBook.querySelector(".book_name")?.text ??
+      itemBook.querySelector("img")!.attributes['alt']!;
 
   final Route lastChap = Route(
       name: itemBook.querySelector(".cl99")!.text.trim(),
@@ -25,8 +26,9 @@ BasicBook parseBasicBook(Element itemBook, String referer) {
           .last
           .replaceFirst(".html", ""));
 
+  final timeAgoElement = itemBook.querySelector(".time-ago");
   final timeAgo =
-      convertTimeAgoToUtc(itemBook.querySelector(".time-ago")!.text);
+      timeAgoElement != null ? convertTimeAgoToUtc(timeAgoElement.text) : null;
   final String? notice = itemBook.querySelector(".type-label")?.text;
 
   final rateValueText = itemBook.querySelector(".rate-star")?.text.trim();

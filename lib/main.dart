@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
 
 import 'pages/details_comic/[slug].page.dart';
+import 'pages/details_comic/[slug]/[chap].page.dart';
 import 'pages/home_page.dart';
 import 'pages/search_page.dart';
 import 'pages/profile_page.dart';
@@ -75,8 +76,22 @@ class MainApp extends StatelessWidget {
                                 builder: (context, state) => DetailsComic(
                                     sourceId:
                                         state.pathParameters['sourceId']!,
-                                    slug: state.pathParameters['slug']!)
-                              )
+                                      slug: state.pathParameters['slug']!),
+                                  routes: [
+                                    GoRoute(
+                                        path: ":chap",
+                                        pageBuilder: GoTransitions
+                                            .material.call,
+                                        builder: (context, state) =>
+                                            DetailsComicReader(
+                                                sourceId:
+                                                    state.pathParameters[
+                                                        'sourceId']!,
+                                                slug: state
+                                                    .pathParameters['slug']!,
+                                                chap: state
+                                                    .pathParameters['chap']!))
+                                  ])
                             ])
                       ]),
                 ]),
@@ -103,9 +118,9 @@ class MainApp extends StatelessWidget {
 // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
 class ScaffoldWithNestedNavigation extends StatelessWidget {
   const ScaffoldWithNestedNavigation({
-    Key? key,
+    super.key,
     required this.navigationShell,
-  }) : super(key: key);
+  });
   final StatefulNavigationShell navigationShell;
 
   void _goBranch(int index) {

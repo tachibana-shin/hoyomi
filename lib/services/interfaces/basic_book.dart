@@ -4,7 +4,7 @@ import 'package:honyomi/services/interfaces/route.dart';
 class BasicBook extends Route {
   final BasicImage image;
   final Route? lastChap;
-  final DateTime timeAgo;
+  final DateTime? timeAgo;
   final String? notice;
   final double? rate;
 

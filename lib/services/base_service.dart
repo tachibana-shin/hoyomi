@@ -1,9 +1,14 @@
+import 'package:honyomi/services/interfaces/basic_image.dart';
 import 'package:honyomi/services/interfaces/basic_section.dart';
+import 'package:honyomi/services/interfaces/meta_book.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart';
 
-class UtilsService {
+abstract class UtilsService {
+  String get name;
+  String get uid => name.toLowerCase().replaceAll(r"\s", "-");
+
   Future<String> fetchData(String url) async {
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -24,6 +29,9 @@ class UtilsService {
 
 abstract class BaseService {
   String get name;
+  String get uid;
 
   Future<Iterable<BasicSection>> home();
+  Future<MetaBook> getDetails(String slug);
+  Future<Iterable<BasicImage>> getPages(String manga, String chap);
 }

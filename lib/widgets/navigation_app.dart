@@ -5,7 +5,7 @@ class NavigationApp extends StatelessWidget {
   final ValueChanged<int> onDestinationSelected;
   final bool rail;
 
-  const NavigationApp({
+  const NavigationApp({super.key, 
     required this.selectedIndex,
     required this.rail,
     required this.onDestinationSelected,
