@@ -1,0 +1,117 @@
+import 'package:flutter/material.dart';
+import 'package:honyomi/services/interfaces/basic_image.dart';
+
+class ImagePicker extends StatefulWidget {
+  final Iterable<BasicImage> images;
+  final Function(Set<int>) onChange;
+
+  const ImagePicker({Key? key, required this.images, required this.onChange})
+      : super(key: key);
+
+  @override
+  _ImagePickerState createState() => _ImagePickerState();
+}
+
+class _ImagePickerState extends State<ImagePicker> {
+  final Set<int> _selectedImages = {};
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      expand: false,
+      initialChildSize: 0.7,
+      minChildSize: 0.5,
+      maxChildSize: 1.0,
+      builder: (BuildContext context, ScrollController scrollController) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40.0,
+                  height: 4.0,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(2.0),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              const Text(
+                'Select Images',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              Expanded(
+                child: GridView.builder(
+                  controller: scrollController,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 8.0,
+                  ),
+                  itemCount: widget.images.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final isSelected = _selectedImages.contains(index);
+
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (isSelected) {
+                            _selectedImages.remove(index);
+                          } else {
+                            _selectedImages.add(index);
+                          }
+                        });
+                      },
+                      child: Transform.scale(
+                        scale: isSelected ? 0.9 : 1.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color:
+                                  isSelected ? Colors.blue : Colors.transparent,
+                              width: isSelected ? 5.0 : 0.0,
+                            ),
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: Transform.scale(
+                              scale: 0.9,
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: Image.network(
+                                    widget.images.elementAt(index).src,
+                                    headers:
+                                        widget.images.elementAt(index).headers,
+                                    fit: BoxFit.cover,
+                                  ))),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  widget.onChange(_selectedImages);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

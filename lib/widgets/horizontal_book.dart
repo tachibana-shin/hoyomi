@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:honyomi/services/interfaces/basic_book.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
 
@@ -53,7 +54,7 @@ class HorizontalBook extends StatelessWidget {
                         Row(
                           children: [
                             Icon(
-                              Icons.star,
+                              MaterialCommunityIcons.star,
                               color: Colors.yellow[700],
                               size: 16.0,
                             ),

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
@@ -24,7 +25,8 @@ class MainApp extends StatelessWidget {
     GoTransition.defaultDuration = const Duration(milliseconds: 600);
 
     final GoRouter router = GoRouter(
-      initialLocation: '/home',
+      initialLocation:
+          '/details_comic/truyengg/toi-la-ky-si-anh-hung-cua-de-che-lien-thien-ha-36919/chap-1',
       observers: [GoTransition.observer],
       routes: [
         StatefulShellRoute.indexedStack(
@@ -71,26 +73,35 @@ class MainApp extends StatelessWidget {
                             pageBuilder: GoTransitions.material.call,
                             routes: [
                               GoRoute(
-                                path: ":slug",
-                                pageBuilder: GoTransitions.material.call,
-                                builder: (context, state) => DetailsComic(
-                                    sourceId:
-                                        state.pathParameters['sourceId']!,
+                                  path: ":slug",
+                                  pageBuilder: GoTransitions.material.call,
+                                  builder: (context, state) => DetailsComic(
+                                      sourceId:
+                                          state.pathParameters['sourceId']!,
                                       slug: state.pathParameters['slug']!),
                                   routes: [
                                     GoRoute(
                                         path: ":chap",
-                                        pageBuilder: GoTransitions
-                                            .material.call,
-                                        builder: (context, state) =>
-                                            DetailsComicReader(
-                                                sourceId:
-                                                    state.pathParameters[
-                                                        'sourceId']!,
-                                                slug: state
-                                                    .pathParameters['slug']!,
-                                                chap: state
-                                                    .pathParameters['chap']!))
+                                        name: "details_comic_reader",
+                                        pageBuilder:
+                                            GoTransitions.material.call,
+                                        builder: (context, state) {
+                                          final sourceId =
+                                              state.pathParameters['sourceId'];
+                                          final slug =
+                                              state.pathParameters['slug'];
+                                          final chap =
+                                              state.pathParameters['chap'];
+
+                                          if (chap != null) {
+                                            return DetailsComicReader(
+                                                sourceId: sourceId!,
+                                                slug: slug!,
+                                                chap: chap);
+                                          }
+
+                                          return Stack(children: []);
+                                        })
                                   ])
                             ])
                       ]),
@@ -109,6 +120,7 @@ class MainApp extends StatelessWidget {
         useMaterial3: true,
       ),
       themeMode: ThemeMode.system,
+      scrollBehavior: AppScrollBehavior(),
       routerConfig: router,
     );
   }
@@ -166,4 +178,13 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
           ));
     });
   }
+}
+
+class AppScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+      };
 }

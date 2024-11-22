@@ -88,14 +88,15 @@ class TruyenGGService extends UtilsService implements BaseService {
     final description =
         document.querySelector(".story-detail-info")!.text.trim();
     final slugRoot = slug;
-    final chaps = document.querySelectorAll(".item_chap").map((chap) {
+    final chaps = document.querySelectorAll(".item_chap").reversed.map((chap) {
       final name = chap.querySelector("a")!.text;
       final slug = chap
           .querySelector("a")!
           .attributes["href"]!
           .split("/")
           .last
-          .replaceFirst("$slugRoot-", "");
+          .replaceFirst("$slugRoot-", "")
+          .replaceFirst(".html", "");
 
       final time$ = chap.querySelector('.cl99')?.text;
       final time = time$ != null ? DateFormat("dd/MM/yyyy").parse(time$) : null;
@@ -133,9 +134,13 @@ class TruyenGGService extends UtilsService implements BaseService {
   }
 
   @override
+  String getURL(manga, chap) {
+    return "$baseUrl/truyen-tranh/$manga-$chap.html";
+  }
+
+  @override
   Future<Iterable<BasicImage>> getPages(String manga, String chap) async {
-    final document =
-        await fetchDocument("$baseUrl/truyen-tranh/$manga-$chap.html");
+    final document = await fetchDocument(getURL(manga, chap));
 
     return document.querySelectorAll(".content_detail_manga > img").map((img) {
       final src = img.attributes["src"]!;

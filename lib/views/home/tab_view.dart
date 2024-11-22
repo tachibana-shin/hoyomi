@@ -1,5 +1,6 @@
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:honyomi/services/base_service.dart';
 import 'package:honyomi/services/interfaces/basic_section.dart';
 import 'package:honyomi/widgets/vertical_book.dart';
@@ -10,6 +11,7 @@ class TabView extends StatefulWidget {
   const TabView({super.key, required this.service});
 
   @override
+  // ignore: library_private_types_in_public_api
   _TabViewState createState() => _TabViewState();
 }
 
@@ -72,13 +74,12 @@ class _TabViewState extends State<TabView> // with AutomaticKeepAliveClientMixin
                         section.name,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      if (section.slug != null)
-                        IconButton(
-                          icon: const Icon(Icons.chevron_right),
-                          onPressed: () {
-                            print("Navigating to ${section.slug}");
-                          },
-                        ),
+                      IconButton(
+                        icon: const Icon(MaterialCommunityIcons.chevron_right),
+                        onPressed: () {
+                          print("Navigating to ${section.slug}");
+                        },
+                      ),
                     ],
                   ),
                   const SizedBox(height: 8.0),

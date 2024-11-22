@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:honyomi/services/main.dart';
 import 'package:honyomi/views/home/tab_view.dart';
 
@@ -86,7 +87,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               children: [
                 const Padding(
                   padding: EdgeInsets.all(8.0),
-                  child: Icon(Icons.search, color: Colors.grey),
+                  child: Icon(MaterialCommunityIcons.magnify, color: Colors.grey),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -98,7 +99,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   ),
                 ),
                 PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_vert, color: Colors.grey),
+                  icon: const Icon( MaterialCommunityIcons.dots_vertical, color: Colors.grey),
                   onSelected: (String value) {
                     if (value == 'clear_history') {
                       // Xử lý xóa lịch sử

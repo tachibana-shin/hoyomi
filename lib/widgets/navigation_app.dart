@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 class NavigationApp extends StatelessWidget {
   final int selectedIndex;
@@ -15,15 +16,15 @@ class NavigationApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final destinations = const [
       (
-        icon: Icon(Icons.home),
+        icon: Icon(MaterialCommunityIcons.home),
         label: ('Home'),
       ),
       (
-        icon: Icon(Icons.search),
+        icon: Icon(MaterialCommunityIcons.magnify),
         label: ('Search'),
       ),
       (
-        icon: Icon(Icons.account_circle),
+        icon: Icon(MaterialCommunityIcons.account_circle),
         label: ('Profile'),
       )
     ];
