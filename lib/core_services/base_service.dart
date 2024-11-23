@@ -1,6 +1,6 @@
-import 'package:honyomi/services/interfaces/basic_image.dart';
-import 'package:honyomi/services/interfaces/basic_section.dart';
-import 'package:honyomi/services/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/interfaces/basic_section.dart';
+import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart';

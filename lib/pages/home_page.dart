@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:honyomi/services/main.dart';
+import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/views/home/tab_view.dart';
 
 class HomePage extends StatelessWidget {

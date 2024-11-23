@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/services/base_service.dart';
+import 'package:honyomi/core_services/base_service.dart';
 
-import 'package:honyomi/services/interfaces/meta_book.dart';
-import 'package:honyomi/services/main.dart';
+import 'package:honyomi/core_services/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/utils/format_number.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
 import 'package:honyomi/widgets/sheet_chapters.dart';

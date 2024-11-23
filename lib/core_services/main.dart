@@ -1,6 +1,6 @@
-import 'package:honyomi/services/base_service.dart';
+import 'package:honyomi/core_services/base_service.dart';
 
-import './truyengg/main.dart';
+import 'truyengg/main.dart';
 
 List<BaseService> services = [TruyenGGService(), TruyenGGService()];
 

@@ -2,11 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/services/base_service.dart';
-import 'package:honyomi/services/interfaces/basic_image.dart';
-import 'package:honyomi/services/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/base_service.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/interfaces/meta_book.dart';
 
-import 'package:honyomi/services/main.dart';
+import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/views/reader/manga_reader.dart';
 
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';

@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:honyomi/services/base_service.dart';
-import 'package:honyomi/services/interfaces/basic_image.dart';
-import 'package:honyomi/services/interfaces/basic_section.dart';
-import 'package:honyomi/services/interfaces/meta_book.dart';
-import 'package:honyomi/services/interfaces/rate_value.dart';
-import 'package:honyomi/services/interfaces/route.dart';
+import 'package:honyomi/core_services/base_service.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/interfaces/basic_section.dart';
+import 'package:honyomi/core_services/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/interfaces/rate_value.dart';
+import 'package:honyomi/core_services/interfaces/route.dart';
 import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 

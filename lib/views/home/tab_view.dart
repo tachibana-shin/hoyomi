@@ -1,8 +1,8 @@
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:honyomi/services/base_service.dart';
-import 'package:honyomi/services/interfaces/basic_section.dart';
+import 'package:honyomi/core_services/base_service.dart';
+import 'package:honyomi/core_services/interfaces/basic_section.dart';
 import 'package:honyomi/widgets/vertical_book.dart';
 
 class TabView extends StatefulWidget {

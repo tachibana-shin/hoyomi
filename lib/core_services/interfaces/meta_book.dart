@@ -1,6 +1,6 @@
-import 'package:honyomi/services/interfaces/basic_image.dart';
-import 'package:honyomi/services/interfaces/rate_value.dart';
-import 'package:honyomi/services/interfaces/route.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/interfaces/rate_value.dart';
+import 'package:honyomi/core_services/interfaces/route.dart';
 
 class MetaBook {
   final String name;

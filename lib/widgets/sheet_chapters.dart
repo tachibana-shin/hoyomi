@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/services/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/interfaces/meta_book.dart';
 
 class SheetChapters extends StatefulWidget {
   final MetaBook book;

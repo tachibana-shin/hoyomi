@@ -1,6 +1,6 @@
-import 'package:honyomi/services/interfaces/basic_book.dart';
-import 'package:honyomi/services/interfaces/basic_image.dart';
-import 'package:honyomi/services/interfaces/route.dart';
+import 'package:honyomi/core_services/interfaces/basic_book.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/interfaces/route.dart';
 import 'package:honyomi/utils/time_utils.dart';
 import 'package:html/dom.dart';
 
