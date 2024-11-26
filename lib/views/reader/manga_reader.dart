@@ -551,6 +551,7 @@ class _MangaReaderState extends State<MangaReader> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
+        isScrollControlled: true,
       builder: (context) {
         bool autoScroll = false;
 

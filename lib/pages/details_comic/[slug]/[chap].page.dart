@@ -7,6 +7,7 @@ import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 
 import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/globals.dart';
 import 'package:honyomi/views/reader/manga_reader.dart';
 
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -138,7 +139,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
                           icon: const Icon(MaterialCommunityIcons.earth),
                           onPressed: _openInBrowser),
                       IconButton(
-                        icon: const Icon(MaterialCommunityIcons.share),
+                        icon: const Icon(Icons.share),
                         onPressed: _share,
                       ),
                     ],
@@ -151,10 +152,8 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
   void _openInBrowser() async {
     final url = _service.getURL(widget.slug, widget.chap);
     if (!await launchUrl(Uri.parse(url))) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Could not launch $url'),
-        ),
+      showSnackBar(
+        Text('Could not launch $url'),
       );
     }
   }

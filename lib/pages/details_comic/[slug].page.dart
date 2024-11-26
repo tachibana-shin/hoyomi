@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
 
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/globals.dart';
 import 'package:honyomi/utils/format_number.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
 import 'package:honyomi/widgets/sheet_chapters.dart';
@@ -31,17 +33,9 @@ class _DetailsComicState extends State<DetailsComic> {
   @override
   void initState() {
     super.initState();
-    final context$ = context;
 
     _service = getService(widget.sourceId);
     _metaBookFuture = _service.getDetails(widget.slug);
-    // ignore: body_might_complete_normally_catch_error
-    _metaBookFuture.catchError((err) {
-      if (_service.isCaptchaError(err)) {
-        // ignore: use_build_context_synchronously
-        getService(widget.sourceId).showCaptchaResolve(context$);
-      }
-    });
 
     _scrollController.addListener(_onScroll);
   }
@@ -80,7 +74,7 @@ class _DetailsComicState extends State<DetailsComic> {
           ),
           actions: [
             IconButton(
-              icon: const Icon(MaterialCommunityIcons.share), // 共有ボタン
+              icon: const Icon(Icons.share), // 共有ボタン
               onPressed: () {
                 _shareContent(context);
               },
@@ -272,27 +266,10 @@ class _DetailsComicState extends State<DetailsComic> {
                             ),
                           ),
                           Expanded(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(MaterialCommunityIcons.thumb_up_outline,
-                                      size: 20.0,
-                                      color: Colors.blueGrey.shade100),
-                                  const SizedBox(height: 4.0),
-                                  Text(
-                                    book.likes != null
-                                        ? formatNumber(book.likes!)
-                                        : '?',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        color: Colors.blueGrey.shade100),
-                                  ),
-                                ],
-                              ),
+                            child: _ButtonLike(
+                              book: book,
+                              slug: widget.slug,
+                              service: _service,
                             ),
                           ),
                           Expanded(
@@ -374,7 +351,13 @@ class _DetailsComicState extends State<DetailsComic> {
                 ));
           },
         ),
-        bottomSheet: _buildSheetChapters());
+        bottomSheet: _book == null
+            ? null
+            : BottomSheet(
+                showDragHandle: true,
+                builder: (context) => _buildSheetChapters()!,
+                onClosing: () {},
+              ));
   }
 
   PopupMenuItem<String> _buildMenuItem(String id, String text) {
@@ -385,9 +368,7 @@ class _DetailsComicState extends State<DetailsComic> {
   }
 
   void _shareContent(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Sharing the content...')),
-    );
+    showSnackBar(Text('Sharing the content...'));
   }
 
   void _handleMenuSelection(BuildContext context, String id) {
@@ -458,3 +439,85 @@ class _DetailsComicState extends State<DetailsComic> {
 //     );
 //   }
 // }
+
+class _ButtonLike extends StatefulWidget {
+  final String slug;
+  final MetaBook book;
+  final BaseService service;
+
+  const _ButtonLike(
+      {required this.slug, required this.book, required this.service});
+
+  @override
+  createState() => _ButtonLikeState();
+}
+
+class _ButtonLikeState extends State<_ButtonLike> {
+  bool? _liked;
+  int? _likes = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _likes = widget.book.likes;
+
+    if (widget.service is AuthService) {
+      (widget.service as AuthService).isLiked(slug: widget.slug).then((liked) {
+        setState(() {
+          _liked = liked;
+        });
+      }).catchError((error) {
+        if (!widget.service.isCaptchaError(error)) {
+          showSnackBar(Text('Error: $error')); // 显示錯誤訊息
+        }
+      });
+    }
+  }
+
+  void _onTap() {
+    (widget.service as AuthService)
+        .setLike(slug: widget.slug, value: !(_liked ?? false))
+        .then((value) {
+      setState(() {
+        _liked = value;
+        _likes = value ? (widget.book.likes ?? 0) + 1 : widget.book.likes! - 1;
+      });
+    })
+        // ignore: body_might_complete_normally_catch_error
+        .catchError((error) {
+      if (!widget.service.isCaptchaError(error)) {
+        showSnackBar(Text('Error: $error')); // 显示錯誤訊息
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        onTap: (widget.service is AuthService) ? _onTap : null,
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(30.0),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                      _liked ?? false
+                          ? MaterialCommunityIcons.thumb_up
+                          : MaterialCommunityIcons.thumb_up_outline,
+                      size: 20.0,
+                      color: Colors.blueGrey.shade100),
+                  const SizedBox(height: 4.0),
+                  Text(
+                    _likes != null ? formatNumber(_likes!) : '?',
+                    style: TextStyle(
+                        fontSize: 14.0, color: Colors.blueGrey.shade100),
+                  ),
+                ],
+              ),
+            )));
+  }
+}

@@ -3,6 +3,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/globals.dart';
 import 'package:honyomi/shared_preferences/cookie.dart';
 import 'package:honyomi/shared_preferences/signed.dart';
 
@@ -42,7 +43,6 @@ class _CustomWebViewState extends State<CustomWebView> {
 
   // Method to collect cookies when the page finishes loading
   Future<void> _collectCookies() async {
-    final $context = context;
     try {
       // Retrieve cookies for the current URL
       final cookies =
@@ -64,8 +64,8 @@ class _CustomWebViewState extends State<CustomWebView> {
       await setSigned(widget.serviceId, signed);
     } catch (e) {
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of($context).showSnackBar(
-        SnackBar(content: Text('Error while collecting cookies: $e')),
+      showSnackBar(
+        Text('Error while collecting cookies: $e'),
       );
     }
   }

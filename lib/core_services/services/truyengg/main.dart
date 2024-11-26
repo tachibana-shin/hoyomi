@@ -183,4 +183,30 @@ class TruyenGGService extends BaseService implements AuthService {
         photoUrl: photoUrl,
         fullName: fullName.isEmpty ? email : fullName);
   }
+
+  @override
+  Future<bool> isLiked({required slug}) async {
+    final document = await fetchDocument("$baseUrl/truyen-tranh/$slug.html",
+        useCookie: true);
+
+    return document.body!.text.contains("Bỏ Theo Dõi");
+    // ok
+    // final csrf = document.querySelector("#csrf-token")!.attributes["value"]!;
+  }
+
+  @override
+  Future<bool> setLike({required slug, required value}) async {
+    final document = await fetchDocument("$baseUrl/truyen-tranh/$slug.html",
+        useCookie: true);
+
+    final id =
+        document.querySelector(".subscribe_button")!.attributes['data-id']!;
+    final csrf = document.querySelector("#csrf-token")!.attributes["value"]!;
+
+    final data = await fetch("$baseUrl/frontend/user/regiter-subscribe",
+        headers: {"x-requested-with": "XMLHttpRequest"},
+        body: {"id": id, "token": csrf});
+
+    return data != '0';
+  }
 }
