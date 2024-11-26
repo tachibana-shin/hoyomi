@@ -7,9 +7,12 @@ environment:
   sdk: ^3.5.4
 
 dependencies:
+  drift_flutter: ^0.2.1
   dynamic_height_grid_view: ^0.0.4
+  flash: ^3.1.1
   flutter:
     sdk: flutter
+  flutter_inappwebview: ^6.1.5
   flutter_localizations:
     sdk: flutter
   flutter_vector_icons: ^2.0.0
@@ -23,12 +26,18 @@ dependencies:
   scrollable_positioned_list: ^0.3.8
   scrollview_observer: ^1.23.0
   share_plus: ^10.1.2
+  shared_preferences: ^2.3.3
+  sqflite: ^2.4.1
+  sqflite_common_ffi: ^2.3.4+3
   url_launcher: ^6.3.1
+  webview_flutter: ^4.10.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  drift_dev: ^2.21.2
+  build_runner: ^2.4.13
 
 flutter:
   uses-material-design: true

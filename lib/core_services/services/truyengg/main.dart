@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
+import 'package:honyomi/core_services/interfaces/basic_user.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/basic_section.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
@@ -11,10 +13,17 @@ import 'package:intl/intl.dart';
 
 import 'utils/parse_basic_book.dart';
 
-class TruyenGGService extends UtilsService implements BaseService {
+const BASE_URL = "https://truyengg.com";
+
+class TruyenGGService extends BaseService implements AuthService {
   @override
   final String name = "TruyenGG";
-  String get baseUrl => "https://truyengg.com";
+  @override
+  final String baseUrl = BASE_URL;
+  @override
+  final String faviconUrl = "$BASE_URL/favicon.ico";
+  @override
+  final String signInUrl = "$BASE_URL/";
 
   @override
   Future<Iterable<BasicSection>> home() async {
@@ -147,5 +156,31 @@ class TruyenGGService extends UtilsService implements BaseService {
 
       return BasicImage(src: src, headers: {"referer": baseUrl});
     });
+  }
+
+  // auth service
+  @override
+  getUser({cookie}) async {
+    final document = await fetchDocument("$baseUrl/thiet-lap-tai-khoan.html",
+        cookie: cookie, useCookie: true);
+
+    if (document.querySelector("title")!.text != 'Thông Tin Tài Khoản') {
+      throw Exception("Not logged in"); // Not logged in
+    }
+
+    final txtCms = document.querySelectorAll("input.txt_cm");
+    final user = txtCms[0].attributes['value']!;
+    final email = txtCms[1].attributes['value']!;
+    final photoUrl =
+        document.querySelector(".image-avatar")!.attributes["src"]!;
+    final fullName =
+        "${document.querySelector("#first_name")!.attributes['value']!} ${document.querySelector("#last_name")!.attributes['value']!}"
+            .trim();
+
+    return BasicUser(
+        user: user,
+        email: email,
+        photoUrl: photoUrl,
+        fullName: fullName.isEmpty ? email : fullName);
   }
 }

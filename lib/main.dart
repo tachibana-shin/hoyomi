@@ -1,13 +1,16 @@
+import 'globals.dart';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
+import 'package:honyomi/pages/webview_page.dart';
 
 import 'pages/details_comic/[slug].page.dart';
 import 'pages/details_comic/[slug]/[chap].page.dart';
 import 'pages/home_page.dart';
 import 'pages/search_page.dart';
-import 'pages/profile_page.dart';
+import 'pages/manager_page.dart';
 
 import 'widgets/navigation_app.dart';
 
@@ -18,6 +21,8 @@ void main() {
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
+  static List<String> routeIgnoreLayoutDefault = ['/details_comic', '/webview'];
+
   @override
   Widget build(BuildContext context) {
     /// Set default transition values for the entire app.
@@ -25,13 +30,16 @@ class MainApp extends StatelessWidget {
     GoTransition.defaultDuration = const Duration(milliseconds: 600);
 
     final GoRouter router = GoRouter(
-      initialLocation:
-          '/details_comic/truyengg/toi-la-ky-si-anh-hung-cua-de-che-lien-thien-ha-36919/chap-1',
+      initialLocation: '/details_comic/truyengg/toi-o-day-de-tra-thu-44867',
       observers: [GoTransition.observer],
       routes: [
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
-            if (state.fullPath?.startsWith("/details_comic/") ?? false) {
+            if (state.fullPath != null &&
+                MainApp.routeIgnoreLayoutDefault.firstWhere(
+                        (route) => state.fullPath!.startsWith(route),
+                        orElse: () => '') !=
+                    '') {
               return Scaffold(body: navigationShell);
             }
 
@@ -55,9 +63,9 @@ class MainApp extends StatelessWidget {
             ]),
             StatefulShellBranch(routes: [
               GoRoute(
-                path: '/profile',
+                path: '/manager',
                 pageBuilder: GoTransitions.material.call,
-                builder: (context, state) => ProfilePage(),
+                builder: (context, state) => ManagerPage(),
               ),
             ]),
             StatefulShellBranch(
@@ -106,6 +114,19 @@ class MainApp extends StatelessWidget {
                             ])
                       ]),
                 ]),
+            StatefulShellBranch(routes: [
+              GoRoute(
+                  path: '/webview',
+                  pageBuilder: GoTransitions.material.call,
+                  routes: [
+                    GoRoute(
+                      path: ':serviceId',
+                      pageBuilder: GoTransitions.material.call,
+                      builder: (context, state) => WebviewPage(
+                          serviceId: state.pathParameters['serviceId']!),
+                    )
+                  ]),
+            ]),
           ],
         ),
       ],
@@ -113,6 +134,7 @@ class MainApp extends StatelessWidget {
 
     return MaterialApp.router(
       title: 'Flutter App',
+      scaffoldMessengerKey: snackbarKey,
       theme: ThemeData(
         useMaterial3: true,
       ),

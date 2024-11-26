@@ -26,13 +26,22 @@ class _DetailsComicState extends State<DetailsComic> {
   final ScrollController _scrollController = ScrollController();
   bool _isTitleVisible = false;
   String _title = "";
+  MetaBook? _book;
 
   @override
   void initState() {
     super.initState();
+    final context$ = context;
 
     _service = getService(widget.sourceId);
     _metaBookFuture = _service.getDetails(widget.slug);
+    // ignore: body_might_complete_normally_catch_error
+    _metaBookFuture.catchError((err) {
+      if (_service.isCaptchaError(err)) {
+        // ignore: use_build_context_synchronously
+        getService(widget.sourceId).showCaptchaResolve(context$);
+      }
+    });
 
     _scrollController.addListener(_onScroll);
   }
@@ -55,61 +64,65 @@ class _DetailsComicState extends State<DetailsComic> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context2) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(MaterialCommunityIcons.arrow_left),
-          onPressed: () {
-            context.pop();
-          },
-        ),
-        title: AnimatedOpacity(
-          duration: const Duration(milliseconds: 200),
-          opacity: _isTitleVisible ? 1.0 : 0.0,
-          child: Text(_title),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(MaterialCommunityIcons.share), // 共有ボタン
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(MaterialCommunityIcons.arrow_left),
             onPressed: () {
-              _shareContent(context);
+              context.pop();
             },
           ),
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              _handleMenuSelection(context, value);
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                _buildMenuItem('download', 'Download'),
-                _buildMenuItem('open_browser', 'Open with browser'),
-                _buildMenuItem('create_shortcut', 'Create shortcut'),
-              ];
-            },
+          title: AnimatedOpacity(
+            duration: const Duration(milliseconds: 200),
+            opacity: _isTitleVisible ? 1.0 : 0.0,
+            child: Text(_title),
           ),
-        ],
-      ),
-      body: FutureBuilder<MetaBook>(
-        future: _metaBookFuture,
-        builder: (context2, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+          actions: [
+            IconButton(
+              icon: const Icon(MaterialCommunityIcons.share), // 共有ボタン
+              onPressed: () {
+                _shareContent(context);
+              },
+            ),
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                _handleMenuSelection(context, value);
+              },
+              itemBuilder: (BuildContext context) {
+                return [
+                  _buildMenuItem('download', 'Download'),
+                  _buildMenuItem('open_browser', 'Open with browser'),
+                  _buildMenuItem('create_shortcut', 'Create shortcut'),
+                ];
+              },
+            ),
+          ],
+        ),
+        body: FutureBuilder<MetaBook>(
+          future: _metaBookFuture,
+          builder: (context2, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+            if (snapshot.hasError) {
+              if (_service.isCaptchaError(snapshot.error)) {
+                return Center(child: _service.templateCaptchaResolver(context));
+              }
 
-          if (!snapshot.hasData) {
-            return const Center(child: Text('No data available.'));
-          }
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
 
-          MetaBook book = snapshot.data!;
-          _title = book.name;
+            if (!snapshot.hasData) {
+              return const Center(child: Text('No data available.'));
+            }
 
-          return Stack(children: [
-            SingleChildScrollView(
+            MetaBook book = snapshot.data!;
+            _title = book.name;
+            _book = book;
+
+            return SingleChildScrollView(
                 padding: EdgeInsets.all(16.0),
                 controller: _scrollController,
                 child: Column(
@@ -140,12 +153,15 @@ class _DetailsComicState extends State<DetailsComic> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(book.name,
-                                  style: const TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 3),
+                              Text(
+                                book.name,
+                                style: const TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                               const SizedBox(height: 8.0),
                               if (book.author != null)
                                 Row(
@@ -294,6 +310,7 @@ class _DetailsComicState extends State<DetailsComic> {
                                   Text(
                                     formatTimeAgo(book.lastModified),
                                     maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         fontSize: 14.0,
                                         color: Colors.blueGrey.shade100),
@@ -354,16 +371,10 @@ class _DetailsComicState extends State<DetailsComic> {
                       }).toList(),
                     ),
                   ],
-                )),
-            SheetChapters(
-              book: book,
-              sourceId: widget.sourceId,
-              slug: widget.slug,
-            ),
-          ]);
-        },
-      ),
-    );
+                ));
+          },
+        ),
+        bottomSheet: _buildSheetChapters());
   }
 
   PopupMenuItem<String> _buildMenuItem(String id, String text) {
@@ -391,6 +402,15 @@ class _DetailsComicState extends State<DetailsComic> {
         // _createShortcut(context);
         break;
     }
+  }
+
+  Widget? _buildSheetChapters() {
+    if (_book == null) return null;
+    return SheetChapters(
+      book: _book!,
+      sourceId: widget.sourceId,
+      slug: widget.slug,
+    );
   }
 }
 
