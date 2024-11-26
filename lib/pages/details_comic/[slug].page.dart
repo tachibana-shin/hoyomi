@@ -354,7 +354,6 @@ class _DetailsComicState extends State<DetailsComic> {
         bottomSheet: _book == null
             ? null
             : BottomSheet(
-                showDragHandle: true,
                 builder: (context) => _buildSheetChapters()!,
                 onClosing: () {},
               ));
@@ -391,6 +390,7 @@ class _DetailsComicState extends State<DetailsComic> {
       book: _book!,
       sourceId: widget.sourceId,
       slug: widget.slug,
+      initialChildSize: 0.15,
     );
   }
 }

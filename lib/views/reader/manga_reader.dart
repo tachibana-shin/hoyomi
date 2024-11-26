@@ -551,7 +551,7 @@ class _MangaReaderState extends State<MangaReader> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
-        isScrollControlled: true,
+      isScrollControlled: true,
       builder: (context) {
         bool autoScroll = false;
 
@@ -753,7 +753,11 @@ class _MangaReaderState extends State<MangaReader> {
         ),
         isScrollControlled: true,
         builder: (context) => SheetChapters(
-            book: widget.book, sourceId: widget.sourceId, slug: widget.slug));
+              book: widget.book,
+              sourceId: widget.sourceId,
+              slug: widget.slug,
+              initialChildSize: 0.6,
+            ));
   }
 
   Widget _buildIconWithLabel(IconData icon, String label) {

@@ -7,11 +7,15 @@ class SheetChapters extends StatefulWidget {
   final String sourceId;
   final String slug;
 
-  const SheetChapters(
-      {super.key,
-      required this.book,
-      required this.sourceId,
-      required this.slug});
+  final double initialChildSize;
+
+  const SheetChapters({
+    super.key,
+    required this.book,
+    required this.sourceId,
+    required this.slug,
+    required this.initialChildSize,
+  });
 
   @override
   _SheetChaptersState createState() => _SheetChaptersState();
@@ -22,13 +26,14 @@ class _SheetChaptersState extends State<SheetChapters> {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       expand: false,
-      initialChildSize: .5,
-      minChildSize: .5,
+      initialChildSize: widget.initialChildSize,
+      minChildSize: .15,
       maxChildSize: 1.0,
       builder: (context2, scrollController) {
         return Container(
+          // color: Colors.transparent,
           decoration: BoxDecoration(
-            color: Colors.grey.shade900,
+            color: Colors.transparent, //Colors.grey.shade900,
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(16.0),
             ),
@@ -36,13 +41,13 @@ class _SheetChaptersState extends State<SheetChapters> {
           child: Column(
             children: [
               // Header
-              Container(
+              Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   "List chapters",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18.0,
+                    fontSize: 15.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
