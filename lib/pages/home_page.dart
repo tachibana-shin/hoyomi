@@ -43,9 +43,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              backgroundColor:  Theme.of(context).scaffoldBackgroundColor,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               foregroundColor: Colors.transparent,
-              scrolledUnderElevation : 0.0,
+              scrolledUnderElevation: 0.0,
               floating: true,
               snap: true,
               pinned: true,
@@ -64,8 +64,19 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         },
         body: TabBarView(
           controller: _tabController,
-          children:
-              services.map((service) => TabView(service: service)).toList(),
+          children: services
+              .map((service) => SafeArea(
+                  top: false,
+                  bottom: false,
+                  child: Builder(builder: (BuildContext context) {
+                    return NotificationListener<ScrollNotification>(
+                        onNotification: (scrollNotification) {
+                          return true;
+                        },
+                        child:
+                            TabView(key: Key(service.uid), service: service));
+                  })))
+              .toList(),
         ),
       ),
     );
@@ -87,7 +98,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               children: [
                 const Padding(
                   padding: EdgeInsets.all(8.0),
-                  child: Icon(MaterialCommunityIcons.magnify, color: Colors.grey),
+                  child:
+                      Icon(MaterialCommunityIcons.magnify, color: Colors.grey),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -99,7 +111,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   ),
                 ),
                 PopupMenuButton<String>(
-                  icon: const Icon( MaterialCommunityIcons.dots_vertical, color: Colors.grey),
+                  icon: const Icon(MaterialCommunityIcons.dots_vertical,
+                      color: Colors.grey),
                   onSelected: (String value) {
                     if (value == 'clear_history') {
                       // Xử lý xóa lịch sử

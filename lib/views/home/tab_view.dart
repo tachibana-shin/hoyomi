@@ -15,8 +15,10 @@ class TabView extends StatefulWidget {
   _TabViewState createState() => _TabViewState();
 }
 
-class _TabViewState extends State<TabView> // with AutomaticKeepAliveClientMixin
-{
+class _TabViewState extends State<TabView>  with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;// with AutomaticKeepAliveClientMixin
+
   late Future<Iterable<BasicSection>> _data;
 
   @override
@@ -84,7 +86,6 @@ class _TabViewState extends State<TabView> // with AutomaticKeepAliveClientMixin
                   ),
                   const SizedBox(height: 8.0),
                   DynamicHeightGridView(
-                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     // padding: const EdgeInsets.all(8.0),
                     // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
