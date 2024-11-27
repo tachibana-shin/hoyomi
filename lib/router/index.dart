@@ -14,7 +14,7 @@ import 'package:honyomi/widgets/navigation_app.dart';
 final List<String> routeIgnoreLayoutDefault = ['/details_comic', '/webview'];
 
 final GoRouter router = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/search',
   observers: [GoTransition.observer],
   routes: [
     StatefulShellRoute.indexedStack(

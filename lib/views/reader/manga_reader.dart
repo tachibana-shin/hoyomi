@@ -77,7 +77,7 @@ class _MangaReaderState extends State<MangaReader> {
       ...widget.pages.map((page) {
         return BasicImageWithGroup(
             groupId: widget.chapter, src: page.src, headers: page.headers);
-      }).toList()
+      })
     ];
     _currentPage =
         (_usingPageView ? _pageController.initialPage : _initialScrollIndex)

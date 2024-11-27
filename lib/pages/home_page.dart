@@ -91,8 +91,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             decoration: BoxDecoration(
               color: Colors.grey[900],
-              borderRadius:
-                  BorderRadius.circular(30.0), // Đặt giá trị lớn để bo tròn hơn
+              borderRadius: BorderRadius.circular(30.0),
             ),
             child: Row(
               children: [
@@ -115,9 +114,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       color: Colors.grey),
                   onSelected: (String value) {
                     if (value == 'clear_history') {
-                      // Xử lý xóa lịch sử
                     } else if (value == 'settings') {
-                      // Xử lý mở cài đặt
                     }
                   },
                   itemBuilder: (BuildContext context) =>

@@ -32,7 +32,7 @@ class _TabViewState extends State<TabView>  with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    // super.build(context);
+    super.build(context);
 
     return FutureBuilder<Iterable<BasicSection>>(
       future: _data,

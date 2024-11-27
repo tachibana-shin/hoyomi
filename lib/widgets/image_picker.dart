@@ -5,8 +5,7 @@ class ImagePicker extends StatefulWidget {
   final Iterable<BasicImage> images;
   final Function(Set<int>) onChange;
 
-  const ImagePicker({Key? key, required this.images, required this.onChange})
-      : super(key: key);
+  const ImagePicker({super.key, required this.images, required this.onChange});
 
   @override
   _ImagePickerState createState() => _ImagePickerState();
