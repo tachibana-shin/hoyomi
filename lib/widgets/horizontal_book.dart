@@ -30,7 +30,7 @@ class HorizontalBook extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8.0),
-          
+
           // Content
           Expanded(
             child: Column(
@@ -70,7 +70,7 @@ class HorizontalBook extends StatelessWidget {
                   ),
 
                 const SizedBox(height: 8.0),
-                
+
                 // Book name
                 Text(
                   book.name,
@@ -81,22 +81,34 @@ class HorizontalBook extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
+                if (book.originalName != null)
+                  Text(
+                    book.originalName!,
+                    style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.grey.shade500,
+                        fontWeight: FontWeight.w400),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
 
                 const SizedBox(height: 4.0),
-                
+
                 // Last chapter
                 if (book.lastChap != null)
                   Text(
                     book.lastChap?.name ?? 'N/A',
-                    style: TextStyle(fontSize: 12.0, color: Colors.grey.shade500),
+                    style:
+                        TextStyle(fontSize: 12.0, color: Colors.grey.shade500),
                   ),
-                
+
                 // Bottom: Time Ago
                 if (book.timeAgo != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 4.0),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [

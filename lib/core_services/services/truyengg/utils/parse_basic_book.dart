@@ -42,5 +42,6 @@ BasicBook parseBasicBook(Element itemBook, String referer) {
       notice: notice,
       name: name,
       slug: slug,
-      rate: rate);
+      rate: rate,
+      originalName: null);
 }

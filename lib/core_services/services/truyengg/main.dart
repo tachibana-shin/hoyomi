@@ -129,7 +129,8 @@ class TruyenGGService extends BaseService implements AuthService {
         genres: genres,
         description: description,
         chapters: chaps,
-        lastModified: lastModified);
+        lastModified: lastModified,
+        originalName: null);
   }
 
   Element? _getInfoTale(List<Element> tales, String name) {

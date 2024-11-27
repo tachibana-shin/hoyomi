@@ -4,6 +4,8 @@ import 'package:honyomi/core_services/interfaces/route.dart';
 
 class MetaBook {
   final String name;
+  final String? originalName;
+
   final BasicImage image;
 
   final String? author;
@@ -21,6 +23,7 @@ class MetaBook {
 
   MetaBook(
       {required this.name,
+      required this.originalName,
       required this.image,
       required this.author,
       required this.translator,

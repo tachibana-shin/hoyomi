@@ -156,6 +156,17 @@ class _DetailsComicState extends State<DetailsComic> {
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                               ),
+                              if (book.originalName != null)
+                                Text(
+                                  book.originalName!,
+                                  style: const TextStyle(
+                                    fontSize: 16.0,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               const SizedBox(height: 8.0),
                               if (book.author != null)
                                 Row(
