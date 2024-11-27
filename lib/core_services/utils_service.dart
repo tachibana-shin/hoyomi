@@ -135,8 +135,11 @@ abstract class UtilsService {
   ///
   /// Returns a parsed [Document] object.
   Future<d.Document> fetchDocument(String url,
-      {String? cookie, bool? useCookie}) async {
-    return parseDocument(
-        await fetch(url, cookie: cookie, useCookie: useCookie));
+      {String? cookie,
+      bool? useCookie,
+      Map<String, dynamic>? body,
+      Map<String, String>? headers}) async {
+    return parseDocument(await fetch(url,
+        cookie: cookie, useCookie: useCookie, body: body, headers: headers));
   }
 }
