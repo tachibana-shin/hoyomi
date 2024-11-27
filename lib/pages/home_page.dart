@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/views/home/tab_view.dart';
+import 'package:honyomi/widgets/search_bar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -23,6 +23,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  Widget? _overlayQuickSearch;
 
   @override
   void initState() {
@@ -36,6 +37,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  void _setOverlay(Widget? overlay) {
+    setState(() {
+      _overlayQuickSearch = overlay;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,13 +53,17 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               foregroundColor: Colors.transparent,
               scrolledUnderElevation: 0.0,
-              floating: true,
-              snap: true,
-              pinned: true,
-              title: _buildSearchBar(context),
+              floating: _overlayQuickSearch == null,
+              snap: _overlayQuickSearch == null,
+              pinned: _overlayQuickSearch == null,
+              title: CustomSearchBar(onOverlayChange: (overlay) {
+                setState(() {
+                  _setOverlay( overlay );
+                });
+              }),
               centerTitle: true,
               titleSpacing: 0.0,
-              bottom: TabBar(
+              bottom:  _overlayQuickSearch != null ? null : TabBar(
                 controller: _tabController,
                 isScrollable: true,
                 splashBorderRadius: BorderRadius.circular(35.0),
@@ -62,76 +73,26 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             )
           ];
         },
-        body: TabBarView(
-          controller: _tabController,
-          children: services
-              .map((service) => SafeArea(
-                  top: false,
-                  bottom: false,
-                  child: Builder(builder: (BuildContext context) {
-                    return NotificationListener<ScrollNotification>(
-                        onNotification: (scrollNotification) {
-                          return true;
-                        },
-                        child:
-                            TabView(key: Key(service.uid), service: service));
-                  })))
-              .toList(),
-        ),
+        body: Stack(children: [
+          TabBarView(
+            controller: _tabController,
+            children: services
+                .map((service) => SafeArea(
+                    top: false,
+                    bottom: false,
+                    child: Builder(builder: (BuildContext context) {
+                      return NotificationListener<ScrollNotification>(
+                          onNotification: (scrollNotification) {
+                            return true;
+                          },
+                          child:
+                              TabView(key: Key(service.uid), service: service));
+                    })))
+                .toList(),
+          ),
+          ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : [])
+        ]),
       ),
-    );
-  }
-
-  Widget _buildSearchBar(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 16.0),
-      child: PreferredSize(
-          preferredSize: const Size.fromHeight(50.0),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            decoration: BoxDecoration(
-              color: Colors.grey[900],
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-            child: Row(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child:
-                      Icon(MaterialCommunityIcons.magnify, color: Colors.grey),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      hintText: "Search...",
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                PopupMenuButton<String>(
-                  icon: const Icon(MaterialCommunityIcons.dots_vertical,
-                      color: Colors.grey),
-                  onSelected: (String value) {
-                    if (value == 'clear_history') {
-                    } else if (value == 'settings') {
-                    }
-                  },
-                  itemBuilder: (BuildContext context) =>
-                      <PopupMenuEntry<String>>[
-                    const PopupMenuItem<String>(
-                      value: 'clear_history',
-                      child: Text("Clear History"),
-                    ),
-                    const PopupMenuItem<String>(
-                      value: 'settings',
-                      child: Text("Settings"),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          )),
     );
   }
 }
