@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/widgets/horizontal_book_list.dart';
 
 class CustomSearchBar extends StatefulWidget {
   final Function(Widget? overlay) onOverlayChange;
@@ -14,6 +18,7 @@ class CustomSearchBar extends StatefulWidget {
 class _CustomSearchBarState extends State<CustomSearchBar> {
   bool _focusing = false;
   bool _isOverlayVisible = false;
+  String _keyword = "";
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +74,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                 child: Focus(
                   onFocusChange: (focused) {
                     setState(() {
-                      if (focused) {
+                      if (focused && !_focusing) {
                         _focusing = focused;
                         _showOverlay();
                       } else {
@@ -78,12 +83,20 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                     });
                   },
                   child: TextField(
-                    autofocus: _focusing || _isOverlayVisible,
-                    decoration: InputDecoration(
-                      hintText: "Search...",
-                      border: InputBorder.none,
-                    ),
-                  ),
+                      autofocus: _focusing || _isOverlayVisible,
+                      decoration: InputDecoration(
+                        hintText: "Search...",
+                        border: InputBorder.none,
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _keyword = value;
+
+                          if (_isOverlayVisible) {
+                            _debouncedShowOverlay();
+                          }
+                        });
+                      }),
                 ),
               ),
               PopupMenuButton<String>(
@@ -122,8 +135,24 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
       top: 0.0,
       child: Container(
           color: Theme.of(context).scaffoldBackgroundColor,
-          child: QuickSearchScreen(onDismissed: _removeOverlay)),
+          child: _QuickSearchScreen(
+              onDismissed: _removeOverlay, keyword: _keyword.trim())),
     );
+  }
+
+  Timer? _debounceTimer;
+  void _debouncedShowOverlay() {
+    _debounceTimer?.cancel();
+
+    _debounceTimer = Timer(const Duration(milliseconds: 1000), () {
+      _showOverlay();
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    super.dispose();
   }
 
   void _showOverlay() {
@@ -144,40 +173,26 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 }
 
-class QuickSearchScreen extends StatelessWidget {
+class _QuickSearchScreen extends StatelessWidget {
+  final String keyword;
   final Function() onDismissed;
 
-  const QuickSearchScreen({super.key, required this.onDismissed});
+  const _QuickSearchScreen(
+      {super.key, required this.onDismissed, required this.keyword});
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: List.generate(10, (index) {
-        return ListTile(
-          leading: const Icon(Icons.history),
-          title: Text("Search suggestion $index"),
-          onTap: () {
-            // Show a dialog for the search result instead of navigating
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text("Search Result $index"),
-                  content: Text("Results for suggestion $index"),
-                  actions: [
-                    TextButton(
-                      child: Text("Close"),
-                      onPressed: () {
-                        onDismissed();
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-        );
-      }),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: keyword.isEmpty
+          ? []
+          : services.map((service) {
+              return HorizontalBookList(
+                booksFuture: service.search(keyword),
+                service: service,
+                title: '${service.name}', more: '/search/${service.uid}?q=$keyword',
+              );
+            }).toList(),
     );
   }
 }
