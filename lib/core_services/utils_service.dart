@@ -12,6 +12,16 @@ abstract class UtilsService {
   String get name;
   String get uid => name.toLowerCase().replaceAll(r"\s", "-");
 
+  /// Called before inserting the cookie to the insert request. Override this method to modify the cookie
+  /// before it is inserted. The default implementation simply returns the original cookie.
+  ///
+  /// [cookie] The cookie to be inserted.
+  ///
+  /// Returns the modified cookie.
+  String? onBeforeInsertCookie(String? cookie) {
+    return cookie;
+  }
+
   void showCaptchaResolve(BuildContext? context) {
     showSnackBar(templateCaptchaResolver(context, isSnackbar: true));
   }
@@ -71,6 +81,8 @@ abstract class UtilsService {
         cookiesText = await getCookie(uid);
       }
     }
+
+    cookiesText = onBeforeInsertCookie(cookiesText);
 
     final uri = Uri.parse(url);
     final $headers = {

@@ -16,13 +16,20 @@ import 'utils/parse_basic_book.dart';
 
 class TruyenGGService extends BaseService implements AuthService {
   @override
-  final String name = "TruyenGG+";
+  final String name = "TruyenGGP";
   @override
   final String baseUrl = "https://truyengg.com";
   @override
   get faviconUrl => "$baseUrl/favicon.ico";
   @override
   get signInUrl => "$baseUrl/";
+
+  @override
+  onBeforeInsertCookie(cookie) {
+    cookie = cookie ?? '';
+
+    return 'type_book=1; $cookie';
+  }
 
 // auth service
   String? _csrf;
