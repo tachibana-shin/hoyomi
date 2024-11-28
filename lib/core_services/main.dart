@@ -1,13 +1,9 @@
 import 'package:honyomi/core_services/base_service.dart';
 
 import 'services/truyengg/main.dart';
+import 'services/truyenqq/main.dart';
 
-class GG extends TruyenGGService {
-  @override
-  final String uid ="truyenqq2";
-}
-
-List<BaseService> services = [TruyenGGService(), GG()];
+List<BaseService> services = [TruyenGGService(), TruyenQQService()];
 
 BaseService getService(String id) {
   for (final service in services) {

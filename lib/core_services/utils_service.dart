@@ -64,18 +64,18 @@ abstract class UtilsService {
       bool? useCookie,
       Map<String, dynamic>? body,
       Map<String, String>? headers}) async {
-    String? setCookie = cookie;
+    String? cookiesText = cookie;
 
     if (cookie == null && useCookie == true) {
       if (await getSigned(uid) ?? false) {
-        setCookie = await getCookie(uid);
+        cookiesText = await getCookie(uid);
       }
     }
 
     final uri = Uri.parse(url);
     final $headers = {
+      'accept-encoding': '*',
       'cache-control': 'no-cache',
-      'dnt': '1',
       'pragma': 'no-cache',
       'priority': 'u=0, i',
       'sec-ch-ua':
@@ -88,7 +88,7 @@ abstract class UtilsService {
       'sec-fetch-user': '?1',
       'sec-gpc': '1',
       'upgrade-insecure-requests': '1',
-      'cookie': setCookie ?? '',
+      'cookie': cookiesText ?? '',
       'user-agent':
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       ...headers ?? {}
@@ -97,6 +97,18 @@ abstract class UtilsService {
     Response response = body == null
         ? await get(uri, headers: $headers)
         : await post(uri, headers: $headers, body: body);
+    if (useCookie == true) {
+      // update cookie
+      await setCookie(
+          uid,
+          response.headers['set-cookie']
+                  ?.split(",")
+                  .map((cookie) => cookie.split(';')[0].trim())
+                  .join(';') ??
+              cookiesText ??
+              '');
+    }
+
     if ([429, 503, 403].contains(response.statusCode)) {
       // required captcha resolve
       showCaptchaResolve(null);

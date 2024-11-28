@@ -14,17 +14,26 @@ import 'package:intl/intl.dart';
 
 import 'utils/parse_basic_book.dart';
 
-const BASE_URL = "https://truyengg.com";
-
 class TruyenGGService extends BaseService implements AuthService {
   @override
-  final String name = "TruyenGG";
+  final String name = "TruyenGG+";
   @override
-  final String baseUrl = BASE_URL;
+  final String baseUrl = "https://truyengg.com";
   @override
-  final String faviconUrl = "$BASE_URL/favicon.ico";
+  get faviconUrl => "$baseUrl/favicon.ico";
   @override
-  final String signInUrl = "$BASE_URL/";
+  get signInUrl => "$baseUrl/";
+
+// auth service
+  String? _csrf;
+  Future<String> _getCsrf() async {
+    if (_csrf != null) return _csrf!;
+
+    final document = await fetchDocument(baseUrl, useCookie: true);
+    _csrf = document.querySelector("#csrf-token")!.attributes["value"]!;
+
+    return _csrf!;
+  }
 
   @override
   Future<Iterable<BasicSection>> home() async {
@@ -160,22 +169,11 @@ class TruyenGGService extends BaseService implements AuthService {
     });
   }
 
-// auth service
-  late final String? _csrf;
-  Future<String> getCsrf() async {
-    if (_csrf != null) return _csrf;
-
-    final document = await fetchDocument(baseUrl, useCookie: true);
-    _csrf = document.querySelector("#csrf-token")!.attributes["value"]!;
-
-    return _csrf!;
-  }
-
   @override
   quickSearch(keyword) async {
     final document = await fetchDocument("$baseUrl/frontend/search/search",
         headers: {"x-requested-with": "XMLHttpRequest"},
-        body: {"search": keyword, "type": "0", "token": await getCsrf()});
+        body: {"search": keyword, "type": "0", "token": await _getCsrf()});
 
     final data = document.querySelectorAll("li > a").map((anchor) {
       final slug =
@@ -204,6 +202,19 @@ class TruyenGGService extends BaseService implements AuthService {
     });
 
     return data;
+  }
+
+  @override
+  Future<Iterable<BasicBook>> search(keyword, {page = 1}) async {
+    final Document document = await fetchDocument(
+        "$baseUrl/tim-kiem${page! > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}",
+        useCookie: true);
+
+    final sections = document.querySelectorAll(".list_item_home");
+
+    return sections[0]
+        .querySelectorAll(".item_home")
+        .map((element) => parseBasicBook(element, baseUrl));
   }
 
   // auth service

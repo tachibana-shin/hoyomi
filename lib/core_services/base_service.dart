@@ -17,4 +17,5 @@ abstract class BaseService extends UtilsService {
   Future<Iterable<BasicImage>> getPages(String manga, String chap);
   String getURL(String comicId, String chapterId);
   Future<Iterable<BasicBook>> quickSearch(String keyword);
+  Future<Iterable<BasicBook>> search(String keyword, {int? page});
 }
