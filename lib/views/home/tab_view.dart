@@ -15,9 +15,9 @@ class TabView extends StatefulWidget {
   _TabViewState createState() => _TabViewState();
 }
 
-class _TabViewState extends State<TabView>  with AutomaticKeepAliveClientMixin {
+class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
   @override
-  bool get wantKeepAlive => true;// with AutomaticKeepAliveClientMixin
+  bool get wantKeepAlive => true; // with AutomaticKeepAliveClientMixin
 
   late Future<Iterable<BasicSection>> _data;
 
@@ -41,6 +41,10 @@ class _TabViewState extends State<TabView>  with AutomaticKeepAliveClientMixin {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
+          if (widget.service.isCaptchaError(snapshot.error)) {
+            return Center(child: widget.service.templateCaptchaResolver(context));
+          }
+
           return Center(child: Text('Error: ${snapshot.error}'));
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -98,7 +102,7 @@ class _TabViewState extends State<TabView>  with AutomaticKeepAliveClientMixin {
                     builder: (context, bookIndex) {
                       final book = section.books.elementAt(bookIndex);
                       return VerticalBook(
-                          book: book, source: widget.service.uid);
+                          book: book, sourceId: widget.service.uid);
                     },
                   ),
                 ],

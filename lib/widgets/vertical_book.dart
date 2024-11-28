@@ -6,15 +6,15 @@ import 'package:honyomi/utils/format_time_ago.dart';
 
 class VerticalBook extends StatelessWidget {
   final BasicBook book;
-  final String source;
+  final String sourceId;
 
-  const VerticalBook({super.key, required this.book, required this.source});
+  const VerticalBook({super.key, required this.book, required this.sourceId});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          context.push("/details_comic/$source/${book.slug}");
+          context.push("/details_comic/$sourceId/${book.slug}");
         },
         splashColor: Colors.white70.withOpacity(0.3),
         highlightColor: Colors.white70.withOpacity(0.1),
