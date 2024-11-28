@@ -70,10 +70,14 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
             }
 
             if (snapshot.hasError) {
+              if (_service.isCaptchaError(snapshot.error)) {
+                return Center(child: _service.templateCaptchaResolver(context));
+              }
+
               return Center(child: Text('Error: ${snapshot.error}'));
             }
 
-            if (!snapshot.hasData) {
+            if (!snapshot.hasData || snapshot.data![0].isEmpty) {
               return const Center(child: Text('No data available.'));
             }
 
