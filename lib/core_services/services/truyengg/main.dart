@@ -7,6 +7,7 @@ import 'package:honyomi/core_services/interfaces/basic_user.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/basic_section.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/interfaces/paginate.dart';
 import 'package:honyomi/core_services/interfaces/rate_value.dart';
 import 'package:honyomi/core_services/interfaces/route.dart';
 import 'package:html/dom.dart';
@@ -212,16 +213,29 @@ class TruyenGGService extends BaseService implements AuthService {
   }
 
   @override
-  Future<Iterable<BasicBook>> search(keyword, {page = 1}) async {
+  search(keyword, {page = 1}) async {
     final Document document = await fetchDocument(
         "$baseUrl/tim-kiem${page! > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}",
         useCookie: true);
 
     final sections = document.querySelectorAll(".list_item_home");
 
-    return sections[0]
+    final data = sections[0]
         .querySelectorAll(".item_home")
         .map((element) => parseBasicBook(element, baseUrl));
+
+    final lastPageLink = document
+        .querySelector(".pagination > a:last-child")
+        ?.attributes["href"];
+    final maxPage = lastPageLink != null
+        ? int.parse(RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!)
+        : 1;
+
+    return Paginate(
+        items: data,
+        page: page,
+        totalItems: data.length * maxPage,
+        totalPages: maxPage);
   }
 
   // auth service

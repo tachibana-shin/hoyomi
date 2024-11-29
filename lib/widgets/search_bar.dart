@@ -178,7 +178,7 @@ class _QuickSearchScreen extends StatelessWidget {
   final Function() onDismissed;
 
   const _QuickSearchScreen(
-      {super.key, required this.onDismissed, required this.keyword});
+      {required this.onDismissed, required this.keyword});
 
   @override
   Widget build(BuildContext context) {
@@ -188,9 +188,9 @@ class _QuickSearchScreen extends StatelessWidget {
           ? []
           : services.map((service) {
               return HorizontalBookList(
-                booksFuture: service.search(keyword),
+                booksFuture: service.search(keyword).then((value) => value.items),
                 service: service,
-                title: '${service.name}', more: '/search/${service.uid}?q=$keyword',
+                title: service.name, more: '/search/${service.uid}?q=$keyword',
               );
             }).toList(),
     );
