@@ -1,9 +1,7 @@
-import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_section.dart';
-import 'package:honyomi/widgets/vertical_book.dart';
+import 'package:honyomi/widgets/vertical_book_list.dart';
 
 class TabView extends StatefulWidget {
   final BaseService service;
@@ -42,7 +40,8 @@ class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
         }
         if (snapshot.hasError) {
           if (widget.service.isCaptchaError(snapshot.error)) {
-            return Center(child: widget.service.templateCaptchaResolver(context));
+            return Center(
+                child: widget.service.templateCaptchaResolver(context));
           }
 
           return Center(child: Text('Error: ${snapshot.error}'));
@@ -68,45 +67,12 @@ class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
           itemBuilder: (context, sectionIndex) {
             final section = snapshot.data!.elementAt(sectionIndex);
 
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        section.name,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      IconButton(
-                        icon: const Icon(MaterialCommunityIcons.chevron_right),
-                        onPressed: () {
-                          print("Navigating to ${section.slug}");
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8.0),
-                  DynamicHeightGridView(
-                    shrinkWrap: true,
-                    // padding: const EdgeInsets.all(8.0),
-                    // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 0.0,
-                    mainAxisSpacing: 10.0,
-                    //   childAspectRatio: 1/3,
-                    // ),
-                    itemCount: section.books.length,
-                    builder: (context, bookIndex) {
-                      final book = section.books.elementAt(bookIndex);
-                      return VerticalBook(
-                          book: book, sourceId: widget.service.uid);
-                    },
-                  ),
-                ],
-              ),
+            return VerticalBookList(
+              booksFuture: null,
+              books: section.books,
+              service: widget.service,
+              title: section.name,
+              more: '/section/${0}',
             );
           },
         );
