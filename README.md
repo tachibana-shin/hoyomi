@@ -8,4 +8,5 @@ A new Flutter project.
 - [ ] Add information `book` for reader
 - [ ] Search page init `/search`
 - [ ] Search page main `/search?q=`
-- [ ] Search page more `/search/:sourceId`
+- [x] Search page more `/search/:sourceId`
+- [ ] Use `Colors` and `TextStyle` theme. Example `style: Theme.of(context).textTheme.titleLarge,`

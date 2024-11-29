@@ -7,14 +7,19 @@ import 'package:honyomi/pages/details_comic/[slug].page.dart';
 import 'package:honyomi/pages/details_comic/[slug]/[chap].page.dart';
 import 'package:honyomi/pages/home_page.dart';
 import 'package:honyomi/pages/manager_page.dart';
-import 'package:honyomi/pages/search_page.dart';
+import 'package:honyomi/pages/search/%5BsourceId%5D.page.dart';
+import 'package:honyomi/pages/search/index.dart';
 import 'package:honyomi/pages/webview_page.dart';
 import 'package:honyomi/widgets/navigation_app.dart';
 
-final List<String> routeIgnoreLayoutDefault = ['/details_comic', '/webview'];
+final List<String> routeIgnoreLayoutDefault = [
+  '/details_comic',
+  '/webview',
+  '/search/'
+];
 
 final GoRouter router = GoRouter(
-  initialLocation: '/search',
+  initialLocation: '/search/truyenggp?q=d',
   observers: [GoTransition.observer],
   routes: [
     StatefulShellRoute.indexedStack(
@@ -39,10 +44,26 @@ final GoRouter router = GoRouter(
         ]),
         StatefulShellBranch(routes: [
           GoRoute(
-            path: '/search',
-            pageBuilder: GoTransitions.material.call,
-            builder: (context, state) => SearchPage(),
-          ),
+              path: '/search',
+              pageBuilder: GoTransitions.material.call,
+              builder: (context, state) => SearchPage(),
+              routes: [
+                GoRoute(
+                  path: ':serviceId',
+                  pageBuilder: GoTransitions.material.call,
+                  builder: (context, state) {
+                    if (state.uri.queryParameters['q'] == null) {
+                      context.replace("/search");
+                      return Stack(children: []);
+                    }
+
+                    return SearchSingleSource(
+                      serviceId: state.pathParameters['serviceId']!,
+                      keyword: state.uri.queryParameters['q']!,
+                    );
+                  },
+                )
+              ]),
         ]),
         StatefulShellBranch(routes: [
           GoRoute(
