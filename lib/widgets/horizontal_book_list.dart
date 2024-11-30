@@ -27,7 +27,9 @@ class HorizontalBookList extends StatelessWidget {
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(children: [
+              child: Column(
+                crossAxisAlignment : CrossAxisAlignment.start,
+                children: [
                 Text(
                   title,
                   style: TextStyle(
@@ -60,7 +62,6 @@ class HorizontalBookList extends StatelessWidget {
               },
               child: Text('More'))
         ]),
-        const SizedBox(height: 8.0),
         FutureBuilder<Iterable<BasicBook>>(
           future: booksFuture,
           builder: (context, snapshot) {
