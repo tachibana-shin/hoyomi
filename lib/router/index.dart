@@ -11,6 +11,7 @@ import 'package:honyomi/pages/manager_page.dart';
 import 'package:honyomi/pages/search/[sourceId].page.dart';
 import 'package:honyomi/pages/search/index_page.dart';
 import 'package:honyomi/pages/webview_page.dart';
+import 'package:honyomi/pages/section/[sourceId]/[slug].page.dart';
 
 import 'package:honyomi/widgets/navigation_app.dart';
 
@@ -131,6 +132,24 @@ final GoRouter router = GoRouter(
                   builder: (context, state) => WebviewPage(
                       serviceId: state.pathParameters['serviceId']!),
                 )
+              ]),
+        ]),
+        StatefulShellBranch(routes: [
+          GoRoute(
+              path: '/section',
+              pageBuilder: GoTransitions.material.call,
+              routes: [
+                GoRoute(
+                    path: ':serviceId',
+                    pageBuilder: GoTransitions.material.call,
+                    routes: [
+                      GoRoute(
+                          path: ":slug",
+                          builder: (context, state) => SectionPage(
+                                serviceId: state.pathParameters['serviceId']!,
+                                slug: state.pathParameters['slug']!,
+                              ))
+                    ])
               ]),
         ]),
       ],
