@@ -19,7 +19,8 @@ final List<String> routeIgnoreLayoutDefault = [
   '/details_comic',
   '/webview',
   '/search/',
-  '/search?q='
+  '/search?q=',
+  '/section'
 ];
 
 final GoRouter router = GoRouter(
