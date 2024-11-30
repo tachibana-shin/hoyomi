@@ -3,36 +3,41 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
+
 import 'package:honyomi/pages/details_comic/[slug].page.dart';
 import 'package:honyomi/pages/details_comic/[slug]/[chap].page.dart';
 import 'package:honyomi/pages/home_page.dart';
 import 'package:honyomi/pages/manager_page.dart';
-import 'package:honyomi/pages/search/%5BsourceId%5D.page.dart';
-import 'package:honyomi/pages/search/index.dart';
+import 'package:honyomi/pages/search/[sourceId].page.dart';
+import 'package:honyomi/pages/search/index_page.dart';
 import 'package:honyomi/pages/webview_page.dart';
+
 import 'package:honyomi/widgets/navigation_app.dart';
 
 final List<String> routeIgnoreLayoutDefault = [
   '/details_comic',
   '/webview',
-  '/search/'
+  '/search/',
+  '/search?q='
 ];
 
 final GoRouter router = GoRouter(
-  initialLocation: '/search/truyenggp?q=d',
+  initialLocation: '/search?q=dễ thương',
   observers: [GoTransition.observer],
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
-        if (state.fullPath != null &&
-            routeIgnoreLayoutDefault.firstWhere(
-                    (route) => state.fullPath!.startsWith(route),
-                    orElse: () => '') !=
-                '') {
-          return Scaffold(body: navigationShell);
-        }
+        final fullPath = state.uri.toString();
 
-        return ScaffoldWithNestedNavigation(navigationShell: navigationShell);
+        final disableToolbar = routeIgnoreLayoutDefault.firstWhere(
+                (route) => fullPath.startsWith(route),
+                orElse: () => '') !=
+            '';
+
+        return ScaffoldWithNestedNavigation(
+          navigationShell: navigationShell,
+          disableToolbar: disableToolbar,
+        );
       },
       branches: [
         StatefulShellBranch(routes: [
@@ -46,7 +51,8 @@ final GoRouter router = GoRouter(
           GoRoute(
               path: '/search',
               pageBuilder: GoTransitions.material.call,
-              builder: (context, state) => SearchPage(),
+              builder: (context, state) =>
+                  SearchPage(keyword: state.uri.queryParameters['q'] ?? ''),
               routes: [
                 GoRoute(
                   path: ':serviceId',
@@ -135,11 +141,11 @@ final GoRouter router = GoRouter(
 // Fork stateful navigation based on:
 // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
 class ScaffoldWithNestedNavigation extends StatelessWidget {
-  const ScaffoldWithNestedNavigation({
-    super.key,
-    required this.navigationShell,
-  });
   final StatefulNavigationShell navigationShell;
+  final bool disableToolbar;
+
+  const ScaffoldWithNestedNavigation(
+      {super.key, required this.navigationShell, required this.disableToolbar});
 
   void _goBranch(int index) {
     navigationShell.goBranch(
@@ -160,12 +166,16 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
         return Scaffold(
           body: Row(
             children: [
-              NavigationApp(
-                selectedIndex: navigationShell.currentIndex,
-                rail: true,
-                onDestinationSelected: _goBranch,
-              ),
-              const VerticalDivider(thickness: 1, width: 1),
+              ...disableToolbar
+                  ? [
+                      NavigationApp(
+                        selectedIndex: navigationShell.currentIndex,
+                        rail: true,
+                        onDestinationSelected: _goBranch,
+                      ),
+                      const VerticalDivider(thickness: 1, width: 1),
+                    ]
+                  : [],
               // This is the main content.
               Expanded(
                 child: navigationShell,
@@ -177,11 +187,13 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
 
       return Scaffold(
           body: navigationShell,
-          bottomNavigationBar: NavigationApp(
-            selectedIndex: navigationShell.currentIndex,
-            rail: false,
-            onDestinationSelected: _goBranch,
-          ));
+          bottomNavigationBar: disableToolbar
+              ? null
+              : NavigationApp(
+                  selectedIndex: navigationShell.currentIndex,
+                  rail: false,
+                  onDestinationSelected: _goBranch,
+                ));
     });
   }
 }

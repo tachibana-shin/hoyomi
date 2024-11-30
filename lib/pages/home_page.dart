@@ -56,20 +56,25 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               floating: _overlayQuickSearch == null,
               snap: _overlayQuickSearch == null,
               pinned: _overlayQuickSearch == null,
-              title: CustomSearchBar(onOverlayChange: (overlay) {
-                setState(() {
-                  _setOverlay( overlay );
-                });
-              }),
+              title: CustomSearchBar(
+                  keyword: '',
+                  onOverlayChange: (overlay) {
+                    setState(() {
+                      _setOverlay(overlay);
+                    });
+                  }),
               centerTitle: true,
               titleSpacing: 0.0,
-              bottom:  _overlayQuickSearch != null ? null : TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                splashBorderRadius: BorderRadius.circular(35.0),
-                tabs:
-                    services.map((service) => Tab(text: service.name)).toList(),
-              ),
+              bottom: _overlayQuickSearch != null
+                  ? null
+                  : TabBar(
+                      controller: _tabController,
+                      isScrollable: true,
+                      splashBorderRadius: BorderRadius.circular(35.0),
+                      tabs: services
+                          .map((service) => Tab(text: service.name))
+                          .toList(),
+                    ),
             )
           ];
         },

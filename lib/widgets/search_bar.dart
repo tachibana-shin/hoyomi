@@ -2,13 +2,21 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/widgets/horizontal_book_list.dart';
 
 class CustomSearchBar extends StatefulWidget {
+  final String keyword;
+  final bool backMode;
+
   final Function(Widget? overlay) onOverlayChange;
 
-  const CustomSearchBar({super.key, required this.onOverlayChange});
+  const CustomSearchBar(
+      {super.key,
+      required this.onOverlayChange,
+      required this.keyword,
+      this.backMode = false});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -16,9 +24,17 @@ class CustomSearchBar extends StatefulWidget {
 }
 
 class _CustomSearchBarState extends State<CustomSearchBar> {
+  late final TextEditingController _controller;
+
   bool _focusing = false;
   bool _isOverlayVisible = false;
   String _keyword = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.keyword);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +53,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
           ),
           child: Row(
             children: [
-              if (_focusing)
+              if (_focusing || widget.backMode)
                 IconButton(
                     icon: Icon(
                       MaterialCommunityIcons.arrow_left,
@@ -47,6 +63,10 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                           .withOpacity(0.7),
                     ),
                     onPressed: () {
+                      if (widget.backMode) {
+                        context.pop();
+                      }
+
                       setState(() {
                         _focusing = false;
                         _removeOverlay();
@@ -84,6 +104,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                   },
                   child: TextField(
                       autofocus: _focusing || _isOverlayVisible,
+                      controller: _controller,
                       decoration: InputDecoration(
                         hintText: "Search...",
                         border: InputBorder.none,
@@ -96,6 +117,9 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                             _debouncedShowOverlay();
                           }
                         });
+                      },
+                      onSubmitted: (value) {
+                        context.pushReplacement("/search?q=$value");
                       }),
                 ),
               ),
@@ -135,7 +159,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
       top: 0.0,
       child: Container(
           color: Theme.of(context).scaffoldBackgroundColor,
-          child: _QuickSearchScreen(
+          child: QuickSearchScreen(
               onDismissed: _removeOverlay, keyword: _keyword.trim())),
     );
   }
@@ -173,12 +197,12 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 }
 
-class _QuickSearchScreen extends StatelessWidget {
+class QuickSearchScreen extends StatelessWidget {
   final String keyword;
   final Function() onDismissed;
 
-  const _QuickSearchScreen(
-      {required this.onDismissed, required this.keyword});
+  const QuickSearchScreen(
+      {super.key, required this.onDismissed, required this.keyword});
 
   @override
   Widget build(BuildContext context) {
@@ -187,10 +211,13 @@ class _QuickSearchScreen extends StatelessWidget {
       children: keyword.isEmpty
           ? []
           : services.map((service) {
+              final result = service.search(keyword);
               return HorizontalBookList(
-                booksFuture: service.search(keyword).then((value) => value.items),
+                booksFuture: result.then((value) => value.items),
+                totalItems: result.then((value) => value.totalItems),
                 service: service,
-                title: service.name, more: '/search/${service.uid}?q=$keyword',
+                title: service.name,
+                more: '/search/${service.uid}?q=$keyword',
               );
             }).toList(),
     );
