@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
@@ -14,6 +15,7 @@ class RssItem {
   final BasicImage? image;
   final BasicImage? avatar;
   final String? creator;
+  final BaseService service;
 
   RssItem({
     required this.title,
@@ -23,6 +25,7 @@ class RssItem {
     this.image,
     this.avatar,
     this.creator,
+    required this.service
   });
 }
 
@@ -112,6 +115,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
             src: imageUrl!, headers: {"referer": Uri.parse(link).host}),
         avatar: BasicImage(src: service.faviconUrl),
         creator: creator,
+        service: service,
       ));
     }
 
@@ -121,9 +125,6 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Rss Feed'),
-      ),
       body: FutureBuilder<List<RssItem>>(
         future: _newsItems,
         builder: (context, snapshot) {
@@ -143,90 +144,91 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
               final item = items[index];
 
               return Card(
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Left side: Title and Description
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(item.title,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.merge(TextStyle(height: 1.2))),
-                            if (item.description != null)
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 7.0),
-                                child: Text(item.description!),
-                              ),
-                            SizedBox(height: 7.0),
-                            Text(
-                                item.pubDate != null
-                                    ? formatTimeAgo(item.pubDate!)
-                                    : 'No date',
-                                style: TextStyle(fontSize: 12.0)),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Row(children: [
-                                CircleAvatar(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.surface,
-                                  radius: 10.0,
-                                  child: Image.network(
-                                    item.avatar!.src,
-                                    headers: item.avatar!.headers,
-                                    fit: BoxFit.cover,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  clipBehavior: Clip.hardEdge,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 4,
+                  child: InkWell(
+                    onTap: () {
+                      final param = item.service. parseURL(item.link);
+
+                      context.push("/details_comic/${item.service.uid}/${param.bookId}");
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Left side: Title and Description
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(item.title,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.merge(TextStyle(height: 1.2))),
+                                if (item.description != null)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 7.0),
+                                    child: Text(item.description!),
                                   ),
+                                SizedBox(height: 7.0),
+                                Text(
+                                    item.pubDate != null
+                                        ? formatTimeAgo(item.pubDate!)
+                                        : 'No date',
+                                    style: TextStyle(fontSize: 12.0)),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Row(children: [
+                                    CircleAvatar(
+                                      backgroundColor:
+                                          Theme.of(context).colorScheme.surface,
+                                      radius: 10.0,
+                                      child: Image.network(
+                                        item.avatar!.src,
+                                        headers: item.avatar!.headers,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Text(item.creator ?? 'Unknown',
+                                        style: TextStyle(fontSize: 12.0))
+                                  ]),
                                 ),
-                                Text(item.creator ?? 'Unknown',
-                                    style: TextStyle(fontSize: 12.0))
-                              ]),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Right side: Image
-                      if (item.image != null)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              item.image!.src,
-                              headers: item.image!.headers,
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
+                              ],
                             ),
                           ),
-                        ),
-                    ],
-                  ),
-                ),
-              );
+                          // Right side: Image
+                          if (item.image != null)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 16.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  item.image!.src,
+                                  headers: item.image!.headers,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ));
             },
           );
         },
       ),
     );
-  }
-
-  void _launchURL(BuildContext context, String url) async {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Opening: $url')));
-    // You can use url_launcher package to open the link.
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
@@ -6,6 +7,7 @@ import 'package:honyomi/core_services/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/interfaces/basic_user.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/basic_section.dart';
+import 'package:honyomi/core_services/interfaces/book_param.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/interfaces/paginate.dart';
 import 'package:honyomi/core_services/interfaces/rate_value.dart';
@@ -164,8 +166,18 @@ class TruyenGGService extends BaseService implements AuthService {
   }
 
   @override
-  String getURL(manga, chap) {
-    return "$baseUrl/truyen-tranh/$manga-$chap.html";
+  String getURL(comicId, chapterId) {
+    return "$baseUrl/truyen-tranh/$comicId-$chapterId.html";
+  }
+
+  @override
+  parseURL(url) {
+    final slug = url.split("/").last.replaceFirst(".html", "");
+    final index = slug.indexOf("chap-");
+    final chapterId = index == -1 ? null : slug.substring(index + 5);
+    final comicId = index == -1 ? slug : slug.substring(0, index);
+
+    return BookParam(bookId: comicId, chapterId: chapterId);
   }
 
   @override
