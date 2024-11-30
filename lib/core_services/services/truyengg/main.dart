@@ -24,6 +24,8 @@ class TruyenGGService extends BaseService implements AuthService {
   get faviconUrl => "$baseUrl/favicon.ico";
   @override
   get signInUrl => "$baseUrl/";
+  @override
+  get rss => "$baseUrl/rss.html";
 
   @override
   onBeforeInsertCookie(cookie) {

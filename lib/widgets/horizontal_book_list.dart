@@ -65,7 +65,7 @@ class HorizontalBookList extends StatelessWidget {
         FutureBuilder<Iterable<BasicBook>>(
           future: booksFuture,
           builder: (context, snapshot) {
-            final childAspectRatio = 118.0 / 236.0;
+            final childAspectRatio = 2/4.1;
             final viewportFraction = 0.2857;
             final height = 1 /
                 childAspectRatio *

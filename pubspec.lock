@@ -666,6 +666,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      sha256: c15605cd28af66339f8eb6fbe0e541bfe2d1b72d5825efc6598f3e0a31b9ad27
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.2"
   platform:
     dependency: transitive
     description:
@@ -714,6 +722,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  rss_feed_parser:
+    dependency: "direct main"
+    description:
+      name: rss_feed_parser
+      sha256: "37af4ec18a240db2eec667db411cf86c9bba93bd476c48822b2a54b29aa8f87a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.6"
   scrollable_positioned_list:
     dependency: "direct main"
     description:
@@ -1167,6 +1183,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  xml:
+    dependency: "direct main"
+    description:
+      name: xml
+      sha256: b015a8ad1c488f66851d762d3090a21c600e479dc75e68328c52774040cf9226
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.5.0"
   yaml:
     dependency: transitive
     description:

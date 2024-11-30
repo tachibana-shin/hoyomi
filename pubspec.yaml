@@ -24,6 +24,7 @@ dependencies:
   infinite_scroll_pagination: ^4.1.0
   interactive_slider: ^0.4.0
   intl: any
+  rss_feed_parser: ^1.0.6
   scrollable_positioned_list: ^0.3.8
   scrollview_observer: ^1.23.0
   share_plus: ^10.1.2
@@ -32,6 +33,7 @@ dependencies:
   sqflite_common_ffi: ^2.3.4+3
   url_launcher: ^6.3.1
   webview_flutter: ^4.10.0
+  xml: ^6.5.0
 
 dev_dependencies:
   flutter_test:

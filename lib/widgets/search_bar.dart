@@ -37,7 +37,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  PreferredSize build(BuildContext context) {
     return PreferredSize(
       preferredSize: const Size.fromHeight(50.0),
       child: Stack(children: [
@@ -53,7 +53,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
           ),
           child: Row(
             children: [
-              if (_focusing || widget.backMode)
+              if (_focusing || (widget.backMode && _controller.text.trim().isNotEmpty))
                 IconButton(
                     icon: Icon(
                       MaterialCommunityIcons.arrow_left,
@@ -65,6 +65,8 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                     onPressed: () {
                       if (widget.backMode) {
                         context.pop();
+                        _controller.clearComposing();
+                        _controller.clear();
                       }
 
                       setState(() {
@@ -119,7 +121,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                         });
                       },
                       onSubmitted: (value) {
-                        context.pushReplacement("/search?q=$value");
+                        context.push("/search?q=$value");
                       }),
                 ),
               ),

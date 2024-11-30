@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/screens/rss/news_feed.dart';
 import 'package:honyomi/widgets/search_bar.dart';
 
 class SearchPage extends StatelessWidget {
@@ -34,36 +36,25 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin {
     super.build(context);
 
     return Scaffold(
-        body: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  foregroundColor: Colors.transparent,
-                  scrolledUnderElevation: 0.0,
-                  floating: true,
-                  snap: true,
-                  pinned: true,
-                  title: CustomSearchBar(
-                      keyword: widget.keyword,
-                      backMode: true,
-                      onOverlayChange: (overlay) {
-                        setState(() {
-                          _overlayQuickSearch = overlay;
-                        });
-                      }),
-                  centerTitle: true,
-                  titleSpacing: 0.0,
-                )
-              ];
-            },
-            body: Stack(children: [
-              widget.keyword.trim().isNotEmpty
-                  ? _buildBodySearch(context)
-                  : _buildBodyGetStarting(context),
-              ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : [])
-            ])));
+        appBar: AppBar(
+          title:  CustomSearchBar(
+              keyword: widget.keyword,
+              backMode: true,
+              onOverlayChange: (overlay) {
+                setState(() {
+                  _overlayQuickSearch = overlay;
+                });
+              }),
+              titleSpacing: 0,
+              automaticallyImplyLeading: false,
+          centerTitle: true,
+        ),
+        body: Stack(children: [
+          widget.keyword.trim().isNotEmpty
+              ? _buildBodySearch(context)
+              : _buildBodyGetStarting(context),
+          ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : [])
+        ]));
   }
 
   Widget _buildBodySearch(BuildContext context) {
@@ -74,6 +65,8 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _buildBodyGetStarting(BuildContext context) {
-    return Scaffold();
+    return NewsFeedScreen(
+      services: services,
+    );
   }
 }

@@ -12,6 +12,7 @@ abstract class BaseService extends UtilsService {
   String get uid;
   String get faviconUrl;
   String get baseUrl;
+  String? rss;
 
   Future<Iterable<BasicSection>> home();
   Future<MetaBook> getDetails(String slug);
