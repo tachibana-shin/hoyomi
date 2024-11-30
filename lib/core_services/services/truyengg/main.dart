@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
+import 'package:honyomi/core_services/interfaces/base_section.dart';
 import 'package:honyomi/core_services/interfaces/basic_user.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/basic_section.dart';
@@ -198,6 +199,33 @@ class TruyenGGService extends BaseService implements AuthService {
         : 1;
 
     return Paginate(
+        items: data,
+        page: page,
+        totalItems: data.length * maxPage,
+        totalPages: maxPage);
+  }
+
+  @override
+  getSection(slug, {page = 1}) async {
+    final Document document = await fetchDocument(
+        "$baseUrl/$slug/${page! > 1 ? 'trang-$page' : ''}.html",
+        useCookie: true);
+
+    final sections = document.querySelectorAll(".list_item_home");
+
+    final data = sections[0]
+        .querySelectorAll(".item_home")
+        .map((element) => parseBasicBook(element, baseUrl));
+
+    final lastPageLink = document
+        .querySelector(".pagination > a:last-child")
+        ?.attributes["href"];
+    final maxPage = lastPageLink != null
+        ? int.parse(RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!)
+        : 1;
+
+    return BaseSection(
+        name: document.querySelector(".title_cate")!.text,
         items: data,
         page: page,
         totalItems: data.length * maxPage,

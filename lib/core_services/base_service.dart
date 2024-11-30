@@ -1,3 +1,4 @@
+import 'package:honyomi/core_services/interfaces/base_section.dart';
 import 'package:honyomi/core_services/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/basic_section.dart';
@@ -19,8 +20,11 @@ abstract class BaseService extends UtilsService {
   BookParam parseURL(String url);
 
   Future<Iterable<BasicSection>> home();
+
+  Future<BaseSection> getSection(String slug, {int? page});
+
   Future<MetaBook> getDetails(String slug);
   Future<Iterable<BasicImage>> getPages(String manga, String chap);
-  
+
   Future<Paginate<BasicBook>> search(String keyword, {int? page});
 }

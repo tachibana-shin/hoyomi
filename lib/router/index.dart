@@ -22,7 +22,7 @@ final List<String> routeIgnoreLayoutDefault = [
 ];
 
 final GoRouter router = GoRouter(
-  initialLocation: '/search',
+  initialLocation: '/home',
   observers: [GoTransition.observer],
   routes: [
     StatefulShellRoute.indexedStack(

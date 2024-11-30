@@ -15,7 +15,7 @@ class TabView extends StatefulWidget {
 
 class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
   @override
-  bool get wantKeepAlive => true; // with AutomaticKeepAliveClientMixin
+  bool get wantKeepAlive => true;
 
   late Future<Iterable<BasicSection>> _data;
 
@@ -24,9 +24,6 @@ class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
     super.initState();
     _data = widget.service.home();
   }
-
-  // @override
-  // bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -50,17 +47,6 @@ class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
           return const Center(child: Text('No data available'));
         }
 
-        double screenWidth = MediaQuery.of(context).size.width;
-        int crossAxisCount;
-
-        if (screenWidth <= 600) {
-          crossAxisCount = 3;
-        } else if (screenWidth <= 900) {
-          crossAxisCount = 4;
-        } else {
-          crossAxisCount = 6;
-        }
-
         return ListView.builder(
           padding: const EdgeInsets.all(8.0),
           itemCount: snapshot.data!.length,
@@ -72,7 +58,7 @@ class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
               books: section.books,
               service: widget.service,
               title: section.name,
-              more: '/section/${0}',
+              more: '/section/${section.slug}',
             );
           },
         );
