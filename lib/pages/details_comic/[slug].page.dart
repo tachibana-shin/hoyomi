@@ -230,14 +230,44 @@ class _DetailsComicState extends State<DetailsComic> {
                               if (book.rate != null)
                                 Row(
                                   children: [
-                                    Icon(
-                                      MaterialCommunityIcons.star,
-                                      color: Colors.yellow[700],
-                                      size: 18.0,
+                                    ...List.generate(
+                                      book.rate!.value.floor(),
+                                      (index) => Icon(
+                                        Icons.star,
+                                        size: 16.0,
+                                        color: Colors.blue
+                                            .shade200, /* Theme.of(context)
+                                            .colorScheme
+                                            .onPrimaryContainer,*/
+                                      ),
+                                    ),
+                                    if (book.rate!.value % 1 != 0)
+                                      Icon(
+                                        Icons.star_half,
+                                        size: 16.0,
+                                        color: Colors.blue.shade200,
+                                      ),
+                                    ...List.generate(
+                                      (book.rate!.best - book.rate!.value)
+                                          .floor(),
+                                      (index) => Icon(
+                                        Icons.star,
+                                        size: 16.0,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant
+                                            .withOpacity(0.5),
+                                      ),
                                     ),
                                     const SizedBox(width: 4.0),
                                     Text(
-                                        '${book.rate!.value} / ${book.rate!.best} (${book.rate!.count} votes)'),
+                                      "(${book.rate!.count})",
+                                      style: TextStyle(
+                                          fontSize: 14.0,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .inverseSurface),
+                                    ),
                                   ],
                                 ),
                             ],
@@ -247,8 +277,7 @@ class _DetailsComicState extends State<DetailsComic> {
                     ),
                     const SizedBox(height: 16.0),
                     Container(
-                      color: Colors.black.withOpacity(0.1),
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      color: Colors.transparent,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [

@@ -77,7 +77,7 @@ class VerticalBook extends StatelessWidget {
                                       children: [
                                         Icon(
                                           MaterialCommunityIcons.star,
-                                          color: Colors.yellow[700],
+                                          color: Colors.blue.shade200,
                                           size: 16.0,
                                         ),
                                         const SizedBox(width: 4.0),
