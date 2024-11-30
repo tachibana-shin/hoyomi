@@ -100,10 +100,8 @@ class TruyenGGService extends BaseService implements AuthService {
 
     final genres = document.querySelectorAll(".clblue").map((anchor) => Route(
         name: anchor.text.trim(),
-        slug: anchor.attributes["href"]!
-            .split("/")
-            .last
-            .replaceFirst(".html", "")));
+        slug:
+            "the-loai*${anchor.attributes["href"]!.split("/").last.replaceFirst(".html", "")}"));
     final description =
         document.querySelector(".story-detail-info")!.text.trim();
     final slugRoot = slug;
@@ -208,7 +206,7 @@ class TruyenGGService extends BaseService implements AuthService {
   @override
   getSection(slug, {page = 1}) async {
     final Document document = await fetchDocument(
-        "$baseUrl/$slug${page! > 1 ? '/trang-$page' : ''}.html",
+        "$baseUrl/${slug.replaceAll('\*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
         useCookie: true);
 
     final sections = document.querySelectorAll(".list_item_home");

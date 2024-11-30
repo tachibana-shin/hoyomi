@@ -22,9 +22,12 @@ class DetailsComic extends StatefulWidget {
   createState() => _DetailsComicState();
 }
 
-class _DetailsComicState extends State<DetailsComic> {
+class _DetailsComicState extends State<DetailsComic>
+    with SingleTickerProviderStateMixin {
   late Future<MetaBook> _metaBookFuture;
   late final BaseService _service;
+
+  late final AnimationController _bottomSheetAnimationController;
 
   final ScrollController _scrollController = ScrollController();
   bool _isTitleVisible = false;
@@ -34,6 +37,8 @@ class _DetailsComicState extends State<DetailsComic> {
   @override
   void initState() {
     super.initState();
+
+    _bottomSheetAnimationController = AnimationController(vsync: this);
 
     _service = getService(widget.sourceId);
     _metaBookFuture = _service.getDetails(widget.slug);
@@ -389,13 +394,19 @@ class _DetailsComicState extends State<DetailsComic> {
                       spacing: 8.0,
                       runSpacing: 4.0,
                       children: book.genres.map((genre) {
-                        return Chip(
-                          padding: EdgeInsets.all(0),
-                          label: Text(genre.name,
-                              style: TextStyle(
-                                color: Colors.white,
-                              )),
-                        );
+                        return InkWell(
+                            onTap: () {
+                              ///
+                              context.push(
+                                  "/section/${_service.uid}/${genre.slug}");
+                            },
+                            child: Chip(
+                              padding: EdgeInsets.all(0),
+                              label: Text(genre.name,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  )),
+                            ));
                       }).toList(),
                     ),
                   ],
@@ -405,6 +416,7 @@ class _DetailsComicState extends State<DetailsComic> {
         bottomSheet: _book == null
             ? null
             : BottomSheet(
+                animationController: _bottomSheetAnimationController,
                 builder: (context) => _buildSheetChapters()!,
                 onClosing: () {},
               ));
