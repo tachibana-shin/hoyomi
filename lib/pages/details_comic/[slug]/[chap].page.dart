@@ -154,7 +154,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
   }
 
   void _openInBrowser() async {
-    final url = _service.getURL(widget.slug, widget.chap);
+    final url = _service.getURL(widget.slug, chapterId: widget.chap);
     if (!await launchUrl(Uri.parse(url))) {
       showSnackBar(
         Text('Could not launch $url'),
@@ -163,7 +163,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
   }
 
   void _share() {
-    final url = _service.getURL(widget.slug, widget.chap);
+    final url = _service.getURL(widget.slug, chapterId: widget.chap);
     final String content =
         "Check out this comic: ${_metaBook?.name}\n\nRead here: $url";
 

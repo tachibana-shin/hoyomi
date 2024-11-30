@@ -10,6 +10,7 @@ import 'package:honyomi/globals.dart';
 import 'package:honyomi/utils/format_number.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
 import 'package:honyomi/widgets/sheet_chapters.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailsComic extends StatefulWidget {
   final String sourceId;
@@ -36,6 +37,12 @@ class _DetailsComicState extends State<DetailsComic> {
 
     _service = getService(widget.sourceId);
     _metaBookFuture = _service.getDetails(widget.slug);
+    _metaBookFuture.then((book) {
+      setState(() {
+        _title = book.name;
+        _book = book;
+      });
+    });
 
     _scrollController.addListener(_onScroll);
   }
@@ -79,6 +86,12 @@ class _DetailsComicState extends State<DetailsComic> {
                 _shareContent(context);
               },
             ),
+            IconButton(
+              icon: const Icon(MaterialCommunityIcons.earth),
+              onPressed: () {
+                _openBrowser(context);
+              },
+            ),
             PopupMenuButton<String>(
               onSelected: (value) {
                 _handleMenuSelection(context, value);
@@ -113,8 +126,6 @@ class _DetailsComicState extends State<DetailsComic> {
             }
 
             MetaBook book = snapshot.data!;
-            _title = book.name;
-            _book = book;
 
             return SingleChildScrollView(
                 padding: EdgeInsets.all(16.0),
@@ -408,6 +419,14 @@ class _DetailsComicState extends State<DetailsComic> {
 
   void _shareContent(BuildContext context) {
     showSnackBar(Text('Sharing the content...'));
+  }
+
+  void _openBrowser(BuildContext context) async {
+    final Uri uri = Uri.parse(_service.getURL(widget.slug));
+
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      showSnackBar(Text('Could not launch $uri'));
+    }
   }
 
   void _handleMenuSelection(BuildContext context, String id) {

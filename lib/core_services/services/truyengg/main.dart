@@ -154,8 +154,8 @@ class TruyenGGService extends BaseService implements AuthService {
   }
 
   @override
-  String getURL(comicId, chapterId) {
-    return "$baseUrl/truyen-tranh/$comicId-$chapterId.html";
+  String getURL(comicId, {chapterId}) {
+    return "$baseUrl/truyen-tranh/$comicId${chapterId != null ? "-$chapterId" : ""}.html";
   }
 
   @override
@@ -170,7 +170,7 @@ class TruyenGGService extends BaseService implements AuthService {
 
   @override
   Future<Iterable<BasicImage>> getPages(String manga, String chap) async {
-    final document = await fetchDocument(getURL(manga, chap));
+    final document = await fetchDocument(getURL(manga, chapterId: chap));
 
     return document.querySelectorAll(".content_detail_manga > img").map((img) {
       final src = img.attributes["src"]!;

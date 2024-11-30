@@ -16,7 +16,7 @@ abstract class BaseService extends UtilsService {
   String get baseUrl;
   String? rss;
 
-  String getURL(String comicId, String chapterId);
+  String getURL(String comicId, {String? chapterId});
   BookParam parseURL(String url);
 
   Future<Iterable<BasicSection>> home();
