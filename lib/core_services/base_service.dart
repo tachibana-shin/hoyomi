@@ -15,11 +15,12 @@ abstract class BaseService extends UtilsService {
   String get baseUrl;
   String? rss;
 
+  String getURL(String comicId, String chapterId);
+  BookParam parseURL(String url);
+
   Future<Iterable<BasicSection>> home();
   Future<MetaBook> getDetails(String slug);
   Future<Iterable<BasicImage>> getPages(String manga, String chap);
-  String getURL(String comicId, String chapterId);
-  BookParam parseURL(String url);
-  Future<Iterable<BasicBook>> quickSearch(String keyword);
+  
   Future<Paginate<BasicBook>> search(String keyword, {int? page});
 }

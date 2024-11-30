@@ -1,9 +1,7 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
-import 'package:honyomi/core_services/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/interfaces/basic_user.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/basic_section.dart';
@@ -34,17 +32,6 @@ class TruyenGGService extends BaseService implements AuthService {
     cookie = cookie ?? '';
 
     return 'type_book=1; $cookie';
-  }
-
-// auth service
-  String? _csrf;
-  Future<String> _getCsrf() async {
-    if (_csrf != null) return _csrf!;
-
-    final document = await fetchDocument(baseUrl, useCookie: true);
-    _csrf = document.querySelector("#csrf-token")!.attributes["value"]!;
-
-    return _csrf!;
   }
 
   @override
@@ -192,41 +179,6 @@ class TruyenGGService extends BaseService implements AuthService {
   }
 
   @override
-  quickSearch(keyword) async {
-    final document = await fetchDocument("$baseUrl/frontend/search/search",
-        headers: {"x-requested-with": "XMLHttpRequest"},
-        body: {"search": keyword, "type": "0", "token": await _getCsrf()});
-
-    final data = document.querySelectorAll("li > a").map((anchor) {
-      final slug =
-          anchor.attributes["href"]!.split("/").last.replaceFirst(".html", "");
-      final name = anchor.querySelector(".name")!.text;
-      final image = BasicImage(
-          src: anchor.querySelector("img")!.attributes["src"]!,
-          headers: {"referer": baseUrl});
-      final originalName = anchor.querySelector(".name_other")!.text;
-
-      final lastChapName$ = anchor.querySelector("p:nth-child(3)")!.text;
-      final lastChap = Route(
-        slug: "$slug/${lastChapName$.replaceFirst('Chapter ', 'chap-')}",
-        name: lastChapName$,
-      );
-
-      return BasicBook(
-          slug: slug,
-          name: name,
-          originalName: originalName,
-          lastChap: lastChap,
-          image: image,
-          timeAgo: null,
-          notice: null,
-          rate: null);
-    });
-
-    return data;
-  }
-
-  @override
   search(keyword, {page = 1}) async {
     final Document document = await fetchDocument(
         "$baseUrl/tim-kiem${page! > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}",
@@ -295,7 +247,7 @@ class TruyenGGService extends BaseService implements AuthService {
 
     final id =
         document.querySelector(".subscribe_button")!.attributes['data-id']!;
-    _csrf = document.querySelector("#csrf-token")!.attributes["value"]!;
+    final _csrf = document.querySelector("#csrf-token")!.attributes["value"]!;
 
     final data = await fetch("$baseUrl/frontend/user/regiter-subscribe",
         headers: {"x-requested-with": "XMLHttpRequest"},
