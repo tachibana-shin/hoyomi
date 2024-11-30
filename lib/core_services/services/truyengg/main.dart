@@ -206,7 +206,7 @@ class TruyenGGService extends BaseService implements AuthService {
   @override
   getSection(slug, {page = 1}) async {
     final Document document = await fetchDocument(
-        "$baseUrl/${slug.replaceAll('\*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
+        "$baseUrl/${slug.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
         useCookie: true);
 
     final sections = document.querySelectorAll(".list_item_home");
