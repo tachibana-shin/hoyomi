@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
+import 'package:honyomi/utils/format_time_ago.dart';
 
 class SheetChapters extends StatefulWidget {
   final MetaBook book;
@@ -40,22 +41,30 @@ class _SheetChaptersState extends State<SheetChapters> {
           ),
           child: Column(
             children: [
+              Center(
+                child: Container(
+                  width: 40.0,
+                  height: 4.0,
+                  margin: EdgeInsets.symmetric(vertical: 16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(2.0),
+                  ),
+                ),
+              ),
               // Header
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.only(bottom: 8.0),
                 child: Text(
                   "List chapters",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 15.0,
+                    fontSize: 160,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              Divider(
-                color: Colors.grey.shade700,
-                height: 1.0,
-              ),
+              Divider(),
               // Chapters List
               Expanded(
                 child: ListView.builder(
@@ -73,7 +82,7 @@ class _SheetChaptersState extends State<SheetChapters> {
                         ),
                       ),
                       subtitle: Text(
-                        "${chapter.time}",
+                        chapter.time != null ? formatTimeAgo(chapter.time!) : "",
                         style: TextStyle(
                           color: Colors.grey.shade400,
                           fontSize: 12.0,

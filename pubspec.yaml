@@ -25,6 +25,7 @@ dependencies:
   infinite_scroll_pagination: ^4.1.0
   interactive_slider: ^0.4.0
   intl: any
+  marquee: ^2.3.0
   rss_feed_parser: ^1.0.6
   scrollable_positioned_list: ^0.3.8
   scrollview_observer: ^1.23.0

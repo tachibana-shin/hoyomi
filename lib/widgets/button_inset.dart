@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 
 class ButtonInset extends StatelessWidget {
   final String text;
@@ -27,7 +28,26 @@ class ButtonInset extends StatelessWidget {
           children: [
             Icon(icon, size: 24),
             SizedBox(height: 2),
-            Text(text, maxLines: 1, style: TextStyle(fontSize: 12)),
+            Text(
+              text,
+              maxLines: 1,
+              style: TextStyle(fontSize: 12),
+              overflow: TextOverflow.ellipsis,
+            )
+            // SizedBox(
+            //     height: 12 * 1.5,
+            //     child: Marquee(
+            //       text: text,
+            //       style: TextStyle(fontSize: 12),
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       blankSpace: 20.0,
+            //       velocity: 25.0,
+            //       startPadding: 0.0,
+            //       pauseAfterRound: Duration(seconds: 1),
+            //       showFadingOnlyWhenScrolling: true,
+            //       fadingEdgeStartFraction: 0.1,
+            //       fadingEdgeEndFraction: 0.1,
+            //     )),
           ],
         ),
       ),
