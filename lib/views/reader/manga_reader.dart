@@ -361,7 +361,10 @@ class _MangaReaderState extends State<MangaReader> {
           return child;
         }
 
-        return _buildPageLoading(loadingProgress);
+        return SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: _buildPageLoading(loadingProgress),
+        );
       },
     );
   }
@@ -888,7 +891,7 @@ class _MangaReaderState extends State<MangaReader> {
                                   .onSurface
                                   .withOpacity(0.5),
                           onPressed: () {
-                            context.replace("../${_prevChapter!.slug}");
+                            context.replace("/details_comic/${widget.sourceId}/${widget.slug}/${_prevChapter!.slug}");
                           },
                         )))),
             Expanded(
@@ -928,7 +931,7 @@ class _MangaReaderState extends State<MangaReader> {
                                     .onSurface
                                     .withOpacity(0.5),
                             onPressed: () {
-                              context.replace("../${_nextChapter!.slug}");
+                              context.replace("/details_comic/${widget.sourceId}/${widget.slug}/${_nextChapter!.slug}");
                             }))))
           ])),
       SizedBox(height: 8.0),
