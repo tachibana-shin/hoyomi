@@ -166,4 +166,31 @@ abstract class UtilsService {
     return parseDocument(await fetch(url,
         cookie: cookie, useCookie: useCookie, body: body, headers: headers));
   }
+
+  /// Builds a new URI with updated query parameters based on the provided filters.
+  ///
+  /// [baseUrl] The base URL to which the query parameters should be added.
+  /// 
+  /// [filters] A map where keys are parameter names and values are lists of parameter values.
+  ///
+  /// Returns a new [Uri] with the query parameters from [filters] applied.
+  Uri buildQueryUri(String baseUrl, {Map<String, List<String>?>? filters}) {
+    final uri = Uri.parse(baseUrl);
+
+    final existingParameters =
+        Map<String, List<String>>.from(uri.queryParametersAll);
+
+    filters?.forEach((key, value) {
+      if (value != null && value.isNotEmpty) {
+        existingParameters[key] = value;
+      }
+    });
+
+    final newUri = uri.replace(
+      queryParameters:
+          existingParameters.map((k, v) => MapEntry(k, v.join(','))),
+    );
+
+    return newUri;
+  }
 }

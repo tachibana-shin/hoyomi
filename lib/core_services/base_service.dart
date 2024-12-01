@@ -21,7 +21,7 @@ abstract class BaseService extends UtilsService {
 
   Future<Iterable<BasicSection>> home();
 
-  Future<BaseSection> getSection(String slug, {int? page});
+  Future<BaseSection> getSection(String slug, {int? page, Map<String, List<String>?>? filters});
 
   Future<MetaBook> getDetails(String slug);
   Future<Iterable<BasicImage>> getPages(String manga, String chap);

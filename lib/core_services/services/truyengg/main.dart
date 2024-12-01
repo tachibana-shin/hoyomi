@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/base_section.dart';
+import 'package:honyomi/core_services/interfaces/basic_filter.dart';
 import 'package:honyomi/core_services/interfaces/basic_user.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/basic_section.dart';
@@ -15,6 +16,28 @@ import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 
 import 'utils/parse_basic_book.dart';
+
+final List<BasicFilter> globalFilters = [
+  BasicFilter(name: 'Trạng thái', key: 'status', multiple: false, options: [
+    BasicOption(name: 'Đang tiến hành', value: '0'),
+    BasicOption(name: 'Hoàn thành', value: '1')
+  ]),
+  BasicFilter(name: 'Quốc Gia', key: 'country', multiple: false, options: [
+    BasicOption(name: 'Trung Quốc', value: '1'),
+    BasicOption(name: 'Hàn Quốc', value: '2'),
+    BasicOption(name: 'Nhật Bản', value: '3'),
+    BasicOption(name: 'Việt Nam', value: '4'),
+    BasicOption(name: 'Hoa Kỳ', value: '5'),
+  ]),
+  BasicFilter(name: 'Sắp Xếp', key: 'sort', multiple: false, options: [
+    BasicOption(name: 'Ngày đăng giảm dần', value: '0'),
+    BasicOption(name: 'Ngày đăng tăng dần', value: '1'),
+    BasicOption(name: 'Ngày cập nhật giảm dần', value: '2'),
+    BasicOption(name: 'Ngày cập nhật tăng dần', value: '3'),
+    BasicOption(name: 'Lượt xem giảm dần', value: '4'),
+    BasicOption(name: 'Lượt xem tăng dần', value: '5')
+  ]),
+];
 
 class TruyenGGService extends BaseService implements AuthService {
   @override
@@ -204,9 +227,12 @@ class TruyenGGService extends BaseService implements AuthService {
   }
 
   @override
-  getSection(slug, {page = 1}) async {
+  getSection(slug, {page = 1, filters}) async {
     final Document document = await fetchDocument(
-        "$baseUrl/${slug.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
+        buildQueryUri(
+                "$baseUrl/${slug.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
+                filters: filters)
+            .toString(),
         useCookie: true);
 
     final sections = document.querySelectorAll(".list_item_home");
@@ -227,7 +253,8 @@ class TruyenGGService extends BaseService implements AuthService {
         items: data,
         page: page,
         totalItems: data.length * maxPage,
-        totalPages: maxPage);
+        totalPages: maxPage,
+        filters: globalFilters);
   }
 
   // auth service
@@ -273,11 +300,11 @@ class TruyenGGService extends BaseService implements AuthService {
 
     final id =
         document.querySelector(".subscribe_button")!.attributes['data-id']!;
-    final _csrf = document.querySelector("#csrf-token")!.attributes["value"]!;
+    final csrf = document.querySelector("#csrf-token")!.attributes["value"]!;
 
     final data = await fetch("$baseUrl/frontend/user/regiter-subscribe",
         headers: {"x-requested-with": "XMLHttpRequest"},
-        body: {"id": id, "token": _csrf});
+        body: {"id": id, "token": csrf});
 
     return data != '0';
   }
