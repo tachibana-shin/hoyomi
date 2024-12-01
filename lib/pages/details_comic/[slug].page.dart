@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:honyomi/cache/get_user.dart';
 import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
+import 'package:honyomi/core_services/interfaces/basic_user.dart';
 
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/main.dart';
@@ -85,6 +87,7 @@ class _DetailsComicState extends State<DetailsComic>
             child: Text(_title),
           ),
           actions: [
+            if (_service is AuthService) _AvatarUser(service: (_service)),
             IconButton(
               icon: const Icon(Icons.share), // 共有ボタン
               onPressed: () {
@@ -590,5 +593,70 @@ class _ButtonLikeState extends State<_ButtonLike> {
                 ],
               ),
             )));
+  }
+}
+
+class _AvatarUser extends StatefulWidget {
+  final BaseService service;
+
+  const _AvatarUser({required this.service});
+
+  @override
+  createState() => _AvatarUserState();
+}
+
+class _AvatarUserState extends State<_AvatarUser> {
+  late Future<BasicUser> _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _user = getUser(widget.service);
+  }
+
+  void _updateUser() {
+    setState(() {
+      _user = getUser(widget.service);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _user,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Tooltip(
+              message: snapshot.data!.fullName,
+              child: CircleAvatar(
+                radius: 15,
+                backgroundColor: Theme.of(context).colorScheme.onSurface,
+                child: Image.network(
+                  snapshot.data!.photoUrl,
+                  fit: BoxFit.cover,
+                ),
+              ));
+        }
+        if (snapshot.hasError) {
+          return GestureDetector(
+            onTap: () async {
+              await context.push("/webview/${widget.service.uid}");
+              _updateUser();
+            },
+            child: CircleAvatar(
+              radius: 15,
+              backgroundColor: Theme.of(context).colorScheme.onSurface,
+              child: Icon(
+                Icons.account_circle,
+                color: Theme.of(context).colorScheme.primary,
+                size: 30,
+              ),
+            ),
+          );
+        }
+
+        return const CircularProgressIndicator();
+      },
+    );
   }
 }

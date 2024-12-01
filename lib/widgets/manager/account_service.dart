@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:honyomi/cache/get_user.dart';
 import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_user.dart';
@@ -48,7 +49,7 @@ class _AccountServiceState extends State<AccountService> {
 
   void _fetchUser() {
     _error = null;
-    (widget.service as AuthService).getUser().then((user) {
+    getUser(widget.service).then((user) {
       setState(() {
         _user = user;
       });
@@ -152,8 +153,7 @@ class _AccountServiceState extends State<AccountService> {
       case "NOT_SIGN":
         oneLine = InkWell(
             onTap: () {
-              context.push(
-                  "/webview/${widget.service.uid}");
+              context.push("/webview/${widget.service.uid}");
             },
             child: Text(
               "(Tap to sign in)",
@@ -188,8 +188,7 @@ class _AccountServiceState extends State<AccountService> {
       default:
         oneLine = InkWell(
             onTap: () {
-              context.push(
-                  "/webview/${widget.service.uid}");
+              context.push("/webview/${widget.service.uid}");
             },
             child: Text(
               _user!.fullName,
