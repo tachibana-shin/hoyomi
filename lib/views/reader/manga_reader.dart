@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -11,6 +12,9 @@ import 'package:honyomi/widgets/button_inset.dart';
 import 'package:honyomi/widgets/image_picker.dart';
 import 'package:honyomi/widgets/sheet_chapters.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+
+// ignore: constant_identifier_names
+const FAKE = "fake:";
 
 class BasicImageWithGroup extends BasicImage {
   final String groupId;
@@ -28,22 +32,31 @@ class MangaReader extends StatefulWidget {
   final String chapter;
   final Future<Iterable<BasicImage>> Function(String chap) getPages;
 
-  const MangaReader(
-      {super.key,
-      required this.sourceId,
-      required this.slug,
-      required this.pages,
-      required this.book,
-      required this.chapter,
-      required this.getPages});
+  final Function(String chap) onChangeChap;
+
+  const MangaReader({
+    super.key,
+    required this.sourceId,
+    required this.slug,
+    required this.pages,
+    required this.book,
+    required this.chapter,
+    required this.getPages,
+    required this.onChangeChap,
+  });
 
   @override
   // ignore: library_private_types_in_public_api, no_logic_in_create_state
   _MangaReaderState createState() => _MangaReaderState();
 }
 
-class _MangaReaderState extends State<MangaReader> {
+class _MangaReaderState extends State<MangaReader>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   late List<BasicImageWithGroup> pages;
+  late String _chapter;
 
   double _currentPage = 0;
   int _mode = 3; // 0: Swipe Right, 1: Swipe Left, 2: Scroll, 3: WebToon
@@ -65,8 +78,43 @@ class _MangaReaderState extends State<MangaReader> {
   final Map<int, double?> _aspectRatios = {};
   Set<int> _skipImages = {};
 
+  double get _realCurrentPage {
+    for (int i = 0; i <= _currentPage; i++) {
+      if (pages[i].groupId == _chapter && pages[i].src != FAKE) {
+        return _currentPage - i;
+      }
+    }
+
+    return _currentPage;
+  }
+
+  int get _realLength {
+    int start = -1;
+    for (int i = 0; i < pages.length; i++) {
+      if (pages[i].groupId == _chapter) {
+        start = i;
+        break;
+      }
+    }
+
+    if (start == -1) return 0;
+
+    int stop = -1;
+    for (int i = pages.length - 1; i > start; i--) {
+      if (pages[i].groupId == _chapter) {
+        stop = i;
+        break;
+      }
+    }
+
+    if (stop == -1) return 0;
+
+    return stop - start + 1;
+  }
+
   @override
   void initState() {
+    _chapter = widget.chapter;
     pages = [
       if (_prevChapter != null)
         _buildSplashImage(
@@ -116,12 +164,13 @@ class _MangaReaderState extends State<MangaReader> {
   void _updateRoute() {
     final currentGroup = pages[_currentPage.round()]
         .groupId; // Get the group id of the current page
-    if (widget.chapter != currentGroup) {
-      // context.replaceNamed("details_comic_reader", pathParameters: {
-      //   'sourceId': widget.sourceId,
-      //   'slug': widget.slug,
-      //   'chap': currentGroup
-      // });
+    if (_chapter != currentGroup) {
+      setState(() {
+        _chapter = currentGroup;
+        widget.onChangeChap(currentGroup);
+      });
+      // GoRouter.of(context)
+      // context.go("/details_comic/${widget.sourceId}/${widget.slug}/view?chap=$currentGroup");
     }
   }
 
@@ -168,11 +217,11 @@ class _MangaReaderState extends State<MangaReader> {
     });
   }
 
-  Chapter get _currentChapter => widget.book.chapters
-      .firstWhere((element) => element.slug == widget.chapter);
+  Chapter get _currentChapter =>
+      widget.book.chapters.firstWhere((element) => element.slug == _chapter);
   Chapter? get _nextChapter {
     for (int i = 0; i < widget.book.chapters.length - 1; i++) {
-      if (widget.book.chapters.elementAt(i).slug == widget.chapter) {
+      if (widget.book.chapters.elementAt(i).slug == _chapter) {
         return widget.book.chapters.elementAtOrNull(i + 1);
       }
     }
@@ -182,7 +231,7 @@ class _MangaReaderState extends State<MangaReader> {
 
   Chapter? get _prevChapter {
     for (int i = 1; i < widget.book.chapters.length; i++) {
-      if (widget.book.chapters.elementAt(i).slug == widget.chapter) {
+      if (widget.book.chapters.elementAt(i).slug == _chapter) {
         return widget.book.chapters.elementAtOrNull(i - 1);
       }
     }
@@ -237,8 +286,7 @@ class _MangaReaderState extends State<MangaReader> {
             ...(await widget.getPages(_prevChapter!.slug)).map((page) =>
                 BasicImageWithGroup(
                     groupId: groupId, src: page.src, headers: page.headers)),
-            if (pages.elementAtOrNull(0)?.src != "fake:" &&
-                _prevChapter != null)
+            if (pages.elementAtOrNull(0)?.src != FAKE && _prevChapter != null)
               _buildSplashImage(
                   groupId: _currentChapter.slug,
                   chapterNext: null,
@@ -279,7 +327,7 @@ class _MangaReaderState extends State<MangaReader> {
       required String? chapterNext,
       required String? chapterPrev,
       required String chapterCurrent}) {
-    return BasicImageWithGroup(groupId: groupId, src: "fake:", headers: {
+    return BasicImageWithGroup(groupId: groupId, src: FAKE, headers: {
       if (chapterPrev != null) 'prev': chapterPrev,
       'current': chapterCurrent,
       if (chapterNext != null) 'next': chapterNext
@@ -288,7 +336,7 @@ class _MangaReaderState extends State<MangaReader> {
 
   Widget _buildImage(int index) {
     final item = pages.elementAt(index);
-    if (item.src == "fake:") {
+    if (item.src == FAKE) {
       return SizedBox(
         width: double.infinity,
         height: _usingPageView
@@ -515,6 +563,7 @@ class _MangaReaderState extends State<MangaReader> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     // return InfiniteScrollPageView(
     //   prep: pages.toList(),
     //   pages: pages.toList(),
@@ -528,6 +577,9 @@ class _MangaReaderState extends State<MangaReader> {
   }
 
   Widget _buildProgressControl() {
+    final max =  _realLength.toDouble();
+    final value = _realCurrentPage;
+
     return SliderTheme(
         data: SliderThemeData(
             thumbShape: SliderComponentShape.noThumb,
@@ -535,8 +587,8 @@ class _MangaReaderState extends State<MangaReader> {
             overlayShape: SliderComponentShape.noOverlay),
         child: Slider(
           min: 0.0,
-          max: _maxPage.ceil().toDouble(),
-          value: _currentPage.round().toDouble(),
+          max: max,
+          value: min(value, max),
           onChanged: (value) {
             setState(() {
               _currentPage = value; //.toInt();
@@ -891,7 +943,8 @@ class _MangaReaderState extends State<MangaReader> {
                                   .onSurface
                                   .withOpacity(0.5),
                           onPressed: () {
-                            context.replace("/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${_prevChapter!.slug}");
+                            context.replace(
+                                "/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${_prevChapter!.slug}");
                           },
                         )))),
             Expanded(
@@ -931,7 +984,8 @@ class _MangaReaderState extends State<MangaReader> {
                                     .onSurface
                                     .withOpacity(0.5),
                             onPressed: () {
-                              context.go("/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${_nextChapter!.slug}");
+                              context.go(
+                                  "/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${_nextChapter!.slug}");
                             }))))
           ])),
       SizedBox(height: 8.0),

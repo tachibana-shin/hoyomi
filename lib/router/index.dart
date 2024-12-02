@@ -111,8 +111,9 @@ final GoRouter router = GoRouter(
                                           state.uri.queryParameters['chap']!;
 
                                       return DetailsComicReader(
+                                        key: Key(slug!),
                                           sourceId: sourceId!,
-                                          slug: slug!,
+                                          slug: slug,
                                           chap: chap);
                                     })
                               ])
