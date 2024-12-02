@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:marquee/marquee.dart';
 
 class ButtonInset extends StatelessWidget {
   final String text;

@@ -100,23 +100,20 @@ final GoRouter router = GoRouter(
                                   slug: state.pathParameters['slug']!),
                               routes: [
                                 GoRoute(
-                                    path: ":chap",
+                                    path: "view",
                                     name: "details_comic_reader",
                                     pageBuilder: GoTransitions.material.call,
                                     builder: (context, state) {
                                       final sourceId =
                                           state.pathParameters['sourceId'];
                                       final slug = state.pathParameters['slug'];
-                                      final chap = state.pathParameters['chap'];
+                                      final chap =
+                                          state.uri.queryParameters['chap']!;
 
-                                      if (chap != null) {
-                                        return DetailsComicReader(
-                                            sourceId: sourceId!,
-                                            slug: slug!,
-                                            chap: chap);
-                                      }
-
-                                      return Stack(children: []);
+                                      return DetailsComicReader(
+                                          sourceId: sourceId!,
+                                          slug: slug!,
+                                          chap: chap);
                                     })
                               ])
                         ])

@@ -154,7 +154,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                     onTap: () {
                       final param = item.service. parseURL(item.link);
 
-                      context.push("/details_comic/${item.service.uid}/${param.bookId}");
+                      context.push("/details_comic/${item.service.uid}/view?chap=${param.bookId}");
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),

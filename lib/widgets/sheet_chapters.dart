@@ -53,18 +53,18 @@ class _SheetChaptersState extends State<SheetChapters> {
                 ),
               ),
               // Header
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                  "List chapters",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 160,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Divider(),
+              // Padding(
+              //   padding: const EdgeInsets.only(bottom: 8.0),
+              //   child: Text(
+              //     "List chapters",
+              //     style: TextStyle(
+              //       color: Colors.white,
+              //       fontSize: 160,
+              //       fontWeight: FontWeight.bold,
+              //     ),
+              //   ),
+              // ),
+              // Divider(height: 1.0),
               // Chapters List
               Expanded(
                 child: ListView.builder(
@@ -90,7 +90,7 @@ class _SheetChaptersState extends State<SheetChapters> {
                       ),
                       onTap: () {
                         context.push(
-                            "/details_comic/${widget.sourceId}/${widget.slug}/${chapter.slug}");
+                            "/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${chapter.slug}");
                       },
                     );
                   },
