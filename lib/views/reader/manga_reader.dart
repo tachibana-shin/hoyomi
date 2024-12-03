@@ -122,6 +122,7 @@ class _MangaReaderState extends State<MangaReader>
 
   @override
   void initState() {
+    _mode = widget.service.getComicModes(widget.book) ?? ComicModes.webToon;
     _chapter = widget.chapter;
     pages = [
       if (_prevChapter != null)
@@ -138,8 +139,6 @@ class _MangaReaderState extends State<MangaReader>
     _currentPage =
         (_usingPageView ? _pageController.initialPage : _initialScrollIndex)
             .toDouble();
-
-    _mode = widget.service.getComicModes(widget.book) ?? ComicModes.webToon;
 
     super.initState();
     _refreshStoreImageLoaded();
