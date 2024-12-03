@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/auth_service.dart';
+import 'package:honyomi/cache/get_user.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/shared_preferences/cookie.dart';
@@ -53,8 +53,7 @@ class _CustomWebViewState extends State<CustomWebView> {
 
       bool signed;
       try {
-        await (getService(widget.serviceId) as AuthService)
-            .getUser(cookie: cookiesText);
+        await getUser(getService(widget.serviceId), cookie: cookiesText);
         signed = true;
       } catch (err) {
         signed = false;
