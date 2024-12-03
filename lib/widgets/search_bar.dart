@@ -53,7 +53,8 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
           ),
           child: Row(
             children: [
-              if (_focusing || (widget.backMode && _controller.text.trim().isNotEmpty))
+              if (_focusing ||
+                  (widget.backMode && _controller.text.trim().isNotEmpty))
                 IconButton(
                     icon: Icon(
                       MaterialCommunityIcons.arrow_left,
@@ -100,6 +101,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                         _focusing = focused;
                         _showOverlay();
                       } else {
+                        // _focusing = false;
                         // _removeOverlay();
                       }
                     });
@@ -190,12 +192,10 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _removeOverlay() {
-    if (_isOverlayVisible) {
-      widget.onOverlayChange(null);
-      setState(() {
-        _isOverlayVisible = false;
-      });
-    }
+    widget.onOverlayChange(null);
+    setState(() {
+      _isOverlayVisible = false;
+    });
   }
 }
 

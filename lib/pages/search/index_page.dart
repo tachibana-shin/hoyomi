@@ -39,7 +39,7 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin {
         appBar: AppBar(
           title:  CustomSearchBar(
               keyword: widget.keyword,
-              backMode: true,
+              backMode: widget.keyword.isNotEmpty,
               onOverlayChange: (overlay) {
                 setState(() {
                   _overlayQuickSearch = overlay;
