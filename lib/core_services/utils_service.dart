@@ -49,8 +49,9 @@ abstract class UtilsService {
               SizedBox(height: 8.0),
               ElevatedButton(
                 child: Text('Go to Captcha'),
-                onPressed: () {
-                  router.push('/webview/$uid');
+                onPressed: () async {
+                  await router.push('/webview/$uid');
+                  router.refresh();
                 },
               ),
             ]));
@@ -170,7 +171,7 @@ abstract class UtilsService {
   /// Builds a new URI with updated query parameters based on the provided filters.
   ///
   /// [baseUrl] The base URL to which the query parameters should be added.
-  /// 
+  ///
   /// [filters] A map where keys are parameter names and values are lists of parameter values.
   ///
   /// Returns a new [Uri] with the query parameters from [filters] applied.

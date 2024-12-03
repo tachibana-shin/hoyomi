@@ -5,6 +5,7 @@ import 'package:honyomi/cache/get_user.dart';
 import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_user.dart';
+import 'package:honyomi/globals.dart';
 import 'package:honyomi/shared_preferences/signed.dart';
 
 class AccountService extends StatefulWidget {
@@ -152,8 +153,13 @@ class _AccountServiceState extends State<AccountService> {
         break;
       case "NOT_SIGN":
         oneLine = InkWell(
-            onTap: () {
-              context.push("/webview/${widget.service.uid}");
+            onTap: () async {
+              await context.push("/webview/${widget.service.uid}");
+              await Future.wait([_fetchUser(), _getSigned()] as Iterable<Future>);
+              
+              if (_signed != true) {
+                showSnackBar(Text('Sign in failed.'));
+              }
             },
             child: Text(
               "(Tap to sign in)",
