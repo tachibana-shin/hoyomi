@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +12,7 @@ import 'package:honyomi/utils/debouncer.dart';
 import 'package:honyomi/widgets/button_inset.dart';
 import 'package:honyomi/widgets/image_picker.dart';
 import 'package:honyomi/widgets/sheet_chapters.dart';
+import 'package:honyomi/widgets/tap_listener.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 // ignore: constant_identifier_names
@@ -33,6 +35,7 @@ class MangaReader extends StatefulWidget {
   final Future<Iterable<BasicImage>> Function(String chap) getPages;
 
   final Function(String chap) onChangeChap;
+  final Function(bool enabled) onChangeEnabled;
 
   const MangaReader({
     super.key,
@@ -43,6 +46,7 @@ class MangaReader extends StatefulWidget {
     required this.chapter,
     required this.getPages,
     required this.onChangeChap,
+    required this.onChangeEnabled,
   });
 
   @override
@@ -58,8 +62,10 @@ class _MangaReaderState extends State<MangaReader>
   late List<BasicImageWithGroup> pages;
   late String _chapter;
 
+  bool _showToolbar = true;
+
   double _currentPage = 0;
-  int _mode = 3; // 0: Swipe Right, 1: Swipe Left, 2: Scroll, 3: WebToon
+  int _mode = 3; // 0: Swipe to Right, 1: Swipe to Left, 2: Scroll, 3: WebToon
   bool _useTwoPage = false;
 
   bool _disposed = false;
@@ -137,6 +143,13 @@ class _MangaReaderState extends State<MangaReader>
     _prefetchChapSibling();
 
     _bindListenerScroll();
+  }
+
+  void _setToolbar(bool enabled) {
+    setState(() {
+      _showToolbar = enabled;
+      widget.onChangeEnabled(enabled);
+    });
   }
 
   void _bindListenerScroll() {
@@ -363,8 +376,22 @@ class _MangaReaderState extends State<MangaReader>
                     style:
                         TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),
                   )),
+              SizedBox(height: 20.0),
             ],
+            Padding(
+                padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
+                child: Text(
+                  "Current chapter:",
+                  style: TextStyle(fontSize: 16.0),
+                )),
+            Padding(
+                padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
+                child: Text(
+                  item.headers!["current"]!,
+                  style: TextStyle(fontSize: 18.0),
+                )),
             if (item.headers!.containsKey("next")) ...[
+              SizedBox(height: 20.0),
               Padding(
                   padding:
                       EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
@@ -382,19 +409,6 @@ class _MangaReaderState extends State<MangaReader>
                         TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),
                   )),
             ],
-            SizedBox(height: 20.0),
-            Padding(
-                padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
-                child: Text(
-                  "Current chapter:",
-                  style: TextStyle(fontSize: 16.0),
-                )),
-            Padding(
-                padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
-                child: Text(
-                  item.headers!["current"]!,
-                  style: TextStyle(fontSize: 18.0),
-                )),
           ],
         ),
       );
@@ -571,13 +585,14 @@ class _MangaReaderState extends State<MangaReader>
     // );
     return Scaffold(
         body: Stack(children: [
-      _buildReader(),
+      TapListener(
+          rows: 3, columns: 3, onTap: _onTapGrid, child: _buildReader()),
       Positioned(bottom: 0, left: 0, right: 0, child: _buildBottomBar())
     ]));
   }
 
   Widget _buildProgressControl() {
-    final max =  _realLength.toDouble();
+    final max = _realLength.toDouble();
     final value = _realCurrentPage;
 
     return SliderTheme(
@@ -914,6 +929,9 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   Widget _buildBottomBar() {
+    if (!_showToolbar) {
+      return Stack(children: []);
+    }
     return Column(children: [
       Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.0),
@@ -1045,6 +1063,76 @@ class _MangaReaderState extends State<MangaReader>
       return _buildImage(index);
     } else {
       return _buildPageLoading(null);
+    }
+  }
+
+  void _onTapGrid(row, column) {
+    if (kDebugMode) {
+      print("row = $row, column = $column");
+    }
+
+    if (row == 1 && column == 1) {
+      // center
+
+      _setToolbar(!_showToolbar);
+    }
+    // click bottom
+    if (column == 2) {
+      // scroll 90% height screen
+      switch (_mode) {
+        case 2:
+          // next page;
+          _pageController.nextPage(
+              duration: Duration(milliseconds: 300), curve: Curves.linear);
+          break;
+        case 3:
+          // scroll 90% height screen
+          _itemScrollController.scrollTo(
+              index: min(pages.length, _currentPage.round() + 1),
+              duration: Duration(milliseconds: 300));
+          break;
+      }
+    }
+    // click top
+    if (column == 0) {
+      switch (_mode) {
+        case 2:
+          // prev page
+          _pageController.previousPage(
+              duration: Duration(milliseconds: 300), curve: Curves.linear);
+          break;
+        case 3:
+          _itemScrollController.scrollTo(
+              index: max(0, _currentPage.round() - 1),
+              duration: Duration(milliseconds: 300));
+          break;
+      }
+    }
+    // click left
+    if (row == 0) {
+      switch (_mode) {
+        case 0:
+          _pageController.previousPage(
+              duration: Duration(milliseconds: 100), curve: Curves.linear);
+          break;
+        case 1:
+          _pageController.nextPage(
+              duration: Duration(milliseconds: 100), curve: Curves.linear);
+          break;
+      }
+    }
+    // click right
+    if (row == 2) {
+      switch (_mode) {
+        case 0:
+          _pageController.nextPage(
+              duration: Duration(milliseconds: 100), curve: Curves.linear);
+          break;
+        case 1:
+          _pageController.previousPage(
+              duration: Duration(milliseconds: 100), curve: Curves.linear);
+          break;
+      }
     }
   }
 }
