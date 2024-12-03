@@ -587,7 +587,7 @@ class _MangaReaderState extends State<MangaReader>
         body: Stack(children: [
       TapListener(
           rows: 3, columns: 3, onTap: _onTapGrid, child: _buildReader()),
-      Positioned(bottom: 0, left: 0, right: 0, child: _buildBottomBar())
+      _buildBottomBar()
     ]));
   }
 
@@ -929,10 +929,13 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   Widget _buildBottomBar() {
-    if (!_showToolbar) {
-      return Stack(children: []);
-    }
-    return Column(children: [
+    return  AnimatedPositioned(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOutCubic,
+            bottom: _showToolbar ? 0 : -kToolbarHeight * 2.5,
+            left: 0,
+            right: 0,
+            child: Column(children: [
       Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.0),
           child:
@@ -1055,7 +1058,7 @@ class _MangaReaderState extends State<MangaReader>
                           ],
                         ))))),
       )
-    ]);
+    ]));
   }
 
   Widget _buildPage(int index) {

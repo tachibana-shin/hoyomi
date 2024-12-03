@@ -138,11 +138,10 @@ class _AppBarState extends State<_AppBar> {
     return ValueListenableBuilder(
         valueListenable: widget.enabled,
         builder: (context, value, child) {
-          if (!value) {
-            return Stack(children: []);
-          }
-          return Positioned(
-            top: 0,
+          return AnimatedPositioned(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOutCubic,
+            top: value ? 0 : -kToolbarHeight,
             left: 0,
             right: 0,
             child: ClipRRect(
