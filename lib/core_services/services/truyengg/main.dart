@@ -8,6 +8,7 @@ import 'package:honyomi/core_services/interfaces/basic_user.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/basic_section.dart';
 import 'package:honyomi/core_services/interfaces/book_param.dart';
+import 'package:honyomi/core_services/interfaces/comic_modes.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/interfaces/paginate.dart';
 import 'package:honyomi/core_services/interfaces/rate_value.dart';
@@ -162,6 +163,16 @@ class TruyenGGService extends BaseService implements AuthService {
         chapters: chaps,
         lastModified: lastModified,
         originalName: null);
+  }
+
+  @override
+  getComicModes(book) {
+    if (book.genres
+        .any((genre) => genre.name == 'Manga' || genre.name == 'Anime')) {
+      return ComicModes.rightToLeft;
+    }
+
+    return null;
   }
 
   Element? _getInfoTale(List<Element> tales, String name) {

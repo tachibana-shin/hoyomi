@@ -92,7 +92,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
 
             return MangaReader(
                 pages: pages.toList(),
-                sourceId: widget.sourceId,
+                service: _service,
                 slug: widget.slug,
                 book: metaBook,
                 chapter: widget.chap,
