@@ -4,8 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:honyomi/cache/get_user.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/globals.dart';
-import 'package:honyomi/shared_preferences/cookie.dart';
-import 'package:honyomi/shared_preferences/signed.dart';
+import 'package:honyomi/models/cookie_manager.dart' as model;
+import 'package:honyomi/objectbox.g.dart';
+import 'package:honyomi/plugins/objectbox.dart';
 
 class CustomWebView extends StatefulWidget {
   final String serviceId;
@@ -51,8 +52,6 @@ class _CustomWebViewState extends State<CustomWebView> {
       final cookiesText =
           cookies.map((cookie) => '${cookie.name}=${cookie.value}').join("; ");
 
-      await setCookie(widget.serviceId, cookiesText);
-
       bool signed;
       try {
         await getUser(getService(widget.serviceId), cookie: cookiesText);
@@ -60,7 +59,27 @@ class _CustomWebViewState extends State<CustomWebView> {
       } catch (err) {
         signed = false;
       }
-      await setSigned(widget.serviceId, signed);
+
+      final record = await objectBox.store
+          .box<model.CookieManager>()
+          .query(CookieManager_.uid.equals(widget.serviceId))
+          .build()
+          .findFirstAsync();
+      if (record != null) {
+        record.cookie = cookiesText;
+        record.signed = signed;
+        record.updatedAt = DateTime.now();
+
+        await objectBox.store.box<model.CookieManager>().putAsync(record);
+      } else {
+        final record = model.CookieManager(
+          uid: widget.serviceId,
+          cookie: cookiesText,
+          signed: signed,
+        );
+
+        await objectBox.store.box<model.CookieManager>().putAsync(record);
+      }
     } catch (e) {
       // ignore: use_build_context_synchronously
       showSnackBar(

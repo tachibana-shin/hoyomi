@@ -6,7 +6,9 @@ import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_user.dart';
 import 'package:honyomi/globals.dart';
-import 'package:honyomi/shared_preferences/signed.dart';
+import 'package:honyomi/models/cookie_manager.dart';
+import 'package:honyomi/objectbox.g.dart';
+import 'package:honyomi/plugins/objectbox.dart';
 
 class AccountService extends StatefulWidget {
   final BaseService service;
@@ -44,11 +46,22 @@ class _AccountServiceState extends State<AccountService> {
     super.initState();
     if (_serviceAccountSupport) {
       _fetchUser();
-      _getSigned();
     }
   }
 
-  void _fetchUser() {
+  Future<void> _fetchUser() async {
+    final row = await objectBox.store
+        .box<CookieManager>()
+        .query(CookieManager_.uid.equals(widget.service.uid))
+        .build()
+        .findFirstAsync();
+
+    setState(() {
+      _signed = row?.signed;
+    });
+
+    if (row?.signed != true) return;
+
     _error = null;
     getUser(widget.service).then((user) {
       setState(() {
@@ -58,14 +71,6 @@ class _AccountServiceState extends State<AccountService> {
       setState(() {
         _error = err;
       });
-    });
-  }
-
-  void _getSigned() async {
-    final signed = await getSigned(widget.service.uid);
-
-    setState(() {
-      _signed = signed ?? false;
     });
   }
 
@@ -155,8 +160,8 @@ class _AccountServiceState extends State<AccountService> {
         oneLine = InkWell(
             onTap: () async {
               await context.push("/webview/${widget.service.uid}");
-              await Future.wait([_fetchUser(), _getSigned()] as Iterable<Future>);
-              
+              await _fetchUser();
+
               if (_signed != true) {
                 showSnackBar(Text('Sign in failed.'));
               }

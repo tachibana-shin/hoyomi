@@ -26,6 +26,8 @@ dependencies:
   interactive_slider: ^0.4.0
   intl: any
   marquee: ^2.3.0
+  objectbox: ^4.0.3
+  objectbox_flutter_libs: ^4.0.3
   rss_feed_parser: ^1.0.6
   scrollable_positioned_list: ^0.3.8
   scrollview_observer: ^1.23.0
@@ -43,10 +45,8 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   drift_dev: ^2.21.2
   build_runner: ^2.4.13
+  objectbox_generator: ^4.0.3
 
 flutter:
   uses-material-design: true
   generate: true
-  assets:
-    - lib/core_services/services/truyengg/favicon.ico
-    - lib/core_services/services/truyenqq/favicon.ico

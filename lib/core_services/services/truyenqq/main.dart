@@ -190,8 +190,8 @@ class TruyenQQService extends TruyenGGService {
   @override
   search(keyword, {page = 1}) async {
     final Document document = await fetchDocument(
-        "$baseUrl/tim-kiem${page! > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}",
-        useCookie: true);
+      "$baseUrl/tim-kiem${page! > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}",
+    );
 
     final data = document
         .querySelectorAll(".list_grid_out li")
@@ -213,12 +213,10 @@ class TruyenQQService extends TruyenGGService {
 
   @override
   getSection(slug, {page = 1, filters}) async {
-    final Document document = await fetchDocument(
-        buildQueryUri(
-                "$baseUrl/${slug.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
-                filters: filters)
-            .toString(),
-        useCookie: true);
+    final Document document = await fetchDocument(buildQueryUri(
+            "$baseUrl/${slug.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
+            filters: filters)
+        .toString());
 
     final data = document
         .querySelectorAll(".list_grid_out li")

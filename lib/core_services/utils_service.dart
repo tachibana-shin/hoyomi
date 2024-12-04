@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:honyomi/globals.dart';
+import 'package:honyomi/models/cookie_manager.dart';
+import 'package:honyomi/objectbox.g.dart';
+import 'package:honyomi/plugins/objectbox.dart';
 import 'package:honyomi/router/index.dart';
-import 'package:honyomi/shared_preferences/cookie.dart';
 import 'package:html/dom.dart' as d;
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
@@ -75,18 +77,20 @@ abstract class UtilsService {
   ///
   /// [cookie] The cookie to include in the request. Defaults to null.
   ///
-  /// [useCookie] Whether to use the cookie from the database if no cookie is provided. Defaults to null.
-  ///
   /// Returns a string containing the fetched data, or throws an exception if the request fails.
   Future<String> fetch(String url,
       {String? cookie,
-      bool? useCookie,
       Map<String, dynamic>? body,
       Map<String, String>? headers}) async {
     String? cookiesText = cookie;
 
     if (cookie == null) {
-      cookiesText = await getCookie(uid);
+      final row = await objectBox.store
+          .box<CookieManager>()
+          .query(CookieManager_.uid.equals(uid))
+          .build()
+          .findFirstAsync();
+      cookiesText = row?.cookie;
     }
 
     cookiesText = onBeforeInsertCookie(cookiesText);
@@ -156,16 +160,13 @@ abstract class UtilsService {
   ///
   /// [cookie] The cookie to include in the request. Defaults to null.
   ///
-  /// [useCookie] Whether to use the cookie from the database if no cookie is provided. Defaults to null.
-  ///
   /// Returns a parsed [Document] object.
   Future<d.Document> fetchDocument(String url,
       {String? cookie,
-      bool? useCookie,
       Map<String, dynamic>? body,
       Map<String, String>? headers}) async {
-    return parseDocument(await fetch(url,
-        cookie: cookie, useCookie: useCookie, body: body, headers: headers));
+    return parseDocument(
+        await fetch(url, cookie: cookie, body: body, headers: headers));
   }
 
   /// Builds a new URI with updated query parameters based on the provided filters.

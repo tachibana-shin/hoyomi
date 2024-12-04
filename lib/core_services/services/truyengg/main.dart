@@ -261,8 +261,8 @@ class TruyenGGService extends BaseService implements AuthService {
   @override
   search(keyword, {page = 1}) async {
     final Document document = await fetchDocument(
-        "$baseUrl/tim-kiem${page! > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}",
-        useCookie: true);
+      "$baseUrl/tim-kiem${page! > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}",
+    );
 
     final sections = document.querySelectorAll(".list_item_home");
 
@@ -287,11 +287,11 @@ class TruyenGGService extends BaseService implements AuthService {
   @override
   getSection(slug, {page = 1, filters}) async {
     final Document document = await fetchDocument(
-        buildQueryUri(
-                "$baseUrl/${slug.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
-                filters: filters)
-            .toString(),
-        useCookie: true);
+      buildQueryUri(
+              "$baseUrl/${slug.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
+              filters: filters)
+          .toString(),
+    );
 
     final sections = document.querySelectorAll(".list_item_home");
 
@@ -319,7 +319,7 @@ class TruyenGGService extends BaseService implements AuthService {
   @override
   getUser({cookie}) async {
     final document = await fetchDocument("$baseUrl/thiet-lap-tai-khoan.html",
-        cookie: cookie, useCookie: true);
+        cookie: cookie);
 
     if (document.querySelector("title")!.text != 'Thông Tin Tài Khoản') {
       throw Exception("Not logged in"); // Not logged in
@@ -343,8 +343,9 @@ class TruyenGGService extends BaseService implements AuthService {
 
   @override
   Future<bool> isLiked({required slug}) async {
-    final document = await fetchDocument("$baseUrl/truyen-tranh/$slug.html",
-        useCookie: true);
+    final document = await fetchDocument(
+      "$baseUrl/truyen-tranh/$slug.html",
+    );
 
     return document.body!.text.contains("Bỏ Theo Dõi");
     // ok
@@ -353,8 +354,9 @@ class TruyenGGService extends BaseService implements AuthService {
 
   @override
   Future<bool> setLike({required slug, required value}) async {
-    final document = await fetchDocument("$baseUrl/truyen-tranh/$slug.html",
-        useCookie: true);
+    final document = await fetchDocument(
+      "$baseUrl/truyen-tranh/$slug.html",
+    );
 
     final id =
         document.querySelector(".subscribe_button")!.attributes['data-id']!;

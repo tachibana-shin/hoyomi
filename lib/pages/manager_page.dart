@@ -17,21 +17,23 @@ class _ServiceAccounts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DynamicHeightGridView(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      // padding: const EdgeInsets.all(8.0),
-      // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 2,
-      crossAxisSpacing: 0.0,
-      mainAxisSpacing: 10.0,
-      //   childAspectRatio: 1/3,
-      // ),
-      itemCount: services.length,
-      builder: (context, index) {
-        return _buildCard(index);
-      },
-    );
+    return Scaffold(
+        appBar: AppBar(title: Text("Accounts manager")),
+        body: DynamicHeightGridView(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          // padding: const EdgeInsets.all(8.0),
+          // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 0.0,
+          mainAxisSpacing: 10.0,
+          //   childAspectRatio: 1/3,
+          // ),
+          itemCount: services.length,
+          builder: (context, index) {
+            return _buildCard(index);
+          },
+        ));
   }
 
   Widget _buildCard(int index) {

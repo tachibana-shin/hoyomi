@@ -1,0 +1,65 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "2:467868298171071382",
+      "lastPropertyId": "6:7145296396540811112",
+      "name": "CookieManager",
+      "properties": [
+        {
+          "id": "1:1680825469337091918",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5403774220271394909",
+          "name": "uid",
+          "type": 9,
+          "flags": 2080,
+          "indexId": "1:4629393216024584336"
+        },
+        {
+          "id": "3:5033094197426888969",
+          "name": "cookie",
+          "type": 9
+        },
+        {
+          "id": "4:3801108359953735194",
+          "name": "signed",
+          "type": 1
+        },
+        {
+          "id": "5:1522807935238184597",
+          "name": "createdAt",
+          "type": 10
+        },
+        {
+          "id": "6:7145296396540811112",
+          "name": "updatedAt",
+          "type": 10
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "2:467868298171071382",
+  "lastIndexId": "1:4629393216024584336",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [
+    6474866504552882787
+  ],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [
+    1693076251926902469,
+    4701568764721583358,
+    3404847523460889847
+  ],
+  "retiredRelationUids": [],
+  "version": 1
+}

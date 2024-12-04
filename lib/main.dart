@@ -1,3 +1,4 @@
+import 'package:honyomi/plugins/objectbox.dart';
 import 'package:honyomi/router/index.dart';
 
 import 'globals.dart';
@@ -5,7 +6,8 @@ import 'globals.dart';
 import 'package:flutter/material.dart';
 import 'package:go_transitions/go_transitions.dart';
 
-void main() {
+Future<void> main() async {
+  await initObjectBox();
   runApp(const MainApp());
 }
 
