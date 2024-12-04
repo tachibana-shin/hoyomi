@@ -194,7 +194,7 @@ class TruyenQQService extends TruyenGGService {
         useCookie: true);
 
     final data = document
-        .querySelectorAll(".list_grid_out a")
+        .querySelectorAll(".list_grid_out li")
         .map((element) => parseBasicBook(element, baseUrl));
 
     final lastPageLink = document
@@ -221,7 +221,7 @@ class TruyenQQService extends TruyenGGService {
         useCookie: true);
 
     final data = document
-        .querySelectorAll(".list_grid_out a")
+        .querySelectorAll(".list_grid_out li")
         .map((element) => parseBasicBook(element, baseUrl));
 
     final lastPageLink = document
