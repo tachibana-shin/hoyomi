@@ -136,7 +136,8 @@ class _DetailsComicState extends State<DetailsComic>
             MetaBook book = snapshot.data!;
 
             return SingleChildScrollView(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16.0).add(EdgeInsets.only(
+                    bottom: MediaQuery.of(context).size.height * 0.15)),
                 controller: _scrollController,
                 child: _buildContainer(book));
           },
