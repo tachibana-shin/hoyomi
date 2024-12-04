@@ -3,7 +3,6 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/router/index.dart';
 import 'package:honyomi/shared_preferences/cookie.dart';
-import 'package:honyomi/shared_preferences/signed.dart';
 import 'package:html/dom.dart' as d;
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
@@ -22,12 +21,12 @@ abstract class UtilsService {
     return cookie;
   }
 
-  void showCaptchaResolve(BuildContext? context) {
-    showSnackBar(templateCaptchaResolver(context, isSnackbar: true));
+  void showCaptchaResolve(BuildContext? context, {String? url}) {
+    showSnackBar(templateCaptchaResolver(context, isSnackbar: true, url: url));
   }
 
   Widget templateCaptchaResolver(BuildContext? context,
-      {bool isSnackbar = false}) {
+      {bool isSnackbar = false, String? url}) {
     return Padding(
         padding: isSnackbar
             ? EdgeInsets.zero
@@ -43,7 +42,13 @@ abstract class UtilsService {
                           ? Colors.black
                           : Theme.of(context).colorScheme.onSurface),
                   SizedBox(width: 8),
-                  Text('Please resolve Captcha to continue.')
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Please resolve Captcha to continue.'),
+                        if (url != null)
+                          Text(url, style: TextStyle(fontSize: 14.0))
+                      ])
                 ],
               ),
               SizedBox(height: 8.0),
@@ -77,10 +82,8 @@ abstract class UtilsService {
       Map<String, String>? headers}) async {
     String? cookiesText = cookie;
 
-    if (cookie == null && useCookie == true) {
-      if (await getSigned(uid) ?? false) {
-        cookiesText = await getCookie(uid);
-      }
+    if (cookie == null) {
+      cookiesText = await getCookie(uid);
     }
 
     cookiesText = onBeforeInsertCookie(cookiesText);
@@ -124,14 +127,8 @@ abstract class UtilsService {
 
     if ([429, 503, 403].contains(response.statusCode)) {
       // required captcha resolve
-      showCaptchaResolve(null);
+      showCaptchaResolve(null, url: url);
       return Future.error('Captcha required');
-    }
-
-    if (response.statusCode == 429) {
-      // Tp 429, wait 1 seconds
-      await Future.delayed(Duration(seconds: 1)); // Wait 1 second
-      return fetch(url); // Retry fetching data
     }
 
     if (response.statusCode == 200) {
