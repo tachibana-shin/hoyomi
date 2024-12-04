@@ -10,7 +10,7 @@ class VerticalBookList extends StatelessWidget {
   final Iterable<BasicBook>? books;
   final BaseService service;
   final String title;
-  final String more;
+  final String? more;
   final bool noHeader;
 
   VerticalBookList(
@@ -44,11 +44,12 @@ class VerticalBookList extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-            ElevatedButton(
-                onPressed: () {
-                  context.push(more);
-                },
-                child: Text('More'))
+            if (more != null)
+              ElevatedButton(
+                  onPressed: () {
+                    context.push(more!);
+                  },
+                  child: Text('More'))
           ]),
         if (noHeader != true) const SizedBox(height: 8.0),
         if (booksFuture != null)
