@@ -1,8 +1,9 @@
 import 'package:honyomi/core_services/interfaces/basic_book.dart';
-import 'package:honyomi/core_services/interfaces/route.dart';
 
-class BasicSection extends Route {
+class BasicSection {
+  final String name;
+  final String? slug;
   final Iterable<BasicBook> books;
 
-  BasicSection({required this.books, required super.name, required super.slug});
+  BasicSection({required this.books, required this.name, this.slug});
 }
