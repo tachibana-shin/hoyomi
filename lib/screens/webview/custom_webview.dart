@@ -51,6 +51,8 @@ class _CustomWebViewState extends State<CustomWebView> {
       final cookiesText =
           cookies.map((cookie) => '${cookie.name}=${cookie.value}').join("; ");
 
+      await setCookie(widget.serviceId, cookiesText);
+
       bool signed;
       try {
         await getUser(getService(widget.serviceId), cookie: cookiesText);
@@ -58,8 +60,6 @@ class _CustomWebViewState extends State<CustomWebView> {
       } catch (err) {
         signed = false;
       }
-
-      await setCookie(widget.serviceId, cookiesText);
       await setSigned(widget.serviceId, signed);
     } catch (e) {
       // ignore: use_build_context_synchronously
