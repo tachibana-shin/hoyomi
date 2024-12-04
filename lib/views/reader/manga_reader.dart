@@ -167,7 +167,7 @@ class _MangaReaderState extends State<MangaReader>
 
         if (visibleItem != null) {
           setState(() {
-            _currentPage = visibleItem.index.toDouble() - 1;
+            _currentPage = max(0, visibleItem.index.toDouble() - 1);
             _updateRoute();
             _lazyLoadImages();
             _prefetchChapSibling();
