@@ -50,20 +50,20 @@ class _AccountServiceState extends State<AccountService> {
   }
 
   Future<void> _fetchUser() async {
-    final row = await objectBox.store
+    final row = objectBox.store
         .box<CookieManager>()
         .query(CookieManager_.uid.equals(widget.service.uid))
         .build()
-        .findFirstAsync();
+        .findFirst();
 
     setState(() {
-      _signed = row?.signed;
+      _signed = row?.signed??false;
     });
 
     if (row?.signed != true) return;
 
     _error = null;
-    getUser(widget.service).then((user) {
+    await getUser(widget.service).then((user) {
       setState(() {
         _user = user;
       });
@@ -85,6 +85,7 @@ class _AccountServiceState extends State<AccountService> {
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 child: Image.network(
                   widget.service.faviconUrl,
+                  headers: { "referer": widget.service.baseUrl },
                   fit: BoxFit.cover,
                 )),
             const SizedBox(width: 5.0),

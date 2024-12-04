@@ -60,17 +60,17 @@ class _CustomWebViewState extends State<CustomWebView> {
         signed = false;
       }
 
-      final record = await objectBox.store
+      final record = objectBox.store
           .box<model.CookieManager>()
           .query(CookieManager_.uid.equals(widget.serviceId))
           .build()
-          .findFirstAsync();
+          .findFirst();
       if (record != null) {
         record.cookie = cookiesText;
         record.signed = signed;
         record.updatedAt = DateTime.now();
 
-        await objectBox.store.box<model.CookieManager>().putAsync(record);
+        objectBox.store.box<model.CookieManager>().put(record);
       } else {
         final record = model.CookieManager(
           uid: widget.serviceId,
@@ -78,7 +78,7 @@ class _CustomWebViewState extends State<CustomWebView> {
           signed: signed,
         );
 
-        await objectBox.store.box<model.CookieManager>().putAsync(record);
+        objectBox.store.box<model.CookieManager>().put(record);
       }
     } catch (e) {
       // ignore: use_build_context_synchronously
@@ -95,7 +95,7 @@ class _CustomWebViewState extends State<CustomWebView> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () async {
-            _collectCookies();
+            await _collectCookies();
             _webViewController.dispose(isKeepAlive: false);
             context.pop();
           },

@@ -85,11 +85,11 @@ abstract class UtilsService {
     String? cookiesText = cookie;
 
     if (cookie == null) {
-      final row = await objectBox.store
+      final row = objectBox.store
           .box<CookieManager>()
           .query(CookieManager_.uid.equals(uid))
           .build()
-          .findFirstAsync();
+          .findFirst();
       cookiesText = row?.cookie;
     }
 
