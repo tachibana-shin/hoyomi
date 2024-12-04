@@ -138,288 +138,7 @@ class _DetailsComicState extends State<DetailsComic>
             return SingleChildScrollView(
                 padding: EdgeInsets.all(16.0),
                 controller: _scrollController,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Left Column: Book Image
-                        Expanded(
-                          flex: 1,
-                          child: AspectRatio(
-                            aspectRatio: 2 / 3,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Image.network(
-                                book.image.src,
-                                headers: book.image.headers,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16.0),
-                        // Right Column: Book Information
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                book.name,
-                                style: const TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              ...book.originalName != null
-                                  ? [
-                                      SizedBox(height: 4.0),
-                                      Text(
-                                        book.originalName!,
-                                        style: TextStyle(
-                                          fontSize: 14.0,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          height: 1.2,
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      )
-                                    ]
-                                  : [],
-                              const SizedBox(height: 8.0),
-                              if (book.author != null)
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(MaterialCommunityIcons.account,
-                                        size: 18.0),
-                                    SizedBox(width: 8.0),
-                                    Expanded(
-                                        child: Text(
-                                      book.author!,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    )),
-                                  ],
-                                ),
-                              if (book.translator != null)
-                                Padding(
-                                    padding: EdgeInsets.only(top: 8.0),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Icon(MaterialCommunityIcons.translate,
-                                            size: 18.0),
-                                        SizedBox(width: 8.0),
-                                        Text(
-                                          book.translator!,
-                                          style: const TextStyle(
-                                            fontSize: 14.0,
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                              if (book.status != null)
-                                Padding(
-                                    padding: EdgeInsets.only(
-                                        top: book.translator != null
-                                            ? 2.0
-                                            : 8.0),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                            MaterialCommunityIcons.play_outline,
-                                            size: 18.0),
-                                        SizedBox(width: 8.0),
-                                        Text(
-                                          book.status!,
-                                          style: const TextStyle(
-                                              fontSize: 14.0,
-                                              color: Colors.lightGreen),
-                                        ),
-                                      ],
-                                    )),
-                              const SizedBox(height: 8.0),
-                              if (book.rate != null)
-                                Row(
-                                  children: [
-                                    ...List.generate(
-                                      book.rate!.value.floor(),
-                                      (index) => Icon(
-                                        Icons.star,
-                                        size: 16.0,
-                                        color: Colors.blue
-                                            .shade200, /* Theme.of(context)
-                                            .colorScheme
-                                            .onPrimaryContainer,*/
-                                      ),
-                                    ),
-                                    if (book.rate!.value % 1 != 0)
-                                      Icon(
-                                        Icons.star_half,
-                                        size: 16.0,
-                                        color: Colors.blue.shade200,
-                                      ),
-                                    ...List.generate(
-                                      (book.rate!.best - book.rate!.value)
-                                          .floor(),
-                                      (index) => Icon(
-                                        Icons.star,
-                                        size: 16.0,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurfaceVariant
-                                            .withOpacity(0.5),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 4.0),
-                                    Text(
-                                      "(${book.rate!.count})",
-                                      style: TextStyle(
-                                          fontSize: 14.0,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .inverseSurface),
-                                    ),
-                                  ],
-                                ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16.0),
-                    Container(
-                      color: Colors.transparent,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(MaterialCommunityIcons.television,
-                                      size: 20.0,
-                                      color: Colors.blueGrey.shade100),
-                                  const SizedBox(height: 4.0),
-                                  Text(
-                                    book.views != null
-                                        ? formatNumber(book.views!)
-                                        : '?',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        color: Colors.blueGrey.shade100),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: _ButtonLike(
-                              book: book,
-                              slug: widget.slug,
-                              service: _service,
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(MaterialCommunityIcons.update,
-                                      size: 20.0,
-                                      color: Colors.blueGrey.shade100),
-                                  const SizedBox(height: 4.0),
-                                  Text(
-                                    formatTimeAgo(book.lastModified),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        color: Colors.blueGrey.shade100),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(MaterialCommunityIcons.star_outline,
-                                      size: 20.0,
-                                      color: Colors.blueGrey.shade100),
-                                  const SizedBox(height: 4.0),
-                                  Text(
-                                    (book.rate != null)
-                                        ? "${book.rate!.value} / ${book.rate!.best}"
-                                        : "?", // 星星評分
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        color: Colors.blueGrey.shade100),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
-                    // Description Section
-                    Text(
-                      'Description',
-                      style: TextStyle(
-                          fontSize: 14.0, fontWeight: FontWeight.w500),
-                    ),
-                    const SizedBox(height: 10.0),
-                    Text(book.description, style: TextStyle(fontSize: 14.0)),
-                    const SizedBox(height: 24.0),
-
-                    Wrap(
-                      spacing: 8.0,
-                      runSpacing: 4.0,
-                      children: book.genres.map((genre) {
-                        return InkWell(
-                            onTap: () {
-                              ///
-                              context.push(
-                                  "/section/${_service.uid}/${genre.slug}");
-                            },
-                            child: Chip(
-                              padding: EdgeInsets.all(0),
-                              label: Text(genre.name,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  )),
-                            ));
-                      }).toList(),
-                    ),
-                  ],
-                ));
+                child: _buildContainer(book));
           },
         ),
         bottomSheet: _book == null
@@ -429,6 +148,266 @@ class _DetailsComicState extends State<DetailsComic>
                 builder: (context) => _buildSheetChapters()!,
                 onClosing: () {},
               ));
+  }
+
+  Widget _buildContainer(MetaBook book) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left Column: Book Image
+            Expanded(
+              flex: 1,
+              child: AspectRatio(
+                aspectRatio: 2 / 3,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.network(
+                    book.image.src,
+                    headers: book.image.headers,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 16.0),
+            // Right Column: Book Information
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    book.name,
+                    style: const TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  ...book.originalName != null
+                      ? [
+                          SizedBox(height: 4.0),
+                          Text(
+                            book.originalName!,
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color: Theme.of(context).colorScheme.secondary,
+                              height: 1.2,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                        ]
+                      : [],
+                  const SizedBox(height: 8.0),
+                  if (book.author != null)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(MaterialCommunityIcons.account, size: 18.0),
+                        SizedBox(width: 8.0),
+                        Expanded(
+                            child: Text(
+                          book.author!,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )),
+                      ],
+                    ),
+                  if (book.translator != null)
+                    Padding(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(MaterialCommunityIcons.translate, size: 18.0),
+                            SizedBox(width: 8.0),
+                            Text(
+                              book.translator!,
+                              style: const TextStyle(
+                                fontSize: 14.0,
+                              ),
+                            ),
+                          ],
+                        )),
+                  if (book.status != null)
+                    Padding(
+                        padding: EdgeInsets.only(
+                            top: book.translator != null ? 2.0 : 8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(MaterialCommunityIcons.play_outline,
+                                size: 18.0),
+                            SizedBox(width: 8.0),
+                            Text(
+                              book.status!,
+                              style: const TextStyle(
+                                  fontSize: 14.0, color: Colors.lightGreen),
+                            ),
+                          ],
+                        )),
+                  const SizedBox(height: 8.0),
+                  if (book.rate != null)
+                    Row(
+                      children: [
+                        ...List.generate(
+                          book.rate!.value.floor(),
+                          (index) => Icon(
+                            Icons.star,
+                            size: 16.0,
+                            color: Colors.blue
+                                .shade200, /* Theme.of(context)
+                                            .colorScheme
+                                            .onPrimaryContainer,*/
+                          ),
+                        ),
+                        if (book.rate!.value % 1 != 0)
+                          Icon(
+                            Icons.star_half,
+                            size: 16.0,
+                            color: Colors.blue.shade200,
+                          ),
+                        ...List.generate(
+                          (book.rate!.best - book.rate!.value).floor(),
+                          (index) => Icon(
+                            Icons.star,
+                            size: 16.0,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant
+                                .withOpacity(0.5),
+                          ),
+                        ),
+                        const SizedBox(width: 4.0),
+                        Text(
+                          "(${book.rate!.count})",
+                          style: TextStyle(
+                              fontSize: 14.0,
+                              color:
+                                  Theme.of(context).colorScheme.inverseSurface),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16.0),
+        Container(
+          color: Colors.transparent,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(MaterialCommunityIcons.television,
+                          size: 20.0, color: Colors.blueGrey.shade100),
+                      const SizedBox(height: 4.0),
+                      Text(
+                        book.views != null ? formatNumber(book.views!) : '?',
+                        style: TextStyle(
+                            fontSize: 14.0, color: Colors.blueGrey.shade100),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: _ButtonLike(
+                  book: book,
+                  slug: widget.slug,
+                  service: _service,
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(MaterialCommunityIcons.update,
+                          size: 20.0, color: Colors.blueGrey.shade100),
+                      const SizedBox(height: 4.0),
+                      Text(
+                        formatTimeAgo(book.lastModified),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 14.0, color: Colors.blueGrey.shade100),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(MaterialCommunityIcons.star_outline,
+                          size: 20.0, color: Colors.blueGrey.shade100),
+                      const SizedBox(height: 4.0),
+                      Text(
+                        (book.rate != null)
+                            ? "${book.rate!.value} / ${book.rate!.best}"
+                            : "?", // 星星評分
+                        style: TextStyle(
+                            fontSize: 14.0, color: Colors.blueGrey.shade100),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16.0),
+        // Description Section
+        Text(
+          'Description',
+          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 10.0),
+        Text(book.description, style: TextStyle(fontSize: 14.0)),
+        const SizedBox(height: 24.0),
+
+        Wrap(
+          spacing: 8.0,
+          runSpacing: 4.0,
+          children: book.genres.map((genre) {
+            return InkWell(
+                onTap: () {
+                  ///
+                  context.push("/section/${_service.uid}/${genre.slug}");
+                },
+                child: Chip(
+                  padding: EdgeInsets.all(0),
+                  label: Text(genre.name,
+                      style: TextStyle(
+                        color: Colors.white,
+                      )),
+                ));
+          }).toList(),
+        ),
+      ],
+    );
   }
 
   PopupMenuItem<String> _buildMenuItem(String id, String text) {
