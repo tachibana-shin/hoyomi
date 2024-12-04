@@ -47,3 +47,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - lib/core_services/services/truyengg/favicon.ico
+    - lib/core_services/services/truyenqq/favicon.ico
