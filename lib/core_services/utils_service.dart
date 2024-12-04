@@ -47,7 +47,10 @@ abstract class UtilsService {
                       children: [
                         Text('Please resolve Captcha to continue.'),
                         if (url != null)
-                          Text(url, style: TextStyle(fontSize: 14.0))
+                          Text(url,
+                              style: TextStyle(fontSize: 14.0),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis)
                       ])
                 ],
               ),
@@ -113,17 +116,17 @@ abstract class UtilsService {
     Response response = body == null
         ? await get(uri, headers: $headers)
         : await post(uri, headers: $headers, body: body);
-    if (useCookie == true) {
-      // update cookie
-      await setCookie(
-          uid,
-          response.headers['set-cookie']
-                  ?.split(",")
-                  .map((cookie) => cookie.split(';')[0].trim())
-                  .join(';') ??
-              cookiesText ??
-              '');
-    }
+    // if (useCookie == true) {
+    //   // update cookie
+    //   await setCookie(
+    //       uid,
+    //       response.headers['set-cookie']
+    //               ?.split(",")
+    //               .map((cookie) => cookie.split(';')[0].trim())
+    //               .join(';') ??
+    //           cookiesText ??
+    //           '');
+    // }
 
     if ([429, 503, 403].contains(response.statusCode)) {
       // required captcha resolve
