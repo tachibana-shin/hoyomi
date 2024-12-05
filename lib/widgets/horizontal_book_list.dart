@@ -8,7 +8,7 @@ class HorizontalBookList extends StatelessWidget {
   final Future<Iterable<BasicBook>> booksFuture;
   final BaseService service;
   final String title;
-  final String more;
+  final String? more;
   final Future<int>? totalItems;
 
   const HorizontalBookList(
@@ -28,44 +28,45 @@ class HorizontalBookList extends StatelessWidget {
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
-                crossAxisAlignment : CrossAxisAlignment.start,
-                children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-                if (totalItems != null)
-                  FutureBuilder(
-                      future: totalItems!,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Column(children: [
-                            SizedBox(height: 2),
-                            Text(
-                              "${snapshot.data} results",
-                              style: TextStyle(
-                                  fontSize: 14, color: Colors.white70),
-                            ),
-                          ]);
-                        }
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    if (totalItems != null)
+                      FutureBuilder(
+                          future: totalItems!,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Column(children: [
+                                SizedBox(height: 2),
+                                Text(
+                                  "${snapshot.data} results",
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.white70),
+                                ),
+                              ]);
+                            }
 
-                        return Stack(children: []);
-                      })
-              ])),
-          ElevatedButton(
-              onPressed: () {
-                context.push(more);
-              },
-              child: Text('More'))
+                            return Stack(children: []);
+                          })
+                  ])),
+          if (more != null)
+            ElevatedButton(
+                onPressed: () {
+                  context.push(more!);
+                },
+                child: Text('More'))
         ]),
         FutureBuilder<Iterable<BasicBook>>(
           future: booksFuture,
           builder: (context, snapshot) {
-            final childAspectRatio = 2/4.1;
+            final childAspectRatio = 2 / 4.1;
             final viewportFraction = 0.2857;
             final height = 1 /
                 childAspectRatio *

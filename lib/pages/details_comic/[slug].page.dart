@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:honyomi/cache/get_user.dart';
 import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
+import 'package:honyomi/core_services/interfaces/base_section.dart';
 import 'package:honyomi/core_services/interfaces/basic_user.dart';
 
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
@@ -11,6 +12,7 @@ import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/utils/format_number.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
+import 'package:honyomi/widgets/horizontal_book_list.dart';
 import 'package:honyomi/widgets/sheet_chapters.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -27,6 +29,7 @@ class DetailsComic extends StatefulWidget {
 class _DetailsComicState extends State<DetailsComic>
     with SingleTickerProviderStateMixin {
   late Future<MetaBook> _metaBookFuture;
+  Future<BaseSection>? _suggestFuture;
   late final BaseService _service;
 
   late final AnimationController _bottomSheetAnimationController;
@@ -48,6 +51,8 @@ class _DetailsComicState extends State<DetailsComic>
       setState(() {
         _title = book.name;
         _book = book;
+        _suggestFuture =
+            _service.getSuggest == null ? null : _service.getSuggest!(_book!);
       });
     });
 
@@ -407,8 +412,21 @@ class _DetailsComicState extends State<DetailsComic>
                 ));
           }).toList(),
         ),
+        SizedBox(height: 24.0),
+        _buildSuggest(book)
       ],
     );
+  }
+
+  Widget _buildSuggest(MetaBook book) {
+    if (_suggestFuture == null) return SizedBox.shrink();
+
+    return HorizontalBookList(
+        booksFuture: _suggestFuture!.then((value) => value.items),
+        // totalItems: _suggestFuture!.then((value) => value.totalItems),
+        service: _service,
+        title: 'Suggest',
+        more: null);
   }
 
   PopupMenuItem<String> _buildMenuItem(String id, String text) {

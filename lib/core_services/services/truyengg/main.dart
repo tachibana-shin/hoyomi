@@ -105,7 +105,7 @@ class TruyenGGService extends BaseService implements AuthService {
         originalName: null);
   }
 
-// Main
+  // Main
   @override
   Future<Iterable<BasicSection>> home() async {
     final Document document = await fetchDocument(baseUrl);
@@ -259,6 +259,17 @@ class TruyenGGService extends BaseService implements AuthService {
   }
 
   @override
+  get getSuggest => (book, {page = 1}) async {
+        return getSection("tim-kiem-nang-cao", page: page, filters: {
+          'category': book.genres
+              .toList()
+              .sublist(0, 3)
+              .map((e) => RegExp(r'\d+').allMatches(e.slug).last.group(0)!)
+              .toList()
+        });
+      };
+
+  @override
   search(keyword, {page = 1}) async {
     final Document document = await fetchDocument(
       "$baseUrl/tim-kiem${page! > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}",
@@ -286,6 +297,7 @@ class TruyenGGService extends BaseService implements AuthService {
 
   @override
   getSection(slug, {page = 1, filters}) async {
+    page ??= 1;
     final Document document = await fetchDocument(
       buildQueryUri(
               "$baseUrl/${slug.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
@@ -293,9 +305,8 @@ class TruyenGGService extends BaseService implements AuthService {
           .toString(),
     );
 
-    final sections = document.querySelectorAll(".list_item_home");
-
-    final data = sections[0]
+    final data = document
+        .querySelector(".list_item_home, .list_grid")!
         .querySelectorAll(".item_home")
         .map((element) => parseBasicBook(element, baseUrl));
 

@@ -28,6 +28,11 @@ abstract class BaseService extends UtilsService {
   Future<MetaBook> getDetails(String slug);
   Future<Iterable<BasicImage>> getPages(String manga, String chap);
 
+  Future<BaseSection> Function(
+    MetaBook book, {
+    int? page,
+  })? getSuggest;
+
   Future<Paginate<BasicBook>> search(String keyword, {int? page});
 
   // Utils
