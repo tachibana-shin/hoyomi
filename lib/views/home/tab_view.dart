@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_section.dart';
+import 'package:honyomi/stores.dart';
+import 'package:honyomi/widgets/horizontal_book_list.dart';
 import 'package:honyomi/widgets/vertical_book_list.dart';
 
 class TabView extends StatefulWidget {
@@ -53,13 +55,30 @@ class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
           itemBuilder: (context, sectionIndex) {
             final section = snapshot.data!.elementAt(sectionIndex);
 
-            return VerticalBookList(
-              booksFuture: null,
-              books: section.books,
-              service: widget.service,
-              title: section.name,
-              more: section.slug != null ? '/section/${widget.service.uid}/${section.slug}' : null,
-            );
+            return ValueListenableBuilder<bool>(
+                valueListenable: isGridViewEnabled,
+                builder: (context, value, _) {
+                  if (value == false) {
+                    return HorizontalBookList(
+                      booksFuture: Future.value(section.books),
+                      service: widget.service,
+                      title: section.name,
+                      more: section.slug != null
+                          ? '/section/${widget.service.uid}/${section.slug}'
+                          : null,
+                    );
+                  }
+
+                  return VerticalBookList(
+                    booksFuture: null,
+                    books: section.books,
+                    service: widget.service,
+                    title: section.name,
+                    more: section.slug != null
+                        ? '/section/${widget.service.uid}/${section.slug}'
+                        : null,
+                  );
+                });
           },
         );
       },

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/stores.dart';
 import 'package:honyomi/widgets/horizontal_book_list.dart';
 
 class CustomSearchBar extends StatefulWidget {
@@ -136,8 +137,12 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                 onSelected: (String value) {
                   if (value == 'clear_history') {
                     // Handle clear history
-                  } else if (value == 'settings') {
+                  }
+                  if (value == 'settings') {
                     // Handle settings
+                  }
+                  if (value == 'grid_view') {
+                    isGridViewEnabled.value = !isGridViewEnabled.value;
                   }
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -148,6 +153,26 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                   const PopupMenuItem<String>(
                     value: 'settings',
                     child: Text("Settings"),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'grid_view',
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Grid View"),
+                        ValueListenableBuilder<bool>(
+                          valueListenable: isGridViewEnabled,
+                          builder: (context, value, _) {
+                            return Switch(
+                              value: value,
+                              onChanged: (newValue) {
+                                isGridViewEnabled.value = newValue;
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
