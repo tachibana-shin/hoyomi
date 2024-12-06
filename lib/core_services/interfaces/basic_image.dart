@@ -1,6 +1,22 @@
 class BasicImage {
-  final String src;
-  final Map<String, String>? headers;
+  final String url;
+  final String? alt;
 
-  BasicImage({required this.src, this.headers});
+  BasicImage({required this.url, this.alt});
+
+  // Convert from JSON
+  factory BasicImage.fromJson(Map<String, dynamic> json) {
+    return BasicImage(
+      url: json['url'],
+      alt: json['alt'],
+    );
+  }
+
+  // Convert to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'url': url,
+      'alt': alt,
+    };
+  }
 }
