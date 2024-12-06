@@ -14,7 +14,10 @@ import 'package:objectbox/internal.dart'
 import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
+import 'models/book.dart';
 import 'models/cookie_manager.dart';
+import 'models/history.dart';
+import 'models/history_chap.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -34,7 +37,7 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(2, 5403774220271394909),
             name: 'uid',
             type: 9,
-            flags: 2080,
+            flags: 34848,
             indexId: const obx_int.IdUid(1, 4629393216024584336)),
         obx_int.ModelProperty(
             id: const obx_int.IdUid(3, 5033094197426888969),
@@ -53,6 +56,122 @@ final _entities = <obx_int.ModelEntity>[
             flags: 0),
         obx_int.ModelProperty(
             id: const obx_int.IdUid(6, 7145296396540811112),
+            name: 'updatedAt',
+            type: 10,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(3, 5235800775085215685),
+      name: 'Book',
+      lastPropertyId: const obx_int.IdUid(5, 8229869474889028217),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 8333492720185785726),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 3864616561366308774),
+            name: 'bookId',
+            type: 9,
+            flags: 34848,
+            indexId: const obx_int.IdUid(2, 1909055743016127838)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 7602500965213928340),
+            name: 'createdAt',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 8229869474889028217),
+            name: 'meta',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(4, 6414348118960353247),
+      name: 'History',
+      lastPropertyId: const obx_int.IdUid(4, 4448237795589367830),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 9216528730135213475),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 5640596592996888749),
+            name: 'bookId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(3, 839246644875405130),
+            relationTarget: 'Book'),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 2602562502974985537),
+            name: 'createdAt',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 4448237795589367830),
+            name: 'updatedAt',
+            type: 10,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[
+        obx_int.ModelBacklink(
+            name: 'chapters', srcEntity: 'HistoryChap', srcField: 'history')
+      ]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(5, 543336033245577724),
+      name: 'HistoryChap',
+      lastPropertyId: const obx_int.IdUid(8, 9013248811264991965),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 6018428055908753189),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 5933649955424895525),
+            name: 'historyId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(4, 2526711134783795624),
+            relationTarget: 'History'),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 1323312489478435984),
+            name: 'uid',
+            type: 9,
+            flags: 34848,
+            indexId: const obx_int.IdUid(5, 448388629847560654)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 8768488944261328457),
+            name: 'chapterId',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 2048747041403121910),
+            name: 'currentPage',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 4931870967431599689),
+            name: 'maxPage',
+            type: 6,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 6170490173772464811),
+            name: 'createdAt',
+            type: 10,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 9013248811264991965),
             name: 'updatedAt',
             type: 10,
             flags: 0)
@@ -96,8 +215,8 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(2, 467868298171071382),
-      lastIndexId: const obx_int.IdUid(1, 4629393216024584336),
+      lastEntityId: const obx_int.IdUid(5, 543336033245577724),
+      lastIndexId: const obx_int.IdUid(5, 448388629847560654),
       lastRelationId: const obx_int.IdUid(0, 0),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [6474866504552882787],
@@ -105,7 +224,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
       retiredPropertyUids: const [
         1693076251926902469,
         4701568764721583358,
-        3404847523460889847
+        3404847523460889847,
+        7463999986077159809
       ],
       retiredRelationUids: const [],
       modelVersion: 5,
@@ -158,6 +278,140 @@ obx_int.ModelDefinition getObjectBoxModel() {
               updatedAt: updatedAtParam);
 
           return object;
+        }),
+    Book: obx_int.EntityDefinition<Book>(
+        model: _entities[1],
+        toOneRelations: (Book object) => [],
+        toManyRelations: (Book object) => {},
+        getId: (Book object) => object.id,
+        setId: (Book object, int id) {
+          object.id = id;
+        },
+        objectToFB: (Book object, fb.Builder fbb) {
+          final bookIdOffset = fbb.writeString(object.bookId);
+          final metaOffset = fbb.writeString(object.meta);
+          fbb.startTable(6);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, bookIdOffset);
+          fbb.addInt64(3, object.createdAt.millisecondsSinceEpoch);
+          fbb.addOffset(4, metaOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final bookIdParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final metaParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 12, '');
+          final createdAtParam = DateTime.fromMillisecondsSinceEpoch(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0));
+          final object = Book(
+              id: idParam,
+              bookId: bookIdParam,
+              meta: metaParam,
+              createdAt: createdAtParam);
+
+          return object;
+        }),
+    History: obx_int.EntityDefinition<History>(
+        model: _entities[2],
+        toOneRelations: (History object) => [object.book],
+        toManyRelations: (History object) => {
+              obx_int.RelInfo<HistoryChap>.toOneBacklink(2, object.id,
+                  (HistoryChap srcObject) => srcObject.history): object.chapters
+            },
+        getId: (History object) => object.id,
+        setId: (History object, int id) {
+          object.id = id;
+        },
+        objectToFB: (History object, fb.Builder fbb) {
+          fbb.startTable(5);
+          fbb.addInt64(0, object.id);
+          fbb.addInt64(1, object.book.targetId);
+          fbb.addInt64(2, object.createdAt.millisecondsSinceEpoch);
+          fbb.addInt64(3, object.updatedAt.millisecondsSinceEpoch);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final createdAtParam = DateTime.fromMillisecondsSinceEpoch(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0));
+          final updatedAtParam = DateTime.fromMillisecondsSinceEpoch(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0));
+          final object = History(
+              id: idParam,
+              createdAt: createdAtParam,
+              updatedAt: updatedAtParam);
+          object.book.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0);
+          object.book.attach(store);
+          obx_int.InternalToManyAccess.setRelInfo<History>(
+              object.chapters,
+              store,
+              obx_int.RelInfo<HistoryChap>.toOneBacklink(
+                  2, object.id, (HistoryChap srcObject) => srcObject.history));
+          return object;
+        }),
+    HistoryChap: obx_int.EntityDefinition<HistoryChap>(
+        model: _entities[3],
+        toOneRelations: (HistoryChap object) => [object.history],
+        toManyRelations: (HistoryChap object) => {},
+        getId: (HistoryChap object) => object.id,
+        setId: (HistoryChap object, int id) {
+          object.id = id;
+        },
+        objectToFB: (HistoryChap object, fb.Builder fbb) {
+          final uidOffset = fbb.writeString(object.uid);
+          final chapterIdOffset = fbb.writeString(object.chapterId);
+          fbb.startTable(9);
+          fbb.addInt64(0, object.id);
+          fbb.addInt64(1, object.history.targetId);
+          fbb.addOffset(2, uidOffset);
+          fbb.addOffset(3, chapterIdOffset);
+          fbb.addInt64(4, object.currentPage);
+          fbb.addInt64(5, object.maxPage);
+          fbb.addInt64(6, object.createdAt.millisecondsSinceEpoch);
+          fbb.addInt64(7, object.updatedAt.millisecondsSinceEpoch);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final uidParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 8, '');
+          final chapterIdParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 10, '');
+          final currentPageParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
+          final maxPageParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
+          final createdAtParam = DateTime.fromMillisecondsSinceEpoch(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0));
+          final updatedAtParam = DateTime.fromMillisecondsSinceEpoch(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 18, 0));
+          final object = HistoryChap(
+              id: idParam,
+              uid: uidParam,
+              chapterId: chapterIdParam,
+              currentPage: currentPageParam,
+              maxPage: maxPageParam,
+              createdAt: createdAtParam,
+              updatedAt: updatedAtParam);
+          object.history.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0);
+          object.history.attach(store);
+          return object;
         })
   };
 
@@ -189,4 +443,79 @@ class CookieManager_ {
   /// See [CookieManager.updatedAt].
   static final updatedAt =
       obx.QueryDateProperty<CookieManager>(_entities[0].properties[5]);
+}
+
+/// [Book] entity fields to define ObjectBox queries.
+class Book_ {
+  /// See [Book.id].
+  static final id = obx.QueryIntegerProperty<Book>(_entities[1].properties[0]);
+
+  /// See [Book.bookId].
+  static final bookId =
+      obx.QueryStringProperty<Book>(_entities[1].properties[1]);
+
+  /// See [Book.createdAt].
+  static final createdAt =
+      obx.QueryDateProperty<Book>(_entities[1].properties[2]);
+
+  /// See [Book.meta].
+  static final meta = obx.QueryStringProperty<Book>(_entities[1].properties[3]);
+}
+
+/// [History] entity fields to define ObjectBox queries.
+class History_ {
+  /// See [History.id].
+  static final id =
+      obx.QueryIntegerProperty<History>(_entities[2].properties[0]);
+
+  /// See [History.book].
+  static final book =
+      obx.QueryRelationToOne<History, Book>(_entities[2].properties[1]);
+
+  /// See [History.createdAt].
+  static final createdAt =
+      obx.QueryDateProperty<History>(_entities[2].properties[2]);
+
+  /// See [History.updatedAt].
+  static final updatedAt =
+      obx.QueryDateProperty<History>(_entities[2].properties[3]);
+
+  /// see [History.chapters]
+  static final chapters =
+      obx.QueryBacklinkToMany<HistoryChap, History>(HistoryChap_.history);
+}
+
+/// [HistoryChap] entity fields to define ObjectBox queries.
+class HistoryChap_ {
+  /// See [HistoryChap.id].
+  static final id =
+      obx.QueryIntegerProperty<HistoryChap>(_entities[3].properties[0]);
+
+  /// See [HistoryChap.history].
+  static final history =
+      obx.QueryRelationToOne<HistoryChap, History>(_entities[3].properties[1]);
+
+  /// See [HistoryChap.uid].
+  static final uid =
+      obx.QueryStringProperty<HistoryChap>(_entities[3].properties[2]);
+
+  /// See [HistoryChap.chapterId].
+  static final chapterId =
+      obx.QueryStringProperty<HistoryChap>(_entities[3].properties[3]);
+
+  /// See [HistoryChap.currentPage].
+  static final currentPage =
+      obx.QueryIntegerProperty<HistoryChap>(_entities[3].properties[4]);
+
+  /// See [HistoryChap.maxPage].
+  static final maxPage =
+      obx.QueryIntegerProperty<HistoryChap>(_entities[3].properties[5]);
+
+  /// See [HistoryChap.createdAt].
+  static final createdAt =
+      obx.QueryDateProperty<HistoryChap>(_entities[3].properties[6]);
+
+  /// See [HistoryChap.updatedAt].
+  static final updatedAt =
+      obx.QueryDateProperty<HistoryChap>(_entities[3].properties[7]);
 }

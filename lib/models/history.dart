@@ -1,30 +1,24 @@
+import 'package:honyomi/models/book.dart';
+import 'package:honyomi/models/history_chap.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
-class CookieManager {
+class History {
   @Id()
-  int id = 0;
+  int id;
 
-  @Unique(onConflict: ConflictStrategy.replace)
-  String uid;
+  final book = ToOne<Book>();
 
-  @Property()
-  String cookie;
-
-  bool signed;
+  @Backlink('history')
+  final chapters = ToMany<HistoryChap>();
 
   @Property(type: PropertyType.date)
   DateTime createdAt;
-
   @Property(type: PropertyType.date)
   DateTime updatedAt;
 
-  // Constructor
-  CookieManager({
+  History({
     this.id = 0,
-    required this.uid,
-    required this.cookie,
-    required this.signed,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : createdAt = createdAt ?? DateTime.now(),

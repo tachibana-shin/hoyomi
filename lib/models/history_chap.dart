@@ -1,30 +1,32 @@
+import 'package:honyomi/models/history.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
-class CookieManager {
+class HistoryChap {
   @Id()
-  int id = 0;
+  int id;
+
+  final history = ToOne<History>();
 
   @Unique(onConflict: ConflictStrategy.replace)
   String uid;
 
-  @Property()
-  String cookie;
+  String chapterId;
 
-  bool signed;
+  int currentPage;
+  int maxPage;
 
   @Property(type: PropertyType.date)
   DateTime createdAt;
-
   @Property(type: PropertyType.date)
   DateTime updatedAt;
 
-  // Constructor
-  CookieManager({
+  HistoryChap({
     this.id = 0,
     required this.uid,
-    required this.cookie,
-    required this.signed,
+    required this.chapterId,
+    required this.currentPage,
+    required this.maxPage,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : createdAt = createdAt ?? DateTime.now(),
