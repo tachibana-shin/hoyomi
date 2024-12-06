@@ -95,6 +95,7 @@ class Chapter extends Route {
   }
 
   // Convert to JSON
+  @override
   Map<String, dynamic> toJson() {
     return {
       'name': name,

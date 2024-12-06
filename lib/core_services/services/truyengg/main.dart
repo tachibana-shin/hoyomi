@@ -300,7 +300,7 @@ class TruyenGGService extends BaseService implements AuthService {
     page ??= 1;
     final Document document = await fetchDocument(
       buildQueryUri(
-              "$baseUrl/${slug.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
+              "$baseUrl/${slug.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html",
               filters: filters)
           .toString(),
     );
