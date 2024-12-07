@@ -1,3 +1,4 @@
+import 'package:honyomi/models/history.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
@@ -8,15 +9,16 @@ class Book {
   @Unique(onConflict: ConflictStrategy.replace)
   String bookId;
 
+  String sourceId;
+
   // @Property(type: PropertyType.byteVector)
   String meta;
 
-  DateTime createdAt;
+  final history = ToOne<History>();
 
-  Book({
-    this.id = 0,
-    required this.bookId,
-    required this.meta,
-    DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now();
+  Book(
+      {this.id = 0,
+      required this.bookId,
+      required this.sourceId,
+      required this.meta});
 }

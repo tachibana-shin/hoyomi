@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/cache/get_user.dart';
+import 'package:honyomi/controller/history.dart';
 import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/base_section.dart';
@@ -10,6 +11,7 @@ import 'package:honyomi/core_services/interfaces/basic_user.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/globals.dart';
+import 'package:honyomi/models/history_chap.dart';
 import 'package:honyomi/utils/format_number.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
 import 'package:honyomi/widgets/horizontal_book_list.dart';
@@ -39,6 +41,9 @@ class _DetailsComicState extends State<DetailsComic>
   String _title = "";
   MetaBook? _book;
 
+  // History data
+  Map<String, HistoryChap>? _historyChapters;
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +58,12 @@ class _DetailsComicState extends State<DetailsComic>
         _book = book;
         _suggestFuture =
             _service.getSuggest == null ? null : _service.getSuggest!(_book!);
+
+        final history = HistoryController(null);
+        final map = history.getHistory(_service.uid, widget.slug);
+        if (map != null) {
+          _historyChapters = {for (var item in map) item.uid: item};
+        }
       });
     });
 
@@ -310,12 +321,13 @@ class _DetailsComicState extends State<DetailsComic>
         const SizedBox(height: 16.0),
         Container(
           color: Colors.transparent,
+          padding: EdgeInsets.zero,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
@@ -341,7 +353,7 @@ class _DetailsComicState extends State<DetailsComic>
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
@@ -362,7 +374,7 @@ class _DetailsComicState extends State<DetailsComic>
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
@@ -385,12 +397,18 @@ class _DetailsComicState extends State<DetailsComic>
           ),
         ),
         const SizedBox(height: 16.0),
+        Row(children: [
+          Expanded(child: _buildButtonRead(book)),
+          const SizedBox(width: 8.0),
+          _buildButtonDownload()
+        ]),
+        const SizedBox(height: 20.0),
         // Description Section
         Text(
           'Description',
           style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
         ),
-        const SizedBox(height: 10.0),
+        const SizedBox(height: 7.0),
         Text(book.description, style: TextStyle(fontSize: 14.0)),
         const SizedBox(height: 24.0),
 
@@ -416,6 +434,107 @@ class _DetailsComicState extends State<DetailsComic>
         _buildSuggest(book)
       ],
     );
+  }
+
+  Widget _buildButtonRead(MetaBook book) {
+    //    _historyChapters
+
+    final currentEpisode = _historyChapters == null
+        ? null
+        : book.chapters.toList().lastIndexWhere((chapter) {
+              return _historyChapters!.containsKey(chapter.slug);
+            }) +
+            1;
+    final totalEpisodes = 20;
+
+    return GestureDetector(
+        onTap: () {
+          print("Button pressed!");
+        },
+        child: Stack(
+          children: [
+            Container(
+              height: 48,
+              decoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .tertiaryFixed
+                    .withOpacity(0.3),
+                //.tertiaryContainer,
+                borderRadius: BorderRadius.circular(35),
+              ),
+            ),
+            Container(
+              height: 48,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(35),
+              ),
+              child: FractionallySizedBox(
+                alignment: Alignment.centerLeft,
+                widthFactor:
+                    currentEpisode == null ? 0 : currentEpisode / totalEpisodes,
+                child: Container(
+                    decoration: BoxDecoration(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .tertiaryFixedDim
+                      .withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(35),
+                )),
+              ),
+            ),
+            // Text content
+            Container(
+              height: 48,
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    currentEpisode == null ? 'Read now' : 'Continue',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface, //.withOpacity(0.6),
+                    ),
+                  ),
+                  Text(
+                    currentEpisode == null
+                        ? '$totalEpisodes chapters'
+                        : 'Chapter $currentEpisode of $totalEpisodes',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.9),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Widget _buildButtonDownload() {
+    return Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color:
+              Theme.of(context).colorScheme.tertiaryFixedDim.withOpacity(0.44),
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+            child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  MaterialCommunityIcons.download,
+                ),
+                iconSize: 48 / 2)));
   }
 
   Widget _buildSuggest(MetaBook book) {
@@ -577,7 +696,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
             borderRadius: BorderRadius.circular(30.0),
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+                  const EdgeInsets.symmetric(horizontal: 4.0, vertical: 16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
