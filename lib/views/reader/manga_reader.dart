@@ -52,7 +52,7 @@ class MangaReader extends StatefulWidget {
   });
 
   @override
-  // ignore: library_private_types_in_public_api, no_logic_in_create_state
+  // ignore: library_private_types_in_public_api
   _MangaReaderState createState() => _MangaReaderState();
 }
 
@@ -69,8 +69,6 @@ class _MangaReaderState extends State<MangaReader>
   double _currentPage = 0;
   late ComicModes _mode;
   bool _useTwoPage = false;
-
-  bool _disposed = false;
 
 // controller for PageView
   PageController _pageController = PageController(viewportFraction: 2);
@@ -165,7 +163,7 @@ class _MangaReaderState extends State<MangaReader>
         final visibleItem =
             positions.where((pos) => pos.itemLeadingEdge >= 0).lastOrNull;
 
-        if (visibleItem != null) {
+        if (visibleItem != null && mounted) {
           setState(() {
             _currentPage = max(0, visibleItem.index.toDouble() - 1);
             _updateRoute();
@@ -269,23 +267,24 @@ class _MangaReaderState extends State<MangaReader>
         try {
           final groupId = _nextChapter!.slug;
           final $pages = await widget.getPages(_nextChapter!.slug);
-          if (_disposed) return;
 
-          setState(() {
-            if (_nextChapter != null) {
-              pages.add(_buildSplashImage(
-                  groupId: _nextChapter!.slug,
-                  chapterNext: _nextChapter!.name,
-                  chapterCurrent: _currentChapter.name,
-                  chapterPrev: null));
-            }
-            pages.addAll($pages.map((page) => BasicImageWithGroup(
-                groupId: groupId, src: page.src, headers: page.headers)));
-            _refreshStoreImageLoaded();
-            // NOTICE: No action `_pageController`
-            // _pageController
-            // _nextPages = null;
-          });
+          if (mounted) {
+            setState(() {
+              if (_nextChapter != null) {
+                pages.add(_buildSplashImage(
+                    groupId: _nextChapter!.slug,
+                    chapterNext: _nextChapter!.name,
+                    chapterCurrent: _currentChapter.name,
+                    chapterPrev: null));
+              }
+              pages.addAll($pages.map((page) => BasicImageWithGroup(
+                  groupId: groupId, src: page.src, headers: page.headers)));
+              _refreshStoreImageLoaded();
+              // NOTICE: No action `_pageController`
+              // _pageController
+              // _nextPages = null;
+            });
+          }
         } finally {
           _prefetchingNext = false;
         }
@@ -310,27 +309,28 @@ class _MangaReaderState extends State<MangaReader>
                   chapterCurrent: _currentChapter.name,
                   chapterPrev: _prevChapter!.name),
           ];
-          if (_disposed) return;
 
           _disablingObserveScroll = true;
-          setState(() {
-            pages.insertAll(0, $pages);
-            _refreshStoreImageLoaded();
+          if (mounted) {
+            setState(() {
+              pages.insertAll(0, $pages);
+              _refreshStoreImageLoaded();
 
-            if (_usingPageView) {
-              _currentPage =
-                  ($pages.length.toDouble() + (_pageController.page ?? 0))
-                      .round()
-                      .toDouble();
-            } else {
-              _currentPage += $pages.length.toDouble() - 1;
-              _initialScrollIndex = _currentPage.ceil();
-            }
+              if (_usingPageView) {
+                _currentPage =
+                    ($pages.length.toDouble() + (_pageController.page ?? 0))
+                        .round()
+                        .toDouble();
+              } else {
+                _currentPage += $pages.length.toDouble() - 1;
+                _initialScrollIndex = _currentPage.ceil();
+              }
 
-            _updatePositionView();
+              _updatePositionView();
 
-            // _prevPages = null;
-          });
+              // _prevPages = null;
+            });
+          }
         } finally {
           _prefetchingPrev = false;
         }
@@ -507,7 +507,6 @@ class _MangaReaderState extends State<MangaReader>
 
   @override
   void dispose() {
-    _disposed = true;
     _pageController.dispose();
     super.dispose();
   }
