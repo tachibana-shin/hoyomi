@@ -64,33 +64,29 @@ class _MangaReaderState extends State<MangaReader>
   @override
   bool get wantKeepAlive => true;
 
+  final _debouncerUpdateHistory = Debouncer(milliseconds: 500);
+  final Map<int, double?> _aspectRatios = {};
+  final Set<int> _skipImages = {};
+
   late final HistoryController _history;
   late final Book _historyBox;
 
   late List<BasicImageWithGroup> pages;
   late String _chapter;
-
-  bool _showToolbar = true;
-
-  double _currentPage = 0;
   late ComicModes _mode;
-  bool _useTwoPage = false;
-
-// controller for PageView
-  PageController _pageController = PageController(viewportFraction: 2);
-
-  Key? _keyScroller;
-  int _initialScrollIndex = 0;
-  bool _disablingObserveScroll = false;
-  ItemScrollController _itemScrollController = ItemScrollController();
-  ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
-
   late List<bool> _isImageLoaded;
 
-  final Map<int, double?> _aspectRatios = {};
-  Set<int> _skipImages = {};
+  bool _showToolbar = true;
+  bool _useTwoPage = false;
+  bool _disablingObserveScroll = false;
 
-  final _debouncerUpdateHistory = Debouncer(milliseconds: 500);
+  double _currentPage = 0;
+
+  PageController _pageController = PageController(viewportFraction: 2);
+  Key? _keyScroller;
+  int _initialScrollIndex = 0;
+  ItemScrollController _itemScrollController = ItemScrollController();
+  ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
 
   double get _realCurrentPage {
     for (int i = 0; i <= _currentPage; i++) {
@@ -98,7 +94,6 @@ class _MangaReaderState extends State<MangaReader>
         return _currentPage - i;
       }
     }
-
     return _currentPage;
   }
 
@@ -148,9 +143,10 @@ class _MangaReaderState extends State<MangaReader>
       })
     ];
     _initialScrollIndex = (_history
-            .getCurrentPage(_historyBox, chapterId: widget.chapterId)
-            ?.currentPage
-            .floor() ?? 0) +
+                .getCurrentPage(_historyBox, chapterId: widget.chapterId)
+                ?.currentPage
+                .floor() ??
+            0) +
         (_prevChapter == null ? 0 : 1);
     _currentPage =
         (_usingPageView ? _pageController.initialPage : _initialScrollIndex)
@@ -839,7 +835,8 @@ class _MangaReaderState extends State<MangaReader>
             images: pages,
             onChange: (selected) {
               setState(() {
-                _skipImages = selected;
+                _skipImages.clear();
+                _skipImages.addAll(selected);
               });
             }));
   }
