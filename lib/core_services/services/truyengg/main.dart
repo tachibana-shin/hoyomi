@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
@@ -263,7 +264,7 @@ class TruyenGGService extends BaseService implements AuthService {
         return getSection("tim-kiem-nang-cao", page: page, filters: {
           'category': book.genres
               .toList()
-              .sublist(0, 3)
+              .sublist(0, min(3, book.genres.length))
               .map((e) => RegExp(r'\d+').allMatches(e.slug).last.group(0)!)
               .toList()
         });
