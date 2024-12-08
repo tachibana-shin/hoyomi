@@ -29,7 +29,7 @@ class _SheetChaptersState extends State<SheetChapters> {
       expand: false,
       initialChildSize: widget.initialChildSize,
       minChildSize: .15,
-      maxChildSize: 1.0,
+      maxChildSize: 0.9,
       builder: (context2, scrollController) {
         return Container(
           // color: Colors.transparent,
