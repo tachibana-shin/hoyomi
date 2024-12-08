@@ -81,7 +81,6 @@ class _CustomWebViewState extends State<CustomWebView> {
         objectBox.store.box<model.CookieManager>().put(record);
       }
     } catch (e) {
-      // ignore: use_build_context_synchronously
       showSnackBar(
         Text('Error while collecting cookies: $e'),
       );

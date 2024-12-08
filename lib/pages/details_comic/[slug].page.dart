@@ -439,18 +439,24 @@ class _DetailsComicState extends State<DetailsComic>
   Widget _buildButtonRead(MetaBook book) {
     //    _historyChapters
 
-    final currentEpisode = _historyChapters == null
+    final currentEpisodeIndex = _historyChapters == null
         ? null
         : book.chapters.toList().lastIndexWhere((chapter) {
-              return _historyChapters!.containsKey(chapter.slug);
-            }) +
-            1;
+            return _historyChapters!.containsKey(chapter.slug);
+          });
     final totalEpisodes = 20;
 
-    return GestureDetector(
+    return InkWell(
         onTap: () {
-          print("Button pressed!");
+          if (currentEpisodeIndex != null) {
+            context.push(
+                "/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${book.chapters.elementAt(currentEpisodeIndex).slug}");
+          } else {
+            context.push(
+                "/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${book.chapters.elementAt(0).slug}");
+          }
         },
+        borderRadius: BorderRadius.circular(35),
         child: Stack(
           children: [
             Container(
@@ -471,8 +477,9 @@ class _DetailsComicState extends State<DetailsComic>
               ),
               child: FractionallySizedBox(
                 alignment: Alignment.centerLeft,
-                widthFactor:
-                    currentEpisode == null ? 0 : currentEpisode / totalEpisodes,
+                widthFactor: currentEpisodeIndex == null
+                    ? 0
+                    : currentEpisodeIndex / totalEpisodes,
                 child: Container(
                     decoration: BoxDecoration(
                   color: Theme.of(context)
@@ -491,7 +498,7 @@ class _DetailsComicState extends State<DetailsComic>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    currentEpisode == null ? 'Read now' : 'Continue',
+                    currentEpisodeIndex == null ? 'Read now' : 'Continue',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -501,9 +508,9 @@ class _DetailsComicState extends State<DetailsComic>
                     ),
                   ),
                   Text(
-                    currentEpisode == null
+                    currentEpisodeIndex == null
                         ? '$totalEpisodes chapters'
-                        : 'Chapter $currentEpisode of $totalEpisodes',
+                        : 'Chapter ${currentEpisodeIndex + 1} of $totalEpisodes',
                     style: TextStyle(
                       fontSize: 12,
                       color: Theme.of(context)
@@ -679,9 +686,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
         _liked = value;
         _likes = value ? (widget.book.likes ?? 0) + 1 : widget.book.likes! - 1;
       });
-    })
-        // ignore: body_might_complete_normally_catch_error
-        .catchError((error) {
+    }).catchError((error) {
       if (!widget.service.isCaptchaError(error)) {
         showSnackBar(Text('Error: $error')); // 显示錯誤訊息
       }
