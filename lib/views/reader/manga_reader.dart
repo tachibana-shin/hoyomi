@@ -6,10 +6,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:honyomi/controller/history.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/comic_modes.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
+import 'package:honyomi/models/book.dart';
+import 'package:honyomi/plugins/event_bus.dart';
 import 'package:honyomi/utils/debouncer.dart';
 import 'package:honyomi/widgets/button_inset.dart';
 import 'package:honyomi/widgets/image_picker.dart';
@@ -29,11 +32,11 @@ class BasicImageWithGroup extends BasicImage {
 
 class MangaReader extends StatefulWidget {
   final BaseService service;
-  final String slug;
+  final String bookId;
 
   final List<BasicImage> pages;
   final MetaBook book;
-  final String chapter;
+  final String chapterId;
   final Future<Iterable<BasicImage>> Function(String chap) getPages;
 
   final Function(String chap) onChangeChap;
@@ -42,10 +45,10 @@ class MangaReader extends StatefulWidget {
   const MangaReader({
     super.key,
     required this.service,
-    required this.slug,
+    required this.bookId,
     required this.pages,
     required this.book,
-    required this.chapter,
+    required this.chapterId,
     required this.getPages,
     required this.onChangeChap,
     required this.onChangeEnabled,
@@ -61,6 +64,9 @@ class _MangaReaderState extends State<MangaReader>
   @override
   bool get wantKeepAlive => true;
 
+  late final HistoryController _history;
+  late final Book _historyBox;
+
   late List<BasicImageWithGroup> pages;
   late String _chapter;
 
@@ -74,7 +80,7 @@ class _MangaReaderState extends State<MangaReader>
   PageController _pageController = PageController(viewportFraction: 2);
 
   Key? _keyScroller;
-  int _initialScrollIndex = 1;
+  int _initialScrollIndex = 0;
   bool _disablingObserveScroll = false;
   ItemScrollController _itemScrollController = ItemScrollController();
   ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
@@ -83,6 +89,8 @@ class _MangaReaderState extends State<MangaReader>
 
   final Map<int, double?> _aspectRatios = {};
   Set<int> _skipImages = {};
+
+  final _debouncerUpdateHistory = Debouncer(milliseconds: 500);
 
   double get _realCurrentPage {
     for (int i = 0; i <= _currentPage; i++) {
@@ -120,8 +128,13 @@ class _MangaReaderState extends State<MangaReader>
 
   @override
   void initState() {
+    _history = HistoryController(null);
+
+    _historyBox = _history.createBook(widget.service.uid,
+        bookId: widget.bookId, book: widget.book);
+
     _mode = widget.service.getComicModes(widget.book) ?? ComicModes.webToon;
-    _chapter = widget.chapter;
+    _chapter = widget.chapterId;
     pages = [
       if (_prevChapter != null)
         _buildSplashImage(
@@ -131,9 +144,14 @@ class _MangaReaderState extends State<MangaReader>
             chapterPrev: _prevChapter!.name),
       ...widget.pages.map((page) {
         return BasicImageWithGroup(
-            groupId: widget.chapter, src: page.src, headers: page.headers);
+            groupId: widget.chapterId, src: page.src, headers: page.headers);
       })
     ];
+    _initialScrollIndex = (_history
+            .getCurrentPage(_historyBox, chapterId: widget.chapterId)
+            ?.currentPage
+            .floor() ?? 0) +
+        (_prevChapter == null ? 0 : 1);
     _currentPage =
         (_usingPageView ? _pageController.initialPage : _initialScrollIndex)
             .toDouble();
@@ -154,7 +172,7 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   void _bindListenerScroll() {
-    final debouncer = Debouncer(milliseconds: 50);
+    final debouncer = Debouncer(milliseconds: 70);
     _itemPositionsListener.itemPositions.addListener(() {
       if (_usingPageView || _disablingObserveScroll) return;
 
@@ -164,12 +182,16 @@ class _MangaReaderState extends State<MangaReader>
             positions.where((pos) => pos.itemLeadingEdge >= 0).lastOrNull;
 
         if (visibleItem != null && mounted) {
-          setState(() {
-            _currentPage = max(0, visibleItem.index.toDouble() - 1);
-            _updateRoute();
-            _lazyLoadImages();
-            _prefetchChapSibling();
-          });
+          final newVal = visibleItem.index.toDouble() - 1;
+          if (_currentPage != newVal) {
+            setState(() {
+              _currentPage = max(0, newVal);
+              _updateRoute();
+              _updateHistory();
+              _lazyLoadImages();
+              _prefetchChapSibling();
+            });
+          }
         }
       });
     });
@@ -321,8 +343,10 @@ class _MangaReaderState extends State<MangaReader>
                     ($pages.length.toDouble() + (_pageController.page ?? 0))
                         .round()
                         .toDouble();
+                _updateHistory();
               } else {
                 _currentPage += $pages.length.toDouble() - 1;
+                _updateHistory();
                 _initialScrollIndex = _currentPage.ceil();
               }
 
@@ -508,6 +532,8 @@ class _MangaReaderState extends State<MangaReader>
   @override
   void dispose() {
     _pageController.dispose();
+    eventBus.fire(UpdatedHistory(
+        bookId: widget.bookId, chapterId: widget.chapterId, force: true));
     super.dispose();
   }
 
@@ -543,20 +569,20 @@ class _MangaReaderState extends State<MangaReader>
     }
   }
 
-  int get _maxPage {
-    if ([ComicModes.leftToRight, ComicModes.rightToLeft].contains(_mode)) {
-      // swipe
-      // ((widget.mangaPages.length - 1) / 2).ceil().toDouble();
-      double page = 0;
-      for (int i = 0; i < pages.length; i++) {
-        page += _getSizePage(i);
-      }
+  // int get _maxPage {
+  //   if ([ComicModes.leftToRight, ComicModes.rightToLeft].contains(_mode)) {
+  //     // swipe
+  //     // ((widget.mangaPages.length - 1) / 2).ceil().toDouble();
+  //     double page = 0;
+  //     for (int i = 0; i < pages.length; i++) {
+  //       page += _getSizePage(i);
+  //     }
 
-      return page.ceil();
-    }
+  //     return page.ceil();
+  //   }
 
-    return pages.length - 1;
-  }
+  //   return pages.length - 1;
+  // }
 
   Map<int, List<int>> get mapPageVertical {
     Map<int, List<int>> map = {};
@@ -610,6 +636,7 @@ class _MangaReaderState extends State<MangaReader>
           onChanged: (value) {
             setState(() {
               _currentPage = value; //.toInt();
+              _updateHistory();
               _updateRoute();
               _updatePositionView();
               _lazyLoadImages();
@@ -827,7 +854,7 @@ class _MangaReaderState extends State<MangaReader>
         builder: (context) => SheetChapters(
               book: widget.book,
               sourceId: widget.service.uid,
-              slug: widget.slug,
+              slug: widget.bookId,
               initialChildSize: 0.6,
             ));
   }
@@ -870,6 +897,7 @@ class _MangaReaderState extends State<MangaReader>
           setState(() {
             _currentPage = page.toDouble();
             _updateRoute();
+            _updateHistory();
             _lazyLoadImages();
             _prefetchChapSibling();
           });
@@ -969,7 +997,7 @@ class _MangaReaderState extends State<MangaReader>
                                           .withOpacity(0.5),
                                   onPressed: () {
                                     context.replace(
-                                        "/details_comic/${widget.service}/${widget.slug}/view?chap=${_prevChapter!.slug}");
+                                        "/details_comic/${widget.service}/${widget.bookId}/view?chap=${_prevChapter!.slug}");
                                   },
                                 )))),
                     Expanded(
@@ -1013,7 +1041,7 @@ class _MangaReaderState extends State<MangaReader>
                                             .withOpacity(0.5),
                                     onPressed: () {
                                       context.go(
-                                          "/details_comic/${widget.service}/${widget.slug}/view?chap=${_nextChapter!.slug}");
+                                          "/details_comic/${widget.service}/${widget.bookId}/view?chap=${_nextChapter!.slug}");
                                     }))))
                   ])),
           SizedBox(height: 8.0),
@@ -1076,7 +1104,7 @@ class _MangaReaderState extends State<MangaReader>
     }
   }
 
-  void _onTapGrid(row, column) {
+  void _onTapGrid(int row, int column) {
     if (kDebugMode) {
       print("row = $row, column = $column");
     }
@@ -1148,5 +1176,20 @@ class _MangaReaderState extends State<MangaReader>
         default:
       }
     }
+  }
+
+// history api
+  void _updateHistory() {
+    _debouncerUpdateHistory.run(() {
+      if (!mounted) return;
+
+      _history.saveHistory(_historyBox,
+          chapterId: widget.chapterId,
+          currentPage: _realCurrentPage,
+          maxPage: _realLength);
+
+      eventBus.fire(
+          UpdatedHistory(bookId: widget.bookId, chapterId: widget.chapterId));
+    });
   }
 }

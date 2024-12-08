@@ -10,3 +10,4 @@ A new Flutter project.
 - [ ] Search page main `/search?q=`
 - [x] Search page more `/search/:sourceId`
 - [ ] Use `Colors` and `TextStyle` theme. Example `style: Theme.of(context).textTheme.titleLarge,`
+- [ ] Fix logic fake page

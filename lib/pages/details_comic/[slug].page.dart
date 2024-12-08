@@ -12,6 +12,7 @@ import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/models/history_chap.dart';
+import 'package:honyomi/plugins/event_bus.dart';
 import 'package:honyomi/utils/format_number.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
 import 'package:honyomi/widgets/horizontal_book_list.dart';
@@ -59,15 +60,32 @@ class _DetailsComicState extends State<DetailsComic>
         _suggestFuture =
             _service.getSuggest == null ? null : _service.getSuggest!(_book!);
 
-        final history = HistoryController(null);
-        final map = history.getHistory(_service.uid, widget.slug);
-        if (map != null) {
-          _historyChapters = {for (var item in map) item.uid: item};
-        }
+        _updateGetHistory();
+        eventBus.on<UpdatedHistory>().listen((event) {
+          if (!mounted) return;
+          // ignore: use_build_context_synchronously
+          final name = GoRouter.of(context).state?.name;
+
+          // lazy call history
+          if (event.bookId == widget.slug &&
+              (name == "details_comic" || event.force)) {
+            _updateGetHistory();
+          }
+        });
       });
     });
 
     _scrollController.addListener(_onScroll);
+  }
+
+  void _updateGetHistory() {
+    setState(() {
+      final history = HistoryController(null);
+      final map = history.getHistory(_service.uid, widget.slug);
+      if (map != null) {
+        _historyChapters = {for (var item in map) item.chapterId: item};
+      }
+    });
   }
 
   @override
@@ -444,86 +462,99 @@ class _DetailsComicState extends State<DetailsComic>
         : book.chapters.toList().lastIndexWhere((chapter) {
             return _historyChapters!.containsKey(chapter.slug);
           });
-    final totalEpisodes = 20;
+    final totalEpisodes = book.chapters.length;
 
-    return InkWell(
-        onTap: () {
-          if (currentEpisodeIndex != null) {
-            context.push(
-                "/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${book.chapters.elementAt(currentEpisodeIndex).slug}");
-          } else {
-            context.push(
-                "/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${book.chapters.elementAt(0).slug}");
-          }
-        },
+    return ClipRRect(
+        clipBehavior: Clip.antiAlias,
         borderRadius: BorderRadius.circular(35),
-        child: Stack(
-          children: [
-            Container(
-              height: 48,
-              decoration: BoxDecoration(
-                color: Theme.of(context)
-                    .colorScheme
-                    .tertiaryFixed
-                    .withOpacity(0.3),
-                //.tertiaryContainer,
-                borderRadius: BorderRadius.circular(35),
-              ),
-            ),
-            Container(
-              height: 48,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(35),
-              ),
-              child: FractionallySizedBox(
-                alignment: Alignment.centerLeft,
-                widthFactor: currentEpisodeIndex == null
-                    ? 0
-                    : currentEpisodeIndex / totalEpisodes,
-                child: Container(
-                    decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .tertiaryFixedDim
-                      .withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(35),
-                )),
-              ),
-            ),
-            // Text content
-            Container(
-              height: 48,
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    currentEpisodeIndex == null ? 'Read now' : 'Continue',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface, //.withOpacity(0.6),
+        child: InkWell(
+            onTap: () {
+              if (currentEpisodeIndex != null) {
+                context.push(
+                    "/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${book.chapters.elementAt(currentEpisodeIndex).slug}");
+              } else {
+                context.push(
+                    "/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${book.chapters.elementAt(0).slug}");
+              }
+            },
+            borderRadius: BorderRadius.circular(35),
+            child: Stack(
+              children: [
+                Container(
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .tertiaryFixed
+                        .withOpacity(0.3),
+                    //.tertiaryContainer,
+                    borderRadius: BorderRadius.circular(35),
+                  ),
+                ),
+                Container(
+                  height: 48,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(35),
+                      bottomLeft: Radius.circular(35),
                     ),
                   ),
-                  Text(
-                    currentEpisodeIndex == null
-                        ? '$totalEpisodes chapters'
-                        : 'Chapter ${currentEpisodeIndex + 1} of $totalEpisodes',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withOpacity(0.9),
+                  clipBehavior: Clip.hardEdge,
+                  child: AnimatedFractionallySizedBox(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    alignment: Alignment.centerLeft,
+                    widthFactor: currentEpisodeIndex == null
+                        ? 0
+                        : currentEpisodeIndex / totalEpisodes,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .tertiaryFixedDim
+                            .withOpacity(0.6),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(35),
+                          bottomLeft: Radius.circular(35),
+                        ),
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ],
-        ));
+                ),
+                // Text content
+                Container(
+                  height: 48,
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        currentEpisodeIndex == null ? 'Read now' : 'Continue',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface, //.withOpacity(0.6),
+                        ),
+                      ),
+                      Text(
+                        currentEpisodeIndex == null
+                            ? '$totalEpisodes chapters'
+                            : 'Chapter ${currentEpisodeIndex + 1} of $totalEpisodes',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.9),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )));
   }
 
   Widget _buildButtonDownload() {

@@ -10,6 +10,7 @@ dependencies:
   drift_flutter: ^0.2.1
   drop_down_list: ^0.0.8
   dynamic_height_grid_view: ^0.0.4
+  event_bus: ^2.0.1
   flash: ^3.1.1
   flutter:
     sdk: flutter

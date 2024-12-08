@@ -93,9 +93,9 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
             return MangaReader(
                 pages: pages.toList(),
                 service: _service,
-                slug: widget.slug,
+                bookId: widget.slug,
                 book: metaBook,
-                chapter: widget.chap,
+                chapterId: widget.chap,
                 getPages: (String chap) => _service.getPages(widget.slug, chap),
                 onChangeChap: _updateChapter,
                 onChangeEnabled: _updateEnabled);

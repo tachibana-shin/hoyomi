@@ -47,12 +47,15 @@ abstract class UtilsService {
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Please resolve Captcha to continue.'),
+                        Expanded(
+                          child: Text('Please resolve Captcha to continue.'),
+                        ),
                         if (url != null)
-                          Text(url,
-                              style: TextStyle(fontSize: 14.0),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis)
+                          Expanded(
+                              child: Text(url,
+                                  style: TextStyle(fontSize: 14.0),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis))
                       ])
                 ],
               ),

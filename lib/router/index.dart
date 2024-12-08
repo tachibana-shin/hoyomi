@@ -86,6 +86,7 @@ final GoRouter router = GoRouter(
               // features
               GoRoute(
                   path: "/details_comic",
+                  name: "details_comic",
                   pageBuilder: GoTransitions.material.call,
                   routes: [
                     GoRoute(

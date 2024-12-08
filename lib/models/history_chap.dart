@@ -1,4 +1,4 @@
-import 'package:honyomi/models/history.dart';
+import 'package:honyomi/models/book.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
@@ -6,24 +6,23 @@ class HistoryChap {
   @Id()
   int id;
 
-  final history = ToOne<History>();
+  final book = ToOne<Book>();
 
-  @Unique(onConflict: ConflictStrategy.replace)
-  String uid;
-
+  @Index()
   String chapterId;
 
-  int currentPage;
+  double currentPage;
   int maxPage;
 
   @Property(type: PropertyType.date)
+  @Index()
   DateTime createdAt;
+
   @Property(type: PropertyType.date)
   DateTime updatedAt;
 
   HistoryChap({
     this.id = 0,
-    required this.uid,
     required this.chapterId,
     required this.currentPage,
     required this.maxPage,

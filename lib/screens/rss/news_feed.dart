@@ -17,16 +17,15 @@ class RssItem {
   final String? creator;
   final BaseService service;
 
-  RssItem({
-    required this.title,
-    required this.link,
-    this.description,
-    this.pubDate,
-    this.image,
-    this.avatar,
-    this.creator,
-    required this.service
-  });
+  RssItem(
+      {required this.title,
+      required this.link,
+      this.description,
+      this.pubDate,
+      this.image,
+      this.avatar,
+      this.creator,
+      required this.service});
 }
 
 class NewsFeedScreen extends StatefulWidget {
@@ -152,9 +151,10 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                   elevation: 4,
                   child: InkWell(
                     onTap: () {
-                      final param = item.service. parseURL(item.link);
+                      final param = item.service.parseURL(item.link);
 
-                      context.push("/details_comic/${item.service.uid}/view?chap=${param.bookId}");
+                      context.push(
+                          "/details_comic/${item.service.uid}/${param.bookId}${param.chapterId == null ? '' : '/view?chap=${param.chapterId}'}");
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
