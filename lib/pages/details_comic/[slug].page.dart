@@ -624,7 +624,7 @@ class _DetailsComicState extends State<DetailsComic>
     return SheetChapters(
       book: _book!,
       sourceId: widget.sourceId,
-      slug: widget.slug,
+      bookId: widget.slug,
       initialChildSize: 0.15,
     );
   }

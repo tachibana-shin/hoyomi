@@ -851,7 +851,7 @@ class _MangaReaderState extends State<MangaReader>
         builder: (context) => SheetChapters(
               book: widget.book,
               sourceId: widget.service.uid,
-              slug: widget.bookId,
+              bookId: widget.bookId,
               initialChildSize: 0.6,
             ));
   }

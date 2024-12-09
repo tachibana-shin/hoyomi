@@ -6,7 +6,7 @@ import 'package:honyomi/utils/format_time_ago.dart';
 class SheetChapters extends StatefulWidget {
   final MetaBook book;
   final String sourceId;
-  final String slug;
+  final String bookId;
 
   final double initialChildSize;
 
@@ -14,7 +14,7 @@ class SheetChapters extends StatefulWidget {
     super.key,
     required this.book,
     required this.sourceId,
-    required this.slug,
+    required this.bookId,
     required this.initialChildSize,
   });
 
@@ -90,7 +90,7 @@ class _SheetChaptersState extends State<SheetChapters> {
                       ),
                       onTap: () {
                         context.push(
-                            "/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${chapter.slug}");
+                            "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${chapter.slug}");
                       },
                     );
                   },
