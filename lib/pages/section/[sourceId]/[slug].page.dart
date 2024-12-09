@@ -232,36 +232,31 @@ class _SectionState extends State<Section> {
       crossAxisCount = 6;
     }
 
-    return Column(children: [
-      if (_description != null)
-        Text(_description!,
-            maxLines: 3, style: Theme.of(context).textTheme.bodySmall),
-      PagedGridView(
-        pagingController: _pagingController,
-        shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 0.0,
-            mainAxisSpacing: 10.0,
-            childAspectRatio: 118.0 / 236.0),
-        builderDelegate: PagedChildBuilderDelegate<BasicBook>(
-          itemBuilder: (context, book, index) {
-            return VerticalBook(book: book, sourceId: _service.uid);
-          },
-          firstPageProgressIndicatorBuilder: (_) => Center(
-            child: CircularProgressIndicator(),
-          ),
-          newPageProgressIndicatorBuilder: (_) => Center(
-            child: CircularProgressIndicator(),
-          ),
-          noItemsFoundIndicatorBuilder: (_) => Center(
-            child: Text('No items found.'),
-          ),
-          newPageErrorIndicatorBuilder: _buildError,
-          firstPageErrorIndicatorBuilder: _buildError,
+    return PagedGridView(
+      pagingController: _pagingController,
+      shrinkWrap: true,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: 0.0,
+          mainAxisSpacing: 10.0,
+          childAspectRatio: 118.0 / 236.0),
+      builderDelegate: PagedChildBuilderDelegate<BasicBook>(
+        itemBuilder: (context, book, index) {
+          return VerticalBook(book: book, sourceId: _service.uid);
+        },
+        firstPageProgressIndicatorBuilder: (_) => Center(
+          child: CircularProgressIndicator(),
         ),
-      )
-    ]);
+        newPageProgressIndicatorBuilder: (_) => Center(
+          child: CircularProgressIndicator(),
+        ),
+        noItemsFoundIndicatorBuilder: (_) => Center(
+          child: Text('No items found.'),
+        ),
+        newPageErrorIndicatorBuilder: _buildError,
+        firstPageErrorIndicatorBuilder: _buildError,
+      ),
+    );
   }
 
   Widget _buildError(BuildContext context) {
