@@ -38,6 +38,8 @@ class _SheetChaptersState extends State<SheetChapters> {
         ? widget.histories!.values
             .reduce((a, b) => a.updatedAt.isAfter(b.updatedAt) ? a : b)
         : null;
+    final currentChapterId =
+        widget.currentChapterId ?? widget.book.chapters.first.chapterId;
 
     return DraggableScrollableSheet(
       expand: false,
@@ -94,8 +96,7 @@ class _SheetChaptersState extends State<SheetChapters> {
                             : null;
                     final bool selected = (lastHistoryChapObject != null &&
                             lastHistoryChapObject == history) ||
-                        (widget.currentChapterId != null &&
-                            chapter.chapterId == widget.currentChapterId);
+                        chapter.chapterId == currentChapterId;
 
                     return ListTile(
                       enableFeedback: true,
