@@ -12,6 +12,7 @@ import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/comic_modes.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/models/book.dart';
+import 'package:honyomi/models/history_chap.dart';
 import 'package:honyomi/plugins/event_bus.dart';
 import 'package:honyomi/utils/debouncer.dart';
 import 'package:honyomi/widgets/button_inset.dart';
@@ -88,6 +89,8 @@ class _MangaReaderState extends State<MangaReader>
   ItemScrollController _itemScrollController = ItemScrollController();
   ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
 
+  Map<String, HistoryChap>? _historyChapters;
+
   double get _realCurrentPage {
     for (int i = 0; i <= _currentPage; i++) {
       if (pages[i].groupId == _chapter && pages[i].src != FAKE) {
@@ -158,6 +161,18 @@ class _MangaReaderState extends State<MangaReader>
     _prefetchChapSibling();
 
     _bindListenerScroll();
+
+    _updateGetHistory();
+  }
+
+  void _updateGetHistory() {
+    setState(() {
+      final history = HistoryController(null);
+      final map = history.getHistory(widget.service.uid, widget.bookId);
+      if (map != null) {
+        _historyChapters = {for (var item in map) item.chapterId: item};
+      }
+    });
   }
 
   void _setToolbar(bool enabled) {
@@ -199,6 +214,7 @@ class _MangaReaderState extends State<MangaReader>
     if (_chapter != currentGroup) {
       setState(() {
         _chapter = currentGroup;
+        _updateGetHistory();
         widget.onChangeChap(currentGroup);
       });
       // GoRouter.of(context)
@@ -852,6 +868,8 @@ class _MangaReaderState extends State<MangaReader>
               book: widget.book,
               sourceId: widget.service.uid,
               bookId: widget.bookId,
+              histories: _historyChapters,
+              currentChapterId: widget.chapterId,
               initialChildSize: 0.6,
             ));
   }
