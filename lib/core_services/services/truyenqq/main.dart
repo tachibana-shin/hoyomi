@@ -230,7 +230,8 @@ class TruyenQQService extends TruyenGGService {
         : 1;
 
     return BaseSection(
-        name: document.querySelector(".title_cate")!.text,
+        name: document.querySelector(".title_cate, .text_list_update")?.text ?? '',
+        description: document.querySelector("tags_detail")?.text,
         items: data,
         page: page,
         totalItems: data.length * maxPage,
