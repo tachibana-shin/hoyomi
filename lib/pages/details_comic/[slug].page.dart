@@ -457,10 +457,13 @@ class _DetailsComicState extends State<DetailsComic>
   Widget _buildButtonRead(MetaBook book) {
     //    _historyChapters
 
-    final currentEpisodeIndex = _historyChapters == null
+    final currentKey = _historyChapters?.entries
+        .reduce((a, b) => a.value.updatedAt.isAfter(b.value.updatedAt) ? a : b)
+        .key;
+    final currentEpisodeIndex = currentKey == null
         ? null
         : book.chapters.toList().lastIndexWhere((chapter) {
-            return _historyChapters!.containsKey(chapter.slug);
+            return currentKey == chapter.slug;
           });
     final totalEpisodes = book.chapters.length;
 
@@ -625,6 +628,7 @@ class _DetailsComicState extends State<DetailsComic>
       book: _book!,
       sourceId: widget.sourceId,
       bookId: widget.slug,
+      histories: _historyChapters,
       initialChildSize: 0.15,
     );
   }
