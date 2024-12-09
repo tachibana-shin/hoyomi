@@ -177,7 +177,7 @@ class TruyenGGService extends BaseService implements AuthService {
     final description =
         document.querySelector(".story-detail-info")!.text.trim();
     final slugRoot = slug;
-    final chaps = document.querySelectorAll(".item_chap").reversed.map((chap) {
+    final chaps = document.querySelectorAll(".item_chap").map((chap) {
       final name = chap.querySelector("a")!.text;
       final slug = chap
           .querySelector("a")!
