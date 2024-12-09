@@ -2,12 +2,13 @@ import 'dart:convert';
 
 import 'package:honyomi/core_services/interfaces/base_section.dart';
 import 'package:honyomi/core_services/interfaces/basic_book.dart';
+import 'package:honyomi/core_services/interfaces/basic_chapter.dart';
+import 'package:honyomi/core_services/interfaces/basic_genre.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/basic_section.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/interfaces/paginate.dart';
 import 'package:honyomi/core_services/interfaces/rate_value.dart';
-import 'package:honyomi/core_services/interfaces/route.dart';
 import 'package:honyomi/core_services/services/truyengg/main.dart';
 import 'package:honyomi/utils/time_utils.dart';
 import 'package:html/dom.dart';
@@ -22,7 +23,7 @@ class TruyenQQService extends TruyenGGService {
   // Utils
   @override
   BasicBook parseBasicBook(Element itemBook, String referer) {
-    final String slug = itemBook
+    final String bookId = itemBook
         .querySelector("a")!
         .attributes["href"]!
         .split("/")
@@ -35,14 +36,14 @@ class TruyenQQService extends TruyenGGService {
             itemBook.querySelector("img")!.attributes['alt']!)
         .trim();
 
-    final Route lastChap = Route(
+    final BasicChapter lastChap = BasicChapter(
         name: itemBook.querySelector(".last_chapter > a")!.text.trim(),
-        slug: itemBook
+        chapterId: itemBook
             .querySelector(".cl99, .last_chapter > a")!
             .attributes["href"]!
             .split("/")
             .last
-            .replaceFirst("$slug-", "")
+            .replaceFirst("$bookId-", "")
             .replaceFirst(".html", ""));
 
     final timeAgoElement = itemBook.querySelector(".time-ago");
@@ -61,7 +62,7 @@ class TruyenQQService extends TruyenGGService {
         timeAgo: timeAgo,
         notice: notice,
         name: name,
-        slug: slug,
+        bookId: bookId,
         rate: rate,
         originalName: null);
   }
@@ -82,13 +83,13 @@ class TruyenQQService extends TruyenGGService {
               .querySelectorAll("#list_new > li")
               .map((element) => parseBasicBook(element, baseUrl)),
           name: 'Truyện Mới Cập Nhật',
-          slug: 'truyen-moi-cap-nhat'),
+          sectionId: 'truyen-moi-cap-nhat'),
     ];
   }
 
   @override
-  Future<MetaBook> getDetails(String slug) async {
-    final document = await fetchDocument("$baseUrl/truyen-tranh/$slug.html");
+  Future<MetaBook> getDetails(String bookId) async {
+    final document = await fetchDocument("$baseUrl/truyen-tranh/$bookId.html");
 
     final String name =
         document.querySelector("h1[itemprop=name]")!.text.trim();
@@ -121,29 +122,29 @@ class TruyenQQService extends TruyenGGService {
             value: double.parse(rate$['aggregateRating']['ratingValue']))
         : null;
 
-    final genres = document.querySelectorAll(".list01 a").map((anchor) => Route(
-        name: anchor.text.trim(),
-        slug:
-            "the-loai*${anchor.attributes["href"]!.split("/").last.replaceFirst(".html", "")}"));
+    final genres = document.querySelectorAll(".list01 a").map((anchor) =>
+        BasicGenre(
+            name: anchor.text.trim(),
+            genreId:
+                "the-loai*${anchor.attributes["href"]!.split("/").last.replaceFirst(".html", "")}"));
     final description =
         document.querySelector(".story-detail-info")!.text.trim();
-    final slugRoot = slug;
     final chapters =
         document.querySelectorAll(".works-chapter-item").reversed.map((chap) {
       final name = chap.querySelector("a")!.text;
-      final slug = chap
+      final chapterId = chap
           .querySelector("a")!
           .attributes["href"]!
           .split("/")
           .last
-          .replaceFirst("$slugRoot-", "")
+          .replaceFirst("$bookId-", "")
           .replaceFirst(".html", "");
 
       final time$ = chap.querySelector('.time-chap')?.text.trim();
       final time =
           time$ != null ? DateFormat("dd/MM/yyyy").tryParse(time$) : null;
 
-      return Chapter(name: name, slug: slug, time: time);
+      return Chapter(name: name, chapterId: chapterId, time: time);
     });
     final lastModified = rate$.containsKey("dateModified")
         ? DateTime.parse(rate$["dateModified"])
@@ -212,9 +213,9 @@ class TruyenQQService extends TruyenGGService {
   }
 
   @override
-  getSection(slug, {page = 1, filters}) async {
+  getSection(sectionId, {page = 1, filters}) async {
     final Document document = await fetchDocument(buildQueryUri(
-            "$baseUrl/${slug.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
+            "$baseUrl/${sectionId.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
             filters: filters)
         .toString());
 
@@ -230,7 +231,11 @@ class TruyenQQService extends TruyenGGService {
         : 1;
 
     return BaseSection(
-        name: document.querySelector(".title_cate, .text_list_update")?.text.trim() ?? '',
+        name: document
+                .querySelector(".title_cate, .text_list_update")
+                ?.text
+                .trim() ??
+            '',
         description: document.querySelector("tags_detail")?.text,
         items: data,
         page: page,

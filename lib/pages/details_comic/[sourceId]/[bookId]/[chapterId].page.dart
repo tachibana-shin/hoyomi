@@ -16,14 +16,14 @@ import 'package:share_plus/share_plus.dart';
 
 class DetailsComicReader extends StatefulWidget {
   final String sourceId;
-  final String slug;
-  final String chap;
+  final String bookId;
+  final String chapterId;
 
   const DetailsComicReader(
       {super.key,
       required this.sourceId,
-      required this.slug,
-      required this.chap});
+      required this.bookId,
+      required this.chapterId});
 
   @override
   createState() => _DetailsComicReaderState();
@@ -40,12 +40,12 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
   @override
   void initState() {
     _service = getService(widget.sourceId);
-    _pagesFuture = _service.getPages(widget.slug, widget.chap);
+    _pagesFuture = _service.getPages(widget.bookId, widget.chapterId);
     _metaBook = null;
-    _metaBookFuture = _service.getDetails(widget.slug);
+    _metaBookFuture = _service.getDetails(widget.bookId);
     _metaBookFuture.then((book) {
-      _chapter.value =
-          book.chapters.firstWhere((element) => element.slug == widget.chap);
+      _chapter.value = book.chapters
+          .firstWhere((element) => element.chapterId == widget.chapterId);
       setState(() {
         _metaBook = book;
       });
@@ -54,9 +54,9 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
     super.initState();
   }
 
-  void _updateChapter(String chap) {
-    _chapter.value =
-        _metaBook!.chapters.firstWhere((element) => element.slug == chap);
+  void _updateChapter(String chapterId) {
+    _chapter.value = _metaBook!.chapters
+        .firstWhere((element) => element.chapterId == chapterId);
   }
 
   void _updateEnabled(bool enabled) {
@@ -68,7 +68,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
     return Scaffold(
       body: Stack(children: [
         FutureBuilder<List<dynamic>>(
-          key: Key(widget.slug),
+          key: Key(widget.bookId),
           future: Future.wait([_pagesFuture, _metaBookFuture]),
           builder: (context2, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -93,10 +93,11 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
             return MangaReader(
                 pages: pages.toList(),
                 service: _service,
-                bookId: widget.slug,
+                bookId: widget.bookId,
                 book: metaBook,
-                chapterId: widget.chap,
-                getPages: (String chap) => _service.getPages(widget.slug, chap),
+                chapterId: widget.chapterId,
+                getPages: (String chap) =>
+                    _service.getPages(widget.bookId, chap),
                 onChangeChap: _updateChapter,
                 onChangeEnabled: _updateEnabled);
           },
@@ -106,7 +107,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
           chapter: _chapter,
           enabled: _showToolbar,
           service: _service,
-          slug: widget.slug,
+          bookId: widget.bookId,
         )
       ]),
     );
@@ -118,14 +119,14 @@ class _AppBar extends StatefulWidget {
   final ValueNotifier<Chapter?> chapter;
   final ValueNotifier<bool> enabled;
   final BaseService service;
-  final String slug;
+  final String bookId;
 
   const _AppBar({
     required this.book,
     required this.chapter,
     required this.enabled,
     required this.service,
-    required this.slug,
+    required this.bookId,
   });
 
   @override
@@ -203,7 +204,7 @@ class _AppBarState extends State<_AppBar> {
 
   void _openInBrowser() async {
     final url = widget.service
-        .getURL(widget.slug, chapterId: widget.chapter.value!.slug);
+        .getURL(widget.bookId, chapterId: widget.chapter.value!.chapterId);
     if (!await launchUrl(Uri.parse(url))) {
       showSnackBar(
         Text('Could not launch $url'),
@@ -213,7 +214,7 @@ class _AppBarState extends State<_AppBar> {
 
   void _share() {
     final url = widget.service
-        .getURL(widget.slug, chapterId: widget.chapter.value!.slug);
+        .getURL(widget.bookId, chapterId: widget.chapter.value!.chapterId);
     final String content =
         "Check out this comic: ${widget.book?.name}\n\nRead here: $url";
 

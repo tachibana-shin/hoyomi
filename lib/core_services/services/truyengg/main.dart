@@ -1,23 +1,25 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:honyomi/core_services/interfaces/basic_chapter.dart';
+import 'package:honyomi/core_services/interfaces/basic_genre.dart';
+import 'package:html/dom.dart';
+import 'package:intl/intl.dart';
+
 import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/base_section.dart';
 import 'package:honyomi/core_services/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/interfaces/basic_filter.dart';
-import 'package:honyomi/core_services/interfaces/basic_user.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/basic_section.dart';
+import 'package:honyomi/core_services/interfaces/basic_user.dart';
 import 'package:honyomi/core_services/interfaces/book_param.dart';
 import 'package:honyomi/core_services/interfaces/comic_modes.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/interfaces/paginate.dart';
 import 'package:honyomi/core_services/interfaces/rate_value.dart';
-import 'package:honyomi/core_services/interfaces/route.dart';
 import 'package:honyomi/utils/time_utils.dart';
-import 'package:html/dom.dart';
-import 'package:intl/intl.dart';
 
 final List<BasicFilter> globalFilters = [
   BasicFilter(name: 'Trạng thái', key: 'status', multiple: false, options: [
@@ -63,7 +65,7 @@ class TruyenGGService extends BaseService implements AuthService {
 
   // Utils
   BasicBook parseBasicBook(Element itemBook, String referer) {
-    final String slug = itemBook
+    final String bookId = itemBook
         .querySelector("a")!
         .attributes["href"]!
         .split("/")
@@ -75,9 +77,9 @@ class TruyenGGService extends BaseService implements AuthService {
     final String name = itemBook.querySelector(".book_name")?.text ??
         itemBook.querySelector("img")!.attributes['alt']!;
 
-    final Route lastChap = Route(
+    final BasicChapter lastChap = BasicChapter(
         name: itemBook.querySelector(".cl99")!.text.trim(),
-        slug: itemBook
+        chapterId: itemBook
             .querySelector(".cl99")!
             .attributes["href"]!
             .split("/")
@@ -101,7 +103,7 @@ class TruyenGGService extends BaseService implements AuthService {
         timeAgo: timeAgo,
         notice: notice,
         name: name,
-        slug: slug,
+        bookId: bookId,
         rate: rate,
         originalName: null);
   }
@@ -119,25 +121,25 @@ class TruyenGGService extends BaseService implements AuthService {
               .querySelectorAll(".item_home")
               .map((element) => parseBasicBook(element, baseUrl)),
           name: 'Mới Cập Nhật',
-          slug: 'truyen-moi-cap-nhat'),
+          sectionId: 'truyen-moi-cap-nhat'),
       BasicSection(
           books: sections[1]
               .querySelectorAll(".item_home")
               .map((element) => parseBasicBook(element, baseUrl)),
           name: "Bình Chọn",
-          slug: "top-binh-chon"),
+          sectionId: "top-binh-chon"),
       BasicSection(
           books: sections[2]
               .querySelectorAll(".item_home")
               .map((element) => parseBasicBook(element, baseUrl)),
           name: "Xem Nhiều",
-          slug: "top-thang")
+          sectionId: "top-thang")
     ];
   }
 
   @override
-  Future<MetaBook> getDetails(String slug) async {
-    final document = await fetchDocument("$baseUrl/truyen-tranh/$slug.html");
+  Future<MetaBook> getDetails(String bookId) async {
+    final document = await fetchDocument("$baseUrl/truyen-tranh/$bookId.html");
 
     final String name =
         document.querySelector("h1[itemprop=name]")!.text.trim();
@@ -170,27 +172,26 @@ class TruyenGGService extends BaseService implements AuthService {
             value: double.parse(rate$['aggregateRating']['ratingValue']))
         : null;
 
-    final genres = document.querySelectorAll(".clblue").map((anchor) => Route(
+    final genres = document.querySelectorAll(".clblue").map((anchor) => BasicGenre(
         name: anchor.text.trim(),
-        slug:
+        genreId:
             "the-loai*${anchor.attributes["href"]!.split("/").last.replaceFirst(".html", "")}"));
     final description =
         document.querySelector(".story-detail-info")!.text.trim();
-    final slugRoot = slug;
     final chaps = document.querySelectorAll(".item_chap").map((chap) {
       final name = chap.querySelector("a")!.text;
-      final slug = chap
+      final chapterId = chap
           .querySelector("a")!
           .attributes["href"]!
           .split("/")
           .last
-          .replaceFirst("$slugRoot-", "")
+          .replaceFirst("$bookId-", "")
           .replaceFirst(".html", "");
 
       final time$ = chap.querySelector('.cl99')?.text;
       final time = time$ != null ? DateFormat("dd/MM/yyyy").parse(time$) : null;
 
-      return Chapter(name: name, slug: slug, time: time);
+      return Chapter(name: name, chapterId: chapterId, time: time);
     });
     final lastModified = rate$.containsKey("dateModified")
         ? DateTime.parse(rate$["dateModified"])
@@ -234,18 +235,18 @@ class TruyenGGService extends BaseService implements AuthService {
   }
 
   @override
-  String getURL(comicId, {chapterId}) {
-    return "$baseUrl/truyen-tranh/$comicId${chapterId != null ? "-$chapterId" : ""}.html";
+  String getURL(bookId, {chapterId}) {
+    return "$baseUrl/truyen-tranh/$bookId${chapterId != null ? "-$chapterId" : ""}.html";
   }
 
   @override
   parseURL(url) {
-    final slug = url.split("/").last.replaceFirst(".html", "");
-    final index = slug.indexOf("chap-");
-    final chapterId = index == -1 ? null : slug.substring(index + 5);
-    final comicId = index == -1 ? slug : slug.substring(0, index);
+    final pathname = url.split("/").last.replaceFirst(".html", "");
+    final index = pathname.indexOf("chap-");
+    final chapterId = index == -1 ? null : pathname.substring(index + 5);
+    final bookId = index == -1 ? pathname : pathname.substring(0, index);
 
-    return BookParam(bookId: comicId, chapterId: chapterId);
+    return BookParam(bookId: bookId, chapterId: chapterId);
   }
 
   @override
@@ -265,7 +266,7 @@ class TruyenGGService extends BaseService implements AuthService {
           'category': book.genres
               .toList()
               .sublist(0, min(3, book.genres.length))
-              .map((e) => RegExp(r'\d+').allMatches(e.slug).last.group(0)!)
+              .map((e) => RegExp(r'\d+').allMatches(e.genreId).last.group(0)!)
               .toList()
         });
       };
@@ -297,11 +298,11 @@ class TruyenGGService extends BaseService implements AuthService {
   }
 
   @override
-  getSection(slug, {page = 1, filters}) async {
+  getSection(sectionId, {page = 1, filters}) async {
     page ??= 1;
     final Document document = await fetchDocument(
       buildQueryUri(
-              "$baseUrl/${slug.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html",
+              "$baseUrl/${sectionId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html",
               filters: filters)
           .toString(),
     );
@@ -354,9 +355,9 @@ class TruyenGGService extends BaseService implements AuthService {
   }
 
   @override
-  Future<bool> isLiked({required slug}) async {
+  Future<bool> isLiked({required bookId}) async {
     final document = await fetchDocument(
-      "$baseUrl/truyen-tranh/$slug.html",
+      "$baseUrl/truyen-tranh/$bookId.html",
     );
 
     return document.body!.text.contains("Bỏ Theo Dõi");
@@ -365,9 +366,9 @@ class TruyenGGService extends BaseService implements AuthService {
   }
 
   @override
-  Future<bool> setLike({required slug, required value}) async {
+  Future<bool> setLike({required bookId, required value}) async {
     final document = await fetchDocument(
-      "$baseUrl/truyen-tranh/$slug.html",
+      "$baseUrl/truyen-tranh/$bookId.html",
     );
 
     final id =

@@ -63,8 +63,8 @@ class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
                       booksFuture: Future.value(section.books),
                       service: widget.service,
                       title: section.name,
-                      more: section.slug != null
-                          ? '/section/${widget.service.uid}/${section.slug}'
+                      more: section.sectionId != null
+                          ? '/section/${widget.service.uid}/${section.sectionId}'
                           : null,
                     );
                   }
@@ -74,8 +74,8 @@ class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
                     books: section.books,
                     service: widget.service,
                     title: section.name,
-                    more: section.slug != null
-                        ? '/section/${widget.service.uid}/${section.slug}'
+                    more: section.sectionId != null
+                        ? '/section/${widget.service.uid}/${section.sectionId}'
                         : null,
                   );
                 });

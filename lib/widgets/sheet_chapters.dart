@@ -89,13 +89,13 @@ class _SheetChaptersState extends State<SheetChapters> {
                     final chapter =
                         widget.book.chapters.elementAt(index); //[index];
                     final history =
-                        widget.histories?.containsKey(chapter.slug) == true
-                            ? widget.histories![chapter.slug]
+                        widget.histories?.containsKey(chapter.chapterId) == true
+                            ? widget.histories![chapter.chapterId]
                             : null;
                     final bool selected = (lastHistoryChapObject != null &&
                             lastHistoryChapObject == history) ||
                         (widget.currentChapterId != null &&
-                            chapter.slug == widget.currentChapterId);
+                            chapter.chapterId == widget.currentChapterId);
 
                     return ListTile(
                       enableFeedback: true,
@@ -178,7 +178,7 @@ class _SheetChaptersState extends State<SheetChapters> {
                             ),
                       onTap: () {
                         context.push(
-                            "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${chapter.slug}");
+                            "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${chapter.chapterId}");
                       },
                     );
                   },

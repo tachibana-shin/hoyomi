@@ -12,23 +12,23 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class SectionPage extends StatelessWidget {
   final String serviceId;
-  final String slug;
+  final String sectionId;
 
-  const SectionPage({super.key, required this.serviceId, required this.slug});
+  const SectionPage({super.key, required this.serviceId, required this.sectionId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Section(serviceId: serviceId, slug: slug),
+      body: Section(serviceId: serviceId, sectionId: sectionId),
     );
   }
 }
 
 class Section extends StatefulWidget {
   final String serviceId;
-  final String slug;
+  final String sectionId;
 
-  const Section({super.key, required this.serviceId, required this.slug});
+  const Section({super.key, required this.serviceId, required this.sectionId});
 
   @override
   createState() => _SectionState();
@@ -60,7 +60,7 @@ class _SectionState extends State<Section> {
   Future<void> _fetchBooks(int pageKey) async {
     try {
       final newBooks =
-          await _service.getSection(widget.slug, page: pageKey, filters: _data);
+          await _service.getSection(widget.sectionId, page: pageKey, filters: _data);
       final isLastPage = newBooks.page >= newBooks.totalPages;
       setState(() {
         _title = newBooks.name;

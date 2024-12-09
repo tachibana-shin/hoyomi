@@ -21,9 +21,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 class DetailsComic extends StatefulWidget {
   final String sourceId;
-  final String slug;
+  final String bookId;
 
-  const DetailsComic({super.key, required this.sourceId, required this.slug});
+  const DetailsComic({super.key, required this.sourceId, required this.bookId});
 
   @override
   createState() => _DetailsComicState();
@@ -52,7 +52,7 @@ class _DetailsComicState extends State<DetailsComic>
     _bottomSheetAnimationController = AnimationController(vsync: this);
 
     _service = getService(widget.sourceId);
-    _metaBookFuture = _service.getDetails(widget.slug);
+    _metaBookFuture = _service.getDetails(widget.bookId);
     _metaBookFuture.then((book) {
       setState(() {
         _title = book.name;
@@ -67,7 +67,7 @@ class _DetailsComicState extends State<DetailsComic>
           final name = GoRouter.of(context).state?.name;
 
           // lazy call history
-          if (event.bookId == widget.slug &&
+          if (event.bookId == widget.bookId &&
               (name == "details_comic" || event.force)) {
             _updateGetHistory();
           }
@@ -81,7 +81,7 @@ class _DetailsComicState extends State<DetailsComic>
   void _updateGetHistory() {
     setState(() {
       final history = HistoryController(null);
-      final map = history.getHistory(_service.uid, widget.slug);
+      final map = history.getHistory(_service.uid, widget.bookId);
       if (map != null) {
         _historyChapters = {for (var item in map) item.chapterId: item};
       }
@@ -365,7 +365,7 @@ class _DetailsComicState extends State<DetailsComic>
               Expanded(
                 child: _ButtonLike(
                   book: book,
-                  slug: widget.slug,
+                  bookId: widget.bookId,
                   service: _service,
                 ),
               ),
@@ -437,7 +437,7 @@ class _DetailsComicState extends State<DetailsComic>
             return InkWell(
                 onTap: () {
                   ///
-                  context.push("/section/${_service.uid}/${genre.slug}");
+                  context.push("/section/${_service.uid}/${genre.genreId}");
                 },
                 child: Chip(
                   padding: EdgeInsets.all(0),
@@ -463,7 +463,7 @@ class _DetailsComicState extends State<DetailsComic>
     final currentEpisodeIndex = currentKey == null
         ? null
         : book.chapters.toList().lastIndexWhere((chapter) {
-            return currentKey == chapter.slug;
+            return currentKey == chapter.chapterId;
           });
     final totalEpisodes = book.chapters.length;
 
@@ -474,10 +474,10 @@ class _DetailsComicState extends State<DetailsComic>
             onTap: () {
               if (currentEpisodeIndex != null) {
                 context.push(
-                    "/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${book.chapters.elementAt(currentEpisodeIndex).slug}");
+                    "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${book.chapters.elementAt(currentEpisodeIndex).chapterId}");
               } else {
                 context.push(
-                    "/details_comic/${widget.sourceId}/${widget.slug}/view?chap=${book.chapters.elementAt(0).slug}");
+                    "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${book.chapters.elementAt(0).chapterId}");
               }
             },
             borderRadius: BorderRadius.circular(35),
@@ -601,7 +601,7 @@ class _DetailsComicState extends State<DetailsComic>
   }
 
   void _openBrowser(BuildContext context) async {
-    final Uri uri = Uri.parse(_service.getURL(widget.slug));
+    final Uri uri = Uri.parse(_service.getURL(widget.bookId));
 
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       showSnackBar(Text('Could not launch $uri'));
@@ -627,7 +627,7 @@ class _DetailsComicState extends State<DetailsComic>
     return SheetChapters(
       book: _book!,
       sourceId: widget.sourceId,
-      bookId: widget.slug,
+      bookId: widget.bookId,
       histories: _historyChapters,
       initialChildSize: 0.15,
     );
@@ -680,12 +680,12 @@ class _DetailsComicState extends State<DetailsComic>
 // }
 
 class _ButtonLike extends StatefulWidget {
-  final String slug;
+  final String bookId;
   final MetaBook book;
   final BaseService service;
 
   const _ButtonLike(
-      {required this.slug, required this.book, required this.service});
+      {required this.bookId, required this.book, required this.service});
 
   @override
   createState() => _ButtonLikeState();
@@ -701,7 +701,9 @@ class _ButtonLikeState extends State<_ButtonLike> {
     _likes = widget.book.likes;
 
     if (widget.service is AuthService) {
-      (widget.service as AuthService).isLiked(slug: widget.slug).then((liked) {
+      (widget.service as AuthService)
+          .isLiked(bookId: widget.bookId)
+          .then((liked) {
         setState(() {
           _liked = liked;
         });
@@ -715,7 +717,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
 
   void _onTap() {
     (widget.service as AuthService)
-        .setLike(slug: widget.slug, value: !(_liked ?? false))
+        .setLike(bookId: widget.bookId, value: !(_liked ?? false))
         .then((value) {
       setState(() {
         _liked = value;

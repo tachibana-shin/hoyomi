@@ -1,6 +1,6 @@
+import 'package:honyomi/core_services/interfaces/basic_genre.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/rate_value.dart';
-import 'package:honyomi/core_services/interfaces/route.dart';
 
 class MetaBook {
   final String name;
@@ -16,7 +16,7 @@ class MetaBook {
   final int? likes;
 
   final RateValue? rate;
-  final Iterable<Route> genres;
+  final Iterable<BasicGenre> genres;
   final String description;
   final Iterable<Chapter> chapters;
   final DateTime lastModified;
@@ -49,7 +49,7 @@ class MetaBook {
       views: json['views'],
       likes: json['likes'],
       rate: json['rate'] != null ? RateValue.fromJson(json['rate']) : null,
-      genres: (json['genres'] as List).map((e) => Route.fromJson(e)),
+      genres: (json['genres'] as List).map((e) => BasicGenre.fromJson(e)),
       description: json['description'],
       chapters: (json['chapters'] as List).map((e) => Chapter.fromJson(e)),
       lastModified: DateTime.parse(json['lastModified']),
@@ -76,12 +76,14 @@ class MetaBook {
   }
 }
 
-class Chapter extends Route {
+class Chapter {
+  final String name;
+  final String chapterId;
   final DateTime? time;
 
   Chapter({
-    required super.name,
-    required super.slug,
+    required this.name,
+    required this.chapterId,
     this.time,
   });
 
@@ -89,17 +91,16 @@ class Chapter extends Route {
   factory Chapter.fromJson(Map<String, dynamic> json) {
     return Chapter(
       name: json['name'],
-      slug: json['slug'],
+      chapterId: json['chapterId'],
       time: json['time'] != null ? DateTime.parse(json['time']) : null,
     );
   }
 
   // Convert to JSON
-  @override
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'slug': slug,
+      'chapterId': chapterId,
       'time': time?.toIso8601String(),
     };
   }

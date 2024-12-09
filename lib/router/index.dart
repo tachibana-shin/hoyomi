@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
 
-import 'package:honyomi/pages/details_comic/[slug].page.dart';
-import 'package:honyomi/pages/details_comic/[slug]/[chap].page.dart';
+import 'package:honyomi/pages/details_comic/[sourceId]/[bookId].page.dart';
+import 'package:honyomi/pages/details_comic/[sourceId]/[bookId]/[chapterId].page.dart';
 import 'package:honyomi/pages/home_page.dart';
 import 'package:honyomi/pages/manager_page.dart';
 import 'package:honyomi/pages/search/[sourceId].page.dart';
 import 'package:honyomi/pages/search/index_page.dart';
 import 'package:honyomi/pages/webview_page.dart';
-import 'package:honyomi/pages/section/[sourceId]/[slug].page.dart';
+import 'package:honyomi/pages/section/[sourceId]/[sectionId].page.dart';
 
 import 'package:honyomi/widgets/navigation_app.dart';
 
@@ -94,11 +94,11 @@ final GoRouter router = GoRouter(
                         pageBuilder: GoTransitions.material.call,
                         routes: [
                           GoRoute(
-                              path: ":slug",
+                              path: ":bookId",
                               pageBuilder: GoTransitions.material.call,
                               builder: (context, state) => DetailsComic(
                                   sourceId: state.pathParameters['sourceId']!,
-                                  slug: state.pathParameters['slug']!),
+                                  bookId: state.pathParameters['bookId']!),
                               routes: [
                                 GoRoute(
                                     path: "view",
@@ -107,15 +107,15 @@ final GoRouter router = GoRouter(
                                     builder: (context, state) {
                                       final sourceId =
                                           state.pathParameters['sourceId'];
-                                      final slug = state.pathParameters['slug'];
-                                      final chap =
+                                      final bookId = state.pathParameters['bookId'];
+                                      final chapterId =
                                           state.uri.queryParameters['chap']!;
 
                                       return DetailsComicReader(
-                                        key: Key(slug!),
+                                        key: Key(bookId!),
                                           sourceId: sourceId!,
-                                          slug: slug,
-                                          chap: chap);
+                                          bookId: bookId,
+                                          chapterId: chapterId);
                                     })
                               ])
                         ])
@@ -144,10 +144,10 @@ final GoRouter router = GoRouter(
                     pageBuilder: GoTransitions.material.call,
                     routes: [
                       GoRoute(
-                          path: ":slug",
+                          path: ":sectionId",
                           builder: (context, state) => SectionPage(
                                 serviceId: state.pathParameters['serviceId']!,
-                                slug: state.pathParameters['slug']!,
+                                sectionId: state.pathParameters['sectionId']!,
                               ))
                     ])
               ]),
