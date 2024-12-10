@@ -26,6 +26,7 @@ class HistoryController {
     String sourceId, {
     required String bookId,
     required MetaBook book,
+    bool? followed,
   }) {
     Book? bookObject = _bookBox
         .query(Book_.sourceId.equals(sourceId).and(Book_.bookId.equals(bookId)))
@@ -34,8 +35,14 @@ class HistoryController {
 
     if (bookObject == null) {
       bookObject = Book(
-          bookId: bookId, sourceId: sourceId, meta: jsonEncode(book.toJson()));
+          bookId: bookId,
+          sourceId: sourceId,
+          meta: jsonEncode(book.toJson()),
+          followedAt: followed == true ? DateTime.now() : null);
       // new book for box
+      _bookBox.put(bookObject);
+    } else if (followed != null) {
+      bookObject.followedAt = followed == true ? DateTime.now() : null;
       _bookBox.put(bookObject);
     }
 

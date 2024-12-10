@@ -22,6 +22,9 @@ class Book {
   final histories = ToMany<HistoryChap>();
 
   @Index()
+  DateTime? followedAt;
+
+  @Index()
   DateTime createdAt;
 
   DateTime updatedAt;
@@ -35,6 +38,7 @@ class Book {
     required this.sourceId,
     required this.bookId,
     required this.meta,
+    this.followedAt,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : uid = Book.genUid(sourceId, bookId: bookId),

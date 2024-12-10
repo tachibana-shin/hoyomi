@@ -15,9 +15,11 @@ import 'package:honyomi/models/history_chap.dart';
 import 'package:honyomi/plugins/event_bus.dart';
 import 'package:honyomi/utils/format_number.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
+import 'package:honyomi/widgets/book/icon_button_follow.dart';
+import 'package:honyomi/widgets/book/icon_button_open_browser.dart';
+import 'package:honyomi/widgets/book/icon_button_share.dart';
 import 'package:honyomi/widgets/horizontal_book_list.dart';
 import 'package:honyomi/widgets/sheet_chapters.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class DetailsComic extends StatefulWidget {
   final String sourceId;
@@ -122,18 +124,13 @@ class _DetailsComicState extends State<DetailsComic>
           ),
           actions: [
             if (_service is AuthService) _AvatarUser(service: (_service)),
-            IconButton(
-              icon: const Icon(Icons.share), // 共有ボタン
-              onPressed: () {
-                _shareContent(context);
-              },
-            ),
-            IconButton(
-              icon: const Icon(MaterialCommunityIcons.earth),
-              onPressed: () {
-                _openBrowser(context);
-              },
-            ),
+            IconButtonShare(),
+            if (_book != null)
+              IconButtonFollow(
+                  sourceId: widget.sourceId,
+                  bookId: widget.bookId,
+                  book: _book!),
+            IconButtonOpenBrowser(url: _service.getURL(widget.bookId)),
             PopupMenuButton<String>(
               onSelected: (value) {
                 _handleMenuSelection(context, value);
@@ -594,18 +591,6 @@ class _DetailsComicState extends State<DetailsComic>
       value: id,
       child: Text(text),
     );
-  }
-
-  void _shareContent(BuildContext context) {
-    showSnackBar(Text('Sharing the content...'));
-  }
-
-  void _openBrowser(BuildContext context) async {
-    final Uri uri = Uri.parse(_service.getURL(widget.bookId));
-
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      showSnackBar(Text('Could not launch $uri'));
-    }
   }
 
   void _handleMenuSelection(BuildContext context, String id) {
