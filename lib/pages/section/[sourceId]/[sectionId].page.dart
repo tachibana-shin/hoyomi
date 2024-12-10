@@ -14,7 +14,8 @@ class SectionPage extends StatelessWidget {
   final String serviceId;
   final String sectionId;
 
-  const SectionPage({super.key, required this.serviceId, required this.sectionId});
+  const SectionPage(
+      {super.key, required this.serviceId, required this.sectionId});
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +60,8 @@ class _SectionState extends State<Section> {
 
   Future<void> _fetchBooks(int pageKey) async {
     try {
-      final newBooks =
-          await _service.getSection(widget.sectionId, page: pageKey, filters: _data);
+      final newBooks = await _service.getSection(widget.sectionId,
+          page: pageKey, filters: _data);
       final isLastPage = newBooks.page >= newBooks.totalPages;
       setState(() {
         _title = newBooks.name;
@@ -241,14 +242,19 @@ class _SectionState extends State<Section> {
           mainAxisSpacing: 10.0,
           childAspectRatio: 118.0 / 236.0),
       builderDelegate: PagedChildBuilderDelegate<BasicBook>(
+        animateTransitions: true,
         itemBuilder: (context, book, index) {
           return VerticalBook(book: book, sourceId: _service.uid);
         },
         firstPageProgressIndicatorBuilder: (_) => Center(
-          child: CircularProgressIndicator(),
+          child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 24.0),
+              child: CircularProgressIndicator()),
         ),
         newPageProgressIndicatorBuilder: (_) => Center(
-          child: CircularProgressIndicator(),
+          child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 24.0),
+              child: CircularProgressIndicator()),
         ),
         noItemsFoundIndicatorBuilder: (_) => Center(
           child: Text('No items found.'),
