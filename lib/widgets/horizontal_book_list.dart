@@ -6,7 +6,8 @@ import 'vertical_book.dart';
 
 class HorizontalBookList extends StatelessWidget {
   final Future<Iterable<BasicBook>> booksFuture;
-  final BaseService service;
+  final BaseService? service;
+  final String Function(int index)? getService;
   final String title;
   final String? more;
   final Future<int>? totalItems;
@@ -15,6 +16,7 @@ class HorizontalBookList extends StatelessWidget {
       {super.key,
       required this.booksFuture,
       required this.service,
+      this.getService,
       required this.title,
       required this.more,
       this.totalItems});
@@ -81,11 +83,11 @@ class HorizontalBookList extends StatelessWidget {
                   ));
             }
             if (snapshot.hasError) {
-              if (service.isCaptchaError(snapshot.error)) {
+              if (service?.isCaptchaError(snapshot.error) == true) {
                 return SizedBox(
                     height: height,
                     child: Center(
-                        child: service.templateCaptchaResolver(context)));
+                        child: service?.templateCaptchaResolver(context)));
               }
 
               return SizedBox(
@@ -117,7 +119,7 @@ class HorizontalBookList extends StatelessWidget {
                   final book = books.elementAt(index);
                   return VerticalBook(
                     book: book,
-                    sourceId: service.uid,
+                    sourceId: service?.uid ?? getService!(index),
                   );
                 },
               ),

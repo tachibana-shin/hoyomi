@@ -9,6 +9,7 @@ import 'package:honyomi/pages/details_comic/[sourceId]/[bookId]/[chapterId].page
 import 'package:honyomi/pages/home_page.dart';
 import 'package:honyomi/pages/library/follow/follow_page.dart';
 import 'package:honyomi/pages/library/history/history_page.dart';
+import 'package:honyomi/pages/library/library_page.dart';
 import 'package:honyomi/pages/manager_page.dart';
 import 'package:honyomi/pages/search/[sourceId].page.dart';
 import 'package:honyomi/pages/search/index_page.dart';
@@ -79,13 +80,16 @@ final GoRouter router = GoRouter(
           GoRoute(
               path: '/library',
               pageBuilder: GoTransitions.material.call,
+              builder: (context, state) => LibraryPage(),
               routes: [
                 GoRoute(
                   path: 'history',
+                  pageBuilder: GoTransitions.material.call,
                   builder: (context, state) => HistoryPage(),
                 ),
                 GoRoute(
                   path: 'follow',
+                  pageBuilder: GoTransitions.material.call,
                   builder: (context, state) => FollowPage(),
                 )
               ])
