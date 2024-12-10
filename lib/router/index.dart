@@ -7,7 +7,7 @@ import 'package:go_transitions/go_transitions.dart';
 import 'package:honyomi/pages/details_comic/[sourceId]/[bookId].page.dart';
 import 'package:honyomi/pages/details_comic/[sourceId]/[bookId]/[chapterId].page.dart';
 import 'package:honyomi/pages/home_page.dart';
-import 'package:honyomi/pages/library_page.dart';
+import 'package:honyomi/pages/library/history_page.dart';
 import 'package:honyomi/pages/manager_page.dart';
 import 'package:honyomi/pages/search/[sourceId].page.dart';
 import 'package:honyomi/pages/search/index_page.dart';
@@ -76,10 +76,14 @@ final GoRouter router = GoRouter(
         ]),
         StatefulShellBranch(routes: [
           GoRoute(
-            path: '/library',
-            pageBuilder: GoTransitions.material.call,
-            builder: (context, state) => LibraryPage(),
-          )
+              path: '/library',
+              pageBuilder: GoTransitions.material.call,
+              routes: [
+                GoRoute(
+                  path: 'history',
+                  builder: (context, state) => HistoryPage(),
+                )
+              ])
         ]),
         StatefulShellBranch(routes: [
           GoRoute(
@@ -115,12 +119,13 @@ final GoRouter router = GoRouter(
                                     builder: (context, state) {
                                       final sourceId =
                                           state.pathParameters['sourceId'];
-                                      final bookId = state.pathParameters['bookId'];
+                                      final bookId =
+                                          state.pathParameters['bookId'];
                                       final chapterId =
                                           state.uri.queryParameters['chap']!;
 
                                       return DetailsComicReader(
-                                        key: Key(bookId!),
+                                          key: Key(bookId!),
                                           sourceId: sourceId!,
                                           bookId: bookId,
                                           chapterId: chapterId);

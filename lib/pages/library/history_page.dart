@@ -10,25 +10,25 @@ import 'package:honyomi/models/book.dart';
 import 'package:honyomi/widgets/vertical_book_list.dart';
 import 'package:intl/intl.dart';
 
-class LibraryPage extends StatelessWidget {
-  const LibraryPage({super.key});
+class HistoryPage extends StatelessWidget {
+  const HistoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Library(),
+      body: History(),
     );
   }
 }
 
-class Library extends StatefulWidget {
-  const Library({super.key});
+class History extends StatefulWidget {
+  const History({super.key});
 
   @override
-  State<Library> createState() => _LibraryState();
+  State<History> createState() => _HistoryState();
 }
 
-class _LibraryState extends State<Library> {
+class _HistoryState extends State<History> {
   final _history = HistoryController(null);
   final List<Book> _items = [];
   int _page = 1;
