@@ -91,4 +91,13 @@ class HistoryController {
 
     return query.find();
   }
+
+  List<Book> getListFollows(int limit, {required int offset}) {
+    final query =
+        _bookBox.query(Book_.followedAt.notNull()).order(Book_.followedAt, flags: Order.descending).build()
+          ..limit = limit
+          ..offset = offset;
+
+    return query.find();
+  }
 }

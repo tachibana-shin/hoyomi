@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:honyomi/controller/history.dart';
 import 'package:honyomi/core_services/interfaces/basic_book.dart';
@@ -10,25 +11,25 @@ import 'package:honyomi/models/book.dart';
 import 'package:honyomi/widgets/vertical_book_list.dart';
 import 'package:intl/intl.dart';
 
-class HistoryPage extends StatelessWidget {
-  const HistoryPage({super.key});
+class FollowPage extends StatelessWidget {
+  const FollowPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: History(),
+      body: Follow(),
     );
   }
 }
 
-class History extends StatefulWidget {
-  const History({super.key});
+class Follow extends StatefulWidget {
+  const Follow({super.key});
 
   @override
-  State<History> createState() => _HistoryState();
+  State<Follow> createState() => _FollowState();
 }
 
-class _HistoryState extends State<History> {
+class _FollowState extends State<Follow> {
   final _history = HistoryController(null);
   final List<Book> _items = [];
   int _page = 1;
@@ -64,7 +65,7 @@ class _HistoryState extends State<History> {
     _scrollCompleter = Completer();
 
     setState(() {
-      final data = _history.getListHistory(30, offset: (_page - 1) * 30);
+      final data = _history.getListFollows(30, offset: (_page - 1) * 30);
       _items.addAll(data);
 
       if (data.length < 30) {
@@ -97,7 +98,18 @@ class _HistoryState extends State<History> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _buildBody(context));
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('My book follows'),
+        // back button
+        leading: IconButton(
+          icon: const Icon(MaterialCommunityIcons.arrow_left),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: _buildBody(context));
   }
 
   Widget _buildBody(BuildContext context) {
