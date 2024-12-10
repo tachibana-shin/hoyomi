@@ -21,11 +21,9 @@ class Book {
   @Backlink('book')
   final histories = ToMany<HistoryChap>();
 
-  @Property(type: PropertyType.date)
   @Index()
   DateTime createdAt;
 
-  @Property(type: PropertyType.date)
   DateTime updatedAt;
 
   static String genUid(String sourceId, {required String bookId}) {

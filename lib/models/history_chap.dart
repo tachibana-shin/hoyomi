@@ -14,11 +14,9 @@ class HistoryChap {
   double currentPage;
   int maxPage;
 
-  @Property(type: PropertyType.date)
   @Index()
   DateTime createdAt;
 
-  @Property(type: PropertyType.date)
   DateTime updatedAt;
 
   HistoryChap({
