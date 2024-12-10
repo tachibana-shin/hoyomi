@@ -97,7 +97,7 @@
     },
     {
       "id": "6:771120293153708254",
-      "lastPropertyId": "6:7397819899799866581",
+      "lastPropertyId": "8:5524208815019802735",
       "name": "Book",
       "properties": [
         {
@@ -131,13 +131,25 @@
           "id": "5:1260106737100877984",
           "name": "meta",
           "type": 9
+        },
+        {
+          "id": "7:3703352462940281809",
+          "name": "createdAt",
+          "type": 10,
+          "flags": 8,
+          "indexId": "15:4118770546462258946"
+        },
+        {
+          "id": "8:5524208815019802735",
+          "name": "updatedAt",
+          "type": 10
         }
       ],
       "relations": []
     }
   ],
   "lastEntityId": "6:771120293153708254",
-  "lastIndexId": "14:7121066938777367334",
+  "lastIndexId": "15:4118770546462258946",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

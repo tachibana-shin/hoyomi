@@ -6,7 +6,8 @@ class NavigationApp extends StatelessWidget {
   final ValueChanged<int> onDestinationSelected;
   final bool rail;
 
-  const NavigationApp({super.key, 
+  const NavigationApp({
+    super.key,
     required this.selectedIndex,
     required this.rail,
     required this.onDestinationSelected,
@@ -22,6 +23,10 @@ class NavigationApp extends StatelessWidget {
       (
         icon: Icon(MaterialCommunityIcons.magnify),
         label: ('Search'),
+      ),
+      (
+        icon: Icon(MaterialCommunityIcons.library),
+        label: ('Library'),
       ),
       (
         icon: Icon(MaterialCommunityIcons.account_circle),

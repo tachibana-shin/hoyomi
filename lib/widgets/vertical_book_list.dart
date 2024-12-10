@@ -8,7 +8,8 @@ import 'vertical_book.dart';
 class VerticalBookList extends StatelessWidget {
   final Future<Iterable<BasicBook>>? booksFuture;
   final Iterable<BasicBook>? books;
-  final BaseService service;
+  final BaseService? service;
+  final String Function(int index)? getService;
   final String title;
   final String? more;
   final bool noHeader;
@@ -18,6 +19,7 @@ class VerticalBookList extends StatelessWidget {
       required this.booksFuture,
       required this.books,
       required this.service,
+      this.getService,
       required this.title,
       required this.more,
       this.noHeader = false}) {
@@ -60,9 +62,9 @@ class VerticalBookList extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasError) {
-                if (service.isCaptchaError(snapshot.error)) {
+                if (service?.isCaptchaError(snapshot.error) == true) {
                   return Center(
-                      child: service.templateCaptchaResolver(context));
+                      child: service?.templateCaptchaResolver(context));
                 }
 
                 return Center(child: Text('Error: ${snapshot.error}'));
@@ -104,7 +106,7 @@ class VerticalBookList extends StatelessWidget {
       itemCount: books.length,
       builder: (context, bookIndex) {
         final book = books.elementAt(bookIndex);
-        return VerticalBook(book: book, sourceId: service.uid);
+        return VerticalBook(book: book, sourceId: service?.uid ?? getService!(bookIndex));
       },
     );
   }

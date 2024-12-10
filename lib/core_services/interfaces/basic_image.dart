@@ -8,7 +8,8 @@ class BasicImage {
   factory BasicImage.fromJson(Map<String, dynamic> json) {
     return BasicImage(
       src: json['src'],
-      headers: json['headers'],
+      headers: (json['headers'] as Map<String, dynamic>?)
+          ?.map((key, value) => MapEntry(key, value as String)),
     );
   }
 

@@ -7,6 +7,7 @@ import 'package:go_transitions/go_transitions.dart';
 import 'package:honyomi/pages/details_comic/[sourceId]/[bookId].page.dart';
 import 'package:honyomi/pages/details_comic/[sourceId]/[bookId]/[chapterId].page.dart';
 import 'package:honyomi/pages/home_page.dart';
+import 'package:honyomi/pages/library_page.dart';
 import 'package:honyomi/pages/manager_page.dart';
 import 'package:honyomi/pages/search/[sourceId].page.dart';
 import 'package:honyomi/pages/search/index_page.dart';
@@ -72,6 +73,13 @@ final GoRouter router = GoRouter(
                   },
                 )
               ]),
+        ]),
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: '/library',
+            pageBuilder: GoTransitions.material.call,
+            builder: (context, state) => LibraryPage(),
+          )
         ]),
         StatefulShellBranch(routes: [
           GoRoute(

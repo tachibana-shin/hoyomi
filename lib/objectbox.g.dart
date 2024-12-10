@@ -112,7 +112,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(6, 771120293153708254),
       name: 'Book',
-      lastPropertyId: const obx_int.IdUid(6, 7397819899799866581),
+      lastPropertyId: const obx_int.IdUid(8, 5524208815019802735),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -142,6 +142,17 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(5, 1260106737100877984),
             name: 'meta',
             type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(7, 3703352462940281809),
+            name: 'createdAt',
+            type: 10,
+            flags: 8,
+            indexId: const obx_int.IdUid(15, 4118770546462258946)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 5524208815019802735),
+            name: 'updatedAt',
+            type: 10,
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
@@ -187,7 +198,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
       lastEntityId: const obx_int.IdUid(6, 771120293153708254),
-      lastIndexId: const obx_int.IdUid(14, 7121066938777367334),
+      lastIndexId: const obx_int.IdUid(15, 4118770546462258946),
       lastRelationId: const obx_int.IdUid(0, 0),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [
@@ -339,12 +350,14 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final sourceIdOffset = fbb.writeString(object.sourceId);
           final bookIdOffset = fbb.writeString(object.bookId);
           final metaOffset = fbb.writeString(object.meta);
-          fbb.startTable(7);
+          fbb.startTable(9);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, uidOffset);
           fbb.addOffset(2, sourceIdOffset);
           fbb.addOffset(3, bookIdOffset);
           fbb.addOffset(4, metaOffset);
+          fbb.addInt64(6, object.createdAt.millisecondsSinceEpoch);
+          fbb.addInt64(7, object.updatedAt.millisecondsSinceEpoch);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -359,11 +372,17 @@ obx_int.ModelDefinition getObjectBoxModel() {
               .vTableGet(buffer, rootOffset, 10, '');
           final metaParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 12, '');
+          final createdAtParam = DateTime.fromMillisecondsSinceEpoch(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0));
+          final updatedAtParam = DateTime.fromMillisecondsSinceEpoch(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 18, 0));
           final object = Book(
               id: idParam,
               sourceId: sourceIdParam,
               bookId: bookIdParam,
-              meta: metaParam)
+              meta: metaParam,
+              createdAt: createdAtParam,
+              updatedAt: updatedAtParam)
             ..uid = const fb.StringReader(asciiOptimization: true)
                 .vTableGet(buffer, rootOffset, 6, '');
           obx_int.InternalToManyAccess.setRelInfo<Book>(
@@ -454,6 +473,14 @@ class Book_ {
 
   /// See [Book.meta].
   static final meta = obx.QueryStringProperty<Book>(_entities[2].properties[4]);
+
+  /// See [Book.createdAt].
+  static final createdAt =
+      obx.QueryDateProperty<Book>(_entities[2].properties[5]);
+
+  /// See [Book.updatedAt].
+  static final updatedAt =
+      obx.QueryDateProperty<Book>(_entities[2].properties[6]);
 
   /// see [Book.histories]
   static final histories =

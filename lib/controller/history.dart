@@ -54,11 +54,16 @@ class HistoryController {
     if (existingHistory != null) {
       existingHistory.currentPage = newHistory.currentPage;
       existingHistory.maxPage = newHistory.maxPage;
-      existingHistory.updatedAt = DateTime.now();
+      book.updatedAt = existingHistory.updatedAt = DateTime.now();
+
       _historyChapBox.put(existingHistory);
+      _bookBox.put(book);
     } else {
       newHistory.book.target = book;
+      book.updatedAt = newHistory.updatedAt;
+
       _historyChapBox.put(newHistory);
+      _bookBox.put(book);
     }
   }
 
@@ -69,5 +74,14 @@ class HistoryController {
             .and(HistoryChap_.book.equals(book.id)))
         .build()
         .findFirst();
+  }
+
+  List<Book> getListHistory(int limit, {required int offset}) {
+    final query =
+        _bookBox.query().order(Book_.updatedAt, flags: Order.descending).build()
+          ..limit = limit
+          ..offset = offset;
+
+    return query.find();
   }
 }

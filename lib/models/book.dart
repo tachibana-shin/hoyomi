@@ -21,14 +21,25 @@ class Book {
   @Backlink('book')
   final histories = ToMany<HistoryChap>();
 
+  @Property(type: PropertyType.date)
+  @Index()
+  DateTime createdAt;
+
+  @Property(type: PropertyType.date)
+  DateTime updatedAt;
+
   static String genUid(String sourceId, {required String bookId}) {
     return '$sourceId#$bookId';
   }
 
-  Book(
-      {this.id = 0,
-      required this.sourceId,
-      required this.bookId,
-      required this.meta})
-      : uid = Book.genUid(sourceId, bookId: bookId);
+  Book({
+    this.id = 0,
+    required this.sourceId,
+    required this.bookId,
+    required this.meta,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  })  : uid = Book.genUid(sourceId, bookId: bookId),
+        createdAt = createdAt ?? DateTime.now(),
+        updatedAt = updatedAt ?? DateTime.now();
 }

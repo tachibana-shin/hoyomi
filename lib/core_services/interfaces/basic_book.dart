@@ -1,5 +1,6 @@
 import 'package:honyomi/core_services/interfaces/basic_chapter.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/interfaces/meta_book.dart';
 
 class BasicBook {
   final String name;
@@ -21,4 +22,17 @@ class BasicBook {
     required this.notice,
     required this.rate,
   });
+
+  factory BasicBook.fromMeta(String bookId, {required MetaBook book}) {
+    return BasicBook(
+      name: book.name,
+      bookId: bookId,
+      originalName: book.originalName,
+      image: book.image,
+      lastChap: null,
+      timeAgo: null,
+      notice: null,
+      rate: book.rate?.value,
+    );
+  }
 }
