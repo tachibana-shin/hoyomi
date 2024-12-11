@@ -68,7 +68,7 @@ class _MangaReaderState extends State<MangaReader>
   final Set<int> _skipImages = {};
 
   late final HistoryController _history;
-  late final Book _historyBox;
+  late final Book _historyObject;
 
   late List<BasicImageWithGroup> pages;
   late String _chapter;
@@ -126,7 +126,7 @@ class _MangaReaderState extends State<MangaReader>
   void initState() {
     _history = HistoryController(null);
 
-    _historyBox = _history.createBook(widget.service.uid,
+    _historyObject = _history.createBook(widget.service.uid,
         bookId: widget.bookId, book: widget.book);
 
     _mode = widget.service.getComicModes(widget.book) ?? ComicModes.webToon;
@@ -144,7 +144,7 @@ class _MangaReaderState extends State<MangaReader>
       })
     ];
     _initialScrollIndex = (_history
-                .getCurrentPage(_historyBox, chapterId: widget.chapterId)
+                .getCurrentPage(_historyObject, chapterId: widget.chapterId)
                 ?.currentPage
                 .floor() ??
             0) +
@@ -1198,7 +1198,7 @@ class _MangaReaderState extends State<MangaReader>
     _debouncerUpdateHistory.run(() {
       if (!mounted) return;
 
-      _history.saveHistory(_historyBox,
+      _history.saveHistory(_historyObject,
           chapterId: widget.chapterId,
           currentPage: _realCurrentPage,
           maxPage: _realLength);
