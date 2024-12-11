@@ -15,6 +15,8 @@ Future<void> main() async {
 
   runApp(const MainApp());
 
+  BookChanges().checkUpdateAll();
+
   // register background service
   if (Platform.isAndroid || Platform.isIOS) {
     BookChanges().initializeBackgroundService();
