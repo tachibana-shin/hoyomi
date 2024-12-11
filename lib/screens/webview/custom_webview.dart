@@ -96,7 +96,10 @@ class _CustomWebViewState extends State<CustomWebView> {
           onPressed: () async {
             await _collectCookies();
             _webViewController.dispose(isKeepAlive: false);
-            context.pop();
+            if (mounted) {
+              // ignore: use_build_context_synchronously
+              context.pop();
+            }
           },
         ),
         title: Column(

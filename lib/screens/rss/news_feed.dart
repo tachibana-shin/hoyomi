@@ -35,7 +35,7 @@ class NewsFeedScreen extends StatefulWidget {
   const NewsFeedScreen({super.key, required this.services});
 
   @override
-  _NewsFeedScreenState createState() => _NewsFeedScreenState();
+  createState() => _NewsFeedScreenState();
 }
 
 class _NewsFeedScreenState extends State<NewsFeedScreen> {
