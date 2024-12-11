@@ -40,12 +40,18 @@ class HistoryController {
           meta: jsonEncode(book.toJson()),
           followedAt: followed == true ? DateTime.now() : null);
       // new book for box
-      _bookBox.put(bookObject);
-    } else if (followed != null) {
-      bookObject.followedAt = followed == true ? DateTime.now() : null;
-      _bookBox.put(bookObject);
+    } else {
+      if (followed != null) {
+        bookObject.followedAt = followed == true ? DateTime.now() : null;
+      }
+
+      final newMeta = jsonEncode(book.toJson());
+      if (newMeta != bookObject.meta) {
+        bookObject.meta = newMeta;
+      }
     }
 
+    _bookBox.put(bookObject);
     return bookObject;
   }
 
@@ -93,10 +99,12 @@ class HistoryController {
   }
 
   List<Book> getListFollows(int limit, {required int offset}) {
-    final query =
-        _bookBox.query(Book_.followedAt.notNull()).order(Book_.followedAt, flags: Order.descending).build()
-          ..limit = limit
-          ..offset = offset;
+    final query = _bookBox
+        .query(Book_.followedAt.notNull())
+        .order(Book_.followedAt, flags: Order.descending)
+        .build()
+      ..limit = limit
+      ..offset = offset;
 
     return query.find();
   }

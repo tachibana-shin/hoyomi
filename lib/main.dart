@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:honyomi/background_services/book_changes.dart';
 import 'package:honyomi/plugins/objectbox.dart';
 import 'package:honyomi/router/index.dart';
 
@@ -7,8 +10,15 @@ import 'package:flutter/material.dart';
 import 'package:go_transitions/go_transitions.dart';
 
 Future<void> main() async {
+  // init store
   await initObjectBox();
+
   runApp(const MainApp());
+
+  // register background service
+  if (Platform.isAndroid || Platform.isIOS) {
+    BookChanges().initializeBackgroundService();
+  }
 }
 
 class MainApp extends StatelessWidget {

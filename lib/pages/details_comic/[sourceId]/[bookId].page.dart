@@ -62,6 +62,9 @@ class _DetailsComicState extends State<DetailsComic>
         _suggestFuture =
             _service.getSuggest == null ? null : _service.getSuggest!(_book!);
 
+        HistoryController(null)
+            .createBook(_service.uid, bookId: widget.bookId, book: book);
+
         _updateGetHistory();
         eventBus.on<UpdatedHistory>().listen((event) {
           if (!mounted) return;
