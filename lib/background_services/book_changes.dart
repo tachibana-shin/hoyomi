@@ -79,7 +79,7 @@ class BookChanges {
               sourceId: sourceId, book: book, saveDatabase: false);
           if (changes.isNotEmpty) {
             // Debug print if there are changes
-            print("[changes]: ");
+            debugPrint("[changes]: $changes");
           }
         })));
       }

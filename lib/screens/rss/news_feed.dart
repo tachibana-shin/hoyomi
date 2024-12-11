@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:honyomi/globals.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -58,7 +59,8 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
           items.addAll(feed);
         }
       } catch (e) {
-        print('Error while parsing $service: $e');
+        showSnackBar(Text('Error while parsing $service: $e'));
+        debugPrint("Error: $e");
       }
     }
 
@@ -101,7 +103,8 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
           pubDate = DateTime.tryParse(pubDateString) ??
               DateFormat('dd-MM-yyyy').parse(pubDateString);
         } catch (e) {
-          print('Error parsing pubDate: $e');
+          showSnackBar(Text('Error parsing pubDate: $e'));
+          debugPrint("Error: $e");
         }
       }
 

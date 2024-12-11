@@ -266,8 +266,8 @@ class _MangaReaderState extends State<MangaReader>
     });
   }
 
-  Chapter get _currentChapter =>
-      widget.book.chapters.firstWhere((element) => element.chapterId == _chapter);
+  Chapter get _currentChapter => widget.book.chapters
+      .firstWhere((element) => element.chapterId == _chapter);
   Chapter? get _nextChapter {
     for (int i = 0; i < widget.book.chapters.length - 1; i++) {
       if (widget.book.chapters.elementAt(i).chapterId == _chapter) {
@@ -335,7 +335,9 @@ class _MangaReaderState extends State<MangaReader>
           final $pages = [
             ...(await widget.getPages(_prevChapter!.chapterId)).map((page) =>
                 BasicImageWithGroup(
-                    chapterId: chapterId, src: page.src, headers: page.headers)),
+                    chapterId: chapterId,
+                    src: page.src,
+                    headers: page.headers)),
             if (pages.elementAtOrNull(0)?.src != FAKE && _prevChapter != null)
               _buildSplashImage(
                   chapterId: _currentChapter.chapterId,
@@ -1120,9 +1122,7 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   void _onTapGrid(int row, int column) {
-    if (kDebugMode) {
-      print("row = $row, column = $column");
-    }
+    debugPrint("row = $row, column = $column");
 
     if (row == 1 && column == 1) {
       // center
