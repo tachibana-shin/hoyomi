@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/models/history_chap.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
+import 'package:honyomi/widgets/circular_progress.dart';
 
 class SheetChapters extends StatefulWidget {
   final MetaBook book;
@@ -142,41 +143,19 @@ class _SheetChaptersState extends State<SheetChapters> {
                       ),
                       trailing: history == null
                           ? null
-                          : SizedBox(
-                              height: 25,
-                              width: 25,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  CircularProgressIndicator(
-                                    strokeWidth: 3.0,
-                                    value: min(
-                                        1,
-                                        (history.currentPage + 1) /
-                                            history.maxPage),
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.green),
-                                    backgroundColor: Colors.grey[300],
-                                  ),
-                                  Center(
-                                    child: Text(
-                                      ((history.currentPage + 1) /
-                                              history.maxPage *
-                                              100)
-                                          .round()
-                                          .toString(),
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                          : CircularProgress(
+                              value: min(1,
+                                  (history.currentPage + 1) / history.maxPage),
+                              strokeWidth: 3.0,
+                              textStyle: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
-                            ),
+                              borderColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.green),
+                              backgroundBorder: Colors.grey[300],
+                              size: 25),
                       onTap: () {
                         context.push(
                             "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${chapter.chapterId}");
