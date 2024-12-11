@@ -3,12 +3,18 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/interfaces/basic_book.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
+import 'package:honyomi/widgets/circular_progress.dart';
 
 class VerticalBook extends StatelessWidget {
   final BasicBook book;
   final String sourceId;
+  final double? percentRead;
 
-  const VerticalBook({super.key, required this.book, required this.sourceId});
+  const VerticalBook(
+      {super.key,
+      required this.book,
+      required this.sourceId,
+      this.percentRead});
 
   @override
   Widget build(BuildContext context) {
@@ -143,6 +149,24 @@ class VerticalBook extends StatelessWidget {
                       //         ),
                       //     ])),
                     ),
+
+                  // progress read
+                  if (percentRead != null)
+                    CircularProgress(
+                        value: percentRead!,
+                        strokeWidth: 3.0,
+                        textStyle: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.surface,
+                        ),
+                        borderColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).colorScheme.surface,
+                        ),
+                        backgroundBorder: Colors.transparent,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.tertiaryContainer,
+                        size: 25),
                 ],
               ),
               Padding(

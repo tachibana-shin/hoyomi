@@ -8,18 +8,21 @@ class HorizontalBookList extends StatelessWidget {
   final Future<Iterable<BasicBook>> booksFuture;
   final BaseService? service;
   final String Function(int index)? getService;
+  final double Function(int index)? getPercentRead;
   final String title;
   final String? more;
   final Future<int>? totalItems;
 
-  const HorizontalBookList(
-      {super.key,
-      required this.booksFuture,
-      required this.service,
-      this.getService,
-      required this.title,
-      required this.more,
-      this.totalItems});
+  const HorizontalBookList({
+    super.key,
+    required this.booksFuture,
+    required this.service,
+    this.getService,
+    this.getPercentRead,
+    required this.title,
+    required this.more,
+    this.totalItems,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -118,9 +121,11 @@ class HorizontalBookList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final book = books.elementAt(index);
                   return VerticalBook(
-                    book: book,
-                    sourceId: service?.uid ?? getService!(index),
-                  );
+                      book: book,
+                      sourceId: service?.uid ?? getService!(index),
+                      percentRead: getPercentRead != null
+                          ? getPercentRead!(index)
+                          : null);
                 },
               ),
             );
