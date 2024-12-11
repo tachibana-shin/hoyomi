@@ -134,7 +134,6 @@ class _DetailsComicState extends State<DetailsComic>
                   sourceId: widget.sourceId,
                   bookId: widget.bookId,
                   book: _book!),
-            IconButtonOpenBrowser(url: _service.getURL(widget.bookId)),
             PopupMenuButton<String>(
               onSelected: (value) {
                 _handleMenuSelection(context, value);
@@ -142,6 +141,7 @@ class _DetailsComicState extends State<DetailsComic>
               itemBuilder: (BuildContext context) {
                 return [
                   _buildMenuItem('download', 'Download'),
+                  _buildMenuItem('find_similar', 'Find similar'),
                   _buildMenuItem('open_browser', 'Open with browser'),
                   _buildMenuItem('create_shortcut', 'Create shortcut'),
                 ];
@@ -610,7 +610,13 @@ class _DetailsComicState extends State<DetailsComic>
       case 'download':
         // _downloadContent(context);
         break;
+      case 'find_similar':
+        context.push(
+            '/details_comic/${widget.sourceId}/${widget.bookId}/similar',
+            extra: {'book': _book});
+        break;
       case 'open_browser':
+        IconButtonOpenBrowser.open(_service.getURL(widget.bookId));
         // _openInBrowser(context);
         break;
       case 'create_shortcut':

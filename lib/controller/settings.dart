@@ -1,7 +1,6 @@
 import 'package:honyomi/models/settings.dart';
 import 'package:honyomi/objectbox.g.dart';
 import 'package:honyomi/plugins/objectbox.dart';
-import 'package:objectbox/objectbox.dart';
 
 class SettingsController {
   final Box<Settings> _settingsBox;

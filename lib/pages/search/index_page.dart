@@ -37,7 +37,7 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin {
 
     return Scaffold(
         appBar: AppBar(
-          title:  CustomSearchBar(
+          title: CustomSearchBar(
               keyword: widget.keyword,
               backMode: widget.keyword.isNotEmpty,
               onOverlayChange: (overlay) {
@@ -45,8 +45,8 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin {
                   _overlayQuickSearch = overlay;
                 });
               }),
-              titleSpacing: 0,
-              automaticallyImplyLeading: false,
+          titleSpacing: 0,
+          automaticallyImplyLeading: false,
           centerTitle: true,
         ),
         body: Stack(children: [
@@ -59,7 +59,6 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin {
 
   Widget _buildBodySearch(BuildContext context) {
     return QuickSearchScreen(
-      onDismissed: () {},
       keyword: widget.keyword,
     );
   }

@@ -226,10 +226,9 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
 
 class QuickSearchScreen extends StatelessWidget {
   final String keyword;
-  final Function() onDismissed;
+  final Function()? onDismissed;
 
-  const QuickSearchScreen(
-      {super.key, required this.onDismissed, required this.keyword});
+  const QuickSearchScreen({super.key, this.onDismissed, required this.keyword});
 
   @override
   Widget build(BuildContext context) {

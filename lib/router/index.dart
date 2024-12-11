@@ -18,6 +18,8 @@ import 'package:honyomi/pages/section/[sourceId]/[sectionId].page.dart';
 
 import 'package:honyomi/widgets/navigation_app.dart';
 
+import '../pages/details_comic/[sourceId]/[bookId]/similar/similar_page.dart';
+
 final List<String> routeIgnoreLayoutDefault = [
   '/details_comic',
   '/webview',
@@ -138,7 +140,21 @@ final GoRouter router = GoRouter(
                                           sourceId: sourceId!,
                                           bookId: bookId,
                                           chapterId: chapterId);
-                                    })
+                                    }),
+                                GoRoute(
+                                  path: "similar",
+                                  pageBuilder: GoTransitions.material.call,
+                                  builder: (context, state) => SimilarPage(
+                                      sourceId:
+                                          state.pathParameters['sourceId']!,
+                                      bookId: state.pathParameters['bookId']!,
+                                      book: (state.extra is Map &&
+                                                  (state.extra as Map)
+                                                      .containsKey('book')) ==
+                                              true
+                                          ? (state.extra as Map)['book']
+                                          : null),
+                                )
                               ])
                         ])
                   ]),
