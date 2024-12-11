@@ -47,7 +47,7 @@ class MetaBook {
       author: json['author'],
       translator: json['translator'],
       status: StatusEnum.values.firstWhere(
-          (value) => value == json['status'] as String,
+          (value) => value.name == json['status'] as String,
           orElse: () => StatusEnum.unknown),
       views: json['views'],
       likes: json['likes'],
