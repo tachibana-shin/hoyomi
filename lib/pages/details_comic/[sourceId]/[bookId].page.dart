@@ -465,16 +465,14 @@ class _DetailsComicState extends State<DetailsComic>
   Widget _buildButtonRead(MetaBook book) {
     //    _historyChapters
 
-    final currentKey = _historyChapters?.entries.isNotEmpty == true
-        ? _historyChapters?.entries
-            .reduce(
-                (a, b) => a.value.updatedAt.isAfter(b.value.updatedAt) ? a : b)
-            .key
+    final current = _historyChapters?.entries.isNotEmpty == true
+        ? _historyChapters?.entries.reduce(
+            (a, b) => a.value.updatedAt.isAfter(b.value.updatedAt) ? a : b)
         : null;
-    final currentEpisodeIndex = currentKey == null
+    final currentEpisodeIndex = current == null
         ? null
         : book.chapters.toList().lastIndexWhere((chapter) {
-            return currentKey == chapter.chapterId;
+            return current.key == chapter.chapterId;
           });
     final totalEpisodes = book.chapters.length;
 
@@ -520,7 +518,7 @@ class _DetailsComicState extends State<DetailsComic>
                     alignment: Alignment.centerLeft,
                     widthFactor: currentEpisodeIndex == null
                         ? 0
-                        : currentEpisodeIndex / totalEpisodes,
+                        : (totalEpisodes - currentEpisodeIndex) / totalEpisodes,
                     child: Container(
                       decoration: BoxDecoration(
                         color: Theme.of(context)
@@ -555,7 +553,7 @@ class _DetailsComicState extends State<DetailsComic>
                       Text(
                         currentEpisodeIndex == null
                             ? '$totalEpisodes chapters'
-                            : 'Chapter ${currentEpisodeIndex + 1} of $totalEpisodes',
+                            : '${book.chapters.elementAt(currentEpisodeIndex).name} of $totalEpisodes',
                         style: TextStyle(
                           fontSize: 12,
                           color: Theme.of(context)
