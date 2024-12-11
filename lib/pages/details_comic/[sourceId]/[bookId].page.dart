@@ -488,7 +488,7 @@ class _DetailsComicState extends State<DetailsComic>
                     "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${book.chapters.elementAt(currentEpisodeIndex).chapterId}");
               } else {
                 context.push(
-                    "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${book.chapters.elementAt(0).chapterId}");
+                    "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${book.chapters.last.chapterId}");
               }
             },
             borderRadius: BorderRadius.circular(35),

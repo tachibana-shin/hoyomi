@@ -101,8 +101,9 @@ class _SheetChaptersState extends State<SheetChapters> {
 
                     return ListTile(
                       enableFeedback: true,
-                      // selected: selected,
+                      selected: selected,
                       autofocus: selected,
+                      focusColor: Colors.transparent,
                       title: Row(
                         children: [
                           if (selected)
