@@ -157,12 +157,26 @@ class _HistoryState extends State<History> {
               more: null,
               title: '',
               noHeader: true,
-              getPercentRead: (index) =>
-                  currentElement.value
-                      .elementAt(index)
-                      .histories
-                      .fold(0.0, (p, c) => p + c.currentPage / c.maxPage) /
-                  books.elementAt(index).chapters.length,
+              getPercentRead: (index) {
+                final bookHistory = currentElement.value.elementAt(index);
+                final book = books.elementAt(index);
+
+                final current = bookHistory.histories
+                    .reduce((a, b) => a.updatedAt.isAfter(b.updatedAt) ? a : b);
+
+                final currentEpisodeIndex =
+                    book.chapters.toList().lastIndexWhere((chapter) {
+                  return current.chapterId == chapter.chapterId;
+                });
+
+                return (book.chapters.length - currentEpisodeIndex) /
+                    book.chapters.length;
+                // currentElement.value
+                //     .elementAt(index)
+                //     .histories
+                //     .fold(0.0, (p, c) => p + c.currentPage / c.maxPage) /
+                // books.elementAt(index).chapters.length
+              },
             );
           }),
     );

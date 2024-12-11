@@ -15,7 +15,7 @@ class HistoryHorizontalList extends StatefulWidget {
 }
 
 class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
-  late final List<Book> _items;
+  late final Iterable<Book> _items;
 
   @override
   initState() {
@@ -36,12 +36,26 @@ class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
       )),
       service: null,
       getService: (index) => _items.elementAt(index).sourceId,
-      getPercentRead: (index) =>
-          _items
-              .elementAt(index)
-              .histories
-              .fold(0.0, (p, c) => p + c.currentPage / c.maxPage) /
-          books.elementAt(index).chapters.length,
+      getPercentRead: (index) {
+        final bookHistory = _items.elementAt(index);
+        final book = books.elementAt(index);
+
+        final current = bookHistory.histories
+            .reduce((a, b) => a.updatedAt.isAfter(b.updatedAt) ? a : b);
+
+        final currentEpisodeIndex =
+            book.chapters.toList().lastIndexWhere((chapter) {
+          return current.chapterId == chapter.chapterId;
+        });
+
+        return (book.chapters.length - currentEpisodeIndex) /
+            book.chapters.length;
+        // currentElement.value
+        //     .elementAt(index)
+        //     .histories
+        //     .fold(0.0, (p, c) => p + c.currentPage / c.maxPage) /
+        // books.elementAt(index).chapters.length
+      },
       more: '/library/history',
       title: 'History',
     );
