@@ -55,8 +55,7 @@ class MangaReader extends StatefulWidget {
   });
 
   @override
-  // ignore: library_private_types_in_public_api
-  _MangaReaderState createState() => _MangaReaderState();
+  createState() => _MangaReaderState();
 }
 
 class _MangaReaderState extends State<MangaReader>

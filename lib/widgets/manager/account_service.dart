@@ -16,7 +16,7 @@ class AccountService extends StatefulWidget {
   const AccountService({super.key, required this.service});
 
   @override
-  _AccountServiceState createState() => _AccountServiceState();
+  createState() => _AccountServiceState();
 }
 
 class _AccountServiceState extends State<AccountService> {
