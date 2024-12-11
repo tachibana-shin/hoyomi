@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
@@ -932,7 +931,9 @@ class _MangaReaderState extends State<MangaReader>
                 maxScale: 2.0,
                 trackpadScrollCausesScale: true,
                 child: Row(
-                  children: _mode == 1 ? children.reversed.toList() : children,
+                  children: _mode == ComicModes.rightToLeft
+                      ? children.reversed.toList()
+                      : children,
                 ));
             // final firstPage = index * 2;
             // final children = [
