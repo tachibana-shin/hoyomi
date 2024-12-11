@@ -33,6 +33,8 @@ dependencies:
   mobx: ^2.4.0
   objectbox: ^4.0.3
   objectbox_flutter_libs: ^4.0.3
+  path: ^1.9.0
+  path_provider: ^2.1.5
   rss_feed_parser: ^1.0.6
   scrollable_positioned_list: ^0.3.8
   scrollview_observer: ^1.23.0
