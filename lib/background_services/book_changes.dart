@@ -5,19 +5,22 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:honyomi/controller/settings.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/interfaces/status_enum.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/models/book.dart';
+import 'package:honyomi/models/settings.dart';
 import 'package:honyomi/objectbox.g.dart';
 import 'package:honyomi/plugins/objectbox.dart';
-import 'package:honyomi/settings_store.dart';
 
 class BookChanges {
   final _bookBox = objectBox.store.box<Book>();
-  final _settings = SettingsStore();
+  late final Settings _settings;
 
   Timer? _timer;
+
+  BookChanges() : _settings = SettingsController().getSettings();
 
   // Method to initialize background service
   void initializeBackgroundService() {
