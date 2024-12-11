@@ -17,6 +17,7 @@ import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 import 'models/book.dart';
 import 'models/cookie_manager.dart';
 import 'models/history_chap.dart';
+import 'models/settings.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -170,7 +171,26 @@ final _entities = <obx_int.ModelEntity>[
       backlinks: <obx_int.ModelBacklink>[
         obx_int.ModelBacklink(
             name: 'histories', srcEntity: 'HistoryChap', srcField: 'book')
-      ])
+      ]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(7, 8609293524667366970),
+      name: 'Settings',
+      lastPropertyId: const obx_int.IdUid(2, 5090545179550879841),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 310790713905728700),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 5090545179550879841),
+            name: 'mangaReadLazyPage',
+            type: 1,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[])
 ];
 
 /// Shortcut for [obx.Store.new] that passes [getObjectBoxModel] and for Flutter
@@ -208,7 +228,7 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(6, 771120293153708254),
+      lastEntityId: const obx_int.IdUid(7, 8609293524667366970),
       lastIndexId: const obx_int.IdUid(16, 5111818506217927819),
       lastRelationId: const obx_int.IdUid(0, 0),
       lastSequenceId: const obx_int.IdUid(0, 0),
@@ -414,6 +434,33 @@ obx_int.ModelDefinition getObjectBoxModel() {
               obx_int.RelInfo<HistoryChap>.toOneBacklink(
                   9, object.id, (HistoryChap srcObject) => srcObject.book));
           return object;
+        }),
+    Settings: obx_int.EntityDefinition<Settings>(
+        model: _entities[3],
+        toOneRelations: (Settings object) => [],
+        toManyRelations: (Settings object) => {},
+        getId: (Settings object) => object.id,
+        setId: (Settings object, int id) {
+          object.id = id;
+        },
+        objectToFB: (Settings object, fb.Builder fbb) {
+          fbb.startTable(3);
+          fbb.addInt64(0, object.id);
+          fbb.addBool(1, object.mangaReadLazyPage);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final mangaReadLazyPageParam =
+              const fb.BoolReader().vTableGet(buffer, rootOffset, 6, false);
+          final object =
+              Settings(id: idParam, mangaReadLazyPage: mangaReadLazyPageParam);
+
+          return object;
         })
   };
 
@@ -516,4 +563,15 @@ class Book_ {
   /// see [Book.histories]
   static final histories =
       obx.QueryBacklinkToMany<HistoryChap, Book>(HistoryChap_.book);
+}
+
+/// [Settings] entity fields to define ObjectBox queries.
+class Settings_ {
+  /// See [Settings.id].
+  static final id =
+      obx.QueryIntegerProperty<Settings>(_entities[3].properties[0]);
+
+  /// See [Settings.mangaReadLazyPage].
+  static final mangaReadLazyPage =
+      obx.QueryBooleanProperty<Settings>(_entities[3].properties[1]);
 }

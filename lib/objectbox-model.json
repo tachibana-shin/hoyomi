@@ -158,9 +158,28 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "7:8609293524667366970",
+      "lastPropertyId": "2:5090545179550879841",
+      "name": "Settings",
+      "properties": [
+        {
+          "id": "1:310790713905728700",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5090545179550879841",
+          "name": "mangaReadLazyPage",
+          "type": 1
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "6:771120293153708254",
+  "lastEntityId": "7:8609293524667366970",
   "lastIndexId": "16:5111818506217927819",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

@@ -10,5 +10,5 @@ abstract class SettingsStoreBase with Store {
   /// Default to 3 hours
   int pollingIntervalBook = 60 * 60 * 3; // 30 hours
 
-
+  
 }

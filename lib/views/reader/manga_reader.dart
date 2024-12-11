@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/controller/history.dart';
+import 'package:honyomi/controller/settings.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/comic_modes.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/models/book.dart';
 import 'package:honyomi/models/history_chap.dart';
+import 'package:honyomi/models/settings.dart';
 import 'package:honyomi/plugins/event_bus.dart';
 import 'package:honyomi/utils/debouncer.dart';
 import 'package:honyomi/widgets/button_inset.dart';
@@ -69,6 +71,7 @@ class _MangaReaderState extends State<MangaReader>
 
   late final HistoryController _history;
   late final Book _historyObject;
+  late final Settings _settingsObject;
 
   late List<BasicImageWithGroup> pages;
   late String _chapter;
@@ -125,9 +128,10 @@ class _MangaReaderState extends State<MangaReader>
   @override
   void initState() {
     _history = HistoryController(null);
-
     _historyObject = _history.createBook(widget.service.uid,
         bookId: widget.bookId, book: widget.book);
+
+    _settingsObject = SettingsController().getSettings();
 
     _mode = widget.service.getComicModes(widget.book) ?? ComicModes.webToon;
     _chapter = widget.chapterId;
@@ -247,7 +251,9 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   void _refreshStoreImageLoaded() {
-    _isImageLoaded = List.generate(pages.length, (index) => false);
+    setState(() {
+      _isImageLoaded = List.generate(pages.length, (index) => false);
+    });
   }
 
   void _lazyLoadImages() {
@@ -256,9 +262,11 @@ class _MangaReaderState extends State<MangaReader>
       int endIndex = (_currentPage.ceil() + 5).clamp(0, pages.length - 1);
 
       for (int i = startIndex; i <= endIndex; i++) {
-        _isImageLoaded[i] = true;
-        if (_usingPageView && _useTwoPage) {
+        if (_isImageLoaded[i] != true) {
+          _isImageLoaded[i] = true;
+          // if (_usingPageView && _useTwoPage) {
           _fetchAspectRatio(i);
+          // }
         }
       }
     });
@@ -1114,7 +1122,7 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   Widget _buildPage(int index) {
-    if (_isImageLoaded[index]) {
+    if (!_settingsObject.mangaReadLazyPage || _isImageLoaded[index]) {
       return _buildImage(index);
     } else {
       return _buildPageLoading(null);
