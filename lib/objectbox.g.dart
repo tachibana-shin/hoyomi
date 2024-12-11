@@ -112,7 +112,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(6, 771120293153708254),
       name: 'Book',
-      lastPropertyId: const obx_int.IdUid(9, 8688100150259443389),
+      lastPropertyId: const obx_int.IdUid(10, 8569686577469091632),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -159,7 +159,12 @@ final _entities = <obx_int.ModelEntity>[
             name: 'followedAt',
             type: 10,
             flags: 8,
-            indexId: const obx_int.IdUid(16, 5111818506217927819))
+            indexId: const obx_int.IdUid(16, 5111818506217927819)),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(10, 8569686577469091632),
+            name: 'status',
+            type: 9,
+            flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[
@@ -356,7 +361,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final sourceIdOffset = fbb.writeString(object.sourceId);
           final bookIdOffset = fbb.writeString(object.bookId);
           final metaOffset = fbb.writeString(object.meta);
-          fbb.startTable(10);
+          final statusOffset = fbb.writeString(object.status);
+          fbb.startTable(11);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, uidOffset);
           fbb.addOffset(2, sourceIdOffset);
@@ -365,6 +371,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addInt64(6, object.createdAt.millisecondsSinceEpoch);
           fbb.addInt64(7, object.updatedAt.millisecondsSinceEpoch);
           fbb.addInt64(8, object.followedAt?.millisecondsSinceEpoch);
+          fbb.addOffset(9, statusOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -379,6 +386,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
               .vTableGet(buffer, rootOffset, 8, '');
           final bookIdParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 10, '');
+          final statusParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 22, '');
           final metaParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 12, '');
           final followedAtParam = followedAtValue == null
@@ -392,6 +401,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
               id: idParam,
               sourceId: sourceIdParam,
               bookId: bookIdParam,
+              status: statusParam,
               meta: metaParam,
               followedAt: followedAtParam,
               createdAt: createdAtParam,
@@ -498,6 +508,10 @@ class Book_ {
   /// See [Book.followedAt].
   static final followedAt =
       obx.QueryDateProperty<Book>(_entities[2].properties[7]);
+
+  /// See [Book.status].
+  static final status =
+      obx.QueryStringProperty<Book>(_entities[2].properties[8]);
 
   /// see [Book.histories]
   static final histories =

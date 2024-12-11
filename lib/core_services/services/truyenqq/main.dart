@@ -9,6 +9,7 @@ import 'package:honyomi/core_services/interfaces/basic_section.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/interfaces/paginate.dart';
 import 'package:honyomi/core_services/interfaces/rate_value.dart';
+import 'package:honyomi/core_services/interfaces/status_enum.dart';
 import 'package:honyomi/core_services/services/truyengg/main.dart';
 import 'package:honyomi/utils/time_utils.dart';
 import 'package:html/dom.dart';
@@ -102,7 +103,15 @@ class TruyenQQService extends TruyenGGService {
     final originalName = _getInfoTale(tales, "Tên khác")?.text.trim();
     final author = _getInfoTale(tales, "Tác giả")?.text.trim();
     final translator = _getInfoTale(tales, "Dịch giả")?.text.trim();
-    final status = _getInfoTale(tales, "Tình trạng")?.text.trim() ?? "Unknown";
+    final status$ =
+        _getInfoTale(tales, "Tình trạng")?.text.trim().toLowerCase() ??
+            "unknown";
+    final status = status$ == 'đang cập nhật'
+        ? StatusEnum.ongoing
+        : status$ == 'unknown'
+            ? StatusEnum.unknown
+            : StatusEnum.completed;
+
     final views = int.tryParse(
         _getInfoTale(tales, "Lượt xem")?.text.trim().replaceAll(",", "") ?? '');
     final likes = int.tryParse(

@@ -9,6 +9,7 @@ import 'package:honyomi/core_services/interfaces/base_section.dart';
 import 'package:honyomi/core_services/interfaces/basic_user.dart';
 
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/interfaces/status_enum.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/models/history_chap.dart';
@@ -272,23 +273,30 @@ class _DetailsComicState extends State<DetailsComic>
                             ),
                           ],
                         )),
-                  if (book.status != null)
-                    Padding(
-                        padding: EdgeInsets.only(
-                            top: book.translator != null ? 2.0 : 8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(MaterialCommunityIcons.play_outline,
-                                size: 18.0),
-                            SizedBox(width: 8.0),
-                            Text(
-                              book.status!,
-                              style: const TextStyle(
-                                  fontSize: 14.0, color: Colors.lightGreen),
-                            ),
-                          ],
-                        )),
+                  Padding(
+                      padding: EdgeInsets.only(
+                          top: book.translator != null ? 2.0 : 8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(MaterialCommunityIcons.play_outline, size: 18.0),
+                          SizedBox(width: 8.0),
+                          Text(
+                            {
+                                  StatusEnum.ongoing: "On going",
+                                  StatusEnum.completed: "Completed",
+                                  StatusEnum.canceled: "Canceled",
+                                  StatusEnum.unknown: "Unknown",
+                                  StatusEnum.onHiatus: "On hiatus",
+                                  StatusEnum.publishingFinished:
+                                      "Publishing finished",
+                                }[book.status] ??
+                                book.status.toString(),
+                            style: const TextStyle(
+                                fontSize: 14.0, color: Colors.lightGreen),
+                          ),
+                        ],
+                      )),
                   const SizedBox(height: 8.0),
                   if (book.rate != null)
                     Row(

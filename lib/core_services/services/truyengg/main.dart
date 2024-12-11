@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:honyomi/core_services/interfaces/basic_chapter.dart';
 import 'package:honyomi/core_services/interfaces/basic_genre.dart';
+import 'package:honyomi/core_services/interfaces/status_enum.dart';
 import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 
@@ -151,7 +152,8 @@ class TruyenGGService extends BaseService implements AuthService {
 
     final author = _getInfoTale(tales, "Tác Giả:")?.text.trim();
     final translator = _getInfoTale(tales, "Dịch Giả:")?.text.trim();
-    final status = _getInfoTale(tales, "Trạng Thái:")?.text.trim() ?? "Unknown";
+    final status$ = _getInfoTale(tales, "Trạng Thái:")?.text.trim().toLowerCase() ?? "Unknown";
+    final status = status$ == 'đang cập nhật' ? StatusEnum.ongoing : status$ == 'unknown' ? StatusEnum.unknown : StatusEnum.completed;
     final views = int.tryParse(
         _getInfoTale(tales, "Lượt Xem:")?.text.trim().replaceAll(",", "") ??
             '');

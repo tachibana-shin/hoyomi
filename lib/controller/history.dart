@@ -37,12 +37,17 @@ class HistoryController {
       bookObject = Book(
           bookId: bookId,
           sourceId: sourceId,
+          status: book.status.name,
           meta: jsonEncode(book.toJson()),
           followedAt: followed == true ? DateTime.now() : null);
       // new book for box
     } else {
       if (followed != null) {
         bookObject.followedAt = followed == true ? DateTime.now() : null;
+      }
+
+      if (bookObject.status != book.status.name) {
+        bookObject.status = book.status.name;
       }
 
       final newMeta = jsonEncode(book.toJson());

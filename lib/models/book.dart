@@ -15,6 +15,8 @@ class Book {
   @Index()
   String bookId;
 
+  String status;
+
   // @Property(type: PropertyType.byteVector)
   String meta;
 
@@ -37,6 +39,7 @@ class Book {
     this.id = 0,
     required this.sourceId,
     required this.bookId,
+    required this.status,
     required this.meta,
     this.followedAt,
     DateTime? createdAt,

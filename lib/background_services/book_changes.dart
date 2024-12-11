@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/interfaces/status_enum.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/models/book.dart';
 import 'package:honyomi/objectbox.g.dart';
@@ -123,7 +124,9 @@ class BookChanges {
     int thirtyMinutesAgoMillis = thirtyMinutesAgo.millisecondsSinceEpoch;
 
     final booksToUpdate = _bookBox
-        .query(Book_.updatedAt.lessThan(thirtyMinutesAgoMillis))
+        .query(Book_.updatedAt
+            .lessThan(thirtyMinutesAgoMillis)
+            .and(Book_.status.equals(StatusEnum.ongoing.name)))
         .order(Book_.updatedAt, flags: Order.descending)
         .build()
         .find();

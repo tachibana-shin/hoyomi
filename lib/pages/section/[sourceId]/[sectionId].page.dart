@@ -42,7 +42,7 @@ class _SectionState extends State<Section> {
       PagingController(firstPageKey: 1);
 
   String? _title;
-  String? _description;
+  // String? _description;
   List<BasicFilter>? _filters;
   int? _currentPage;
   int? _totalPages;
@@ -65,7 +65,7 @@ class _SectionState extends State<Section> {
       final isLastPage = newBooks.page >= newBooks.totalPages;
       setState(() {
         _title = newBooks.name;
-        _description = newBooks.description;
+        // _description = newBooks.description;
         _filters = newBooks.filters;
         _filters?.map((filter) {
           _data[filter.key] = null;

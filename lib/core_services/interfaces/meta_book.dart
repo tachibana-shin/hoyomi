@@ -1,6 +1,7 @@
 import 'package:honyomi/core_services/interfaces/basic_genre.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/rate_value.dart';
+import 'package:honyomi/core_services/interfaces/status_enum.dart';
 
 class MetaBook {
   final String name;
@@ -10,7 +11,7 @@ class MetaBook {
 
   final String? author;
   final String? translator;
-  final String? status;
+  final StatusEnum status;
 
   final int? views;
   final int? likes;
@@ -45,7 +46,9 @@ class MetaBook {
       image: BasicImage.fromJson(json['image']),
       author: json['author'],
       translator: json['translator'],
-      status: json['status'],
+      status: StatusEnum.values.firstWhere(
+          (value) => value == json['status'] as String,
+          orElse: () => StatusEnum.unknown),
       views: json['views'],
       likes: json['likes'],
       rate: json['rate'] != null ? RateValue.fromJson(json['rate']) : null,
@@ -64,7 +67,7 @@ class MetaBook {
       'image': image.toJson(),
       'author': author,
       'translator': translator,
-      'status': status,
+      'status': status.name,
       'views': views,
       'likes': likes,
       'rate': rate?.toJson(),
