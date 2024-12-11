@@ -465,9 +465,12 @@ class _DetailsComicState extends State<DetailsComic>
   Widget _buildButtonRead(MetaBook book) {
     //    _historyChapters
 
-    final currentKey = _historyChapters?.entries
-        .reduce((a, b) => a.value.updatedAt.isAfter(b.value.updatedAt) ? a : b)
-        .key;
+    final currentKey = _historyChapters?.entries.isNotEmpty == true
+        ? _historyChapters?.entries
+            .reduce(
+                (a, b) => a.value.updatedAt.isAfter(b.value.updatedAt) ? a : b)
+            .key
+        : null;
     final currentEpisodeIndex = currentKey == null
         ? null
         : book.chapters.toList().lastIndexWhere((chapter) {
