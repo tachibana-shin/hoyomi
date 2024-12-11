@@ -18,6 +18,23 @@ class VerticalBook extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final widgetStar = book.rate != null
+        ? Row(
+            children: [
+              Icon(
+                MaterialCommunityIcons.star,
+                color: Colors.blue.shade200,
+                size: 16.0,
+              ),
+              const SizedBox(width: 4.0),
+              Text(
+                book.rate!.toString(),
+                style: const TextStyle(fontSize: 12.0, color: Colors.white),
+              ),
+            ],
+          )
+        : null;
+
     return InkWell(
         onTap: () {
           context.push("/details_comic/$sourceId/${book.bookId}");
@@ -47,7 +64,8 @@ class VerticalBook extends StatelessWidget {
                   ),
 
                   // top
-                  if (book.notice != null || book.rate != null)
+                  if (book.notice != null ||
+                      (book.rate != null && book.timeAgo != null))
                     Positioned(
                         top: 0,
                         left: 0,
@@ -78,23 +96,7 @@ class VerticalBook extends StatelessWidget {
                                     )
                                   else
                                     Text(""),
-                                  if (book.rate != null)
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          MaterialCommunityIcons.star,
-                                          color: Colors.blue.shade200,
-                                          size: 16.0,
-                                        ),
-                                        const SizedBox(width: 4.0),
-                                        Text(
-                                          book.rate!.toString(),
-                                          style: const TextStyle(
-                                              fontSize: 14.0,
-                                              color: Colors.white),
-                                        ),
-                                      ],
-                                    ),
+                                  if (widgetStar != null) widgetStar
                                 ]))),
 
                   // bottom
@@ -150,6 +152,27 @@ class VerticalBook extends StatelessWidget {
                       //     ])),
                     ),
 
+                  if (book.rate != null && book.timeAgo == null)
+                    Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                            padding: const EdgeInsets.only(
+                                top: 16.0, left: 5.0, right: 8.0, bottom: 10.0),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.black.withOpacity(0.7),
+                                  Colors.transparent,
+                                ],
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                              ),
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                            child: widgetStar)),
+
                   // progress read
                   if (percentRead != null)
                     Positioned(
@@ -164,9 +187,7 @@ class VerticalBook extends StatelessWidget {
                               color: Theme.of(context).colorScheme.surface,
                             ),
                             borderColor: AlwaysStoppedAnimation<Color>(
-                              Theme.of(context)
-                                  .colorScheme
-                                  .onTertiaryFixed,
+                              Theme.of(context).colorScheme.onTertiaryFixed,
                             ),
                             backgroundBorder: Colors.transparent,
                             backgroundColor:
