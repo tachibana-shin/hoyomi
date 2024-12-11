@@ -140,19 +140,31 @@ class _HistoryState extends State<History> {
             previousElement,
             currentElement,
             nextElement,
-          ) =>
-              VerticalBookList(
-                  books: currentElement.value.map(
-                    (item) => BasicBook.fromMeta(item.bookId,
-                        book: MetaBook.fromJson(jsonDecode(item.meta))),
-                  ),
-                  booksFuture: null,
-                  service: null,
-                  getService: (index) =>
-                      currentElement.value.elementAt(index).sourceId,
-                  more: null,
-                  title: '',
-                  noHeader: true)),
+          ) {
+            final books = currentElement.value
+                .map((item) => MetaBook.fromJson(jsonDecode(item.meta)));
+            int index = 0;
+
+            return VerticalBookList(
+              books: currentElement.value.map(
+                (item) => BasicBook.fromMeta(item.bookId,
+                    book: books.elementAt(index++)),
+              ),
+              booksFuture: null,
+              service: null,
+              getService: (index) =>
+                  currentElement.value.elementAt(index).sourceId,
+              more: null,
+              title: '',
+              noHeader: true,
+              getPercentRead: (index) =>
+                  currentElement.value
+                      .elementAt(index)
+                      .histories
+                      .fold(0.0, (p, c) => p + c.currentPage / c.maxPage) /
+                  books.elementAt(index).chapters.length,
+            );
+          }),
     );
   }
 }

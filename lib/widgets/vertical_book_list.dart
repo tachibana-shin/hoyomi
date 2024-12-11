@@ -10,6 +10,7 @@ class VerticalBookList extends StatelessWidget {
   final Iterable<BasicBook>? books;
   final BaseService? service;
   final String Function(int index)? getService;
+  final double Function(int index)? getPercentRead;
   final String title;
   final String? more;
   final bool noHeader;
@@ -22,7 +23,8 @@ class VerticalBookList extends StatelessWidget {
       this.getService,
       required this.title,
       required this.more,
-      this.noHeader = false}) {
+      this.noHeader = false,
+      this.getPercentRead}) {
     if (booksFuture == null && books == null) {
       throw ArgumentError('Either booksFuture or books must be provided.');
     }
@@ -106,7 +108,12 @@ class VerticalBookList extends StatelessWidget {
       itemCount: books.length,
       builder: (context, bookIndex) {
         final book = books.elementAt(bookIndex);
-        return VerticalBook(book: book, sourceId: service?.uid ?? getService!(bookIndex));
+        return VerticalBook(
+          book: book,
+          sourceId: service?.uid ?? getService!(bookIndex),
+          percentRead:
+              getPercentRead != null ? getPercentRead!(bookIndex) : null,
+        );
       },
     );
   }
