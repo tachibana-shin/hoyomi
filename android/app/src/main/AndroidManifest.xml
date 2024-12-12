@@ -27,11 +27,6 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name="id.flutter.flutter_background_service.BackgroundService"
-            android:foregroundServiceType="WhatForegroundServiceTypeDoYouWant"
-        />
-        
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

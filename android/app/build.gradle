@@ -8,15 +8,16 @@ plugins {
 android {
     namespace = "com.example.honyomi"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // ndkVersion = flutter.ndkVersion
+	ndkVersion = "25.1.8937393"
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_18
+        targetCompatibility = JavaVersion.VERSION_18
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = JavaVersion.VERSION_18
     }
 
     defaultConfig {
@@ -28,6 +29,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+		multiDexEnabled true
     }
 
     buildTypes {
@@ -37,6 +39,10 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
+	
+	dependencies {
+		implementation 'com.android.support:multidex:2.0.1'
+	}
 }
 
 flutter {
