@@ -7,12 +7,12 @@ import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 
 import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/globals.dart';
 import 'package:honyomi/views/reader/manga_reader.dart';
 
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:honyomi/widgets/book/icon_button_follow.dart';
+import 'package:honyomi/widgets/book/icon_button_open_browser.dart';
+import 'package:honyomi/widgets/book/icon_button_share.dart';
 
 class DetailsComicReader extends StatefulWidget {
   final String sourceId;
@@ -184,40 +184,17 @@ class _AppBarState extends State<_AppBar> {
                                     : []);
                           }),
                       actions: [
-                        IconButton(
-                          icon: const Icon(
-                              MaterialCommunityIcons.bookmark_outline),
-                          onPressed: () {},
-                        ),
-                        IconButton(
-                            icon: const Icon(MaterialCommunityIcons.earth),
-                            onPressed: _openInBrowser),
-                        IconButton(
-                          icon: const Icon(Icons.share),
-                          onPressed: _share,
-                        ),
+                        IconButtonFollow(
+                            sourceId: widget.service.uid,
+                            bookId: widget.bookId,
+                            book: widget.book!),
+                        IconButtonOpenBrowser(
+                            url: widget.service.getURL(widget.bookId,
+                                chapterId: widget.chapter.value?.chapterId)),
+                        IconButtonShare()
                       ],
                     ))),
           );
         });
-  }
-
-  void _openInBrowser() async {
-    final url = widget.service
-        .getURL(widget.bookId, chapterId: widget.chapter.value!.chapterId);
-    if (!await launchUrl(Uri.parse(url))) {
-      showSnackBar(
-        Text('Could not launch $url'),
-      );
-    }
-  }
-
-  void _share() {
-    final url = widget.service
-        .getURL(widget.bookId, chapterId: widget.chapter.value!.chapterId);
-    final String content =
-        "Check out this comic: ${widget.book?.name}\n\nRead here: $url";
-
-    Share.share(content);
   }
 }
