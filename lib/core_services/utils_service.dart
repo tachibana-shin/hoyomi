@@ -33,11 +33,10 @@ abstract class UtilsService {
         padding: isSnackbar
             ? EdgeInsets.zero
             : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-        child: Expanded(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               Row(
                 children: [
                   Icon(MaterialCommunityIcons.earth,
@@ -45,16 +44,17 @@ abstract class UtilsService {
                           ? Colors.black
                           : Theme.of(context).colorScheme.onSurface),
                   SizedBox(width: 8),
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                  Expanded(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                         Text('Please resolve Captcha to continue.'),
                         if (url != null)
                           Text(url,
                               style: TextStyle(fontSize: 14.0),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis)
-                      ])
+                      ]))
                 ],
               ),
               SizedBox(height: 8.0),
@@ -65,7 +65,7 @@ abstract class UtilsService {
                   router.refresh();
                 },
               ),
-            ])));
+            ]));
   }
 
   bool isCaptchaError(dynamic error) {
