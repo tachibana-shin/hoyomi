@@ -26,6 +26,17 @@ class HorizontalBookList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double crossAxisCount;
+
+    if (screenWidth <= 600) {
+      crossAxisCount = 3.5;
+    } else if (screenWidth <= 900) {
+      crossAxisCount = 4.5;
+    } else {
+      crossAxisCount = 6.5;
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -72,7 +83,7 @@ class HorizontalBookList extends StatelessWidget {
           future: booksFuture,
           builder: (context, snapshot) {
             final childAspectRatio = 2 / 4.1;
-            final viewportFraction = 0.2857;
+            final viewportFraction = 1 / crossAxisCount;
             final height = 1 /
                 childAspectRatio *
                 (MediaQuery.of(context).size.width) *
