@@ -9,6 +9,7 @@ class HorizontalBookList extends StatelessWidget {
   final BaseService? service;
   final String Function(int index)? getService;
   final double Function(int index)? getPercentRead;
+  final Function()? onTapChild;
   final String title;
   final String? more;
   final Future<int>? totalItems;
@@ -19,6 +20,7 @@ class HorizontalBookList extends StatelessWidget {
     required this.service,
     this.getService,
     this.getPercentRead,
+    this.onTapChild,
     required this.title,
     required this.more,
     this.totalItems,
@@ -75,6 +77,10 @@ class HorizontalBookList extends StatelessWidget {
           if (more != null)
             ElevatedButton(
                 onPressed: () {
+                  if (onTapChild != null) {
+                    onTapChild!();
+                  }
+
                   context.push(more!);
                 },
                 child: Text('More'))
@@ -131,12 +137,14 @@ class HorizontalBookList extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   final book = books.elementAt(index);
-                  return VerticalBook(
-                      book: book,
-                      sourceId: service?.uid ?? getService!(index),
-                      percentRead: getPercentRead != null
-                          ? getPercentRead!(index)
-                          : null);
+                  return GestureDetector(
+                      onTap: onTapChild,
+                      child: VerticalBook(
+                          book: book,
+                          sourceId: service?.uid ?? getService!(index),
+                          percentRead: getPercentRead != null
+                              ? getPercentRead!(index)
+                              : null));
                 },
               ),
             );

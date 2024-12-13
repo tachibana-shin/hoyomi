@@ -34,6 +34,11 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   bool _isOverlayVisible = false;
   String _keyword = "";
 
+  OverlayEntry? _overlayEntry;
+
+  bool _readonly = false;
+  final _focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -113,6 +118,8 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                   child: TextField(
                       autofocus: _focusing || _isOverlayVisible,
                       controller: _controller,
+                      // readOnly: _readonly,
+                      focusNode: _focusNode,
                       decoration: InputDecoration(
                         hintText: "Search...",
                         border: InputBorder.none,
@@ -131,54 +138,56 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                       }),
                 ),
               ),
-              PopupMenuButton<String>(
-                icon: Icon(MaterialCommunityIcons.dots_vertical,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .secondaryFixedDim
-                        .withOpacity(0.7)),
-                onSelected: (String value) {
-                  if (value == 'clear_history') {
-                    // Handle clear history
-                  }
-                  if (value == 'settings') {
-                    // Handle settings
-                  }
-                  if (value == 'grid_view') {
-                    isGridViewEnabled.value = !isGridViewEnabled.value;
-                  }
-                },
-                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                  const PopupMenuItem<String>(
-                    value: 'clear_history',
-                    child: Text("Clear History"),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'settings',
-                    child: Text("Settings"),
-                  ),
-                  PopupMenuItem<String>(
-                    value: 'grid_view',
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text("Grid View"),
-                        ValueListenableBuilder<bool>(
-                          valueListenable: isGridViewEnabled,
-                          builder: (context, value, _) {
-                            return Switch(
-                              value: value,
-                              onChanged: (newValue) {
-                                isGridViewEnabled.value = newValue;
-                              },
-                            );
-                          },
-                        ),
-                      ],
+              if (_focusing == false)
+                PopupMenuButton<String>(
+                  icon: Icon(MaterialCommunityIcons.dots_vertical,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .secondaryFixedDim
+                          .withOpacity(0.7)),
+                  onSelected: (String value) {
+                    if (value == 'clear_history') {
+                      // Handle clear history
+                    }
+                    if (value == 'settings') {
+                      // Handle settings
+                    }
+                    if (value == 'grid_view') {
+                      isGridViewEnabled.value = !isGridViewEnabled.value;
+                    }
+                  },
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'clear_history',
+                      child: Text("Clear History"),
                     ),
-                  ),
-                ],
-              ),
+                    const PopupMenuItem<String>(
+                      value: 'settings',
+                      child: Text("Settings"),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'grid_view',
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Grid View"),
+                          ValueListenableBuilder<bool>(
+                            valueListenable: isGridViewEnabled,
+                            builder: (context, value, _) {
+                              return Switch(
+                                value: value,
+                                onChanged: (newValue) {
+                                  isGridViewEnabled.value = newValue;
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
@@ -188,11 +197,17 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
 
   Widget _createOverlayEntry() {
     return Positioned.fill(
-      top: 0.0,
+      top: 52.0,
       child: Container(
           color: Theme.of(context).scaffoldBackgroundColor,
           child: QuickSearchScreen(
-              onDismissed: _removeOverlay, keyword: _keyword.trim())),
+              onDismissed: () {
+                setState(() {
+                  _focusing = false;
+                  _removeOverlay();
+                });
+              },
+              keyword: _keyword.trim())),
     );
   }
 
@@ -212,7 +227,9 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _showOverlay() {
-    // widget.onOverlayChange(_createOverlayEntry());
+    _overlayEntry = OverlayEntry(builder: (context) => _createOverlayEntry());
+    Overlay.of(context).insert(_overlayEntry!);
+
     // Overlay.of(context).insert(_overlayEntry);
     setState(() {
       _isOverlayVisible = true;
@@ -220,7 +237,10 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _removeOverlay() {
-    widget.onOverlayChange(null);
+    _overlayEntry?.remove();
+    _overlayEntry?.dispose();
+    _overlayEntry = null;
+    // Overlay.of(context).
     setState(() {
       _isOverlayVisible = false;
     });
@@ -284,45 +304,14 @@ class _QuickSearchScreenState extends State<QuickSearchScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: services.map((service) {
-          return FutureBuilder(
-            future: _searchFutures[service.uid],
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    'Error searching on ${service.name}: ${snapshot.error}',
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.error),
-                  ),
-                );
-              } else if (!snapshot.hasData || snapshot.data!.items.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    'No results found for "${widget.keyword}" on ${service.name}.',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                );
-              }
-
-              final searchResult = snapshot.data!;
-              return HorizontalBookList(
-                booksFuture: Future.value(searchResult.items),
-                totalItems: Future.value(searchResult.totalItems),
-                service: service,
-                title: service.name,
-                more: '/search/${service.uid}?q=${widget.keyword}',
-              );
-            },
-          );
+          final searchResult = _searchFutures[service.uid];
+          return HorizontalBookList(
+              booksFuture: searchResult!.then((data) => data.items),
+              totalItems: searchResult.then((data) => data.totalItems),
+              service: service,
+              title: service.name,
+              more: '/search/${service.uid}?q=${widget.keyword}',
+              onTapChild: widget.onDismissed);
         }).toList(),
       ),
     );
