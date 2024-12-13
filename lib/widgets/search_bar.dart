@@ -212,7 +212,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _showOverlay() {
-    widget.onOverlayChange(_createOverlayEntry());
+    // widget.onOverlayChange(_createOverlayEntry());
     // Overlay.of(context).insert(_overlayEntry);
     setState(() {
       _isOverlayVisible = true;
