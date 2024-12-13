@@ -15,6 +15,8 @@ class _LibraryPageState extends State<LibraryPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('LibraryPage'),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          scrolledUnderElevation: 0.0,
         ),
         body: _buildBody());
   }

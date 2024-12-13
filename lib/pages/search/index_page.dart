@@ -37,6 +37,8 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin {
 
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          scrolledUnderElevation: 0.0,
           title: CustomSearchBar(
               keyword: widget.keyword,
               backMode: widget.keyword.isNotEmpty,

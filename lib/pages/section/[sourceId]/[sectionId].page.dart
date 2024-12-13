@@ -96,9 +96,8 @@ class _SectionState extends State<Section> {
 
   AppBar _buildAppBar() {
     return AppBar(
-        backgroundColor:
-            Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
-        elevation: 0,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        scrolledUnderElevation: 0.0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {

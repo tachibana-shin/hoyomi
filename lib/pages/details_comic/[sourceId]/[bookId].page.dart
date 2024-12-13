@@ -115,6 +115,8 @@ class _DetailsComicState extends State<DetailsComic>
   Widget build(BuildContext context2) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          scrolledUnderElevation: 0.0,
           leading: IconButton(
             icon: const Icon(MaterialCommunityIcons.arrow_left),
             onPressed: () {

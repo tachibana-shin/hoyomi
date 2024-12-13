@@ -91,6 +91,8 @@ class _CustomWebViewState extends State<CustomWebView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        scrolledUnderElevation: 0.0,
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () async {

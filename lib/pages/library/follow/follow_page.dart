@@ -100,6 +100,8 @@ class _FollowState extends State<Follow> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          scrolledUnderElevation: 0.0,
         title: const Text('My book follows'),
         // back button
         leading: IconButton(
