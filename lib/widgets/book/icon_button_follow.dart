@@ -6,7 +6,7 @@ import 'package:honyomi/core_services/interfaces/meta_book.dart';
 class IconButtonFollow extends StatefulWidget {
   final String sourceId;
   final String bookId;
-  final MetaBook book;
+  final MetaBook? book;
 
   const IconButtonFollow(
       {super.key,
@@ -29,28 +29,32 @@ class _IconButtonFollowState extends State<IconButtonFollow> {
   }
 
   void _setFollowed(bool? val) {
+    if (widget.book == null) return;
+
     _isFollowed.value = _history
             .createBook(widget.sourceId,
-                bookId: widget.bookId, book: widget.book, followed: val)
+                bookId: widget.bookId, book: widget.book!, followed: val)
             .followedAt !=
         null;
   }
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: _isFollowed.value ? "Unfollow" : "Follow",
-      icon: ValueListenableBuilder<bool>(
-        valueListenable: _isFollowed,
-        builder: (context, value, child) => Icon(
-          value
-              ? MaterialCommunityIcons.bookmark
-              : MaterialCommunityIcons.bookmark_outline,
-        ),
-      ),
-      onPressed: () {
-        _setFollowed(!_isFollowed.value);
-      },
-    );
+    return Opacity(
+        opacity: null == widget.book ? 0.8 : 1.0,
+        child: IconButton(
+          tooltip: _isFollowed.value ? "Unfollow" : "Follow",
+          icon: ValueListenableBuilder<bool>(
+            valueListenable: _isFollowed,
+            builder: (context, value, child) => Icon(
+              value
+                  ? MaterialCommunityIcons.bookmark
+                  : MaterialCommunityIcons.bookmark_outline,
+            ),
+          ),
+          onPressed: () {
+            _setFollowed(!_isFollowed.value);
+          },
+        ));
   }
 }

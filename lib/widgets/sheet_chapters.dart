@@ -44,31 +44,14 @@ class _SheetChaptersState extends State<SheetChapters> {
 
     return DraggableScrollableSheet(
       expand: false,
+      snap: true,
+      snapSizes: [0.5],
       initialChildSize: widget.initialChildSize,
       minChildSize: .15,
       maxChildSize: 0.9,
       builder: (context2, scrollController) {
-        return Container(
-          // color: Colors.transparent,
-          decoration: BoxDecoration(
-            color: Colors.transparent, //Colors.grey.shade900,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(16.0),
-            ),
-          ),
-          child: Column(
+        return  Column(
             children: [
-              Center(
-                child: Container(
-                  width: 40.0,
-                  height: 4.0,
-                  margin: EdgeInsets.symmetric(vertical: 16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[400],
-                    borderRadius: BorderRadius.circular(2.0),
-                  ),
-                ),
-              ),
               // Header
               // Padding(
               //   padding: const EdgeInsets.only(bottom: 8.0),
@@ -166,7 +149,7 @@ class _SheetChaptersState extends State<SheetChapters> {
                 ),
               ),
             ],
-          ),
+          
         );
       },
     );

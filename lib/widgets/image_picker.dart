@@ -18,6 +18,7 @@ class _ImagePickerState extends State<ImagePicker> {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       expand: false,
+      snap: true,
       initialChildSize: 0.7,
       minChildSize: 0.5,
       maxChildSize: 1.0,
@@ -27,17 +28,6 @@ class _ImagePickerState extends State<ImagePicker> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: Container(
-                  width: 40.0,
-                  height: 4.0,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[400],
-                    borderRadius: BorderRadius.circular(2.0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16.0),
               const Text(
                 'Select Images',
                 style: TextStyle(

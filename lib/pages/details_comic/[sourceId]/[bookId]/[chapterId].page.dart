@@ -187,7 +187,7 @@ class _AppBarState extends State<_AppBar> {
                         IconButtonFollow(
                             sourceId: widget.service.uid,
                             bookId: widget.bookId,
-                            book: widget.book!),
+                            book: widget.book),
                         IconButtonOpenBrowser(
                             url: widget.service.getURL(widget.bookId,
                                 chapterId: widget.chapter.value?.chapterId)),

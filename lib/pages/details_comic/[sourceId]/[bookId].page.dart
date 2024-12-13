@@ -138,11 +138,8 @@ class _DetailsComicState extends State<DetailsComic>
           actions: [
             if (_service is AuthService) _AvatarUser(service: (_service)),
             IconButtonShare(),
-            if (_book != null)
-              IconButtonFollow(
-                  sourceId: widget.sourceId,
-                  bookId: widget.bookId,
-                  book: _book!),
+            IconButtonFollow(
+                sourceId: widget.sourceId, bookId: widget.bookId, book: _book),
             PopupMenuButton<String>(
               onSelected: (value) {
                 _handleMenuSelection(context, value);
@@ -192,6 +189,7 @@ class _DetailsComicState extends State<DetailsComic>
             ? null
             : BottomSheet(
                 animationController: _bottomSheetAnimationController,
+                showDragHandle: true,
                 builder: (context) => _buildSheetChapters()!,
                 onClosing: () {},
               ));

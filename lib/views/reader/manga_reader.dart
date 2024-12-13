@@ -668,10 +668,8 @@ class _MangaReaderState extends State<MangaReader>
   void _showPanelSettings() {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-      ),
       isScrollControlled: true,
+      showDragHandle: true,
       builder: (context) {
         bool autoScroll = false;
 
@@ -682,18 +680,6 @@ class _MangaReaderState extends State<MangaReader>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Center(
-                    child: Container(
-                      width: 40.0,
-                      height: 4.0,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[400],
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-
                   // List Item: Rotate Screen
                   InkWell(
                     customBorder: const StadiumBorder(),
@@ -851,10 +837,8 @@ class _MangaReaderState extends State<MangaReader>
   void _showPanelSkipPages() {
     showModalBottomSheet(
         context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-        ),
         isScrollControlled: true,
+        showDragHandle: true,
         builder: (context) => ImagePicker(
             images: pages,
             onChange: (selected) {
@@ -868,10 +852,8 @@ class _MangaReaderState extends State<MangaReader>
   void _showPanelListChapters() {
     showModalBottomSheet(
         context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-        ),
         isScrollControlled: true,
+        showDragHandle: true,
         builder: (context) => SheetChapters(
               book: widget.book,
               sourceId: widget.service.uid,
