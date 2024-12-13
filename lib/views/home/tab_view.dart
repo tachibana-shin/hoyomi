@@ -72,6 +72,10 @@ class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
                     return ValueListenableBuilder<bool>(
                         valueListenable: isGridViewEnabled,
                         builder: (context, value, _) {
+                          if (section.gridView != null) {
+                            value = section.gridView!;
+                          }
+
                           if (value == false) {
                             return HorizontalBookList(
                               booksFuture: Future.value(section.books),
