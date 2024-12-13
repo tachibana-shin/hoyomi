@@ -46,58 +46,41 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              foregroundColor: Colors.transparent,
-              scrolledUnderElevation: 0.0,
-              floating: _overlayQuickSearch == null,
-              snap: _overlayQuickSearch == null,
-              pinned: _overlayQuickSearch == null,
-              title: CustomSearchBar(
-                  keyword: '',
-                  onOverlayChange: (overlay) {
-                    setState(() {
-                      _setOverlay(overlay);
-                    });
-                  }),
-              centerTitle: true,
-              titleSpacing: 0.0,
-              bottom: _overlayQuickSearch != null
-                  ? null
-                  : TabBar(
-                      controller: _tabController,
-                      isScrollable: true,
-                      splashBorderRadius: BorderRadius.circular(35.0),
-                      tabs: services
-                          .map((service) => Tab(text: service.name))
-                          .toList(),
-                    ),
-            )
-          ];
-        },
-        body: Stack(children: [
-          TabBarView(
-            controller: _tabController,
-            children: services
-                .map((service) => SafeArea(
-                    top: false,
-                    bottom: false,
-                    child: Builder(builder: (BuildContext context) {
-                      return NotificationListener<ScrollNotification>(
-                          onNotification: (scrollNotification) {
-                            return true;
-                          },
-                          child:
-                              TabView(key: Key(service.uid), service: service));
-                    })))
-                .toList(),
-          ),
-          ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : [])
-        ]),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        scrolledUnderElevation: 0.0,
+        // floating: _overlayQuickSearch == null,
+        // snap: _overlayQuickSearch == null,
+        // pinned: _overlayQuickSearch == null,
+        title: CustomSearchBar(
+            keyword: '',
+            onOverlayChange: (overlay) {
+              setState(() {
+                _setOverlay(overlay);
+              });
+            }),
+        centerTitle: true,
+        titleSpacing: 0.0,
+        bottom: _overlayQuickSearch != null
+            ? null
+            : TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                splashBorderRadius: BorderRadius.circular(35.0),
+                tabs:
+                    services.map((service) => Tab(text: service.name)).toList(),
+              ),
       ),
+      body: Stack(children: [
+        TabBarView(
+          controller: _tabController,
+          children: services
+              .map(
+                  (service) => TabView(key: Key(service.uid), service: service))
+              .toList(),
+        ),
+        ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : [])
+      ]),
     );
   }
 }
