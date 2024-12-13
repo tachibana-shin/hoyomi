@@ -223,10 +223,11 @@ class TruyenQQService extends TruyenGGService {
 
   @override
   getSection(sectionId, {page = 1, filters}) async {
-    final Document document = await fetchDocument(buildQueryUri(
-            "$baseUrl/${sectionId.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html",
-            filters: filters)
-        .toString());
+    final url =
+        "$baseUrl/${sectionId.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html";
+
+    final Document document =
+        await fetchDocument(buildQueryUri(url, filters: filters).toString());
 
     final data = document
         .querySelectorAll(".list_grid_out li")
@@ -245,6 +246,7 @@ class TruyenQQService extends TruyenGGService {
                 ?.text
                 .trim() ??
             '',
+        url: url,
         description: document.querySelector("tags_detail")?.text,
         items: data,
         page: page,

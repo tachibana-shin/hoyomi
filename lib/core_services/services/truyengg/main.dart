@@ -152,8 +152,14 @@ class TruyenGGService extends BaseService implements AuthService {
 
     final author = _getInfoTale(tales, "Tác Giả:")?.text.trim();
     final translator = _getInfoTale(tales, "Dịch Giả:")?.text.trim();
-    final status$ = _getInfoTale(tales, "Trạng Thái:")?.text.trim().toLowerCase() ?? "Unknown";
-    final status = status$ == 'đang cập nhật' ? StatusEnum.ongoing : status$ == 'unknown' ? StatusEnum.unknown : StatusEnum.completed;
+    final status$ =
+        _getInfoTale(tales, "Trạng Thái:")?.text.trim().toLowerCase() ??
+            "Unknown";
+    final status = status$ == 'đang cập nhật'
+        ? StatusEnum.ongoing
+        : status$ == 'unknown'
+            ? StatusEnum.unknown
+            : StatusEnum.completed;
     final views = int.tryParse(
         _getInfoTale(tales, "Lượt Xem:")?.text.trim().replaceAll(",", "") ??
             '');
@@ -302,11 +308,11 @@ class TruyenGGService extends BaseService implements AuthService {
   @override
   getSection(sectionId, {page = 1, filters}) async {
     page ??= 1;
+    final url =
+        "$baseUrl/${sectionId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html";
+
     final Document document = await fetchDocument(
-      buildQueryUri(
-              "$baseUrl/${sectionId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html",
-              filters: filters)
-          .toString(),
+      buildQueryUri(url, filters: filters).toString(),
     );
 
     final data = document
@@ -323,6 +329,7 @@ class TruyenGGService extends BaseService implements AuthService {
 
     return BaseSection(
         name: document.querySelector(".title_cate")!.text,
+        url: url,
         items: data,
         page: page,
         totalItems: data.length * maxPage,

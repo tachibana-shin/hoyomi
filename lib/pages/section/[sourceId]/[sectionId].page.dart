@@ -9,6 +9,7 @@ import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/interfaces/basic_filter.dart';
 import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/widgets/book/icon_button_open_browser.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:honyomi/widgets/vertical_book.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -48,6 +49,7 @@ class _SectionState extends State<Section> {
       RefreshController(initialRefresh: false);
 
   String? _title;
+  String? _url;
   // String? _description;
   List<BasicFilter>? _filters;
   int? _currentPage;
@@ -73,6 +75,7 @@ class _SectionState extends State<Section> {
       final isLastPage = newBooks.page >= newBooks.totalPages;
       setState(() {
         _title = newBooks.name;
+        _url = newBooks.url;
         // _description = newBooks.description;
         _filters = newBooks.filters;
         _filters?.map((filter) {
@@ -137,6 +140,7 @@ class _SectionState extends State<Section> {
             ),
           ],
         ),
+        actions: [if (_url != null) IconButtonOpenBrowser(url: _url!)],
         // actions: [
         //   IconButton(
         //       onPressed: () {},
@@ -261,35 +265,35 @@ class _SectionState extends State<Section> {
         },
         initialData: null,
         builder: (data) => PagedGridView(
-          pagingController: _pagingController,
-          shrinkWrap: true,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: 0.0,
-              mainAxisSpacing: 10.0,
-              childAspectRatio: 118.0 / 236.0),
-          builderDelegate: PagedChildBuilderDelegate<BasicBook>(
-            animateTransitions: true,
-            itemBuilder: (context, book, index) {
-              return VerticalBook(book: book, sourceId: _service.uid);
-            },
-            firstPageProgressIndicatorBuilder: (_) => Center(
-              child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24.0),
-                  child: CircularProgressIndicator()),
-            ),
-            newPageProgressIndicatorBuilder: (_) => Center(
-              child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24.0),
-                  child: CircularProgressIndicator()),
-            ),
-            noItemsFoundIndicatorBuilder: (_) => Center(
-              child: Text('No items found.'),
-            ),
-            newPageErrorIndicatorBuilder: _buildError,
-            firstPageErrorIndicatorBuilder: _buildError,
-          ),
-        ));
+              pagingController: _pagingController,
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: 0.0,
+                  mainAxisSpacing: 10.0,
+                  childAspectRatio: 118.0 / 236.0),
+              builderDelegate: PagedChildBuilderDelegate<BasicBook>(
+                animateTransitions: true,
+                itemBuilder: (context, book, index) {
+                  return VerticalBook(book: book, sourceId: _service.uid);
+                },
+                firstPageProgressIndicatorBuilder: (_) => Center(
+                  child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24.0),
+                      child: CircularProgressIndicator()),
+                ),
+                newPageProgressIndicatorBuilder: (_) => Center(
+                  child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24.0),
+                      child: CircularProgressIndicator()),
+                ),
+                noItemsFoundIndicatorBuilder: (_) => Center(
+                  child: Text('No items found.'),
+                ),
+                newPageErrorIndicatorBuilder: _buildError,
+                firstPageErrorIndicatorBuilder: _buildError,
+              ),
+            ));
   }
 
   Widget _buildError(BuildContext context) {
