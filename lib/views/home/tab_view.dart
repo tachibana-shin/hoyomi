@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:honyomi/stores.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_section.dart';
-import 'package:honyomi/stores.dart';
 import 'package:honyomi/widgets/horizontal_book_list.dart';
+import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:honyomi/widgets/vertical_book_list.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class TabView extends StatefulWidget {
   final BaseService service;
@@ -11,13 +13,15 @@ class TabView extends StatefulWidget {
   const TabView({super.key, required this.service});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _TabViewState createState() => _TabViewState();
+  createState() => _TabViewState();
 }
 
 class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   late Future<Iterable<BasicSection>> _data;
 
@@ -25,6 +29,12 @@ class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     _data = widget.service.home();
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,38 +59,42 @@ class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
           return const Center(child: Text('No data available'));
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(8.0),
-          itemCount: snapshot.data!.length,
-          itemBuilder: (context, sectionIndex) {
-            final section = snapshot.data!.elementAt(sectionIndex);
+        return PullToRefresh<Iterable<BasicSection>>(
+            controller: _refreshController,
+            onRefresh: widget.service.home,
+            initialData: snapshot.data!,
+            builder: (data) => ListView.builder(
+                  padding: const EdgeInsets.all(8.0),
+                  itemCount: data.length,
+                  itemBuilder: (context, sectionIndex) {
+                    final section = data.elementAt(sectionIndex);
 
-            return ValueListenableBuilder<bool>(
-                valueListenable: isGridViewEnabled,
-                builder: (context, value, _) {
-                  if (value == false) {
-                    return HorizontalBookList(
-                      booksFuture: Future.value(section.books),
-                      service: widget.service,
-                      title: section.name,
-                      more: section.sectionId != null
-                          ? '/section/${widget.service.uid}/${section.sectionId}'
-                          : null,
-                    );
-                  }
+                    return ValueListenableBuilder<bool>(
+                        valueListenable: isGridViewEnabled,
+                        builder: (context, value, _) {
+                          if (value == false) {
+                            return HorizontalBookList(
+                              booksFuture: Future.value(section.books),
+                              service: widget.service,
+                              title: section.name,
+                              more: section.sectionId != null
+                                  ? '/section/${widget.service.uid}/${section.sectionId}'
+                                  : null,
+                            );
+                          }
 
-                  return VerticalBookList(
-                    booksFuture: null,
-                    books: section.books,
-                    service: widget.service,
-                    title: section.name,
-                    more: section.sectionId != null
-                        ? '/section/${widget.service.uid}/${section.sectionId}'
-                        : null,
-                  );
-                });
-          },
-        );
+                          return VerticalBookList(
+                            booksFuture: null,
+                            books: section.books,
+                            service: widget.service,
+                            title: section.name,
+                            more: section.sectionId != null
+                                ? '/section/${widget.service.uid}/${section.sectionId}'
+                                : null,
+                          );
+                        });
+                  },
+                ));
       },
     );
   }

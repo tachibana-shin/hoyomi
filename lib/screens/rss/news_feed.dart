@@ -4,9 +4,11 @@ import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
+import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:xml/xml.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class RssItem {
   final String title;
@@ -40,6 +42,8 @@ class NewsFeedScreen extends StatefulWidget {
 
 class _NewsFeedScreenState extends State<NewsFeedScreen> {
   late Future<List<RssItem>> _newsItems;
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   void initState() {
@@ -113,8 +117,10 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
         link: link,
         description: description,
         pubDate: pubDate,
-        image: BasicImage(
-            src: imageUrl!, headers: {"referer": Uri.parse(link).host}),
+        image: imageUrl != null
+            ? BasicImage(
+                src: imageUrl, headers: {"referer": Uri.parse(link).host})
+            : null,
         avatar: BasicImage(src: service.faviconUrl),
         creator: creator,
         service: service,
@@ -125,113 +131,127 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
   }
 
   @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<RssItem>>(
-        future: _newsItems,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No news items found'));
-          }
+        body: FutureBuilder<List<RssItem>>(
+      future: _newsItems,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No news items found'));
+        }
 
-          final items = snapshot.data!;
+        return PullToRefresh(
+            controller: _refreshController,
+            onRefresh: () => fetchAndParseFeeds(widget.services
+                .where((service) => service.rss != null)
+                .toList()),
+            initialData: snapshot.data!,
+            builder: (items) => ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
 
-          return ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 16),
+                      clipBehavior: Clip.hardEdge,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 4,
+                      child: InkWell(
+                        onTap: () {
+                          final param = item.service.parseURL(item.link);
 
-              return Card(
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  clipBehavior: Clip.hardEdge,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 4,
-                  child: InkWell(
-                    onTap: () {
-                      final param = item.service.parseURL(item.link);
-
-                      context.push(
-                          "/details_comic/${item.service.uid}/${param.bookId}${param.chapterId == null ? '' : '/view?chap=${param.chapterId}'}");
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Left side: Title and Description
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(item.title,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.merge(TextStyle(height: 1.2))),
-                                if (item.description != null)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 7.0),
-                                    child: Text(item.description!),
-                                  ),
-                                SizedBox(height: 7.0),
-                                Text(
-                                    item.pubDate != null
-                                        ? formatTimeAgo(item.pubDate!)
-                                        : 'No date',
-                                    style: TextStyle(fontSize: 12.0)),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Row(children: [
-                                    CircleAvatar(
-                                      backgroundColor:
-                                          Theme.of(context).colorScheme.surface,
-                                      radius: 10.0,
-                                      child: Image.network(
-                                        item.avatar!.src,
-                                        headers: item.avatar!.headers,
-                                        fit: BoxFit.cover,
+                          context.push(
+                              "/details_comic/${item.service.uid}/${param.bookId}${param.chapterId == null ? '' : '/view?chap=${param.chapterId}'}");
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Left side: Title and Description
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(item.title,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.merge(
+                                                const TextStyle(height: 1.2))),
+                                    if (item.description != null)
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 7.0),
+                                        child: Text(item.description!),
                                       ),
+                                    const SizedBox(height: 7.0),
+                                    Text(
+                                        item.pubDate != null
+                                            ? formatTimeAgo(item.pubDate!)
+                                            : 'No date',
+                                        style: const TextStyle(fontSize: 12.0)),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0),
+                                      child: Row(children: [
+                                        CircleAvatar(
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .surface,
+                                          radius: 10.0,
+                                          child: Image.network(
+                                            item.avatar!.src,
+                                            headers: item.avatar!.headers,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        Text(item.creator ?? 'Unknown',
+                                            style: const TextStyle(
+                                                fontSize: 12.0)),
+                                      ]),
                                     ),
-                                    Text(item.creator ?? 'Unknown',
-                                        style: TextStyle(fontSize: 12.0))
-                                  ]),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Right side: Image
-                          if (item.image != null)
-                            Padding(
-                              padding: const EdgeInsets.only(left: 16.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  item.image!.src,
-                                  headers: item.image!.headers,
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
+                                  ],
                                 ),
                               ),
-                            ),
-                        ],
+                              // Right side: Image
+                              if (item.image != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                      item.image!.src,
+                                      headers: item.image!.headers,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ));
-            },
-          );
-        },
-      ),
-    );
+                    );
+                  },
+                ));
+      },
+    ));
   }
 }

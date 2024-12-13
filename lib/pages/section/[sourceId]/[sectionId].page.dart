@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +9,10 @@ import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/interfaces/basic_filter.dart';
 import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:honyomi/widgets/vertical_book.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class SectionPage extends StatelessWidget {
   final String serviceId;
@@ -40,12 +44,16 @@ class _SectionState extends State<Section> {
 
   final PagingController<int, BasicBook> _pagingController =
       PagingController(firstPageKey: 1);
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   String? _title;
   // String? _description;
   List<BasicFilter>? _filters;
   int? _currentPage;
   int? _totalPages;
+
+  Completer<void>? _refreshCompleter;
 
   final Map<String, List<String>?> _data = {};
 
@@ -80,13 +88,24 @@ class _SectionState extends State<Section> {
         final nextPageKey = pageKey + 1;
         _pagingController.appendPage(newBooks.items.toList(), nextPageKey);
       }
+
+      _refreshCompleter?.complete();
     } catch (error) {
       _pagingController.error = error;
+
+      _refreshCompleter?.completeError(error);
     }
   }
 
   void _filtersChanged() {
     _pagingController.refresh();
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    _pagingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -114,7 +133,7 @@ class _SectionState extends State<Section> {
             SizedBox(height: 2),
             Text(
               "${_service.name} (${(_currentPage ?? '?')}/${_totalPages ?? '??'}) page",
-              style: TextStyle(fontSize: 14, color: Colors.white70),
+              style: TextStyle(fontSize: 12, color: Colors.white70),
             ),
           ],
         ),
@@ -232,36 +251,45 @@ class _SectionState extends State<Section> {
       crossAxisCount = 6;
     }
 
-    return PagedGridView(
-      pagingController: _pagingController,
-      shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: crossAxisCount,
-          crossAxisSpacing: 0.0,
-          mainAxisSpacing: 10.0,
-          childAspectRatio: 118.0 / 236.0),
-      builderDelegate: PagedChildBuilderDelegate<BasicBook>(
-        animateTransitions: true,
-        itemBuilder: (context, book, index) {
-          return VerticalBook(book: book, sourceId: _service.uid);
+    return PullToRefresh(
+        controller: _refreshController,
+        onRefresh: () async {
+          _refreshCompleter = Completer();
+          _pagingController.refresh();
+
+          await _refreshCompleter?.future;
         },
-        firstPageProgressIndicatorBuilder: (_) => Center(
-          child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 24.0),
-              child: CircularProgressIndicator()),
-        ),
-        newPageProgressIndicatorBuilder: (_) => Center(
-          child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 24.0),
-              child: CircularProgressIndicator()),
-        ),
-        noItemsFoundIndicatorBuilder: (_) => Center(
-          child: Text('No items found.'),
-        ),
-        newPageErrorIndicatorBuilder: _buildError,
-        firstPageErrorIndicatorBuilder: _buildError,
-      ),
-    );
+        initialData: null,
+        builder: (data) => PagedGridView(
+          pagingController: _pagingController,
+          shrinkWrap: true,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: 0.0,
+              mainAxisSpacing: 10.0,
+              childAspectRatio: 118.0 / 236.0),
+          builderDelegate: PagedChildBuilderDelegate<BasicBook>(
+            animateTransitions: true,
+            itemBuilder: (context, book, index) {
+              return VerticalBook(book: book, sourceId: _service.uid);
+            },
+            firstPageProgressIndicatorBuilder: (_) => Center(
+              child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24.0),
+                  child: CircularProgressIndicator()),
+            ),
+            newPageProgressIndicatorBuilder: (_) => Center(
+              child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24.0),
+                  child: CircularProgressIndicator()),
+            ),
+            noItemsFoundIndicatorBuilder: (_) => Center(
+              child: Text('No items found.'),
+            ),
+            newPageErrorIndicatorBuilder: _buildError,
+            firstPageErrorIndicatorBuilder: _buildError,
+          ),
+        ));
   }
 
   Widget _buildError(BuildContext context) {
@@ -270,11 +298,5 @@ class _SectionState extends State<Section> {
     }
 
     return Center(child: Text('Error: ${_pagingController.error}'));
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
   }
 }

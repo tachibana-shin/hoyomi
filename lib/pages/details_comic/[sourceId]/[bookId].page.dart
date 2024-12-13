@@ -20,7 +20,9 @@ import 'package:honyomi/widgets/book/icon_button_follow.dart';
 import 'package:honyomi/widgets/book/icon_button_open_browser.dart';
 import 'package:honyomi/widgets/book/icon_button_share.dart';
 import 'package:honyomi/widgets/horizontal_book_list.dart';
+import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:honyomi/widgets/sheet_chapters.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class DetailsComic extends StatefulWidget {
   final String sourceId;
@@ -41,6 +43,9 @@ class _DetailsComicState extends State<DetailsComic>
   late final AnimationController _bottomSheetAnimationController;
 
   final ScrollController _scrollController = ScrollController();
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
   bool _isTitleVisible = false;
   String _title = "";
   MetaBook? _book;
@@ -98,6 +103,8 @@ class _DetailsComicState extends State<DetailsComic>
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+
+    _refreshController.dispose();
     super.dispose();
   }
 
@@ -170,13 +177,15 @@ class _DetailsComicState extends State<DetailsComic>
               return const Center(child: Text('No data available.'));
             }
 
-            MetaBook book = snapshot.data!;
-
-            return SingleChildScrollView(
-                padding: EdgeInsets.all(16.0).add(EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.height * 0.15)),
-                controller: _scrollController,
-                child: _buildContainer(book));
+            return PullToRefresh(
+                controller: _refreshController,
+                onRefresh: () => _service.getDetails(widget.bookId),
+                initialData: snapshot.data!,
+                builder: (book) => SingleChildScrollView(
+                    padding: EdgeInsets.all(16.0).add(EdgeInsets.only(
+                        bottom: MediaQuery.of(context).size.height * 0.15)),
+                    controller: _scrollController,
+                    child: _buildContainer(book)));
           },
         ),
         bottomSheet: _book == null
@@ -709,9 +718,11 @@ class _ButtonLikeState extends State<_ButtonLike> {
       (widget.service as AuthService)
           .isLiked(bookId: widget.bookId)
           .then((liked) {
-        setState(() {
-          _liked = liked;
-        });
+        if (mounted) {
+          setState(() {
+            _liked = liked;
+          });
+        }
       }).catchError((error) {
         if (!widget.service.isCaptchaError(error)) {
           showSnackBar(Text('Error: $error')); // 显示錯誤訊息
@@ -724,10 +735,13 @@ class _ButtonLikeState extends State<_ButtonLike> {
     (widget.service as AuthService)
         .setLike(bookId: widget.bookId, value: !(_liked ?? false))
         .then((value) {
-      setState(() {
-        _liked = value;
-        _likes = value ? (widget.book.likes ?? 0) + 1 : widget.book.likes! - 1;
-      });
+      if (mounted) {
+        setState(() {
+          _liked = value;
+          _likes =
+              value ? (widget.book.likes ?? 0) + 1 : widget.book.likes! - 1;
+        });
+      }
     }).catchError((error) {
       if (!widget.service.isCaptchaError(error)) {
         showSnackBar(Text('Error: $error')); // 显示錯誤訊息

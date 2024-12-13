@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:honyomi/core_services/interfaces/basic_book.dart';
+import 'package:honyomi/core_services/interfaces/paginate.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/stores.dart';
 import 'package:honyomi/widgets/horizontal_book_list.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class CustomSearchBar extends StatefulWidget {
   final String keyword;
@@ -224,28 +227,110 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 }
 
-class QuickSearchScreen extends StatelessWidget {
+class QuickSearchScreen extends StatefulWidget {
   final String keyword;
   final Function()? onDismissed;
 
   const QuickSearchScreen({super.key, this.onDismissed, required this.keyword});
 
   @override
+  State<QuickSearchScreen> createState() => _QuickSearchScreenState();
+}
+
+class _QuickSearchScreenState extends State<QuickSearchScreen> {
+  final RefreshController _refreshController = RefreshController();
+  final Map<String, Future<Paginate<BasicBook>>> _searchFutures = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSearchResults();
+  }
+
+  void _fetchSearchResults() {
+    // Trigger search for each service
+    for (var service in services) {
+      _searchFutures[service.uid] = service.search(widget.keyword);
+    }
+  }
+
+  Future<void> _onRefresh() async {
+    try {
+      _fetchSearchResults();
+      await Future.wait(_searchFutures.values);
+      _refreshController.refreshCompleted();
+      setState(() {});
+    } catch (e) {
+      debugPrint('Refresh error: $e');
+      _refreshController.refreshFailed();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: keyword.isEmpty
-          ? []
-          : services.map((service) {
-              final result = service.search(keyword);
+    if (widget.keyword.isEmpty) {
+      return const Center(
+        child: Text(
+          'Please enter a keyword to search.',
+          style: TextStyle(fontSize: 16),
+        ),
+      );
+    }
+
+    return SmartRefresher(
+      controller: _refreshController,
+      onRefresh: _onRefresh,
+      enablePullDown: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: services.map((service) {
+          return FutureBuilder(
+            future: _searchFutures[service.uid],
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Error searching on ${service.name}: ${snapshot.error}',
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error),
+                  ),
+                );
+              } else if (!snapshot.hasData || snapshot.data!.items.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'No results found for "${widget.keyword}" on ${service.name}.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                );
+              }
+
+              final searchResult = snapshot.data!;
               return HorizontalBookList(
-                booksFuture: result.then((value) => value.items),
-                totalItems: result.then((value) => value.totalItems),
+                booksFuture: Future.value(searchResult.items),
+                totalItems: Future.value(searchResult.totalItems),
                 service: service,
                 title: service.name,
-                more: '/search/${service.uid}?q=$keyword',
+                more: '/search/${service.uid}?q=${widget.keyword}',
               );
-            }).toList(),
+            },
+          );
+        }).toList(),
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 }

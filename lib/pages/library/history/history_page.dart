@@ -8,8 +8,10 @@ import 'package:honyomi/controller/history.dart';
 import 'package:honyomi/core_services/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/interfaces/meta_book.dart';
 import 'package:honyomi/models/book.dart';
+import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:honyomi/widgets/vertical_book_list.dart';
 import 'package:intl/intl.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
@@ -35,6 +37,8 @@ class _HistoryState extends State<History> {
   int _page = 1;
 
   final ScrollController _scrollController = ScrollController();
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   bool _initd = false;
 
@@ -45,6 +49,10 @@ class _HistoryState extends State<History> {
     onUserScrolls();
     _scrollController.addListener(onUserScrolls);
     _initd = true;
+  }
+
+  Future<void> _onRefresh() async {
+    onUserScrolls();
   }
 
   bool keepFetchingData = true;
@@ -97,6 +105,12 @@ class _HistoryState extends State<History> {
   }
 
   @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -115,72 +129,77 @@ class _HistoryState extends State<History> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Scrollbar(
-      controller: _scrollController,
-      thumbVisibility: true,
-      radius: const Radius.circular(15),
-      child: GroupedListView<MapEntry<DateTime, List<Book>>, DateTime>(
+    return PullToRefresh(
+      controller: _refreshController,
+      onRefresh: _onRefresh,
+      initialData: null,
+      builder: (data) => Scrollbar(
           controller: _scrollController,
-          elements: _groups,
-          order: GroupedListOrder.DESC,
-          sort: true,
-          reverse: false,
-          floatingHeader: false,
-          useStickyGroupSeparators: true,
-          stickyHeaderBackgroundColor: Colors.transparent,
-          // padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-          groupBy: (element) => DateTime(
-                element.key.year,
-                element.key.month,
-                element.key.day,
-              ),
-          groupHeaderBuilder: (element) => Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: Text(DateFormat.yMMMd().format(element.key))),
-          interdependentItemBuilder: (
-            context,
-            previousElement,
-            currentElement,
-            nextElement,
-          ) {
-            final books = currentElement.value
-                .map((item) => MetaBook.fromJson(jsonDecode(item.meta)));
-            int index = 0;
+          thumbVisibility: true,
+          radius: const Radius.circular(15),
+          child: GroupedListView<MapEntry<DateTime, List<Book>>, DateTime>(
+              controller: _scrollController,
+              elements: _groups,
+              order: GroupedListOrder.DESC,
+              sort: true,
+              reverse: false,
+              floatingHeader: false,
+              useStickyGroupSeparators: true,
+              stickyHeaderBackgroundColor: Colors.transparent,
+              // padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              groupBy: (element) => DateTime(
+                    element.key.year,
+                    element.key.month,
+                    element.key.day,
+                  ),
+              groupHeaderBuilder: (element) => Padding(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: Text(DateFormat.yMMMd().format(element.key))),
+              interdependentItemBuilder: (
+                context,
+                previousElement,
+                currentElement,
+                nextElement,
+              ) {
+                final books = currentElement.value
+                    .map((item) => MetaBook.fromJson(jsonDecode(item.meta)));
+                int index = 0;
 
-            return VerticalBookList(
-              books: currentElement.value.map(
-                (item) => BasicBook.fromMeta(item.bookId,
-                    book: books.elementAt(index++)),
-              ),
-              booksFuture: null,
-              service: null,
-              getService: (index) =>
-                  currentElement.value.elementAt(index).sourceId,
-              more: null,
-              title: '',
-              noHeader: true,
-              getPercentRead: (index) {
-                final bookHistory = currentElement.value.elementAt(index);
-                final book = books.elementAt(index);
+                return VerticalBookList(
+                  books: currentElement.value.map(
+                    (item) => BasicBook.fromMeta(item.bookId,
+                        book: books.elementAt(index++)),
+                  ),
+                  booksFuture: null,
+                  service: null,
+                  getService: (index) =>
+                      currentElement.value.elementAt(index).sourceId,
+                  more: null,
+                  title: '',
+                  noHeader: true,
+                  getPercentRead: (index) {
+                    final bookHistory = currentElement.value.elementAt(index);
+                    final book = books.elementAt(index);
 
-                final current = bookHistory.histories
-                    .reduce((a, b) => a.updatedAt.isAfter(b.updatedAt) ? a : b);
+                    final current = bookHistory.histories.reduce(
+                        (a, b) => a.updatedAt.isAfter(b.updatedAt) ? a : b);
 
-                final currentEpisodeIndex =
-                    book.chapters.toList().lastIndexWhere((chapter) {
-                  return current.chapterId == chapter.chapterId;
-                });
+                    final currentEpisodeIndex =
+                        book.chapters.toList().lastIndexWhere((chapter) {
+                      return current.chapterId == chapter.chapterId;
+                    });
 
-                return (book.chapters.length - currentEpisodeIndex) /
-                    book.chapters.length;
-                // currentElement.value
-                //     .elementAt(index)
-                //     .histories
-                //     .fold(0.0, (p, c) => p + c.currentPage / c.maxPage) /
-                // books.elementAt(index).chapters.length
-              },
-            );
-          }),
+                    return (book.chapters.length - currentEpisodeIndex) /
+                        book.chapters.length;
+                    // currentElement.value
+                    //     .elementAt(index)
+                    //     .histories
+                    //     .fold(0.0, (p, c) => p + c.currentPage / c.maxPage) /
+                    // books.elementAt(index).chapters.length
+                  },
+                );
+              })),
     );
   }
 }

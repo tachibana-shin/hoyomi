@@ -3,8 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:honyomi/widgets/vertical_book.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class SearchPageSingleSource extends StatelessWidget {
   final String serviceId;
@@ -37,6 +39,9 @@ class _SearchSingleSourceState extends State<SearchSingleSource> {
 
   final PagingController<int, BasicBook> _pagingController =
       PagingController(firstPageKey: 1);
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
   int? _currentPage;
   int? _totalPages;
 
@@ -67,6 +72,13 @@ class _SearchSingleSourceState extends State<SearchSingleSource> {
     } catch (error) {
       _pagingController.error = error;
     }
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    _refreshController.dispose();
+    super.dispose();
   }
 
   @override
@@ -113,31 +125,39 @@ class _SearchSingleSourceState extends State<SearchSingleSource> {
       crossAxisCount = 6;
     }
 
-    return PagedGridView(
-      pagingController: _pagingController,
-      shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: crossAxisCount,
-          crossAxisSpacing: 0.0,
-          mainAxisSpacing: 10.0,
-          childAspectRatio: 118.0 / 236.0),
-      builderDelegate: PagedChildBuilderDelegate<BasicBook>(
-        itemBuilder: (context, book, index) {
-          return VerticalBook(book: book, sourceId: _service.uid);
+    return PullToRefresh(
+        controller: _refreshController,
+        onRefresh: () async {
+          await Future.delayed(Duration(milliseconds: 500));
+
+          _pagingController.refresh();
         },
-        firstPageProgressIndicatorBuilder: (_) => Center(
-          child: CircularProgressIndicator(),
-        ),
-        newPageProgressIndicatorBuilder: (_) => Center(
-          child: CircularProgressIndicator(),
-        ),
-        noItemsFoundIndicatorBuilder: (_) => Center(
-          child: Text('No items found.'),
-        ),
-        newPageErrorIndicatorBuilder: _buildError,
-        firstPageErrorIndicatorBuilder: _buildError,
-      ),
-    );
+        initialData: null,
+        builder: (data) => PagedGridView(
+              pagingController: _pagingController,
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: 0.0,
+                  mainAxisSpacing: 10.0,
+                  childAspectRatio: 118.0 / 236.0),
+              builderDelegate: PagedChildBuilderDelegate<BasicBook>(
+                itemBuilder: (context, book, index) {
+                  return VerticalBook(book: book, sourceId: _service.uid);
+                },
+                firstPageProgressIndicatorBuilder: (_) => Center(
+                  child: CircularProgressIndicator(),
+                ),
+                newPageProgressIndicatorBuilder: (_) => Center(
+                  child: CircularProgressIndicator(),
+                ),
+                noItemsFoundIndicatorBuilder: (_) => Center(
+                  child: Text('No items found.'),
+                ),
+                newPageErrorIndicatorBuilder: _buildError,
+                firstPageErrorIndicatorBuilder: _buildError,
+              ),
+            ));
   }
 
   Widget _buildError(BuildContext context) {
@@ -146,11 +166,5 @@ class _SearchSingleSourceState extends State<SearchSingleSource> {
     }
 
     return Center(child: Text('Error: ${_pagingController.error}'));
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
   }
 }
