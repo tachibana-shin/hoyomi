@@ -5,7 +5,7 @@ class PullToRefresh<T> extends StatefulWidget {
   final T initialData;
   final Widget Function(T data) builder;
   final RefreshController controller;
-  final Future<T> Function()? onLoading;
+  final Future<T> Function(T oldData)? onLoading;
   final Future<T> Function() onRefresh;
 
   const PullToRefresh({
@@ -50,7 +50,7 @@ class _PullToRefreshState<T> extends State<PullToRefresh<T>> {
 
   Future<void> _onLoading() async {
     try {
-      final newData = await widget.onLoading!();
+      final newData = await widget.onLoading!(_data);
       if (mounted) {
         setState(() {
           _data = newData;
