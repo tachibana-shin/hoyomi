@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:honyomi/core_services/interfaces/base_comments.dart';
 import 'package:honyomi/core_services/interfaces/basic_chapter.dart';
+import 'package:honyomi/core_services/interfaces/basic_comment.dart';
 import 'package:honyomi/core_services/interfaces/basic_genre.dart';
 import 'package:honyomi/core_services/interfaces/status_enum.dart';
 import 'package:html/dom.dart';
@@ -55,6 +57,8 @@ class TruyenGGService extends BaseService implements AuthService {
   get signInUrl => "$baseUrl/";
   @override
   get rss => "$baseUrl/rss.html";
+
+  final Map<String, String> _bookCachedStore = {};
 
   // Hooks
   @override
@@ -140,7 +144,8 @@ class TruyenGGService extends BaseService implements AuthService {
 
   @override
   Future<MetaBook> getDetails(String bookId) async {
-    final document = await fetchDocument("$baseUrl/truyen-tranh/$bookId.html");
+    final document =
+        parseDocument(_bookCachedStore[bookId] ??= await fetch(getURL(bookId)));
 
     final String name =
         document.querySelector("h1[itemprop=name]")!.text.trim();
@@ -267,6 +272,75 @@ class TruyenGGService extends BaseService implements AuthService {
       return BasicImage(src: src, headers: {"referer": baseUrl});
     });
   }
+
+  @override
+  get getComments =>
+      ({required bookId, chapterId, parentId = '0', page = 1}) async {
+        final docB = parseDocument(
+            _bookCachedStore[bookId] ?? await fetch(getURL(bookId)));
+        final document =
+            await fetchDocument("$baseUrl/frontend/comment/list", body: {
+          'book_id': bookId,
+          'parent_id': parentId,
+          'page': page,
+          'episode_id': chapterId,
+          'team_id': 0,
+        });
+
+        final items = document.querySelectorAll(".info-comment").map((element) {
+          final id =
+              RegExp(r'child_(\d+)').firstMatch(element.className)!.group(0)!;
+
+          final photoUrl =
+              element.querySelector(".avartar-comment img")!.attributes['src']!;
+          final name = element.querySelector(".info-user-comment strong")!.text;
+          final time =
+              convertTimeAgoToUtc(element.querySelector(".time")!.text.trim());
+
+          final content = element.querySelector(".content-comment")!.innerHtml;
+
+          final like =
+              int.parse(element.querySelector(".total-like-comment")!.text);
+          final dislike =
+              int.parse(element.querySelector(".total-dislike-comment")!.text);
+
+          final countReply$ =
+              element.querySelector(".text-list-reply")?.text.trim();
+          final countReply = countReply$ != null
+              ? int.parse(
+                  RegExp(r'(\d+)').firstMatch(countReply$)?.group(0) ?? '0')
+              : 0;
+
+          return BasicComment(
+              id: id,
+              bookId: bookId,
+              chapterId: chapterId,
+              userId: name,
+              name: name,
+              photoUrl:
+                  BasicImage(src: photoUrl, headers: {"referer": baseUrl}),
+              content: content,
+              like: like,
+              dislike: dislike,
+              countReply: countReply,
+              timeAgo: time);
+        });
+
+        final totalItems =
+            int.parse(docB.querySelector(".comment-count")!.text);
+        final totalPages = int.parse(RegExp(r'loadComment\((\d+)\);')
+            .firstMatch(document
+                .querySelectorAll(".page-item")
+                .last
+                .attributes['onclick']!)!
+            .group(1)!);
+
+        return BaseComments(
+            items: items,
+            page: page!,
+            totalItems: totalItems,
+            totalPages: totalPages);
+      };
 
   @override
   get getSuggest => (book, {page = 1}) async {
