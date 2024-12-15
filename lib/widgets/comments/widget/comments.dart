@@ -144,7 +144,15 @@ class _CommentsState extends State<Comments> {
   }
 
   Widget _buildLastComment(BaseComments comments) {
-    final comment = comments.items.elementAt(0);
+    final comment = comments.items.firstOrNull;
+    if (comment == null) {
+      return InkWell(
+          onTap: () {
+            _showBottomSheet(comments);
+          },
+          borderRadius: BorderRadius.circular(10.0),
+          child: Center(child: Text('Tap to comment')));
+    }
 
     return InkWell(
         onTap: () {

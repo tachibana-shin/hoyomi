@@ -146,11 +146,11 @@ class _MangaReaderState extends State<MangaReader>
             chapterPrev: _prevChapter!.name),
       ...widget.pages.map((page) {
         return BasicImageWithGroup(
-            chapterId: widget.chapterId, src: page.src, headers: page.headers);
+            chapterId: _chapter, src: page.src, headers: page.headers);
       })
     ];
     _initialScrollIndex = (_history
-                .getCurrentPage(_historyObject, chapterId: widget.chapterId)
+                .getCurrentPage(_historyObject, chapterId: _chapter)
                 ?.currentPage
                 .floor() ??
             0) +
@@ -555,7 +555,7 @@ class _MangaReaderState extends State<MangaReader>
   void dispose() {
     _pageController.dispose();
     eventBus.fire(UpdatedHistory(
-        bookId: widget.bookId, chapterId: widget.chapterId, force: true));
+        bookId: widget.bookId, chapterId:_chapter, force: true));
     super.dispose();
   }
 
@@ -858,7 +858,7 @@ class _MangaReaderState extends State<MangaReader>
         showDragHandle: true,
         builder: (context) => CommentsSheet(
               bookId: widget.bookId,
-              chapterId: widget.chapterId,
+              chapterId: _chapter,
               service: widget.service as AuthService,
             ));
   }
@@ -873,7 +873,7 @@ class _MangaReaderState extends State<MangaReader>
               sourceId: widget.service.uid,
               bookId: widget.bookId,
               histories: _historyChapters,
-              currentChapterId: widget.chapterId,
+              currentChapterId: _chapter,
               initialChildSize: 0.6,
             ));
   }
@@ -1209,12 +1209,12 @@ class _MangaReaderState extends State<MangaReader>
       if (!mounted) return;
 
       _history.saveHistory(_historyObject,
-          chapterId: widget.chapterId,
+          chapterId: _chapter,
           currentPage: _realCurrentPage,
           maxPage: _realLength);
 
       eventBus.fire(
-          UpdatedHistory(bookId: widget.bookId, chapterId: widget.chapterId));
+          UpdatedHistory(bookId: widget.bookId, chapterId: _chapter));
     });
   }
 }

@@ -14,6 +14,7 @@ class SheetChapters extends StatefulWidget {
   final String bookId;
   final String? currentChapterId;
   final Map<String, HistoryChap>? histories;
+  final bool replace;
 
   final double initialChildSize;
 
@@ -24,6 +25,7 @@ class SheetChapters extends StatefulWidget {
     required this.bookId,
     this.currentChapterId,
     required this.histories,
+    this.replace = false,
     required this.initialChildSize,
   });
 
@@ -138,9 +140,15 @@ class _SheetChaptersState extends State<SheetChapters> {
                             backgroundBorder: Colors.grey[300],
                             size: 25),
                     onTap: () {
-                      context.push(
-                          "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${chapter.chapterId}",
-                          extra: {'book': widget.book});
+                      final url =
+                          "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${chapter.chapterId}";
+                      final extra = {'book': widget.book};
+
+                      if (widget.replace) {
+                        context.replace(url, extra: extra);
+                      } else {
+                        context.push(url, extra: extra);
+                      }
                     },
                   );
                 },
