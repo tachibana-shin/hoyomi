@@ -145,7 +145,7 @@ class TruyenGGService extends BaseService implements AuthService {
   @override
   Future<MetaBook> getDetails(String bookId) async {
     final document =
-        parseDocument(_bookCachedStore[bookId] ??= await fetch(getURL(bookId)));
+        parseDocument(_bookCachedStore[bookId] = await fetch(getURL(bookId)));
 
     final String name =
         document.querySelector("h1[itemprop=name]")!.text.trim();
@@ -325,8 +325,8 @@ class TruyenGGService extends BaseService implements AuthService {
               photoUrl:
                   BasicImage(src: photoUrl, headers: {"referer": baseUrl}),
               content: content,
-              like: like,
-              dislike: dislike,
+              countLike: like,
+              countDislike: dislike,
               countReply: countReply,
               timeAgo: time,
               canDelete: canDelete);
@@ -344,7 +344,7 @@ class TruyenGGService extends BaseService implements AuthService {
             '1');
 
         return BaseComments(
-            items: items,
+            items: items.toList(),
             page: page!,
             totalItems: totalItems,
             totalPages: totalPages);
@@ -362,6 +362,29 @@ class TruyenGGService extends BaseService implements AuthService {
           'token': docB.querySelector('#csrf-token')?.attributes['value'],
           'episode_id': chapterId,
         });
+      };
+
+  @override
+  get setLikeComment => (
+          {required bookId,
+          chapterId,
+          parent,
+          required comment,
+          required value}) async {
+        if (value) {
+          final json = jsonDecode(await fetch("$baseUrl/frontend/comment/like",
+              body: {'id': comment.id}));
+
+          if (json["success"] == 0) throw Exception(json["error"]);
+        } else {
+          final json = jsonDecode(await fetch(
+              "$baseUrl/frontend/comment/dislike",
+              body: {'id': comment.id}));
+
+          if (json["success"] == 0) throw Exception(json["error"]);
+        }
+
+        return value;
       };
 
   @override
@@ -395,7 +418,7 @@ class TruyenGGService extends BaseService implements AuthService {
         : 1;
 
     return Paginate(
-        items: data,
+        items: data.toList(),
         page: page,
         totalItems: data.length * maxPage,
         totalPages: maxPage);
@@ -426,7 +449,7 @@ class TruyenGGService extends BaseService implements AuthService {
     return BaseSection(
         name: document.querySelector(".title_cate")!.text,
         url: url,
-        items: data,
+        items: data.toList(),
         page: page,
         totalItems: data.length * maxPage,
         totalPages: maxPage,

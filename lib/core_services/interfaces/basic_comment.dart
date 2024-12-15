@@ -10,11 +10,12 @@ class BasicComment {
   final String content;
   final DateTime timeAgo;
 
-  final int? like;
-  final int? dislike;
+   int? countLike;
+   int? countDislike;
   final int countReply;
 
   final bool canDelete;
+  bool? like;
 
   BasicComment(
       {required this.id,
@@ -25,8 +26,9 @@ class BasicComment {
       required this.photoUrl,
       required this.content,
       required this.timeAgo,
-      this.like,
-      this.dislike,
+      this.countLike,
+      this.countDislike,
       required this.countReply,
-      this.canDelete = false});
+      this.canDelete = false,
+      this.like});
 }

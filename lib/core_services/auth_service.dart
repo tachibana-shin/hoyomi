@@ -8,6 +8,7 @@ abstract class AuthService {
   Future<bool> isLiked({required String bookId});
   Future<bool> setLike({required String bookId, required bool value});
 
+// for comment system
   Future<BaseComments> Function(
       {required String bookId,
       String? chapterId,
@@ -19,4 +20,11 @@ abstract class AuthService {
       String? chapterId,
       BasicComment? parent,
       required BasicComment comment})? get deleteComment;
+
+  Future<bool> Function(
+      {required String bookId,
+      String? chapterId,
+      BasicComment? parent,
+      required BasicComment comment,
+      required bool value})? get setLikeComment;
 }

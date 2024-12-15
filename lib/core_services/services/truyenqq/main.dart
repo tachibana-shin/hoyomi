@@ -215,7 +215,7 @@ class TruyenQQService extends TruyenGGService {
         : 1;
 
     return Paginate(
-        items: data,
+        items: data.toList(),
         page: page,
         totalItems: data.length * maxPage,
         totalPages: maxPage);
@@ -248,7 +248,7 @@ class TruyenQQService extends TruyenGGService {
             '',
         url: url,
         description: document.querySelector("tags_detail")?.text,
-        items: data,
+        items: data.toList(),
         page: page,
         totalItems: data.length * maxPage,
         totalPages: maxPage,

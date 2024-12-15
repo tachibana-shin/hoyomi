@@ -19,6 +19,7 @@ import 'package:honyomi/utils/format_time_ago.dart';
 import 'package:honyomi/widgets/book/icon_button_follow.dart';
 import 'package:honyomi/widgets/book/icon_button_open_browser.dart';
 import 'package:honyomi/widgets/book/icon_button_share.dart';
+import 'package:honyomi/widgets/comments/widget/comments.dart';
 import 'package:honyomi/widgets/horizontal_book_list.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:honyomi/widgets/sheet_chapters.dart';
@@ -67,6 +68,8 @@ class _DetailsComicState extends State<DetailsComic>
         _book = book;
         _suggestFuture =
             _service.getSuggest == null ? null : _service.getSuggest!(_book!);
+        if (_service is AuthService &&
+            (_service as AuthService).getComments != null) {}
 
         HistoryController(null)
             .createBook(_service.uid, bookId: widget.bookId, book: book);
@@ -438,6 +441,32 @@ class _DetailsComicState extends State<DetailsComic>
           _buildButtonDownload()
         ]),
         const SizedBox(height: 20.0),
+
+        // Comment
+        if (_service is AuthService &&
+            (_service as AuthService).getComments != null)
+          Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: Comments(
+                getComments: ({page, parent}) {
+                  return (_service as AuthService).getComments!(
+                      bookId: widget.bookId, page: page, parent: parent);
+                },
+                deleteComment: ({required comment, parent}) {
+                  return (_service as AuthService).deleteComment!(
+                      bookId: widget.bookId, comment: comment, parent: parent);
+                },
+                setLikeComment: ({required comment, parent, required value}) {
+                  return (_service as AuthService).setLikeComment!(
+                      bookId: widget.bookId,
+                      comment: comment,
+                      parent: parent,
+                      value: value);
+                },
+                controller: null,
+                activatorMode: true,
+              )),
+
         // Description Section
         Text(
           'Description',
@@ -445,6 +474,7 @@ class _DetailsComicState extends State<DetailsComic>
         ),
         const SizedBox(height: 7.0),
         Text(book.description, style: TextStyle(fontSize: 14.0)),
+
         const SizedBox(height: 24.0),
 
         Wrap(

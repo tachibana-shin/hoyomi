@@ -1,5 +1,5 @@
 class Paginate<T> {
-  final Iterable<T> items;
+  final List<T> items;
   final int page;
   final int totalItems;
   final int totalPages;
