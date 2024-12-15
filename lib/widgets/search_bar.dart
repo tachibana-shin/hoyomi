@@ -227,6 +227,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _showOverlay() {
+    return ;
     _overlayEntry = OverlayEntry(builder: (context) => _createOverlayEntry());
     Overlay.of(context).insert(_overlayEntry!);
 
