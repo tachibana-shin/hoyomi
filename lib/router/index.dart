@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
+import 'package:honyomi/core_services/interfaces/meta_book.dart';
 
 import 'package:honyomi/pages/details_comic/[sourceId]/[bookId].page.dart';
 import 'package:honyomi/pages/details_comic/[sourceId]/[bookId]/[chapterId].page.dart';
@@ -139,7 +140,11 @@ final GoRouter router = GoRouter(
                                           key: Key(bookId!),
                                           sourceId: sourceId!,
                                           bookId: bookId,
-                                          chapterId: chapterId);
+                                          chapterId: chapterId,
+                                          book: state.extra != null
+                                              ? (state.extra as Map)['book']
+                                                  as MetaBook
+                                              : null);
                                     }),
                                 GoRoute(
                                   path: "similar",

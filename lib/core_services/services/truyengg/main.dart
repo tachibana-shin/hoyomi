@@ -59,6 +59,7 @@ class TruyenGGService extends BaseService implements AuthService {
   get rss => "$baseUrl/rss.html";
 
   final Map<String, String> _bookCachedStore = {};
+  final Map<String, String> _episodeIdStore = {};
 
   // Hooks
   @override
@@ -266,6 +267,9 @@ class TruyenGGService extends BaseService implements AuthService {
   Future<Iterable<BasicImage>> getPages(String manga, String chap) async {
     final document = await fetchDocument(getURL(manga, chapterId: chap));
 
+    _episodeIdStore[chap] =
+        document.querySelector("#episode_id")!.attributes["value"]!;
+
     return document.querySelectorAll(".content_detail_manga > img").map((img) {
       final src = img.attributes["src"]!;
 
@@ -276,6 +280,14 @@ class TruyenGGService extends BaseService implements AuthService {
   @override
   get getComments => ({required bookId, chapterId, parent, page = 1}) async {
         final parentId = parent?.id;
+
+        if (chapterId != null) {
+          // pre-fetch
+          chapterId = _episodeIdStore[chapterId] ??=
+              (await fetchDocument(getURL(bookId, chapterId: chapterId)))
+                  .querySelector("#episode_id")!
+                  .attributes["value"]!;
+        }
 
         final docB = parseDocument(
             _bookCachedStore[bookId] ?? await fetch(getURL(bookId)));

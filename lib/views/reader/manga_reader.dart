@@ -1004,7 +1004,8 @@ class _MangaReaderState extends State<MangaReader>
                                           .withOpacity(0.5),
                                   onPressed: () {
                                     context.replace(
-                                        "/details_comic/${widget.service}/${widget.bookId}/view?chap=${_prevChapter!.chapterId}");
+                                        "/details_comic/${widget.service}/${widget.bookId}/view?chap=${_prevChapter!.chapterId}",
+                                        extra: {'book': widget.book});
                                   },
                                 )))),
                     Expanded(
@@ -1048,7 +1049,8 @@ class _MangaReaderState extends State<MangaReader>
                                             .withOpacity(0.5),
                                     onPressed: () {
                                       context.replace(
-                                          "/details_comic/${widget.service}/${widget.bookId}/view?chap=${_nextChapter!.chapterId}");
+                                          "/details_comic/${widget.service}/${widget.bookId}/view?chap=${_nextChapter!.chapterId}",
+                                          extra: {'book': widget.book});
                                     }))))
                   ])),
           SizedBox(height: 8.0),

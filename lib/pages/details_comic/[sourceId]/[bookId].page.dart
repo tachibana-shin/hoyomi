@@ -522,10 +522,12 @@ class _DetailsComicState extends State<DetailsComic>
             onTap: () {
               if (currentEpisodeIndex != null) {
                 context.push(
-                    "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${book.chapters.elementAt(currentEpisodeIndex).chapterId}");
+                    "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${book.chapters.elementAt(currentEpisodeIndex).chapterId}",
+                    extra: {'book': book});
               } else {
                 context.push(
-                    "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${book.chapters.last.chapterId}");
+                    "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${book.chapters.last.chapterId}",
+                    extra: {'book': book});
               }
             },
             borderRadius: BorderRadius.circular(35),

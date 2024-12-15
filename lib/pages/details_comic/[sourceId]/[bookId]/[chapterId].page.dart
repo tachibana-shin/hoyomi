@@ -18,12 +18,14 @@ class DetailsComicReader extends StatefulWidget {
   final String sourceId;
   final String bookId;
   final String chapterId;
+  final MetaBook? book;
 
   const DetailsComicReader(
       {super.key,
       required this.sourceId,
       required this.bookId,
-      required this.chapterId});
+      required this.chapterId,
+      required this.book});
 
   @override
   createState() => _DetailsComicReaderState();
@@ -42,7 +44,9 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
     _service = getService(widget.sourceId);
     _pagesFuture = _service.getPages(widget.bookId, widget.chapterId);
     _metaBook = null;
-    _metaBookFuture = _service.getDetails(widget.bookId);
+    _metaBookFuture = widget.book != null
+        ? Future.value(widget.book)
+        : _service.getDetails(widget.bookId);
     _metaBookFuture.then((book) {
       _chapter.value = book.chapters
           .firstWhere((element) => element.chapterId == widget.chapterId);

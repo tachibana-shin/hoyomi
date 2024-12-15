@@ -50,106 +50,104 @@ class _SheetChaptersState extends State<SheetChapters> {
       minChildSize: .15,
       maxChildSize: 0.9,
       builder: (context2, scrollController) {
-        return  Column(
-            children: [
-              // Header
-              // Padding(
-              //   padding: const EdgeInsets.only(bottom: 8.0),
-              //   child: Text(
-              //     "List chapters",
-              //     style: TextStyle(
-              //       color: Colors.white,
-              //       fontSize: 160,
-              //       fontWeight: FontWeight.bold,
-              //     ),
-              //   ),
-              // ),
-              // Divider(height: 1.0),
-              // Chapters List
-              Expanded(
-                child: ListView.builder(
-                  controller: scrollController,
-                  // reverse
-                  itemCount: widget.book.chapters.length,
-                  itemBuilder: (context2, index) {
-                    final chapter =
-                        widget.book.chapters.elementAt(index); //[index];
-                    final history =
-                        widget.histories?.containsKey(chapter.chapterId) == true
-                            ? widget.histories![chapter.chapterId]
-                            : null;
-                    final bool selected = (lastHistoryChapObject != null &&
-                            lastHistoryChapObject == history) ||
-                        chapter.chapterId == currentChapterId;
+        return Column(
+          children: [
+            // Header
+            // Padding(
+            //   padding: const EdgeInsets.only(bottom: 8.0),
+            //   child: Text(
+            //     "List chapters",
+            //     style: TextStyle(
+            //       color: Colors.white,
+            //       fontSize: 160,
+            //       fontWeight: FontWeight.bold,
+            //     ),
+            //   ),
+            // ),
+            // Divider(height: 1.0),
+            // Chapters List
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                // reverse
+                itemCount: widget.book.chapters.length,
+                itemBuilder: (context2, index) {
+                  final chapter =
+                      widget.book.chapters.elementAt(index); //[index];
+                  final history =
+                      widget.histories?.containsKey(chapter.chapterId) == true
+                          ? widget.histories![chapter.chapterId]
+                          : null;
+                  final bool selected = (lastHistoryChapObject != null &&
+                          lastHistoryChapObject == history) ||
+                      chapter.chapterId == currentChapterId;
 
-                    return ListTile(
-                      enableFeedback: true,
-                      selected: selected,
-                      autofocus: selected,
-                      focusColor: Colors.transparent,
-                      title: Row(
-                        children: [
-                          if (selected)
-                            Icon(
-                              MaterialCommunityIcons.play,
-                              size: 20,
-                              color: Colors.green.shade500,
-                            ),
-                          if (selected) SizedBox(width: 4.0),
-                          Text(
-                            chapter.name,
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: selected ? FontWeight.w500 : null,
-                              color: selected
-                                  ? Theme.of(context).colorScheme.onSurface
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.85),
-                            ),
+                  return ListTile(
+                    enableFeedback: true,
+                    selected: selected,
+                    autofocus: selected,
+                    focusColor: Colors.transparent,
+                    title: Row(
+                      children: [
+                        if (selected)
+                          Icon(
+                            MaterialCommunityIcons.play,
+                            size: 20,
+                            color: Colors.green.shade500,
                           ),
-                        ],
-                      ),
-                      subtitle: Text(
-                        chapter.time != null
-                            ? formatTimeAgo(chapter.time!)
-                            : "",
-                        style: TextStyle(
-                          color: selected
-                              ? Theme.of(context).colorScheme.secondary
-                              : Theme.of(context)
-                                  .colorScheme
-                                  .secondary
-                                  .withOpacity(0.85),
-                          fontSize: 12.0,
+                        if (selected) SizedBox(width: 4.0),
+                        Text(
+                          chapter.name,
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: selected ? FontWeight.w500 : null,
+                            color: selected
+                                ? Theme.of(context).colorScheme.onSurface
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withOpacity(0.85),
+                          ),
                         ),
+                      ],
+                    ),
+                    subtitle: Text(
+                      chapter.time != null ? formatTimeAgo(chapter.time!) : "",
+                      style: TextStyle(
+                        color: selected
+                            ? Theme.of(context).colorScheme.secondary
+                            : Theme.of(context)
+                                .colorScheme
+                                .secondary
+                                .withOpacity(0.85),
+                        fontSize: 12.0,
                       ),
-                      trailing: history == null
-                          ? null
-                          : CircularProgress(
-                              value: min(1,
-                                  (history.currentPage + 1) / history.maxPage),
-                              strokeWidth: 3.0,
-                              textStyle: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
-                              borderColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.green),
-                              backgroundBorder: Colors.grey[300],
-                              size: 25),
-                      onTap: () {
-                        context.push(
-                            "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${chapter.chapterId}");
-                      },
-                    );
-                  },
-                ),
+                    ),
+                    trailing: history == null
+                        ? null
+                        : CircularProgress(
+                            value: min(
+                                1, (history.currentPage + 1) / history.maxPage),
+                            strokeWidth: 3.0,
+                            textStyle: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                            borderColor:
+                                AlwaysStoppedAnimation<Color>(Colors.green),
+                            backgroundBorder: Colors.grey[300],
+                            size: 25),
+                    onTap: () {
+                      context.push(
+                          "/details_comic/${widget.sourceId}/${widget.bookId}/view?chap=${chapter.chapterId}",
+                          extra: {'book': widget.book});
+                    },
+                  );
+                },
               ),
-            ],
-          
+            ),
+          ],
         );
       },
     );
