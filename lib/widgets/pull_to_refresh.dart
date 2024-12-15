@@ -5,7 +5,8 @@ class PullToRefresh<T> extends StatefulWidget {
   final T initialData;
   final Widget Function(T data) builder;
   final RefreshController controller;
-  final Future<T> Function(T oldData)? onLoading;
+  final ScrollController? scrollController;
+  final Future<T?> Function(T oldData)? onLoading;
   final Future<T> Function() onRefresh;
 
   const PullToRefresh({
@@ -13,6 +14,7 @@ class PullToRefresh<T> extends StatefulWidget {
     required this.initialData,
     required this.builder,
     required this.controller,
+    this.scrollController,
     this.onLoading,
     required this.onRefresh,
   });
@@ -51,6 +53,13 @@ class _PullToRefreshState<T> extends State<PullToRefresh<T>> {
   Future<void> _onLoading() async {
     try {
       final newData = await widget.onLoading!(_data);
+      if (newData == null) {
+        if (mounted) {
+          widget.controller.loadNoData();
+        }
+
+        return;
+      }
       if (mounted) {
         setState(() {
           _data = newData;
@@ -70,6 +79,7 @@ class _PullToRefreshState<T> extends State<PullToRefresh<T>> {
   Widget build(BuildContext context) {
     return SmartRefresher(
         enablePullDown: true,
+        scrollController: widget.scrollController,
         enablePullUp: widget.onLoading != null,
         header: WaterDropHeader(),
         footer: CustomFooter(
