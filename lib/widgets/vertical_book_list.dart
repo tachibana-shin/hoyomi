@@ -1,14 +1,14 @@
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/base_service.dart';
-import 'package:honyomi/core_services/interfaces/basic_book.dart';
+import 'package:honyomi/core_services/book/book_base_service.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
 import 'vertical_book.dart';
 
 class VerticalBookList extends StatelessWidget {
   final Future<Iterable<BasicBook>>? booksFuture;
   final Iterable<BasicBook>? books;
-  final BaseService? service;
+  final BookBaseService? service;
   final String Function(int index)? getService;
   final double Function(int index)? getPercentRead;
   final String title;

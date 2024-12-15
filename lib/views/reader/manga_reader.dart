@@ -7,11 +7,11 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/controller/history.dart';
 import 'package:honyomi/controller/settings.dart';
-import 'package:honyomi/core_services/auth_service.dart';
-import 'package:honyomi/core_services/base_service.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
-import 'package:honyomi/core_services/interfaces/comic_modes.dart';
-import 'package:honyomi/core_services/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/book/auth_service.dart';
+import 'package:honyomi/core_services/book/book_base_service.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/book/interfaces/comic_modes.dart';
+import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/models/book.dart';
 import 'package:honyomi/models/history_chap.dart';
 import 'package:honyomi/models/settings.dart';
@@ -35,7 +35,7 @@ class BasicImageWithGroup extends BasicImage {
 }
 
 class MangaReader extends StatefulWidget {
-  final BaseService service;
+  final BookBaseService service;
   final String bookId;
 
   final List<BasicImage> pages;

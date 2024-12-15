@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/cache/get_user.dart';
-import 'package:honyomi/core_services/auth_service.dart';
-import 'package:honyomi/core_services/base_service.dart';
-import 'package:honyomi/core_services/interfaces/basic_user.dart';
+import 'package:honyomi/core_services/book/auth_service.dart';
+import 'package:honyomi/core_services/book/book_base_service.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/models/cookie_manager.dart';
 import 'package:honyomi/objectbox.g.dart';
 import 'package:honyomi/plugins/objectbox.dart';
 
 class AccountService extends StatefulWidget {
-  final BaseService service;
+  final BookBaseService service;
 
   const AccountService({super.key, required this.service});
 

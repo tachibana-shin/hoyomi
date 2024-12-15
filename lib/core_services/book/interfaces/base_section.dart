@@ -1,6 +1,6 @@
-import 'package:honyomi/core_services/interfaces/basic_book.dart';
-import 'package:honyomi/core_services/interfaces/basic_filter.dart';
-import 'package:honyomi/core_services/interfaces/paginate.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_filter.dart';
+import 'package:honyomi/core_services/book/interfaces/paginate.dart';
 
 class BaseSection extends Paginate<BasicBook> {
   final String name;

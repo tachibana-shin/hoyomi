@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:honyomi/core_services/auth_service.dart';
+import 'package:honyomi/core_services/book/auth_service.dart';
 import 'package:honyomi/widgets/comments/widget/comments.dart';
 
 class CommentsSheet extends StatefulWidget {

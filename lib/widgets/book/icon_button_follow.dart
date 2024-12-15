@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:honyomi/controller/history.dart';
-import 'package:honyomi/core_services/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 
 class IconButtonFollow extends StatefulWidget {
   final String sourceId;

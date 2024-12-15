@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:honyomi/core_services/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/models/book.dart';
 import 'package:honyomi/models/history_chap.dart';
 import 'package:honyomi/objectbox.g.dart';

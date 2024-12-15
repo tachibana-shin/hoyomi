@@ -1,11 +1,11 @@
-import 'package:honyomi/core_services/base_service.dart';
+import 'package:honyomi/core_services/book/book_base_service.dart';
 
 import 'services/truyengg/main.dart';
 import 'services/truyenqq/main.dart';
 
-List<BaseService> services = [TruyenGGService(), TruyenQQService()];
+List<BookBaseService> services = [TruyenGGService(), TruyenQQService()];
 
-BaseService getService(String id) {
+BookBaseService getService(String id) {
   for (final service in services) {
     if (service.uid == id) {
       return service;

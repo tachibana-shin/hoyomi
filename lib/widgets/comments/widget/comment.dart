@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:honyomi/core_services/interfaces/base_comments.dart';
-import 'package:honyomi/core_services/interfaces/basic_comment.dart';
+import 'package:honyomi/core_services/book/interfaces/base_comments.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_comment.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';

@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:honyomi/controller/history.dart';
-import 'package:honyomi/core_services/interfaces/basic_book.dart';
-import 'package:honyomi/core_services/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/models/book.dart';
 import 'package:honyomi/widgets/horizontal_book_list.dart';
 

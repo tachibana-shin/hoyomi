@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/base_service.dart';
-import 'package:honyomi/core_services/interfaces/basic_book.dart';
-import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/core_services/book/book_base_service.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:honyomi/core_services/book/main.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:honyomi/widgets/vertical_book.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -35,7 +35,7 @@ class SearchSingleSource extends StatefulWidget {
 }
 
 class _SearchSingleSourceState extends State<SearchSingleSource> {
-  late final BaseService _service;
+  late final BookBaseService _service;
 
   final PagingController<int, BasicBook> _pagingController =
       PagingController(firstPageKey: 1);

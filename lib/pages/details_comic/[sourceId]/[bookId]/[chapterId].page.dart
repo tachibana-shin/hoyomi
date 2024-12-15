@@ -2,11 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/base_service.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
-import 'package:honyomi/core_services/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/book/book_base_service.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 
-import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/core_services/book/main.dart';
 import 'package:honyomi/views/reader/manga_reader.dart';
 
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -35,7 +35,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
   late Future<Iterable<BasicImage>> _pagesFuture;
   late Future<MetaBook> _metaBookFuture;
   MetaBook? _metaBook;
-  late final BaseService _service;
+  late final BookBaseService _service;
   final ValueNotifier<Chapter?> _chapter = ValueNotifier(null);
   final ValueNotifier<bool> _showToolbar = ValueNotifier(true);
 
@@ -122,7 +122,7 @@ class _AppBar extends StatefulWidget {
   final MetaBook? book;
   final ValueNotifier<Chapter?> chapter;
   final ValueNotifier<bool> enabled;
-  final BaseService service;
+  final BookBaseService service;
   final String bookId;
 
   const _AppBar({

@@ -1,16 +1,16 @@
 import 'dart:convert';
 
-import 'package:honyomi/core_services/interfaces/base_section.dart';
-import 'package:honyomi/core_services/interfaces/basic_book.dart';
-import 'package:honyomi/core_services/interfaces/basic_chapter.dart';
-import 'package:honyomi/core_services/interfaces/basic_genre.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
-import 'package:honyomi/core_services/interfaces/basic_section.dart';
-import 'package:honyomi/core_services/interfaces/meta_book.dart';
-import 'package:honyomi/core_services/interfaces/paginate.dart';
-import 'package:honyomi/core_services/interfaces/rate_value.dart';
-import 'package:honyomi/core_services/interfaces/status_enum.dart';
-import 'package:honyomi/core_services/services/truyengg/main.dart';
+import 'package:honyomi/core_services/book/interfaces/base_section.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_chapter.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_genre.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_section.dart';
+import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/book/interfaces/paginate.dart';
+import 'package:honyomi/core_services/book/interfaces/rate_value.dart';
+import 'package:honyomi/core_services/book/interfaces/status_enum.dart';
+import 'package:honyomi/core_services/book/services/truyengg/main.dart';
 import 'package:honyomi/utils/time_utils.dart';
 import 'package:html/dom.dart';
 import 'package:intl/intl.dart';

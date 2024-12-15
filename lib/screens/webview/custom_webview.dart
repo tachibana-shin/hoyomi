@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/cache/get_user.dart';
-import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/core_services/book/main.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/models/cookie_manager.dart' as model;
 import 'package:honyomi/objectbox.g.dart';

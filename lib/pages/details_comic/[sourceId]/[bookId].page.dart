@@ -3,14 +3,14 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/cache/get_user.dart';
 import 'package:honyomi/controller/history.dart';
-import 'package:honyomi/core_services/auth_service.dart';
-import 'package:honyomi/core_services/base_service.dart';
-import 'package:honyomi/core_services/interfaces/base_section.dart';
-import 'package:honyomi/core_services/interfaces/basic_user.dart';
+import 'package:honyomi/core_services/book/auth_service.dart';
+import 'package:honyomi/core_services/book/book_base_service.dart';
+import 'package:honyomi/core_services/book/interfaces/base_section.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
 
-import 'package:honyomi/core_services/interfaces/meta_book.dart';
-import 'package:honyomi/core_services/interfaces/status_enum.dart';
-import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/book/interfaces/status_enum.dart';
+import 'package:honyomi/core_services/book/main.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/models/history_chap.dart';
 import 'package:honyomi/plugins/event_bus.dart';
@@ -39,7 +39,7 @@ class _DetailsComicState extends State<DetailsComic>
     with SingleTickerProviderStateMixin {
   late Future<MetaBook> _metaBookFuture;
   Future<BaseSection>? _suggestFuture;
-  late final BaseService _service;
+  late final BookBaseService _service;
 
   late final AnimationController _bottomSheetAnimationController;
 
@@ -726,7 +726,7 @@ class _DetailsComicState extends State<DetailsComic>
 class _ButtonLike extends StatefulWidget {
   final String bookId;
   final MetaBook book;
-  final BaseService service;
+  final BookBaseService service;
 
   const _ButtonLike(
       {required this.bookId, required this.book, required this.service});
@@ -811,7 +811,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
 }
 
 class _AvatarUser extends StatefulWidget {
-  final BaseService service;
+  final BookBaseService service;
 
   const _AvatarUser({required this.service});
 

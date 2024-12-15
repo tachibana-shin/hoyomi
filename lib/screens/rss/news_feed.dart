@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/base_service.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/book/book_base_service.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_image.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
@@ -18,7 +18,7 @@ class RssItem {
   final BasicImage? image;
   final BasicImage? avatar;
   final String? creator;
-  final BaseService service;
+  final BookBaseService service;
 
   RssItem(
       {required this.title,
@@ -32,7 +32,7 @@ class RssItem {
 }
 
 class NewsFeedScreen extends StatefulWidget {
-  final List<BaseService> services;
+  final List<BookBaseService> services;
 
   const NewsFeedScreen({super.key, required this.services});
 
@@ -52,7 +52,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
         widget.services.where((service) => service.rss != null).toList());
   }
 
-  Future<List<RssItem>> fetchAndParseFeeds(List<BaseService> services) async {
+  Future<List<RssItem>> fetchAndParseFeeds(List<BookBaseService> services) async {
     final items = <RssItem>[];
 
     for (final service in services) {
@@ -77,7 +77,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
     return items;
   }
 
-  List<RssItem> parseRss(String xmlData, {required BaseService service}) {
+  List<RssItem> parseRss(String xmlData, {required BookBaseService service}) {
     final document = XmlDocument.parse(xmlData);
     final items = <RssItem>[];
 

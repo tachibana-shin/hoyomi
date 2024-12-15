@@ -1,27 +1,27 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:honyomi/core_services/interfaces/base_comments.dart';
-import 'package:honyomi/core_services/interfaces/basic_chapter.dart';
-import 'package:honyomi/core_services/interfaces/basic_comment.dart';
-import 'package:honyomi/core_services/interfaces/basic_genre.dart';
-import 'package:honyomi/core_services/interfaces/status_enum.dart';
+import 'package:honyomi/core_services/book/book_base_service.dart';
+import 'package:honyomi/core_services/book/interfaces/base_comments.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_chapter.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_comment.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_genre.dart';
+import 'package:honyomi/core_services/book/interfaces/status_enum.dart';
 import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 
-import 'package:honyomi/core_services/auth_service.dart';
-import 'package:honyomi/core_services/base_service.dart';
-import 'package:honyomi/core_services/interfaces/base_section.dart';
-import 'package:honyomi/core_services/interfaces/basic_book.dart';
-import 'package:honyomi/core_services/interfaces/basic_filter.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
-import 'package:honyomi/core_services/interfaces/basic_section.dart';
-import 'package:honyomi/core_services/interfaces/basic_user.dart';
-import 'package:honyomi/core_services/interfaces/book_param.dart';
-import 'package:honyomi/core_services/interfaces/comic_modes.dart';
-import 'package:honyomi/core_services/interfaces/meta_book.dart';
-import 'package:honyomi/core_services/interfaces/paginate.dart';
-import 'package:honyomi/core_services/interfaces/rate_value.dart';
+import 'package:honyomi/core_services/book/auth_service.dart';
+import 'package:honyomi/core_services/book/interfaces/base_section.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_filter.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_section.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
+import 'package:honyomi/core_services/book/interfaces/book_param.dart';
+import 'package:honyomi/core_services/book/interfaces/comic_modes.dart';
+import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
+import 'package:honyomi/core_services/book/interfaces/paginate.dart';
+import 'package:honyomi/core_services/book/interfaces/rate_value.dart';
 import 'package:honyomi/utils/time_utils.dart';
 
 final List<BasicFilter> globalFilters = [
@@ -46,7 +46,7 @@ final List<BasicFilter> globalFilters = [
   ]),
 ];
 
-class TruyenGGService extends BaseService implements AuthService {
+class TruyenGGService extends BookBaseService implements AuthService {
   @override
   final String name = "TruyenGGP";
   @override

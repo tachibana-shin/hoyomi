@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:honyomi/core_services/book/book_base_service.dart';
 import 'package:honyomi/stores.dart';
-import 'package:honyomi/core_services/base_service.dart';
-import 'package:honyomi/core_services/interfaces/basic_section.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_section.dart';
 import 'package:honyomi/widgets/horizontal_book_list.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:honyomi/widgets/vertical_book_list.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class TabView extends StatefulWidget {
-  final BaseService service;
+  final BookBaseService service;
 
   const TabView({super.key, required this.service});
 

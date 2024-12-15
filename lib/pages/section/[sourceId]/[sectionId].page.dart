@@ -5,10 +5,10 @@ import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/base_service.dart';
-import 'package:honyomi/core_services/interfaces/basic_book.dart';
-import 'package:honyomi/core_services/interfaces/basic_filter.dart';
-import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/core_services/book/book_base_service.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_filter.dart';
+import 'package:honyomi/core_services/book/main.dart';
 import 'package:honyomi/widgets/book/icon_button_open_browser.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:honyomi/widgets/vertical_book.dart';
@@ -41,7 +41,7 @@ class Section extends StatefulWidget {
 }
 
 class _SectionState extends State<Section> {
-  late final BaseService _service;
+  late final BookBaseService _service;
 
   final PagingController<int, BasicBook> _pagingController =
       PagingController(firstPageKey: 1);
