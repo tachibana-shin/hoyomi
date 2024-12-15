@@ -279,7 +279,7 @@ class TruyenGGService extends BaseService implements AuthService {
 
   @override
   get getComments => ({required bookId, chapterId, parent, page = 1}) async {
-        final parentId = parent?.id;
+        final parentId = parent?.id ?? 0;
 
         if (chapterId != null) {
           // pre-fetch
@@ -297,8 +297,9 @@ class TruyenGGService extends BaseService implements AuthService {
                 'book_id': RegExp(r'(\d+)$').firstMatch(bookId)!.group(1)!,
                 'parent_id': parentId,
                 'team_id': docB.querySelector('#team_id')?.attributes['value'],
-                'token': docB.querySelector('#csrf-token')?.attributes['value'],
-                'page': parentId == null ? page : null,
+                'token':
+                    docB.querySelector('#csrf-token')?.attributes['va5lue'],
+                'page': page,
                 'episode_id': chapterId,
               });
 
