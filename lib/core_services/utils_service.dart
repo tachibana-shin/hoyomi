@@ -120,13 +120,18 @@ abstract class UtilsService {
 
     Response response = body == null
         ? await get(uri, headers: $headers)
-        : await post(uri, headers: $headers, body: body.map((key, value) {
-            if (value is String) {
-              return MapEntry(key, value);
-            } else {
-              return MapEntry(key, value.toString());
-            }
-          }));
+        : await post(uri,
+            headers: $headers,
+            body: Map.fromEntries(body.entries
+                .where((entry) => entry.value != null)
+                .toList()
+                .map((entry) {
+              if (entry.value is String) {
+                return entry;
+              } else {
+                return MapEntry(entry.key, entry.value.toString());
+              }
+            })));
     // if (useCookie == true) {
     //   // update cookie
     //   await setCookie(

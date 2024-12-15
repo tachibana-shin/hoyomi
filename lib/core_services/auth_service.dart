@@ -1,4 +1,5 @@
 import 'package:honyomi/core_services/interfaces/base_comments.dart';
+import 'package:honyomi/core_services/interfaces/basic_comment.dart';
 import 'package:honyomi/core_services/interfaces/basic_user.dart';
 
 abstract class AuthService {
@@ -10,6 +11,12 @@ abstract class AuthService {
   Future<BaseComments> Function(
       {required String bookId,
       String? chapterId,
-      String? parentId,
+      BasicComment? parent,
       int? page})? get getComments;
+
+  Future<void> Function(
+      {required String bookId,
+      String? chapterId,
+      BasicComment? parent,
+      required BasicComment comment})? get deleteComment;
 }

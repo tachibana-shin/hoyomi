@@ -274,22 +274,25 @@ class TruyenGGService extends BaseService implements AuthService {
   }
 
   @override
-  get getComments =>
-      ({required bookId, chapterId, parentId = '0', page = 1}) async {
+  get getComments => ({required bookId, chapterId, parent, page = 1}) async {
+        final parentId = parent?.id;
+
         final docB = parseDocument(
             _bookCachedStore[bookId] ?? await fetch(getURL(bookId)));
-        final document =
-            await fetchDocument("$baseUrl/frontend/comment/list", body: {
-          'book_id': bookId,
-          'parent_id': parentId,
-          'page': page,
-          'episode_id': chapterId,
-          'team_id': 0,
-        });
+        final document = page == 1
+            ? docB
+            : await fetchDocument("$baseUrl/frontend/comment/list", body: {
+                'book_id': RegExp(r'(\d+)$').firstMatch(bookId)!.group(1)!,
+                'parent_id': parentId,
+                'team_id': docB.querySelector('#team_id')?.attributes['value'],
+                'token': docB.querySelector('#csrf-token')?.attributes['value'],
+                'page': parentId == null ? page : null,
+                'episode_id': chapterId,
+              });
 
         final items = document.querySelectorAll(".info-comment").map((element) {
           final id =
-              RegExp(r'child_(\d+)').firstMatch(element.className)!.group(0)!;
+              RegExp(r'child_(\d+)').firstMatch(element.className)!.group(1)!;
 
           final photoUrl =
               element.querySelector(".avartar-comment img")!.attributes['src']!;
@@ -311,6 +314,8 @@ class TruyenGGService extends BaseService implements AuthService {
                   RegExp(r'(\d+)').firstMatch(countReply$)?.group(0) ?? '0')
               : 0;
 
+          final canDelete = element.querySelector(".remove_comnent") != null;
+
           return BasicComment(
               id: id,
               bookId: bookId,
@@ -323,23 +328,40 @@ class TruyenGGService extends BaseService implements AuthService {
               like: like,
               dislike: dislike,
               countReply: countReply,
-              timeAgo: time);
+              timeAgo: time,
+              canDelete: canDelete);
         });
 
         final totalItems =
             int.parse(docB.querySelector(".comment-count")!.text);
         final totalPages = int.parse(RegExp(r'loadComment\((\d+)\);')
-            .firstMatch(document
-                .querySelectorAll(".page-item")
-                .last
-                .attributes['onclick']!)!
-            .group(1)!);
+                .firstMatch(document
+                        .querySelectorAll(".page-item")
+                        .lastOrNull
+                        ?.attributes['onclick'] ??
+                    '')
+                ?.group(1) ??
+            '1');
 
         return BaseComments(
             items: items,
             page: page!,
             totalItems: totalItems,
             totalPages: totalPages);
+      };
+
+  @override
+  get deleteComment =>
+      ({required bookId, chapterId, parent, required comment}) async {
+        final docB = parseDocument(
+            _bookCachedStore[bookId] ?? await fetch(getURL(bookId)));
+
+        await fetch("$baseUrl/frontend/comment/remove", body: {
+          'id': comment.id,
+          'book_id': bookId,
+          'token': docB.querySelector('#csrf-token')?.attributes['value'],
+          'episode_id': chapterId,
+        });
       };
 
   @override
