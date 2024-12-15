@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/book/book_base_service.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';

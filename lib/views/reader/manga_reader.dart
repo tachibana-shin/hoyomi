@@ -9,7 +9,7 @@ import 'package:honyomi/controller/history.dart';
 import 'package:honyomi/controller/settings.dart';
 import 'package:honyomi/core_services/book/auth_service.dart';
 import 'package:honyomi/core_services/book/book_base_service.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/book/interfaces/comic_modes.dart';
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/models/book.dart';

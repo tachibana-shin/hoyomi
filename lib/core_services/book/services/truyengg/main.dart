@@ -14,7 +14,7 @@ import 'package:honyomi/core_services/book/auth_service.dart';
 import 'package:honyomi/core_services/book/interfaces/base_section.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_filter.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_section.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
 import 'package:honyomi/core_services/book/interfaces/book_param.dart';

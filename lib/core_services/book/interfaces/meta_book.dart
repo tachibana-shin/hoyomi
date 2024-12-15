@@ -1,5 +1,5 @@
 import 'package:honyomi/core_services/book/interfaces/basic_genre.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/book/interfaces/rate_value.dart';
 import 'package:honyomi/core_services/book/interfaces/status_enum.dart';
 

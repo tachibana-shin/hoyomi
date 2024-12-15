@@ -5,7 +5,6 @@ export 'basic_chapter.dart';
 export 'basic_comment.dart';
 export 'basic_filter.dart';
 export 'basic_genre.dart';
-export 'basic_image.dart';
 export 'basic_section.dart';
 export 'basic_user.dart';
 export 'book_param.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_image.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
 
 class ImagePicker extends StatefulWidget {
   final Iterable<BasicImage> images;
