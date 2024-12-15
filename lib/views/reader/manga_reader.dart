@@ -277,9 +277,9 @@ class _MangaReaderState extends State<MangaReader>
   Chapter get _currentChapter => widget.book.chapters
       .firstWhere((element) => element.chapterId == _chapter);
   Chapter? get _nextChapter {
-    for (int i = 0; i < widget.book.chapters.length - 1; i++) {
+    for (int i = 1; i < widget.book.chapters.length; i++) {
       if (widget.book.chapters.elementAt(i).chapterId == _chapter) {
-        return widget.book.chapters.elementAtOrNull(i + 1);
+        return widget.book.chapters.elementAtOrNull(i - 1);
       }
     }
 
@@ -287,9 +287,9 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   Chapter? get _prevChapter {
-    for (int i = 1; i < widget.book.chapters.length; i++) {
+    for (int i = 0; i < widget.book.chapters.length - 1; i++) {
       if (widget.book.chapters.elementAt(i).chapterId == _chapter) {
-        return widget.book.chapters.elementAtOrNull(i - 1);
+        return widget.book.chapters.elementAtOrNull(i + 1);
       }
     }
 
