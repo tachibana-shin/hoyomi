@@ -3,25 +3,25 @@ import 'package:honyomi/core_services/book/main.dart';
 import 'package:honyomi/views/home/tab_view.dart';
 import 'package:honyomi/widgets/search_bar.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomeBookPage extends StatelessWidget {
+  const HomeBookPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Home(),
+      body: HomeBook(),
     );
   }
 }
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class HomeBook extends StatefulWidget {
+  const HomeBook({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomeBook> createState() => _HomeBookState();
 }
 
-class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
+class _HomeBookState extends State<HomeBook> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   Widget? _overlayQuickSearch;
 
