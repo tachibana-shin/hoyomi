@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:honyomi/core_services/book/main.dart';
+import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/screens/rss/news_feed.dart';
 import 'package:honyomi/widgets/search_bar.dart';
 

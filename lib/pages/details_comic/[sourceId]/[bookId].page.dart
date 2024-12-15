@@ -10,7 +10,7 @@ import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
 
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/book/interfaces/status_enum.dart';
-import 'package:honyomi/core_services/book/main.dart';
+import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/models/history_chap.dart';
 import 'package:honyomi/plugins/event_bus.dart';

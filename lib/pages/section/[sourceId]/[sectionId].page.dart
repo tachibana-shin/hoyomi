@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/book/book_base_service.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_filter.dart';
-import 'package:honyomi/core_services/book/main.dart';
+import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/widgets/book/icon_button_open_browser.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:honyomi/widgets/vertical_book.dart';

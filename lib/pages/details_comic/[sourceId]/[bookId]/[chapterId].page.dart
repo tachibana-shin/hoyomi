@@ -6,7 +6,7 @@ import 'package:honyomi/core_services/book/book_base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 
-import 'package:honyomi/core_services/book/main.dart';
+import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/views/reader/manga_reader.dart';
 
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';

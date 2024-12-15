@@ -8,7 +8,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:honyomi/controller/settings.dart';
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/book/interfaces/status_enum.dart';
-import 'package:honyomi/core_services/book/main.dart';
+import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/models/book.dart';
 import 'package:honyomi/models/settings.dart';
 import 'package:honyomi/objectbox.g.dart';
