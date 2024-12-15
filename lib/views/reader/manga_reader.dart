@@ -7,6 +7,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/controller/history.dart';
 import 'package:honyomi/controller/settings.dart';
+import 'package:honyomi/core_services/auth_service.dart';
 import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/interfaces/comic_modes.dart';
@@ -17,6 +18,7 @@ import 'package:honyomi/models/settings.dart';
 import 'package:honyomi/plugins/event_bus.dart';
 import 'package:honyomi/utils/debouncer.dart';
 import 'package:honyomi/widgets/button_inset.dart';
+import 'package:honyomi/widgets/comments/widget/comments_sheet.dart';
 import 'package:honyomi/widgets/image_picker.dart';
 import 'package:honyomi/widgets/sheet_chapters.dart';
 import 'package:honyomi/widgets/tap_listener.dart';
@@ -849,6 +851,18 @@ class _MangaReaderState extends State<MangaReader>
             }));
   }
 
+  void _showPanelComments() {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        showDragHandle: true,
+        builder: (context) => CommentsSheet(
+              bookId: widget.bookId,
+              chapterId: widget.chapterId,
+              service: widget.service as AuthService,
+            ));
+  }
+
   void _showPanelListChapters() {
     showModalBottomSheet(
         context: context,
@@ -1080,7 +1094,11 @@ class _MangaReaderState extends State<MangaReader>
                                     child: ButtonInset(
                                   icon: Ionicons.chatbox_ellipses_outline,
                                   text: 'Comments',
-                                  onPressed: () {},
+                                  disabled: widget.service is! AuthService ||
+                                      (widget.service as AuthService)
+                                              .getComments ==
+                                          null,
+                                  onPressed: _showPanelComments,
                                 )),
                                 Expanded(
                                     child: ButtonInset(

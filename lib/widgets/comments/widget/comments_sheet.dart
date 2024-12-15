@@ -6,12 +6,12 @@ class CommentsSheet extends StatefulWidget {
   final AuthService service;
 
   final String bookId;
-  final String? chapterId;
+  final String chapterId;
 
   const CommentsSheet({
     super.key,
     required this.bookId,
-    this.chapterId,
+    required this.chapterId,
     required this.service,
   });
 
