@@ -35,9 +35,9 @@ class HorizontalBookList extends StatelessWidget {
       more: more,
       items: items,
       itemsFuture: itemsFuture,
-      builder: (context, eiga, index) {
+      builder: (context, book, index) {
         return VerticalBook(
-          book: eiga,
+          book: book,
           sourceId: service?.uid ?? getService!(index),
           percentRead: getPercentRead != null ? getPercentRead!(index) : null,
         );

@@ -25,7 +25,7 @@ class VerticalBookList extends StatelessWidget {
       this.noHeader = false,
       this.getPercentRead}) {
     if (itemsFuture == null && items == null) {
-      throw ArgumentError('Either booksFuture or books must be provided.');
+      throw ArgumentError('Either itemsFuture or items must be provided.');
     }
   }
 

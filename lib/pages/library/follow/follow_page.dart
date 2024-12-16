@@ -163,10 +163,12 @@ class _FollowState extends State<Follow> {
                 nextElement,
               ) =>
                   VerticalBookList(
-                      items: currentElement.value.map(
-                        (item) => BasicBook.fromMeta(item.bookId,
-                            book: MetaBook.fromJson(jsonDecode(item.meta))),
-                      ).toList(),
+                      items: currentElement.value
+                          .map(
+                            (item) => BasicBook.fromMeta(item.bookId,
+                                book: MetaBook.fromJson(jsonDecode(item.meta))),
+                          )
+                          .toList(),
                       itemsFuture: null,
                       service: null,
                       getService: (index) =>

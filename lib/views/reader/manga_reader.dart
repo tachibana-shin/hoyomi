@@ -41,7 +41,7 @@ class MangaReader extends StatefulWidget {
   final List<BasicImage> pages;
   final MetaBook book;
   final String chapterId;
-  final Future<Iterable<BasicImage>> Function(String chapterId) getPages;
+  final Future<List<BasicImage>> Function(String chapterId) getPages;
 
   final Function(String chap) onChangeChap;
   final Function(bool enabled) onChangeEnabled;

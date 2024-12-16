@@ -74,14 +74,14 @@ class TruyenQQService extends TruyenGGService {
 
     return [
       BasicSection(
-        books: document
+        items: document
             .querySelectorAll("#list_suggest > li")
             .map((element) => parseBasicBook(element, baseUrl))
             .toList(),
         name: 'Truyện Hay',
       ),
       BasicSection(
-          books: document
+          items: document
               .querySelectorAll("#list_new > li")
               .map((element) => parseBasicBook(element, baseUrl))
               .toList(),

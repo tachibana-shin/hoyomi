@@ -123,21 +123,21 @@ class TruyenGGService extends BookBaseService implements AuthService {
 
     return [
       BasicSection(
-          books: sections[0]
+          items: sections[0]
               .querySelectorAll(".item_home")
               .map((element) => parseBasicBook(element, baseUrl))
               .toList(),
           name: 'Mới Cập Nhật',
           sectionId: 'truyen-moi-cap-nhat'),
       BasicSection(
-          books: sections[1]
+          items: sections[1]
               .querySelectorAll(".item_home")
               .map((element) => parseBasicBook(element, baseUrl))
               .toList(),
           name: "Bình Chọn",
           sectionId: "top-binh-chon"),
       BasicSection(
-          books: sections[2]
+          items: sections[2]
               .querySelectorAll(".item_home")
               .map((element) => parseBasicBook(element, baseUrl))
               .toList(),

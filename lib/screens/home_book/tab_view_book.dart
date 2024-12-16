@@ -78,7 +78,7 @@ class _TabViewBookState extends State<TabViewBook> with AutomaticKeepAliveClient
 
                           if (value == false) {
                             return HorizontalBookList(
-                              itemsFuture: Future.value(section.books),
+                              itemsFuture: Future.value(section.items),
                               service: widget.service,
                               title: section.name,
                               more: section.sectionId != null
@@ -89,7 +89,7 @@ class _TabViewBookState extends State<TabViewBook> with AutomaticKeepAliveClient
 
                           return VerticalBookList(
                             itemsFuture: null,
-                            items: section.books,
+                            items: section.items,
                             service: widget.service,
                             title: section.name,
                             more: section.sectionId != null

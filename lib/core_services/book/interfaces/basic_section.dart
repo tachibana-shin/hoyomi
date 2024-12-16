@@ -4,8 +4,8 @@ class BasicSection {
   final String name;
   final String? sectionId;
   final bool? gridView;
-  final List<BasicBook> books;
+  final List<BasicBook> items;
 
   BasicSection(
-      {required this.books, required this.name, this.sectionId, this.gridView});
+      {required this.items, required this.name, this.sectionId, this.gridView});
 }

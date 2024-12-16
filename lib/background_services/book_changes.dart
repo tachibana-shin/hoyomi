@@ -72,9 +72,9 @@ class BookChanges {
     List<Future<void>> tasks = [];
 
     for (final sourceId in groupedBooks.keys) {
-      final booksWithSameSourceId = groupedBooks[sourceId]!;
+      final itemsWithSameSourceId = groupedBooks[sourceId]!;
 
-      final chunkedBooks = _chunkList(booksWithSameSourceId, 5);
+      final chunkedBooks = _chunkList(itemsWithSameSourceId, 5);
 
       for (final bookBatch in chunkedBooks) {
         tasks.add(Future.wait(bookBatch.map((book) async {
@@ -126,7 +126,7 @@ class BookChanges {
         .subtract(Duration(minutes: _settings.pollingIntervalBook));
     int thirtyMinutesAgoMillis = thirtyMinutesAgo.millisecondsSinceEpoch;
 
-    final booksToUpdate = _bookBox
+    final itemsToUpdate = _bookBox
         .query(Book_.updatedAt
             .lessThan(thirtyMinutesAgoMillis)
             .and(Book_.status.equals(StatusEnum.ongoing.name)))
@@ -134,7 +134,7 @@ class BookChanges {
         .build()
         .find();
 
-    return booksToUpdate;
+    return itemsToUpdate;
   }
 
   List<List<T>> _chunkList<T>(List<T> list, int chunkSize) {

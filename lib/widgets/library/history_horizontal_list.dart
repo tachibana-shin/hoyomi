@@ -25,7 +25,7 @@ class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
 
   @override
   Widget build(BuildContext context) {
-    final books =
+    final items =
         _items.map((item) => MetaBook.fromJson(jsonDecode(item.meta)));
     int index = 0;
 
@@ -33,14 +33,14 @@ class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
       itemsFuture: Future.value(_items
           .map(
             (item) =>
-                BasicBook.fromMeta(item.bookId, book: books.elementAt(index++)),
+                BasicBook.fromMeta(item.bookId, book: items.elementAt(index++)),
           )
           .toList()),
       service: null,
       getService: (index) => _items.elementAt(index).sourceId,
       getPercentRead: (index) {
         final bookHistory = _items.elementAt(index);
-        final book = books.elementAt(index);
+        final book = items.elementAt(index);
 
         final current = bookHistory.histories
             .reduce((a, b) => a.updatedAt.isAfter(b.updatedAt) ? a : b);
@@ -56,7 +56,7 @@ class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
         //     .elementAt(index)
         //     .histories
         //     .fold(0.0, (p, c) => p + c.currentPage / c.maxPage) /
-        // books.elementAt(index).chapters.length
+        // items.elementAt(index).chapters.length
       },
       more: '/library/history',
       title: 'History',
