@@ -7,7 +7,7 @@ import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/book/interfaces/paginate.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/stores.dart';
-import 'package:honyomi/widgets/horizontal_book_list.dart';
+import 'package:honyomi/widgets/book/horizontal_book_list.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class CustomSearchBar extends StatefulWidget {
@@ -270,7 +270,7 @@ class _QuickSearchScreenState extends State<QuickSearchScreen> {
 
   void _fetchSearchResults() {
     // Trigger search for each service
-    for (var service in services) {
+    for (var service in bookServices) {
       _searchFutures[service.uid] = service.search(widget.keyword);
     }
   }
@@ -304,10 +304,10 @@ class _QuickSearchScreenState extends State<QuickSearchScreen> {
       enablePullDown: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: services.map((service) {
+        children: bookServices.map((service) {
           final searchResult = _searchFutures[service.uid];
           return HorizontalBookList(
-              booksFuture: searchResult!.then((data) => data.items),
+              itemsFuture: searchResult!.then((data) => data.items),
               totalItems: searchResult.then((data) => data.totalItems),
               service: service,
               title: service.name,

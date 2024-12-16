@@ -41,7 +41,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
 
   @override
   void initState() {
-    _service = getService(widget.sourceId);
+    _service = getBookService(widget.sourceId);
     _pagesFuture = _service.getPages(widget.bookId, widget.chapterId);
     _metaBook = null;
     _metaBookFuture = widget.book != null

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/views/home/tab_view.dart';
+import 'package:honyomi/screens/home_book/tab_view_book.dart';
 import 'package:honyomi/widgets/search_bar.dart';
 
 class HomeBookPage extends StatelessWidget {
@@ -28,7 +28,7 @@ class _HomeBookState extends State<HomeBook> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: services.length, vsync: this);
+    _tabController = TabController(length: bookServices.length, vsync: this);
   }
 
   @override
@@ -68,15 +68,15 @@ class _HomeBookState extends State<HomeBook> with SingleTickerProviderStateMixin
                 isScrollable: true,
                 splashBorderRadius: BorderRadius.circular(35.0),
                 tabs:
-                    services.map((service) => Tab(text: service.name)).toList(),
+                    bookServices.map((service) => Tab(text: service.name)).toList(),
               ),
       ),
       body: Stack(children: [
         TabBarView(
           controller: _tabController,
-          children: services
+          children: bookServices
               .map(
-                  (service) => TabView(key: Key(service.uid), service: service))
+                  (service) => TabViewBook(key: Key(service.uid), service: service))
               .toList(),
         ),
         ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : [])

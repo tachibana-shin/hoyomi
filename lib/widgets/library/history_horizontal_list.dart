@@ -5,7 +5,7 @@ import 'package:honyomi/controller/history.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/models/book.dart';
-import 'package:honyomi/widgets/horizontal_book_list.dart';
+import 'package:honyomi/widgets/book/horizontal_book_list.dart';
 
 class HistoryHorizontalList extends StatefulWidget {
   const HistoryHorizontalList({super.key});
@@ -30,7 +30,7 @@ class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
     int index = 0;
 
     return HorizontalBookList(
-      booksFuture: Future.value(_items.map(
+      itemsFuture: Future.value(_items.map(
         (item) =>
             BasicBook.fromMeta(item.bookId, book: books.elementAt(index++)),
       )),

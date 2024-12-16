@@ -9,7 +9,7 @@ import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/models/book.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
-import 'package:honyomi/widgets/vertical_book_list.dart';
+import 'package:honyomi/widgets/book/vertical_book_list.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
@@ -163,11 +163,11 @@ class _FollowState extends State<Follow> {
                 nextElement,
               ) =>
                   VerticalBookList(
-                      books: currentElement.value.map(
+                      items: currentElement.value.map(
                         (item) => BasicBook.fromMeta(item.bookId,
                             book: MetaBook.fromJson(jsonDecode(item.meta))),
                       ),
-                      booksFuture: null,
+                      itemsFuture: null,
                       service: null,
                       getService: (index) =>
                           currentElement.value.elementAt(index).sourceId,

@@ -20,9 +20,9 @@ import 'package:honyomi/widgets/book/icon_button_follow.dart';
 import 'package:honyomi/widgets/book/icon_button_open_browser.dart';
 import 'package:honyomi/widgets/book/icon_button_share.dart';
 import 'package:honyomi/widgets/comments/widget/comments.dart';
-import 'package:honyomi/widgets/horizontal_book_list.dart';
+import 'package:honyomi/widgets/book/horizontal_book_list.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
-import 'package:honyomi/widgets/sheet_chapters.dart';
+import 'package:honyomi/widgets/book/sheet_chapters.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class DetailsComic extends StatefulWidget {
@@ -60,7 +60,7 @@ class _DetailsComicState extends State<DetailsComic>
 
     _bottomSheetAnimationController = AnimationController(vsync: this);
 
-    _service = getService(widget.sourceId);
+    _service = getBookService(widget.sourceId);
     _metaBookFuture = _service.getDetails(widget.bookId);
     _metaBookFuture.then((book) {
       setState(() {
@@ -632,7 +632,7 @@ class _DetailsComicState extends State<DetailsComic>
     if (_suggestFuture == null) return SizedBox.shrink();
 
     return HorizontalBookList(
-        booksFuture: _suggestFuture!.then((value) => value.items),
+        itemsFuture: _suggestFuture!.then((value) => value.items),
         // totalItems: _suggestFuture!.then((value) => value.totalItems),
         service: _service,
         title: 'Suggest',

@@ -20,7 +20,7 @@ import 'package:honyomi/utils/debouncer.dart';
 import 'package:honyomi/widgets/button_inset.dart';
 import 'package:honyomi/widgets/comments/widget/comments_sheet.dart';
 import 'package:honyomi/widgets/image_picker.dart';
-import 'package:honyomi/widgets/sheet_chapters.dart';
+import 'package:honyomi/widgets/book/sheet_chapters.dart';
 import 'package:honyomi/widgets/tap_listener.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 

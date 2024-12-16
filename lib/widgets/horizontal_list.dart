@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/book/book_base_service.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
-import 'vertical_book.dart';
 
-class HorizontalBookList extends StatelessWidget {
-  final Future<Iterable<BasicBook>> booksFuture;
-  final BookBaseService? service;
-  final String Function(int index)? getService;
-  final double Function(int index)? getPercentRead;
-  final Function()? onTapChild;
+class HorizontalList<T> extends StatelessWidget {
   final String title;
   final String? more;
-  final Future<int>? totalItems;
+  final bool noHeader;
+  final Widget Function(BuildContext, T, int) builder;
+  final Widget? Function(Object? error) builderError;
+  final Iterable<T>? items;
+  final Future<Iterable<T>>? itemsFuture;
+  final Future<int>? totalFuture;
 
-  const HorizontalBookList({
-    super.key,
-    required this.booksFuture,
-    required this.service,
-    this.getService,
-    this.getPercentRead,
-    this.onTapChild,
-    required this.title,
-    required this.more,
-    this.totalItems,
-  });
+  HorizontalList(
+      {super.key,
+      required this.title,
+      required this.more,
+      this.noHeader = false,
+      required this.items,
+      required this.itemsFuture,
+      required this.builder,
+      required this.builderError,
+      required this.totalFuture}) {
+    if (itemsFuture == null && items == null) {
+      throw ArgumentError('Either itemsFuture or items must be provided.');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +57,9 @@ class HorizontalBookList extends StatelessWidget {
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
-                    if (totalItems != null)
+                    if (totalFuture != null)
                       FutureBuilder(
-                          future: totalItems!,
+                          future: totalFuture!,
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return Column(children: [
@@ -77,16 +78,12 @@ class HorizontalBookList extends StatelessWidget {
           if (more != null)
             ElevatedButton(
                 onPressed: () {
-                  if (onTapChild != null) {
-                    onTapChild!();
-                  }
-
                   context.push(more!);
                 },
                 child: Text('More'))
         ]),
-        FutureBuilder<Iterable<BasicBook>>(
-          future: booksFuture,
+        FutureBuilder(
+          future: itemsFuture,
           builder: (context, snapshot) {
             final childAspectRatio = 2 / 4.1;
             final viewportFraction = 1 / crossAxisCount;
@@ -103,14 +100,9 @@ class HorizontalBookList extends StatelessWidget {
                   ));
             }
             if (snapshot.hasError) {
-              if (service?.isCaptchaError(snapshot.error) == true) {
-                return SizedBox(
-                    height: height,
-                    child: Center(
-                        child: service?.templateCaptchaResolver(context)));
-              }
+             
 
-              return SizedBox(
+              return builderError(snapshot.error) ?? SizedBox(
                   height: height,
                   child: Center(
                     child: Text('Error: ${snapshot.error}'),
@@ -124,11 +116,11 @@ class HorizontalBookList extends StatelessWidget {
                   ));
             }
 
-            final books = snapshot.data!;
+            final items = snapshot.data!;
             return SizedBox(
               height: height,
               child: PageView.builder(
-                itemCount: books.length,
+                itemCount: items.length,
                 allowImplicitScrolling: true,
                 padEnds: false,
                 controller: PageController(
@@ -136,15 +128,7 @@ class HorizontalBookList extends StatelessWidget {
                   initialPage: 0,
                 ),
                 itemBuilder: (context, index) {
-                  final book = books.elementAt(index);
-                  return GestureDetector(
-                      onTap: onTapChild,
-                      child: VerticalBook(
-                          book: book,
-                          sourceId: service?.uid ?? getService!(index),
-                          percentRead: getPercentRead != null
-                              ? getPercentRead!(index)
-                              : null));
+                  return builder(context, items.elementAt(index), index);
                 },
               ),
             );

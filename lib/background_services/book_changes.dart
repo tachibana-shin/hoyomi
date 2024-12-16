@@ -95,7 +95,7 @@ class BookChanges {
       {required String sourceId,
       required Book book,
       bool? saveDatabase}) async {
-    final service = getService(sourceId);
+    final service = getBookService(sourceId);
     final newData = await service.getDetails(book.bookId);
     final oldData = MetaBook.fromJson(jsonDecode(book.meta));
 

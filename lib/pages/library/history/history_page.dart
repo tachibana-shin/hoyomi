@@ -9,7 +9,7 @@ import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/models/book.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
-import 'package:honyomi/widgets/vertical_book_list.dart';
+import 'package:honyomi/widgets/book/vertical_book_list.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
@@ -167,11 +167,11 @@ class _HistoryState extends State<History> {
                 int index = 0;
 
                 return VerticalBookList(
-                  books: currentElement.value.map(
+                  items: currentElement.value.map(
                     (item) => BasicBook.fromMeta(item.bookId,
                         book: books.elementAt(index++)),
                   ),
-                  booksFuture: null,
+                  itemsFuture: null,
                   service: null,
                   getService: (index) =>
                       currentElement.value.elementAt(index).sourceId,

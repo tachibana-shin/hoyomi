@@ -24,7 +24,7 @@ class _SimilarPageState extends State<SimilarPage> {
     if (widget.book != null) {
       _keyword = Future.value(widget.book!.name);
     } else {
-      _keyword = getService(widget.sourceId)
+      _keyword = getBookService(widget.sourceId)
           .getDetails(widget.bookId)
           .then((value) => value.name);
     }

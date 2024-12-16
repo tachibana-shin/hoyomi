@@ -1,39 +1,34 @@
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/book/book_base_service.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
-import 'vertical_book.dart';
 
-class VerticalBookList extends StatelessWidget {
-  final Future<Iterable<BasicBook>>? booksFuture;
-  final Iterable<BasicBook>? books;
-  final BookBaseService? service;
-  final String Function(int index)? getService;
-  final double Function(int index)? getPercentRead;
+class VerticalList<T> extends StatelessWidget {
   final String title;
   final String? more;
   final bool noHeader;
+  final Widget Function(BuildContext, T, int) builder;
+  final Widget? Function(Object? error) builderError;
+  final Iterable<T>? items;
+  final Future<Iterable<T>>? itemsFuture;
 
-  VerticalBookList(
+  VerticalList(
       {super.key,
-      required this.booksFuture,
-      required this.books,
-      required this.service,
-      this.getService,
       required this.title,
       required this.more,
       this.noHeader = false,
-      this.getPercentRead}) {
-    if (booksFuture == null && books == null) {
-      throw ArgumentError('Either booksFuture or books must be provided.');
+      required this.items,
+      required this.itemsFuture,
+      required this.builder,
+      required this.builderError}) {
+    if (itemsFuture == null && items == null) {
+      throw ArgumentError('Either itemsFuture or items must be provided.');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (noHeader == true && booksFuture == null) {
-      return _buildGridView(context, books!);
+    if (noHeader == true) {
+      return _buildGridView(context, items!);
     }
 
     return Column(
@@ -56,22 +51,21 @@ class VerticalBookList extends StatelessWidget {
                   child: Text('More'))
           ]),
         if (noHeader != true) const SizedBox(height: 8.0),
-        if (booksFuture != null)
+        if (itemsFuture != null)
           FutureBuilder(
-            future: booksFuture,
+            future: itemsFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasError) {
-                if (service?.isCaptchaError(snapshot.error) == true) {
-                  return Center(
-                      child: service?.templateCaptchaResolver(context));
-                }
-
-                return Center(child: Text('Error: ${snapshot.error}'));
+                return builderError(snapshot.error) ??
+                    Center(child: Text('Error: ${snapshot.error}'));
               }
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              if (!snapshot.hasData ||
+                  (snapshot.data is Iterable
+                      ? (snapshot.data as Iterable).isEmpty
+                      : false)) {
                 return const Center(child: Text('No data available'));
               }
 
@@ -79,12 +73,12 @@ class VerticalBookList extends StatelessWidget {
             },
           )
         else
-          _buildGridView(context, books!)
+          _buildGridView(context, items!)
       ],
     );
   }
 
-  Widget _buildGridView(BuildContext context, Iterable<BasicBook> books) {
+  Widget _buildGridView(BuildContext context, Iterable<T> items) {
     double screenWidth = MediaQuery.of(context).size.width;
     int crossAxisCount;
 
@@ -105,15 +99,9 @@ class VerticalBookList extends StatelessWidget {
       mainAxisSpacing: 10.0,
       //   childAspectRatio: 1/3,
       // ),
-      itemCount: books.length,
-      builder: (context, bookIndex) {
-        final book = books.elementAt(bookIndex);
-        return VerticalBook(
-          book: book,
-          sourceId: service?.uid ?? getService!(bookIndex),
-          percentRead:
-              getPercentRead != null ? getPercentRead!(bookIndex) : null,
-        );
+      itemCount: items.length,
+      builder: (context, index) {
+        return builder(context, items.elementAt(index), index);
       },
     );
   }

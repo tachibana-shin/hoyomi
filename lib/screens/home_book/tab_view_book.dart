@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:honyomi/core_services/book/book_base_service.dart';
 import 'package:honyomi/stores.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_section.dart';
-import 'package:honyomi/widgets/horizontal_book_list.dart';
+import 'package:honyomi/widgets/book/horizontal_book_list.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
-import 'package:honyomi/widgets/vertical_book_list.dart';
+import 'package:honyomi/widgets/book/vertical_book_list.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-class TabView extends StatefulWidget {
+class TabViewBook extends StatefulWidget {
   final BookBaseService service;
 
-  const TabView({super.key, required this.service});
+  const TabViewBook({super.key, required this.service});
 
   @override
-  createState() => _TabViewState();
+  createState() => _TabViewBookState();
 }
 
-class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
+class _TabViewBookState extends State<TabViewBook> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -78,7 +78,7 @@ class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
 
                           if (value == false) {
                             return HorizontalBookList(
-                              booksFuture: Future.value(section.books),
+                              itemsFuture: Future.value(section.books),
                               service: widget.service,
                               title: section.name,
                               more: section.sectionId != null
@@ -88,8 +88,8 @@ class _TabViewState extends State<TabView> with AutomaticKeepAliveClientMixin {
                           }
 
                           return VerticalBookList(
-                            booksFuture: null,
-                            books: section.books,
+                            itemsFuture: null,
+                            items: section.books,
                             service: widget.service,
                             title: section.name,
                             more: section.sectionId != null

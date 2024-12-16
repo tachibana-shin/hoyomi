@@ -67,7 +67,7 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin {
 
   Widget _buildBodyGetStarting(BuildContext context) {
     return NewsFeedScreen(
-      services: services,
+      services: bookServices,
     );
   }
 }

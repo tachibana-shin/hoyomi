@@ -35,7 +35,7 @@ class _CustomWebViewState extends State<CustomWebView> {
   void initState() {
     super.initState();
 
-    final service = getService(widget.serviceId);
+    final service = getBookService(widget.serviceId);
     _initialUrl = service.baseUrl;
 
     _currentTitle = _initialUrl;
@@ -54,7 +54,7 @@ class _CustomWebViewState extends State<CustomWebView> {
 
       bool signed;
       try {
-        await getUser(getService(widget.serviceId), cookie: cookiesText);
+        await getUser(getBookService(widget.serviceId), cookie: cookiesText);
         signed = true;
       } catch (err) {
         signed = false;

@@ -11,7 +11,7 @@ import 'package:honyomi/core_services/book/interfaces/basic_filter.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/widgets/book/icon_button_open_browser.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
-import 'package:honyomi/widgets/vertical_book.dart';
+import 'package:honyomi/widgets/book/vertical_book.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
@@ -62,7 +62,7 @@ class _SectionState extends State<Section> {
   @override
   void initState() {
     super.initState();
-    _service = getService(widget.serviceId);
+    _service = getBookService(widget.serviceId);
     _pagingController.addPageRequestListener((pageKey) {
       _fetchBooks(pageKey);
     });

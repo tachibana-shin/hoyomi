@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class NavigationApp extends StatelessWidget {
   final int selectedIndex;
@@ -17,7 +18,7 @@ class NavigationApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final destinations = const [
       (
-        icon: Icon(MaterialCommunityIcons.book),
+        icon: Icon(HugeIcons.strokeRoundedBookmark01),
         label: ('Book'),
       ),
       (
@@ -25,7 +26,7 @@ class NavigationApp extends StatelessWidget {
         label: ('Search'),
       ),
       (
-        icon: Icon(MaterialCommunityIcons.library),
+        icon: Icon(MaterialCommunityIcons.apple_safari),
         label: ('Library'),
       ),
       (
