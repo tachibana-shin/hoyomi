@@ -15,7 +15,7 @@ class HistoryHorizontalList extends StatefulWidget {
 }
 
 class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
-  late final Iterable<Book> _items;
+  late final List<Book> _items;
 
   @override
   initState() {
@@ -30,10 +30,12 @@ class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
     int index = 0;
 
     return HorizontalBookList(
-      itemsFuture: Future.value(_items.map(
-        (item) =>
-            BasicBook.fromMeta(item.bookId, book: books.elementAt(index++)),
-      )),
+      itemsFuture: Future.value(_items
+          .map(
+            (item) =>
+                BasicBook.fromMeta(item.bookId, book: books.elementAt(index++)),
+          )
+          .toList()),
       service: null,
       getService: (index) => _items.elementAt(index).sourceId,
       getPercentRead: (index) {

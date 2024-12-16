@@ -69,20 +69,22 @@ class TruyenQQService extends TruyenGGService {
   }
 
   @override
-  Future<Iterable<BasicSection>> home() async {
+  Future<List<BasicSection>> home() async {
     final document = await fetchDocument(baseUrl);
 
     return [
       BasicSection(
         books: document
             .querySelectorAll("#list_suggest > li")
-            .map((element) => parseBasicBook(element, baseUrl)),
+            .map((element) => parseBasicBook(element, baseUrl))
+            .toList(),
         name: 'Truyện Hay',
       ),
       BasicSection(
           books: document
               .querySelectorAll("#list_new > li")
-              .map((element) => parseBasicBook(element, baseUrl)),
+              .map((element) => parseBasicBook(element, baseUrl))
+              .toList(),
           name: 'Truyện Mới Cập Nhật',
           sectionId: 'truyen-moi-cap-nhat'),
     ];
@@ -170,21 +172,21 @@ class TruyenQQService extends TruyenGGService {
         views: views,
         likes: likes,
         rate: rate,
-        genres: genres,
+        genres: genres.toList(),
         description: description,
-        chapters: chapters,
+        chapters: chapters.toList(),
         lastModified: lastModified);
   }
 
   @override
-  Future<Iterable<BasicImage>> getPages(String manga, String chap) async {
+  Future<List<BasicImage>> getPages(String manga, String chap) async {
     final document = await fetchDocument(getURL(manga, chapterId: chap));
 
     return document.querySelectorAll(".chapter_content img").map((img) {
       final src = img.attributes["src"]!;
 
       return BasicImage(src: src, headers: {"referer": baseUrl});
-    });
+    }).toList();
   }
 
   Element? _getInfoTale(List<Element> tales, String name) {

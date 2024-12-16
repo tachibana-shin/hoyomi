@@ -116,7 +116,7 @@ class TruyenGGService extends BookBaseService implements AuthService {
 
   // Main
   @override
-  Future<Iterable<BasicSection>> home() async {
+  Future<List<BasicSection>> home() async {
     final Document document = await fetchDocument(baseUrl);
 
     final sections = document.querySelectorAll(".list_item_home");
@@ -125,19 +125,22 @@ class TruyenGGService extends BookBaseService implements AuthService {
       BasicSection(
           books: sections[0]
               .querySelectorAll(".item_home")
-              .map((element) => parseBasicBook(element, baseUrl)),
+              .map((element) => parseBasicBook(element, baseUrl))
+              .toList(),
           name: 'Mới Cập Nhật',
           sectionId: 'truyen-moi-cap-nhat'),
       BasicSection(
           books: sections[1]
               .querySelectorAll(".item_home")
-              .map((element) => parseBasicBook(element, baseUrl)),
+              .map((element) => parseBasicBook(element, baseUrl))
+              .toList(),
           name: "Bình Chọn",
           sectionId: "top-binh-chon"),
       BasicSection(
           books: sections[2]
               .querySelectorAll(".item_home")
-              .map((element) => parseBasicBook(element, baseUrl)),
+              .map((element) => parseBasicBook(element, baseUrl))
+              .toList(),
           name: "Xem Nhiều",
           sectionId: "top-thang")
     ];
@@ -221,9 +224,9 @@ class TruyenGGService extends BookBaseService implements AuthService {
         views: views,
         likes: likes,
         rate: rate,
-        genres: genres,
+        genres: genres.toList(),
         description: description,
-        chapters: chaps,
+        chapters: chaps.toList(),
         lastModified: lastModified,
         originalName: null);
   }
@@ -264,7 +267,7 @@ class TruyenGGService extends BookBaseService implements AuthService {
   }
 
   @override
-  Future<Iterable<BasicImage>> getPages(String manga, String chap) async {
+  Future<List<BasicImage>> getPages(String manga, String chap) async {
     final document = await fetchDocument(getURL(manga, chapterId: chap));
 
     _episodeIdStore[chap] =
@@ -274,7 +277,7 @@ class TruyenGGService extends BookBaseService implements AuthService {
       final src = img.attributes["src"]!;
 
       return BasicImage(src: src, headers: {"referer": baseUrl});
-    });
+    }).toList();
   }
 
   @override

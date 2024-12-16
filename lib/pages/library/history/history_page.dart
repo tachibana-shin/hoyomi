@@ -170,7 +170,7 @@ class _HistoryState extends State<History> {
                   items: currentElement.value.map(
                     (item) => BasicBook.fromMeta(item.bookId,
                         book: books.elementAt(index++)),
-                  ),
+                  ).toList(),
                   itemsFuture: null,
                   service: null,
                   getService: (index) =>

@@ -8,8 +8,8 @@ class VerticalList<T> extends StatelessWidget {
   final bool noHeader;
   final Widget Function(BuildContext, T, int) builder;
   final Widget? Function(Object? error) builderError;
-  final Iterable<T>? items;
-  final Future<Iterable<T>>? itemsFuture;
+  final List<T>? items;
+  final Future<List<T>>? itemsFuture;
 
   VerticalList(
       {super.key,
@@ -63,8 +63,8 @@ class VerticalList<T> extends StatelessWidget {
                     Center(child: Text('Error: ${snapshot.error}'));
               }
               if (!snapshot.hasData ||
-                  (snapshot.data is Iterable
-                      ? (snapshot.data as Iterable).isEmpty
+                  (snapshot.data is List
+                      ? (snapshot.data as List).isEmpty
                       : false)) {
                 return const Center(child: Text('No data available'));
               }
@@ -78,7 +78,7 @@ class VerticalList<T> extends StatelessWidget {
     );
   }
 
-  Widget _buildGridView(BuildContext context, Iterable<T> items) {
+  Widget _buildGridView(BuildContext context, List<T> items) {
     double screenWidth = MediaQuery.of(context).size.width;
     int crossAxisCount;
 

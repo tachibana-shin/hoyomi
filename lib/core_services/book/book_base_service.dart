@@ -12,13 +12,13 @@ abstract class BookBaseService extends BaseService {
   String getURL(String bookId, {String? chapterId});
   BookParam parseURL(String url);
 
-  Future<Iterable<BasicSection>> home();
+  Future<List<BasicSection>> home();
 
   Future<BaseSection> getSection(String sectionId,
       {int? page, Map<String, List<String>?>? filters});
 
   Future<MetaBook> getDetails(String bookId);
-  Future<Iterable<BasicImage>> getPages(String manga, String chap);
+  Future<List<BasicImage>> getPages(String manga, String chap);
 
   Future<BaseSection> Function(
     MetaBook book, {

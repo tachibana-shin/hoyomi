@@ -23,7 +23,7 @@ class _TabViewBookState extends State<TabViewBook> with AutomaticKeepAliveClient
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  late Future<Iterable<BasicSection>> _data;
+  late Future<List<BasicSection>> _data;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _TabViewBookState extends State<TabViewBook> with AutomaticKeepAliveClient
   Widget build(BuildContext context) {
     super.build(context);
 
-    return FutureBuilder<Iterable<BasicSection>>(
+    return FutureBuilder<List<BasicSection>>(
       future: _data,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -59,7 +59,7 @@ class _TabViewBookState extends State<TabViewBook> with AutomaticKeepAliveClient
           return const Center(child: Text('No data available'));
         }
 
-        return PullToRefresh<Iterable<BasicSection>>(
+        return PullToRefresh<List<BasicSection>>(
             controller: _refreshController,
             onRefresh: widget.service.home,
             initialData: snapshot.data!,

@@ -29,7 +29,7 @@ class _FollowHorizontalListState extends State<FollowHorizontalList> {
       itemsFuture: Future.value(_items.map(
         (item) => BasicBook.fromMeta(item.bookId,
             book: MetaBook.fromJson(jsonDecode(item.meta))),
-      )),
+      ).toList()),
       service: null,
       getService: (index) => _items.elementAt(index).sourceId,
       more: '/library/follow',

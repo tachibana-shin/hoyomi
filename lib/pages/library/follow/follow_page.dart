@@ -166,7 +166,7 @@ class _FollowState extends State<Follow> {
                       items: currentElement.value.map(
                         (item) => BasicBook.fromMeta(item.bookId,
                             book: MetaBook.fromJson(jsonDecode(item.meta))),
-                      ),
+                      ).toList(),
                       itemsFuture: null,
                       service: null,
                       getService: (index) =>

@@ -17,9 +17,9 @@ class MetaBook {
   final int? likes;
 
   final RateValue? rate;
-  final Iterable<BasicGenre> genres;
+  final List<BasicGenre> genres;
   final String description;
-  final Iterable<Chapter> chapters;
+  final List<Chapter> chapters;
   final DateTime lastModified;
 
   MetaBook({
@@ -52,9 +52,9 @@ class MetaBook {
       views: json['views'],
       likes: json['likes'],
       rate: json['rate'] != null ? RateValue.fromJson(json['rate']) : null,
-      genres: (json['genres'] as List).map((e) => BasicGenre.fromJson(e)),
+      genres: (json['genres'] as List).map((e) => BasicGenre.fromJson(e)).toList(),
       description: json['description'],
-      chapters: (json['chapters'] as List).map((e) => Chapter.fromJson(e)),
+      chapters: (json['chapters'] as List).map((e) => Chapter.fromJson(e)).toList(),
       lastModified: DateTime.parse(json['lastModified']),
     );
   }

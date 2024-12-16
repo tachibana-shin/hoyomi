@@ -4,7 +4,7 @@ class BasicSection {
   final String name;
   final String? sectionId;
   final bool? gridView;
-  final Iterable<BasicBook> books;
+  final List<BasicBook> books;
 
   BasicSection(
       {required this.books, required this.name, this.sectionId, this.gridView});

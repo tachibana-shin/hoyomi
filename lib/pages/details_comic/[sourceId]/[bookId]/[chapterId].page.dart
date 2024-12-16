@@ -32,7 +32,7 @@ class DetailsComicReader extends StatefulWidget {
 }
 
 class _DetailsComicReaderState extends State<DetailsComicReader> {
-  late Future<Iterable<BasicImage>> _pagesFuture;
+  late Future<List<BasicImage>> _pagesFuture;
   late Future<MetaBook> _metaBookFuture;
   MetaBook? _metaBook;
   late final BookBaseService _service;
@@ -91,7 +91,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
               return const Center(child: Text('No data available.'));
             }
 
-            final [pages as Iterable<BasicImage>, metaBook as MetaBook] =
+            final [pages as List<BasicImage>, metaBook as MetaBook] =
                 snapshot.data!; //book] = snapshot.data!;
 
             return MangaReader(

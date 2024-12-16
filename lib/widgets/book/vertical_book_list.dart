@@ -5,8 +5,8 @@ import 'package:honyomi/widgets/vertical_list.dart';
 import 'vertical_book.dart';
 
 class VerticalBookList extends StatelessWidget {
-  final Future<Iterable<BasicBook>>? itemsFuture;
-  final Iterable<BasicBook>? items;
+  final Future<List<BasicBook>>? itemsFuture;
+  final List<BasicBook>? items;
   final BookBaseService? service;
   final String Function(int index)? getService;
   final double Function(int index)? getPercentRead;

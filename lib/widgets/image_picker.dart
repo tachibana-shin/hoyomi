@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 
 class ImagePicker extends StatefulWidget {
-  final Iterable<BasicImage> images;
+  final List<BasicImage> images;
   final Function(Set<int>) onChange;
 
   const ImagePicker({super.key, required this.images, required this.onChange});

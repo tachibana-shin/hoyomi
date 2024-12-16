@@ -94,7 +94,7 @@ class HistoryController {
         .findFirst();
   }
 
-  Iterable<Book> getListHistory(int limit, {required int offset}) {
+  List<Book> getListHistory(int limit, {required int offset}) {
     final query =
         _bookBox.query().order(Book_.updatedAt, flags: Order.descending).build()
           ..limit = limit
@@ -106,7 +106,7 @@ class HistoryController {
       items.followedBy(getListHistory(dropOut, offset: offset + items.length));
     }
 
-    return items;
+    return items.toList();
   }
 
   List<Book> getListFollows(int limit, {required int offset}) {

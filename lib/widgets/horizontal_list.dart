@@ -7,8 +7,8 @@ class HorizontalList<T> extends StatelessWidget {
   final bool noHeader;
   final Widget Function(BuildContext, T, int) builder;
   final Widget? Function(Object? error) builderError;
-  final Iterable<T>? items;
-  final Future<Iterable<T>>? itemsFuture;
+  final List<T>? items;
+  final Future<List<T>>? itemsFuture;
   final Future<int>? totalFuture;
 
   HorizontalList(
