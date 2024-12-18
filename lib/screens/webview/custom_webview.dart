@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
@@ -23,7 +26,8 @@ class _CustomWebViewState extends State<CustomWebView> {
       WebViewEnvironment.fromPlatform(
           platform: PlatformWebViewEnvironment(
               PlatformWebViewEnvironmentCreationParams(
-                  settings: WebViewEnvironmentSettings())));
+                  settings: WebViewEnvironmentSettings(
+                  ))));
   late final String _initialUrl;
 
   String _currentTitle = "Loading...";
@@ -35,8 +39,11 @@ class _CustomWebViewState extends State<CustomWebView> {
   void initState() {
     super.initState();
 
-    final service = getBookService(widget.serviceId);
-    _initialUrl = service.baseUrl;
+    try {
+      _initialUrl = getBookService(widget.serviceId).baseUrl;
+    } catch (err) {
+      _initialUrl = getEigaService(widget.serviceId).baseUrl;
+    }
 
     _currentTitle = _initialUrl;
     _currentUrl = _initialUrl;
@@ -48,7 +55,9 @@ class _CustomWebViewState extends State<CustomWebView> {
       // Retrieve cookies for the current URL
       final cookies =
           await CookieManager.instance(webViewEnvironment: _webViewEnvironment)
-              .getCookies(url: WebUri(_initialUrl));
+              .getCookies(
+                  url: WebUri(_initialUrl),
+                  webViewController: _webViewController);
       final cookiesText =
           cookies.map((cookie) => '${cookie.name}=${cookie.value}').join("; ");
 
@@ -165,7 +174,12 @@ class _CustomWebViewState extends State<CustomWebView> {
               initialUrlRequest: URLRequest(url: WebUri(_initialUrl)),
               webViewEnvironment: _webViewEnvironment,
               onWebViewCreated: (controller) {
-                _webViewController = controller;
+                _webViewController =
+                    controller; //..loadUrl(urlRequest: URLRequest());
+              },
+              shouldInterceptRequest: (controller, request) async {
+                print(request.headers);
+                return null;
               },
               onTitleChanged: (controller, title) {
                 setState(() {
@@ -195,4 +209,47 @@ class _CustomWebViewState extends State<CustomWebView> {
       ),
     );
   }
+}
+
+Future<CustomResponse> fetchCustomResponse(Uri url) async {
+  final httpClient = HttpClient();
+  final request = await httpClient.getUrl(url);
+  final response = await request.close();
+
+  final bodyBytes = await response.fold<List<int>>([], (b, d) => b..addAll(d));
+
+  return CustomResponse(
+    statusCode: response.statusCode,
+    reasonPhrase: response.reasonPhrase,
+    headers: response.headers,
+    bodyBytes: bodyBytes,
+    contentType: response.headers.contentType?.mimeType ?? "text/html",
+  );
+}
+
+class CustomResponse {
+  final int statusCode;
+  final String? reasonPhrase;
+  final HttpHeaders headers;
+  final List<int> bodyBytes;
+  final String contentType;
+
+  CustomResponse({
+    required this.statusCode,
+    this.reasonPhrase,
+    required this.headers,
+    required this.bodyBytes,
+    required this.contentType,
+  });
+}
+
+Map<String, String> httpHeadersToMap(HttpHeaders headers) {
+  final Map<String, String> headersMap = {};
+
+  headers.forEach((key, values) {
+    // Kết hợp các giá trị header thành một chuỗi duy nhất nếu có nhiều giá trị
+    headersMap[key] = values.join(", ");
+  });
+
+  return headersMap;
 }
