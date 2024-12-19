@@ -1,11 +1,11 @@
 import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
 
-class BasicSection {
+class BasicBookSection {
   final String name;
   final String? sectionId;
   final bool? gridView;
   final List<BasicBook> items;
 
-  BasicSection(
+  BasicBookSection(
       {required this.items, required this.name, this.sectionId, this.gridView});
 }

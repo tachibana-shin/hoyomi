@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:honyomi/core_services/book/interfaces/base_section.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_chapter.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_genre.dart';
+import 'package:honyomi/core_services/interfaces/basic_genre.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_section.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_book_section.dart';
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/book/interfaces/paginate.dart';
 import 'package:honyomi/core_services/book/interfaces/rate_value.dart';
@@ -69,18 +69,18 @@ class TruyenQQService extends TruyenGGService {
   }
 
   @override
-  Future<List<BasicSection>> home() async {
+  Future<List<BasicBookSection>> home() async {
     final document = await fetchDocument(baseUrl);
 
     return [
-      BasicSection(
+      BasicBookSection(
         items: document
             .querySelectorAll("#list_suggest > li")
             .map((element) => parseBasicBook(element, baseUrl))
             .toList(),
         name: 'Truyện Hay',
       ),
-      BasicSection(
+      BasicBookSection(
           items: document
               .querySelectorAll("#list_new > li")
               .map((element) => parseBasicBook(element, baseUrl))

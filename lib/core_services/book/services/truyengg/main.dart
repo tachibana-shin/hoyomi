@@ -5,7 +5,7 @@ import 'package:honyomi/core_services/book/book_base_service.dart';
 import 'package:honyomi/core_services/book/interfaces/base_comments.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_chapter.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_comment.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_genre.dart';
+import 'package:honyomi/core_services/interfaces/basic_genre.dart';
 import 'package:honyomi/core_services/book/interfaces/status_enum.dart';
 import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
@@ -15,7 +15,7 @@ import 'package:honyomi/core_services/book/interfaces/base_section.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_filter.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_section.dart';
+import 'package:honyomi/core_services/book/interfaces/basic_book_section.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
 import 'package:honyomi/core_services/book/interfaces/book_param.dart';
 import 'package:honyomi/core_services/book/interfaces/comic_modes.dart';
@@ -116,27 +116,27 @@ class TruyenGGService extends BookBaseService implements AuthService {
 
   // Main
   @override
-  Future<List<BasicSection>> home() async {
+  Future<List<BasicBookSection>> home() async {
     final Document document = await fetchDocument(baseUrl);
 
     final sections = document.querySelectorAll(".list_item_home");
 
     return [
-      BasicSection(
+      BasicBookSection(
           items: sections[0]
               .querySelectorAll(".item_home")
               .map((element) => parseBasicBook(element, baseUrl))
               .toList(),
           name: 'Mới Cập Nhật',
           sectionId: 'truyen-moi-cap-nhat'),
-      BasicSection(
+      BasicBookSection(
           items: sections[1]
               .querySelectorAll(".item_home")
               .map((element) => parseBasicBook(element, baseUrl))
               .toList(),
           name: "Bình Chọn",
           sectionId: "top-binh-chon"),
-      BasicSection(
+      BasicBookSection(
           items: sections[2]
               .querySelectorAll(".item_home")
               .map((element) => parseBasicBook(element, baseUrl))
