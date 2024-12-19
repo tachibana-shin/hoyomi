@@ -9,4 +9,10 @@ A new Flutter project.
 - [ ] Use `Colors` and `TextStyle` theme. Example `style: Theme.of(context).textTheme.titleLarge,`
 - [ ] Fix logic fake page
 
+- [x] Add time count down for eiga
+- [x] Add carousel for eiga
+- [ ] Page eiga details
+
+- [ ] Fix page `Error: ...` can't pull refresh
+
 /// provider or mobx

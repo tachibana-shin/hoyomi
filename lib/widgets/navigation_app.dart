@@ -18,8 +18,12 @@ class NavigationApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final destinations = const [
       (
-        icon: Icon(HugeIcons.strokeRoundedBookmark01),
+        icon: Icon(HugeIcons.strokeRoundedBook04),
         label: ('Book'),
+      ),
+      (
+        icon: Icon(HugeIcons.strokeRoundedFlimSlate),
+        label: ('Eigo'),
       ),
       (
         icon: Icon(MaterialCommunityIcons.magnify),

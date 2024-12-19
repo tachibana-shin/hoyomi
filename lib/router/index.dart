@@ -8,6 +8,7 @@ import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/pages/details_comic/[sourceId]/[bookId].page.dart';
 import 'package:honyomi/pages/details_comic/[sourceId]/[bookId]/[chapterId].page.dart';
 import 'package:honyomi/pages/home_book/home_book_page.dart';
+import 'package:honyomi/pages/home_eiga/home_eiga_page.dart';
 import 'package:honyomi/pages/library/follow/follow_page.dart';
 import 'package:honyomi/pages/library/history/history_page.dart';
 import 'package:honyomi/pages/library/library_page.dart';
@@ -30,7 +31,7 @@ final List<String> routeIgnoreLayoutDefault = [
 ];
 
 final GoRouter router = GoRouter(
-  initialLocation: '/home_book',
+  initialLocation: '/home_eiga',
   observers: [GoTransition.observer],
   routes: [
     StatefulShellRoute.indexedStack(
@@ -53,6 +54,13 @@ final GoRouter router = GoRouter(
             path: '/home_book',
             pageBuilder: GoTransitions.material.call,
             builder: (context, state) => HomeBookPage(),
+          )
+        ]),
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: '/home_eiga',
+            pageBuilder: GoTransitions.material.call,
+            builder: (context, state) => HomeEigaPage(),
           )
         ]),
         StatefulShellBranch(routes: [

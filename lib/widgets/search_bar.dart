@@ -36,7 +36,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
 
   OverlayEntry? _overlayEntry;
 
-  bool _readonly = false;
+  final bool _readonly = false;
   final _focusNode = FocusNode();
 
   @override
