@@ -76,6 +76,7 @@ class _TabViewEigaState extends State<TabViewEiga>
 
                       return CarouselEiga(
                           aspectRatio: data.carousel!.aspectRatio,
+                          sourceId: widget.service.uid,
                           items: data.carousel!.items,
                           maxHeight: data.carousel!.maxHeightBuilder(context));
                     }
