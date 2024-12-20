@@ -5,10 +5,9 @@ import 'package:honyomi/cache/get_user.dart';
 import 'package:honyomi/core_services/book/auth_service.dart';
 import 'package:honyomi/core_services/book/book_base_service.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
+import 'package:honyomi/database/isar.dart';
 import 'package:honyomi/globals.dart';
-import 'package:honyomi/models/cookie_manager.dart';
-import 'package:honyomi/objectbox.g.dart';
-import 'package:honyomi/plugins/objectbox.dart';
+import 'package:honyomi/database/scheme/cookie_manager.dart';
 
 class AccountService extends StatefulWidget {
   final BookBaseService service;
@@ -50,15 +49,13 @@ class _AccountServiceState extends State<AccountService> {
   }
 
   Future<void> _fetchUser() async {
-    final row = objectBox.store
-        .box<CookieManager>()
-        .query(CookieManager_.uid.equals(widget.service.uid))
-        .build()
-        .findFirst();
+    final row = await isar.cookieManagers.getByUid(widget.service.uid);
 
-    setState(() {
-      _signed = row?.signed??false;
-    });
+    if (mounted) {
+      setState(() {
+        _signed = row?.signed ?? false;
+      });
+    }
 
     if (row?.signed != true) return;
 
@@ -85,7 +82,7 @@ class _AccountServiceState extends State<AccountService> {
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 child: Image.network(
                   widget.service.faviconUrl,
-                  headers: { "referer": widget.service.baseUrl },
+                  headers: {"referer": widget.service.baseUrl},
                   fit: BoxFit.cover,
                 )),
             const SizedBox(width: 5.0),

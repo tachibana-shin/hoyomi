@@ -39,13 +39,13 @@ class _CarouselEigaState extends State<CarouselEiga> {
           // scale: 0.9,
           itemBuilder: (BuildContext context, int index) {
             final item = widget.items.elementAt(index);
-            return ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: InkWell(
-                    onTap: () {
-                      context.push(
-                          "/details_eiga/${widget.sourceId}/${item.eigaId}");
-                    },
+            return GestureDetector(
+                onTap: () {
+                  context
+                      .push("/details_eiga/${widget.sourceId}/${item.eigaId}");
+                },
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16.0),
                     child: Stack(
                       children: [
                         Image.network(
@@ -108,12 +108,15 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                 )))),
                         Positioned(
                           left: 0,
-                          right: 0,
                           bottom: 0,
+                          right: 0,
+                          height: height * 0.8,
                           child: Container(
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.only(
-                                left: 24.0, top: 18.0, bottom: 24.0),
+                            margin: EdgeInsets.only(
+                                left: 24.0,
+                                right: 12.0,
+                                top: 18.0,
+                                bottom: 24.0),
                             child: Expanded(
                                 child: Column(
                                     crossAxisAlignment:

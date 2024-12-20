@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:honyomi/core_services/book/book_base_service.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:honyomi/core_services/utils_service.dart';
 import 'package:honyomi/widgets/vertical_list.dart';
 import 'vertical_book.dart';
 
@@ -45,10 +46,9 @@ class VerticalBookList extends StatelessWidget {
         );
       },
       builderError: (Object? error) {
-        if (service?.isCaptchaError(error) == true) {
-          return Center(child: service?.templateCaptchaResolver(context));
-        }
-        return null;
+        return Center(
+            child: UtilsService.errorWidgetBuilder(context,
+                error: error, orElse: (error) => Text('Error: $error')));
       },
     );
   }

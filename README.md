@@ -15,4 +15,7 @@ A new Flutter project.
 
 - [ ] Fix page `Error: ...` can't pull refresh
 
+- [ ] Responsive for video player
+- [ ] AppBar all page
+
 /// provider or mobx

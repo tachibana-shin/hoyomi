@@ -7,7 +7,7 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:honyomi/controller/history.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:honyomi/models/book.dart';
+import 'package:honyomi/database/scheme/book.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:honyomi/widgets/book/vertical_book_list.dart';
 import 'package:intl/intl.dart';
@@ -32,7 +32,7 @@ class Follow extends StatefulWidget {
 }
 
 class _FollowState extends State<Follow> {
-  final _history = HistoryController(null);
+  final _history = HistoryController();
   final List<Book> _items = [];
   int _page = 1;
 
@@ -72,17 +72,18 @@ class _FollowState extends State<Follow> {
     }
     _scrollCompleter = Completer();
 
-    setState(() {
-      final data = _history.getListFollows(30, offset: (_page - 1) * 30);
-      _items.addAll(data);
+    final data = await _history.getListFollows(30, offset: (_page - 1) * 30);
+    if (mounted) {
+      setState(() {
+        _items.addAll(data);
+        if (data.length < 30) {
+          _page++;
+          keepFetchingData = true;
+        }
 
-      if (data.length < 30) {
-        _page++;
-        keepFetchingData = true;
-      }
-
-      _scrollCompleter!.complete(keepFetchingData);
-    });
+        _scrollCompleter!.complete(keepFetchingData);
+      });
+    }
   }
 
   // _groupsのgetter

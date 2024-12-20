@@ -20,7 +20,7 @@ class IconButtonFollow extends StatefulWidget {
 
 class _IconButtonFollowState extends State<IconButtonFollow> {
   final ValueNotifier<bool> _isFollowed = ValueNotifier<bool>(false);
-  final _history = HistoryController(null);
+  final _history = HistoryController();
 
   @override
   void initState() {
@@ -28,14 +28,12 @@ class _IconButtonFollowState extends State<IconButtonFollow> {
     _setFollowed(null);
   }
 
-  void _setFollowed(bool? val) {
+  void _setFollowed(bool? val)async  {
     if (widget.book == null) return;
 
-    _isFollowed.value = _history
-            .createBook(widget.sourceId,
-                bookId: widget.bookId, book: widget.book!, followed: val)
-            .followedAt !=
-        null;
+    final book = await _history.createBook(widget.sourceId,
+        bookId: widget.bookId, book: widget.book!, followed: val);
+    _isFollowed.value = book.followedAt != null;
   }
 
   @override

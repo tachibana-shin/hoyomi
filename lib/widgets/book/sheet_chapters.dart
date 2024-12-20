@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:honyomi/models/history_chap.dart';
+import 'package:honyomi/database/scheme/history_chap.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
 import 'package:honyomi/widgets/circular_progress.dart';
 

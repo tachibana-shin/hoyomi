@@ -1,3 +1,4 @@
+import 'package:honyomi/core_services/base_service.dart';
 import 'package:honyomi/core_services/book/book_base_service.dart';
 import 'package:honyomi/core_services/eiga/eiga_base_service.dart';
 import 'package:honyomi/core_services/eiga/services/animevietsub/main.dart';
@@ -27,4 +28,12 @@ EigaBaseService getEigaService(String id) {
   }
 
   throw Exception('Service not found');
+}
+
+BaseService getBaseService(String uid) {
+  try {
+    return getBookService(uid);
+  } catch (err) {
+    return getEigaService(uid);
+  }
 }

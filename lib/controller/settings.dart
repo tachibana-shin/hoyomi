@@ -1,18 +1,15 @@
-import 'package:honyomi/models/settings.dart';
-import 'package:honyomi/objectbox.g.dart';
-import 'package:honyomi/plugins/objectbox.dart';
+import 'package:honyomi/database/isar.dart';
+import 'package:honyomi/database/scheme/settings.dart';
 
 class SettingsController {
-  final Box<Settings> _settingsBox;
+  final  _settingsBox = isar.settings;
 
   Settings? _settings;
 
-  SettingsController() : _settingsBox = objectBox.store.box<Settings>();
-
-  Settings getSettings() {
+  Future<Settings> getSettings() async{
     if (_settings != null) return _settings!;
 
-    _settings = _settingsBox.query(Settings_.id.equals(0)).build().findFirst();
+    _settings =await _settingsBox.get(0);
     if (_settings == null) {
       _settings = Settings();
       _settingsBox.put(_settings!);

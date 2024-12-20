@@ -5,14 +5,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inappwebview;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/database/isar.dart';
+import 'package:honyomi/errors/captcha_required_exception.dart';
 import 'package:html/dom.dart' as d;
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
 
 import 'package:honyomi/globals.dart';
-import 'package:honyomi/models/cookie_manager.dart';
-import 'package:honyomi/objectbox.g.dart';
-import 'package:honyomi/plugins/objectbox.dart';
+import 'package:honyomi/database/scheme/cookie_manager.dart';
 import 'package:honyomi/router/index.dart';
 
 final inappwebview.WebViewEnvironment webViewEnvironment =
@@ -228,6 +229,61 @@ abstract class UtilsService {
   String get name;
   String get uid => name.toLowerCase().replaceAll(r"\s", "-");
 
+  static void showCaptchaResolve(BuildContext? context,
+      {String? url, required CaptchaRequiredException error}) {
+    showSnackBar(errorWidgetBuilder(context,
+        isSnackbar: true,
+        url: url,
+        error: error,
+        orElse: (error) => Text('An error occurred: $error')));
+  }
+
+  static Widget errorWidgetBuilder(BuildContext? context,
+      {bool isSnackbar = false,
+      String? url,
+      required Object? error,
+      required Widget Function(Object? error) orElse}) {
+    return error is! CaptchaRequiredException
+        ? orElse(error)
+        : Padding(
+            padding: isSnackbar
+                ? EdgeInsets.zero
+                : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      Icon(MaterialCommunityIcons.earth,
+                          color: isSnackbar || context == null
+                              ? Colors.black
+                              : Theme.of(context).colorScheme.onSurface),
+                      SizedBox(width: 8),
+                      Expanded(
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                            Text('Please resolve Captcha to continue.'),
+                            if (url != null)
+                              Text(url,
+                                  style: TextStyle(fontSize: 14.0),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis)
+                          ]))
+                    ],
+                  ),
+                  SizedBox(height: 8.0),
+                  ElevatedButton(
+                    child: Text('Go to Captcha'),
+                    onPressed: () async {
+                      await router.push('/webview/${error.service.uid}');
+                      router.refresh();
+                    },
+                  ),
+                ]));
+  }
+
   /// Called before inserting the cookie to the insert request. Override this method to modify the cookie
   /// before it is inserted. The default implementation simply returns the original cookie.
   ///
@@ -236,55 +292,6 @@ abstract class UtilsService {
   /// Returns the modified cookie.
   String? onBeforeInsertCookie(String? cookie) {
     return cookie;
-  }
-
-  void showCaptchaResolve(BuildContext? context, {String? url}) {
-    showSnackBar(templateCaptchaResolver(context, isSnackbar: true, url: url));
-  }
-
-  Widget templateCaptchaResolver(BuildContext? context,
-      {bool isSnackbar = false, String? url}) {
-    return Padding(
-        padding: isSnackbar
-            ? EdgeInsets.zero
-            : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  Icon(MaterialCommunityIcons.earth,
-                      color: isSnackbar || context == null
-                          ? Colors.black
-                          : Theme.of(context).colorScheme.onSurface),
-                  SizedBox(width: 8),
-                  Expanded(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                        Text('Please resolve Captcha to continue.'),
-                        if (url != null)
-                          Text(url,
-                              style: TextStyle(fontSize: 14.0),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis)
-                      ]))
-                ],
-              ),
-              SizedBox(height: 8.0),
-              ElevatedButton(
-                child: Text('Go to Captcha'),
-                onPressed: () async {
-                  await router.push('/webview/$uid');
-                  router.refresh();
-                },
-              ),
-            ]));
-  }
-
-  bool isCaptchaError(dynamic error) {
-    return '$error' == 'Captcha required';
   }
 
   /// Fetches data from the provided URL, handling cookies and retries.
@@ -301,11 +308,7 @@ abstract class UtilsService {
     String? cookiesText = cookie;
 
     if (cookie == null) {
-      final row = objectBox.store
-          .box<CookieManager>()
-          .query(CookieManager_.uid.equals(uid))
-          .build()
-          .findFirst();
+      final row = await isar.cookieManagers.getByUid(uid);
       cookiesText = row?.cookie;
     }
 
@@ -360,8 +363,10 @@ abstract class UtilsService {
     // }
 
     if ([429, 503, 403].contains(response.statusCode)) {
+      final error = CaptchaRequiredException(getBaseService(uid));
+
       // required captcha resolve
-      showCaptchaResolve(null, url: url);
+      showCaptchaResolve(null, url: url, error: error);
       try {
         final start = DateTime.now();
         final data = await createWebView(uri)
@@ -372,7 +377,7 @@ abstract class UtilsService {
         return data;
       } catch (err) {
         debugPrint('Error: $err');
-        return Future.error('Captcha required');
+        return Future.error(error);
       }
     }
 

@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:honyomi/core_services/book/book_base_service.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:honyomi/core_services/utils_service.dart';
 import 'package:honyomi/widgets/horizontal_list.dart';
 import 'vertical_book.dart';
 
+class BasicBookExtend {
+  final BasicBook book;
+  final String sourceId;
+  final double? percentRead;
+
+  BasicBookExtend(
+      {required this.book, required this.sourceId, this.percentRead});
+}
+
 class HorizontalBookList extends StatelessWidget {
-  final List<BasicBook>? items;
-  final Future<List<BasicBook>> itemsFuture;
-  final BookBaseService? service;
-  final String Function(int index)? getService;
-  final double Function(int index)? getPercentRead;
+  final List<BasicBookExtend>? items;
+  final Future<List<BasicBookExtend>>? itemsFuture;
   final Function()? onTapChild;
   final String title;
   final String? more;
@@ -18,15 +24,12 @@ class HorizontalBookList extends StatelessWidget {
   const HorizontalBookList({
     super.key,
     this.items,
-    required this.itemsFuture,
-    required this.service,
-    this.getService,
-    this.getPercentRead,
+    this.itemsFuture,
     this.onTapChild,
     required this.title,
     required this.more,
     this.totalItems,
-  });
+  }) : assert(items != null || itemsFuture != null);
 
   @override
   Widget build(BuildContext context) {
@@ -37,17 +40,17 @@ class HorizontalBookList extends StatelessWidget {
       itemsFuture: itemsFuture,
       builder: (context, book, index) {
         return VerticalBook(
-          book: book,
-          sourceId: service?.uid ?? getService!(index),
-          percentRead: getPercentRead != null ? getPercentRead!(index) : null,
+          book: book.book,
+          sourceId: book.sourceId,
+          percentRead: book.percentRead,
         );
       },
       builderError: (Object? error) {
-        if (service?.isCaptchaError(error) == true) {
-          return Center(child: service?.templateCaptchaResolver(context));
-        }
-        return null;
-      }, totalFuture: totalItems,
+        return Center(
+            child: UtilsService.errorWidgetBuilder(context,
+                error: error, orElse: (error) => Text('Error: $error')));
+      },
+      totalFuture: totalItems,
     );
   }
 }

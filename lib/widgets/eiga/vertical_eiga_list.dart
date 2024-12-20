@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:honyomi/core_services/eiga/eiga_base_service.dart';
 import 'package:honyomi/core_services/eiga/interfaces/basic_eiga.dart';
+import 'package:honyomi/core_services/utils_service.dart';
 import 'package:honyomi/widgets/eiga/vertical_eiga.dart';
 import 'package:honyomi/widgets/vertical_list.dart';
 
@@ -40,10 +41,10 @@ class VerticalEigaList extends StatelessWidget {
         );
       },
       builderError: (Object? error) {
-        if (service?.isCaptchaError(error) == true) {
-          return Center(child: service?.templateCaptchaResolver(context));
-        }
-        return null;
+        return Center(
+            child: UtilsService.errorWidgetBuilder(context,
+                error: error,
+                orElse: (error) => Text('Error: $error')));
       },
     );
   }

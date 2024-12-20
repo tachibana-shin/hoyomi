@@ -5,10 +5,9 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/cache/get_user.dart';
 import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/database/isar.dart';
 import 'package:honyomi/globals.dart';
-import 'package:honyomi/models/cookie_manager.dart' as model;
-import 'package:honyomi/objectbox.g.dart';
-import 'package:honyomi/plugins/objectbox.dart';
+import 'package:honyomi/database/scheme/cookie_manager.dart' as model;
 
 class CustomWebView extends StatefulWidget {
   final String serviceId;
@@ -25,8 +24,7 @@ class _CustomWebViewState extends State<CustomWebView> {
       WebViewEnvironment.fromPlatform(
           platform: PlatformWebViewEnvironment(
               PlatformWebViewEnvironmentCreationParams(
-                  settings: WebViewEnvironmentSettings(
-                  ))));
+                  settings: WebViewEnvironmentSettings())));
   late final String _initialUrl;
 
   String _currentTitle = "Loading...";
@@ -68,25 +66,23 @@ class _CustomWebViewState extends State<CustomWebView> {
         signed = false;
       }
 
-      final record = objectBox.store
-          .box<model.CookieManager>()
-          .query(CookieManager_.uid.equals(widget.serviceId))
-          .build()
-          .findFirst();
+      final record = await isar.cookieManagers.getByUid(widget.serviceId);
       if (record != null) {
         record.cookie = cookiesText;
         record.signed = signed;
         record.updatedAt = DateTime.now();
 
-        objectBox.store.box<model.CookieManager>().put(record);
+        await isar.cookieManagers.put(record);
       } else {
         final record = model.CookieManager(
           uid: widget.serviceId,
           cookie: cookiesText,
           signed: signed,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
         );
 
-        objectBox.store.box<model.CookieManager>().put(record);
+        await isar.cookieManagers.put(record);
       }
     } catch (e) {
       showSnackBar(
@@ -175,10 +171,6 @@ class _CustomWebViewState extends State<CustomWebView> {
               onWebViewCreated: (controller) {
                 _webViewController =
                     controller; //..loadUrl(urlRequest: URLRequest());
-              },
-              shouldInterceptRequest: (controller, request) async {
-                print(request.headers);
-                return null;
               },
               onTitleChanged: (controller, title) {
                 setState(() {

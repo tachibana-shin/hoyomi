@@ -11,8 +11,10 @@ import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/book/interfaces/status_enum.dart';
 import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/core_services/utils_service.dart';
+import 'package:honyomi/errors/captcha_required_exception.dart';
 import 'package:honyomi/globals.dart';
-import 'package:honyomi/models/history_chap.dart';
+import 'package:honyomi/database/scheme/history_chap.dart';
 import 'package:honyomi/plugins/event_bus.dart';
 import 'package:honyomi/utils/format_number.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
@@ -71,7 +73,7 @@ class _DetailsComicState extends State<DetailsComic>
         if (_service is AuthService &&
             (_service as AuthService).getComments != null) {}
 
-        HistoryController(null)
+        HistoryController()
             .createBook(_service.uid, bookId: widget.bookId, book: book);
 
         _updateGetHistory();
@@ -92,14 +94,17 @@ class _DetailsComicState extends State<DetailsComic>
     _scrollController.addListener(_onScroll);
   }
 
-  void _updateGetHistory() {
-    setState(() {
-      final history = HistoryController(null);
-      final map = history.getHistory(_service.uid, widget.bookId);
-      if (map != null) {
-        _historyChapters = {for (var item in map) item.chapterId: item};
-      }
-    });
+  void _updateGetHistory() async {
+    final history = HistoryController();
+    final map = await history.getHistory(_service.uid, widget.bookId);
+
+    if (mounted) {
+      setState(() {
+        if (map != null) {
+          _historyChapters = {for (var item in map) item.chapterId: item};
+        }
+      });
+    }
   }
 
   @override
@@ -166,11 +171,10 @@ class _DetailsComicState extends State<DetailsComic>
             }
 
             if (snapshot.hasError) {
-              if (_service.isCaptchaError(snapshot.error)) {
-                return Center(child: _service.templateCaptchaResolver(context));
-              }
-
-              return Center(child: Text('Error: ${snapshot.error}'));
+              return Center(
+                  child: UtilsService.errorWidgetBuilder(context,
+                      error: snapshot.error,
+                      orElse: (err) => Text('Error: $err')));
             }
 
             if (!snapshot.hasData) {
@@ -632,9 +636,10 @@ class _DetailsComicState extends State<DetailsComic>
     if (_suggestFuture == null) return SizedBox.shrink();
 
     return HorizontalBookList(
-        itemsFuture: _suggestFuture!.then((value) => value.items),
+        itemsFuture: _suggestFuture!.then((value) => value.items
+            .map((book) => BasicBookExtend(book: book, sourceId: _service.uid))
+            .toList()),
         // totalItems: _suggestFuture!.then((value) => value.totalItems),
-        service: _service,
         title: 'Suggest',
         more: null);
   }
@@ -754,7 +759,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
           });
         }
       }).catchError((error) {
-        if (!widget.service.isCaptchaError(error)) {
+        if (error is! CaptchaRequiredException) {
           showSnackBar(Text('Error: $error')); // 显示錯誤訊息
         }
       });
@@ -773,7 +778,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
         });
       }
     }).catchError((error) {
-      if (!widget.service.isCaptchaError(error)) {
+      if (error is! CaptchaRequiredException) {
         showSnackBar(Text('Error: $error')); // 显示錯誤訊息
       }
     });

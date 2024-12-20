@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:honyomi/controller/history.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:honyomi/models/book.dart';
+import 'package:honyomi/database/scheme/book.dart';
 import 'package:honyomi/widgets/book/horizontal_book_list.dart';
 
 class HistoryHorizontalList extends StatefulWidget {
@@ -15,49 +15,34 @@ class HistoryHorizontalList extends StatefulWidget {
 }
 
 class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
-  late final List<Book> _items;
+  late final Future<List<Book>> _itemsFuture;
 
   @override
   initState() {
     super.initState();
-    _items = HistoryController(null).getListHistory(10, offset: 0);
+    _itemsFuture = HistoryController().getListHistory(10, offset: 0);
   }
 
   @override
   Widget build(BuildContext context) {
-    final items =
-        _items.map((item) => MetaBook.fromJson(jsonDecode(item.meta)));
-    int index = 0;
-
     return HorizontalBookList(
-      itemsFuture: Future.value(_items
-          .map(
-            (item) =>
-                BasicBook.fromMeta(item.bookId, book: items.elementAt(index++)),
-          )
-          .toList()),
-      service: null,
-      getService: (index) => _items.elementAt(index).sourceId,
-      getPercentRead: (index) {
-        final bookHistory = _items.elementAt(index);
-        final book = items.elementAt(index);
+      itemsFuture: _itemsFuture.then((items) => items.map((item) {
+            final meta = MetaBook.fromJson(jsonDecode(item.meta));
+            final book = BasicBook.fromMeta(item.bookId, book: meta);
 
-        final current = bookHistory.histories
-            .reduce((a, b) => a.updatedAt.isAfter(b.updatedAt) ? a : b);
+            final current = item.histories
+                .reduce((a, b) => a.updatedAt.isAfter(b.updatedAt) ? a : b);
 
-        final currentEpisodeIndex =
-            book.chapters.toList().lastIndexWhere((chapter) {
-          return current.chapterId == chapter.chapterId;
-        });
+            final currentEpisodeIndex = meta.chapters.lastIndexWhere((chapter) {
+              return current.chapterId == chapter.chapterId;
+            });
 
-        return (book.chapters.length - currentEpisodeIndex) /
-            book.chapters.length;
-        // currentElement.value
-        //     .elementAt(index)
-        //     .histories
-        //     .fold(0.0, (p, c) => p + c.currentPage / c.maxPage) /
-        // items.elementAt(index).chapters.length
-      },
+            return BasicBookExtend(
+                sourceId: item.sourceId,
+                book: book,
+                percentRead: (meta.chapters.length - currentEpisodeIndex) /
+                    meta.chapters.length);
+          }).toList()),
       more: '/library/history',
       title: 'History',
     );

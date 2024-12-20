@@ -227,7 +227,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _showOverlay() {
-    return ;
+    return;
     _overlayEntry = OverlayEntry(builder: (context) => _createOverlayEntry());
     Overlay.of(context).insert(_overlayEntry!);
 
@@ -305,11 +305,13 @@ class _QuickSearchScreenState extends State<QuickSearchScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: bookServices.map((service) {
-          final searchResult = _searchFutures[service.uid];
+          final searchResult = _searchFutures[service.uid]!;
           return HorizontalBookList(
-              itemsFuture: searchResult!.then((data) => data.items),
+              itemsFuture: searchResult.then((data) => data.items
+                  .map((item) =>
+                      BasicBookExtend(book: item, sourceId: service.uid))
+                  .toList()),
               totalItems: searchResult.then((data) => data.totalItems),
-              service: service,
               title: service.name,
               more: '/search/${service.uid}?q=${widget.keyword}',
               onTapChild: widget.onDismissed);

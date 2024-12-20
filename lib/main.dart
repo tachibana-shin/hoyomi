@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:honyomi/background_services/book_changes.dart';
-import 'package:honyomi/plugins/objectbox.dart';
+import 'package:honyomi/database/isar.dart';
 import 'package:honyomi/router/index.dart';
 
 import 'globals.dart';
@@ -12,10 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:go_transitions/go_transitions.dart';
 
 Future<void> main() async {
-  // ca
+  WidgetsFlutterBinding.ensureInitialized();
+
   await _installCert();
-  // init store
-  await initObjectBox();
+  await initializeIsar();
 
   runApp(const MainApp());
 

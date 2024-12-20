@@ -7,7 +7,8 @@ import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 
 import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/views/reader/manga_reader.dart';
+import 'package:honyomi/core_services/utils_service.dart';
+import 'package:honyomi/screens/home_book/manga_reader.dart';
 
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:honyomi/widgets/book/icon_button_follow.dart';
@@ -80,11 +81,10 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
             }
 
             if (snapshot.hasError) {
-              if (_service.isCaptchaError(snapshot.error)) {
-                return Center(child: _service.templateCaptchaResolver(context));
-              }
-
-              return Center(child: Text('Error: ${snapshot.error}'));
+              return Center(
+                  child: UtilsService.errorWidgetBuilder(context,
+                      error: snapshot.error,
+                      orElse: (error) => Text('Error: $error')));
             }
 
             if (!snapshot.hasData || snapshot.data![0].isEmpty) {

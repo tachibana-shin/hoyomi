@@ -9,21 +9,23 @@ import 'package:honyomi/controller/settings.dart';
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/book/interfaces/status_enum.dart';
 import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/models/book.dart';
-import 'package:honyomi/models/settings.dart';
-import 'package:honyomi/objectbox.g.dart';
-import 'package:honyomi/plugins/objectbox.dart';
+import 'package:honyomi/database/isar.dart';
+import 'package:honyomi/database/scheme/book.dart';
+import 'package:honyomi/database/scheme/settings.dart';
+import 'package:isar/isar.dart';
 
 class BookChanges {
-  final _bookBox = objectBox.store.box<Book>();
+  final _bookBox =isar.books;
   late final Settings _settings;
 
   Timer? _timer;
 
-  BookChanges() : _settings = SettingsController().getSettings();
+  BookChanges() ;
 
   // Method to initialize background service
-  void initializeBackgroundService() {
+  void initializeBackgroundService() async {
+    _settings = await SettingsController().getSettings();
+
     FlutterBackgroundService().configure(
       androidConfiguration: AndroidConfiguration(
         onStart: onStart,
@@ -65,7 +67,7 @@ class BookChanges {
   }
 
   Future<void> checkUpdateAll() async {
-    final allBooks = fetchAndSortBooksForUpdate();
+    final allBooks = await fetchAndSortBooksForUpdate();
 
     final groupedBooks = groupBooksBySourceId(allBooks);
 
@@ -121,18 +123,16 @@ class BookChanges {
     return groupedBooks;
   }
 
-  List<Book> fetchAndSortBooksForUpdate() {
+  Future<List<Book>> fetchAndSortBooksForUpdate() {
     DateTime thirtyMinutesAgo = DateTime.now()
         .subtract(Duration(minutes: _settings.pollingIntervalBook));
-    int thirtyMinutesAgoMillis = thirtyMinutesAgo.millisecondsSinceEpoch;
 
     final itemsToUpdate = _bookBox
-        .query(Book_.updatedAt
-            .lessThan(thirtyMinutesAgoMillis)
-            .and(Book_.status.equals(StatusEnum.ongoing.name)))
-        .order(Book_.updatedAt, flags: Order.descending)
-        .build()
-        .find();
+        .filter()
+        .updatedAtLessThan(thirtyMinutesAgo)
+        .statusEqualTo(StatusEnum.ongoing.name)
+        .sortByUpdatedAtDesc()
+        .findAll();
 
     return itemsToUpdate;
   }

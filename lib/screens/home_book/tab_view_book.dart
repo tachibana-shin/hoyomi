@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:honyomi/core_services/book/book_base_service.dart';
+import 'package:honyomi/core_services/utils_service.dart';
 import 'package:honyomi/stores.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_book_section.dart';
 import 'package:honyomi/widgets/book/horizontal_book_list.dart';
@@ -16,7 +17,8 @@ class TabViewBook extends StatefulWidget {
   createState() => _TabViewBookState();
 }
 
-class _TabViewBookState extends State<TabViewBook> with AutomaticKeepAliveClientMixin {
+class _TabViewBookState extends State<TabViewBook>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -48,12 +50,10 @@ class _TabViewBookState extends State<TabViewBook> with AutomaticKeepAliveClient
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          if (widget.service.isCaptchaError(snapshot.error)) {
-            return Center(
-                child: widget.service.templateCaptchaResolver(context));
-          }
-
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Center(
+              child: UtilsService.errorWidgetBuilder(context,
+                  error: snapshot.error,
+                  orElse: (error) => Text('Error: $error')));
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text('No data available'));
@@ -78,8 +78,10 @@ class _TabViewBookState extends State<TabViewBook> with AutomaticKeepAliveClient
 
                           if (value == false) {
                             return HorizontalBookList(
-                              itemsFuture: Future.value(section.items),
-                              service: widget.service,
+                              items: section.items
+                                  .map((item) => BasicBookExtend(
+                                      book: item, sourceId: widget.service.uid))
+                                  .toList(),
                               title: section.name,
                               more: section.sectionId != null
                                   ? '/section/${widget.service.uid}/${section.sectionId}'

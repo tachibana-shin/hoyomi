@@ -9,6 +9,7 @@ import 'package:honyomi/core_services/book/book_base_service.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_filter.dart';
 import 'package:honyomi/core_services/main.dart';
+import 'package:honyomi/core_services/utils_service.dart';
 import 'package:honyomi/widgets/book/icon_button_open_browser.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:honyomi/widgets/book/vertical_book.dart';
@@ -297,10 +298,9 @@ class _SectionState extends State<Section> {
   }
 
   Widget _buildError(BuildContext context) {
-    if (_service.isCaptchaError(_pagingController.error)) {
-      return Center(child: _service.templateCaptchaResolver(context));
-    }
-
-    return Center(child: Text('Error: ${_pagingController.error}'));
+    return Center(
+        child: UtilsService.errorWidgetBuilder(context,
+            error: _pagingController.error,
+            orElse: (error) => Text('Error: $error')));
   }
 }
