@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:honyomi/background_services/book_changes.dart';
 import 'package:honyomi/database/isar.dart';
 import 'package:honyomi/router/index.dart';
 
@@ -14,16 +14,16 @@ import 'package:go_transitions/go_transitions.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await _installCert();
+
+  if (!kIsWeb) await _installCert();
   await initializeIsar();
 
   runApp(const MainApp());
 
-  BookChanges().checkUpdateAll();
-
   // register background service
   // if (Platform.isAndroid || Platform.isIOS) {
   //   BookChanges().initializeBackgroundService();
+  // BookChanges().checkUpdateAll();
   // }
 }
 
@@ -37,8 +37,6 @@ class _MyHttpOverrides extends HttpOverrides {
 }
 
 Future<void> _installCert() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   ByteData data =
       await PlatformAssetBundle().load('assets/ca/lets-encrypt-r3.pem');
   SecurityContext.defaultContext
