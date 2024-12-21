@@ -5,6 +5,7 @@ import 'package:honyomi/core_services/eiga/interfaces/basic_carousel.dart';
 import 'package:honyomi/core_services/eiga/interfaces/basic_carousel_item.dart';
 import 'package:honyomi/core_services/eiga/interfaces/basic_eiga.dart';
 import 'package:honyomi/core_services/eiga/interfaces/basic_eiga_section.dart';
+import 'package:honyomi/core_services/eiga/interfaces/eiga_param.dart';
 import 'package:honyomi/core_services/interfaces/basic_genre.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:html/dom.dart';
@@ -17,9 +18,22 @@ class AnimeVietsubService extends EigaBaseService {
   @override
   String get faviconUrl => "$baseUrl/favicon.ico";
 
+  @override
+  parseURL(String url) {
+    final uri = Uri.parse(url);
+    assert(uri.path.startsWith("/phim"));
+
+    final seg = uri.path.split("/");
+    // [0] is empty, [1] is phim
+    final eigaId = seg[2];
+    final episodeId = seg.length >= 4 ? seg[3] : null;
+
+    return EigaParam(eigaId: eigaId, episodeId: episodeId);
+  }
+
   BasicEiga _parseItem(Element item) {
     final name = item.querySelector(".Title")!.text;
-    final eigaId = item.querySelector("a")!.attributes["href"]!;
+    final eigaId = parseURL(item.querySelector("a")!.attributes["href"]!).eigaId;
     final originalName = item.querySelector(".Qlty")?.text ??
         item.querySelector(".mli-quality")?.text;
 
@@ -60,8 +74,13 @@ class AnimeVietsubService extends EigaBaseService {
     final data = _parseItem(item);
 
     final year = item.querySelector(".AAIco-date_range")?.text.trim();
-    final description = item.querySelector(".Description > p")?.innerHtml.trim();
-    final studio = item.querySelector(".AAIco-videocam")?.text.replaceFirst('Studio:', '').trim();
+    final description =
+        item.querySelector(".Description > p")?.innerHtml.trim();
+    final studio = item
+        .querySelector(".AAIco-videocam")
+        ?.text
+        .replaceFirst('Studio:', '')
+        .trim();
     final genres =
         item.querySelectorAll(".AAIco-movie_creation a").map((anchor) {
       final href = anchor.attributes['href']!.split('/');
