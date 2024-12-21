@@ -21,9 +21,11 @@ import 'package:honyomi/pages/section/[sourceId]/[sectionId].page.dart';
 import 'package:honyomi/widgets/navigation_app.dart';
 
 import '../pages/details_comic/[sourceId]/[bookId]/similar/similar_page.dart';
+import '../pages/details_eiga/[sourceId]/[eigaId].dart';
 
 final List<String> routeIgnoreLayoutDefault = [
   '/details_comic',
+  '/details_eiga',
   '/webview',
   '/search/',
   '/search?q=',
@@ -172,6 +174,30 @@ final GoRouter router = GoRouter(
                         ])
                   ]),
             ]),
+            // branch for details_eiga
+        StatefulShellBranch(routes: [
+          GoRoute(
+              path: "/details_eiga",
+              name: "details_eiga",
+              pageBuilder: GoTransitions.material.call,
+              routes: [
+                GoRoute(
+                    path: ":sourceId",
+                    pageBuilder: GoTransitions.material.call,
+                    routes: [
+                      GoRoute(
+                          path: ":eigaId",
+                          pageBuilder: GoTransitions.material.call,
+                          builder: (context, state) => DetailsEigaPage(
+                              sourceId: state.pathParameters['sourceId']!,
+                              eigaId: state.pathParameters['eigaId']!,
+                              episodeId: state.uri.queryParameters['episodeId']
+                          ),
+                      )
+                    ])
+              ]),
+        ]),
+        
         StatefulShellBranch(routes: [
           GoRoute(
               path: '/webview',
