@@ -10,5 +10,6 @@
     "truyengg",
     "truyenqq",
     "Vietsub"
-  ]
+  ],
+  "cmake.ignoreCMakeListsMissing": true
 }
