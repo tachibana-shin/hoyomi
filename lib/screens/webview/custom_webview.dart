@@ -8,6 +8,7 @@ import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/database/isar.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/database/scheme/cookie_manager.dart' as model;
+import 'package:isar/isar.dart';
 
 class CustomWebView extends StatefulWidget {
   final String serviceId;
@@ -66,13 +67,13 @@ class _CustomWebViewState extends State<CustomWebView> {
         signed = false;
       }
 
-      final record = await isar.cookieManagers.getByUid(widget.serviceId);
+      final record = await isar.cookieManagers.where().uidEqualTo(widget.serviceId).findFirstAsync();
       if (record != null) {
         record.cookie = cookiesText;
         record.signed = signed;
         record.updatedAt = DateTime.now();
 
-        await isar.cookieManagers.put(record);
+        isar.cookieManagers.put(record);
       } else {
         final record = model.CookieManager(
           uid: widget.serviceId,
@@ -82,7 +83,7 @@ class _CustomWebViewState extends State<CustomWebView> {
           updatedAt: DateTime.now(),
         );
 
-        await isar.cookieManagers.put(record);
+        isar.cookieManagers.put(record);
       }
     } catch (e) {
       showSnackBar(

@@ -1,13 +1,12 @@
-import 'package:honyomi/database/scheme/history_chap.dart';
 import 'package:isar/isar.dart';
 
 part 'book.g.dart';
 
-@Collection()
+@collection
 class Book {
-  Id id = Isar.autoIncrement;
+  late int id;
 
-  @Index(unique: true, replace: true)
+  @Index(unique: true)
   late String uid;
 
   @Index()
@@ -19,9 +18,6 @@ class Book {
   late String status;
 
   late String meta;
-
-  @Backlink(to: 'book')
-  final histories = IsarLinks<HistoryChap>();
 
   @Index()
   DateTime? followedAt;
@@ -36,7 +32,6 @@ class Book {
   }
 
   Book({
-    this.id = Isar.autoIncrement,
     required this.sourceId,
     required this.bookId,
     required this.status,

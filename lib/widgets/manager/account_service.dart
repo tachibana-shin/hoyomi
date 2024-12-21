@@ -8,6 +8,7 @@ import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
 import 'package:honyomi/database/isar.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/database/scheme/cookie_manager.dart';
+import 'package:isar/isar.dart';
 
 class AccountService extends StatefulWidget {
   final BookBaseService service;
@@ -49,7 +50,7 @@ class _AccountServiceState extends State<AccountService> {
   }
 
   Future<void> _fetchUser() async {
-    final row = await isar.cookieManagers.getByUid(widget.service.uid);
+    final row = await isar.cookieManagers.where().uidEqualTo(widget.service.uid).findFirstAsync();
 
     if (mounted) {
       setState(() {

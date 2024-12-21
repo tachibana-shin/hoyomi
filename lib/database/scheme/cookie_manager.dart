@@ -4,9 +4,9 @@ part 'cookie_manager.g.dart';
 
 @Collection()
 class CookieManager {
-  Id id = Isar.autoIncrement;
+  late int id;
 
-  @Index(unique: true, replace: true)
+  @Index(unique: true)
   late String uid;
 
   late String cookie;
@@ -20,7 +20,6 @@ class CookieManager {
 
   // Constructor
   CookieManager({
-    this.id = Isar.autoIncrement,
     required this.uid,
     required this.cookie,
     required this.signed,

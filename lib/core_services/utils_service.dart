@@ -15,6 +15,7 @@ import 'package:http/http.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/database/scheme/cookie_manager.dart';
 import 'package:honyomi/router/index.dart';
+import 'package:isar/isar.dart';
 
 final inappwebview.WebViewEnvironment webViewEnvironment =
     inappwebview.WebViewEnvironment.fromPlatform(
@@ -308,7 +309,7 @@ abstract class UtilsService {
     String? cookiesText = cookie;
 
     if (cookie == null) {
-      final row = await isar.cookieManagers.getByUid(uid);
+      final row = await isar.cookieManagers.where().uidEqualTo(uid).findFirstAsync();
       cookiesText = row?.cookie;
     }
 

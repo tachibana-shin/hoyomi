@@ -182,17 +182,18 @@ class _HistoryState extends State<History> {
                   more: null,
                   title: '',
                   noHeader: true,
-                  getPercentRead: (index) {
+                  getPercentRead: (index) async {
                     final bookHistory = currentElement.value.elementAt(index);
                     final book = items.elementAt(index);
 
-                    final current = bookHistory.histories.reduce(
-                        (a, b) => a.updatedAt.isAfter(b.updatedAt) ? a : b);
+                    final current =
+                        await _history.getLastChapter(bookHistory.id);
 
-                    final currentEpisodeIndex =
-                        book.chapters.toList().lastIndexWhere((chapter) {
-                      return current.chapterId == chapter.chapterId;
-                    });
+                    final currentEpisodeIndex = current == null
+                        ? -1 
+                        : book.chapters.toList().lastIndexWhere((chapter) {
+                            return current.chapterId == chapter.chapterId;
+                          });
 
                     return (book.chapters.length - currentEpisodeIndex) /
                         book.chapters.length;

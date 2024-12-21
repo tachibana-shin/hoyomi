@@ -1,14 +1,13 @@
-
 import 'package:flutter/material.dart';
 import 'package:honyomi/core_services/eiga/eiga_base_service.dart';
 import 'package:honyomi/core_services/eiga/interfaces/base_eiga_home.dart';
+import 'package:honyomi/core_services/utils_service.dart';
 import 'package:honyomi/stores.dart';
 import 'package:honyomi/widgets/eiga/carousel_eiga.dart';
 import 'package:honyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:honyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
-
 
 class TabViewEiga extends StatefulWidget {
   final EigaBaseService service;
@@ -52,12 +51,10 @@ class _TabViewEigaState extends State<TabViewEiga>
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          if (widget.service.isCaptchaError(snapshot.error)) {
-            return Center(
-                child: widget.service.templateCaptchaResolver(context));
-          }
-
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Center(
+              child: UtilsService.errorWidgetBuilder(context,
+                  error: snapshot.error,
+                  orElse: (error) => Text('Error: $error')));
         }
         if (!snapshot.hasData) {
           return const Center(child: Text('No data available'));
@@ -73,7 +70,6 @@ class _TabViewEigaState extends State<TabViewEiga>
                       data.sections.length + (data.carousel == null ? 0 : 1),
                   itemBuilder: (context, sectionIndex) {
                     if (sectionIndex == 0 && data.carousel != null) {
-
                       return CarouselEiga(
                           aspectRatio: data.carousel!.aspectRatio,
                           sourceId: widget.service.uid,

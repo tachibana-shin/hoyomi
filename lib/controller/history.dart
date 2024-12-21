@@ -11,14 +11,15 @@ class HistoryController {
   final _bookBox = isar.books;
   final _historyChapBox = isar.historyChaps;
 
-  Future<IsarLinks<HistoryChap>?> getHistory(
-      String sourceId, String bookId) async {
-    return (await _bookBox
-            .filter()
-            .bookIdEqualTo(bookId)
-            .sourceIdEqualTo(sourceId)
-            .findFirst())
-        ?.histories;
+  Future<List<HistoryChap>?> getHistory(String sourceId, String bookId) async {
+    final book = await _bookBox
+        .where()
+        .bookIdEqualTo(bookId)
+        .sourceIdEqualTo(sourceId)
+        .findFirstAsync();
+    if (book == null) return null;
+
+    return _historyChapBox.where().bookEqualTo(book.id).findAll();
   }
 
   Future<Book> createBook(
@@ -28,11 +29,11 @@ class HistoryController {
     bool? followed,
   }) async {
     Book? bookObject = await _bookBox
-        .filter()
+        .where()
         .sourceIdEqualTo(sourceId)
         .and()
         .bookIdEqualTo(bookId)
-        .findFirst();
+        .findFirstAsync();
 
     bookObject ??= Book(
       sourceId: sourceId,
@@ -56,7 +57,7 @@ class HistoryController {
       bookObject.meta = newMeta;
     }
 
-    await _bookBox.put(bookObject);
+    _bookBox.put(bookObject);
     return bookObject;
   }
 
@@ -71,8 +72,8 @@ class HistoryController {
       existingHistory.maxPage = maxPage;
       book.updatedAt = existingHistory.updatedAt = DateTime.now();
 
-      await _historyChapBox.put(existingHistory);
-      await _bookBox.put(book);
+      _historyChapBox.put(existingHistory);
+      _bookBox.put(book);
     } else {
       final newHistory = HistoryChap(
           chapterId: chapterId,
@@ -81,33 +82,28 @@ class HistoryController {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
 
-      newHistory.book.value = book;
+      newHistory.book = book.id;
       book.updatedAt = newHistory.updatedAt;
 
-      await _historyChapBox.put(newHistory);
-      await _bookBox.put(book);
+      _historyChapBox.put(newHistory);
+      _bookBox.put(book);
     }
   }
 
   Future<HistoryChap?> getCurrentPage(Book book,
       {required String chapterId}) async {
-    return await _historyChapBox
-        .filter()
+    return _historyChapBox
+        .where()
         .chapterIdEqualTo(chapterId)
         .and()
-        .book((q) => q.idEqualTo(book.id))
-        .findFirst();
+        .bookEqualTo(book.id)
+        .findFirstAsync();
   }
 
   Future<List<Book>> getListHistory(int limit, {required int offset}) async {
-    final query = _bookBox
-        .filter()
-        .histories((q) => q.chapterIdIsNotEmpty())
-        .sortByUpdatedAtDesc()
-        .offset(offset)
-        .limit(limit);
+    final query = _bookBox.where().sortByUpdatedAtDesc();
 
-    final items = await query.findAll();
+    final items = await query.findAllAsync(offset: offset, limit: limit);
     final dropOut = limit - items.length;
 
     if (dropOut > 0 && items.isNotEmpty) {
@@ -119,13 +115,16 @@ class HistoryController {
   }
 
   Future<List<Book>> getListFollows(int limit, {required int offset}) async {
-    final query = _bookBox
-        .filter()
-        .followedAtIsNotNull()
-        .sortByFollowedAtDesc()
-        .offset(offset)
-        .limit(limit);
+    final query = _bookBox.where().followedAtIsNotNull().sortByFollowedAtDesc();
 
-    return await query.findAll();
+    return query.findAllAsync(offset: offset, limit: limit);
+  }
+
+ Future<HistoryChap?> getLastChapter(int bookId) async {
+    return _historyChapBox
+        .where()
+        .bookEqualTo(bookId)
+        .sortByUpdatedAtDesc()
+        .findFirstAsync();
   }
 }

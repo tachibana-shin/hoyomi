@@ -4,7 +4,7 @@ part 'settings.g.dart';
 
 @Collection()
 class Settings {
-  Id id = Isar.autoIncrement;
+  late int id;
 
   late bool mangaReadLazyPage;
 
@@ -13,7 +13,6 @@ class Settings {
   late int pollingIntervalBook = 60 * 60 * 3; // 3 hours
 
   Settings({
-    this.id = Isar.autoIncrement,
     this.mangaReadLazyPage = true,
   });
 }

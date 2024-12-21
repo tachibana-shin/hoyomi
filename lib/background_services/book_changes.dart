@@ -15,12 +15,12 @@ import 'package:honyomi/database/scheme/settings.dart';
 import 'package:isar/isar.dart';
 
 class BookChanges {
-  final _bookBox =isar.books;
+  final _bookBox = isar.books;
   late final Settings _settings;
 
   Timer? _timer;
 
-  BookChanges() ;
+  BookChanges();
 
   // Method to initialize background service
   void initializeBackgroundService() async {
@@ -128,11 +128,11 @@ class BookChanges {
         .subtract(Duration(minutes: _settings.pollingIntervalBook));
 
     final itemsToUpdate = _bookBox
-        .filter()
+        .where()
         .updatedAtLessThan(thirtyMinutesAgo)
         .statusEqualTo(StatusEnum.ongoing.name)
         .sortByUpdatedAtDesc()
-        .findAll();
+        .findAllAsync();
 
     return itemsToUpdate;
   }

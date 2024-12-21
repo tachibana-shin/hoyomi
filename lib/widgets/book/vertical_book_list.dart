@@ -10,7 +10,7 @@ class VerticalBookList extends StatelessWidget {
   final List<BasicBook>? items;
   final BookBaseService? service;
   final String Function(int index)? getService;
-  final double Function(int index)? getPercentRead;
+  final Future<double> Function(int index)? getPercentRead;
   final String title;
   final String? more;
   final bool noHeader;

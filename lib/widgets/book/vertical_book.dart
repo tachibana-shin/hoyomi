@@ -8,7 +8,7 @@ import 'package:honyomi/widgets/circular_progress.dart';
 class VerticalBook extends StatelessWidget {
   final BasicBook book;
   final String sourceId;
-  final double? percentRead;
+  final Future<double>? percentRead;
 
   const VerticalBook(
       {super.key,
@@ -178,21 +178,29 @@ class VerticalBook extends StatelessWidget {
                     Positioned(
                         bottom: 4,
                         right: 4,
-                        child: CircularProgress(
-                            value: percentRead!,
-                            strokeWidth: 7.0,
-                            textStyle: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: Theme.of(context).colorScheme.surface,
-                            ),
-                            borderColor: AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).colorScheme.onTertiaryFixed,
-                            ),
-                            backgroundBorder: Colors.transparent,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.tertiaryFixedDim,
-                            size: 25)),
+                        child: FutureBuilder(
+                            future: percentRead!,
+                            builder: (context, snapshot) {
+                              return CircularProgress(
+                                  value: snapshot.data!,
+                                  strokeWidth: 7.0,
+                                  textStyle: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
+                                  ),
+                                  borderColor: AlwaysStoppedAnimation<Color>(
+                                    Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryFixed,
+                                  ),
+                                  backgroundBorder: Colors.transparent,
+                                  backgroundColor: Theme.of(context)
+                                      .colorScheme
+                                      .tertiaryFixedDim,
+                                  size: 25);
+                            })),
                 ],
               ),
               Padding(
