@@ -19,6 +19,7 @@ class DetailsEigaPage extends StatefulWidget {
 class _DetailsEigaPageState extends State<DetailsEigaPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: PlayerEiga());
+    return Scaffold(
+        body: SingleChildScrollView(child: Column(children: [PlayerEiga()])));
   }
 }
