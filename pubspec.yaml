@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   card_swiper: ^3.0.1
+  crypto: ^3.0.6
   device_info_plus: ^11.2.0
   drop_down_list: ^0.0.8
   dynamic_height_grid_view: ^0.0.4
@@ -16,10 +17,12 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_background_service: ^5.0.10
+  flutter_hls_parser: ^2.0.1
   flutter_inappwebview: ^6.1.5
   flutter_localizations:
     sdk: flutter
   flutter_spinkit: ^5.2.1
+  flutter_subtitle: ^0.0.5
   flutter_vector_icons: ^2.0.0
   flutter_widget_from_html: ^0.15.3
   go_router: ^14.6.0
@@ -44,7 +47,12 @@ dependencies:
   sharara_video_player: ^1.0.14
   share_plus: ^10.1.2
   shared_preferences: ^2.3.3
+  subtitle_wrapper_package:
+    git:
+      url: https://github.com/tachibana-shin/flutter_subtitle_wrapper
+      ref: main
   url_launcher: ^6.3.1
+  video_player: ^2.9.2
   webview_flutter: ^4.10.0
   xml: ^6.5.0
 

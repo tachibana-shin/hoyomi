@@ -1,36 +1,67 @@
+import 'dart:convert';
 import 'dart:core';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:honyomi/core_services/eiga/interfaces/subtitle.dart' as type;
-import 'package:subtitle_wrapper_package/subtitle_controller.dart';
+import 'package:http/http.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
+
+import 'package:honyomi/core_services/eiga/interfaces/source_video.dart';
+import 'package:honyomi/core_services/eiga/interfaces/subtitle.dart' as type;
+import 'package:honyomi/utils/save_file_cache.dart';
 
 // import 'package:bitmovin_player/bitmovin_player.dart';
 // import 'package:theoplayer/theoplayer.dart';
 
 // import 'package:video_player_oneplusdream/video_player_oneplusdream.dart';
 // import 'package:video_player_oneplusdream_example/cache.dart';
+class SourceContent {
+  final String content;
+  final Uri url;
+  final Map<String, String> headers;
+
+  const SourceContent(
+      {required this.content, required this.url, this.headers = const {}});
+}
+
 class PlayerEiga extends StatefulWidget {
   final String title;
   final String subtitle;
+
+  final SourceVideo source;
+  final Future<SourceContent> Function(SourceVideo source)? getSource;
+
   final void Function() onBack;
   final List<type.Subtitle> subtitles;
   final void Function()? onNext;
   final void Function()? onPrev;
 
-  const PlayerEiga(
-      {super.key,
-      required this.title,
-      required this.subtitle,
-      required this.onBack,
-      required this.subtitles,
-      this.onNext,
-      this.onPrev});
+  const PlayerEiga({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.source,
+    this.getSource,
+    required this.onBack,
+    required this.subtitles,
+    this.onNext,
+    this.onPrev,
+  });
   @override
   State<PlayerEiga> createState() => _PlayerEigaState();
+}
+
+class _VariantMeta {
+  final Variant variant;
+  final String code;
+  final String label;
+
+  _VariantMeta(
+      {required this.variant, required this.code, required this.label});
 }
 
 // https://pub.dev/packages/double_tap_player_view
@@ -60,14 +91,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
   final _durationAnimate = const Duration(milliseconds: 300);
 
-  final _availableResolutions = const [
-    (code: 'auto', label: 'Auto'),
-    (code: '240p', label: '240p'),
-    (code: '360p', label: '360p'),
-    (code: '480p', label: '480p'),
-    (code: '720p', label: '720p'),
-    (code: '1080p', label: '1080p'),
-  ];
+  List<_VariantMeta> _availableResolutions = [];
   final _playbackList = const [
     (value: 0.25, label: '0.25x'),
     (value: 0.5, label: '0.5x'),
@@ -83,24 +107,86 @@ class _PlayerEigaState extends State<PlayerEiga> {
   bool _autoPlay = false;
   String? _$subtitleCode;
   double _playbackSpeed = 1.0;
-  String? _qualityCode;
+  String? _$qualityCode;
   bool _$fullscreen = false;
 
   @override
   void initState() {
     super.initState();
 
-    // saveFileCache(content: b64, path: "test.m3u8").then((file) {
-    //   if (!mounted) return;
+    _setupPlayer(widget.source);
+  }
 
-    _controller = VideoPlayerController.networkUrl(
-        Uri.parse('https://download.samplelib.com/mp4/sample-30s.mp4'),
-        httpHeaders: {'referer': 'https://animevietsub.tv/'})
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
-    // });
+  void _setupPlayer(SourceVideo source) async {
+    _availableResolutions = [];
+
+    // not function get source
+    if (widget.getSource == null) {
+      final url = Uri.parse(source.src);
+      _controller =
+          VideoPlayerController.networkUrl(url, httpHeaders: source.headers)
+            ..initialize().then((_) {
+              // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+              setState(() {});
+            });
+
+      final response = await get(url, headers: source.headers);
+      if (response.statusCode > 299) throw response;
+
+      _initializeHls(content: response.body, url: url, headers: source.headers);
+
+      return;
+    }
+
+    setState(() {});
+
+    final content = await widget.getSource!(source);
+    final fileCache = await saveFileCache(
+        content: content.content,
+        path: "${sha256.convert(utf8.encode(content.content))}.m3u8");
+    if (!mounted) return;
+
+    _controller =
+        VideoPlayerController.file(fileCache, httpHeaders: source.headers)
+          ..initialize().then((_) {
+            // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+            setState(() {});
+          });
+
+    _initializeHls(
+        content: content.content, url: content.url, headers: content.headers);
+  }
+
+  Future<void> _initializeHls(
+      {required String content,
+      required Uri url,
+      required Map<String, String> headers}) async {
+    final playlist = await HlsPlaylistParser.create().parseString(url, content);
+
+    if (playlist is HlsMasterPlaylist) {
+      // master m3u8 file
+      // no action
+      for (var variant in playlist.variants) {
+        debugPrint("[initialize_hls]: variant: ${variant.url}");
+      }
+
+      if (playlist.variants.isEmpty) return;
+
+      _availableResolutions = playlist.variants.map((variant) {
+        return _VariantMeta(
+            variant: variant,
+            code: variant.url.toString(),
+            label: variant.format.label ??
+                variant.format.height?.toString() ??
+                variant.format.id ??
+                variant.url.toString());
+      }).toList();
+      _$qualityCode = _availableResolutions.first.code;
+      setState(() {});
+    } else if (playlist is HlsMediaPlaylist) {
+      // media m3u8 file
+      debugPrint("[initialize_hls]: no action because is media playlist");
+    }
   }
 
   @override
@@ -109,30 +195,34 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
     return AspectRatio(
         aspectRatio: 16 / 9,
-        child: Stack(children: [
-          SubtitleWrapper(
-            enabled: _subtitleCode != null,
-            videoPlayerController: _controller!,
-            subtitleController: subtitleController,
-            subtitleStyle: SubtitleStyle(
-              textColor: Colors.white,
-              hasBorder: true,
-            ),
-            videoChild: VideoPlayer(_controller!),
-          ),
-          Container(color: Colors.white),
-          AnimatedOpacity(
-              opacity: _showControls ? 1.0 : 0.0,
-              duration: _durationAnimate,
-              child: Container(
-                  color: Colors.black.withValues(alpha: 0.5),
-                  child: Stack(children: [
-                    _buildMobileTopControls(),
-                    _buildMobileControls(),
-                    _buildMobileBottomControls()
-                  ]))),
-          _buildMobileSliderProgress()
-        ]));
+        child: _controller == null
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Stack(children: [
+                SubtitleWrapper(
+                  enabled: _subtitleCode != null,
+                  videoPlayerController: _controller!,
+                  subtitleController: subtitleController,
+                  subtitleStyle: SubtitleStyle(
+                    textColor: Colors.white,
+                    hasBorder: true,
+                  ),
+                  videoChild: VideoPlayer(_controller!),
+                ),
+                Container(color: Colors.white),
+                AnimatedOpacity(
+                    opacity: _showControls ? 1.0 : 0.0,
+                    duration: _durationAnimate,
+                    child: Container(
+                        color: Colors.black.withValues(alpha: 0.5),
+                        child: Stack(children: [
+                          _buildMobileTopControls(),
+                          _buildMobileControls(),
+                          _buildMobileBottomControls()
+                        ]))),
+                _buildMobileSliderProgress()
+              ]));
   }
 
   Widget _buildMobileTopControls() {
@@ -410,6 +500,21 @@ class _PlayerEigaState extends State<PlayerEiga> {
                     },
                   ));
         });
+  }
+
+  String? get _qualityCode => _$qualityCode;
+  set _qualityCode(String? value) {
+    _$qualityCode = value;
+
+    final variant = _availableResolutions.firstWhere((item) {
+      return item.code == value;
+    }, orElse: () => _availableResolutions[0]).variant;
+
+    _setupPlayer(SourceVideo(
+      src: variant.url.toString(),
+      type: 'application/x-mpegURL',
+      headers: widget.source.headers,
+    ));
   }
 
   void _showQualityOptions() {
