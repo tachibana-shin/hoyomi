@@ -133,7 +133,10 @@ class _PlayerEigaState extends State<PlayerEiga> {
       final response = await get(url, headers: source.headers);
       if (response.statusCode > 299) throw response;
 
-      _initializeHls(content: response.body, url: url, headers: source.headers);
+      if (widget.source.type == 'hls') {
+        _initializeHls(
+            content: response.body, url: url, headers: source.headers);
+      }
 
       return;
     }
@@ -153,8 +156,10 @@ class _PlayerEigaState extends State<PlayerEiga> {
             setState(() {});
           });
 
-    _initializeHls(
-        content: content.content, url: content.url, headers: content.headers);
+    if (widget.source.type == 'hls') {
+      _initializeHls(
+          content: content.content, url: content.url, headers: content.headers);
+    }
   }
 
   Future<void> _initializeHls(
@@ -512,7 +517,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
     _setupPlayer(SourceVideo(
       src: variant.url.toString(),
-      type: 'application/x-mpegURL',
+      type: 'hls',
       headers: widget.source.headers,
     ));
   }
