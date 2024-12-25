@@ -17,7 +17,7 @@ class AnimeVietsubService extends EigaBaseService {
   @override
   final String name = "AnimeVietsub";
   @override
-  final String baseUrl = "https://animevietsub.info/";
+  final String baseUrl = "https://animevietsub.video";
   @override
   String get faviconUrl => "$baseUrl/favicon.ico";
 
@@ -182,7 +182,8 @@ class AnimeVietsubService extends EigaBaseService {
         Uri.parse('http://localhost').resolve(item.attributes['href']!).path;
 
     return BasicGenre(
-        name: item.text.trim(), genreId: href.replaceAll('/', '_'));
+        name: item.text.trim(),
+        genreId: href.replaceAll(r'^\/|\/$', '').replaceAll('/', '_'));
   }
 
   @override
@@ -218,8 +219,9 @@ class AnimeVietsubService extends EigaBaseService {
             .replaceAll(',', ''))!
         .group(0)!);
     final seasons = document.querySelectorAll(".season_item > a").map((item) {
-      final genre = _getInfoAnchor(item);
-      return BasicSeason(name: genre.name, eigaId: genre.genreId);
+      return BasicSeason(
+          name: item.text.trim(),
+          eigaId: Uri.parse(item.attributes['href']!).path.split('/').elementAt(2));
     }).toList();
     final genres = document
         .querySelectorAll(".breadcrumb > li > a")
@@ -291,10 +293,7 @@ class AnimeVietsubService extends EigaBaseService {
         .map((item) {
       return EpisodeEiga(
           name: item.text.trim(),
-          episodeId: item.attributes['href']!
-              .split('/')
-              .last
-              .replaceFirst('.html', ''));
+          episodeId: Uri.parse(item.attributes['href']!).path.split('/').elementAt(3));
     }).toList();
 
     final scheduleText = document
@@ -321,7 +320,7 @@ class AnimeVietsubService extends EigaBaseService {
       image: image,
       poster: poster,
       schedule: day != null && hour != null && minute != null
-          ? TimeOfDay(
+          ? TimeAndDay(
               hour: int.parse(hour), minute: int.parse(minute), day: day)
           : null,
     );

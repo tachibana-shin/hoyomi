@@ -5,7 +5,7 @@ class EpisodesEiga {
   final List<EpisodeEiga> episodes;
   final BasicImage? image;
   final BasicImage? poster;
-  final TimeOfDay? schedule;
+  final TimeAndDay? schedule;
 
   EpisodesEiga({
     required this.episodes,
@@ -15,10 +15,10 @@ class EpisodesEiga {
   });
 }
 
-class TimeOfDay {
+class TimeAndDay {
   final String day;
   final int hour;
   final int minute;
 
-  TimeOfDay({required this.day, required this.hour, required this.minute});
+  TimeAndDay({required this.day, required this.hour, required this.minute});
 }

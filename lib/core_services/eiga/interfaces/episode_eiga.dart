@@ -4,6 +4,7 @@ class EpisodeEiga {
   final String name;
   final String episodeId;
   final BasicImage? image;
+  final String? description;
 
-  EpisodeEiga({required this.name, required this.episodeId, this.image});
+  EpisodeEiga({required this.name, required this.episodeId, this.image, this.description});
 }

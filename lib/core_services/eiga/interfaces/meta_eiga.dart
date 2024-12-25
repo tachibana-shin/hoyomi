@@ -11,8 +11,8 @@ class BasicSeason {
 class MetaEiga {
   final String name;
   final String? originalName;
-  final BasicImage image;
-  final BasicImage? poster;
+  BasicImage image;
+  BasicImage? poster;
   final String description;
   final double? rate;
   final int? countRate;
