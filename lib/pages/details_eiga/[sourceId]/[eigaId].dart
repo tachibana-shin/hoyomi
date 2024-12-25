@@ -352,10 +352,11 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                     },
                     onTap: (episode) {
                       setState2(() {
+                        final oldEiga = _eigaId;
                         _eigaId = season.eigaId;
                         _episodeId = episode.episodeId;
 
-                        if (widget.eigaId != _eigaId) {
+                        if (oldEiga != _eigaId) {
                           _service.getDetails(widget.eigaId).then((metaEiga) {
                             setState2(() {}, metaEiga);
                           });
