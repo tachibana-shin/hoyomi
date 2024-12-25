@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart' as material;
 import 'package:honyomi/core_services/eiga/eiga_base_service.dart';
 import 'package:honyomi/core_services/eiga/interfaces/base_eiga_home.dart';
-import 'package:honyomi/core_services/eiga/interfaces/basic_carousel.dart';
+import 'package:honyomi/core_services/eiga/interfaces/episode_eiga.dart';
+import 'package:honyomi/core_services/eiga/interfaces/episodes_eiga.dart';
+import 'package:honyomi/core_services/interfaces/basic_carousel.dart';
 import 'package:honyomi/core_services/eiga/interfaces/basic_carousel_item.dart';
 import 'package:honyomi/core_services/eiga/interfaces/basic_eiga.dart';
 import 'package:honyomi/core_services/eiga/interfaces/basic_eiga_section.dart';
 import 'package:honyomi/core_services/eiga/interfaces/eiga_param.dart';
+import 'package:honyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:honyomi/core_services/interfaces/basic_genre.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:html/dom.dart';
@@ -33,7 +36,8 @@ class AnimeVietsubService extends EigaBaseService {
 
   BasicEiga _parseItem(Element item) {
     final name = item.querySelector(".Title")!.text;
-    final eigaId = parseURL(item.querySelector("a")!.attributes["href"]!).eigaId;
+    final eigaId =
+        parseURL(item.querySelector("a")!.attributes["href"]!).eigaId;
     final originalName = item.querySelector(".Qlty")?.text ??
         item.querySelector(".mli-quality")?.text;
 
@@ -155,5 +159,171 @@ class AnimeVietsubService extends EigaBaseService {
                   .map((item) => _parseItem(item))
                   .toList()),
         ]);
+  }
+
+  Element? _findInfo(List<Element> elements, String label) {
+    for (final element in elements) {
+      if (element
+              .querySelector("strong")
+              ?.text
+              .trim()
+              .toLowerCase()
+              .startsWith(label) ==
+          true) {
+        return element;
+      }
+    }
+
+    return null;
+  }
+
+  BasicGenre _getInfoAnchor(Element item) {
+    final href =
+        Uri.parse('http://localhost').resolve(item.attributes['href']!).path;
+
+    return BasicGenre(
+        name: item.text.trim(), genreId: href.replaceAll('/', '_'));
+  }
+
+  @override
+  getDetails(String eigaId) async {
+    final document = await fetchDocument('$baseUrl/phim/$eigaId');
+
+    final name = document.querySelector(".Title")!.text;
+    final originalName = document.querySelector(".SubTitle")!.text;
+    final image = BasicImage(
+        src: document.querySelector(".Image img")!.attributes['src']!,
+        headers: {'referer': baseUrl});
+    final poster = document.querySelector(".TPostBg img") == null
+        ? null
+        : BasicImage(
+            src: document.querySelector(".TPostBg img")!.attributes['src']!,
+            headers: {'referer': baseUrl});
+    final description = document.querySelector(".Description")?.text;
+
+    final rate = double.parse(RegExp(r'[\d.]+')
+        .firstMatch(document.querySelector("#average_score")!.text.trim())!
+        .group(0)!);
+    final countRate = int.parse(RegExp(r'\d+')
+        .firstMatch(document.querySelector(".num-rating")!.text.trim())!
+        .group(0)!);
+    final duration = document.querySelector(".AAIco-access_time")!.text.trim();
+    final yearOf =
+        int.parse(document.querySelector(".AAIco-date_range > a")!.text.trim());
+    final views = int.parse(RegExp(r'\d+')
+        .firstMatch(document
+            .querySelector(".AAIco-remove_red_eye")!
+            .text
+            .trim()
+            .replaceAll(',', ''))!
+        .group(0)!);
+    final seasons = document.querySelectorAll(".season_item > a").map((item) {
+      final genre = _getInfoAnchor(item);
+      return BasicSeason(name: genre.name, eigaId: genre.genreId);
+    }).toList();
+    final genres = document
+        .querySelectorAll(".breadcrumb > li > a")
+        .skip(1)
+        .take(document.querySelectorAll(".breadcrumb > li > a").length - 2)
+        .map((item) => _getInfoAnchor(item))
+        .toList();
+    final quality = document.querySelector(".Qlty")!.text.trim();
+
+    // ==== info ====
+    final infoListLeft =
+        document.querySelectorAll(".mvici-left > .InfoList > .AAIco-adjust");
+    final infoListRight =
+        document.querySelectorAll(".mvici-right > .InfoList > .AAIco-adjust");
+
+    // final status =
+    //     _findInfo(infoListLeft, "trạng thái")?.text.split(":")[1].trim();
+    final author =
+        _findInfo(infoListLeft, "đạo diễn")?.text.split(":")[1].trim();
+    final countries = _findInfo(infoListLeft, "quốc gia")
+        ?.querySelectorAll("a")
+        .map((item) => _getInfoAnchor(item))
+        .toList();
+    final likes = int.parse(_findInfo(infoListLeft, "số người theo dõi")
+            ?.text
+            .split(":")[1]
+            .trim()
+            .replaceAll(',', '') ??
+        '0');
+    final language =
+        _findInfo(infoListRight, "ngôn ngữ")?.text.split(":")[1].trim();
+    final studio = _findInfo(infoListRight, "studio") == null
+        ? null
+        : _getInfoAnchor(
+            _findInfo(infoListRight, "studio")!.querySelector("a")!);
+    final trailer = document.querySelector("#Opt1 iframe")?.attributes['src'];
+    final movieSeason =
+        _getInfoAnchor(_findInfo(infoListRight, "studio")!.querySelector("a")!);
+
+    return MetaEiga(
+        name: name,
+        originalName: originalName,
+        image: image,
+        poster: poster,
+        description: description ?? '',
+        rate: rate,
+        countRate: countRate,
+        duration: duration,
+        yearOf: yearOf,
+        views: views,
+        seasons: seasons,
+        genres: genres,
+        quality: quality,
+        author: author,
+        countries: countries,
+        likes: likes,
+        language: language,
+        studio: studio,
+        movieSeason: movieSeason,
+        trailer: trailer);
+  }
+
+  @override
+  getEpisodes(String eigaId) async {
+    final document = await fetchDocument('$baseUrl/phim/$eigaId/xem-phim.html');
+
+    final episodes = document
+        .querySelectorAll("#list-server .list-episode .episode a")
+        .map((item) {
+      return EpisodeEiga(
+          name: item.text.trim(),
+          episodeId: item.attributes['href']!
+              .split('/')
+              .last
+              .replaceFirst('.html', ''));
+    }).toList();
+
+    final scheduleText = document
+        .querySelector(".schedule-title-main > h4 > strong:nth-child(3)")
+        ?.text;
+    final match = RegExp(r'(Thứ [^\s]+|chủ nhật) vào lúc (\d+) giờ (\d+) phút',
+            caseSensitive: false)
+        .firstMatch(scheduleText ?? '');
+    final day = match?.group(1);
+    final hour = match?.group(2);
+    final minute = match?.group(3);
+
+    final image$ = document.querySelector(".Image img")?.attributes['src'];
+    final image = image$ == null
+        ? null
+        : BasicImage(src: image$, headers: {'referer': baseUrl});
+    final poster$ = document.querySelector(".TPostBg img")?.attributes['src'];
+    final poster = poster$ == null
+        ? null
+        : BasicImage(src: poster$, headers: {'referer': baseUrl});
+
+    return EpisodesEiga(
+      episodes: episodes,
+      image: image,
+      poster: poster,
+      schedule: day != null && hour != null && minute != null
+          ? TimeOfDay(
+              hour: int.parse(hour), minute: int.parse(minute), day: day)
+          : null,
+    );
   }
 }

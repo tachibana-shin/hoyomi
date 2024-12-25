@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:http/http.dart';
+import 'package:play_video/function/format_duration.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
 
@@ -215,7 +216,6 @@ class _PlayerEigaState extends State<PlayerEiga> {
                   ),
                   videoChild: VideoPlayer(_controller!),
                 ),
-                Container(color: Colors.white),
                 AnimatedOpacity(
                     opacity: _showControls ? 1.0 : 0.0,
                     duration: _durationAnimate,
@@ -364,8 +364,10 @@ class _PlayerEigaState extends State<PlayerEiga> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('00:00', style: TextStyle(color: Colors.white)),
-                Text(' / 00:00', style: TextStyle(color: Colors.grey.shade300)),
+                Text(formatDuration(_controller!.value.position),
+                    style: TextStyle(color: Colors.white)),
+                Text(' / ${formatDuration(_controller!.value.duration)}',
+                    style: TextStyle(color: Colors.grey.shade300)),
               ],
             ),
             Row(mainAxisSize: MainAxisSize.min, children: [
