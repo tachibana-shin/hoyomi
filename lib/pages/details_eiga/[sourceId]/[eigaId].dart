@@ -343,6 +343,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                     sourceId: widget.sourceId,
                     eigaId: _eigaId,
                     episodeId: _episodeId,
+                    initialData:  () => _cacheEpisodesStore[season.eigaId],
                     onUpdate: (episodes) {
                       _cacheEpisodesStore[season.eigaId] = episodes;
                       if (season.eigaId ==

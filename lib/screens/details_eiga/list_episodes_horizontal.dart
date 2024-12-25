@@ -10,6 +10,7 @@ class ListEpisodesHorizontal extends StatefulWidget {
   final BasicSeason season;
   final String eigaId;
   final String? episodeId;
+  final EpisodesEiga? Function() initialData;
   final void Function(EpisodesEiga episodes)? onUpdate;
   final void Function(EpisodeEiga episode) onTap;
 
@@ -20,7 +21,8 @@ class ListEpisodesHorizontal extends StatefulWidget {
       required this.eigaId,
       required this.episodeId,
       required this.onUpdate,
-      required this.onTap});
+      required this.onTap,
+      required this.initialData});
 
   @override
   State<ListEpisodesHorizontal> createState() => _ListEpisodesHorizontalState();
@@ -36,7 +38,10 @@ class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal>
   @override
   initState() {
     final service = getEigaService(widget.sourceId);
-    _seasonFuture = service.getEpisodes(widget.season.eigaId);
+    final initial = widget.initialData();
+    _seasonFuture = initial != null
+        ? Future.value(initial)
+        : service.getEpisodes(widget.season.eigaId);
     if (widget.onUpdate != null) _seasonFuture.then(widget.onUpdate!);
     super.initState();
   }
