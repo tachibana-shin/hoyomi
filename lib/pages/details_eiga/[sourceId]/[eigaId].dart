@@ -33,7 +33,7 @@ class DetailsEigaPage extends StatefulWidget {
 
 class _DetailsEigaPageState extends State<DetailsEigaPage> {
   late final EigaBaseService _service;
-  late final Future<MetaEiga> _metaEigaFuture;
+  late Future<MetaEiga> _metaEigaFuture;
 
   final Map<String, EpisodesEiga> _cacheEpisodesStore = {};
 
@@ -84,7 +84,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                 return Text('Error: ${snapshot.error}');
               }
 
-              final metaEiga = snapshot.data as MetaEiga;
+              var metaEiga = snapshot.data as MetaEiga;
 
               return StatefulBuilder(
                   builder: (context, setState2) => Column(
@@ -93,7 +93,11 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                           _buildBasicInfo(metaEiga),
                           SizedBox(height: 10.0),
                           _buildSchedule(),
-                          _buildSeasonArea(metaEiga, setState2: setState2)
+                          _buildSeasonArea(metaEiga,
+                              setState2: (fn, $metaEiga) {
+                            if ($metaEiga != null) metaEiga = $metaEiga;
+                            setState2(fn);
+                          }),
                         ],
                       ));
             },
@@ -288,7 +292,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
   }
 
   Widget _buildSeasonArea(MetaEiga metaEiga,
-      {required void Function(void Function()) setState2}) {
+      {required void Function(void Function(), MetaEiga? metaEiga) setState2}) {
     void updateData(EpisodesEiga episodes) {
       if (episodes.image != null) {
         metaEiga.image = episodes.image!;
@@ -300,7 +304,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
         _schedule = episodes.schedule;
       }
 
-      setState2(() {});
+      setState2(() {}, null);
     }
 
     // tab view
@@ -350,7 +354,13 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                       setState2(() {
                         _eigaId = season.eigaId;
                         _episodeId = episode.episodeId;
-                      });
+
+                        if (widget.eigaId != _eigaId) {
+                          _service.getDetails(widget.eigaId).then((metaEiga) {
+                            setState2(() {}, metaEiga);
+                          });
+                        }
+                      }, null);
                     }));
           }).toList())
         ]);
