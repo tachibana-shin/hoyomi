@@ -117,7 +117,8 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                 right: 12.0,
                                 top: 18.0,
                                 bottom: 24.0),
-                            child: Expanded(
+                            child: LimitedBox(
+                              maxHeight: height * 0.8,
                                 child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
