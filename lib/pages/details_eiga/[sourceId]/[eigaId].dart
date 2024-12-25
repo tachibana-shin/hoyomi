@@ -357,7 +357,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                         _episodeId = episode.episodeId;
 
                         if (oldEiga != _eigaId) {
-                          _service.getDetails(widget.eigaId).then((metaEiga) {
+                          _service.getDetails(_eigaId).then((metaEiga) {
                             setState2(() {}, metaEiga);
                           });
                         }
