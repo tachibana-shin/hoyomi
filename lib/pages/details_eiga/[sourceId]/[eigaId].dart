@@ -1,8 +1,12 @@
-import 'package:flutter/material.dart';
+import 'dart:math';
+
+import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
+import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:honyomi/core_services/eiga/eiga_base_service.dart';
+import 'package:honyomi/core_services/eiga/interfaces/episodes_eiga.dart';
 import 'package:honyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:honyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:honyomi/core_services/eiga/interfaces/subtitle.dart';
@@ -21,7 +25,7 @@ class DetailsEigaPage extends StatefulWidget {
       {super.key,
       required this.sourceId,
       required this.eigaId,
-      this.episodeId});
+      required this.episodeId});
 
   @override
   State<DetailsEigaPage> createState() => _DetailsEigaPageState();
@@ -31,12 +35,20 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
   late final EigaBaseService _service;
   late final Future<MetaEiga> _metaEigaFuture;
 
+  final Map<String, EpisodesEiga> _cacheEpisodesStore = {};
+
+  late String _eigaId;
+  late String? _episodeId;
+  TimeAndDay? _schedule;
+
   @override
   void initState() {
     super.initState();
     _service = getEigaService(widget.sourceId);
     _metaEigaFuture = _service.getDetails(widget.eigaId);
 
+    _eigaId = widget.eigaId;
+    _episodeId = widget.episodeId;
   }
 
   @override
@@ -74,14 +86,16 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
 
               final metaEiga = snapshot.data as MetaEiga;
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildBasicInfo(metaEiga),
-                  SizedBox(height: 10.0),
-                  _buildSeasonArea(metaEiga)
-                ],
-              );
+              return StatefulBuilder(
+                  builder: (context, setState2) => Column(
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildBasicInfo(metaEiga),
+                          SizedBox(height: 10.0),
+                          _buildSchedule(),
+                          _buildSeasonArea(metaEiga, setState2: setState2)
+                        ],
+                      ));
             },
           )),
     ]));
@@ -255,29 +269,92 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
     );
   }
 
-  Widget _buildSeasonArea(MetaEiga metaEiga) {
+  Widget _buildSchedule() {
+    if (_schedule == null) return SizedBox.shrink();
+
+    return Row(children: [
+      Icon(
+        MaterialCommunityIcons.clock_outline,
+        size: 16.0,
+        color: Theme.of(context).colorScheme.secondary,
+      ),
+      SizedBox(width: 5.0),
+      Text(
+        'Updated on day ${_schedule!.day} of the week at ${_schedule!.hour}:${_schedule!.minute}',
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.secondary, fontSize: 12.0),
+      )
+    ]);
+  }
+
+  Widget _buildSeasonArea(MetaEiga metaEiga,
+      {required void Function(void Function()) setState2}) {
+    void updateData(EpisodesEiga episodes) {
+      if (episodes.image != null) {
+        metaEiga.image = episodes.image!;
+      }
+      if (episodes.poster != null) {
+        metaEiga.poster = episodes.poster;
+      }
+      if (episodes.schedule != null) {
+        _schedule = episodes.schedule;
+      }
+
+      setState2(() {});
+    }
+
     // tab view
     return DefaultTabController(
       length: metaEiga.seasons.length,
-      initialIndex: metaEiga.seasons
-          .indexWhere((season) => season.eigaId == widget.eigaId),
-      child: Column(children: [
-        TabBar(
-          isScrollable: true,
-          splashBorderRadius: BorderRadius.circular(35.0),
-          indicatorColor: Theme.of(context).colorScheme.secondary,
-          tabs: metaEiga.seasons.map((season) {
-            return Tab(
-              text: season.name,
-            );
-          }).toList(),
-        ),
-        TabBarView(
-            children: metaEiga.seasons.map((season) {
-          return ListEpisodesHorizontal(
-              season: season, sourceId: widget.sourceId);
-        }).toList())
-      ]),
+      initialIndex: max(
+          0, metaEiga.seasons.indexWhere((season) => season.eigaId == _eigaId)),
+      child: Builder(builder: (context) {
+        final controller = DefaultTabController.of(context);
+        controller.addListener(() {
+          final episodes =
+              _cacheEpisodesStore[metaEiga.seasons[controller.index].eigaId];
+
+          if (episodes != null) {
+            updateData(episodes);
+          }
+        });
+
+        return Column(children: [
+          TabBar(
+            isScrollable: true,
+            splashBorderRadius: BorderRadius.circular(35.0),
+            indicatorColor: Theme.of(context).colorScheme.secondary,
+            tabs: metaEiga.seasons.map((season) {
+              return Tab(
+                text: season.name,
+              );
+            }).toList(),
+          ),
+          ContentSizeTabBarView(
+              children: metaEiga.seasons.map((season) {
+            return Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: ListEpisodesHorizontal(
+                    season: season,
+                    sourceId: widget.sourceId,
+                    eigaId: _eigaId,
+                    episodeId: _episodeId,
+                    onUpdate: (episodes) {
+                      _cacheEpisodesStore[season.eigaId] = episodes;
+                      if (season.eigaId ==
+                          metaEiga.seasons[controller.index].eigaId) {
+                        updateData(episodes);
+                      }
+                    },
+                    onTap: (episode) {
+                      setState2(() {
+                        _eigaId = season.eigaId;
+                        _episodeId = episode.episodeId;
+                      });
+                    }));
+          }).toList())
+        ]);
+      }),
     );
   }
 }
