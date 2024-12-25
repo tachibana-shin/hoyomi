@@ -511,6 +511,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
   String? get _qualityCode => _$qualityCode;
   set _qualityCode(String? value) {
+    if (_availableResolutions.isNotEmpty) return;
+
     _$qualityCode = value;
 
     final variant = _availableResolutions.firstWhere((item) {
@@ -574,20 +576,21 @@ class _PlayerEigaState extends State<PlayerEiga> {
           return ListView(
             shrinkWrap: true,
             children: [
-              ListTile(
-                leading: Icon(Icons.tune),
-                title: Text('Quality', style: TextStyle(fontSize: 14.0)),
-                trailing: Text(
-                    _availableResolutions.firstWhere((item) {
-                      return item.code == _qualityCode;
-                    }, orElse: () => _availableResolutions[0]).label,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary)),
-                onTap: () {
-                  Navigator.pop(context);
-                  _showQualityOptions();
-                },
-              ),
+              if (_availableResolutions.isNotEmpty)
+                ListTile(
+                  leading: Icon(Icons.tune),
+                  title: Text('Quality', style: TextStyle(fontSize: 14.0)),
+                  trailing: Text(
+                      _availableResolutions.firstWhere((item) {
+                        return item.code == _qualityCode;
+                      }, orElse: () => _availableResolutions[0]).label,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary)),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _showQualityOptions();
+                  },
+                ),
               ListTile(
                 leading: Icon(Icons.speed_outlined),
                 title: Text('Playback Speed', style: TextStyle(fontSize: 14.0)),
