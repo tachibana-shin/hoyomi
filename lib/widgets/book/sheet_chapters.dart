@@ -107,7 +107,7 @@ class _SheetChaptersState extends State<SheetChapters> {
                                 : Theme.of(context)
                                     .colorScheme
                                     .onSurface
-                                    .withOpacity(0.85),
+                                    .withValues(alpha: 0.85),
                           ),
                         ),
                       ],
@@ -120,7 +120,7 @@ class _SheetChaptersState extends State<SheetChapters> {
                             : Theme.of(context)
                                 .colorScheme
                                 .secondary
-                                .withOpacity(0.85),
+                                .withValues(alpha: 0.85),
                         fontSize: 12.0,
                       ),
                     ),

@@ -1028,7 +1028,7 @@ class _MangaReaderState extends State<MangaReader>
                                   color: Theme.of(context)
                                       .colorScheme
                                       .surface
-                                      .withOpacity(0.9),
+                                      .withValues(alpha: 0.9),
                                   shape: CircleBorder(),
                                 ),
                                 child: IconButton(
@@ -1041,7 +1041,7 @@ class _MangaReaderState extends State<MangaReader>
                                       : Theme.of(context)
                                           .colorScheme
                                           .onSurface
-                                          .withOpacity(0.5),
+                                          .withValues(alpha: 0.5),
                                   onPressed: () {
                                     context.replace(
                                         "/details_comic/${widget.service}/${widget.bookId}/view?chap=${_prevChapter!.chapterId}",
@@ -1057,7 +1057,7 @@ class _MangaReaderState extends State<MangaReader>
                                     color: Theme.of(context)
                                         .colorScheme
                                         .surface
-                                        .withOpacity(0.9),
+                                        .withValues(alpha: 0.9),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 16.0, vertical: 15.0),
@@ -1072,7 +1072,7 @@ class _MangaReaderState extends State<MangaReader>
                                   color: Theme.of(context)
                                       .colorScheme
                                       .surface
-                                      .withOpacity(0.9),
+                                      .withValues(alpha: 0.9),
                                   shape: CircleBorder(),
                                 ),
                                 child: IconButton(
@@ -1086,7 +1086,7 @@ class _MangaReaderState extends State<MangaReader>
                                         : Theme.of(context)
                                             .colorScheme
                                             .onSurface
-                                            .withOpacity(0.5),
+                                            .withValues(alpha: 0.5),
                                     onPressed: () {
                                       context.replace(
                                           "/details_comic/${widget.service}/${widget.bookId}/view?chap=${_nextChapter!.chapterId}",
@@ -1104,7 +1104,7 @@ class _MangaReaderState extends State<MangaReader>
                     child: Material(
                         color: Theme.of(context)
                             .scaffoldBackgroundColor
-                            .withOpacity(0.8),
+                            .withValues(alpha: 0.8),
                         child: Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 12.0, vertical: 8.0),

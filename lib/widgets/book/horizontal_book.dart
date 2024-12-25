@@ -48,7 +48,7 @@ class HorizontalBook extends StatelessWidget {
                             style: const TextStyle(
                                 fontSize: 12.0, color: Colors.orange),
                           ),
-                          backgroundColor: Colors.black.withOpacity(0.6),
+                          backgroundColor: Colors.black.withValues(alpha: 0.6),
                         ),
                       if (book.rate != null)
                         Row(
@@ -112,7 +112,7 @@ class HorizontalBook extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.black.withOpacity(0.8),
+                            Colors.black.withValues(alpha: 0.8),
                             Colors.transparent,
                           ],
                           begin: Alignment.bottomCenter,

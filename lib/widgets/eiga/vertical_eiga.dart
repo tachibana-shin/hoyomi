@@ -46,8 +46,8 @@ class VerticalEiga extends StatelessWidget {
         onTap: () {
           context.push("/details_eiga/$sourceId/${eiga.eigaId}");
         },
-        splashColor: Colors.white70.withOpacity(0.3),
-        highlightColor: Colors.white70.withOpacity(0.1),
+        splashColor: Colors.white70.withValues(alpha: 0.3),
+        highlightColor: Colors.white70.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8.0),
         child: Card(
           margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
@@ -105,7 +105,7 @@ class VerticalEiga extends StatelessWidget {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                Colors.black.withOpacity(0.8),
+                                Colors.black.withValues(alpha: 0.8),
                                 Colors.transparent,
                               ],
                               begin: Alignment.bottomCenter,
@@ -195,7 +195,7 @@ class VerticalEiga extends StatelessWidget {
                           color: Theme.of(context)
                               .colorScheme
                               .surfaceContainer
-                              .withOpacity(0.5),
+                              .withValues(alpha: 0.5),
                           child: Center(
                             child: Text(
                                 eiga.preRelease != null

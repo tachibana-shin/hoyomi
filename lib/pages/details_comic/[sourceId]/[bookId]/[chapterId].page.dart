@@ -155,7 +155,7 @@ class _AppBarState extends State<_AppBar> {
                     child: AppBar(
                       backgroundColor: Theme.of(context)
                           .scaffoldBackgroundColor
-                          .withOpacity(0.8),
+                          .withValues(alpha: 0.8),
                       elevation: 0,
                       leading: IconButton(
                         icon: const Icon(MaterialCommunityIcons.arrow_left),

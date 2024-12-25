@@ -39,8 +39,8 @@ class VerticalBook extends StatelessWidget {
         onTap: () {
           context.push("/details_comic/$sourceId/${book.bookId}");
         },
-        splashColor: Colors.white70.withOpacity(0.3),
-        highlightColor: Colors.white70.withOpacity(0.1),
+        splashColor: Colors.white70.withValues(alpha: 0.3),
+        highlightColor: Colors.white70.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8.0),
         child: Card(
           margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
@@ -76,7 +76,7 @@ class VerticalBook extends StatelessWidget {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.black.withOpacity(0.5),
+                                  Colors.black.withValues(alpha: 0.5),
                                   Colors.transparent,
                                 ],
                                 begin: Alignment.topCenter,
@@ -111,7 +111,7 @@ class VerticalBook extends StatelessWidget {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                Colors.black.withOpacity(0.8),
+                                Colors.black.withValues(alpha: 0.8),
                                 Colors.transparent,
                               ],
                               begin: Alignment.bottomCenter,
@@ -163,7 +163,7 @@ class VerticalBook extends StatelessWidget {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.black.withOpacity(0.7),
+                                  Colors.black.withValues(alpha: 0.7),
                                   Colors.transparent,
                                 ],
                                 begin: Alignment.bottomCenter,

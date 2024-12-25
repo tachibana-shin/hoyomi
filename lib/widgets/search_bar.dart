@@ -70,7 +70,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                       color: Theme.of(context)
                           .colorScheme
                           .secondaryFixedDim
-                          .withOpacity(0.7),
+                          .withValues(alpha: 0.7),
                     ),
                     onPressed: () {
                       if (widget.backMode) {
@@ -90,7 +90,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                         color: Theme.of(context)
                             .colorScheme
                             .secondaryFixedDim
-                            .withOpacity(0.7)),
+                            .withValues(alpha: 0.7)),
                     onPressed: () {
                       setState(() {
                         _focusing = false;
@@ -144,7 +144,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                       color: Theme.of(context)
                           .colorScheme
                           .secondaryFixedDim
-                          .withOpacity(0.7)),
+                          .withValues(alpha: 0.7)),
                   onSelected: (String value) {
                     if (value == 'clear_history') {
                       // Handle clear history

@@ -65,7 +65,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                 decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                   colors: [
-                                    Colors.black.withOpacity(0.7),
+                                    Colors.black.withValues(alpha: 0.7),
                                     Colors.transparent,
                                   ],
                                   begin: Alignment.centerLeft,
@@ -81,7 +81,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                 decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                   colors: [
-                                    Colors.black.withOpacity(0.7),
+                                    Colors.black.withValues(alpha: 0.7),
                                     Colors.transparent,
                                   ],
                                   begin: Alignment.centerRight,
@@ -100,7 +100,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                 decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                   colors: [
-                                    Colors.black.withOpacity(0.7),
+                                    Colors.black.withValues(alpha: 0.7),
                                     Colors.transparent,
                                   ],
                                   begin: Alignment.bottomCenter,

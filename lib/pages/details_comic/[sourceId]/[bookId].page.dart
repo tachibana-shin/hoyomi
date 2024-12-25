@@ -342,7 +342,7 @@ class _DetailsComicState extends State<DetailsComic>
                             color: Theme.of(context)
                                 .colorScheme
                                 .onSurfaceVariant
-                                .withOpacity(0.5),
+                                .withValues(alpha: 0.5),
                           ),
                         ),
                         const SizedBox(width: 4.0),
@@ -543,7 +543,7 @@ class _DetailsComicState extends State<DetailsComic>
                     color: Theme.of(context)
                         .colorScheme
                         .tertiaryFixed
-                        .withOpacity(0.3),
+                        .withValues(alpha: 0.3),
                     //.tertiaryContainer,
                     borderRadius: BorderRadius.circular(35),
                   ),
@@ -569,7 +569,7 @@ class _DetailsComicState extends State<DetailsComic>
                         color: Theme.of(context)
                             .colorScheme
                             .tertiaryFixedDim
-                            .withOpacity(0.6),
+                            .withValues(alpha: 0.6),
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(35),
                           bottomLeft: Radius.circular(35),
@@ -592,7 +592,7 @@ class _DetailsComicState extends State<DetailsComic>
                           fontWeight: FontWeight.w500,
                           color: Theme.of(context)
                               .colorScheme
-                              .onSurface, //.withOpacity(0.6),
+                              .onSurface, //.withValues(alpha: 0.6),
                         ),
                       ),
                       Text(
@@ -604,7 +604,7 @@ class _DetailsComicState extends State<DetailsComic>
                           color: Theme.of(context)
                               .colorScheme
                               .onSurface
-                              .withOpacity(0.9),
+                              .withValues(alpha: 0.9),
                         ),
                       ),
                     ],
@@ -620,7 +620,7 @@ class _DetailsComicState extends State<DetailsComic>
         height: 48,
         decoration: BoxDecoration(
           color:
-              Theme.of(context).colorScheme.tertiaryFixedDim.withOpacity(0.44),
+              Theme.of(context).colorScheme.tertiaryFixedDim.withValues(alpha: 0.44),
           shape: BoxShape.circle,
         ),
         child: Center(
@@ -718,7 +718,7 @@ class _DetailsComicState extends State<DetailsComic>
 //           begin: Alignment.topCenter,
 //           end: Alignment.bottomCenter,
 //           colors: [
-//             theme.scaffoldBackgroundColor.withOpacity(0.05),
+//             theme.scaffoldBackgroundColor.withValues(alpha: 0.05),
 //             theme.scaffoldBackgroundColor,
 //           ],
 //           stops: const [0, .3],
