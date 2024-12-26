@@ -307,6 +307,23 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
       setState2(() {}, null);
     }
 
+    if (metaEiga.seasons.isEmpty) {
+      return ListEpisodesHorizontal(
+          season: BasicSeason(eigaId: _eigaId, name: 'Episodes'),
+          sourceId: widget.sourceId,
+          eigaId: _eigaId,
+          episodeId: _episodeId,
+          initialData: () => _cacheEpisodesStore[_eigaId],
+          onUpdate: (episodes) {
+            _cacheEpisodesStore[_eigaId] = episodes;
+          },
+          onTap: (episode) {
+            setState2(() {
+              _episodeId = episode.episodeId;
+            }, null);
+          });
+    }
+
     // tab view
     return DefaultTabController(
       length: metaEiga.seasons.length,
@@ -343,7 +360,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                     sourceId: widget.sourceId,
                     eigaId: _eigaId,
                     episodeId: _episodeId,
-                    initialData:  () => _cacheEpisodesStore[season.eigaId],
+                    initialData: () => _cacheEpisodesStore[season.eigaId],
                     onUpdate: (episodes) {
                       _cacheEpisodesStore[season.eigaId] = episodes;
                       if (season.eigaId ==
