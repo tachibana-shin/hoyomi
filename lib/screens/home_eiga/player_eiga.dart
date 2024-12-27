@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:honyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:http/http.dart';
 import 'package:play_video/function/format_duration.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
@@ -20,35 +21,27 @@ import 'package:honyomi/utils/save_file_cache.dart';
 
 // import 'package:video_player_oneplusdream/video_player_oneplusdream.dart';
 // import 'package:video_player_oneplusdream_example/cache.dart';
-class SourceContent {
-  final String content;
-  final Uri url;
-  final Map<String, String> headers;
-
-  const SourceContent(
-      {required this.content, required this.url, this.headers = const {}});
-}
 
 class PlayerEiga extends StatefulWidget {
-  final String title;
-  final String subtitle;
+  final ValueNotifier<String> titleNotifier;
+  final ValueNotifier<String> subtitleNotifier;
 
-  final SourceVideo source;
-  final Future<SourceContent> Function(SourceVideo source)? getSource;
+  final ValueNotifier<SourceVideo?> sourceNotifier;
+  final Future<SourceContent> Function({required SourceVideo source})? fetchSourceContent;
 
   final void Function() onBack;
-  final List<type.Subtitle> subtitles;
+  final ValueNotifier<List<type.Subtitle>> subtitlesNotifier;
   final void Function()? onNext;
   final void Function()? onPrev;
 
   const PlayerEiga({
     super.key,
-    required this.title,
-    required this.subtitle,
-    required this.source,
-    this.getSource,
+    required this.titleNotifier,
+    required this.subtitleNotifier,
+    required this.sourceNotifier,
+    this.fetchSourceContent,
     required this.onBack,
-    required this.subtitles,
+    required this.subtitlesNotifier,
     this.onNext,
     this.onPrev,
   });
@@ -60,9 +53,13 @@ class _VariantMeta {
   final Variant variant;
   final String code;
   final String label;
+  final Map<String, String> headers;
 
   _VariantMeta(
-      {required this.variant, required this.code, required this.label});
+      {required this.variant,
+      required this.code,
+      required this.label,
+      required this.headers});
 }
 
 // https://pub.dev/packages/double_tap_player_view
@@ -115,14 +112,21 @@ class _PlayerEigaState extends State<PlayerEiga> {
   void initState() {
     super.initState();
 
-    _setupPlayer(widget.source);
+    void run() {
+      if (widget.sourceNotifier.value != null) {
+        _setupPlayer(widget.sourceNotifier.value!);
+      }
+    }
+
+    run();
+    widget.sourceNotifier.addListener(run);
   }
 
   void _setupPlayer(SourceVideo source) async {
     _availableResolutions = [];
 
     // not function get source
-    if (widget.getSource == null) {
+    if (widget.fetchSourceContent == null) {
       final url = Uri.parse(source.src);
       _controller =
           VideoPlayerController.networkUrl(url, httpHeaders: source.headers)
@@ -134,7 +138,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
       final response = await get(url, headers: source.headers);
       if (response.statusCode > 299) throw response;
 
-      if (widget.source.type == 'hls') {
+      if (source.type == 'hls') {
         _initializeHls(
             content: response.body, url: url, headers: source.headers);
       }
@@ -144,7 +148,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
     setState(() {});
 
-    final content = await widget.getSource!(source);
+    final content = await widget.fetchSourceContent!(source: source);
     final fileCache = await saveFileCache(
         content: content.content,
         path: "${sha256.convert(utf8.encode(content.content))}.m3u8");
@@ -157,7 +161,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
             setState(() {});
           });
 
-    if (widget.source.type == 'hls') {
+    if (source.type == 'hls') {
       _initializeHls(
           content: content.content, url: content.url, headers: content.headers);
     }
@@ -185,7 +189,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
             label: variant.format.label ??
                 variant.format.height?.toString() ??
                 variant.format.id ??
-                variant.url.toString());
+                variant.url.toString(),
+            headers: {...headers, 'referer': variant.url.toString()});
       }).toList();
       _$qualityCode = _availableResolutions.first.code;
       setState(() {});
@@ -251,18 +256,22 @@ class _PlayerEigaState extends State<PlayerEiga> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w500)),
-                    Text(widget.subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Colors.grey.shade300, fontSize: 14.0))
+                    ValueListenableBuilder(
+                        valueListenable: widget.titleNotifier,
+                        builder: (context, value, child) => Text(value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w500))),
+                    ValueListenableBuilder(
+                        valueListenable: widget.subtitleNotifier,
+                        builder: (context, value, child) => Text(value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Colors.grey.shade300, fontSize: 14.0)))
                   ],
                 )
               ]),
@@ -456,9 +465,10 @@ class _PlayerEigaState extends State<PlayerEiga> {
           return StatefulBuilder(
               builder: (BuildContext context, setState2) => ListView.builder(
                     shrinkWrap: true,
-                    itemCount: widget.subtitles.length,
+                    itemCount: widget.subtitlesNotifier.value.length,
                     itemBuilder: (context, index) {
-                      final item = widget.subtitles.elementAt(index);
+                      final item =
+                          widget.subtitlesNotifier.value.elementAt(index);
 
                       return ListTile(
                         leading: _subtitleCode == item.code
@@ -515,14 +525,14 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
     _$qualityCode = value;
 
-    final variant = _availableResolutions.firstWhere((item) {
+    final resolution = _availableResolutions.firstWhere((item) {
       return item.code == value;
-    }, orElse: () => _availableResolutions[0]).variant;
+    }, orElse: () => _availableResolutions[0]);
 
     _setupPlayer(SourceVideo(
-      src: variant.url.toString(),
+      src: resolution.variant.url.toString(),
       type: 'hls',
-      headers: widget.source.headers,
+      headers: resolution.headers,
     ));
   }
 
@@ -561,7 +571,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
     _$subtitleCode = value;
     if (value != null) {
       subtitleController.updateSubtitleUrl(
-          url: widget.subtitles.firstWhere((item) {
+          url: widget.subtitlesNotifier.value.firstWhere((item) {
         return item.code == value;
       }).url);
     }
@@ -611,7 +621,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                 trailing: _subtitleCode == null
                     ? null
                     : Text(
-                        widget.subtitles.firstWhere((item) {
+                        widget.subtitlesNotifier.value.firstWhere((item) {
                           return item.code == _subtitleCode;
                         }).language,
                         style: TextStyle(
