@@ -6,6 +6,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:honyomi/core_services/eiga/eiga_base_service.dart';
+import 'package:honyomi/core_services/eiga/interfaces/episode_eiga.dart';
 import 'package:honyomi/core_services/eiga/interfaces/episodes_eiga.dart';
 import 'package:honyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:honyomi/core_services/eiga/interfaces/source_video.dart';
@@ -36,10 +37,15 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
   late Future<MetaEiga> _metaEigaFuture;
 
   final Map<String, EpisodesEiga> _cacheEpisodesStore = {};
+  final ValueNotifier<String> _titleNotifier = ValueNotifier('');
+  final ValueNotifier<String> _subtitleNotifier = ValueNotifier('');
+  final ValueNotifier<List<Subtitle>> _subtitlesNotifier = ValueNotifier([]);
+  final ValueNotifier<SourceVideo?> _sourceNotifier = ValueNotifier(null);
 
   late String _eigaId;
   late String? _episodeId;
   TimeAndDay? _schedule;
+  EpisodeEiga? _episode;
 
   @override
   void initState() {
@@ -51,6 +57,17 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
     _episodeId = widget.episodeId;
   }
 
+  void _updatePlayer() {
+    assert(_episode != null);
+
+    _service.getSubtitles(episode: _episode!).then((subtitles) {
+      _subtitlesNotifier.value = subtitles;
+    });
+    _service.getSource(episode: _episode!).then((source) {
+      _sourceNotifier.value = source;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: _buildBody());
@@ -59,18 +76,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
   Widget _buildBody() {
     return SingleChildScrollView(
         child: Column(children: [
-      PlayerEiga(
-        title: 'Title',
-        subtitle: 'Subtitle',
-        onBack: () {
-          Navigator.pop(context);
-        },
-        subtitles: [
-          Subtitle(code: 'en', language: 'English', url: ''),
-          Subtitle(code: 'vi', language: 'Vietnamese', url: ''),
-        ],
-        source: SourceVideo(src: '', type: 'mp4'),
-      ),
+      _buildPlayer(),
       Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: FutureBuilder(
@@ -85,6 +91,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
               }
 
               var metaEiga = snapshot.data as MetaEiga;
+              _titleNotifier.value = metaEiga.name;
 
               return StatefulBuilder(
                   builder: (context, setState2) => Column(
@@ -95,7 +102,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                           _buildSchedule(),
                           _buildSeasonArea(metaEiga,
                               setState2: (fn, $metaEiga) {
-                            if ($metaEiga != null) metaEiga = $metaEiga;
+                            if ($metaEiga != null) {
+                              metaEiga = $metaEiga;
+                              _titleNotifier.value = metaEiga.name;
+                            }
                             setState2(fn);
                           }),
                         ],
@@ -103,6 +113,19 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
             },
           )),
     ]));
+  }
+
+  Widget _buildPlayer() {
+    return PlayerEiga(
+      titleNotifier: _titleNotifier,
+      subtitleNotifier: _subtitleNotifier,
+      onBack: () {
+        context.pop();
+      },
+      subtitlesNotifier: _subtitlesNotifier,
+      sourceNotifier: _sourceNotifier,
+      fetchSourceContent: _service.fetchSourceContent,
+    );
   }
 
   Widget _buildBasicInfo(MetaEiga metaEiga) {
@@ -314,12 +337,14 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
           eigaId: _eigaId,
           episodeId: _episodeId,
           initialData: () => _cacheEpisodesStore[_eigaId],
+          eager: true,
           onUpdate: (episodes) {
             _cacheEpisodesStore[_eigaId] = episodes;
           },
           onTap: (episode) {
             setState2(() {
               _episodeId = episode.episodeId;
+              _updatePlayer();
             }, null);
           });
     }
@@ -361,6 +386,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                     eigaId: _eigaId,
                     episodeId: _episodeId,
                     initialData: () => _cacheEpisodesStore[season.eigaId],
+                    eager: true,
                     onUpdate: (episodes) {
                       _cacheEpisodesStore[season.eigaId] = episodes;
                       if (season.eigaId ==
@@ -373,6 +399,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                         final oldEiga = _eigaId;
                         _eigaId = season.eigaId;
                         _episodeId = episode.episodeId;
+                        _episode = episode;
+                        _updatePlayer();
 
                         if (oldEiga != _eigaId) {
                           _service.getDetails(_eigaId).then((metaEiga) {

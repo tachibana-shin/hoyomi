@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart' as material;
 import 'package:honyomi/core_services/eiga/eiga_base_service.dart';
 import 'package:honyomi/core_services/eiga/interfaces/base_eiga_home.dart';
 import 'package:honyomi/core_services/eiga/interfaces/episode_eiga.dart';
 import 'package:honyomi/core_services/eiga/interfaces/episodes_eiga.dart';
+import 'package:honyomi/core_services/eiga/interfaces/source_content.dart';
+import 'package:honyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:honyomi/core_services/interfaces/basic_carousel.dart';
 import 'package:honyomi/core_services/eiga/interfaces/basic_carousel_item.dart';
 import 'package:honyomi/core_services/eiga/interfaces/basic_eiga.dart';
@@ -12,6 +16,11 @@ import 'package:honyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:honyomi/core_services/interfaces/basic_genre.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:html/dom.dart';
+
+import 'dart:typed_data';
+import 'package:crypto/crypto.dart';
+import 'package:pointycastle/export.dart';
+import 'package:archive/archive.dart';
 
 class AnimeVietsubService extends EigaBaseService {
   @override
@@ -221,7 +230,8 @@ class AnimeVietsubService extends EigaBaseService {
     final seasons = document.querySelectorAll(".season_item > a").map((item) {
       return BasicSeason(
           name: item.text.trim(),
-          eigaId: Uri.parse(item.attributes['href']!).path.split('/').elementAt(2));
+          eigaId:
+              Uri.parse(item.attributes['href']!).path.split('/').elementAt(2));
     }).toList();
     final genres = document
         .querySelectorAll(".breadcrumb > li > a")
@@ -293,7 +303,13 @@ class AnimeVietsubService extends EigaBaseService {
         .map((item) {
       return EpisodeEiga(
           name: item.text.trim(),
-          episodeId: Uri.parse(item.attributes['href']!).path.split('/').elementAt(3));
+          episodeId:
+              Uri.parse(item.attributes['href']!).path.split('/').elementAt(3),
+          extra: {
+            'id': item.attributes['data-id']!,
+            'play': item.attributes['data-play']!,
+            'hash': item.attributes['data-hash']!
+          });
     }).toList();
 
     final scheduleText = document
@@ -324,5 +340,79 @@ class AnimeVietsubService extends EigaBaseService {
               hour: int.parse(hour), minute: int.parse(minute), day: day)
           : null,
     );
+  }
+
+  @override
+  getSource({required EpisodeEiga episode}) async {
+    final json = jsonDecode(await fetch('$baseUrl/ajax/player?v=2019a',
+        body: {...(episode.extra as Map<String, String>? ?? {}), 'backuplinks': '1'}));
+
+    return SourceVideo(src: json['link'][0]['file'], type: json['playTech'] == 'api' ? 'hls' : 'embed', headers: {'referer': baseUrl});
+  }
+  
+  fetchSourceContentData({required source}) async {
+    return SourceContent(content: _decryptM3u8(source.src), url: source.url, headers: source.headers);
+  }
+
+  @override
+  getSubtitles({required episode}) async {
+    return [];
+  }
+}
+
+
+String _decryptM3u8(
+  String data, {
+  bool flag1 = true,
+  bool flag2 = false,
+  bool flag3 = false,
+  bool flag4 = false,
+  String? key,
+}) {
+  final keyString = key ?? "ZG1fdGhhbmdfc3VjX3ZhdF9nZXRfbGlua19hbl9kYnQ";
+  final keyBytes = base64.decode(keyString);
+  final digest = sha256.convert(keyBytes).bytes;
+
+  final buff = flag1 ? base64.decode(data) : Uint8List(data.length);
+
+  final iv = buff.sublist(flag2 ? 9 : 0, flag3 ? 18 : 16);
+  final body = buff.sublist(flag4 ? 25 : 16);
+
+  final cipher = CBCBlockCipher(AESFastEngine())
+    ..init(
+      false,
+      ParametersWithIV(KeyParameter(Uint8List.fromList(digest)), iv),
+    );
+
+  final decrypted = _processBlocks(cipher, body);
+  final decompressed = _Inflate.raw(decrypted);//.getBytes();
+
+  return utf8.decode(decompressed);
+}
+
+Uint8List _processBlocks(BlockCipher cipher, Uint8List input) {
+  final output = Uint8List(input.length);
+  var offset = 0;
+
+  while (offset < input.length) {
+    final length = cipher.processBlock(input, offset, output, offset);
+    offset += length;
+  }
+
+  return output;
+}
+
+class _Inflate {
+  final List<int> _input;
+  _Inflate(this._input);
+
+  Uint8List  getBytes() {
+    final archive = ZLibDecoder().decodeBytes(_input, verify: true);
+    return archive;
+  }
+
+  static Uint8List  raw(List<int> input) {
+    final archive = ZLibDecoder().decodeBytes(input, verify: true);
+    return archive;
   }
 }

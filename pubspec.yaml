@@ -7,6 +7,7 @@ environment:
   sdk: ^3.5.4
 
 dependencies:
+  archive: ^4.0.2
   card_swiper: ^3.0.1
   contentsize_tabbarview: ^0.0.2
   crypto: ^3.0.6
@@ -41,6 +42,7 @@ dependencies:
   path: ^1.9.0
   path_provider: ^2.1.5
   play_video: ^0.0.1
+  pointycastle: ^3.9.1
   pull_to_refresh_flutter3: ^2.0.2
   rss_feed_parser: ^1.0.6
   scrollable_positioned_list: ^0.3.8

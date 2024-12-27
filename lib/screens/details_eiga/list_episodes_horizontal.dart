@@ -13,6 +13,7 @@ class ListEpisodesHorizontal extends StatefulWidget {
   final EpisodesEiga? Function() initialData;
   final void Function(EpisodesEiga episodes)? onUpdate;
   final void Function(EpisodeEiga episode) onTap;
+  final bool eager;
 
   const ListEpisodesHorizontal(
       {super.key,
@@ -22,7 +23,8 @@ class ListEpisodesHorizontal extends StatefulWidget {
       required this.episodeId,
       required this.onUpdate,
       required this.onTap,
-      required this.initialData});
+      required this.initialData,
+      required this.eager});
 
   @override
   State<ListEpisodesHorizontal> createState() => _ListEpisodesHorizontalState();
@@ -84,6 +86,10 @@ class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal>
                             (widget.episodeId ??
                                     episodes.episodes[0].episodeId) ==
                                 episode.episodeId;
+
+                        if (widget.eager) {
+                          widget.onTap(episode);
+                        }
 
                         return Padding(
                             padding: EdgeInsets.only(right: 8.0),
