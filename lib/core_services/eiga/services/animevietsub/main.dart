@@ -26,9 +26,11 @@ class AnimeVietsubService extends EigaBaseService {
   @override
   final String name = "AnimeVietsub";
   @override
-  final String baseUrl = "https://animevietsub.video";
+  final String baseUrl = "https://animevietsub.biz";
   @override
   String get faviconUrl => "$baseUrl/favicon.ico";
+
+  final Map<String, _ParamsEpisode> _paramsEpisodeStore = {};
 
   @override
   parseURL(String url) {
@@ -301,15 +303,18 @@ class AnimeVietsubService extends EigaBaseService {
     final episodes = document
         .querySelectorAll("#list-server .list-episode .episode a")
         .map((item) {
-      return EpisodeEiga(
-          name: item.text.trim(),
-          episodeId:
-              Uri.parse(item.attributes['href']!).path.split('/').elementAt(3),
-          extra: {
-            'id': item.attributes['data-id']!,
-            'play': item.attributes['data-play']!,
-            'hash': item.attributes['data-hash']!
-          });
+      final episodeId =
+          Uri.parse(item.attributes['href']!).path.split('/').elementAt(3);
+
+      final params = _ParamsEpisode(
+          id: item.attributes['data-id']!,
+          play: item.attributes['data-play']!,
+          hash: item.attributes['data-hash']!,
+          backuplinks: item.attributes['data-backuplinks'] ?? '1');
+
+      _paramsEpisodeStore['$episodeId@$eigaId'] = params;
+
+      return EpisodeEiga(name: item.text.trim(), episodeId: episodeId);
     }).toList();
 
     final scheduleText = document
@@ -343,23 +348,55 @@ class AnimeVietsubService extends EigaBaseService {
   }
 
   @override
-  getSource({required EpisodeEiga episode}) async {
-    final json = jsonDecode(await fetch('$baseUrl/ajax/player?v=2019a',
-        body: {...(episode.extra as Map<String, String>? ?? {}), 'backuplinks': '1'}));
+  getSource({required eigaId, required EpisodeEiga episode}) async {
+    final text = (await fetch(
+      '$baseUrl/ajax/player?v=2019a',
+      body: _paramsEpisodeStore['${episode.episodeId}@$eigaId']!.toMap(),
+    ));
 
-    return SourceVideo(src: json['link'][0]['file'], type: json['playTech'] == 'api' ? 'hls' : 'embed', headers: {'referer': baseUrl});
-  }
-  
-  fetchSourceContentData({required source}) async {
-    return SourceContent(content: _decryptM3u8(source.src), url: source.url, headers: source.headers);
+    final json = jsonDecode(text);
+    return SourceVideo(
+        src: json['link'][0]['file'],
+        url: Uri.parse(baseUrl),
+        type: json['playTech'] == 'api' ? 'hls' : 'embed',
+        headers: {'referer': baseUrl});
   }
 
   @override
-  getSubtitles({required episode}) async {
+  get fetchSourceContent => ({required source}) async {
+        return SourceContent(
+            content: jsonDecode(_decryptM3u8(source.src)),
+            url: source.url,
+            headers: source.headers);
+      };
+
+  @override
+  getSubtitles({required eigaId, required episode}) async {
     return [];
   }
 }
 
+class _ParamsEpisode {
+  final String id;
+  final String play;
+  final String hash;
+  final String backuplinks;
+
+  _ParamsEpisode(
+      {required this.id,
+      required this.play,
+      required this.hash,
+      required this.backuplinks});
+
+  Map<String, String> toMap() {
+    return {
+      'id': id,
+      'play': play,
+      'link': hash,
+      'backuplinks': backuplinks,
+    };
+  }
+}
 
 String _decryptM3u8(
   String data, {
@@ -369,7 +406,7 @@ String _decryptM3u8(
   bool flag4 = false,
   String? key,
 }) {
-  final keyString = key ?? "ZG1fdGhhbmdfc3VjX3ZhdF9nZXRfbGlua19hbl9kYnQ";
+  final keyString = key ?? "ZG1fdGhhbmdfc3VjX3ZhdF9nZXRfbGlua19hbl9kYnQ=";
   final keyBytes = base64.decode(keyString);
   final digest = sha256.convert(keyBytes).bytes;
 
@@ -385,7 +422,7 @@ String _decryptM3u8(
     );
 
   final decrypted = _processBlocks(cipher, body);
-  final decompressed = _Inflate.raw(decrypted);//.getBytes();
+  final decompressed = _Inflate.raw(decrypted); //.getBytes();
 
   return utf8.decode(decompressed);
 }
@@ -406,13 +443,13 @@ class _Inflate {
   final List<int> _input;
   _Inflate(this._input);
 
-  Uint8List  getBytes() {
-    final archive = ZLibDecoder().decodeBytes(_input, verify: true);
+  Uint8List getBytes() {
+    final archive = ZLibDecoder().decodeBytes(_input, verify: true, raw: true);
     return archive;
   }
 
-  static Uint8List  raw(List<int> input) {
-    final archive = ZLibDecoder().decodeBytes(input, verify: true);
+  static Uint8List raw(List<int> input) {
+    final archive = ZLibDecoder().decodeBytes(input, verify: true, raw: true);
     return archive;
   }
 }

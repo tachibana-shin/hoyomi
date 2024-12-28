@@ -60,10 +60,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
   void _updatePlayer() {
     assert(_episode != null);
 
-    _service.getSubtitles(episode: _episode!).then((subtitles) {
+    _service
+        .getSubtitles(eigaId: _eigaId, episode: _episode!)
+        .then((subtitles) {
       _subtitlesNotifier.value = subtitles;
     });
-    _service.getSource(episode: _episode!).then((source) {
+    _service.getSource(eigaId: _eigaId, episode: _episode!).then((source) {
       _sourceNotifier.value = source;
     });
   }

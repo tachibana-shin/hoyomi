@@ -14,7 +14,10 @@ abstract class EigaBaseService extends BaseService {
 
   Future<MetaEiga> getDetails(String eigaId);
   Future<EpisodesEiga> getEpisodes(String eigaId);
-  Future<SourceVideo> getSource({required EpisodeEiga episode});
-  Future<List<Subtitle>> getSubtitles({required EpisodeEiga episode});
-  Future<SourceContent> Function({required SourceVideo source})? fetchSourceContent;
+  Future<SourceVideo> getSource(
+      {required String eigaId, required EpisodeEiga episode});
+  Future<List<Subtitle>> getSubtitles(
+      {required String eigaId, required EpisodeEiga episode});
+  Future<SourceContent> Function({required SourceVideo source})?
+      fetchSourceContent;
 }
