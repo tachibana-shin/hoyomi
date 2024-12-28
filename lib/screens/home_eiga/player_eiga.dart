@@ -27,7 +27,8 @@ class PlayerEiga extends StatefulWidget {
   final ValueNotifier<String> subtitleNotifier;
 
   final ValueNotifier<SourceVideo?> sourceNotifier;
-  final Future<SourceContent> Function({required SourceVideo source})? fetchSourceContent;
+  final Future<SourceContent> Function({required SourceVideo source})?
+      fetchSourceContent;
 
   final void Function() onBack;
   final ValueNotifier<List<type.Subtitle>> subtitlesNotifier;
@@ -203,36 +204,34 @@ class _PlayerEigaState extends State<PlayerEiga> {
   @override
   Widget build(BuildContext context) {
     // if (_controller?.value.isInitialized != true) return SizedBox.shrink();
+    // buffer + isError + slider controller
 
     return AspectRatio(
         aspectRatio: 16 / 9,
-        child: _controller == null
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : Stack(children: [
-                SubtitleWrapper(
-                  enabled: _subtitleCode != null,
-                  videoPlayerController: _controller!,
-                  subtitleController: subtitleController,
-                  subtitleStyle: SubtitleStyle(
-                    textColor: Colors.white,
-                    hasBorder: true,
-                  ),
-                  videoChild: VideoPlayer(_controller!),
-                ),
-                AnimatedOpacity(
-                    opacity: _showControls ? 1.0 : 0.0,
-                    duration: _durationAnimate,
-                    child: Container(
-                        color: Colors.black.withValues(alpha: 0.5),
-                        child: Stack(children: [
-                          _buildMobileTopControls(),
-                          _buildMobileControls(),
-                          _buildMobileBottomControls()
-                        ]))),
-                _buildMobileSliderProgress()
-              ]));
+        child: Stack(children: [
+          if (_controller != null)
+            SubtitleWrapper(
+              enabled: _subtitleCode != null,
+              videoPlayerController: _controller!,
+              subtitleController: subtitleController,
+              subtitleStyle: SubtitleStyle(
+                textColor: Colors.white,
+                hasBorder: true,
+              ),
+              videoChild: VideoPlayer(_controller!),
+            ),
+          AnimatedOpacity(
+              opacity: _showControls ? 1.0 : 0.0,
+              duration: _durationAnimate,
+              child: Container(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  child: Stack(children: [
+                    _buildMobileTopControls(),
+                    _buildMobileControls(),
+                    _buildMobileBottomControls()
+                  ]))),
+          _buildMobileSliderProgress()
+        ]));
   }
 
   Widget _buildMobileTopControls() {
@@ -323,23 +322,28 @@ class _PlayerEigaState extends State<PlayerEiga> {
                   size: 25.0,
                 ),
               ))),
-      ElevatedButton(
-        onPressed: () {
-          setState(() {
-            _playing = !_playing;
-          });
-        },
-        style: ElevatedButton.styleFrom(
-            shape: CircleBorder(),
-            padding: EdgeInsets.all(15),
-            backgroundColor: Colors.black.withValues(alpha: 0.3),
-            shadowColor: Colors.transparent),
-        child: Icon(
-          _playing ? Icons.pause : Icons.play_arrow,
-          color: Colors.white,
-          size: 42.0,
+      if (_controller != null)
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              _playing = !_playing;
+            });
+          },
+          style: ElevatedButton.styleFrom(
+              shape: CircleBorder(),
+              padding: EdgeInsets.all(15),
+              backgroundColor: Colors.black.withValues(alpha: 0.3),
+              shadowColor: Colors.transparent),
+          child: Icon(
+            _playing ? Icons.pause : Icons.play_arrow,
+            color: Colors.white,
+            size: 42.0,
+          ),
+        )
+      else
+        Center(
+          child: CircularProgressIndicator(),
         ),
-      ),
       Opacity(
           opacity: widget.onNext == null ? 0.5 : 1.0,
           child: IgnorePointer(
@@ -373,9 +377,12 @@ class _PlayerEigaState extends State<PlayerEiga> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(formatDuration(_controller!.value.position),
+                Text(
+                    formatDuration(_controller?.value.position ??
+                        Duration(milliseconds: 0)),
                     style: TextStyle(color: Colors.white)),
-                Text(' / ${formatDuration(_controller!.value.duration)}',
+                Text(
+                    ' / ${formatDuration(_controller?.value.duration ?? Duration(milliseconds: 0))}',
                     style: TextStyle(color: Colors.grey.shade300)),
               ],
             ),
@@ -429,6 +436,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
   bool get _playing =>
       _controller?.value.isInitialized == true && _controller!.value.isPlaying;
   set _playing(bool value) {
+    if (_controller?.value.isInitialized != true) return;
+
     if (value) {
       _controller!.play();
     } else {
@@ -533,6 +542,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
       src: resolution.variant.url.toString(),
       type: 'hls',
       headers: resolution.headers,
+      url: resolution.variant.url,
     ));
   }
 
