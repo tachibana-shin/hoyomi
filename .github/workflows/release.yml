@@ -9,9 +9,11 @@ jobs:
     - uses: actions/setup-java@v1
       with:
         java-version: '12.x'
-    - uses: subosito/flutter-action@v1
+
+    - uses: flutter-actions/setup-flutter@v4
       with:
-        flutter-version: '3.5.4'
+        channel: stable
+        version: 3.27.1
 
     - run: flutter pub get
     # - run: flutter test
