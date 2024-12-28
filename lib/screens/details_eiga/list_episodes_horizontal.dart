@@ -45,6 +45,21 @@ class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal>
         ? Future.value(initial)
         : service.getEpisodes(widget.season.eigaId);
     if (widget.onUpdate != null) _seasonFuture.then(widget.onUpdate!);
+
+    if (widget.eager) {
+      _seasonFuture.then((value) {
+        for (final episode in value.episodes) {
+          final active = widget.eigaId == widget.season.eigaId &&
+              (widget.episodeId ?? value.episodes[0].episodeId) ==
+                  episode.episodeId;
+
+          if (active) {
+            widget.onTap(episode);
+            break;
+          }
+        }
+      });
+    }
     super.initState();
   }
 
@@ -71,53 +86,46 @@ class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal>
           }
 
           final episodes = snapshot.data as EpisodesEiga;
-          final height = 30.0;
+          final height = 35.0;
 
           return SizedBox(
               height: height,
-              child: Expanded(
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: episodes.episodes.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        final episode = episodes.episodes[index];
-                        final active = widget.eigaId == widget.season.eigaId &&
-                            (widget.episodeId ??
-                                    episodes.episodes[0].episodeId) ==
-                                episode.episodeId;
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: episodes.episodes.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final episode = episodes.episodes[index];
+                    final active = widget.eigaId == widget.season.eigaId &&
+                        (widget.episodeId ?? episodes.episodes[0].episodeId) ==
+                            episode.episodeId;
 
-                        if (widget.eager) {
-                          widget.onTap(episode);
-                        }
-
-                        return Padding(
-                            padding: EdgeInsets.only(right: 8.0),
-                            child: InkWell(
-                                borderRadius: BorderRadius.circular(7),
-                                onTap: () => widget.onTap(episode),
-                                child: AnimatedContainer(
-                                    duration: Duration(milliseconds: 300),
-                                    height: height,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: active
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .tertiaryContainer
-                                            : Colors.grey.withAlpha(60),
-                                      ),
-                                      color: active
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .tertiaryContainer
-                                          : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(7),
-                                    ),
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: Center(child: Text(episode.name)))));
-                      })));
+                    return Padding(
+                        padding: EdgeInsets.only(right: 8.0),
+                        child: InkWell(
+                            borderRadius: BorderRadius.circular(7),
+                            onTap: () => widget.onTap(episode),
+                            child: AnimatedContainer(
+                                duration: Duration(milliseconds: 300),
+                                height: height * 0.9,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: active
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .tertiaryContainer
+                                        : Colors.grey.withAlpha(60),
+                                  ),
+                                  color: active
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .tertiaryContainer
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(7),
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Center(child: Text(episode.name)))));
+                  }));
         });
   }
 }
