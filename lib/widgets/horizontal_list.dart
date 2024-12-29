@@ -11,7 +11,7 @@ class HorizontalList<T> extends StatelessWidget {
   final Future<List<T>>? itemsFuture;
   final Future<int>? totalFuture;
 
-  HorizontalList(
+  const HorizontalList(
       {super.key,
       required this.title,
       required this.more,
@@ -20,12 +20,8 @@ class HorizontalList<T> extends StatelessWidget {
       required this.itemsFuture,
       required this.builder,
       required this.builderError,
-      required this.totalFuture}) {
-    if (itemsFuture == null && items == null) {
-      throw ArgumentError('Either itemsFuture or items must be provided.');
-    }
-  }
-
+      required this.totalFuture})
+      : assert(items == null || itemsFuture == null);
 
   @override
   Widget build(BuildContext context) {
@@ -100,13 +96,12 @@ class HorizontalList<T> extends StatelessWidget {
                   ));
             }
             if (snapshot.hasError) {
-             
-
-              return builderError(snapshot.error) ?? SizedBox(
-                  height: height,
-                  child: Center(
-                    child: Text('Error: ${snapshot.error}'),
-                  ));
+              return builderError(snapshot.error) ??
+                  SizedBox(
+                      height: height,
+                      child: Center(
+                        child: Text('Error: ${snapshot.error}'),
+                      ));
             }
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return SizedBox(
