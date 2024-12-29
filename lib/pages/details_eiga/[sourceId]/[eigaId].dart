@@ -37,7 +37,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
   late Future<MetaEiga> _metaEigaFuture;
 
   final Map<String, EpisodesEiga> _cacheEpisodesStore = {};
-  ValueNotifier<String> _titleNotifier = ValueNotifier('');
+  final ValueNotifier<String> _titleNotifier = ValueNotifier('');
   final ValueNotifier<String> _subtitleNotifier = ValueNotifier('');
   final ValueNotifier<List<Subtitle>> _subtitlesNotifier = ValueNotifier([]);
   final ValueNotifier<SourceVideo?> _sourceNotifier = ValueNotifier(null);
@@ -96,7 +96,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
               }
 
               final metaEiga = ValueNotifier(snapshot.data as MetaEiga);
-              _titleNotifier = ValueNotifier(metaEiga.value.name);
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                _titleNotifier.value = metaEiga.value.name;
+              });
+
               _mergeMetaListeners =
                   Listenable.merge([metaEiga, _eigaId, _episodeId]);
               metaEiga.addListener(() {
