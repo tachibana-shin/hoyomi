@@ -361,12 +361,14 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
       required List<BasicSeason> seasons,
     }) {
       final oldEiga = _eigaId.value;
-      if (oldEiga != seasons[indexSeason].eigaId) {
+      final seasonChanged = oldEiga != seasons[indexSeason].eigaId;
+
+      if (seasonChanged) {
         _eigaId.value = seasons[indexSeason].eigaId;
       }
       _episodeId.value = episodes[indexEpisode].episodeId;
       _episode.value = episodes[indexEpisode];
-      _subtitleNotifier.value = episodes[indexEpisode].name;
+      _subtitleNotifier.value = 'Episode ${episodes[indexEpisode].name}';
 
       final currentIndex =
           episodes.indexWhere((e) => e.episodeId == _episodeId.value);
@@ -390,7 +392,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
 
       _updatePlayer();
 
-      if (oldEiga != _eigaId.value) {
+      if (seasonChanged) {
         _service.getDetails(_eigaId.value).then((value) {
           metaEiga.value = value;
         });
