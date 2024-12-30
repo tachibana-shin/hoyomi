@@ -79,23 +79,21 @@ class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal> {
                     episode.episodeId;
           }
 
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (widget.eager) {
-              for (final episode in episodes.episodes) {
-                final active = checkEpisodeActive(episode);
+          if (widget.eager) {
+            for (final episode in episodes.episodes) {
+              final active = checkEpisodeActive(episode);
 
-                if (active) {
-                  final episodeIndex = episodes.episodes.indexOf(episode);
+              if (active) {
+                final episodeIndex = episodes.episodes.indexOf(episode);
 
-                  widget.onTap(
-                    indexEpisode: episodeIndex,
-                    episodes: episodes.episodes,
-                  );
-                  break;
-                }
+                widget.onTap(
+                  indexEpisode: episodeIndex,
+                  episodes: episodes.episodes,
+                );
+                break;
               }
             }
-          });
+          }
 
           return SizedBox(
               height: height,

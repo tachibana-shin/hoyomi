@@ -62,6 +62,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
   void _updatePlayer() {
     assert(_episode.value != null);
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _subtitleNotifier.value = 'Episode ${_episode.value!.name}';
+    });
     _service
         .getSubtitles(eigaId: _eigaId.value, episode: _episode.value!)
         .then((subtitles) {
@@ -368,7 +371,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
       }
       _episodeId.value = episodes[indexEpisode].episodeId;
       _episode.value = episodes[indexEpisode];
-      _subtitleNotifier.value = 'Episode ${episodes[indexEpisode].name}';
 
       final currentIndex =
           episodes.indexWhere((e) => e.episodeId == _episodeId.value);
