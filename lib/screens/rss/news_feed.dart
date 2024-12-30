@@ -215,7 +215,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                               .colorScheme
                                               .surface,
                                           radius: 10.0,
-                                          child: Image.network(
+                                          child: BasicImage.network(
                                             item.avatar!.src,
                                             headers: item.avatar!.headers,
                                             fit: BoxFit.cover,
@@ -235,7 +235,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                   padding: const EdgeInsets.only(left: 16.0),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
+                                    child: BasicImage.network(
                                       item.image!.src,
                                       headers: item.image!.headers,
                                       width: 100,

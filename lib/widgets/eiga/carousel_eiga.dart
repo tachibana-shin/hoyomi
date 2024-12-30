@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/eiga/interfaces/basic_carousel_item.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/widgets/vertical_separator.dart';
 
 class CarouselEiga extends StatefulWidget {
@@ -48,7 +49,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                     borderRadius: BorderRadius.circular(16.0),
                     child: Stack(
                       children: [
-                        Image.network(
+                        BasicImage.network(
                           item.image.src,
                           headers: item.image.headers,
                           fit: BoxFit.cover,

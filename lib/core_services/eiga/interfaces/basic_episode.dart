@@ -4,4 +4,12 @@ class BasicEpisode {
   final DateTime? time;
 
   const BasicEpisode({required this.name, required this.episodeId, this.time});
+
+  factory BasicEpisode.createFakeData() {
+    return BasicEpisode(
+      name: 'episode name',
+      episodeId: 'episode id',
+      time: DateTime.now(),
+    );
+  }
 }

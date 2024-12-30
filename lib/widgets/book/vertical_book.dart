@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/utils/format_time_ago.dart';
 import 'package:honyomi/widgets/circular_progress.dart';
 
@@ -55,7 +56,7 @@ class VerticalBook extends StatelessWidget {
                     aspectRatio: 2 / 3,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
+                      child: BasicImage.network(
                         book.image.src,
                         headers: book.image.headers,
                         fit: BoxFit.cover,

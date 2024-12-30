@@ -77,7 +77,7 @@ class _ImagePickerState extends State<ImagePicker> {
                                     borderRadius: BorderRadius.circular(20.0),
                                   ),
                                   clipBehavior: Clip.antiAlias,
-                                  child: Image.network(
+                                  child: BasicImage.network(
                                     widget.images.elementAt(index).src,
                                     headers:
                                         widget.images.elementAt(index).headers,

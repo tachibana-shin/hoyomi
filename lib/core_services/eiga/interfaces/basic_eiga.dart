@@ -11,18 +11,32 @@ class BasicEiga {
   final String? notice;
   final double? rate;
   final bool pending;
-  final DateTime ? preRelease;
+  final DateTime? preRelease;
 
-  BasicEiga({
-    required this.name,
-    required this.eigaId,
-    required this.originalName,
-    required this.image,
-    required this.lastEpisode,
-    required this.timeAgo,
-    required this.notice,
-    required this.rate,
-    this.pending = false,
-    this.preRelease
-  });
+  BasicEiga(
+      {required this.name,
+      required this.eigaId,
+      required this.originalName,
+      required this.image,
+      required this.lastEpisode,
+      required this.timeAgo,
+      required this.notice,
+      required this.rate,
+      this.pending = false,
+      this.preRelease});
+
+  factory BasicEiga.createFakeData() {
+    return BasicEiga(
+      name: 'Eiga Fake',
+      eigaId: 'eiga-fake-id',
+      originalName: 'Eiga Fake Original',
+      image: BasicImage.createFakeData(),
+      lastEpisode: BasicEpisode.createFakeData(),
+      timeAgo: DateTime.now().subtract(Duration(days: 7)),
+      notice: 'Notice Fake',
+      rate: 8.5,
+      pending: true,
+      preRelease: DateTime.now().add(Duration(days: 30)),
+    );
+  }
 }

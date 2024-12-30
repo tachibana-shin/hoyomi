@@ -5,6 +5,7 @@ import 'package:honyomi/cache/get_user.dart';
 import 'package:honyomi/core_services/book/auth_service.dart';
 import 'package:honyomi/core_services/book/book_base_service.dart';
 import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/database/isar.dart';
 import 'package:honyomi/globals.dart';
 import 'package:honyomi/database/scheme/cookie_manager.dart';
@@ -81,7 +82,7 @@ class _AccountServiceState extends State<AccountService> {
           children: [
             CircleAvatar(
                 backgroundColor: Theme.of(context).colorScheme.surface,
-                child: Image.network(
+                child: BasicImage.network(
                   widget.service.faviconUrl,
                   headers: {"referer": widget.service.baseUrl},
                   fit: BoxFit.cover,
@@ -123,7 +124,7 @@ class _AccountServiceState extends State<AccountService> {
       default:
         return CircleAvatar(
             backgroundColor: Colors.grey.shade300,
-            child: Image.network(
+            child: BasicImage.network(
               _user!.photoUrl,
               fit: BoxFit.cover,
             ));

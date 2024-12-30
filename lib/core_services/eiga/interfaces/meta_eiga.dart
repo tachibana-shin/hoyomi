@@ -58,9 +58,8 @@ class MetaEiga {
     return MetaEiga(
       name: '5-toubun no Hanayome',
       originalName: '5-toubun no Hanayome',
-      image:
-          BasicImage(src: 'https://example.com/image.jpg'), // BasicImageの仮のURL
-      poster: BasicImage(src: 'https://example.com/poster.jpg'), // ポスター画像
+      image: BasicImage.createFakeData(),
+      poster: BasicImage.createFakeData(),
       description: 'This is a fake movie description.',
       rate: 8.5,
       countRate: 1200,

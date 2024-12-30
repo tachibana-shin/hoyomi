@@ -10,6 +10,7 @@ import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
 
 import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:honyomi/core_services/book/interfaces/status_enum.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/core_services/utils_service.dart';
 import 'package:honyomi/errors/captcha_required_exception.dart';
@@ -216,7 +217,7 @@ class _DetailsComicState extends State<DetailsComic>
                 aspectRatio: 2 / 3,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
-                  child: Image.network(
+                  child: BasicImage.network(
                     book.image.src,
                     headers: book.image.headers,
                     fit: BoxFit.cover,
@@ -850,7 +851,7 @@ class _AvatarUserState extends State<_AvatarUser> {
               child: CircleAvatar(
                 radius: 15,
                 backgroundColor: Theme.of(context).colorScheme.onSurface,
-                child: Image.network(
+                child: BasicImage.network(
                   snapshot.data!.photoUrl,
                   fit: BoxFit.cover,
                 ),

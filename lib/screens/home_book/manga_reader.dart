@@ -490,7 +490,7 @@ class _MangaReaderState extends State<MangaReader>
       );
     }
 
-    return Image.network(
+    return BasicImage.network(
       item.src,
       headers: item.headers,
       fit: BoxFit.contain,

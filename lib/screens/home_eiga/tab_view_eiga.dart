@@ -8,6 +8,7 @@ import 'package:honyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:honyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:honyomi/widgets/pull_to_refresh.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class TabViewEiga extends StatefulWidget {
   final EigaBaseService service;
@@ -47,68 +48,82 @@ class _TabViewEigaState extends State<TabViewEiga>
     return FutureBuilder<BaseEigaHome>(
       future: _data,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
         if (snapshot.hasError) {
           return Center(
               child: UtilsService.errorWidgetBuilder(context,
                   error: snapshot.error,
                   orElse: (error) => Text('Error: $error')));
         }
-        if (!snapshot.hasData) {
-          return const Center(child: Text('No data available'));
-        }
+        // if (!snapshot.hasData) {
+        //   return const Center(child: Text('No data available'));
+        // }
 
-        return PullToRefresh<BaseEigaHome>(
-            controller: _refreshController,
-            onRefresh: widget.service.home,
-            initialData: snapshot.data!,
-            builder: (data) => ListView.builder(
-                  padding: const EdgeInsets.all(8.0),
-                  itemCount:
-                      data.sections.length + (data.carousel == null ? 0 : 1),
-                  itemBuilder: (context, sectionIndex) {
-                    if (sectionIndex == 0 && data.carousel != null) {
-                      return CarouselEiga(
-                          aspectRatio: data.carousel!.aspectRatio,
-                          sourceId: widget.service.uid,
-                          items: data.carousel!.items,
-                          maxHeight: data.carousel!.maxHeightBuilder(context));
-                    }
+        Widget builder(BaseEigaHome data) {
+          return Skeletonizer(
+              enabled: snapshot.connectionState == ConnectionState.waiting,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(8.0),
+                itemCount:
+                    data.sections.length + (data.carousel == null ? 0 : 1),
+                itemBuilder: (context, sectionIndex) {
+                  if (sectionIndex == 0 && data.carousel != null) {
+                    return CarouselEiga(
+                        aspectRatio: data.carousel!.aspectRatio,
+                        sourceId: widget.service.uid,
+                        items: data.carousel!.items,
+                        maxHeight: data.carousel!.maxHeightBuilder(context));
+                  }
 
-                    final section = data.sections.elementAt(
-                        sectionIndex - (data.carousel != null ? 1 : 0));
-                    return ValueListenableBuilder<bool>(
-                        valueListenable: isGridViewEnabled,
-                        builder: (context, value, _) {
-                          if (section.gridView != null) {
-                            value = section.gridView!;
-                          }
+                  final section = data.sections.elementAt(
+                      sectionIndex - (data.carousel != null ? 1 : 0));
+                  return ValueListenableBuilder<bool>(
+                      valueListenable: isGridViewEnabled,
+                      builder: (context, value, _) {
+                        if (section.gridView != null) {
+                          value = section.gridView!;
+                        }
 
-                          if (value == false) {
-                            return HorizontalEigaList(
-                              itemsFuture: Future.value(section.items),
-                              service: widget.service,
-                              title: section.name,
-                              more: section.sectionId != null
-                                  ? '/section/${widget.service.uid}/${section.sectionId}'
-                                  : null,
-                            );
-                          }
-
-                          return VerticalEigaList(
-                            itemsFuture: null,
-                            items: section.items,
+                        if (value == false) {
+                          return HorizontalEigaList(
+                            itemsFuture: Future.value(section.items),
                             service: widget.service,
                             title: section.name,
                             more: section.sectionId != null
                                 ? '/section/${widget.service.uid}/${section.sectionId}'
                                 : null,
                           );
-                        });
-                  },
-                ));
+                        }
+
+                        return VerticalEigaList(
+                          itemsFuture: null,
+                          items: section.items,
+                          service: widget.service,
+                          title: section.name,
+                          more: section.sectionId != null
+                              ? '/section/${widget.service.uid}/${section.sectionId}'
+                              : null,
+                        );
+                      });
+                },
+              ));
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return PullToRefresh(
+              controller: RefreshController(),
+              onRefresh: () async {
+                setState(() {});
+                return null;
+              },
+              initialData: null,
+              builder: (_) => builder(BaseEigaHome.createFakeData()));
+        }
+
+        return PullToRefresh<BaseEigaHome>(
+            controller: _refreshController,
+            onRefresh: widget.service.home,
+            initialData: snapshot.data!,
+            builder: builder);
       },
     );
   }

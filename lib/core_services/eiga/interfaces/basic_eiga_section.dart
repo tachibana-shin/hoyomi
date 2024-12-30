@@ -8,4 +8,11 @@ class BasicEigaSection {
 
   BasicEigaSection(
       {required this.items, required this.name, this.sectionId, this.gridView});
+
+  factory BasicEigaSection.createFakeData() {
+    return BasicEigaSection(
+      name: 'Section Name',
+      items: List.generate(10, (index) => BasicEiga.createFakeData()),
+    );
+  }
 }
