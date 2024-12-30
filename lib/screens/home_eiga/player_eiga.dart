@@ -142,9 +142,6 @@ class _PlayerEigaState extends State<PlayerEiga> {
             ..initialize().then((_) {
               // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
               if (_playing.value) _controller.value?.play();
-              _onPlayerValueChanged();
-            }).catchError((error) {
-              _error.value = '$error';
             });
 
       final response = await get(url, headers: source.headers);
@@ -169,9 +166,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
           ..initialize().then((_) {
             // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
             if (_playing.value) _controller.value?.play();
-            _onPlayerValueChanged();
-          }).catchError((error) {
-            _error.value = '$error';
+            setState(() {});
           });
 
     if (source.type == 'hls') {
@@ -191,6 +186,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
     _duration.value = _controller.value?.value.duration ?? Duration();
     _loading.value = _controller.value?.value.isInitialized != true ||
         _controller.value!.value.isBuffering;
+    _playing.value = _controller.value?.value.isPlaying ?? _playing.value;
   }
 
   Future<void> _initializeHls(
@@ -219,6 +215,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
             headers: {...headers, 'referer': variant.url.toString()});
       }).toList();
       _setQualityCode(_availableResolutions.value.first.code);
+      setState(() {});
     } else if (playlist is HlsMediaPlaylist) {
       // media m3u8 file
       debugPrint("[initialize_hls]: no action because is media playlist");
@@ -379,30 +376,25 @@ class _PlayerEigaState extends State<PlayerEiga> {
                           ),
                         ))),
                 ValueListenableBuilder(
-                    valueListenable: _loading,
-                    builder: (context, loading, child) => loading
-                        ? Center(child: CircularProgressIndicator())
-                        : ValueListenableBuilder(
-                            valueListenable: _playing,
-                            builder: (context, value, child) {
-                              return ElevatedButton(
-                                onPressed: () {
-                                  _setPlaying(!value);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    shape: CircleBorder(),
-                                    padding: EdgeInsets.all(15),
-                                    backgroundColor:
-                                        Colors.black.withValues(alpha: 0.3),
-                                    shadowColor: Colors.transparent),
-                                child: Icon(
-                                  value ? Icons.pause : Icons.play_arrow,
-                                  color: Colors.white,
-                                  size: 42.0,
-                                ),
-                              );
-                            },
-                          )),
+                  valueListenable: _playing,
+                  builder: (context, value, child) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        _setPlaying(!value);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          shape: CircleBorder(),
+                          padding: EdgeInsets.all(15),
+                          backgroundColor: Colors.black.withValues(alpha: 0.3),
+                          shadowColor: Colors.transparent),
+                      child: Icon(
+                        value ? Icons.pause : Icons.play_arrow,
+                        color: Colors.white,
+                        size: 42.0,
+                      ),
+                    );
+                  },
+                ),
                 Opacity(
                     opacity: widget.onNext == null ? 0.5 : 1.0,
                     child: IgnorePointer(
@@ -502,8 +494,10 @@ class _PlayerEigaState extends State<PlayerEiga> {
                         min: 0.0,
                         max: duration.inSeconds.toDouble(),
                         onChanged: (value) {
-                          _controller.value
-                              ?.seekTo(Duration(seconds: value.toInt()));
+                          setState(() {
+                            _controller.value
+                                ?.seekTo(Duration(seconds: value.toInt()));
+                          });
                         },
                       );
                     });
