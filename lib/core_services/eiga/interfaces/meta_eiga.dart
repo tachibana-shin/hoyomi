@@ -52,4 +52,43 @@ class MetaEiga {
     this.movieSeason,
     this.trailer,
   });
+
+  // Factory method to create fake data
+  factory MetaEiga.createFakeData() {
+    return MetaEiga(
+      name: '5-toubun no Hanayome',
+      originalName: '5-toubun no Hanayome',
+      image:
+          BasicImage(src: 'https://example.com/image.jpg'), // BasicImageの仮のURL
+      poster: BasicImage(src: 'https://example.com/poster.jpg'), // ポスター画像
+      description: 'This is a fake movie description.',
+      rate: 8.5,
+      countRate: 1200,
+      duration: '2h 30m',
+      yearOf: 2023,
+      views: 500000,
+      seasons: [
+        BasicSeason(name: 'Season 1', eigaId: 'S1'),
+        BasicSeason(name: 'Season 2', eigaId: 'S2'),
+      ],
+      genres: [
+        BasicGenre(name: 'Action', genreId: ''),
+        BasicGenre(name: 'Drama', genreId: ''),
+        BasicGenre(name: 'Drama', genreId: ''),
+        BasicGenre(name: 'Drama', genreId: ''),
+        BasicGenre(name: 'Drama', genreId: ''),
+        BasicGenre(name: 'Drama', genreId: ''),
+        BasicGenre(name: 'Drama', genreId: ''),
+      ],
+      quality: 'HD',
+      author: 'John Doe',
+      countries: [
+        BasicGenre(name: 'Japan', genreId: ''),
+      ],
+      likes: 2500,
+      language: 'English',
+      studio: BasicGenre(name: 'Studio Ghibli', genreId: ''),
+      movieSeason: BasicGenre(name: 'Spring', genreId: ''),
+    );
+  }
 }

@@ -11,4 +11,11 @@ class EpisodeEiga {
       required this.episodeId,
       this.image,
       this.description});
+
+  factory EpisodeEiga.createFakeData() {
+    return EpisodeEiga(
+      name: "Episode 1",
+      episodeId: "1",
+    );
+  }
 }

@@ -5,6 +5,7 @@ import 'package:honyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/core_services/utils_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class ListEpisodesHorizontal extends StatefulWidget {
   final String sourceId;
@@ -147,5 +148,38 @@ class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal> {
                         });
                   }));
         });
+  }
+}
+
+class ListEpisodesHorizontalSkeleton extends StatelessWidget {
+  final height = 35.0;
+  final episodes = EpisodesEiga.createFakeData().episodes;
+
+  ListEpisodesHorizontalSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Skeletonizer(enabled: true, child: SizedBox(
+        height:height,child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: episodes.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              final episode = episodes[index];
+
+              return Padding(
+                  padding: EdgeInsets.only(right: 8.0),
+                  child: Container(
+                      height: height * 0.9,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey.withAlpha(60),
+                        ),
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(7),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Center(child: Text(episode.name))));
+            })));
   }
 }

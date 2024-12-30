@@ -13,6 +13,12 @@ class EpisodesEiga {
     this.poster,
     this.schedule,
   });
+
+  factory EpisodesEiga.createFakeData() {
+    return EpisodesEiga(
+      episodes: List.generate(12, (index) => EpisodeEiga.createFakeData()),
+    );
+  }
 }
 
 class TimeAndDay {

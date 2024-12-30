@@ -16,6 +16,7 @@ import 'package:honyomi/screens/details_eiga/list_episodes_horizontal.dart';
 import 'package:honyomi/screens/home_eiga/player_eiga.dart';
 import 'package:honyomi/utils/format_number.dart';
 import 'package:honyomi/widgets/vertical_separator.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class DetailsEigaPage extends StatefulWidget {
   final String sourceId;
@@ -91,30 +92,35 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
           child: FutureBuilder(
             future: _metaEigaFuture,
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              }
-
               if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               }
 
-              final metaEiga = ValueNotifier(snapshot.data as MetaEiga);
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                _titleNotifier.value = metaEiga.value.name;
-              });
+              final done = snapshot.connectionState != ConnectionState.waiting;
 
-              metaEiga.addListener(() {
-                _titleNotifier.value = metaEiga.value.name;
-              });
+              final metaEiga = ValueNotifier(
+                  done ? snapshot.data! : MetaEiga.createFakeData());
+              if (done) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _titleNotifier.value = metaEiga.value.name;
+                });
+
+                metaEiga.addListener(() {
+                  _titleNotifier.value = metaEiga.value.name;
+                });
+              }
 
               return Column(
                 // crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildBasicInfo(metaEiga),
+                  Skeletonizer(
+                      enabled: !done, child: _buildBasicInfo(metaEiga)),
                   SizedBox(height: 10.0),
-                  _buildSchedule(),
-                  _buildSeasonArea(metaEiga),
+                  if (done) _buildSchedule(),
+                  if (!done)
+                    ListEpisodesHorizontalSkeleton()
+                  else
+                    _buildSeasonArea(metaEiga),
                 ],
               );
             },
@@ -275,7 +281,33 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                     Text('${metaEiga.countRate} people rated',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).colorScheme.secondary,
-                            fontSize: 12.0))
+                            fontSize: 12.0)),
+                  if (metaEiga.countRate != null) VerticalSeparator(),
+                  if (metaEiga.movieSeason != null)
+                    Row(children: [
+                      Text('Studio ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  fontSize: 12.0)),
+                      GestureDetector(
+                          onTap: () {
+                            context.push(
+                                '/section_eiga/${widget.sourceId}/${metaEiga.movieSeason!.genreId}');
+                          },
+                          child: Text(metaEiga.movieSeason!.name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                      fontSize: 12.0,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiaryFixedDim)))
+                    ])
                 ]),
 
                 SizedBox(height: 2.0),
@@ -381,25 +413,27 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
       _episodeId.value = episodes[indexEpisode].episodeId;
       _episode.value = episodes[indexEpisode];
 
-      final currentIndex =
-          episodes.indexWhere((e) => e.episodeId == _episodeId.value);
-      _onPrevNotifier.value = currentIndex > 0
-          ? () => onChangeEpisode(
-                indexEpisode: currentIndex - 1,
-                indexSeason: indexSeason,
-                episodes: episodes,
-                seasons: seasons,
-              )
-          : null;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final currentIndex =
+            episodes.indexWhere((e) => e.episodeId == _episodeId.value);
+        _onPrevNotifier.value = currentIndex > 0
+            ? () => onChangeEpisode(
+                  indexEpisode: currentIndex - 1,
+                  indexSeason: indexSeason,
+                  episodes: episodes,
+                  seasons: seasons,
+                )
+            : null;
 
-      _onNextNotifier.value = currentIndex < episodes.length - 1
-          ? () => onChangeEpisode(
-                indexEpisode: currentIndex + 1,
-                indexSeason: indexSeason,
-                episodes: episodes,
-                seasons: seasons,
-              )
-          : null;
+        _onNextNotifier.value = currentIndex < episodes.length - 1
+            ? () => onChangeEpisode(
+                  indexEpisode: currentIndex + 1,
+                  indexSeason: indexSeason,
+                  episodes: episodes,
+                  seasons: seasons,
+                )
+            : null;
+      });
 
       _updatePlayer();
 
