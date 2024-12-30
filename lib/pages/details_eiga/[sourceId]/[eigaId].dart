@@ -284,30 +284,20 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                             fontSize: 12.0)),
                   if (metaEiga.countRate != null) VerticalSeparator(),
                   if (metaEiga.movieSeason != null)
-                    Row(children: [
-                      Text('Studio ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                  fontSize: 12.0)),
-                      GestureDetector(
-                          onTap: () {
-                            context.push(
-                                '/section_eiga/${widget.sourceId}/${metaEiga.movieSeason!.genreId}');
-                          },
-                          child: Text(metaEiga.movieSeason!.name,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                      fontSize: 12.0,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .tertiaryFixedDim)))
-                    ])
+                    GestureDetector(
+                        onTap: () {
+                          context.push(
+                              '/section_eiga/${widget.sourceId}/${metaEiga.movieSeason!.genreId}');
+                        },
+                        child: Text(metaEiga.movieSeason!.name,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    fontSize: 12.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .tertiaryFixedDim)))
                 ]),
 
                 SizedBox(height: 2.0),

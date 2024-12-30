@@ -271,7 +271,7 @@ class AnimeVietsubService extends EigaBaseService {
             _findInfo(infoListRight, "studio")!.querySelector("a")!);
     final trailer = document.querySelector("#Opt1 iframe")?.attributes['src'];
     final movieSeason =
-        _getInfoAnchor(_findInfo(infoListRight, "studio")!.querySelector("a")!);
+        _getInfoAnchor(_findInfo(infoListRight, "season")!.querySelector("a")!);
 
     return MetaEiga(
         name: name,
