@@ -401,7 +401,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                       style: ElevatedButton.styleFrom(
                           shape: CircleBorder(),
                           padding: EdgeInsets.all(15),
-                          backgroundColor: Colors.black.withValues(alpha: 0.3),
+                          backgroundColor: Colors.grey.shade300.withAlpha(50),
                           shadowColor: Colors.transparent),
                       child: Icon(
                         value ? Icons.pause : Icons.play_arrow,
@@ -423,7 +423,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                           style: ElevatedButton.styleFrom(
                             shape: CircleBorder(),
                             padding: EdgeInsets.all(15),
-                            backgroundColor: Colors.grey.shade300.withAlpha(76),
+                            backgroundColor: Colors.grey.shade300.withAlpha(50),
                             shadowColor: Colors.transparent,
                           ),
                           child: Icon(
