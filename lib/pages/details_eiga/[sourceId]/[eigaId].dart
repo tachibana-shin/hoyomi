@@ -179,7 +179,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                   if (metaEiga.studio != null) VerticalSeparator(),
                   if (metaEiga.studio != null)
                     Row(children: [
-                      Text('Studio by ',
+                      Text('Studio ',
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -194,6 +194,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                           },
                           child: Text(
                             metaEiga.studio!.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
