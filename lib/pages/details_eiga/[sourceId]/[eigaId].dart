@@ -467,16 +467,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
               });
 
               return Column(children: [
-                TabBar(
-                  isScrollable: true,
-                  splashBorderRadius: BorderRadius.circular(35.0),
-                  indicatorColor: Theme.of(context).colorScheme.secondary,
-                  tabs: metaEiga.seasons.map((season) {
-                    return Tab(
-                      text: season.name,
-                    );
-                  }).toList(),
-                ),
                 ContentSizeTabBarView(
                     children: metaEiga.seasons.asMap().entries.map((entry) {
                   final season = entry.value;
@@ -507,7 +497,19 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                                 episodes: episodes,
                                 seasons: metaEiga.seasons);
                           }));
-                }).toList())
+                }).toList()),
+                TabBar(
+                  isScrollable: true,
+                  splashBorderRadius: BorderRadius.circular(35.0),
+                  indicatorColor: Theme.of(context).colorScheme.secondary,
+                  tabAlignment: TabAlignment.start,
+                  dividerHeight: 0,
+                  tabs: metaEiga.seasons.map((season) {
+                    return Tab(
+                      text: season.name,
+                    );
+                  }).toList(),
+                ),
               ]);
             }),
           );
