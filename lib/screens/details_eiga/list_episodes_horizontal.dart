@@ -4,6 +4,7 @@ import 'package:honyomi/core_services/eiga/interfaces/episodes_eiga.dart';
 import 'package:honyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:honyomi/core_services/main.dart';
 import 'package:honyomi/core_services/utils_service.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ListEpisodesHorizontal extends StatefulWidget {
   final String sourceId;
@@ -53,11 +54,17 @@ class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal> {
     return FutureBuilder(
         future: _seasonFuture,
         builder: (context, snapshot) {
+          final height = 35.0;
+
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-                child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    child: CircularProgressIndicator()));
+            return SizedBox(
+                height: height,
+                child: Center(
+                    child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        child: SpinKitPouringHourGlassRefined(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            size: height - 5))));
           }
           if (snapshot.hasError) {
             return Center(
@@ -70,7 +77,6 @@ class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal> {
           }
 
           final episodes = snapshot.data as EpisodesEiga;
-          final height = 35.0;
 
           bool checkEpisodeActive(EpisodeEiga episode) {
             return widget.eigaIdNotifier.value == widget.season.eigaId &&
