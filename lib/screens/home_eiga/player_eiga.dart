@@ -288,20 +288,31 @@ class _PlayerEigaState extends State<PlayerEiga> {
                   children: [
                     ValueListenableBuilder(
                         valueListenable: widget.titleNotifier,
-                        builder: (context, value, child) => Text(value,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500))),
+                        builder: (context, value, child) => SizedBox(
+                            width: (MediaQuery.of(context).size.width -
+                                    16 * 2 -
+                                    40 * 4) *
+                                0.9,
+                            child: Text(value,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w500)))),
                     ValueListenableBuilder(
                         valueListenable: widget.subtitleNotifier,
-                        builder: (context, value, child) => Text(value,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: Colors.grey.shade300, fontSize: 14.0)))
+                        builder: (context, value, child) => SizedBox(
+                            width: (MediaQuery.of(context).size.width -
+                                    16 * 2 -
+                                    40 * 4) *
+                                0.9,
+                            child: Text(value,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: Colors.grey.shade300,
+                                    fontSize: 14.0))))
                   ],
                 )
               ]),
@@ -412,7 +423,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                           style: ElevatedButton.styleFrom(
                             shape: CircleBorder(),
                             padding: EdgeInsets.all(15),
-                            backgroundColor: Colors.black.withAlpha(76),
+                            backgroundColor: Colors.grey.shade300.withAlpha(76),
                             shadowColor: Colors.transparent,
                           ),
                           child: Icon(
