@@ -304,17 +304,26 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
                 if (metaEiga.originalName != null) SizedBox(height: 5.0),
 
                 if (metaEiga.originalName != null)
-                  Wrap(children: [
-                    Text('Other name ',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontSize: 12.0)),
-                    Text(metaEiga.originalName!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontSize: 12.0))
-                  ])
+                  RichText(
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(children: [
+                        TextSpan(
+                            text: 'Other name: ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    fontSize: 12.0)),
+                        TextSpan(
+                            text: metaEiga.originalName!,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(fontSize: 12.0))
+                      ]))
               ],
             ));
   }
