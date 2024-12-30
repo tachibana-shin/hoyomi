@@ -32,19 +32,19 @@ class PlayerEiga extends StatefulWidget {
 
   final void Function() onBack;
   final ValueNotifier<List<type.Subtitle>> subtitlesNotifier;
-  final void Function()? onNext;
-  final void Function()? onPrev;
+  final ValueNotifier<void Function()?> onNext;
+  final ValueNotifier<void Function()?> onPrev;
 
   const PlayerEiga({
     super.key,
     required this.titleNotifier,
     required this.subtitleNotifier,
     required this.sourceNotifier,
-    this.fetchSourceContent,
+    required this.fetchSourceContent,
     required this.onBack,
     required this.subtitlesNotifier,
-    this.onNext,
-    this.onPrev,
+    required this.onNext,
+    required this.onPrev,
   });
   @override
   State<PlayerEiga> createState() => _PlayerEigaState();
@@ -357,24 +357,29 @@ class _PlayerEigaState extends State<PlayerEiga> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                 SizedBox(width: 8.0),
-                Opacity(
-                    opacity: widget.onPrev == null ? 0.5 : 1.0,
-                    child: IgnorePointer(
-                        ignoring: widget.onPrev == null,
-                        child: ElevatedButton(
-                          onPressed: widget.onPrev,
-                          style: ElevatedButton.styleFrom(
-                              shape: CircleBorder(),
-                              padding: EdgeInsets.all(15),
-                              backgroundColor:
-                                  Colors.black.withValues(alpha: 0.3),
-                              shadowColor: Colors.transparent),
-                          child: Icon(
-                            MaterialCommunityIcons.skip_previous,
-                            color: Colors.white,
-                            size: 25.0,
-                          ),
-                        ))),
+                ValueListenableBuilder<void Function()?>(
+                  valueListenable: widget.onPrev,
+                  builder: (context, onPrev, child) {
+                    return Opacity(
+                        opacity: onPrev == null ? 0.5 : 1.0,
+                        child: IgnorePointer(
+                            ignoring: onPrev == null,
+                            child: ElevatedButton(
+                              onPressed: onPrev,
+                              style: ElevatedButton.styleFrom(
+                                  shape: CircleBorder(),
+                                  padding: EdgeInsets.all(15),
+                                  backgroundColor:
+                                      Colors.black.withValues(alpha: 0.3),
+                                  shadowColor: Colors.transparent),
+                              child: Icon(
+                                MaterialCommunityIcons.skip_previous,
+                                color: Colors.white,
+                                size: 25.0,
+                              ),
+                            )));
+                  },
+                ),
                 ValueListenableBuilder(
                   valueListenable: _playing,
                   builder: (context, value, child) {
@@ -395,24 +400,31 @@ class _PlayerEigaState extends State<PlayerEiga> {
                     );
                   },
                 ),
-                Opacity(
-                    opacity: widget.onNext == null ? 0.5 : 1.0,
-                    child: IgnorePointer(
-                        ignoring: widget.onNext == null,
+                ValueListenableBuilder<void Function()?>(
+                  valueListenable: widget.onNext,
+                  builder: (context, onNext, child) {
+                    return Opacity(
+                      opacity: onNext == null ? 0.5 : 1.0,
+                      child: IgnorePointer(
+                        ignoring: onNext == null,
                         child: ElevatedButton(
-                          onPressed: widget.onNext,
+                          onPressed: onNext,
                           style: ElevatedButton.styleFrom(
-                              shape: CircleBorder(),
-                              padding: EdgeInsets.all(14),
-                              backgroundColor:
-                                  Colors.black.withValues(alpha: 0.3),
-                              shadowColor: Colors.transparent),
+                            shape: CircleBorder(),
+                            padding: EdgeInsets.all(15),
+                            backgroundColor: Colors.black.withAlpha(76),
+                            shadowColor: Colors.transparent,
+                          ),
                           child: Icon(
                             MaterialCommunityIcons.skip_next,
                             color: Colors.white,
                             size: 25.0,
                           ),
-                        ))),
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 SizedBox(width: 8.0),
               ]));
         });
