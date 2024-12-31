@@ -27,16 +27,13 @@ class BasicEiga {
 
   factory BasicEiga.createFakeData() {
     return BasicEiga(
-      name: 'Eiga Fake',
-      eigaId: 'eiga-fake-id',
-      originalName: 'Eiga Fake Original',
-      image: BasicImage.createFakeData(),
-      lastEpisode: BasicEpisode.createFakeData(),
-      timeAgo: DateTime.now().subtract(Duration(days: 7)),
-      notice: 'Notice Fake',
-      rate: 8.5,
-      pending: true,
-      preRelease: DateTime.now().add(Duration(days: 30)),
-    );
+        name: 'Dragon Ball Daima',
+        eigaId: 'eiga-fake-id',
+        originalName: null,
+        image: BasicImage.createFakeData(),
+        lastEpisode: null,
+        timeAgo: null,
+        notice: 'Notice Fake',
+        rate: 8.5);
   }
 }

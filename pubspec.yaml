@@ -71,3 +71,4 @@ flutter:
   generate: true
   assets:
       - assets/ca/
+      - assets/images/

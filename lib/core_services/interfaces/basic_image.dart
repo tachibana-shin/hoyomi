@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 class BasicImage {
@@ -53,7 +55,30 @@ class BasicImage {
     int? cacheWidth,
     int? cacheHeight,
   }) {
-    if (src == "fake:") return SizedBox.shrink();
+    if (src == "fake:") {
+      return Image.asset('assets/images/blank.png',
+          key: key,
+          scale: scale,
+          frameBuilder: frameBuilder,
+          errorBuilder: errorBuilder,
+          semanticLabel: semanticLabel,
+          excludeFromSemantics: excludeFromSemantics,
+          width: width,
+          height: height,
+          color: color,
+          opacity: opacity,
+          colorBlendMode: colorBlendMode,
+          fit: fit,
+          alignment: alignment,
+          repeat: repeat,
+          centerSlice: centerSlice,
+          matchTextDirection: matchTextDirection,
+          gaplessPlayback: gaplessPlayback,
+          filterQuality: filterQuality,
+          isAntiAlias: isAntiAlias,
+          cacheWidth: cacheWidth,
+          cacheHeight: cacheHeight);
+    }
 
     return Image.network(src,
         key: key,
