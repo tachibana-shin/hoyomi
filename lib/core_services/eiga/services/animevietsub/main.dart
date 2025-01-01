@@ -318,14 +318,27 @@ class AnimeVietsubService extends EigaBaseService {
     }).toList();
 
     final scheduleText = document
-        .querySelector(".schedule-title-main > h4 > strong:nth-child(3)")
+        .querySelectorAll(".schedule-title-main > h4 > strong")
+        .lastOrNull
         ?.text;
     final match = RegExp(r'(Thứ [^\s]+|chủ nhật) vào lúc (\d+) giờ (\d+) phút',
             caseSensitive: false)
         .firstMatch(scheduleText ?? '');
-    final day = match?.group(1);
+    final day$ = match?.group(1);
     final hour = match?.group(2);
     final minute = match?.group(3);
+
+    final day = day$ == null
+        ? null
+        : [
+            'chủ nhật',
+            'thứ hai',
+            'thứ ba',
+            'thứ tư',
+            'thứ năm',
+            'thứ sáu',
+            'thứ bảy'
+          ].indexOf(day$.toLowerCase());
 
     final image$ = document.querySelector(".Image img")?.attributes['src'];
     final image = image$ == null

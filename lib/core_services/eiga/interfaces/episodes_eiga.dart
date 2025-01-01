@@ -22,7 +22,7 @@ class EpisodesEiga {
 }
 
 class TimeAndDay {
-  final String day;
+  final int day;
   final int hour;
   final int minute;
 

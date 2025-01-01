@@ -111,7 +111,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
               }
 
               return Column(
-                // crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Skeletonizer(
                       enabled: !done, child: _buildBasicInfo(metaEiga)),
@@ -366,7 +366,15 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
             ),
             SizedBox(width: 5.0),
             Text(
-              'Updated on day ${schedule.day} of the week at ${schedule.hour}:${schedule.minute}',
+              'Updated on day ${[
+                'Sunday',
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday'
+              ][schedule.day]} of the week at ${schedule.hour}:${schedule.minute}',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.secondary,
                   fontSize: 12.0),
