@@ -16,7 +16,7 @@ class ListEpisodesHorizontal extends StatefulWidget {
   final void Function(EpisodesEiga episodes)? onUpdate;
   final void Function({
     required int indexEpisode,
-    required List<EpisodeEiga> episodes,
+    required EpisodesEiga episodes,
   }) onTap;
   final bool eager;
 
@@ -95,7 +95,7 @@ class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal> {
 
                 widget.onTap(
                   indexEpisode: episodeIndex,
-                  episodes: episodes.episodes,
+                  episodes: episodes,
                 );
                 break;
               }
@@ -122,7 +122,7 @@ class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal> {
                                   borderRadius: BorderRadius.circular(7),
                                   onTap: () => widget.onTap(
                                         indexEpisode: index,
-                                        episodes: episodes.episodes,
+                                        episodes: episodes,
                                       ),
                                   child: Container(
                                       height: height * 0.9,
@@ -159,27 +159,30 @@ class ListEpisodesHorizontalSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Skeletonizer(enabled: true, child: SizedBox(
-        height:height,child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: episodes.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final episode = episodes[index];
+    return Skeletonizer(
+        enabled: true,
+        child: SizedBox(
+            height: height,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: episodes.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final episode = episodes[index];
 
-              return Padding(
-                  padding: EdgeInsets.only(right: 8.0),
-                  child: Container(
-                      height: height * 0.9,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey.withAlpha(60),
-                        ),
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Center(child: Text(episode.name))));
-            })));
+                  return Padding(
+                      padding: EdgeInsets.only(right: 8.0),
+                      child: Container(
+                          height: height * 0.9,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey.withAlpha(60),
+                            ),
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Center(child: Text(episode.name))));
+                })));
   }
 }
