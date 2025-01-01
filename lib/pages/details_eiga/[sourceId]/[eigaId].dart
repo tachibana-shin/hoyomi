@@ -402,8 +402,16 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
       if (seasonChanged) {
         _eigaId.value = seasons[indexSeason].eigaId;
       }
-      _episodeId.value = episodes[indexEpisode].episodeId;
-      _episode.value = episodes[indexEpisode];
+
+      var episodeChanged = false;
+      if (_episodeId.value != episodes[indexEpisode].episodeId) {
+        _episodeId.value = episodes[indexEpisode].episodeId;
+        episodeChanged = true;
+      }
+      if (_episode.value != episodes[indexEpisode]) {
+        _episode.value = episodes[indexEpisode];
+        episodeChanged = true;
+      }
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final currentIndex =
@@ -427,7 +435,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage> {
             : null;
       });
 
-      _updatePlayer();
+      if (episodeChanged) _updatePlayer();
 
       if (seasonChanged) {
         _service.getDetails(_eigaId.value).then((value) {
