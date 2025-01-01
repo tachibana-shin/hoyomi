@@ -136,6 +136,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
     // not function get source
     if (widget.fetchSourceContent == null) {
       final url = Uri.parse(source.src);
+      _controller.value?.dispose();
       _controller.value =
           VideoPlayerController.networkUrl(url, httpHeaders: source.headers)
             ..addListener(_onPlayerValueChanged)
@@ -160,13 +161,13 @@ class _PlayerEigaState extends State<PlayerEiga> {
         path: "${sha256.convert(utf8.encode(content.content))}.m3u8");
     if (!mounted) return;
 
+    _controller.value?.dispose();
     _controller.value =
         VideoPlayerController.file(fileCache, httpHeaders: source.headers)
           ..addListener(_onPlayerValueChanged)
           ..initialize().then((_) {
             // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
             if (_playing.value) _controller.value?.play();
-            setState(() {});
           });
 
     if (source.type == 'hls') {
@@ -215,7 +216,6 @@ class _PlayerEigaState extends State<PlayerEiga> {
             headers: {...headers, 'referer': variant.url.toString()});
       }).toList();
       _setQualityCode(_availableResolutions.value.first.code);
-      setState(() {});
     } else if (playlist is HlsMediaPlaylist) {
       // media m3u8 file
       debugPrint("[initialize_hls]: no action because is media playlist");
@@ -516,10 +516,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
                         min: 0.0,
                         max: duration.inSeconds.toDouble(),
                         onChanged: (value) {
-                          setState(() {
-                            _controller.value
-                                ?.seekTo(Duration(seconds: value.toInt()));
-                          });
+                          _controller.value
+                              ?.seekTo(Duration(seconds: value.toInt()));
                         },
                       );
                     });
