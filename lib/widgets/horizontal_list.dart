@@ -36,6 +36,13 @@ class HorizontalList<T> extends StatelessWidget {
       crossAxisCount = 6.5;
     }
 
+    final childAspectRatio = 2 / 4.1;
+    final viewportFraction = 1 / crossAxisCount;
+    final height = 1 /
+        childAspectRatio *
+        (MediaQuery.of(context).size.width) *
+        viewportFraction;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -78,57 +85,67 @@ class HorizontalList<T> extends StatelessWidget {
                 },
                 child: Text('More'))
         ]),
-        FutureBuilder(
-          future: itemsFuture,
-          builder: (context, snapshot) {
-            final childAspectRatio = 2 / 4.1;
-            final viewportFraction = 1 / crossAxisCount;
-            final height = 1 /
-                childAspectRatio *
-                (MediaQuery.of(context).size.width) *
-                viewportFraction;
-
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return SizedBox(
-                  height: height,
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ));
-            }
-            if (snapshot.hasError) {
-              return builderError(snapshot.error) ??
-                  SizedBox(
-                      height: height,
-                      child: Center(
-                        child: Text('Error: ${snapshot.error}'),
-                      ));
-            }
-            if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return SizedBox(
-                  height: height,
-                  child: Center(
-                    child: Text('No data available.'),
-                  ));
-            }
-
-            final items = snapshot.data!;
-            return SizedBox(
-              height: height,
-              child: PageView.builder(
-                itemCount: items.length,
-                allowImplicitScrolling: true,
-                padEnds: false,
-                controller: PageController(
-                  viewportFraction: viewportFraction,
-                  initialPage: 0,
-                ),
-                itemBuilder: (context, index) {
-                  return builder(context, items.elementAt(index), index);
-                },
+        if (items != null)
+          SizedBox(
+            height: height,
+            child: PageView.builder(
+              itemCount: items!.length,
+              allowImplicitScrolling: true,
+              padEnds: false,
+              controller: PageController(
+                viewportFraction: viewportFraction,
+                initialPage: 0,
               ),
-            );
-          },
-        ),
+              itemBuilder: (context, index) {
+                return builder(context, items!.elementAt(index), index);
+              },
+            ),
+          )
+        else
+          FutureBuilder(
+            future: itemsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox(
+                    height: height,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ));
+              }
+              if (snapshot.hasError) {
+                return builderError(snapshot.error) ??
+                    SizedBox(
+                        height: height,
+                        child: Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        ));
+              }
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return SizedBox(
+                    height: height,
+                    child: Center(
+                      child: Text('No data available.'),
+                    ));
+              }
+
+              final items = snapshot.data!;
+              return SizedBox(
+                height: height,
+                child: PageView.builder(
+                  itemCount: items.length,
+                  allowImplicitScrolling: true,
+                  padEnds: false,
+                  controller: PageController(
+                    viewportFraction: viewportFraction,
+                    initialPage: 0,
+                  ),
+                  itemBuilder: (context, index) {
+                    return builder(context, items.elementAt(index), index);
+                  },
+                ),
+              );
+            },
+          ),
       ],
     );
   }
