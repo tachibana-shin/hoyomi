@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:core';
+import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
@@ -278,7 +279,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(children: [
+              Expanded(
+                  child: Row(children: [
 // button back
                 IconButton(
                     icon: Icon(Icons.arrow_back_ios),
@@ -286,39 +288,29 @@ class _PlayerEigaState extends State<PlayerEiga> {
                     onPressed: widget.onBack),
                 SizedBox(width: 8.0),
                 // 2 line text
-                Column(
+                Expanded(
+                    child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ValueListenableBuilder(
                         valueListenable: widget.titleNotifier,
-                        builder: (context, value, child) => SizedBox(
-                            width: (MediaQuery.of(context).size.width -
-                                    16 * 2 -
-                                    40 * 4) *
-                                0.9,
-                            child: Text(value,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w500)))),
+                        builder: (context, value, child) => Text(value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w500))),
                     ValueListenableBuilder(
                         valueListenable: widget.subtitleNotifier,
-                        builder: (context, value, child) => SizedBox(
-                            width: (MediaQuery.of(context).size.width -
-                                    16 * 2 -
-                                    40 * 4) *
-                                0.9,
-                            child: Text(value,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    color: Colors.grey.shade300,
-                                    fontSize: 14.0))))
+                        builder: (context, value, child) => Text(value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Colors.grey.shade300, fontSize: 14.0)))
                   ],
-                )
-              ]),
+                ))
+              ])),
               Row(children: [
                 IconButton(
                   icon: Icon(MaterialCommunityIcons.playlist_play),
