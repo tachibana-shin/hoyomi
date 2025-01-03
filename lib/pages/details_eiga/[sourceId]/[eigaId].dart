@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
@@ -423,7 +424,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   void _showModalEpisodes(ValueNotifier<MetaEiga> metaEiga) {
     final size = MediaQuery.of(context).size;
     final heightPlayer = size.height -
-        View.of(context).padding.top -
+        MediaQuery.of(context).padding.top -
         (size.width * 1 / _aspectRatio);
     final initial = max(0.5, heightPlayer / size.height);
 
