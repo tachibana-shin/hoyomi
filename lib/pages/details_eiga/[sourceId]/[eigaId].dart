@@ -417,10 +417,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   void _showModalEpisodes(ValueNotifier<MetaEiga> metaEiga) {
     final size = MediaQuery.of(context).size;
     final heightPlayer = size.height -
-        20 -
         View.of(context).padding.top -
         (size.width * 1 / _aspectRatio);
-    final initial = (heightPlayer / size.height);
+    final initial = max(0.5, heightPlayer / size.height);
 
     showModalBottomSheet(
       context: context,
