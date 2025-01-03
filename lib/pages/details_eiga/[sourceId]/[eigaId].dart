@@ -5,6 +5,7 @@ import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:honyomi/core_services/eiga/eiga_base_service.dart';
@@ -47,6 +48,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final ValueNotifier<String> _subtitleNotifier = ValueNotifier('');
   final ValueNotifier<List<Subtitle>> _subtitlesNotifier = ValueNotifier([]);
   final ValueNotifier<SourceVideo?> _sourceNotifier = ValueNotifier(null);
+  final ValueNotifier<BasicImage?> _posterNotifier = ValueNotifier(null);
   final ValueNotifier<void Function()?> _onPrevNotifier = ValueNotifier(null);
   final ValueNotifier<void Function()?> _onNextNotifier = ValueNotifier(null);
 
@@ -76,6 +78,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         .then((subtitles) {
       _subtitlesNotifier.value = subtitles;
     });
+    _sourceNotifier.value = null;
     _service
         .getSource(eigaId: _eigaId.value, episode: _episode.value!)
         .then((source) {
@@ -149,6 +152,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       },
       subtitlesNotifier: _subtitlesNotifier,
       sourceNotifier: _sourceNotifier,
+      posterNotifier: _posterNotifier,
       aspectRatio: _aspectRatio,
       fetchSourceContent: _service.fetchSourceContent,
       onPrev: _onPrevNotifier,
@@ -572,6 +576,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       });
     }
 
+    if (_posterNotifier.value != metaEiga.value.poster) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _posterNotifier.value = metaEiga.value.poster;
+      });
+    }
+
     if (eigaChanged) metaEiga.value = metaEiga.value;
   }
 
@@ -629,6 +639,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     if (seasonChanged) {
       _service.getDetails(_eigaId.value).then((value) {
         metaEiga.value = value;
+        _posterNotifier.value = value.poster;
       });
     }
   }

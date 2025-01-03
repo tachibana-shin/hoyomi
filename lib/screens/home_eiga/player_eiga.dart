@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:core';
-import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:honyomi/core_services/eiga/interfaces/source_content.dart';
+import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:http/http.dart';
 import 'package:play_video/function/format_duration.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
@@ -28,6 +28,7 @@ class PlayerEiga extends StatefulWidget {
   final ValueNotifier<String> subtitleNotifier;
 
   final ValueNotifier<SourceVideo?> sourceNotifier;
+  final ValueNotifier<BasicImage?> posterNotifier;
   final Future<SourceContent> Function({required SourceVideo source})?
       fetchSourceContent;
 
@@ -43,6 +44,7 @@ class PlayerEiga extends StatefulWidget {
     required this.titleNotifier,
     required this.subtitleNotifier,
     required this.sourceNotifier,
+    required this.posterNotifier,
     required this.fetchSourceContent,
     required this.aspectRatio,
     required this.onBack,
@@ -120,6 +122,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
   final ValueNotifier<bool> _loading = ValueNotifier(true);
   final ValueNotifier<bool> _playing = ValueNotifier(true);
 
+  final ValueNotifier<bool> _firstLoadedSource = ValueNotifier(false);
+
   @override
   void initState() {
     super.initState();
@@ -128,6 +132,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
       if (widget.sourceNotifier.value != null) {
         _setupPlayer(widget.sourceNotifier.value!);
       }
+      _firstLoadedSource.value = false;
     }
 
     run();
@@ -146,7 +151,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
             ..addListener(_onPlayerValueChanged)
             ..initialize().then((_) {
               // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-              if (_playing.value) _controller.value?.play();
+              if (!_playing.value) _controller.value?.play();
             });
 
       final response = await get(url, headers: source.headers);
@@ -171,7 +176,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
           ..addListener(_onPlayerValueChanged)
           ..initialize().then((_) {
             // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-            if (_playing.value) _controller.value?.play();
+            if (!_playing.value) _controller.value?.play();
           });
 
     if (source.type == 'hls') {
@@ -192,6 +197,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
     _loading.value = _controller.value?.value.isInitialized != true ||
         _controller.value!.value.isBuffering;
     _playing.value = _controller.value?.value.isPlaying ?? _playing.value;
+    _firstLoadedSource.value = true;
   }
 
   Future<void> _initializeHls(
@@ -252,6 +258,21 @@ class _PlayerEigaState extends State<PlayerEiga> {
                         videoChild: VideoPlayer(controller),
                       );
                     });
+              }),
+          ListenableBuilder(
+              listenable:
+                  Listenable.merge([widget.posterNotifier, _firstLoadedSource]),
+              builder: (context, child) {
+                if (widget.posterNotifier.value == null ||
+                    _firstLoadedSource.value) {
+                  return SizedBox.shrink();
+                }
+
+                return BasicImage.network(
+                  widget.posterNotifier.value!.src,
+                  headers: widget.posterNotifier.value!.headers,
+                  fit: BoxFit.cover,
+                );
               }),
           ValueListenableBuilder(
               valueListenable: _showControls,
