@@ -30,7 +30,10 @@ class VerticalBook extends StatelessWidget {
               const SizedBox(width: 4.0),
               Text(
                 book.rate!.toString(),
-                style: const TextStyle(fontSize: 12.0, color: Colors.white),
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
             ],
           )
@@ -214,7 +217,7 @@ class VerticalBook extends StatelessWidget {
                         book.name,
                         style: TextStyle(
                             fontSize: 14.0,
-                            color: Colors.grey.shade300,
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontWeight: FontWeight.w500),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -223,7 +226,9 @@ class VerticalBook extends StatelessWidget {
                 Text(
                   book.lastChap?.name ?? 'N/A',
                   textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 12.0, color: Colors.grey.shade500),
+                  style: TextStyle(
+                      fontSize: 12.0,
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
             ],
           ),

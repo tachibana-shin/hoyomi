@@ -226,7 +226,9 @@ class VerticalEiga extends StatelessWidget {
                 Text(
                   eiga.lastEpisode?.name ?? 'N/A',
                   textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 12.0, color: Colors.grey.shade500),
+                  style: TextStyle(
+                      fontSize: 12.0,
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
             ],
           ),
