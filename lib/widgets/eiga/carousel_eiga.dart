@@ -132,6 +132,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                               .textTheme
                                               .headlineSmall
                                               ?.copyWith(
+                                                  color: Colors.white,
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 20.0)),
                                       if (item.originalName?.isNotEmpty == true)
@@ -142,6 +143,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                                 .textTheme
                                                 .headlineSmall
                                                 ?.copyWith(
+                                                    color: Colors.white,
                                                     fontWeight: FontWeight.w600,
                                                     fontSize: 16.0)),
                                       SizedBox(height: 5.0),
