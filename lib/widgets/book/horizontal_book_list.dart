@@ -42,7 +42,8 @@ class HorizontalBookList extends StatelessWidget {
         return VerticalBook(
           book: book.book,
           sourceId: book.sourceId,
-          percentRead: Future.value(book.percentRead),
+          percentRead:
+              book.percentRead == null ? null : Future.value(book.percentRead),
         );
       },
       builderError: (Object? error) {
