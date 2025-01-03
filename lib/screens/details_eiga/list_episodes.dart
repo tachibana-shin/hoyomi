@@ -7,11 +7,12 @@ import 'package:honyomi/core_services/utils_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class ListEpisodesHorizontal extends StatefulWidget {
+class ListEpisodes extends StatefulWidget {
   final String sourceId;
   final BasicSeason season;
   final ValueNotifier<String> eigaIdNotifier;
   final ValueNotifier<String?> episodeIdNotifier;
+  final Axis scrollDirection;
   final EpisodesEiga? Function() initialData;
   final void Function(EpisodesEiga episodes)? onUpdate;
   final void Function({
@@ -20,7 +21,7 @@ class ListEpisodesHorizontal extends StatefulWidget {
   }) onTap;
   final bool eager;
 
-  const ListEpisodesHorizontal(
+  const ListEpisodes(
       {super.key,
       required this.sourceId,
       required this.season,
@@ -29,13 +30,14 @@ class ListEpisodesHorizontal extends StatefulWidget {
       required this.onUpdate,
       required this.onTap,
       required this.initialData,
-      required this.eager});
+      required this.eager,
+      this.scrollDirection = Axis.horizontal});
 
   @override
-  State<ListEpisodesHorizontal> createState() => _ListEpisodesHorizontalState();
+  State<ListEpisodes> createState() => _ListEpisodesState();
 }
 
-class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal> {
+class _ListEpisodesState extends State<ListEpisodes> {
   late final Future<EpisodesEiga> _seasonFuture;
 
   @override
@@ -58,14 +60,15 @@ class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal> {
           final height = 35.0;
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return SizedBox(
-                height: height,
-                child: Center(
-                    child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
-                        child: SpinKitPouringHourGlassRefined(
-                            color: Theme.of(context).colorScheme.onSurface,
-                            size: height - 5))));
+            final child = Center(
+                child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    child: SpinKitPouringHourGlassRefined(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        size: height - 5)));
+            return widget.scrollDirection == Axis.horizontal
+                ? SizedBox(height: height, child: child)
+                : child;
           }
           if (snapshot.hasError) {
             return Center(
@@ -102,6 +105,51 @@ class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal> {
             }
           }
 
+          Widget itemBuilder(BuildContext context, int index) {
+            final episode = episodes.episodes[index];
+            final active = checkEpisodeActive(episode);
+
+            return Padding(
+              padding: EdgeInsets.only(right: 8.0),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(7),
+                onTap: () => widget.onTap(
+                  indexEpisode: index,
+                  episodes: episodes,
+                ),
+                child: Ink(
+                  height: height * 0.9,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: active
+                          ? Theme.of(context).colorScheme.tertiaryContainer
+                          : Colors.grey.withAlpha(60),
+                    ),
+                    color: active
+                        ? Theme.of(context).colorScheme.tertiaryContainer
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Center(child: Text(episode.name)),
+                ),
+              ),
+            );
+          }
+
+          if (widget.scrollDirection == Axis.vertical) {
+            return AnimatedBuilder(
+                animation: Listenable.merge(
+                    [widget.eigaIdNotifier, widget.episodeIdNotifier]),
+                builder: (context, child) {
+                  return Expanded(
+                      child: Wrap(alignment: WrapAlignment.center,
+                    children: episodes.episodes.indexed.map((entry) {
+                      return itemBuilder(context, entry.$1);
+                    }).toList(),
+                  ));
+                });
+          }
           return SizedBox(
               height: height,
               child: AnimatedBuilder(
@@ -109,43 +157,10 @@ class _ListEpisodesHorizontalState extends State<ListEpisodesHorizontal> {
                       [widget.eigaIdNotifier, widget.episodeIdNotifier]),
                   builder: (context, child) {
                     return ListView.builder(
-                        scrollDirection: Axis.horizontal,
+                        scrollDirection: widget.scrollDirection,
                         itemCount: episodes.episodes.length,
                         shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          final episode = episodes.episodes[index];
-                          final active = checkEpisodeActive(episode);
-
-                          return Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: InkWell(
-                                  borderRadius: BorderRadius.circular(7),
-                                  onTap: () => widget.onTap(
-                                        indexEpisode: index,
-                                        episodes: episodes,
-                                      ),
-                                  child: Container(
-                                      height: height * 0.9,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: active
-                                              ? Theme.of(context)
-                                                  .colorScheme
-                                                  .tertiaryContainer
-                                              : Colors.grey.withAlpha(60),
-                                        ),
-                                        color: active
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .tertiaryContainer
-                                            : Colors.transparent,
-                                        borderRadius: BorderRadius.circular(7),
-                                      ),
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 8.0),
-                                      child:
-                                          Center(child: Text(episode.name)))));
-                        });
+                        itemBuilder: itemBuilder);
                   }));
         });
   }

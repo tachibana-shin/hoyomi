@@ -15,7 +15,7 @@ import 'package:honyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:honyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:honyomi/core_services/eiga/interfaces/subtitle.dart';
 import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/screens/details_eiga/list_episodes_horizontal.dart';
+import 'package:honyomi/screens/details_eiga/list_episodes.dart';
 import 'package:honyomi/screens/home_eiga/player_eiga.dart';
 import 'package:honyomi/utils/format_number.dart';
 import 'package:honyomi/widgets/vertical_separator.dart';
@@ -469,11 +469,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 valueListenable: _eigaId,
                 builder: (context, eigaId, child) {
                   final season = BasicSeason(eigaId: eigaId, name: 'Episodes');
-                  return ListEpisodesHorizontal(
+                  return ListEpisodes(
                       season: season,
                       sourceId: widget.sourceId,
                       eigaIdNotifier: _eigaId,
                       episodeIdNotifier: _episodeId,
+                      scrollDirection: Axis.vertical,
                       initialData: () => _cacheEpisodesStore[eigaId],
                       eager: true,
                       onUpdate: (episodes) {
@@ -519,11 +520,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
                       return Padding(
                           padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: ListEpisodesHorizontal(
+                          child: ListEpisodes(
                               season: season,
                               sourceId: widget.sourceId,
                               eigaIdNotifier: _eigaId,
                               episodeIdNotifier: _episodeId,
+                              scrollDirection: Axis.vertical,
                               initialData: () =>
                                   _cacheEpisodesStore[season.eigaId],
                               eager: true,
@@ -653,7 +655,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 valueListenable: _eigaId,
                 builder: (context, eigaId, child) {
                   final season = BasicSeason(eigaId: eigaId, name: 'Episodes');
-                  return ListEpisodesHorizontal(
+                  return ListEpisodes(
                       season: season,
                       sourceId: widget.sourceId,
                       eigaIdNotifier: _eigaId,
@@ -703,7 +705,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
                       return Padding(
                           padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: ListEpisodesHorizontal(
+                          child: ListEpisodes(
                               season: season,
                               sourceId: widget.sourceId,
                               eigaIdNotifier: _eigaId,
