@@ -27,6 +27,7 @@ dependencies:
   flutter_subtitle: ^0.0.5
   flutter_vector_icons: ^2.0.0
   flutter_widget_from_html: ^0.15.3
+  get: ^4.6.6
   go_router: ^14.6.0
   go_transitions: ^0.7.0
   grouped_list: ^6.0.0

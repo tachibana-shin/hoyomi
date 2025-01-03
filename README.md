@@ -18,4 +18,8 @@ A new Flutter project.
 - [ ] Responsive for video player
 - [ ] AppBar all page
 
+- [ ] Show modal more episodes
+- [ ] Show modal more info
+- [ ] Custom slider video
+
 /// provider or mobx

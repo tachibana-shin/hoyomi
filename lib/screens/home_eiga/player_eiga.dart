@@ -30,6 +30,8 @@ class PlayerEiga extends StatefulWidget {
   final Future<SourceContent> Function({required SourceVideo source})?
       fetchSourceContent;
 
+  final double aspectRatio;
+
   final void Function() onBack;
   final ValueNotifier<List<type.Subtitle>> subtitlesNotifier;
   final ValueNotifier<void Function()?> onNext;
@@ -41,6 +43,7 @@ class PlayerEiga extends StatefulWidget {
     required this.subtitleNotifier,
     required this.sourceNotifier,
     required this.fetchSourceContent,
+    required this.aspectRatio,
     required this.onBack,
     required this.subtitlesNotifier,
     required this.onNext,
@@ -227,7 +230,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
     // if (_controller?.value.isInitialized != true) return SizedBox.shrink();
 
     return AspectRatio(
-        aspectRatio: 16 / 9,
+        aspectRatio: widget.aspectRatio,
         child: Stack(children: [
           ValueListenableBuilder<VideoPlayerController?>(
               valueListenable: _controller,
@@ -773,7 +776,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
   @override
   void dispose() {
-    _controller.value?.dispose();
     super.dispose();
+    _controller.value?.dispose();
   }
 }
