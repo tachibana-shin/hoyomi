@@ -385,12 +385,22 @@ class _PlayerEigaState extends State<PlayerEiga> {
                             )));
                   },
                 ),
-                ValueListenableBuilder(
-                  valueListenable: _playing,
-                  builder: (context, value, child) {
+                ListenableBuilder(
+                  listenable: Listenable.merge([_playing, _loading]),
+                  builder: (context, child) {
+                    if (_loading.value) {
+                      return SizedBox(
+                          width: 50.0,
+                          height: 50.0,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 5.0,
+                            color: Colors.white,
+                          ));
+                    }
+
                     return ElevatedButton(
                       onPressed: () {
-                        _setPlaying(!value);
+                        _setPlaying(!_playing.value);
                       },
                       style: ElevatedButton.styleFrom(
                           shape: CircleBorder(),
@@ -398,7 +408,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                           backgroundColor: Colors.grey.shade300.withAlpha(20),
                           shadowColor: Colors.transparent),
                       child: Icon(
-                        value ? Icons.pause : Icons.play_arrow,
+                        _playing.value ? Icons.pause : Icons.play_arrow,
                         color: Colors.white,
                         size: 42.0,
                       ),
