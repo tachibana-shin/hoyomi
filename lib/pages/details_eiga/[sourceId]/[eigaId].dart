@@ -88,49 +88,55 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Widget _buildBody() {
-    return SingleChildScrollView(
-        child: Column(children: [
-      _buildPlayer(),
-      Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: FutureBuilder(
-            future: _metaEigaFuture,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              }
+    return Stack(children: [
+      SingleChildScrollView(
+          child: Column(children: [
+        AspectRatio(
+          aspectRatio: _aspectRatio,
+        ),
+        Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: FutureBuilder(
+              future: _metaEigaFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
 
-              final done = snapshot.connectionState != ConnectionState.waiting;
+                final done =
+                    snapshot.connectionState != ConnectionState.waiting;
 
-              final metaEiga = ValueNotifier(
-                  done ? snapshot.data! : MetaEiga.createFakeData());
-              if (done) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _titleNotifier.value = metaEiga.value.name;
-                });
+                final metaEiga = ValueNotifier(
+                    done ? snapshot.data! : MetaEiga.createFakeData());
+                if (done) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _titleNotifier.value = metaEiga.value.name;
+                  });
 
-                metaEiga.addListener(() {
-                  _titleNotifier.value = metaEiga.value.name;
-                });
-              }
+                  metaEiga.addListener(() {
+                    _titleNotifier.value = metaEiga.value.name;
+                  });
+                }
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Skeletonizer(
-                      enabled: !done, child: _buildBasicInfo(metaEiga)),
-                  SizedBox(height: 10.0),
-                  if (done) _buildSchedule(),
-                  if (done) _buildSeasonHeader(metaEiga),
-                  if (!done)
-                    ListEpisodesHorizontalSkeleton()
-                  else
-                    _buildSeasonArea(metaEiga),
-                ],
-              );
-            },
-          )),
-    ]));
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Skeletonizer(
+                        enabled: !done, child: _buildBasicInfo(metaEiga)),
+                    SizedBox(height: 10.0),
+                    if (done) _buildSchedule(),
+                    if (done) _buildSeasonHeader(metaEiga),
+                    if (!done)
+                      ListEpisodesHorizontalSkeleton()
+                    else
+                      _buildSeasonArea(metaEiga),
+                  ],
+                );
+              },
+            )),
+      ])),
+      Positioned(top: 0, left: 0, right: 0, child: _buildPlayer()),
+    ]);
   }
 
   Widget _buildPlayer() {
