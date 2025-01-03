@@ -33,9 +33,9 @@ class VerticalEiga extends StatelessWidget {
                 ),
                 TextSpan(
                   text: ' ${eiga.rate}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10.0,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 )
               ],
@@ -217,7 +217,7 @@ class VerticalEiga extends StatelessWidget {
                         eiga.name,
                         style: TextStyle(
                             fontSize: 14.0,
-                            color: Colors.grey.shade300,
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontWeight: FontWeight.w500),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
