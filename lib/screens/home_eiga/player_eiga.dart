@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:get/get.dart';
 import 'package:honyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:honyomi/core_services/interfaces/basic_image.dart';
 import 'package:http/http.dart';
@@ -109,8 +110,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
     (value: 2.0, label: '2x'),
   ];
 
-  final ValueNotifier<bool> _showControls = ValueNotifier(true);
-  final ValueNotifier<bool> _autoPlay = ValueNotifier(false);
+  final ValueNotifier<bool> _showControls = ValueNotifier(false);
+  final ValueNotifier<bool> _autoPlay = ValueNotifier(true);
   final ValueNotifier<String?> _subtitleCode = ValueNotifier(null);
   final ValueNotifier<double> _playbackSpeed = ValueNotifier(1.0);
   final ValueNotifier<String?> _qualityCode = ValueNotifier(null);
@@ -185,6 +186,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
     }
   }
 
+  DateTime _activeTime = DateTime.now();
   void _onPlayerValueChanged() {
     if (_controller.value?.value.hasError == true) {
       debugPrint(
@@ -198,6 +200,16 @@ class _PlayerEigaState extends State<PlayerEiga> {
         _controller.value!.value.isBuffering;
     _playing.value = _controller.value?.value.isPlaying ?? _playing.value;
     _firstLoadedSource.value = true;
+
+    if (_controller.value?.isBlank == true ||
+        _controller.value?.value.isInitialized == true &&
+            _controller.value?.value.isBuffering != true) {
+      _activeTime = DateTime.now();
+    }
+
+    if (_activeTime.difference(DateTime.now()).inSeconds.abs() > 3) {
+      _showControls.value = false;
+    }
   }
 
   Future<void> _initializeHls(
@@ -247,16 +259,21 @@ class _PlayerEigaState extends State<PlayerEiga> {
                 return ValueListenableBuilder<String?>(
                     valueListenable: _qualityCode,
                     builder: (context, value, child) {
-                      return SubtitleWrapper(
-                        enabled: value != null,
-                        videoPlayerController: controller,
-                        subtitleController: subtitleController,
-                        subtitleStyle: SubtitleStyle(
-                          textColor: Colors.white,
-                          hasBorder: true,
-                        ),
-                        videoChild: VideoPlayer(controller),
-                      );
+                      return GestureDetector(
+                          onTap: () {
+                            _showControls.value = !_showControls.value;
+                            _activeTime = DateTime.now();
+                          },
+                          child: SubtitleWrapper(
+                            enabled: value != null,
+                            videoPlayerController: controller,
+                            subtitleController: subtitleController,
+                            subtitleStyle: SubtitleStyle(
+                              textColor: Colors.white,
+                              hasBorder: true,
+                            ),
+                            videoChild: VideoPlayer(controller),
+                          ));
                     });
               }),
           ListenableBuilder(
@@ -277,18 +294,30 @@ class _PlayerEigaState extends State<PlayerEiga> {
                         headers: widget.posterNotifier.value!.headers,
                         fit: BoxFit.cover));
               }),
-          ValueListenableBuilder(
-              valueListenable: _showControls,
-              builder: (context, value, child) => AnimatedOpacity(
-                  opacity: value ? 1.0 : 0.0,
-                  duration: _durationAnimate,
-                  child: Container(
-                      color: Colors.black.withValues(alpha: 0.5),
-                      child: Stack(children: [
-                        _buildMobileTopControls(),
-                        _buildMobileControls(),
-                        _buildMobileBottomControls()
-                      ])))),
+          ListenableBuilder(
+              listenable: Listenable.merge([_showControls, _playing]),
+              builder: (context, child) {
+                bool ended = false;
+                return AnimatedOpacity(
+                    opacity: !_playing.value || _showControls.value ? 1.0 : 0.0,
+                    duration: _durationAnimate,
+                    onEnd: () => ended = true,
+                    child: Visibility(
+                        visible: (!_playing.value || _showControls.value)
+                            ? true
+                            : !ended,
+                        child: GestureDetector(
+                            onTap: () =>
+                                _showControls.value = !_showControls.value,
+                            child: Container(
+                                color: Colors.black.withValues(alpha: 0.5),
+                                child: Stack(children: [
+                                  _buildMobileTopControls(),
+                                  _buildMobileControls(),
+                                  _buildIndicator(),
+                                  _buildMobileBottomControls()
+                                ])))));
+              }),
           _buildMobileSliderProgress()
         ]));
   }
@@ -414,12 +443,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                   builder: (context, child) {
                     if (_loading.value) {
                       return SizedBox(
-                          width: 50.0,
-                          height: 50.0,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 5.0,
-                            color: Colors.white,
-                          ));
+                          width: 50.0, height: 50.0, child: SizedBox.shrink());
                     }
 
                     return ElevatedButton(
@@ -466,6 +490,19 @@ class _PlayerEigaState extends State<PlayerEiga> {
                 ),
                 SizedBox(width: 8.0),
               ]));
+        });
+  }
+
+  Widget _buildIndicator() {
+    return ValueListenableBuilder(
+        valueListenable: _loading,
+        builder: (context, value, child) {
+          if (!value) return SizedBox.shrink();
+
+          return CircularProgressIndicator(
+            strokeWidth: 5.0,
+            color: Colors.white,
+          );
         });
   }
 
