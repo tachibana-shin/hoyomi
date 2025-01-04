@@ -9,6 +9,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:http/http.dart';
 import 'package:play_video/function/format_duration.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
@@ -575,38 +576,21 @@ class _PlayerEigaState extends State<PlayerEiga> {
         bottom: 0,
         left: 0,
         right: 0,
-        child: SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              trackHeight: 3.0,
-              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6.0),
-              overlayShape: RoundSliderOverlayShape(overlayRadius: 0.0),
-              activeTrackColor: Colors.red,
-              inactiveTrackColor: Colors.white.withValues(alpha: 0.5),
-              thumbColor: Colors.red,
-              overlayColor: Colors.red.withValues(alpha: 0.2),
-              thumbSelector:
-                  (textDirection, values, tapValue, thumbSize, trackSize, dx) {
-                return Thumb.end;
-              },
-            ),
-            child: ValueListenableBuilder(
-              valueListenable: _duration,
-              builder: (context, duration, child) {
-                return ValueListenableBuilder(
-                    valueListenable: _position,
-                    builder: (context, position, child) {
-                      return Slider(
-                        value: position.inSeconds.toDouble(),
-                        min: 0.0,
-                        max: duration.inSeconds.toDouble(),
-                        onChanged: (value) {
-                          _controller.value
-                              ?.seekTo(Duration(seconds: value.toInt()));
-                        },
-                      );
-                    });
-              },
-            )));
+        child: ListenableBuilder(
+            listenable: Listenable.merge([_position, _duration]),
+            builder: (context, child) {
+              return SliderEiga(
+                progress: _position.value.inMilliseconds /
+                    _duration.value.inMilliseconds,
+                previewPosition: 1.0,
+                showThumb: _showControls.value,
+                onSeek: (position) {
+                  final duration = _duration.value;
+                  final seek = duration * position;
+                  _controller.value?.seekTo(seek);
+                },
+              );
+            }));
   }
 
   void _setFullscreen(bool value) {
