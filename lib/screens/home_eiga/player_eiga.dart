@@ -268,11 +268,14 @@ class _PlayerEigaState extends State<PlayerEiga> {
                   return SizedBox.shrink();
                 }
 
-                return BasicImage.network(
-                  widget.posterNotifier.value!.src,
-                  headers: widget.posterNotifier.value!.headers,
-                  fit: BoxFit.cover,
-                );
+                return Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: BasicImage.network(widget.posterNotifier.value!.src,
+                        headers: widget.posterNotifier.value!.headers,
+                        fit: BoxFit.cover));
               }),
           ValueListenableBuilder(
               valueListenable: _showControls,
