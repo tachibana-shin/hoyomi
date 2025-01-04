@@ -254,6 +254,12 @@ class _PlayerEigaState extends State<PlayerEiga> {
     return AspectRatio(
         aspectRatio: widget.aspectRatio,
         child: Stack(children: [
+          Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(color: Colors.black)),
           ValueListenableBuilder<VideoPlayerController?>(
               valueListenable: _controller,
               builder: (context, controller, child) {
@@ -319,10 +325,10 @@ class _PlayerEigaState extends State<PlayerEiga> {
                                     child: Stack(children: [
                                       _buildMobileTopControls(),
                                       _buildMobileControls(),
-                                      _buildIndicator(),
                                       _buildMobileBottomControls()
                                     ]))))));
               }),
+          _buildIndicator(),
           _buildMobileSliderProgress()
         ]));
   }
