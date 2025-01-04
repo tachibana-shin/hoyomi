@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
-import 'package:honyomi/utils/format_time_ago.dart';
-import 'package:honyomi/widgets/circular_progress.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/utils/format_time_ago.dart';
+import 'package:hoyomi/widgets/circular_progress.dart';
 
 class VerticalBook extends StatelessWidget {
   final BasicBook book;

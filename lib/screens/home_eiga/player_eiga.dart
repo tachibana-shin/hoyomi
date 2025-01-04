@@ -7,16 +7,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
-import 'package:honyomi/core_services/eiga/interfaces/source_content.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:http/http.dart';
 import 'package:play_video/function/format_duration.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
 
-import 'package:honyomi/core_services/eiga/interfaces/source_video.dart';
-import 'package:honyomi/core_services/eiga/interfaces/subtitle.dart' as type;
-import 'package:honyomi/utils/save_file_cache.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart' as type;
+import 'package:hoyomi/utils/save_file_cache.dart';
 
 // import 'package:bitmovin_player/bitmovin_player.dart';
 // import 'package:theoplayer/theoplayer.dart';

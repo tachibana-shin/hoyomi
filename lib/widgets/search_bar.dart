@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
-import 'package:honyomi/core_services/book/interfaces/paginate.dart';
-import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/stores.dart';
-import 'package:honyomi/widgets/book/horizontal_book_list.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:hoyomi/core_services/book/interfaces/paginate.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/stores.dart';
+import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class CustomSearchBar extends StatefulWidget {

@@ -1,6 +1,6 @@
-import 'package:honyomi/core_services/book/interfaces/basic_chapter.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
-import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_chapter.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 
 class BasicBook {
   final String name;

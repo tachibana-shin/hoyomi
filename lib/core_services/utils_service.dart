@@ -5,16 +5,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inappwebview;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/database/isar.dart';
-import 'package:honyomi/errors/captcha_required_exception.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/database/isar.dart';
+import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:html/dom.dart' as d;
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
 
-import 'package:honyomi/globals.dart';
-import 'package:honyomi/database/scheme/cookie_manager.dart';
-import 'package:honyomi/router/index.dart';
+import 'package:hoyomi/globals.dart';
+import 'package:hoyomi/database/scheme/cookie_manager.dart';
+import 'package:hoyomi/router/index.dart';
 import 'package:isar/isar.dart';
 
 final inappwebview.WebViewEnvironment webViewEnvironment =

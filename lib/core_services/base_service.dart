@@ -1,4 +1,4 @@
-import 'package:honyomi/core_services/utils_service.dart';
+import 'package:hoyomi/core_services/utils_service.dart';
 
 abstract class BaseService extends UtilsService {
   @override

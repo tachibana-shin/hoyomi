@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:honyomi/database/isar.dart';
-import 'package:honyomi/router/index.dart';
+import 'package:hoyomi/database/isar.dart';
+import 'package:hoyomi/router/index.dart';
 
 import 'globals.dart';
 

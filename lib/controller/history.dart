@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:honyomi/database/isar.dart';
-import 'package:honyomi/database/scheme/book.dart';
-import 'package:honyomi/database/scheme/history_chap.dart';
+import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
+import 'package:hoyomi/database/isar.dart';
+import 'package:hoyomi/database/scheme/book.dart';
+import 'package:hoyomi/database/scheme/history_chap.dart';
 
 import 'package:isar/isar.dart';
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:honyomi/core_services/book/interfaces/base_comments.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_comment.dart';
-import 'package:honyomi/globals.dart';
-import 'package:honyomi/utils/format_time_ago.dart';
+import 'package:hoyomi/core_services/book/interfaces/base_comments.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_comment.dart';
+import 'package:hoyomi/globals.dart';
+import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:honyomi/widgets/comments/widget/comments.dart';
+import 'package:hoyomi/widgets/comments/widget/comments.dart';
 
 class Comment extends StatefulWidget {
   final BasicComment comment;

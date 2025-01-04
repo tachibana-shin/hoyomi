@@ -2,18 +2,18 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/book/book_base_service.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
-import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
+import 'package:hoyomi/core_services/book/book_base_service.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 
-import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/core_services/utils_service.dart';
-import 'package:honyomi/screens/home_book/manga_reader.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:hoyomi/screens/home_book/manga_reader.dart';
 
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:honyomi/widgets/book/icon_button_follow.dart';
-import 'package:honyomi/widgets/book/icon_button_open_browser.dart';
-import 'package:honyomi/widgets/book/icon_button_share.dart';
+import 'package:hoyomi/widgets/book/icon_button_follow.dart';
+import 'package:hoyomi/widgets/book/icon_button_open_browser.dart';
+import 'package:hoyomi/widgets/book/icon_button_share.dart';
 
 class DetailsComicReader extends StatefulWidget {
   final String sourceId;

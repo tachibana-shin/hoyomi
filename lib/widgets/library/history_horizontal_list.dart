@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:honyomi/controller/history.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
-import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:honyomi/database/scheme/book.dart';
-import 'package:honyomi/widgets/book/horizontal_book_list.dart';
+import 'package:hoyomi/controller/history.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
+import 'package:hoyomi/database/scheme/book.dart';
+import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
 
 class HistoryHorizontalList extends StatefulWidget {
   const HistoryHorizontalList({super.key});

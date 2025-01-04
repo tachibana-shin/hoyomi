@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/cache/get_user.dart';
-import 'package:honyomi/core_services/book/auth_service.dart';
-import 'package:honyomi/core_services/book/book_base_service.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
-import 'package:honyomi/database/isar.dart';
-import 'package:honyomi/globals.dart';
-import 'package:honyomi/database/scheme/cookie_manager.dart';
+import 'package:hoyomi/cache/get_user.dart';
+import 'package:hoyomi/core_services/book/auth_service.dart';
+import 'package:hoyomi/core_services/book/book_base_service.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_user.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/database/isar.dart';
+import 'package:hoyomi/globals.dart';
+import 'package:hoyomi/database/scheme/cookie_manager.dart';
 import 'package:isar/isar.dart';
 
 class AccountService extends StatefulWidget {

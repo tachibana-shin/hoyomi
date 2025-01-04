@@ -1,4 +1,4 @@
-# honyomi
+# hoyomi
 
 A new Flutter project.
 

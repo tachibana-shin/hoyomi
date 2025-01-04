@@ -5,13 +5,13 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:honyomi/controller/settings.dart';
-import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:honyomi/core_services/book/interfaces/status_enum.dart';
-import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/database/isar.dart';
-import 'package:honyomi/database/scheme/book.dart';
-import 'package:honyomi/database/scheme/settings.dart';
+import 'package:hoyomi/controller/settings.dart';
+import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
+import 'package:hoyomi/core_services/book/interfaces/status_enum.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/database/isar.dart';
+import 'package:hoyomi/database/scheme/book.dart';
+import 'package:hoyomi/database/scheme/settings.dart';
 import 'package:isar/isar.dart';
 
 class BookChanges {

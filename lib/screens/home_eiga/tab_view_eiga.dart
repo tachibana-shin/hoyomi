@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:honyomi/core_services/eiga/eiga_base_service.dart';
-import 'package:honyomi/core_services/eiga/interfaces/base_eiga_home.dart';
-import 'package:honyomi/core_services/utils_service.dart';
-import 'package:honyomi/stores.dart';
-import 'package:honyomi/widgets/eiga/carousel_eiga.dart';
-import 'package:honyomi/widgets/eiga/horizontal_eiga_list.dart';
-import 'package:honyomi/widgets/eiga/vertical_eiga_list.dart';
-import 'package:honyomi/widgets/pull_to_refresh.dart';
+import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/base_eiga_home.dart';
+import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:hoyomi/stores.dart';
+import 'package:hoyomi/widgets/eiga/carousel_eiga.dart';
+import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
+import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
+import 'package:hoyomi/widgets/pull_to_refresh.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 

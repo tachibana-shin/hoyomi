@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/eiga/interfaces/basic_eiga.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
-import 'package:honyomi/utils/format_time_ago.dart';
-import 'package:honyomi/widgets/circular_progress.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/utils/format_time_ago.dart';
+import 'package:hoyomi/widgets/circular_progress.dart';
 
 class VerticalEiga extends StatelessWidget {
   final BasicEiga eiga;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:honyomi/core_services/eiga/interfaces/episode_eiga.dart';
-import 'package:honyomi/core_services/eiga/interfaces/episodes_eiga.dart';
-import 'package:honyomi/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/core_services/utils_service.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 

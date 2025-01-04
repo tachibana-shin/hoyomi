@@ -1,4 +1,4 @@
-import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
 
 class BasicBookSection {
   final String name;

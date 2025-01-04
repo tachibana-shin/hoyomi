@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:honyomi/core_services/eiga/eiga_base_service.dart';
-import 'package:honyomi/core_services/eiga/interfaces/basic_eiga.dart';
-import 'package:honyomi/core_services/utils_service.dart';
-import 'package:honyomi/widgets/eiga/vertical_eiga.dart';
-import 'package:honyomi/widgets/vertical_list.dart';
+import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
+import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:hoyomi/widgets/eiga/vertical_eiga.dart';
+import 'package:hoyomi/widgets/vertical_list.dart';
 
 class VerticalEigaList extends StatelessWidget {
   final Future<List<BasicEiga>>? itemsFuture;

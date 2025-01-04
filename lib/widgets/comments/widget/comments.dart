@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:honyomi/core_services/book/interfaces/base_comments.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_comment.dart';
-import 'package:honyomi/widgets/comments/widget/comment.dart';
-import 'package:honyomi/widgets/pull_to_refresh.dart';
+import 'package:hoyomi/core_services/book/interfaces/base_comments.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_comment.dart';
+import 'package:hoyomi/widgets/comments/widget/comment.dart';
+import 'package:hoyomi/widgets/pull_to_refresh.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class Comments extends StatefulWidget {

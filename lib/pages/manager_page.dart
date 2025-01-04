@@ -1,7 +1,7 @@
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
-import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/widgets/manager/account_service.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/widgets/manager/account_service.dart';
 
 class ManagerPage extends StatelessWidget {
   const ManagerPage({super.key});

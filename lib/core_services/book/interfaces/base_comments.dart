@@ -1,5 +1,5 @@
-import 'package:honyomi/core_services/book/interfaces/basic_comment.dart';
-import 'package:honyomi/core_services/book/interfaces/paginate.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_comment.dart';
+import 'package:hoyomi/core_services/book/interfaces/paginate.dart';
 
 class BaseComments extends Paginate<BasicComment> {
   BaseComments(

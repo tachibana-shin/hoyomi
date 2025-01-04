@@ -4,20 +4,20 @@ import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import 'package:honyomi/core_services/eiga/eiga_base_service.dart';
-import 'package:honyomi/core_services/eiga/interfaces/episode_eiga.dart';
-import 'package:honyomi/core_services/eiga/interfaces/episodes_eiga.dart';
-import 'package:honyomi/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:honyomi/core_services/eiga/interfaces/source_video.dart';
-import 'package:honyomi/core_services/eiga/interfaces/subtitle.dart';
-import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/screens/details_eiga/list_episodes.dart';
-import 'package:honyomi/screens/home_eiga/player_eiga.dart';
-import 'package:honyomi/utils/format_number.dart';
-import 'package:honyomi/widgets/vertical_separator.dart';
+import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/screens/details_eiga/list_episodes.dart';
+import 'package:hoyomi/screens/home_eiga/player_eiga.dart';
+import 'package:hoyomi/utils/format_number.dart';
+import 'package:hoyomi/widgets/vertical_separator.dart';
 
 class DetailsEigaPage extends StatefulWidget {
   final String sourceId;

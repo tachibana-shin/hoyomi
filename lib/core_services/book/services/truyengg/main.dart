@@ -1,28 +1,28 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:honyomi/core_services/book/book_base_service.dart';
-import 'package:honyomi/core_services/book/interfaces/base_comments.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_chapter.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_comment.dart';
-import 'package:honyomi/core_services/interfaces/basic_genre.dart';
-import 'package:honyomi/core_services/book/interfaces/status_enum.dart';
+import 'package:hoyomi/core_services/book/book_base_service.dart';
+import 'package:hoyomi/core_services/book/interfaces/base_comments.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_chapter.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_comment.dart';
+import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
+import 'package:hoyomi/core_services/book/interfaces/status_enum.dart';
 import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 
-import 'package:honyomi/core_services/book/auth_service.dart';
-import 'package:honyomi/core_services/book/interfaces/base_section.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_filter.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_book_section.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
-import 'package:honyomi/core_services/book/interfaces/book_param.dart';
-import 'package:honyomi/core_services/book/interfaces/comic_modes.dart';
-import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:honyomi/core_services/book/interfaces/paginate.dart';
-import 'package:honyomi/core_services/book/interfaces/rate_value.dart';
-import 'package:honyomi/utils/time_utils.dart';
+import 'package:hoyomi/core_services/book/auth_service.dart';
+import 'package:hoyomi/core_services/book/interfaces/base_section.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_filter.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_book_section.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_user.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_param.dart';
+import 'package:hoyomi/core_services/book/interfaces/comic_modes.dart';
+import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
+import 'package:hoyomi/core_services/book/interfaces/paginate.dart';
+import 'package:hoyomi/core_services/book/interfaces/rate_value.dart';
+import 'package:hoyomi/utils/time_utils.dart';
 
 final List<BasicFilter> globalFilters = [
   BasicFilter(name: 'Trạng thái', key: 'status', multiple: false, options: [

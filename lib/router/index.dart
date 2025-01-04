@@ -3,22 +3,22 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
-import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
+import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 
-import 'package:honyomi/pages/details_comic/[sourceId]/[bookId].page.dart';
-import 'package:honyomi/pages/details_comic/[sourceId]/[bookId]/[chapterId].page.dart';
-import 'package:honyomi/pages/home_book/home_book_page.dart';
-import 'package:honyomi/pages/home_eiga/home_eiga_page.dart';
-import 'package:honyomi/pages/library/follow/follow_page.dart';
-import 'package:honyomi/pages/library/history/history_page.dart';
-import 'package:honyomi/pages/library/library_page.dart';
-import 'package:honyomi/pages/manager_page.dart';
-import 'package:honyomi/pages/search/[sourceId].page.dart';
-import 'package:honyomi/pages/search/index_page.dart';
-import 'package:honyomi/pages/webview_page.dart';
-import 'package:honyomi/pages/section/[sourceId]/[sectionId].page.dart';
+import 'package:hoyomi/pages/details_comic/[sourceId]/[bookId].page.dart';
+import 'package:hoyomi/pages/details_comic/[sourceId]/[bookId]/[chapterId].page.dart';
+import 'package:hoyomi/pages/home_book/home_book_page.dart';
+import 'package:hoyomi/pages/home_eiga/home_eiga_page.dart';
+import 'package:hoyomi/pages/library/follow/follow_page.dart';
+import 'package:hoyomi/pages/library/history/history_page.dart';
+import 'package:hoyomi/pages/library/library_page.dart';
+import 'package:hoyomi/pages/manager_page.dart';
+import 'package:hoyomi/pages/search/[sourceId].page.dart';
+import 'package:hoyomi/pages/search/index_page.dart';
+import 'package:hoyomi/pages/webview_page.dart';
+import 'package:hoyomi/pages/section/[sourceId]/[sectionId].page.dart';
 
-import 'package:honyomi/widgets/navigation_app.dart';
+import 'package:hoyomi/widgets/navigation_app.dart';
 
 import '../pages/details_comic/[sourceId]/[bookId]/similar/similar_page.dart';
 import '../pages/details_eiga/[sourceId]/[eigaId].dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/widgets/search_bar.dart';
+import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/widgets/search_bar.dart';
 
 class SimilarPage extends StatefulWidget {
   final String sourceId;

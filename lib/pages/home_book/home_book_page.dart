@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/screens/home_book/tab_view_book.dart';
-import 'package:honyomi/widgets/search_bar.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/screens/home_book/tab_view_book.dart';
+import 'package:hoyomi/widgets/search_bar.dart';
 
 class HomeBookPage extends StatelessWidget {
   const HomeBookPage({super.key});

@@ -1,5 +1,5 @@
-import 'package:honyomi/core_services/interfaces/basic_genre.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 
 class BasicCarouselItem {
   final BasicImage image;

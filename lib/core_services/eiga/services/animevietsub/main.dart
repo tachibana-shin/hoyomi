@@ -1,20 +1,20 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart' as material;
-import 'package:honyomi/core_services/eiga/eiga_base_service.dart';
-import 'package:honyomi/core_services/eiga/interfaces/base_eiga_home.dart';
-import 'package:honyomi/core_services/eiga/interfaces/episode_eiga.dart';
-import 'package:honyomi/core_services/eiga/interfaces/episodes_eiga.dart';
-import 'package:honyomi/core_services/eiga/interfaces/source_content.dart';
-import 'package:honyomi/core_services/eiga/interfaces/source_video.dart';
-import 'package:honyomi/core_services/interfaces/basic_carousel.dart';
-import 'package:honyomi/core_services/eiga/interfaces/basic_carousel_item.dart';
-import 'package:honyomi/core_services/eiga/interfaces/basic_eiga.dart';
-import 'package:honyomi/core_services/eiga/interfaces/basic_eiga_section.dart';
-import 'package:honyomi/core_services/eiga/interfaces/eiga_param.dart';
-import 'package:honyomi/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:honyomi/core_services/interfaces/basic_genre.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/base_eiga_home.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
+import 'package:hoyomi/core_services/interfaces/basic_carousel.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/basic_carousel_item.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga_section.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_param.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
+import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:html/dom.dart';
 
 import 'dart:typed_data';

@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/cache/get_user.dart';
-import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/database/isar.dart';
-import 'package:honyomi/globals.dart';
-import 'package:honyomi/database/scheme/cookie_manager.dart' as model;
+import 'package:hoyomi/cache/get_user.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/database/isar.dart';
+import 'package:hoyomi/globals.dart';
+import 'package:hoyomi/database/scheme/cookie_manager.dart' as model;
 import 'package:isar/isar.dart';
 
 class CustomWebView extends StatefulWidget {

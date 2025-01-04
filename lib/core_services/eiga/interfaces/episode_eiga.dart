@@ -1,4 +1,4 @@
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 
 class EpisodeEiga {
   final String name;

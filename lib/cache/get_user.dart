@@ -1,6 +1,6 @@
-import 'package:honyomi/core_services/book/auth_service.dart';
-import 'package:honyomi/core_services/book/book_base_service.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
+import 'package:hoyomi/core_services/book/auth_service.dart';
+import 'package:hoyomi/core_services/book/book_base_service.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_user.dart';
 
 final Map<String, BasicUser> store = {};
 Future<BasicUser> getUser(BookBaseService service, {String? cookie}) async {

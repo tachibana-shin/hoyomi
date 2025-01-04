@@ -1,5 +1,5 @@
-import 'package:honyomi/core_services/interfaces/basic_carousel.dart';
-import 'package:honyomi/core_services/eiga/interfaces/basic_eiga_section.dart';
+import 'package:hoyomi/core_services/interfaces/basic_carousel.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga_section.dart';
 
 class BaseEigaHome {
   final BasicCarousel? carousel;

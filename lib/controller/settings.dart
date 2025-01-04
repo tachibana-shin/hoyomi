@@ -1,5 +1,5 @@
-import 'package:honyomi/database/isar.dart';
-import 'package:honyomi/database/scheme/settings.dart';
+import 'package:hoyomi/database/isar.dart';
+import 'package:hoyomi/database/scheme/settings.dart';
 import 'package:isar/isar.dart';
 
 class SettingsController {

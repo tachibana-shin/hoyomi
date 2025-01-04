@@ -1,5 +1,5 @@
-import 'package:honyomi/core_services/eiga/interfaces/basic_episode.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/basic_episode.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 
 class BasicEiga {
   final String name;

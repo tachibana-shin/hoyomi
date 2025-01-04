@@ -1,6 +1,6 @@
-import 'package:honyomi/core_services/book/interfaces/base_comments.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_comment.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_user.dart';
+import 'package:hoyomi/core_services/book/interfaces/base_comments.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_comment.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_user.dart';
 
 abstract class AuthService {
   String get signInUrl;

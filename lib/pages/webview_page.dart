@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:honyomi/screens/webview/custom_webview.dart';
+import 'package:hoyomi/screens/webview/custom_webview.dart';
 
 class WebviewPage extends StatelessWidget {
   final String serviceId;

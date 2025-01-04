@@ -1,7 +1,7 @@
-import 'package:honyomi/core_services/base_service.dart';
-import 'package:honyomi/core_services/book/book_base_service.dart';
-import 'package:honyomi/core_services/eiga/eiga_base_service.dart';
-import 'package:honyomi/core_services/eiga/services/animevietsub/main.dart';
+import 'package:hoyomi/core_services/base_service.dart';
+import 'package:hoyomi/core_services/book/book_base_service.dart';
+import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
+import 'package:hoyomi/core_services/eiga/services/animevietsub/main.dart';
 
 import 'book/services/truyengg/main.dart';
 import 'book/services/truyenqq/main.dart';

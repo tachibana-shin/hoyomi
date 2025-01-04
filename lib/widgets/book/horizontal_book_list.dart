@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:honyomi/core_services/book/interfaces/basic_book.dart';
-import 'package:honyomi/core_services/utils_service.dart';
-import 'package:honyomi/widgets/horizontal_list.dart';
+import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:hoyomi/widgets/horizontal_list.dart';
 import 'vertical_book.dart';
 
 class BasicBookExtend {

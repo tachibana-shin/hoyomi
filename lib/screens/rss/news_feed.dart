@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:honyomi/core_services/book/book_base_service.dart';
-import 'package:honyomi/core_services/interfaces/basic_image.dart';
-import 'package:honyomi/globals.dart';
-import 'package:honyomi/utils/format_time_ago.dart';
-import 'package:honyomi/widgets/pull_to_refresh.dart';
+import 'package:hoyomi/core_services/book/book_base_service.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/globals.dart';
+import 'package:hoyomi/utils/format_time_ago.dart';
+import 'package:hoyomi/widgets/pull_to_refresh.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:xml/xml.dart';

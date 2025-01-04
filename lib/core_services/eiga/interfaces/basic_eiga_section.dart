@@ -1,4 +1,4 @@
-import 'package:honyomi/core_services/eiga/interfaces/basic_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
 
 class BasicEigaSection {
   final String name;

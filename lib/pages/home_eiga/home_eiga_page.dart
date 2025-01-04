@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:honyomi/core_services/main.dart';
-import 'package:honyomi/screens/home_eiga/tab_view_eiga.dart';
-import 'package:honyomi/widgets/search_bar.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/screens/home_eiga/tab_view_eiga.dart';
+import 'package:hoyomi/widgets/search_bar.dart';
 
 class HomeEigaPage extends StatefulWidget {
   const HomeEigaPage({super.key});
