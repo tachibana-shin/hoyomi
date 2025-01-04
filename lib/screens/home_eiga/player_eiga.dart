@@ -187,6 +187,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
   }
 
   DateTime _activeTime = DateTime.now();
+  bool _onCanPlay = false;
   void _onPlayerValueChanged() {
     if (_controller.value?.value.hasError == true) {
       debugPrint(
@@ -201,11 +202,13 @@ class _PlayerEigaState extends State<PlayerEiga> {
     _playing.value = _controller.value?.value.isPlaying ?? _playing.value;
     _firstLoadedSource.value = true;
 
-    if (_controller.value?.isBlank == true ||
-        _controller.value?.value.isInitialized == true &&
-            _controller.value?.value.isBuffering != true) {
-      _activeTime = DateTime.now();
-    }
+    // if (_controller.value?.isBlank == true ||
+    //    _loading.value) {
+    //   _activeTime = DateTime.now();
+    //   _onCanPlay = true;
+    // } else {
+    //   _onCanPlay = false;
+    // }
 
     if (_activeTime.difference(DateTime.now()).inSeconds.abs() > 3) {
       _showControls.value = false;
@@ -261,8 +264,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
                     builder: (context, value, child) {
                       return GestureDetector(
                           onTap: () {
-                            _showControls.value = !_showControls.value;
                             _activeTime = DateTime.now();
+                            _showControls.value = !_showControls.value;
                           },
                           child: SubtitleWrapper(
                             enabled: value != null,
@@ -297,26 +300,28 @@ class _PlayerEigaState extends State<PlayerEiga> {
           ListenableBuilder(
               listenable: Listenable.merge([_showControls, _playing]),
               builder: (context, child) {
-                bool ended = false;
+                final ended = ValueNotifier<bool>(false);
                 return AnimatedOpacity(
                     opacity: !_playing.value || _showControls.value ? 1.0 : 0.0,
                     duration: _durationAnimate,
-                    onEnd: () => ended = true,
-                    child: Visibility(
-                        visible: (!_playing.value || _showControls.value)
-                            ? true
-                            : !ended,
-                        child: GestureDetector(
-                            onTap: () =>
-                                _showControls.value = !_showControls.value,
-                            child: Container(
-                                color: Colors.black.withValues(alpha: 0.5),
-                                child: Stack(children: [
-                                  _buildMobileTopControls(),
-                                  _buildMobileControls(),
-                                  _buildIndicator(),
-                                  _buildMobileBottomControls()
-                                ])))));
+                    onEnd: () => ended.value = true,
+                    child: ValueListenableBuilder(
+                        valueListenable: ended,
+                        builder: (context, value, child) => Visibility(
+                            visible: (!_playing.value || _showControls.value)
+                                ? true
+                                : !value,
+                            child: GestureDetector(
+                                onTap: () =>
+                                    _showControls.value = !_showControls.value,
+                                child: Container(
+                                    color: Colors.black.withValues(alpha: 0.5),
+                                    child: Stack(children: [
+                                      _buildMobileTopControls(),
+                                      _buildMobileControls(),
+                                      _buildIndicator(),
+                                      _buildMobileBottomControls()
+                                    ]))))));
               }),
           _buildMobileSliderProgress()
         ]));
@@ -448,6 +453,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
                     return ElevatedButton(
                       onPressed: () {
+                        _activeTime = DateTime.now();
                         _setPlaying(!_playing.value);
                       },
                       style: ElevatedButton.styleFrom(
@@ -499,10 +505,16 @@ class _PlayerEigaState extends State<PlayerEiga> {
         builder: (context, value, child) {
           if (!value) return SizedBox.shrink();
 
-          return CircularProgressIndicator(
-            strokeWidth: 5.0,
-            color: Colors.white,
-          );
+          return Positioned(
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              child: Center(
+                  child: CircularProgressIndicator(
+                strokeWidth: 5.0,
+                color: Colors.white,
+              )));
         });
   }
 
