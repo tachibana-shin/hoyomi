@@ -579,8 +579,10 @@ class _PlayerEigaState extends State<PlayerEiga> {
             listenable: Listenable.merge([_position, _duration]),
             builder: (context, child) {
               return SliderEiga(
-                progress: _position.value.inMilliseconds /
-                    _duration.value.inMilliseconds,
+                progress: _duration.value.inMilliseconds > 0
+                    ? _position.value.inMilliseconds /
+                        _duration.value.inMilliseconds
+                    : 0,
                 previewPosition: 1.0,
                 showThumb: _showControls.value,
                 onSeek: (position) {
