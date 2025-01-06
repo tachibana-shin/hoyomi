@@ -85,18 +85,7 @@ class _SliderEigaState extends State<SliderEiga> with SingleTickerProviderStateM
         });
       },
       // onTapCancel: _onHoverEnd,
-      child: MouseRegion(
-        onHover: (event) {
-          final box = context.findRenderObject() as RenderBox;
-          _onHoverUpdate(event.localPosition, box.size);
-        },
-        onEnter: (_) {
-          setState(() {
-            _isHovering = true;
-          });
-        },
-        onExit: (_) => _onHoverEnd(),
-        child: Stack(
+      child:  Stack(
           children: [
             AnimatedBuilder(
               animation: _barHeightAnimation,
@@ -133,7 +122,7 @@ class _SliderEigaState extends State<SliderEiga> with SingleTickerProviderStateM
             ),
           ],
         ),
-      ),
+
     );
   }
 }
@@ -163,14 +152,6 @@ class _ProgressBarPainter extends CustomPainter {
       ..color = Colors.blue
       ..style = PaintingStyle.fill;
 
-    final hoverPaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-
-    final previewPaint = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.fill;
-
     // Draw background
     canvas.drawRect(
         Rect.fromLTWH(0, (size.height - barHeight) / 2, size.width, barHeight),
@@ -181,18 +162,6 @@ class _ProgressBarPainter extends CustomPainter {
         Rect.fromLTWH(
             0, (size.height - barHeight) / 2, progress * size.width, barHeight),
         progressPaint);
-
-    // Draw hover indicator
-    if (isHovering) {
-      canvas.drawCircle(
-          Offset(hoverPosition * size.width, size.height / 2), 5, hoverPaint);
-    }
-
-    // Draw preview indicator
-    if (isHovering) {
-      canvas.drawCircle(Offset(previewPosition * size.width, size.height / 2),
-          5, previewPaint);
-    }
   }
 
   @override
