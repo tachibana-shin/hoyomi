@@ -77,7 +77,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         .then((subtitles) {
       _subtitlesNotifier.value = subtitles;
     }).catchError((error) {
-      debugPrint(error);
+      debugPrint('Error: $error');
     });
     _sourceNotifier.value = null;
     _service
@@ -85,7 +85,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         .then((source) {
       _sourceNotifier.value = source;
     }).catchError((error) {
-      debugPrint(error);
+      debugPrint('Error: $error');
     });
     _thumbnailVtt.value = null;
     if (_service.getThumbnail != null) {
@@ -97,7 +97,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           .then((thumbnail) {
         _thumbnailVtt.value = thumbnail;
       }).catchError((error) {
-        debugPrint(error);
+        debugPrint('Error: $error');
       });
     }
   }

@@ -402,26 +402,27 @@ class AnimeVietsubService extends EigaBaseService {
         final rawName = episode.name.trim();
         final epName = rawName.replaceAll('^[^0-9.+_-]+', '');
 
-        final list = jsonDecode(episodes) as List<dynamic>;
+        final list = jsonDecode(episodes)['list'] as List<dynamic>;
 
         final epFloat = double.parse(epName);
         final episodeD = list.firstWhereOrNull((item) {
-              if (item.name == epName || item.name == rawName) return true;
+              if (item['name'] == epName || item['name'] == rawName) {
+                return true;
+              }
 
-              return double.parse(item.name) == epFloat;
+              return double.parse(item['name']) == epFloat;
             }) ??
             (episodeIndex < list.length - 1 ? list[episodeIndex] : null);
 
         if (episodeD == null) return null;
 
         final meta =
-            jsonDecode(await fetch('$_apiThumb/episode-skip/${episodeD.id}'));
+            jsonDecode(await fetch('$_apiThumb/episode-skip/${episodeD['id']}'));
 
         final file = (meta.tracks as List<dynamic>)
-            .firstWhereOrNull((item) => item.kind == "thumbnails")
-            ?.file as String?;
+            .firstWhereOrNull((item) => item['kind'] == "thumbnails");
 
-        if (file != null) return BasicVtt(src: file);
+        if (file != null) return BasicVtt(src: file['file']);
         return null;
       };
 
