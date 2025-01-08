@@ -21,11 +21,6 @@ class CustomWebView extends StatefulWidget {
 
 class _CustomWebViewState extends State<CustomWebView> {
   late InAppWebViewController _webViewController;
-  final WebViewEnvironment _webViewEnvironment =
-      WebViewEnvironment.fromPlatform(
-          platform: PlatformWebViewEnvironment(
-              PlatformWebViewEnvironmentCreationParams(
-                  settings: WebViewEnvironmentSettings())));
   late final String _initialUrl;
 
   String _currentTitle = "Loading...";
@@ -51,11 +46,8 @@ class _CustomWebViewState extends State<CustomWebView> {
   Future<void> _collectCookies() async {
     try {
       // Retrieve cookies for the current URL
-      final cookies =
-          await CookieManager.instance(webViewEnvironment: _webViewEnvironment)
-              .getCookies(
-                  url: WebUri(_initialUrl),
-                  webViewController: _webViewController);
+      final cookies = await CookieManager.instance().getCookies(
+          url: WebUri(_initialUrl), webViewController: _webViewController);
       final cookiesText =
           cookies.map((cookie) => '${cookie.name}=${cookie.value}').join("; ");
 
@@ -67,7 +59,10 @@ class _CustomWebViewState extends State<CustomWebView> {
         signed = false;
       }
 
-      final record = await isar.cookieManagers.where().uidEqualTo(widget.serviceId).findFirstAsync();
+      final record = await isar.cookieManagers
+          .where()
+          .uidEqualTo(widget.serviceId)
+          .findFirstAsync();
       if (record != null) {
         record.cookie = cookiesText;
         record.signed = signed;
@@ -168,7 +163,6 @@ class _CustomWebViewState extends State<CustomWebView> {
           Expanded(
             child: InAppWebView(
               initialUrlRequest: URLRequest(url: WebUri(_initialUrl)),
-              webViewEnvironment: _webViewEnvironment,
               onWebViewCreated: (controller) {
                 _webViewController =
                     controller; //..loadUrl(urlRequest: URLRequest());

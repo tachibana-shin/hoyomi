@@ -17,12 +17,6 @@ import 'package:hoyomi/database/scheme/cookie_manager.dart';
 import 'package:hoyomi/router/index.dart';
 import 'package:isar/isar.dart';
 
-final inappwebview.WebViewEnvironment webViewEnvironment =
-    inappwebview.WebViewEnvironment.fromPlatform(
-        platform: inappwebview.PlatformWebViewEnvironment(
-            inappwebview.PlatformWebViewEnvironmentCreationParams(
-                settings: inappwebview.WebViewEnvironmentSettings())));
-
 class StackWebView {
   int _i = 0;
   bool _isFirstInit = true;
@@ -41,7 +35,6 @@ class StackWebView {
     _controllerFuture = promise.future;
 
     inappwebview.HeadlessInAppWebView(
-        webViewEnvironment: webViewEnvironment,
         initialSettings: inappwebview.InAppWebViewSettings(
             // // javaScriptEnabled: false,
             mediaPlaybackRequiresUserGesture: true,
@@ -309,7 +302,8 @@ abstract class UtilsService {
     String? cookiesText = cookie;
 
     if (cookie == null) {
-      final row = await isar.cookieManagers.where().uidEqualTo(uid).findFirstAsync();
+      final row =
+          await isar.cookieManagers.where().uidEqualTo(uid).findFirstAsync();
       cookiesText = row?.cookie;
     }
 
