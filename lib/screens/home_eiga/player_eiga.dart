@@ -8,6 +8,7 @@ import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:http/http.dart';
 import 'package:play_video/function/format_duration.dart';
@@ -30,6 +31,7 @@ class PlayerEiga extends StatefulWidget {
 
   final ValueNotifier<SourceVideo?> sourceNotifier;
   final ValueNotifier<BasicImage?> posterNotifier;
+  final ValueNotifier<BasicVtt?> thumbnailVtt;
   final Future<SourceContent> Function({required SourceVideo source})?
       fetchSourceContent;
 
@@ -46,6 +48,7 @@ class PlayerEiga extends StatefulWidget {
     required this.subtitleNotifier,
     required this.sourceNotifier,
     required this.posterNotifier,
+    required this.thumbnailVtt,
     required this.fetchSourceContent,
     required this.aspectRatio,
     required this.onBack,
@@ -187,7 +190,6 @@ class _PlayerEigaState extends State<PlayerEiga> {
   }
 
   DateTime _activeTime = DateTime.now();
-  bool _onCanPlay = false;
   void _onPlayerValueChanged() {
     if (_controller.value?.value.hasError == true) {
       debugPrint(
@@ -575,23 +577,17 @@ class _PlayerEigaState extends State<PlayerEiga> {
         bottom: 0,
         left: 0,
         right: 0,
-        child: ListenableBuilder(
-            listenable: Listenable.merge([_position, _duration]),
-            builder: (context, child) {
-              return SliderEiga(
-                progress: _duration.value.inMilliseconds > 0
-                    ? _position.value.inMilliseconds /
-                        _duration.value.inMilliseconds
-                    : 0,
-                previewPosition: 1.0,
-                showThumb: _showControls.value,
-                onSeek: (position) {
-                  final duration = _duration.value;
-                  final seek = duration * position;
-                  _controller.value?.seekTo(seek);
-                },
-              );
-            }));
+        child: SliderEiga(
+          progress: _position,
+          duration: _duration,
+          showThumb: _showControls,
+          vttThumbnail: widget.thumbnailVtt,
+          onSeek: (position) {
+            final duration = _duration.value;
+            final seek = duration * position;
+            _controller.value?.seekTo(seek);
+          },
+        ));
   }
 
   void _setFullscreen(bool value) {

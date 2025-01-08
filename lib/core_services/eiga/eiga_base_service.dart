@@ -7,6 +7,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart';
+import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 
 abstract class EigaBaseService extends BaseService {
   Future<BaseEigaHome> home();
@@ -16,8 +17,10 @@ abstract class EigaBaseService extends BaseService {
   Future<EpisodesEiga> getEpisodes(String eigaId);
   Future<SourceVideo> getSource(
       {required String eigaId, required EpisodeEiga episode});
-  Future<List<Subtitle>> getSubtitles(
-      {required String eigaId, required EpisodeEiga episode});
   Future<SourceContent> Function({required SourceVideo source})?
       fetchSourceContent;
+  Future<BasicVtt> Function(
+      {required String eigaId, required EpisodeEiga episode})? getThumbnail;
+  Future<List<Subtitle>> getSubtitles(
+      {required String eigaId, required EpisodeEiga episode});
 }

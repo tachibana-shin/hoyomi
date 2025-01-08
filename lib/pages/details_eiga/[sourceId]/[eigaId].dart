@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
@@ -39,7 +40,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final EigaBaseService _service;
   late Future<MetaEiga> _metaEigaFuture;
 
-  final ValueNotifier<double> _backdropNotifier = ValueNotifier(0.5);
   final double _aspectRatio = 16 / 9;
 
   final Map<String, EpisodesEiga> _cacheEpisodesStore = {};
@@ -48,6 +48,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final ValueNotifier<List<Subtitle>> _subtitlesNotifier = ValueNotifier([]);
   final ValueNotifier<SourceVideo?> _sourceNotifier = ValueNotifier(null);
   final ValueNotifier<BasicImage?> _posterNotifier = ValueNotifier(null);
+  final ValueNotifier<BasicVtt?> _thumbnailVtt = ValueNotifier(null);
   final ValueNotifier<void Function()?> _onPrevNotifier = ValueNotifier(null);
   final ValueNotifier<void Function()?> _onNextNotifier = ValueNotifier(null);
 
@@ -72,6 +73,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _subtitleNotifier.value = 'Episode ${_episode.value!.name}';
     });
+    _subtitlesNotifier.value = [];
     _service
         .getSubtitles(eigaId: _eigaId.value, episode: _episode.value!)
         .then((subtitles) {
@@ -83,6 +85,13 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         .then((source) {
       _sourceNotifier.value = source;
     });
+    _thumbnailVtt.value = null;
+    if (_service.getThumbnail != null) {
+      _service.getThumbnail!(eigaId: _eigaId.value, episode: _episode.value!)
+          .then((thumbnail) {
+        _thumbnailVtt.value = thumbnail;
+      });
+    }
   }
 
   @override
@@ -152,6 +161,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       subtitlesNotifier: _subtitlesNotifier,
       sourceNotifier: _sourceNotifier,
       posterNotifier: _posterNotifier,
+      thumbnailVtt: _thumbnailVtt,
       aspectRatio: _aspectRatio,
       fetchSourceContent: _service.fetchSourceContent,
       onPrev: _onPrevNotifier,

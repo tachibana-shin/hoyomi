@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   archive: ^4.0.2
+  cached_network_image: ^3.4.1
   card_swiper: ^3.0.1
   contentsize_tabbarview: ^0.0.2
   crypto: ^3.0.6
@@ -52,6 +53,7 @@ dependencies:
   share_plus: ^10.1.2
   shared_preferences: ^2.3.3
   skeletonizer: ^1.4.2
+  subtitle: ^0.1.0-beta.3
   subtitle_wrapper_package:
     git:
       url: https://github.com/tachibana-shin/flutter_subtitle_wrapper
