@@ -1,10 +1,7 @@
-String formatDuration(int duration) {
-  final hours = duration ~/ 3600;
-  final minutes = (duration % 3600) ~/ 60;
-  final seconds = duration % 60;
-  if (hours > 0) {
-    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-  } else {
-    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-  }
+String formatDuration(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  final hours = twoDigits(duration.inHours);
+  final minutes = twoDigits(duration.inMinutes.remainder(60));
+  final seconds = twoDigits(duration.inSeconds.remainder(60));
+  return [if (duration.inHours > 0) hours, minutes, seconds].join(':');
 }
