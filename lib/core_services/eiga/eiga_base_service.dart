@@ -19,8 +19,12 @@ abstract class EigaBaseService extends BaseService {
       {required String eigaId, required EpisodeEiga episode});
   Future<SourceContent> Function({required SourceVideo source})?
       fetchSourceContent;
-  Future<BasicVtt> Function(
-      {required String eigaId, required EpisodeEiga episode})? getThumbnail;
+  Future<BasicVtt?> Function(
+      {required String eigaId,
+      required EpisodeEiga episode,
+      required int episodeIndex,
+      required MetaEiga metaEiga})? getThumbnail;
+
   Future<List<Subtitle>> getSubtitles(
       {required String eigaId, required EpisodeEiga episode});
 }

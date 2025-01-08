@@ -67,29 +67,37 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     _episodeId.value = widget.episodeId;
   }
 
-  void _updatePlayer() {
-    assert(_episode.value != null);
-
+  void _updatePlayer(MetaEiga metaEiga, EpisodeEiga episode, int episodeIndex) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _subtitleNotifier.value = 'Episode ${_episode.value!.name}';
+      _subtitleNotifier.value = 'Episode ${episode.name}';
     });
     _subtitlesNotifier.value = [];
     _service
-        .getSubtitles(eigaId: _eigaId.value, episode: _episode.value!)
+        .getSubtitles(eigaId: episode.episodeId, episode: episode)
         .then((subtitles) {
       _subtitlesNotifier.value = subtitles;
+    }).catchError((error) {
+      debugPrint(error);
     });
     _sourceNotifier.value = null;
     _service
-        .getSource(eigaId: _eigaId.value, episode: _episode.value!)
+        .getSource(eigaId: episode.episodeId, episode: episode)
         .then((source) {
       _sourceNotifier.value = source;
+    }).catchError((error) {
+      debugPrint(error);
     });
     _thumbnailVtt.value = null;
     if (_service.getThumbnail != null) {
-      _service.getThumbnail!(eigaId: _eigaId.value, episode: _episode.value!)
+      _service.getThumbnail!(
+              eigaId: episode.episodeId,
+              episode: episode,
+              episodeIndex: episodeIndex,
+              metaEiga: metaEiga)
           .then((thumbnail) {
         _thumbnailVtt.value = thumbnail;
+      }).catchError((error) {
+        debugPrint(error);
       });
     }
   }
@@ -644,7 +652,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           : null;
     });
 
-    if (episodeChanged) _updatePlayer();
+    if (episodeChanged) {
+      _updatePlayer(
+          metaEiga.value, episodes.episodes[indexEpisode], indexEpisode);
+    }
     _updateData(metaEiga: metaEiga, episodes: episodes);
 
     if (seasonChanged) {
