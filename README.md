@@ -20,6 +20,6 @@ A new Flutter project.
 
 - [ ] Show modal more episodes
 - [ ] Show modal more info
-- [ ] Custom slider video
+- [x] Custom slider video
 
 /// provider or mobx
