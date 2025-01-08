@@ -47,7 +47,8 @@ class AnimeVietsubService extends EigaBaseService {
     final eigaId = seg[2];
     final episodeId = seg.length >= 4 ? seg[3] : null;
 
-    return EigaParam(eigaId: eigaId, episodeId: episodeId);
+    return EigaParam(
+        eigaId: eigaId, episodeId: episodeId?.replaceFirst(".html", ""));
   }
 
   BasicEiga _parseItem(Element item) {
@@ -308,8 +309,11 @@ class AnimeVietsubService extends EigaBaseService {
     final episodes = document
         .querySelectorAll("#list-server .list-episode .episode a")
         .map((item) {
-      final episodeId =
-          Uri.parse(item.attributes['href']!).path.split('/').elementAt(3);
+      final episodeId = Uri.parse(item.attributes['href']!)
+          .path
+          .split('/')
+          .elementAt(3)
+          .replaceFirst(".html", "");
 
       final params = _ParamsEpisode(
           id: item.attributes['data-id']!,
@@ -416,8 +420,8 @@ class AnimeVietsubService extends EigaBaseService {
 
         if (episodeD == null) return null;
 
-        final meta =
-            jsonDecode(await fetch('$_apiThumb/episode-skip/${episodeD['id']}'));
+        final meta = jsonDecode(
+            await fetch('$_apiThumb/episode-skip/${episodeD['id']}'));
 
         final file = (meta.tracks as List<dynamic>)
             .firstWhereOrNull((item) => item['kind'] == "thumbnails");

@@ -68,6 +68,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   void _updatePlayer(MetaEiga metaEiga, EpisodeEiga episode, int episodeIndex) {
+    assert(_episode.value != null);
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _subtitleNotifier.value = 'Episode ${episode.name}';
     });
