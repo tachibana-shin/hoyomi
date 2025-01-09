@@ -132,15 +132,16 @@ class _PlayerEigaState extends State<PlayerEiga> {
   void initState() {
     super.initState();
 
-    void run() {
-      if (widget.sourceNotifier.value != null) {
-        _setupPlayer(widget.sourceNotifier.value!);
-      }
-      _firstLoadedSource.value = false;
-    }
+    _onSourceChanged();
+    widget.sourceNotifier.addListener(_onSourceChanged);
+    _fullscreen.addListener(_onFullscreenChanged);
+  }
 
-    run();
-    widget.sourceNotifier.addListener(run);
+  void _onSourceChanged() {
+    if (widget.sourceNotifier.value != null) {
+      _setupPlayer(widget.sourceNotifier.value!);
+    }
+    _firstLoadedSource.value = false;
   }
 
   void _setupPlayer(SourceVideo source) async {
@@ -253,86 +254,106 @@ class _PlayerEigaState extends State<PlayerEiga> {
   Widget build(BuildContext context) {
     // if (_controller?.value.isInitialized != true) return SizedBox.shrink();
 
-    return AspectRatio(
-        aspectRatio: widget.aspectRatio,
-        child: Stack(children: [
-          Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Container(color: Colors.black)),
-          ValueListenableBuilder<VideoPlayerController?>(
-              valueListenable: _controller,
-              builder: (context, controller, child) {
-                if (controller == null) return SizedBox.shrink();
+    return ValueListenableBuilder(
+        valueListenable: _fullscreen,
+        builder: (context2, fullscreen, child) {
+          if (fullscreen) {
+            return SizedBox.shrink();
+          }
 
-                return ValueListenableBuilder<String?>(
-                    valueListenable: _qualityCode,
-                    builder: (context, value, child) {
-                      return GestureDetector(
-                          onTap: () {
-                            _activeTime = DateTime.now();
-                            _showControls.value = !_showControls.value;
-                          },
-                          child: SubtitleWrapper(
-                            enabled: value != null,
-                            videoPlayerController: controller,
-                            subtitleController: subtitleController,
-                            subtitleStyle: SubtitleStyle(
-                              textColor: Colors.white,
-                              hasBorder: true,
-                            ),
-                            videoChild: VideoPlayer(controller),
-                          ));
-                    });
-              }),
-          ListenableBuilder(
-              listenable:
-                  Listenable.merge([widget.posterNotifier, _firstLoadedSource]),
-              builder: (context, child) {
-                if (widget.posterNotifier.value == null ||
-                    _firstLoadedSource.value) {
-                  return SizedBox.shrink();
-                }
+          return AspectRatio(
+              aspectRatio: widget.aspectRatio, child: _buildStack());
+        });
+  }
 
-                return Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: BasicImage.network(widget.posterNotifier.value!.src,
-                        headers: widget.posterNotifier.value!.headers,
-                        fit: BoxFit.cover));
-              }),
-          ListenableBuilder(
-              listenable: Listenable.merge([_showControls, _playing]),
-              builder: (context, child) {
-                final ended = ValueNotifier<bool>(false);
-                return AnimatedOpacity(
-                    opacity: !_playing.value || _showControls.value ? 1.0 : 0.0,
-                    duration: _durationAnimate,
-                    onEnd: () => ended.value = true,
-                    child: ValueListenableBuilder(
-                        valueListenable: ended,
-                        builder: (context, value, child) => Visibility(
-                            visible: (!_playing.value || _showControls.value)
-                                ? true
-                                : !value,
-                            child: GestureDetector(
-                                onTap: () =>
-                                    _showControls.value = !_showControls.value,
-                                child: Container(
-                                    color: Colors.black.withValues(alpha: 0.5),
-                                    child: Stack(children: [
-                                      _buildMobileTopControls(),
-                                      _buildMobileControls(),
-                                      _buildMobileBottomControls()
-                                    ]))))));
-              }),
-          _buildIndicator(),
-          _buildMobileSliderProgress()
-        ]));
+  void _onFullscreenChanged() {
+    if (_fullscreen.value) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => _buildStack()));
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
+  Widget _buildStack() {
+    return Stack(children: [
+      Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Container(color: Colors.black)),
+      ValueListenableBuilder<VideoPlayerController?>(
+          valueListenable: _controller,
+          builder: (context, controller, child) {
+            if (controller == null) return SizedBox.shrink();
+
+            return ValueListenableBuilder<String?>(
+                valueListenable: _qualityCode,
+                builder: (context, value, child) {
+                  return GestureDetector(
+                      onTap: () {
+                        _activeTime = DateTime.now();
+                        _showControls.value = !_showControls.value;
+                      },
+                      child: SubtitleWrapper(
+                        enabled: value != null,
+                        videoPlayerController: controller,
+                        subtitleController: subtitleController,
+                        subtitleStyle: SubtitleStyle(
+                          textColor: Colors.white,
+                          hasBorder: true,
+                        ),
+                        videoChild: VideoPlayer(controller),
+                      ));
+                });
+          }),
+      ListenableBuilder(
+          listenable:
+              Listenable.merge([widget.posterNotifier, _firstLoadedSource]),
+          builder: (context, child) {
+            if (widget.posterNotifier.value == null ||
+                _firstLoadedSource.value) {
+              return SizedBox.shrink();
+            }
+
+            return Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: BasicImage.network(widget.posterNotifier.value!.src,
+                    headers: widget.posterNotifier.value!.headers,
+                    fit: BoxFit.cover));
+          }),
+      ListenableBuilder(
+          listenable: Listenable.merge([_showControls, _playing]),
+          builder: (context, child) {
+            final ended = ValueNotifier<bool>(false);
+            return AnimatedOpacity(
+                opacity: !_playing.value || _showControls.value ? 1.0 : 0.0,
+                duration: _durationAnimate,
+                onEnd: () => ended.value = true,
+                child: ValueListenableBuilder(
+                    valueListenable: ended,
+                    builder: (context, value, child) => Visibility(
+                        visible: (!_playing.value || _showControls.value)
+                            ? true
+                            : !value,
+                        child: GestureDetector(
+                            onTap: () =>
+                                _showControls.value = !_showControls.value,
+                            child: Container(
+                                color: Colors.black.withValues(alpha: 0.5),
+                                child: Stack(children: [
+                                  _buildMobileTopControls(),
+                                  _buildMobileControls(),
+                                  _buildMobileBottomControls()
+                                ]))))));
+          }),
+      _buildIndicator(),
+      _buildMobileSliderProgress()
+    ]);
   }
 
   Widget _buildMobileTopControls() {
@@ -840,5 +861,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
   void dispose() {
     super.dispose();
     _controller.value?.dispose();
+    widget.sourceNotifier.removeListener(_onSourceChanged);
+    _fullscreen.removeListener(_onFullscreenChanged);
   }
 }
