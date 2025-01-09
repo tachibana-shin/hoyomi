@@ -401,7 +401,7 @@ class AnimeVietsubService extends EigaBaseService {
         final episodes = await fetch('$_apiOpEnd/list-episodes?${[
           metaEiga.name,
           ...metaEiga.originalName?.split(",").map((name) => name.trim()) ?? []
-        ].map((name) => 'name=$name').join('=')}');
+        ].map((name) => 'name=$name').join('&')}');
 
         final rawName = episode.name.trim();
         final epName = rawName.replaceAll('^[^0-9.+_-]+', '');
@@ -423,7 +423,7 @@ class AnimeVietsubService extends EigaBaseService {
         final meta = jsonDecode(
             await fetch('$_apiThumb/episode-skip/${episodeD['id']}'));
 
-        final file = (meta.tracks as List<dynamic>)
+        final file = (meta['tracks'] as List<dynamic>)
             .firstWhereOrNull((item) => item['kind'] == "thumbnails");
 
         if (file != null) return BasicVtt(src: file['file']);
