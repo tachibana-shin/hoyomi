@@ -605,21 +605,23 @@ class _PlayerEigaState extends State<PlayerEiga> {
   }
 
   Widget _buildMobileSliderProgress() {
-    return Positioned(
-        bottom: 0,
-        left: 0,
-        right: 0,
-        child: SliderEiga(
-          progress: _position,
-          duration: _duration,
-          showThumb: _showControls,
-          vttThumbnail: widget.thumbnailVtt,
-          onSeek: (position) {
-            final duration = _duration.value;
-            final seek = duration * position;
-            _controller.value?.seekTo(seek);
-          },
-        ));
+    return ValueListenableBuilder(
+        valueListenable: _fullscreen,
+        builder: (context, value, child) => Positioned(
+            bottom: value ? kToolbarHeight : 0,
+            left: 0,
+            right: 0,
+            child: SliderEiga(
+              progress: _position,
+              duration: _duration,
+              showThumb: _showControls,
+              vttThumbnail: widget.thumbnailVtt,
+              onSeek: (position) {
+                final duration = _duration.value;
+                final seek = duration * position;
+                _controller.value?.seekTo(seek);
+              },
+            )));
   }
 
   void _setFullscreen(bool value) {
