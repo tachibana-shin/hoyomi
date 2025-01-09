@@ -75,7 +75,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     });
     _subtitlesNotifier.value = [];
     _service
-        .getSubtitles(eigaId: episode.episodeId, episode: episode)
+        .getSubtitles(eigaId:_eigaId.value, episode: episode)
         .then((subtitles) {
       _subtitlesNotifier.value = subtitles;
     }).catchError((error) {
@@ -83,7 +83,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     });
     _sourceNotifier.value = null;
     _service
-        .getSource(eigaId: episode.episodeId, episode: episode)
+        .getSource(eigaId: _eigaId.value, episode: episode)
         .then((source) {
       _sourceNotifier.value = source;
     }).catchError((error) {
@@ -92,7 +92,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     _thumbnailVtt.value = null;
     if (_service.getThumbnail != null) {
       _service.getThumbnail!(
-              eigaId: episode.episodeId,
+              eigaId: _eigaId.value,
               episode: episode,
               episodeIndex: episodeIndex,
               metaEiga: metaEiga)
