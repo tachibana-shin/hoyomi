@@ -262,7 +262,7 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
         return Scaffold(
           body: Row(
             children: [
-              ...disableToolbar
+              ...!disableToolbar
                   ? [
                       NavigationApp(
                         selectedIndex: navigationShell.currentIndex,
