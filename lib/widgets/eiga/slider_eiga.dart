@@ -324,7 +324,8 @@ class _SliderEigaState extends State<SliderEiga>
     final width = parentSize.width;
 
     return ListenableBuilder(
-        listenable: Listenable.merge([widget.duration, widget.progress]),
+        listenable: Listenable.merge(
+            [widget.duration, widget.progress, widget.showThumb]),
         builder: (context, child) {
           final double left = ((widget.duration.value.inMilliseconds == 0
                           ? 0
@@ -334,17 +335,22 @@ class _SliderEigaState extends State<SliderEiga>
                   thumbSize / 2)
               .clamp(0, width - thumbSize);
 
+          final double size = widget.showThumb.value ? thumbSize : 0;
+
           return Positioned(
               left: left,
-              bottom: 0, // Adjust position to center the thumb
-              child: GestureDetector(
-                onPanUpdate: (details) {
-                  _onSeek(details.localPosition);
-                },
-                child: CustomPaint(
-                    size: Size(thumbSize,
-                        thumbSize), // Keep height to accommodate thumb
-                    painter: _ThumbPainter(size: thumbSize)),
+              bottom: 0,
+              child: AnimatedSize(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: GestureDetector(
+                  onPanUpdate: (details) {
+                    _onSeek(details.localPosition);
+                  },
+                  child: CustomPaint(
+                      size: Size(size, size), // Adjust size based on showThumb
+                      painter: _ThumbPainter(size: size)),
+                ),
               ));
         });
   }
