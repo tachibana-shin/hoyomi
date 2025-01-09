@@ -269,9 +269,11 @@ class _PlayerEigaState extends State<PlayerEiga> {
   void _onFullscreenChanged() {
     if (_fullscreen.value) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => _buildStack()));
+          context,
+          MaterialPageRoute(
+              fullscreenDialog: true, builder: (context) => _buildStack()));
     } else {
-      Navigator.pop(context);
+      Navigator.pop(context, true);
     }
   }
 
