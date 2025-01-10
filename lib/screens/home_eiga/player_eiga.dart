@@ -11,7 +11,7 @@ import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:http/http.dart';
-import 'package:play_video/function/format_duration.dart';
+import 'package:hoyomi/utils/format_duration.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
 
