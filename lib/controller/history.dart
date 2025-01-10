@@ -57,7 +57,10 @@ class HistoryController {
       bookObject.meta = newMeta;
     }
 
-    _bookBox.put(bookObject);
+    await isar.writeAsync((isar) {
+      isar.books.put(bookObject!);
+    });
+
     return bookObject;
   }
 
@@ -72,8 +75,10 @@ class HistoryController {
       existingHistory.maxPage = maxPage;
       book.updatedAt = existingHistory.updatedAt = DateTime.now();
 
-      _historyChapBox.put(existingHistory);
-      _bookBox.put(book);
+      await isar.writeAsync((isar) {
+        isar.historyChaps.put(existingHistory);
+        isar.books.put(book);
+      });
     } else {
       final newHistory = HistoryChap(
           chapterId: chapterId,
@@ -85,8 +90,10 @@ class HistoryController {
       newHistory.book = book.id;
       book.updatedAt = newHistory.updatedAt;
 
-      _historyChapBox.put(newHistory);
-      _bookBox.put(book);
+      await isar.writeAsync((isar) {
+        isar.historyChaps.put(newHistory);
+        isar.books.put(book);
+      });
     }
   }
 
@@ -120,7 +127,7 @@ class HistoryController {
     return query.findAllAsync(offset: offset, limit: limit);
   }
 
- Future<HistoryChap?> getLastChapter(int bookId) async {
+  Future<HistoryChap?> getLastChapter(int bookId) async {
     return _historyChapBox
         .where()
         .bookEqualTo(bookId)

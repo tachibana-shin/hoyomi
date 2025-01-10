@@ -13,14 +13,19 @@ class SettingsController {
     _settings = await _settingsBox.getAsync(0);
     if (_settings == null) {
       _settings = Settings();
-      _settingsBox.put(_settings!);
+      await isar.writeAsync((isar) {
+        isar.settings.put(_settings!);
+      });
     }
 
     return _settings!;
   }
 
-  void setSettings(Settings settings) {
+  Future<void> setSettings(Settings settings) async {
     _settings = settings;
-    _settingsBox.put(_settings!);
+
+    await isar.writeAsync((isar) {
+      isar.settings.put(_settings!);
+    });
   }
 }

@@ -103,7 +103,10 @@ class BookChanges {
 
     if (saveDatabase == true) {
       book.meta = jsonEncode(newData.toJson());
-      _bookBox.put(book);
+
+      await isar.writeAsync((isar) {
+        isar.books.put(book);
+      });
     }
 
     final oldChaptersSet =
