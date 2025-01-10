@@ -4,7 +4,7 @@ part 'cookie_manager.g.dart';
 
 @Collection()
 class CookieManager {
-  late int id;
+  late int id = 0;
 
   @Index(unique: true)
   late String uid;

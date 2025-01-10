@@ -4,7 +4,7 @@ part 'settings.g.dart';
 
 @Collection()
 class Settings {
-  late int id;
+  late int id = 0;
 
   late bool mangaReadLazyPage;
 
