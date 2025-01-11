@@ -10,6 +10,7 @@ class CookieManager {
   late String uid;
 
   late String cookie;
+  late String userAgent;
 
   late bool signed;
 
@@ -22,6 +23,7 @@ class CookieManager {
   CookieManager({
     required this.uid,
     required this.cookie,
+    required this.userAgent,
     required this.signed,
     required this.createdAt,
     required this.updatedAt,

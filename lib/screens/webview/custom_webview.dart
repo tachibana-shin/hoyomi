@@ -50,6 +50,8 @@ class _CustomWebViewState extends State<CustomWebView> {
           url: WebUri(_initialUrl), webViewController: _webViewController);
       final cookiesText =
           cookies.map((cookie) => '${cookie.name}=${cookie.value}').join("; ");
+      final userAgent = await _webViewController.evaluateJavascript(
+          source: "navigator.userAgent");
 
       bool signed;
       try {
@@ -65,6 +67,7 @@ class _CustomWebViewState extends State<CustomWebView> {
           .findFirstAsync();
       if (record != null) {
         record.cookie = cookiesText;
+        record.userAgent = userAgent;
         record.signed = signed;
         record.updatedAt = DateTime.now();
 
@@ -75,19 +78,21 @@ class _CustomWebViewState extends State<CustomWebView> {
         final record = model.CookieManager(
           uid: widget.serviceId,
           cookie: cookiesText,
+          userAgent: userAgent,
           signed: signed,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
+        );
+
         await isar.writeAsync((isar) {
           isar.cookieManagers.put(record);
         });
-
-        isar.cookieManagers.put(record);
       }
     } catch (e) {
       showSnackBar(
         Text('Error while collecting cookies: $e'),
       );
+      rethrow;
     }
   }
 

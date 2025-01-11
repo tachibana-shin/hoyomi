@@ -29,6 +29,10 @@ const CookieManagerSchema = IsarGeneratedSchema(
         type: IsarType.string,
       ),
       IsarPropertySchema(
+        name: 'userAgent',
+        type: IsarType.string,
+      ),
+      IsarPropertySchema(
         name: 'signed',
         type: IsarType.bool,
       ),
@@ -72,11 +76,12 @@ const CookieManagerSchema = IsarGeneratedSchema(
 int serializeCookieManager(IsarWriter writer, CookieManager object) {
   IsarCore.writeString(writer, 1, object.uid);
   IsarCore.writeString(writer, 2, object.cookie);
-  IsarCore.writeBool(writer, 3, object.signed);
+  IsarCore.writeString(writer, 3, object.userAgent);
+  IsarCore.writeBool(writer, 4, object.signed);
   IsarCore.writeLong(
-      writer, 4, object.createdAt.toUtc().microsecondsSinceEpoch);
+      writer, 5, object.createdAt.toUtc().microsecondsSinceEpoch);
   IsarCore.writeLong(
-      writer, 5, object.updatedAt.toUtc().microsecondsSinceEpoch);
+      writer, 6, object.updatedAt.toUtc().microsecondsSinceEpoch);
   return object.id;
 }
 
@@ -86,11 +91,13 @@ CookieManager deserializeCookieManager(IsarReader reader) {
   _uid = IsarCore.readString(reader, 1) ?? '';
   final String _cookie;
   _cookie = IsarCore.readString(reader, 2) ?? '';
+  final String _userAgent;
+  _userAgent = IsarCore.readString(reader, 3) ?? '';
   final bool _signed;
-  _signed = IsarCore.readBool(reader, 3);
+  _signed = IsarCore.readBool(reader, 4);
   final DateTime _createdAt;
   {
-    final value = IsarCore.readLong(reader, 4);
+    final value = IsarCore.readLong(reader, 5);
     if (value == -9223372036854775808) {
       _createdAt =
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
@@ -101,7 +108,7 @@ CookieManager deserializeCookieManager(IsarReader reader) {
   }
   final DateTime _updatedAt;
   {
-    final value = IsarCore.readLong(reader, 5);
+    final value = IsarCore.readLong(reader, 6);
     if (value == -9223372036854775808) {
       _updatedAt =
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
@@ -113,6 +120,7 @@ CookieManager deserializeCookieManager(IsarReader reader) {
   final object = CookieManager(
     uid: _uid,
     cookie: _cookie,
+    userAgent: _userAgent,
     signed: _signed,
     createdAt: _createdAt,
     updatedAt: _updatedAt,
@@ -131,10 +139,12 @@ dynamic deserializeCookieManagerProp(IsarReader reader, int property) {
     case 2:
       return IsarCore.readString(reader, 2) ?? '';
     case 3:
-      return IsarCore.readBool(reader, 3);
+      return IsarCore.readString(reader, 3) ?? '';
     case 4:
+      return IsarCore.readBool(reader, 4);
+    case 5:
       {
-        final value = IsarCore.readLong(reader, 4);
+        final value = IsarCore.readLong(reader, 5);
         if (value == -9223372036854775808) {
           return DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
         } else {
@@ -142,9 +152,9 @@ dynamic deserializeCookieManagerProp(IsarReader reader, int property) {
               .toLocal();
         }
       }
-    case 5:
+    case 6:
       {
-        final value = IsarCore.readLong(reader, 5);
+        final value = IsarCore.readLong(reader, 6);
         if (value == -9223372036854775808) {
           return DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
         } else {
@@ -162,6 +172,7 @@ sealed class _CookieManagerUpdate {
     required int id,
     String? uid,
     String? cookie,
+    String? userAgent,
     bool? signed,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -178,6 +189,7 @@ class _CookieManagerUpdateImpl implements _CookieManagerUpdate {
     required int id,
     Object? uid = ignore,
     Object? cookie = ignore,
+    Object? userAgent = ignore,
     Object? signed = ignore,
     Object? createdAt = ignore,
     Object? updatedAt = ignore,
@@ -187,9 +199,10 @@ class _CookieManagerUpdateImpl implements _CookieManagerUpdate {
         ], {
           if (uid != ignore) 1: uid as String?,
           if (cookie != ignore) 2: cookie as String?,
-          if (signed != ignore) 3: signed as bool?,
-          if (createdAt != ignore) 4: createdAt as DateTime?,
-          if (updatedAt != ignore) 5: updatedAt as DateTime?,
+          if (userAgent != ignore) 3: userAgent as String?,
+          if (signed != ignore) 4: signed as bool?,
+          if (createdAt != ignore) 5: createdAt as DateTime?,
+          if (updatedAt != ignore) 6: updatedAt as DateTime?,
         }) >
         0;
   }
@@ -200,6 +213,7 @@ sealed class _CookieManagerUpdateAll {
     required List<int> id,
     String? uid,
     String? cookie,
+    String? userAgent,
     bool? signed,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -216,6 +230,7 @@ class _CookieManagerUpdateAllImpl implements _CookieManagerUpdateAll {
     required List<int> id,
     Object? uid = ignore,
     Object? cookie = ignore,
+    Object? userAgent = ignore,
     Object? signed = ignore,
     Object? createdAt = ignore,
     Object? updatedAt = ignore,
@@ -223,9 +238,10 @@ class _CookieManagerUpdateAllImpl implements _CookieManagerUpdateAll {
     return collection.updateProperties(id, {
       if (uid != ignore) 1: uid as String?,
       if (cookie != ignore) 2: cookie as String?,
-      if (signed != ignore) 3: signed as bool?,
-      if (createdAt != ignore) 4: createdAt as DateTime?,
-      if (updatedAt != ignore) 5: updatedAt as DateTime?,
+      if (userAgent != ignore) 3: userAgent as String?,
+      if (signed != ignore) 4: signed as bool?,
+      if (createdAt != ignore) 5: createdAt as DateTime?,
+      if (updatedAt != ignore) 6: updatedAt as DateTime?,
     });
   }
 }
@@ -240,6 +256,7 @@ sealed class _CookieManagerQueryUpdate {
   int call({
     String? uid,
     String? cookie,
+    String? userAgent,
     bool? signed,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -256,6 +273,7 @@ class _CookieManagerQueryUpdateImpl implements _CookieManagerQueryUpdate {
   int call({
     Object? uid = ignore,
     Object? cookie = ignore,
+    Object? userAgent = ignore,
     Object? signed = ignore,
     Object? createdAt = ignore,
     Object? updatedAt = ignore,
@@ -263,9 +281,10 @@ class _CookieManagerQueryUpdateImpl implements _CookieManagerQueryUpdate {
     return query.updateProperties(limit: limit, {
       if (uid != ignore) 1: uid as String?,
       if (cookie != ignore) 2: cookie as String?,
-      if (signed != ignore) 3: signed as bool?,
-      if (createdAt != ignore) 4: createdAt as DateTime?,
-      if (updatedAt != ignore) 5: updatedAt as DateTime?,
+      if (userAgent != ignore) 3: userAgent as String?,
+      if (signed != ignore) 4: signed as bool?,
+      if (createdAt != ignore) 5: createdAt as DateTime?,
+      if (updatedAt != ignore) 6: updatedAt as DateTime?,
     });
   }
 }
@@ -289,6 +308,7 @@ class _CookieManagerQueryBuilderUpdateImpl
   int call({
     Object? uid = ignore,
     Object? cookie = ignore,
+    Object? userAgent = ignore,
     Object? signed = ignore,
     Object? createdAt = ignore,
     Object? updatedAt = ignore,
@@ -298,9 +318,10 @@ class _CookieManagerQueryBuilderUpdateImpl
       return q.updateProperties(limit: limit, {
         if (uid != ignore) 1: uid as String?,
         if (cookie != ignore) 2: cookie as String?,
-        if (signed != ignore) 3: signed as bool?,
-        if (createdAt != ignore) 4: createdAt as DateTime?,
-        if (updatedAt != ignore) 5: updatedAt as DateTime?,
+        if (userAgent != ignore) 3: userAgent as String?,
+        if (signed != ignore) 4: signed as bool?,
+        if (createdAt != ignore) 5: createdAt as DateTime?,
+        if (updatedAt != ignore) 6: updatedAt as DateTime?,
       });
     } finally {
       q.close();
@@ -761,13 +782,193 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentGreaterThan(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentGreaterThanOrEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentLessThan(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentLessThanOrEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentBetween(
+    String lower,
+    String upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 3,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 3,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(
+          property: 3,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(
+          property: 3,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       signedEqualTo(
     bool value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 3,
+          property: 4,
           value: value,
         ),
       );
@@ -781,7 +982,7 @@ extension CookieManagerQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 4,
+          property: 5,
           value: value,
         ),
       );
@@ -795,7 +996,7 @@ extension CookieManagerQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 4,
+          property: 5,
           value: value,
         ),
       );
@@ -809,7 +1010,7 @@ extension CookieManagerQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 4,
+          property: 5,
           value: value,
         ),
       );
@@ -823,7 +1024,7 @@ extension CookieManagerQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 4,
+          property: 5,
           value: value,
         ),
       );
@@ -837,7 +1038,7 @@ extension CookieManagerQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 4,
+          property: 5,
           value: value,
         ),
       );
@@ -852,7 +1053,7 @@ extension CookieManagerQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 4,
+          property: 5,
           lower: lower,
           upper: upper,
         ),
@@ -867,7 +1068,7 @@ extension CookieManagerQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 5,
+          property: 6,
           value: value,
         ),
       );
@@ -881,7 +1082,7 @@ extension CookieManagerQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 5,
+          property: 6,
           value: value,
         ),
       );
@@ -895,7 +1096,7 @@ extension CookieManagerQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 5,
+          property: 6,
           value: value,
         ),
       );
@@ -909,7 +1110,7 @@ extension CookieManagerQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 5,
+          property: 6,
           value: value,
         ),
       );
@@ -923,7 +1124,7 @@ extension CookieManagerQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 5,
+          property: 6,
           value: value,
         ),
       );
@@ -938,7 +1139,7 @@ extension CookieManagerQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 5,
+          property: 6,
           lower: lower,
           upper: upper,
         ),
@@ -1006,41 +1207,62 @@ extension CookieManagerQuerySortBy
     });
   }
 
+  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> sortByUserAgent(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        3,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> sortByUserAgentDesc(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        3,
+        sort: Sort.desc,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy> sortBySigned() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(3);
-    });
-  }
-
-  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> sortBySignedDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(3, sort: Sort.desc);
-    });
-  }
-
-  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> sortByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(4);
     });
   }
 
-  QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      sortByCreatedAtDesc() {
+  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> sortBySignedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(4, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> sortByUpdatedAt() {
+  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> sortByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(5);
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      sortByUpdatedAtDesc() {
+      sortByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(5, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> sortByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(6);
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
+      sortByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(6, sort: Sort.desc);
     });
   }
 }
@@ -1087,41 +1309,55 @@ extension CookieManagerQuerySortThenBy
     });
   }
 
+  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> thenByUserAgent(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(3, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> thenByUserAgentDesc(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(3, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy> thenBySigned() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(3);
-    });
-  }
-
-  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> thenBySignedDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(3, sort: Sort.desc);
-    });
-  }
-
-  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> thenByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(4);
     });
   }
 
-  QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      thenByCreatedAtDesc() {
+  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> thenBySignedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(4, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> thenByUpdatedAt() {
+  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> thenByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(5);
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      thenByUpdatedAtDesc() {
+      thenByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(5, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterSortBy> thenByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(6);
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
+      thenByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(6, sort: Sort.desc);
     });
   }
 }
@@ -1143,23 +1379,30 @@ extension CookieManagerQueryWhereDistinct
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterDistinct>
-      distinctBySigned() {
+      distinctByUserAgent({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(3);
+      return query.addDistinctBy(3, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterDistinct>
-      distinctByCreatedAt() {
+      distinctBySigned() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(4);
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterDistinct>
-      distinctByUpdatedAt() {
+      distinctByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(5);
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterDistinct>
+      distinctByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(6);
     });
   }
 }
@@ -1184,21 +1427,27 @@ extension CookieManagerQueryProperty1
     });
   }
 
-  QueryBuilder<CookieManager, bool, QAfterProperty> signedProperty() {
+  QueryBuilder<CookieManager, String, QAfterProperty> userAgentProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
     });
   }
 
-  QueryBuilder<CookieManager, DateTime, QAfterProperty> createdAtProperty() {
+  QueryBuilder<CookieManager, bool, QAfterProperty> signedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(4);
     });
   }
 
-  QueryBuilder<CookieManager, DateTime, QAfterProperty> updatedAtProperty() {
+  QueryBuilder<CookieManager, DateTime, QAfterProperty> createdAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(5);
+    });
+  }
+
+  QueryBuilder<CookieManager, DateTime, QAfterProperty> updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(6);
     });
   }
 }
@@ -1223,23 +1472,29 @@ extension CookieManagerQueryProperty2<R>
     });
   }
 
-  QueryBuilder<CookieManager, (R, bool), QAfterProperty> signedProperty() {
+  QueryBuilder<CookieManager, (R, String), QAfterProperty> userAgentProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
     });
   }
 
-  QueryBuilder<CookieManager, (R, DateTime), QAfterProperty>
-      createdAtProperty() {
+  QueryBuilder<CookieManager, (R, bool), QAfterProperty> signedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(4);
     });
   }
 
   QueryBuilder<CookieManager, (R, DateTime), QAfterProperty>
-      updatedAtProperty() {
+      createdAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(5);
+    });
+  }
+
+  QueryBuilder<CookieManager, (R, DateTime), QAfterProperty>
+      updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(6);
     });
   }
 }
@@ -1264,23 +1519,30 @@ extension CookieManagerQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<CookieManager, (R1, R2, bool), QOperations> signedProperty() {
+  QueryBuilder<CookieManager, (R1, R2, String), QOperations>
+      userAgentProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
     });
   }
 
-  QueryBuilder<CookieManager, (R1, R2, DateTime), QOperations>
-      createdAtProperty() {
+  QueryBuilder<CookieManager, (R1, R2, bool), QOperations> signedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(4);
     });
   }
 
   QueryBuilder<CookieManager, (R1, R2, DateTime), QOperations>
-      updatedAtProperty() {
+      createdAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(5);
+    });
+  }
+
+  QueryBuilder<CookieManager, (R1, R2, DateTime), QOperations>
+      updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(6);
     });
   }
 }
