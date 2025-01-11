@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/cache/get_user.dart';
+import 'package:hoyomi/controller/cookie.dart';
 import 'package:hoyomi/core_services/book/auth_service.dart';
 import 'package:hoyomi/core_services/book/book_base_service.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_user.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
-import 'package:hoyomi/database/isar.dart';
 import 'package:hoyomi/globals.dart';
-import 'package:hoyomi/database/scheme/cookie_manager.dart';
-import 'package:isar/isar.dart';
 
 class AccountService extends StatefulWidget {
   final BookBaseService service;
@@ -51,7 +49,7 @@ class _AccountServiceState extends State<AccountService> {
   }
 
   Future<void> _fetchUser() async {
-    final row = await isar.cookieManagers.where().uidEqualTo(widget.service.uid).findFirstAsync();
+    final row = await CookieController.getAsync(sourceId: widget.service.uid);
 
     if (mounted) {
       setState(() {
@@ -84,6 +82,7 @@ class _AccountServiceState extends State<AccountService> {
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 child: BasicImage.network(
                   widget.service.faviconUrl,
+                  sourceId: widget.service.uid,
                   headers: {"referer": widget.service.baseUrl},
                   fit: BoxFit.cover,
                 )),
@@ -126,6 +125,7 @@ class _AccountServiceState extends State<AccountService> {
             backgroundColor: Colors.grey.shade300,
             child: BasicImage.network(
               _user!.photoUrl,
+              sourceId: widget.service.uid,
               fit: BoxFit.cover,
             ));
     }

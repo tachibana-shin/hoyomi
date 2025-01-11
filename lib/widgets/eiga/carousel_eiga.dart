@@ -51,6 +51,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                       children: [
                         BasicImage.network(
                           item.image.src,
+                          sourceId: widget.sourceId,
                           headers: item.image.headers,
                           fit: BoxFit.cover,
                           width: screen.width,

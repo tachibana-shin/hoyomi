@@ -6,8 +6,9 @@ import 'package:hoyomi/utils/format_time_ago.dart';
 
 class HorizontalBook extends StatelessWidget {
   final BasicBook book;
+  final String sourceId;
 
-  const HorizontalBook({super.key, required this.book});
+  const HorizontalBook({super.key, required this.book, required this.sourceId});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +26,7 @@ class HorizontalBook extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.0),
               child: BasicImage.network(
                 book.image.src,
+                sourceId: sourceId,
                 headers: book.image.headers,
                 fit: BoxFit.cover,
               ),

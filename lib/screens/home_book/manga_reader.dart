@@ -492,6 +492,7 @@ class _MangaReaderState extends State<MangaReader>
 
     return BasicImage.network(
       item.src,
+      sourceId: widget.service.uid,
       headers: item.headers,
       fit: BoxFit.contain,
       loadingBuilder: (context, child, loadingProgress) {
@@ -869,6 +870,7 @@ class _MangaReaderState extends State<MangaReader>
         showDragHandle: true,
         builder: (context) => ImagePicker(
             images: pages,
+            sourceId: widget.service.uid,
             onChange: (selected) {
               setState(() {
                 _skipImages.clear();
@@ -1150,7 +1152,8 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   Widget _buildPage(int index) {
-    if (_settingsObject == null || !_settingsObject!.mangaReadLazyPage ||
+    if (_settingsObject == null ||
+        !_settingsObject!.mangaReadLazyPage ||
         _isImageLoaded[index]) {
       return _buildImage(index);
     } else {

@@ -21,7 +21,11 @@ dependencies:
     sdk: flutter
   flutter_background_service: ^5.0.10
   flutter_hls_parser: ^2.0.1
-  flutter_inappwebview: ^6.1.5
+  flutter_inappwebview:
+    git:
+      url: https://github.com/tachibana-shin/flutter_inappwebview
+      ref: master
+      path: flutter_inappwebview
   flutter_localizations:
     sdk: flutter
   flutter_spinkit: ^5.2.1
@@ -43,7 +47,6 @@ dependencies:
   marquee: ^2.3.0
   path: ^1.9.0
   path_provider: ^2.1.5
-  play_video: ^0.0.1
   pointycastle: ^3.9.1
   pull_to_refresh_flutter3: ^2.0.2
   rss_feed_parser: ^1.0.6
@@ -52,8 +55,6 @@ dependencies:
   sharara_video_player: ^1.0.14
   share_plus: ^10.1.2
   shared_preferences: ^2.3.3
-  shelf: ^1.4.2
-  shelf_proxy: ^1.0.4
   skeletonizer: ^1.4.2
   subtitle: ^0.1.0-beta.3
   subtitle_wrapper_package:

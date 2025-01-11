@@ -52,7 +52,8 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
         widget.services.where((service) => service.rss != null).toList());
   }
 
-  Future<List<RssItem>> fetchAndParseFeeds(List<BookBaseService> services) async {
+  Future<List<RssItem>> fetchAndParseFeeds(
+      List<BookBaseService> services) async {
     final items = <RssItem>[];
 
     for (final service in services) {
@@ -217,6 +218,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                           radius: 10.0,
                                           child: BasicImage.network(
                                             item.avatar!.src,
+                                            sourceId: item.service.uid,
                                             headers: item.avatar!.headers,
                                             fit: BoxFit.cover,
                                           ),
@@ -237,6 +239,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                     borderRadius: BorderRadius.circular(8),
                                     child: BasicImage.network(
                                       item.image!.src,
+                                      sourceId: item.service.uid,
                                       headers: item.image!.headers,
                                       width: 100,
                                       height: 100,

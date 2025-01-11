@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/cache/get_user.dart';
+import 'package:hoyomi/controller/cookie.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/database/isar.dart';
 import 'package:hoyomi/globals.dart';
@@ -71,9 +72,7 @@ class _CustomWebViewState extends State<CustomWebView> {
         record.signed = signed;
         record.updatedAt = DateTime.now();
 
-        await isar.writeAsync((isar) {
-          isar.cookieManagers.put(record);
-        });
+        await CookieController.save(record);
       } else {
         final record = model.CookieManager(
           uid: widget.serviceId,
@@ -84,9 +83,7 @@ class _CustomWebViewState extends State<CustomWebView> {
           updatedAt: DateTime.now(),
         );
 
-        await isar.writeAsync((isar) {
-          isar.cookieManagers.put(record);
-        });
+        await CookieController.save(record);
       }
     } catch (e) {
       showSnackBar(

@@ -5,17 +5,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inappwebview;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/database/isar.dart';
+import 'package:hoyomi/controller/cookie.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:html/dom.dart' as d;
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
 
 import 'package:hoyomi/globals.dart';
-import 'package:hoyomi/database/scheme/cookie_manager.dart';
 import 'package:hoyomi/router/index.dart';
-import 'package:isar/isar.dart';
 
 class StackWebView {
   int _i = 0;
@@ -36,19 +33,18 @@ class StackWebView {
 
     inappwebview.HeadlessInAppWebView(
         initialSettings: inappwebview.InAppWebViewSettings(
-            // // javaScriptEnabled: false,
+            javaScriptEnabled: false,
             mediaPlaybackRequiresUserGesture: true,
-            allowsInlineMediaPlayback: true,
+            allowsInlineMediaPlayback: false,
             blockNetworkImage: true,
             blockNetworkLoads: true,
-            useShouldInterceptRequest: true,
             loadsImagesAutomatically: false,
             supportMultipleWindows: true,
             javaScriptCanOpenWindowsAutomatically: false),
         // initialData: inappwebview.InAppWebViewInitialData(
         //     data: """ui""", baseUrl: inappwebview.WebUri(host)),
         initialUrlRequest: inappwebview.URLRequest(
-            url: inappwebview.WebUri("https://$host/favicon.ico")),
+            url: inappwebview.WebUri("https://$host/404.htmlx")),
         onWebViewCreated: (controller) {
           controller.addJavaScriptHandler(
               handlerName: 'fetch_done',
@@ -301,9 +297,8 @@ abstract class UtilsService {
       Map<String, String>? headers}) async {
     String? cookiesText = cookie;
 
+    final row = await CookieController.getAsync(sourceId: uid);
     if (cookie == null) {
-      final row =
-          await isar.cookieManagers.where().uidEqualTo(uid).findFirstAsync();
       cookiesText = row?.cookie;
     }
 
@@ -311,24 +306,31 @@ abstract class UtilsService {
 
     final uri = Uri.parse(url);
     final $headers = {
-      'accept-encoding': '*',
+      'accept':
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+      'accept-language': 'vi',
       'cache-control': 'no-cache',
+      'cookie': cookiesText ?? '',
       'pragma': 'no-cache',
       'priority': 'u=0, i',
       'sec-ch-ua':
           '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+      'sec-ch-ua-arch': '"x86"',
+      'sec-ch-ua-bitness': '"64"',
+      'sec-ch-ua-full-version': '"131.0.6778.265"',
+      'sec-ch-ua-full-version-list':
+          '"Google Chrome";v="131.0.6778.265", "Chromium";v="131.0.6778.265", "Not_A Brand";v="24.0.0.0"',
       'sec-ch-ua-mobile': '?0',
+      'sec-ch-ua-model': '""',
       'sec-ch-ua-platform': '"Windows"',
+      'sec-ch-ua-platform-version': '"19.0.0"',
       'sec-fetch-dest': 'document',
       'sec-fetch-mode': 'navigate',
-      'sec-fetch-site': 'none',
+      'sec-fetch-site': 'same-origin',
       'sec-fetch-user': '?1',
-      'sec-gpc': '1',
       'upgrade-insecure-requests': '1',
-      'cookie': cookiesText ?? '',
-      'user-agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-      ...headers ?? {}
+      'user-agent': row?.userAgent ??
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
     };
 
     Response response = body == null
@@ -358,22 +360,23 @@ abstract class UtilsService {
     // }
 
     if ([429, 503, 403].contains(response.statusCode)) {
-      final error = CaptchaRequiredException(getBaseService(uid));
+      return Future.error(response);
+      // final error = CaptchaRequiredException(getBaseService(uid));
 
-      // required captcha resolve
-      showCaptchaResolve(null, url: url, error: error);
-      try {
-        final start = DateTime.now();
-        final data = await createWebView(uri)
-            .fetch(url: url, headers: headers, body: body);
+      // // required captcha resolve
+      // showCaptchaResolve(null, url: url, error: error);
+      // try {
+      //   final start = DateTime.now();
+      //   final data = await createWebView(uri)
+      //       .fetch(url: url, headers: headers, body: body);
 
-        debugPrint(
-            'Future completed in ${DateTime.now().difference(start).inMilliseconds} milliseconds');
-        return data;
-      } catch (err) {
-        debugPrint('Error: $err');
-        return Future.error(error);
-      }
+      //   debugPrint(
+      //       'Future completed in ${DateTime.now().difference(start).inMilliseconds} milliseconds');
+      //   return data;
+      // } catch (err) {
+      //   debugPrint('Error: $err');
+      //   return Future.error(error);
+      // }
     }
 
     if (response.statusCode == 200) {

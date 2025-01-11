@@ -69,22 +69,20 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   void _updatePlayer(MetaEiga metaEiga, EpisodeEiga episode, int episodeIndex) {
     assert(_episode.value != null);
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _subtitleNotifier.value = 'Episode ${episode.name}';
     });
     _subtitlesNotifier.value = [];
     _service
-        .getSubtitles(eigaId:_eigaId.value, episode: episode)
+        .getSubtitles(eigaId: _eigaId.value, episode: episode)
         .then((subtitles) {
       _subtitlesNotifier.value = subtitles;
     }).catchError((error) {
       debugPrint('Error: $error');
     });
     _sourceNotifier.value = null;
-    _service
-        .getSource(eigaId: _eigaId.value, episode: episode)
-        .then((source) {
+    _service.getSource(eigaId: _eigaId.value, episode: episode).then((source) {
       _sourceNotifier.value = source;
     }).catchError((error) {
       debugPrint('Error: $error');
@@ -163,6 +161,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   Widget _buildPlayer() {
     return PlayerEiga(
+      sourceId: widget.sourceId,
       titleNotifier: _titleNotifier,
       subtitleNotifier: _subtitleNotifier,
       onBack: () {

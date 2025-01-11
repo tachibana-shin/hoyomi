@@ -28,6 +28,7 @@ import 'package:hoyomi/utils/save_file_cache.dart';
 class PlayerEiga extends StatefulWidget {
   final ValueNotifier<String> titleNotifier;
   final ValueNotifier<String> subtitleNotifier;
+  final String sourceId;
 
   final ValueNotifier<SourceVideo?> sourceNotifier;
   final ValueNotifier<BasicImage?> posterNotifier;
@@ -46,6 +47,7 @@ class PlayerEiga extends StatefulWidget {
     super.key,
     required this.titleNotifier,
     required this.subtitleNotifier,
+    required this.sourceId,
     required this.sourceNotifier,
     required this.posterNotifier,
     required this.thumbnailVtt,
@@ -334,6 +336,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                 right: 0,
                 bottom: 0,
                 child: BasicImage.network(widget.posterNotifier.value!.src,
+                    sourceId:widget.sourceId,
                     headers: widget.posterNotifier.value!.headers,
                     fit: BoxFit.cover));
           }),

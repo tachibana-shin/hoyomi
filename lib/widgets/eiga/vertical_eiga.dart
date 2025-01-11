@@ -65,6 +65,7 @@ class VerticalEiga extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8.0),
                       child: BasicImage.network(
                         eiga.image.src,
+                        sourceId: sourceId,
                         headers: eiga.image.headers,
                         fit: BoxFit.cover,
                       ),

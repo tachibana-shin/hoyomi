@@ -14,7 +14,6 @@ import 'package:go_transitions/go_transitions.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-
   if (!kIsWeb) await _installCert();
   await initializeIsar();
 

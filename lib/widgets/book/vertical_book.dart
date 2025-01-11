@@ -61,6 +61,7 @@ class VerticalBook extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8.0),
                       child: BasicImage.network(
                         book.image.src,
+                        sourceId: sourceId,
                         headers: book.image.headers,
                         fit: BoxFit.cover,
                       ),

@@ -3,9 +3,14 @@ import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 
 class ImagePicker extends StatefulWidget {
   final List<BasicImage> images;
+  final String sourceId;
   final Function(Set<int>) onChange;
 
-  const ImagePicker({super.key, required this.images, required this.onChange});
+  const ImagePicker(
+      {super.key,
+      required this.images,
+      required this.sourceId,
+      required this.onChange});
 
   @override
   createState() => _ImagePickerState();
@@ -79,6 +84,7 @@ class _ImagePickerState extends State<ImagePicker> {
                                   clipBehavior: Clip.antiAlias,
                                   child: BasicImage.network(
                                     widget.images.elementAt(index).src,
+                                    sourceId: widget.sourceId,
                                     headers:
                                         widget.images.elementAt(index).headers,
                                     fit: BoxFit.cover,

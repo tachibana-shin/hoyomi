@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hoyomi/controller/cookie.dart';
 
 class BasicImage {
   final String src;
@@ -29,6 +30,7 @@ class BasicImage {
 
   static Widget network(
     String src, {
+    required String sourceId,
     Key? key,
     double scale = 1.0,
     Widget Function(BuildContext, Widget, int?, bool)? frameBuilder,
@@ -78,6 +80,8 @@ class BasicImage {
           cacheHeight: cacheHeight);
     }
 
+    final cookie = CookieController.get(sourceId: sourceId);
+
     return Image.network(src,
         key: key,
         scale: scale,
@@ -99,7 +103,11 @@ class BasicImage {
         gaplessPlayback: gaplessPlayback,
         filterQuality: filterQuality,
         isAntiAlias: isAntiAlias,
-        headers: headers,
+        headers: {
+          'set-cookie': cookie?.cookie ?? '',
+          'user-agent': cookie?.userAgent ?? '',
+          ...headers ?? {}
+        },
         cacheWidth: cacheWidth,
         cacheHeight: cacheHeight);
   }

@@ -219,6 +219,7 @@ class _DetailsComicState extends State<DetailsComic>
                   borderRadius: BorderRadius.circular(8.0),
                   child: BasicImage.network(
                     book.image.src,
+                    sourceId: widget.sourceId,
                     headers: book.image.headers,
                     fit: BoxFit.cover,
                   ),
@@ -620,8 +621,10 @@ class _DetailsComicState extends State<DetailsComic>
         width: 48,
         height: 48,
         decoration: BoxDecoration(
-          color:
-              Theme.of(context).colorScheme.tertiaryFixedDim.withValues(alpha: 0.44),
+          color: Theme.of(context)
+              .colorScheme
+              .tertiaryFixedDim
+              .withValues(alpha: 0.44),
           shape: BoxShape.circle,
         ),
         child: Center(
@@ -853,6 +856,7 @@ class _AvatarUserState extends State<_AvatarUser> {
                 backgroundColor: Theme.of(context).colorScheme.onSurface,
                 child: BasicImage.network(
                   snapshot.data!.photoUrl,
+                  sourceId: widget.service.uid,
                   fit: BoxFit.cover,
                 ),
               ));
