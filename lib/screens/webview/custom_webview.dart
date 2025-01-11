@@ -68,7 +68,9 @@ class _CustomWebViewState extends State<CustomWebView> {
         record.signed = signed;
         record.updatedAt = DateTime.now();
 
-        isar.cookieManagers.put(record);
+        await isar.writeAsync((isar) {
+          isar.cookieManagers.put(record);
+        });
       } else {
         final record = model.CookieManager(
           uid: widget.serviceId,
@@ -76,7 +78,9 @@ class _CustomWebViewState extends State<CustomWebView> {
           signed: signed,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-        );
+        await isar.writeAsync((isar) {
+          isar.cookieManagers.put(record);
+        });
 
         isar.cookieManagers.put(record);
       }
