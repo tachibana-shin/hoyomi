@@ -462,7 +462,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   Text('View all',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: Theme.of(context).colorScheme.secondary,
-                          fontWeight: FontWeight.w400)),
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14.0)),
                   Center(
                       child: Icon(
                     MaterialCommunityIcons.chevron_right,
