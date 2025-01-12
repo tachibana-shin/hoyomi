@@ -36,6 +36,7 @@ class AnimeVietsubService extends EigaBaseService {
   final String _apiThumb = "https://sk-hianime.animevsub.eu.org";
 
   final Map<String, _ParamsEpisode> _paramsEpisodeStore = {};
+  final Map<String, Document> _docEigaStore = {};
 
   @override
   parseURL(String url) {
@@ -206,6 +207,8 @@ class AnimeVietsubService extends EigaBaseService {
   @override
   getDetails(String eigaId) async {
     final document = await fetchDocument('$baseUrl/phim/$eigaId');
+
+    _docEigaStore[eigaId] = document;
 
     final name = document.querySelector(".Title")!.text;
     final originalName = document.querySelector(".SubTitle")!.text;
@@ -434,6 +437,16 @@ class AnimeVietsubService extends EigaBaseService {
   getSubtitles({required eigaId, required episode}) async {
     return [];
   }
+
+  @override
+  get getSuggest => ({required eiga, required eigaId, page}) async {
+        final items = _docEigaStore[eigaId]!
+            .querySelectorAll(".MovieListRelated .TPostMv")
+            .map((item) => _parseItem(item))
+            .toList();
+
+        return items;
+      };
 }
 
 class _ParamsEpisode {
