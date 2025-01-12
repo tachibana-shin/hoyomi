@@ -37,6 +37,8 @@ class VerticalBookList extends StatelessWidget {
       more: more,
       items: items,
       itemsFuture: itemsFuture,
+      getDataLoading: () =>
+          List.generate(30, (_) => BasicBook.createFakeData()),
       builder: (context, book, bookIndex) {
         return VerticalBook(
           book: book,

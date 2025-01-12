@@ -40,11 +40,12 @@ class VerticalEigaList extends StatelessWidget {
           percentRead: getPercentRead != null ? getPercentRead!(index) : null,
         );
       },
+      getDataLoading: () =>
+          List.generate(30, (index) => BasicEiga.createFakeData()),
       builderError: (Object? error) {
         return Center(
             child: UtilsService.errorWidgetBuilder(context,
-                error: error,
-                orElse: (error) => Text('Error: $error')));
+                error: error, orElse: (error) => Text('Error: $error')));
       },
     );
   }

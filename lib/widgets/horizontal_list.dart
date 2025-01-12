@@ -47,43 +47,40 @@ class HorizontalList<T> extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w600,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                    ),
-                    if (totalFuture != null)
-                      FutureBuilder(
-                          future: totalFuture!,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return Column(children: [
-                                SizedBox(height: 2),
-                                Text(
-                                  "${snapshot.data} results",
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.white70),
-                                ),
-                              ]);
-                            }
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            if (totalFuture != null)
+              FutureBuilder(
+                  future: totalFuture!,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Column(children: [
+                        SizedBox(height: 2),
+                        Text(
+                          "${snapshot.data} results",
+                          style: TextStyle(fontSize: 14, color: Colors.white70),
+                        ),
+                      ]);
+                    }
 
-                            return Stack(children: []);
-                          })
-                  ])),
+                    return Stack(children: []);
+                  })
+          ]),
           if (more != null)
             ElevatedButton(
                 onPressed: () {
                   context.push(more!);
                 },
                 child: Text('More'))
+          else
+            SizedBox.shrink()
         ]),
         if (items != null)
           SizedBox(

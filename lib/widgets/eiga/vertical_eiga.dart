@@ -51,7 +51,7 @@ class VerticalEiga extends StatelessWidget {
         highlightColor: Colors.white70.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8.0),
         child: Card(
-          margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+          // margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),/
           color: Colors.transparent,
           elevation: 0,
           child: Column(
