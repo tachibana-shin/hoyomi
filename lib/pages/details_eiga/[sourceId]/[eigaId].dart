@@ -42,7 +42,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final EigaBaseService _service;
   late Future<MetaEiga> _metaEigaFuture;
 
-  late final double _aspectRatio;
+  double _aspectRatio = 16 / 9;
 
   final Map<String, EpisodesEiga> _cacheEpisodesStore = {};
   final ValueNotifier<String> _titleNotifier = ValueNotifier('');
@@ -75,17 +75,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     _eigaId = ValueNotifier(widget.eigaId);
     _episodeId.value = widget.episodeId;
-
-    final size = MediaQuery.of(context).size;
-
-    var aspectRatio = 16 / 9;
-
-    final heightPlayer = 1 / aspectRatio /* = width / height */ * size.width;
-    if (size.height * 0.65 < heightPlayer) {
-      aspectRatio = size.width / (size.height * 0.65);
-    }
-
-    _aspectRatio = aspectRatio;
   }
 
   void _updatePlayer(MetaEiga metaEiga, EpisodeEiga episode, int episodeIndex) {
@@ -125,6 +114,17 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    var aspectRatio = 16 / 9;
+
+    final heightPlayer = 1 / aspectRatio /* = width / height */ * size.width;
+    if (size.height * 0.65 < heightPlayer) {
+      aspectRatio = size.width / (size.height * 0.65);
+    }
+
+    _aspectRatio = aspectRatio;
+
     return Scaffold(body: _buildBody());
   }
 
