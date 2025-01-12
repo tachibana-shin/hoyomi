@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inappwebview;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/controller/cookie.dart';
+import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:html/dom.dart' as d;
 import 'package:html/parser.dart';
@@ -360,11 +361,11 @@ abstract class UtilsService {
     // }
 
     if ([429, 503, 403].contains(response.statusCode)) {
-      return Future.error(response);
-      // final error = CaptchaRequiredException(getBaseService(uid));
+      // return Future.error(response);
+      final error = CaptchaRequiredException(getBaseService(uid));
 
       // // required captcha resolve
-      // showCaptchaResolve(null, url: url, error: error);
+      showCaptchaResolve(null, url: url, error: error);
       // try {
       //   final start = DateTime.now();
       //   final data = await createWebView(uri)
@@ -375,7 +376,7 @@ abstract class UtilsService {
       //   return data;
       // } catch (err) {
       //   debugPrint('Error: $err');
-      //   return Future.error(error);
+      return Future.error(error);
       // }
     }
 
