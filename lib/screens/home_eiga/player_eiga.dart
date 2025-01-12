@@ -262,18 +262,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
           if (fullscreen) {
             return SizedBox.shrink();
           }
-
-          final size = MediaQuery.of(context2).size;
-
-          var aspectRatio = widget.aspectRatio;
-
-          final heightPlayer =
-              1 / aspectRatio /* = width / height */ * size.width;
-          if (size.height * 0.65 < heightPlayer) {
-            aspectRatio = size.width / (size.height * 0.65);
-          }
-
-          return AspectRatio(aspectRatio: aspectRatio, child: _buildStack());
+          
+          return AspectRatio(aspectRatio: widget.aspectRatio, child: _buildStack());
         });
   }
 
