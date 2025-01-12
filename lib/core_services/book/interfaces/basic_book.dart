@@ -35,4 +35,16 @@ class BasicBook {
       rate: book.rate?.value,
     );
   }
+
+  factory BasicBook.createFakeData() {
+    return BasicBook(
+        name: 'Dragon Ball Daima',
+        bookId: 'eiga-fake-id',
+        originalName: null,
+        image: BasicImage.createFakeData(),
+        lastChap: null,
+        timeAgo: null,
+        notice: 'Notice Fake',
+        rate: 8.5);
+  }
 }
