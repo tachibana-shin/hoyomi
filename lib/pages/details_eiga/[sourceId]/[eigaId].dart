@@ -460,9 +460,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         ?.copyWith(fontWeight: FontWeight.w400)),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   Text('View all',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: Theme.of(context).colorScheme.secondary,
-                          fontSize: 12.0)),
+                          fontWeight: FontWeight.w400)),
                   Center(
                       child: Icon(
                     MaterialCommunityIcons.chevron_right,
