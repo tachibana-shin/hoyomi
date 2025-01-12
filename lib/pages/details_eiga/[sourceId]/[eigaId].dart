@@ -4,8 +4,10 @@ import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
+import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
@@ -56,12 +58,20 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final ValueNotifier<String?> _episodeId = ValueNotifier(null);
   final ValueNotifier<TimeAndDay?> _schedule = ValueNotifier(null);
   final ValueNotifier<EpisodeEiga?> _episode = ValueNotifier(null);
+  final ValueNotifier<Future<List<BasicEiga>>?> _suggestNotifier =
+      ValueNotifier(null);
 
   @override
   void initState() {
     super.initState();
     _service = getEigaService(widget.sourceId);
     _metaEigaFuture = _service.getDetails(widget.eigaId);
+
+    if (_service.getSuggest != null) {
+      _suggestNotifier.value = _metaEigaFuture.then((metaEiga) {
+        return _service.getSuggest!(eiga: metaEiga, eigaId: widget.eigaId);
+      });
+    }
 
     _eigaId = ValueNotifier(widget.eigaId);
     _episodeId.value = widget.episodeId;
@@ -135,6 +145,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
                   metaEiga.addListener(() {
                     _titleNotifier.value = metaEiga.value.name;
+
+                    _suggestNotifier.value = _service.getSuggest!(
+                        eiga: metaEiga.value, eigaId: _eigaId.value);
                   });
                 }
 
@@ -146,10 +159,13 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     SizedBox(height: 10.0),
                     if (done) _buildSchedule(),
                     if (done) _buildSeasonHeader(metaEiga),
+                    SizedBox(height: 5.0),
                     if (!done)
                       ListEpisodesHorizontalSkeleton()
                     else
                       _buildSeasonArea(metaEiga),
+                    SizedBox(height: 12.0),
+                    _buildSuggest()
                   ],
                 );
               },
@@ -426,7 +442,11 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Episode', style: Theme.of(context).textTheme.titleSmall),
+                Text('Episode',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w400)),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   Text('View all',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -762,6 +782,21 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   ]);
             }),
           );
+        });
+  }
+
+  Widget _buildSuggest() {
+    return ValueListenableBuilder(
+        valueListenable: _suggestNotifier,
+        builder: (context, suggest, child) {
+          if (suggest == null) return SizedBox.shrink();
+
+          return VerticalEigaList(
+              itemsFuture: suggest,
+              items: null,
+              service: _service,
+              title: 'Suggest',
+              more: null);
         });
   }
 }
