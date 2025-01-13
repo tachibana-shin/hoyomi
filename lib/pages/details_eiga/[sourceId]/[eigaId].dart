@@ -41,6 +41,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     with TickerProviderStateMixin {
   late final EigaBaseService _service;
   late Future<MetaEiga> _metaEigaFuture;
+  late ValueNotifier<MetaEiga> _metaEigaNotifier;
+
+  late final AnimationController _bottomSheetAnimationController;
 
   double _aspectRatio = 16 / 9;
 
@@ -60,10 +63,16 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final ValueNotifier<EpisodeEiga?> _episode = ValueNotifier(null);
   final ValueNotifier<Future<List<BasicEiga>>?> _suggestNotifier =
       ValueNotifier(null);
+  final ValueNotifier<Widget Function()?> _bottomSheetNotifier =
+      ValueNotifier(null);
+
+  double _initialBottomSheet = 0.5;
 
   @override
   void initState() {
     super.initState();
+    _bottomSheetAnimationController = AnimationController(vsync: this);
+
     _service = getEigaService(widget.sourceId);
     _metaEigaFuture = _service.getDetails(widget.eigaId);
 
@@ -125,7 +134,11 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     _aspectRatio = aspectRatio;
 
-    return Scaffold(body: _buildBody());
+    return ValueListenableBuilder(
+        valueListenable: _bottomSheetNotifier,
+        child: _buildBody(),
+        builder: (context, callback, child) => Scaffold(
+            body: child, bottomSheet: callback == null ? null : callback()));
   }
 
   Widget _buildBody() {
@@ -147,18 +160,18 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 final done =
                     snapshot.connectionState != ConnectionState.waiting;
 
-                final metaEiga = ValueNotifier(
+                _metaEigaNotifier = ValueNotifier(
                     done ? snapshot.data! : MetaEiga.createFakeData());
                 if (done) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _titleNotifier.value = metaEiga.value.name;
+                    _titleNotifier.value = _metaEigaNotifier.value.name;
                   });
 
-                  metaEiga.addListener(() {
-                    _titleNotifier.value = metaEiga.value.name;
+                  _metaEigaNotifier.addListener(() {
+                    _titleNotifier.value = _metaEigaNotifier.value.name;
 
                     _suggestNotifier.value = _service.getSuggest!(
-                        eiga: metaEiga.value, eigaId: _eigaId.value);
+                        eiga: _metaEigaNotifier.value, eigaId: _eigaId.value);
                   });
                 }
 
@@ -166,15 +179,16 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Skeletonizer(
-                        enabled: !done, child: _buildBasicInfo(metaEiga)),
+                        enabled: !done,
+                        child: _buildBasicInfo(_metaEigaNotifier)),
                     SizedBox(height: 10.0),
                     if (done) _buildSchedule(),
-                    if (done) _buildSeasonHeader(metaEiga),
+                    if (done) _buildSeasonHeader(_metaEigaNotifier),
                     SizedBox(height: 5.0),
                     if (!done)
-                      ListEpisodesHorizontalSkeleton()
+                      ListEpisodesSkeleton()
                     else
-                      _buildSeasonArea(metaEiga),
+                      _buildSeasonArea(_metaEigaNotifier),
                     SizedBox(height: 12.0),
                     _buildSuggest()
                   ],
@@ -221,7 +235,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   Text('${formatNumber(metaEiga.views!)} views',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).colorScheme.secondary,
-                          fontSize: 11.0)),
+                          fontSize: 12.0)),
 
                 SizedBox(height: 2.0),
 
@@ -476,138 +490,34 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   void _showModalEpisodes(ValueNotifier<MetaEiga> metaEiga) {
-    final size = MediaQuery.of(context).size;
-    final heightPlayer = size.height -
-        MediaQuery.of(context).padding.top -
-        (size.width * 1 / _aspectRatio);
-    final initial = max(0.5, heightPlayer / size.height);
+    final query = MediaQuery.of(context);
+    final size = query.size;
+    final heightPlayer =
+        size.height - query.padding.top - (size.width * 1 / _aspectRatio);
 
-    showModalBottomSheet(
-      context: context,
-      elevation: 0,
-      barrierColor: Colors.transparent,
-      // backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (context) {
-        return DraggableScrollableSheet(
-          initialChildSize: initial,
-          snapSizes: [initial],
-          minChildSize: 0,
-          expand: false,
-          snap: true,
-          builder: (context, scrollController) {
-            return SingleChildScrollView(
-              controller: scrollController,
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(children: [
-                Row(children: [_buildModalEpisodes(metaEiga)])
-              ]),
-            );
+    _initialBottomSheet = max(0.5, heightPlayer / size.height);
+    _bottomSheetNotifier.value = () => BottomSheet(
+          showDragHandle: true,
+          animationController: _bottomSheetAnimationController,
+          builder: (context) => DraggableScrollableSheet(
+            expand: false,
+            snap: true,
+            snapSizes: [_initialBottomSheet],
+            initialChildSize: _initialBottomSheet,
+            minChildSize: 0,
+            maxChildSize: 1,
+            builder: (context, scrollController) {
+              return SingleChildScrollView(
+                  controller: scrollController,
+                  child: _buildSeasonArea(metaEiga,
+                      scrollDirection: Axis.vertical,
+                      controller: scrollController));
+            },
+          ),
+          onClosing: () {
+            _bottomSheetNotifier.value = null;
           },
         );
-      },
-    );
-  }
-
-  Widget _buildModalEpisodes(ValueNotifier<MetaEiga> metaEiga) {
-    return ValueListenableBuilder(
-        valueListenable: metaEiga,
-        builder: (context, metaEiga$, child) {
-          if (metaEiga$.seasons.isEmpty) {
-            return ValueListenableBuilder(
-                valueListenable: _eigaId,
-                builder: (context, eigaId, child) {
-                  final season = BasicSeason(eigaId: eigaId, name: 'Episodes');
-                  return ListEpisodes(
-                      season: season,
-                      sourceId: widget.sourceId,
-                      eigaIdNotifier: _eigaId,
-                      episodeIdNotifier: _episodeId,
-                      scrollDirection: Axis.vertical,
-                      initialData: () => _cacheEpisodesStore[eigaId],
-                      eager: true,
-                      onUpdate: (episodes) {
-                        _cacheEpisodesStore[eigaId] = episodes;
-                      },
-                      onTap: ({required episodes, required indexEpisode}) {
-                        _onChangeEpisode(
-                            metaEiga: metaEiga,
-                            indexEpisode: indexEpisode,
-                            indexSeason: 0,
-                            episodes: episodes,
-                            seasons: [season]);
-                      });
-                });
-          }
-
-          // tab view
-          return DefaultTabController(
-            length: metaEiga$.seasons.length,
-            initialIndex: max(
-                0,
-                metaEiga$.seasons
-                    .indexWhere((season) => season.eigaId == _eigaId.value)),
-            child: Builder(builder: (context) {
-              final controller = DefaultTabController.of(context);
-
-              _eigaId.addListener(() {
-                final index = metaEiga$.seasons
-                    .indexWhere((season) => season.eigaId == _eigaId.value);
-                if (index != controller.index) {
-                  controller.animateTo(index);
-                }
-              });
-
-              return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ContentSizeTabBarView(
-                        children:
-                            metaEiga$.seasons.asMap().entries.map((entry) {
-                      final season = entry.value;
-                      final index = entry.key;
-
-                      return Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: ListEpisodes(
-                              season: season,
-                              sourceId: widget.sourceId,
-                              eigaIdNotifier: _eigaId,
-                              episodeIdNotifier: _episodeId,
-                              scrollDirection: Axis.vertical,
-                              initialData: () =>
-                                  _cacheEpisodesStore[season.eigaId],
-                              eager: true,
-                              onUpdate: (episodes) {
-                                _cacheEpisodesStore[season.eigaId] = episodes;
-                              },
-                              onTap: (
-                                  {required episodes, required indexEpisode}) {
-                                _onChangeEpisode(
-                                    metaEiga: metaEiga,
-                                    indexEpisode: indexEpisode,
-                                    indexSeason: index,
-                                    episodes: episodes,
-                                    seasons: metaEiga$.seasons);
-                              }));
-                    }).toList()),
-                    TabBar(
-                      isScrollable: true,
-                      splashBorderRadius: BorderRadius.circular(35.0),
-                      indicatorColor: Theme.of(context).colorScheme.secondary,
-                      tabAlignment: TabAlignment.start,
-                      dividerHeight: 0,
-                      tabs: metaEiga$.seasons.map((season) {
-                        return Tab(
-                          text: season.name,
-                        );
-                      }).toList(),
-                    ),
-                  ]);
-            }),
-          );
-        });
   }
 
   void _updateData(
@@ -699,7 +609,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     }
   }
 
-  Widget _buildSeasonArea(ValueNotifier<MetaEiga> metaEiga) {
+  Widget _buildSeasonArea(ValueNotifier<MetaEiga> metaEiga,
+      {scrollDirection = Axis.horizontal, ScrollController? controller}) {
     return ValueListenableBuilder(
         valueListenable: metaEiga,
         builder: (context, metaEiga$, child) {
@@ -715,6 +626,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       episodeIdNotifier: _episodeId,
                       initialData: () => _cacheEpisodesStore[eigaId],
                       eager: true,
+                      scrollDirection: scrollDirection,
+                      controller: controller,
                       onUpdate: (episodes) {
                         _cacheEpisodesStore[eigaId] = episodes;
                       },
@@ -737,13 +650,13 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 metaEiga$.seasons
                     .indexWhere((season) => season.eigaId == _eigaId.value)),
             child: Builder(builder: (context) {
-              final controller = DefaultTabController.of(context);
+              final tabController = DefaultTabController.of(context);
 
               _eigaId.addListener(() {
                 final index = metaEiga$.seasons
                     .indexWhere((season) => season.eigaId == _eigaId.value);
-                if (index != controller.index) {
-                  controller.animateTo(index);
+                if (index != tabController.index) {
+                  tabController.animateTo(index);
                 }
               });
 
@@ -766,6 +679,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                               initialData: () =>
                                   _cacheEpisodesStore[season.eigaId],
                               eager: true,
+                              scrollDirection: scrollDirection,
+                              controller: controller,
                               onUpdate: (episodes) {
                                 _cacheEpisodesStore[season.eigaId] = episodes;
                               },
