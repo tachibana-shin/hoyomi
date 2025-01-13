@@ -149,7 +149,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                                     fontSize: 16.0)),
                                       SizedBox(height: 5.0),
                                       // rate
-                                      Row(children: [
+                                      Wrap(children: [
                                         ...(item.rate != null)
                                             ? [
                                                 Icon(
