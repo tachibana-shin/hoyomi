@@ -691,23 +691,26 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 }).toList()),
                 TabBar(
                   isScrollable: true,
-                  splashBorderRadius: BorderRadius.circular(35.0),
+                  padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 0),
+                  labelPadding:
+                      EdgeInsets.symmetric(horizontal: 8.0, vertical: 0),
+                  splashBorderRadius: BorderRadius.circular(10.0),
+                  labelStyle: TextStyle(fontSize: 13.0),
                   indicatorColor: Theme.of(context).colorScheme.secondary,
                   tabAlignment: TabAlignment.start,
                   dividerHeight: 0,
                   tabs: metaEiga$.seasons.map((season) {
-                    return Tab(
-                      text: season.name,
-                    );
+                    return Tab(text: season.name, height: 35.0);
                   }).toList(),
                 ),
               ];
 
               return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: scrollDirection == Axis.vertical
-                      ? children.reversed.toList()
-                      : children);
+                  verticalDirection: scrollDirection == Axis.vertical
+                      ? VerticalDirection.up
+                      : VerticalDirection.down,
+                  children: children);
             }),
           );
         });
