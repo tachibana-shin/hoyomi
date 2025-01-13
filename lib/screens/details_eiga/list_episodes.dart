@@ -104,7 +104,7 @@ class _ListEpisodesState extends State<ListEpisodes> {
 
           Widget itemBuilder(BuildContext context, int index) {
             final episode = episodes.episodes[index];
-            final active = checkEpisodeActive(episode);
+            final active = !waiting && checkEpisodeActive(episode);
 
             return Padding(
               padding: EdgeInsets.only(right: 8.0),
