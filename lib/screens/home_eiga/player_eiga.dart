@@ -130,6 +130,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
   final ValueNotifier<bool> _firstLoadedSource = ValueNotifier(false);
 
+  bool _firstShowControls = true;
+
   @override
   void initState() {
     super.initState();
@@ -262,8 +264,9 @@ class _PlayerEigaState extends State<PlayerEiga> {
           if (fullscreen) {
             return SizedBox.shrink();
           }
-          
-          return AspectRatio(aspectRatio: widget.aspectRatio, child: _buildStack());
+
+          return AspectRatio(
+              aspectRatio: widget.aspectRatio, child: _buildStack());
         });
   }
 
@@ -326,18 +329,22 @@ class _PlayerEigaState extends State<PlayerEiga> {
                 right: 0,
                 bottom: 0,
                 child: BasicImage.network(widget.posterNotifier.value!.src,
-                    sourceId:widget.sourceId,
+                    sourceId: widget.sourceId,
                     headers: widget.posterNotifier.value!.headers,
                     fit: BoxFit.cover));
           }),
       ListenableBuilder(
           listenable: Listenable.merge([_showControls, _playing]),
           builder: (context, child) {
-            final ended = ValueNotifier<bool>(false);
+            final ended = ValueNotifier<bool>(_firstShowControls);
+
             return AnimatedOpacity(
                 opacity: !_playing.value || _showControls.value ? 1.0 : 0.0,
                 duration: _durationAnimate,
-                onEnd: () => ended.value = true,
+                onEnd: () {
+                  ended.value = true;
+                  _firstShowControls = false;
+                },
                 child: ValueListenableBuilder(
                     valueListenable: ended,
                     builder: (context, value, child) => Visibility(
