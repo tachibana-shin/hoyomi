@@ -660,53 +660,54 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 }
               });
 
+              final children = [
+                ContentSizeTabBarView(
+                    children: metaEiga$.seasons.asMap().entries.map((entry) {
+                  final season = entry.value;
+                  final index = entry.key;
+
+                  return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: ListEpisodes(
+                          season: season,
+                          sourceId: widget.sourceId,
+                          eigaIdNotifier: _eigaId,
+                          episodeIdNotifier: _episodeId,
+                          initialData: () => _cacheEpisodesStore[season.eigaId],
+                          eager: true,
+                          scrollDirection: scrollDirection,
+                          controller: controller,
+                          onUpdate: (episodes) {
+                            _cacheEpisodesStore[season.eigaId] = episodes;
+                          },
+                          onTap: ({required episodes, required indexEpisode}) {
+                            _onChangeEpisode(
+                                metaEiga: metaEiga,
+                                indexEpisode: indexEpisode,
+                                indexSeason: index,
+                                episodes: episodes,
+                                seasons: metaEiga$.seasons);
+                          }));
+                }).toList()),
+                TabBar(
+                  isScrollable: true,
+                  splashBorderRadius: BorderRadius.circular(35.0),
+                  indicatorColor: Theme.of(context).colorScheme.secondary,
+                  tabAlignment: TabAlignment.start,
+                  dividerHeight: 0,
+                  tabs: metaEiga$.seasons.map((season) {
+                    return Tab(
+                      text: season.name,
+                    );
+                  }).toList(),
+                ),
+              ];
+
               return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ContentSizeTabBarView(
-                        children:
-                            metaEiga$.seasons.asMap().entries.map((entry) {
-                      final season = entry.value;
-                      final index = entry.key;
-
-                      return Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: ListEpisodes(
-                              season: season,
-                              sourceId: widget.sourceId,
-                              eigaIdNotifier: _eigaId,
-                              episodeIdNotifier: _episodeId,
-                              initialData: () =>
-                                  _cacheEpisodesStore[season.eigaId],
-                              eager: true,
-                              scrollDirection: scrollDirection,
-                              controller: controller,
-                              onUpdate: (episodes) {
-                                _cacheEpisodesStore[season.eigaId] = episodes;
-                              },
-                              onTap: (
-                                  {required episodes, required indexEpisode}) {
-                                _onChangeEpisode(
-                                    metaEiga: metaEiga,
-                                    indexEpisode: indexEpisode,
-                                    indexSeason: index,
-                                    episodes: episodes,
-                                    seasons: metaEiga$.seasons);
-                              }));
-                    }).toList()),
-                    TabBar(
-                      isScrollable: true,
-                      splashBorderRadius: BorderRadius.circular(35.0),
-                      indicatorColor: Theme.of(context).colorScheme.secondary,
-                      tabAlignment: TabAlignment.start,
-                      dividerHeight: 0,
-                      tabs: metaEiga$.seasons.map((season) {
-                        return Tab(
-                          text: season.name,
-                        );
-                      }).toList(),
-                    ),
-                  ]);
+                  children: scrollDirection == Axis.vertical
+                      ? children.reversed.toList()
+                      : children);
             }),
           );
         });
