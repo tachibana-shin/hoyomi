@@ -4,7 +4,6 @@ import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ListEpisodes extends StatefulWidget {
@@ -13,6 +12,7 @@ class ListEpisodes extends StatefulWidget {
   final ValueNotifier<String> eigaIdNotifier;
   final ValueNotifier<String?> episodeIdNotifier;
   final Axis scrollDirection;
+  final ScrollController? controller;
   final EpisodesEiga? Function() initialData;
   final void Function(EpisodesEiga episodes)? onUpdate;
   final void Function({
@@ -31,7 +31,8 @@ class ListEpisodes extends StatefulWidget {
       required this.onTap,
       required this.initialData,
       required this.eager,
-      this.scrollDirection = Axis.horizontal});
+      this.scrollDirection = Axis.horizontal,
+      this.controller});
 
   @override
   State<ListEpisodes> createState() => _ListEpisodesState();
@@ -59,28 +60,24 @@ class _ListEpisodesState extends State<ListEpisodes> {
         builder: (context, snapshot) {
           final height = 35.0;
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            final child = Center(
-                child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    child: SpinKitPouringHourGlassRefined(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        size: height - 5)));
-            return widget.scrollDirection == Axis.horizontal
-                ? SizedBox(height: height, child: child)
-                : child;
-          }
           if (snapshot.hasError) {
             return Center(
                 child: UtilsService.errorWidgetBuilder(context,
                     error: snapshot.error,
                     orElse: (error) => Text('Error: $error')));
           }
-          if (!snapshot.hasData) {
+
+          final waiting = snapshot.connectionState == ConnectionState.waiting;
+          if (!waiting && !snapshot.hasData) {
             return const Center(child: Text('No data available'));
           }
 
-          final episodes = snapshot.data as EpisodesEiga;
+          late final EpisodesEiga episodes;
+          if (waiting) {
+            episodes = EpisodesEiga.createFakeData();
+          } else {
+            episodes = snapshot.data as EpisodesEiga;
+          }
 
           bool checkEpisodeActive(EpisodeEiga episode) {
             return widget.eigaIdNotifier.value == widget.season.eigaId &&
@@ -89,7 +86,7 @@ class _ListEpisodesState extends State<ListEpisodes> {
                     episode.episodeId;
           }
 
-          if (widget.eager) {
+          if (!waiting && widget.eager) {
             for (final episode in episodes.episodes) {
               final active = checkEpisodeActive(episode);
 
@@ -142,12 +139,17 @@ class _ListEpisodesState extends State<ListEpisodes> {
                 animation: Listenable.merge(
                     [widget.eigaIdNotifier, widget.episodeIdNotifier]),
                 builder: (context, child) {
-                  return Expanded(
-                      child: Wrap(alignment: WrapAlignment.center,
-                    children: episodes.episodes.indexed.map((entry) {
-                      return itemBuilder(context, entry.$1);
-                    }).toList(),
-                  ));
+                  final child = SingleChildScrollView(
+                      controller: widget.controller,
+                      child: Wrap(
+                        alignment: WrapAlignment.center,
+                        children: episodes.episodes.indexed.map((entry) {
+                          return itemBuilder(context, entry.$1);
+                        }).toList(),
+                      ));
+
+                  if (waiting) return Skeletonizer(enabled: true, child: child);
+                  return child;
                 });
           }
           return SizedBox(
@@ -156,21 +158,26 @@ class _ListEpisodesState extends State<ListEpisodes> {
                   animation: Listenable.merge(
                       [widget.eigaIdNotifier, widget.episodeIdNotifier]),
                   builder: (context, child) {
-                    return ListView.builder(
+                    final child = ListView.builder(
                         scrollDirection: widget.scrollDirection,
                         itemCount: episodes.episodes.length,
                         shrinkWrap: true,
                         itemBuilder: itemBuilder);
+
+                    if (waiting) {
+                      return Skeletonizer(enabled: true, child: child);
+                    }
+                    return child;
                   }));
         });
   }
 }
 
-class ListEpisodesHorizontalSkeleton extends StatelessWidget {
+class ListEpisodesSkeleton extends StatelessWidget {
   final height = 35.0;
   final episodes = EpisodesEiga.createFakeData().episodes;
 
-  ListEpisodesHorizontalSkeleton({super.key});
+  ListEpisodesSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
