@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
@@ -222,102 +224,119 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   Widget _buildBasicInfo(ValueNotifier<MetaEiga> metaEiga) {
     return ValueListenableBuilder(
         valueListenable: metaEiga,
-        builder: (context, metaEiga, child) => Column(
+        builder: (context, metaEiga$, child) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // name
-                Text(metaEiga.name,
-                    style:
-                        TextStyle(fontWeight: FontWeight.w500, fontSize: 18.0),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis),
-                if (metaEiga.views != null)
-                  Text('${formatNumber(metaEiga.views!)} views',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontSize: 12.0)),
+                InkWell(
+                    onTap: () => _showModalMetadata(metaEiga),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // name
+                          Text(metaEiga$.name,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 18.0),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis),
+                          if (metaEiga$.views != null)
+                            Text('${formatNumber(metaEiga$.views!)} views',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        fontSize: 12.0)),
 
-                SizedBox(height: 2.0),
+                          SizedBox(height: 2.0),
 
-                // author
-                Row(children: [
-                  Row(children: [
-                    Text('Author ',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontSize: 12.0)),
-                    Text(metaEiga.author ?? 'Unknown',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontSize: 12.0)),
-                  ]),
-                  if (metaEiga.studio != null) VerticalSeparator(),
-                  if (metaEiga.studio != null)
-                    Row(children: [
-                      Text('Studio ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                  fontSize: 12.0)),
-                      GestureDetector(
-                          onTap: () {
-                            context.push(
-                                '/section_eiga/${widget.sourceId}/${metaEiga.studio!.genreId}');
-                          },
-                          child: Text(
-                            metaEiga.studio!.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
-                                    fontSize: 12.0),
-                          )),
-                    ])
-                ]),
-
+                          // author
+                          Row(children: [
+                            Row(children: [
+                              Text('Author ',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                          fontSize: 12.0)),
+                              Text(metaEiga$.author ?? 'Unknown',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(fontSize: 12.0)),
+                            ]),
+                            if (metaEiga$.studio != null) VerticalSeparator(),
+                            if (metaEiga$.studio != null)
+                              Row(children: [
+                                Text('Studio ',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                            fontSize: 12.0)),
+                                GestureDetector(
+                                    onTap: () {
+                                      context.push(
+                                          '/section_eiga/${widget.sourceId}/${metaEiga$.studio!.genreId}');
+                                    },
+                                    child: Text(
+                                      metaEiga$.studio!.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface,
+                                              fontSize: 12.0),
+                                    )),
+                              ])
+                          ]),
+                        ])),
                 SizedBox(height: 2.0),
 
                 /////
                 Row(children: [
-                  if (metaEiga.quality != null)
+                  if (metaEiga$.quality != null)
                     Container(
                         padding: EdgeInsets.symmetric(horizontal: 4.0),
                         decoration: BoxDecoration(
                             color: Colors.greenAccent.shade400,
                             borderRadius: BorderRadius.circular(4.0)),
                         child: Center(
-                            child: Text(metaEiga.quality!,
+                            child: Text(metaEiga$.quality!,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
                                     ?.copyWith(fontSize: 12.0)))),
-                  if (metaEiga.quality != null) VerticalSeparator(),
-                  if (metaEiga.yearOf != null)
-                    Text(metaEiga.yearOf.toString(),
+                  if (metaEiga$.quality != null) VerticalSeparator(),
+                  if (metaEiga$.yearOf != null)
+                    Text(metaEiga$.yearOf.toString(),
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
                             ?.copyWith(fontSize: 12.0)),
-                  if (metaEiga.duration != null) VerticalSeparator(),
-                  if (metaEiga.duration != null)
-                    Text('Updated to ${metaEiga.duration}',
+                  if (metaEiga$.duration != null) VerticalSeparator(),
+                  if (metaEiga$.duration != null)
+                    Text('Updated to ${metaEiga$.duration}',
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
                             ?.copyWith(fontSize: 12.0)),
-                  if (metaEiga.countries?.isNotEmpty == true)
+                  if (metaEiga$.countries?.isNotEmpty == true)
                     VerticalSeparator(),
-                  if (metaEiga.countries?.isNotEmpty == true)
+                  if (metaEiga$.countries?.isNotEmpty == true)
                     Row(
-                        children: metaEiga.countries!.map((country) {
+                        children: metaEiga$.countries!.map((country) {
                       return Padding(
                           padding: EdgeInsets.only(right: 4.0),
                           child: GestureDetector(
@@ -340,7 +359,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 SizedBox(height: 2.0),
 
                 Row(children: [
-                  if (metaEiga.rate != null)
+                  if (metaEiga$.rate != null)
                     Row(children: [
                       Icon(
                         MaterialCommunityIcons.star,
@@ -348,26 +367,26 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         size: 14.0,
                       ),
                       Text(
-                        ' ${metaEiga.rate}',
+                        ' ${metaEiga$.rate}',
                         style: const TextStyle(
                           fontSize: 12.0,
                         ),
                       )
                     ]),
-                  if (metaEiga.countRate != null) VerticalSeparator(),
-                  if (metaEiga.countRate != null)
-                    Text('${metaEiga.countRate} people rated',
+                  if (metaEiga$.countRate != null) VerticalSeparator(),
+                  if (metaEiga$.countRate != null)
+                    Text('${metaEiga$.countRate} people rated',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).colorScheme.secondary,
                             fontSize: 12.0)),
-                  if (metaEiga.countRate != null) VerticalSeparator(),
-                  if (metaEiga.movieSeason != null)
+                  if (metaEiga$.countRate != null) VerticalSeparator(),
+                  if (metaEiga$.movieSeason != null)
                     GestureDetector(
                         onTap: () {
                           context.push(
-                              '/section_eiga/${widget.sourceId}/${metaEiga.movieSeason!.genreId}');
+                              '/section_eiga/${widget.sourceId}/${metaEiga$.movieSeason!.genreId}');
                         },
-                        child: Text(metaEiga.movieSeason!.name,
+                        child: Text(metaEiga$.movieSeason!.name,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -382,7 +401,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
                 Wrap(
                   spacing: 7.0, // Space between the genre tags
-                  children: metaEiga.genres.map((genre) {
+                  children: metaEiga$.genres.map((genre) {
                     return GestureDetector(
                       onTap: () {
                         context.push(
@@ -401,9 +420,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   }).toList(),
                 ),
 
-                if (metaEiga.originalName != null) SizedBox(height: 5.0),
+                if (metaEiga$.originalName != null) SizedBox(height: 5.0),
 
-                if (metaEiga.originalName != null)
+                if (metaEiga$.originalName != null)
                   RichText(
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -418,7 +437,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                         Theme.of(context).colorScheme.secondary,
                                     fontSize: 12.0)),
                         TextSpan(
-                            text: metaEiga.originalName!,
+                            text: metaEiga$.originalName!,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -487,6 +506,107 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 ])
               ],
             )));
+  }
+
+  void _showModalMetadata(ValueNotifier<MetaEiga> metaEiga) {
+    final query = MediaQuery.of(context);
+    final size = query.size;
+    final heightPlayer =
+        size.height - query.padding.top - (size.width * 1 / _aspectRatio);
+
+    _initialBottomSheet = max(0.5, heightPlayer / size.height);
+    _bottomSheetNotifier.value = () => BottomSheet(
+          showDragHandle: true,
+          animationController: _bottomSheetAnimationController,
+          builder: (context) => DraggableScrollableSheet(
+            expand: false,
+            snap: true,
+            snapSizes: [_initialBottomSheet],
+            initialChildSize: _initialBottomSheet,
+            minChildSize: 0,
+            maxChildSize: 1,
+            builder: (context, scrollController) {
+              return SingleChildScrollView(
+                  controller: scrollController,
+                  child: Padding(
+                      padding:
+                          EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Description
+                            Text('Description',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 15.0)),
+                            Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: min(110.0,
+                                        MediaQuery.of(context).size.width / 2),
+                                    decoration: BoxDecoration(
+                                        color: Colors.blueGrey.shade200,
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
+                                    clipBehavior: Clip.antiAlias,
+                                    child: AspectRatio(
+                                        aspectRatio: 2 / 3,
+                                        child: BasicImage.network(
+                                          metaEiga.value.image.src,
+                                          sourceId: widget.sourceId,
+                                          headers: metaEiga.value.image.headers,
+                                          fit: BoxFit.cover,
+                                        )),
+                                  ),
+                                  SizedBox(width: 7.0),
+                                  Expanded(
+                                      child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 3.0,
+                                      ),
+                                      HtmlWidget(
+                                        metaEiga.value.description,
+                                        textStyle: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
+                                      ),
+                                    ],
+                                  ))
+                                ]),
+
+                            SizedBox(height: 10.0),
+
+                            // Trailer
+                            if (metaEiga.value.trailer != null)
+                              Text('Trailer',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 15.0)),
+                            if (metaEiga.value.trailer != null)
+                              AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child: InAppWebView(
+                                      initialUrlRequest: URLRequest(
+                                          url:
+                                              WebUri(metaEiga.value.trailer!))))
+                          ])));
+            },
+          ),
+          onDragEnd: (details, {required isClosing}) {
+            if (isClosing) {
+              _bottomSheetNotifier.value = null;
+            }
+          },
+          onClosing: () => _bottomSheetNotifier.value = null,
+        );
   }
 
   void _showModalEpisodes(ValueNotifier<MetaEiga> metaEiga) {
