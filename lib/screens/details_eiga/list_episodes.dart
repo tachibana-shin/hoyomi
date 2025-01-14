@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
@@ -129,7 +131,8 @@ class _ListEpisodesState extends State<ListEpisodes> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              width: 100.0,
+                              width: min(
+                                  100.0, MediaQuery.of(context).size.width / 2),
                               decoration: BoxDecoration(
                                   color: Colors.blueGrey.shade200,
                                   borderRadius: BorderRadius.circular(10.0)),
@@ -145,7 +148,8 @@ class _ListEpisodesState extends State<ListEpisodes> {
                                   )),
                             ),
                             SizedBox(width: 7.0),
-                            Column(
+                            Expanded(
+                                child: Column(
                               children: [
                                 SizedBox(
                                   height: 3.0,
@@ -170,7 +174,7 @@ class _ListEpisodesState extends State<ListEpisodes> {
                                     maxLines: 2,
                                   )
                               ],
-                            )
+                            ))
                           ])));
             }
 
