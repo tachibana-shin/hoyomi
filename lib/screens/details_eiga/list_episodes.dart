@@ -10,7 +10,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 class ListEpisodes extends StatefulWidget {
   final String sourceId;
   final BasicSeason season;
-  final BasicImage? thumbnail;
+  final BasicImage thumbnail;
   final ValueNotifier<String> eigaIdNotifier;
   final ValueNotifier<String?> episodeIdNotifier;
   final Axis scrollDirection;
@@ -111,34 +111,67 @@ class _ListEpisodesState extends State<ListEpisodes> {
             final active = !waiting && checkEpisodeActive(episode);
 
             if (isVertical) {
-              final src = episode.image?.src ?? widget.thumbnail?.src;
               return InkWell(
                   borderRadius: BorderRadius.circular(7),
                   onTap: () => widget.onTap(
                         indexEpisode: index,
                         episodes: episodes,
                       ),
-                  child: Row(children: [
-                    ClipRRect(
-                        borderRadius: BorderRadius.circular(16.0),
-                        child: AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: BasicImage.network(src ?? BasicImage.fake,
-                                sourceId: widget.sourceId,
-                                headers: episodes.image?.headers ??
-                                    widget.thumbnail?.headers,
-                                width: 200.0,
-                                fit: BoxFit.cover))),
-                    Column(children: [
-                      Text(
-                        'Episode ${episode.name}',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      if (episode.description != null)
-                        Text(episode.description!,
-                            style: Theme.of(context).textTheme.bodyMedium)
-                    ])
-                  ]));
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: active
+                              ? Theme.of(context).colorScheme.tertiaryContainer
+                              : null,
+                          borderRadius: BorderRadius.circular(7.0)),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 7.0, horizontal: 7.0),
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 100.0,
+                              decoration: BoxDecoration(
+                                  color: Colors.blueGrey.shade200,
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              clipBehavior: Clip.antiAlias,
+                              child: AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child: BasicImage.network(
+                                    episode.image?.src ?? widget.thumbnail.src,
+                                    sourceId: widget.sourceId,
+                                    headers: episodes.image?.headers ??
+                                        widget.thumbnail.headers,
+                                    fit: BoxFit.cover,
+                                  )),
+                            ),
+                            SizedBox(width: 7.0),
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 3.0,
+                                ),
+                                Text(
+                                  'Episode ${episode.name}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.w400),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox(height: 5.0),
+                                if (episode.description?.isNotEmpty == true)
+                                  Text(
+                                    episode.description!,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    maxLines: 2,
+                                  )
+                              ],
+                            )
+                          ])));
             }
 
             return Padding(
@@ -170,7 +203,7 @@ class _ListEpisodesState extends State<ListEpisodes> {
           }
 
           return SizedBox(
-              height: height,
+              height: isVertical ? null : height,
               child: AnimatedBuilder(
                   animation: Listenable.merge(
                       [widget.eigaIdNotifier, widget.episodeIdNotifier]),
