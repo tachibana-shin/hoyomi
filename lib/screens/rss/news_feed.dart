@@ -165,7 +165,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                     return Card(
                       margin: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 16),
-                      clipBehavior: Clip.hardEdge,
+                      clipBehavior: Clip.antiAlias,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

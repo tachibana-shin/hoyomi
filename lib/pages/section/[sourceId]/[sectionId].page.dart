@@ -205,7 +205,7 @@ class _SectionState extends State<Section> {
                                   ).showModal(context);
                                 },
                                 child: ClipRRect(
-                                    clipBehavior: Clip.hardEdge,
+                                    clipBehavior: Clip.antiAlias,
                                     child: Chip(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 8.0, vertical: 4.0),

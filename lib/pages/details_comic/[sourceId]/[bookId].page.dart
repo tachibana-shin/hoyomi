@@ -558,7 +558,7 @@ class _DetailsComicState extends State<DetailsComic>
                       bottomLeft: Radius.circular(35),
                     ),
                   ),
-                  clipBehavior: Clip.hardEdge,
+                  clipBehavior: Clip.antiAlias,
                   child: AnimatedFractionallySizedBox(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
