@@ -509,11 +509,17 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             builder: (context, scrollController) {
               return SingleChildScrollView(
                   controller: scrollController,
-                  child: Column(children: [_buildSchedule(), _buildSeasonArea(metaEiga,
-                      scrollDirection: Axis.vertical,
-                      controller: scrollController)]) );
+                  child: Column(children: [
+                    _buildSchedule(),
+                    _buildSeasonArea(metaEiga,
+                        scrollDirection: Axis.vertical,
+                        controller: scrollController)
+                  ]));
             },
           ),
+          onDragEnd: (details, {required isClosing}) {
+            if (isClosing) _bottomSheetNotifier.value = null;
+          },
           onClosing: () {
             _bottomSheetNotifier.value = null;
           },
