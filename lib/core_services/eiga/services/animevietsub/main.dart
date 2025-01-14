@@ -356,7 +356,7 @@ class AnimeVietsubService extends EigaBaseService {
     final image = image$ == null
         ? null
         : BasicImage(src: image$, headers: {'referer': baseUrl});
-    final poster$ = document.querySelector(".TPostBg img")?.attributes['src'];
+    final poster$ = document.querySelector(".TPostBg img")?.attributes['data-cfsrc'];
     final poster = poster$ == null
         ? null
         : BasicImage(src: poster$, headers: {'referer': baseUrl});
