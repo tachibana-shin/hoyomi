@@ -621,6 +621,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   final season = BasicSeason(eigaId: eigaId, name: 'Episodes');
                   return ListEpisodes(
                       season: season,
+                      thumbnail: metaEiga$.poster,
                       sourceId: widget.sourceId,
                       eigaIdNotifier: _eigaId,
                       episodeIdNotifier: _episodeId,
@@ -671,6 +672,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       child: ListEpisodes(
                           season: season,
                           sourceId: widget.sourceId,
+                          thumbnail: metaEiga$.poster,
                           eigaIdNotifier: _eigaId,
                           episodeIdNotifier: _episodeId,
                           initialData: () => _cacheEpisodesStore[season.eigaId],

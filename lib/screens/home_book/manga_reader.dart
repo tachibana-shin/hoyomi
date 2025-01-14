@@ -24,9 +24,6 @@ import 'package:hoyomi/widgets/book/sheet_chapters.dart';
 import 'package:hoyomi/widgets/tap_listener.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-// ignore: constant_identifier_names
-const FAKE = "fake:";
-
 class BasicImageWithGroup extends BasicImage {
   final String chapterId;
 
@@ -97,7 +94,7 @@ class _MangaReaderState extends State<MangaReader>
 
   double get _realCurrentPage {
     for (int i = 0; i <= _currentPage; i++) {
-      if (pages[i].chapterId == _chapter && pages[i].src != FAKE) {
+      if (pages[i].chapterId == _chapter && pages[i].src != BasicImage.fake) {
         return _currentPage - i;
       }
     }
@@ -372,7 +369,8 @@ class _MangaReaderState extends State<MangaReader>
                     chapterId: chapterId,
                     src: page.src,
                     headers: page.headers)),
-            if (pages.elementAtOrNull(0)?.src != FAKE && _prevChapter != null)
+            if (pages.elementAtOrNull(0)?.src != BasicImage.fake &&
+                _prevChapter != null)
               _buildSplashImage(
                   chapterId: _currentChapter.chapterId,
                   chapterNext: null,
@@ -416,16 +414,19 @@ class _MangaReaderState extends State<MangaReader>
       required String? chapterNext,
       required String? chapterPrev,
       required String chapterCurrent}) {
-    return BasicImageWithGroup(chapterId: chapterId, src: FAKE, headers: {
-      if (chapterPrev != null) 'prev': chapterPrev,
-      'current': chapterCurrent,
-      if (chapterNext != null) 'next': chapterNext
-    });
+    return BasicImageWithGroup(
+        chapterId: chapterId,
+        src: BasicImage.fake,
+        headers: {
+          if (chapterPrev != null) 'prev': chapterPrev,
+          'current': chapterCurrent,
+          if (chapterNext != null) 'next': chapterNext
+        });
   }
 
   Widget _buildImage(int index) {
     final item = pages.elementAt(index);
-    if (item.src == FAKE) {
+    if (item.src == BasicImage.fake) {
       return SizedBox(
         width: double.infinity,
         height: _usingPageView

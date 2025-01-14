@@ -5,6 +5,8 @@ class BasicImage {
   final String src;
   final Map<String, String>? headers;
 
+  static final fake = "fake:";
+
   BasicImage({required this.src, this.headers});
 
   // Convert from JSON
@@ -25,7 +27,7 @@ class BasicImage {
   }
 
   factory BasicImage.createFakeData() {
-    return BasicImage(src: 'fake:');
+    return BasicImage(src: fake);
   }
 
   static Widget network(
@@ -55,7 +57,7 @@ class BasicImage {
     int? cacheWidth,
     int? cacheHeight,
   }) {
-    if (src == "fake:") {
+    if (src == fake) {
       return Image.asset('assets/images/blank.png',
           key: key,
           scale: scale,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
+import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -9,6 +10,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 class ListEpisodes extends StatefulWidget {
   final String sourceId;
   final BasicSeason season;
+  final BasicImage? thumbnail;
   final ValueNotifier<String> eigaIdNotifier;
   final ValueNotifier<String?> episodeIdNotifier;
   final Axis scrollDirection;
@@ -25,6 +27,7 @@ class ListEpisodes extends StatefulWidget {
       {super.key,
       required this.sourceId,
       required this.season,
+      required this.thumbnail,
       required this.eigaIdNotifier,
       required this.episodeIdNotifier,
       required this.onUpdate,
@@ -102,9 +105,41 @@ class _ListEpisodesState extends State<ListEpisodes> {
             }
           }
 
+          final isVertical = widget.scrollDirection == Axis.vertical;
           Widget itemBuilder(BuildContext context, int index) {
             final episode = episodes.episodes[index];
             final active = !waiting && checkEpisodeActive(episode);
+
+            if (isVertical) {
+              final src = episode.image?.src ?? widget.thumbnail?.src;
+              return InkWell(
+                  borderRadius: BorderRadius.circular(7),
+                  onTap: () => widget.onTap(
+                        indexEpisode: index,
+                        episodes: episodes,
+                      ),
+                  child: Row(children: [
+                    ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: BasicImage.network(src ?? BasicImage.fake,
+                                sourceId: widget.sourceId,
+                                headers: episodes.image?.headers ??
+                                    widget.thumbnail?.headers,
+                                width: 200.0,
+                                fit: BoxFit.cover))),
+                    Column(children: [
+                      Text(
+                        'Episode ${episode.name}',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      if (episode.description != null)
+                        Text(episode.description!,
+                            style: Theme.of(context).textTheme.bodyMedium)
+                    ])
+                  ]));
+            }
 
             return Padding(
               padding: EdgeInsets.only(right: 8.0),
@@ -134,24 +169,6 @@ class _ListEpisodesState extends State<ListEpisodes> {
             );
           }
 
-          if (widget.scrollDirection == Axis.vertical) {
-            return AnimatedBuilder(
-                animation: Listenable.merge(
-                    [widget.eigaIdNotifier, widget.episodeIdNotifier]),
-                builder: (context, child) {
-                  final child = SingleChildScrollView(
-                      controller: widget.controller,
-                      child: Wrap(
-                        alignment: WrapAlignment.center,
-                        children: episodes.episodes.indexed.map((entry) {
-                          return itemBuilder(context, entry.$1);
-                        }).toList(),
-                      ));
-
-                  if (waiting) return Skeletonizer(enabled: true, child: child);
-                  return child;
-                });
-          }
           return SizedBox(
               height: height,
               child: AnimatedBuilder(
