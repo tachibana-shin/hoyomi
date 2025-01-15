@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
+            VALUE "CompanyName", "git.shin" "\0"
             VALUE "FileDescription", "hoyomi" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "hoyomi" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 git.shin. All rights reserved." "\0"
             VALUE "OriginalFilename", "hoyomi.exe" "\0"
             VALUE "ProductName", "hoyomi" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

@@ -1,4 +1,4 @@
-package com.example.hoyomi
+package git.shin.hoyomi
 
 import io.flutter.embedding.android.FlutterActivity
 
