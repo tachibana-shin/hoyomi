@@ -21,5 +21,8 @@ A new Flutter project.
 - [x] Show modal more episodes
 - [x] Show modal more info
 - [x] Custom slider video
+- [ ] API skip opening / ending for eiga
+- [ ] API comment for eiga
+
 
 /// provider or mobx
