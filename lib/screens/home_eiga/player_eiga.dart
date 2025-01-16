@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:core';
+import 'dart:io';
+import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
@@ -33,6 +36,7 @@ class PlayerEiga extends StatefulWidget {
   final ValueNotifier<SourceVideo?> sourceNotifier;
   final ValueNotifier<BasicImage?> posterNotifier;
   final ValueNotifier<BasicVtt?> thumbnailVtt;
+  final ValueNotifier<OpeningEnding?> openingEndingNotifier;
   final Future<SourceContent> Function({required SourceVideo source})?
       fetchSourceContent;
 
@@ -57,6 +61,7 @@ class PlayerEiga extends StatefulWidget {
     required this.subtitlesNotifier,
     required this.onNext,
     required this.onPrev,
+    required this.openingEndingNotifier,
   });
   @override
   State<PlayerEiga> createState() => _PlayerEigaState();
@@ -74,6 +79,8 @@ class _VariantMeta {
       required this.label,
       required this.headers});
 }
+
+enum _StateOpeningEnding { opening, ending, none, skip }
 
 // https://pub.dev/packages/double_tap_player_view
 // sharara
@@ -127,6 +134,9 @@ class _PlayerEigaState extends State<PlayerEiga> {
   final ValueNotifier<Duration> _duration = ValueNotifier(Duration());
   final ValueNotifier<bool> _loading = ValueNotifier(true);
   final ValueNotifier<bool> _playing = ValueNotifier(true);
+
+  final ValueNotifier<_StateOpeningEnding> _stateOpeningEnding =
+      ValueNotifier(_StateOpeningEnding.none);
 
   final ValueNotifier<bool> _firstLoadedSource = ValueNotifier(false);
 
@@ -219,6 +229,28 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
     if (_activeTime.difference(DateTime.now()).inSeconds.abs() > 3) {
       _showControls.value = false;
+    }
+
+    _updateDurationRangeOpeningEnding();
+  }
+
+  void _updateDurationRangeOpeningEnding() {
+    if (widget.openingEndingNotifier.value == null) return;
+
+    final opening = widget.openingEndingNotifier.value!.opening;
+    final ending = widget.openingEndingNotifier.value!.ending;
+
+    final inOpening = opening == null
+        ? false
+        : opening.start <= _position.value && opening.end >= _position.value;
+    if (inOpening) {
+      _stateOpeningEnding.value = _StateOpeningEnding.opening;
+    } else if (ending == null
+        ? false
+        : ending.start <= _position.value && ending.end >= _position.value) {
+      _stateOpeningEnding.value = _StateOpeningEnding.ending;
+    } else {
+      _stateOpeningEnding.value = _StateOpeningEnding.none;
     }
   }
 
@@ -363,7 +395,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
                                 ]))))));
           }),
       _buildIndicator(),
-      _buildMobileSliderProgress()
+      _buildMobileSliderProgress(),
+      _buildPopupOpeningEnding(),
     ]);
   }
 
@@ -616,12 +649,115 @@ class _PlayerEigaState extends State<PlayerEiga> {
               duration: _duration,
               showThumb: _showControls,
               vttThumbnail: widget.thumbnailVtt,
+              openingEnding: widget.openingEndingNotifier,
               onSeek: (position) {
                 final duration = _duration.value;
                 final seek = duration * position;
                 _controller.value?.seekTo(seek);
               },
             )));
+  }
+
+  Widget _buildPopupOpeningEnding() {
+    return LayoutBuilder(builder: (context, constraints) {
+      final parentSize = constraints.biggest;
+
+      return ValueListenableBuilder(
+          valueListenable: _stateOpeningEnding,
+          builder: (context, value, child) {
+            final isOpening = value == _StateOpeningEnding.opening;
+            final visible = isOpening || value == _StateOpeningEnding.ending;
+
+            return AnimatedOpacity(
+              opacity: visible ? 1.0 : 0.0,
+              duration: Duration(milliseconds: 300),
+              child: Positioned(
+                right: 10,
+                bottom: 30,
+                child: Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(28, 28, 28, 0.9),
+                      borderRadius: BorderRadius.circular(5.0)),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      children: [
+                        Text('Skip ',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 12.0)),
+                        Text(isOpening ? 'Opening' : 'Ending',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w500)),
+                      ],
+                    ),
+                    if (Platform.isWindows)
+                      Container(
+                          margin: EdgeInsets.symmetric(horizontal: 8.0)
+                              .copyWith(right: 0.0),
+                          width: 1.0,
+                          height: 30.0,
+                          color: Color.fromRGBO(255, 255, 255, 0.28)),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (Platform.isWindows)
+                          TextButton(
+                              onPressed: () {
+                                if (isOpening) {
+                                  _controller.value?.seekTo(widget
+                                      .openingEndingNotifier
+                                      .value!
+                                      .opening!
+                                      .end);
+                                } else {
+                                  _controller.value?.seekTo(widget
+                                      .openingEndingNotifier
+                                      .value!
+                                      .ending!
+                                      .end);
+                                }
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('Skip (Enter)',
+                                      style: TextStyle(
+                                        color:
+                                            Colors.white.withValues(alpha: 0.9),
+                                        fontSize: 12.0,
+                                      )),
+                                  Text(
+                                      visible
+                                          ? '${isOpening ? (widget.openingEndingNotifier.value!.opening!.end.inSeconds - _position.value.inSeconds).round() : (widget.openingEndingNotifier.value!.ending!.end.inSeconds - _position.value.inSeconds).round()} seconds'
+                                          : '0 seconds',
+                                      style: TextStyle(
+                                        color:
+                                            Color.fromRGBO(209, 213, 219, 1.0),
+                                        fontSize: 11.0,
+                                      ))
+                                ],
+                              )),
+                        InkWell(
+                            onTap: () {
+                              _stateOpeningEnding.value =
+                                  _StateOpeningEnding.skip;
+                            },
+                            borderRadius: BorderRadius.circular(5.0),
+                            highlightColor: Colors.black,
+                            child: Icon(Icons.close, size: 16.0))
+                      ],
+                    )
+                  ]),
+                ),
+              ),
+            );
+            ;
+          });
+    });
   }
 
   void _setFullscreen(bool value) {
