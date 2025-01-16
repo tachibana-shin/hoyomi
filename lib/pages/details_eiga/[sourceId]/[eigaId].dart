@@ -7,6 +7,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
@@ -56,6 +57,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final ValueNotifier<SourceVideo?> _sourceNotifier = ValueNotifier(null);
   final ValueNotifier<BasicImage?> _posterNotifier = ValueNotifier(null);
   final ValueNotifier<BasicVtt?> _thumbnailVtt = ValueNotifier(null);
+  final ValueNotifier<OpeningEnding?> _openingEndingNotifier =
+      ValueNotifier(null);
   final ValueNotifier<void Function()?> _onPrevNotifier = ValueNotifier(null);
   final ValueNotifier<void Function()?> _onNextNotifier = ValueNotifier(null);
 
@@ -94,6 +97,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _subtitleNotifier.value = 'Episode ${episode.name}';
     });
+
     _subtitlesNotifier.value = [];
     _service
         .getSubtitles(eigaId: _eigaId.value, episode: episode)
@@ -102,12 +106,14 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     }).catchError((error) {
       debugPrint('Error: $error');
     });
+
     _sourceNotifier.value = null;
     _service.getSource(eigaId: _eigaId.value, episode: episode).then((source) {
       _sourceNotifier.value = source;
     }).catchError((error) {
       debugPrint('Error: $error');
     });
+
     _thumbnailVtt.value = null;
     if (_service.getThumbnail != null) {
       _service.getThumbnail!(
@@ -121,6 +127,19 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         debugPrint('Error: $error');
       });
     }
+
+    _openingEndingNotifier.value = null;
+    _service
+        .getOpeningEnding(
+            eigaId: _eigaId.value,
+            episode: episode,
+            episodeIndex: episodeIndex,
+            metaEiga: metaEiga)
+        .then((data) {
+      _openingEndingNotifier.value = data;
+    }).catchError((error) {
+      debugPrint('Error: $error');
+    });
   }
 
   @override
@@ -214,6 +233,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       sourceNotifier: _sourceNotifier,
       posterNotifier: _posterNotifier,
       thumbnailVtt: _thumbnailVtt,
+      openingEndingNotifier: _openingEndingNotifier,
       aspectRatio: _aspectRatio,
       fetchSourceContent: _service.fetchSourceContent,
       onPrev: _onPrevNotifier,
