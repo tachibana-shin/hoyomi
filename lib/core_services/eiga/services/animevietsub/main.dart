@@ -6,6 +6,7 @@ import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/base_eiga_home.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:hoyomi/core_services/interfaces/basic_carousel.dart';
@@ -23,12 +24,13 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:pointycastle/export.dart';
 import 'package:archive/archive.dart';
+import 'package:video_player/video_player.dart';
 
 class AnimeVietsubService extends EigaBaseService {
   @override
   final String name = "AnimeVietsub";
   @override
-  final String baseUrl = "https://animevietsub.biz";
+  final String baseUrl = "https://animevietsub.page";
   @override
   String get faviconUrl => "$baseUrl/favicon.ico";
 
@@ -356,7 +358,8 @@ class AnimeVietsubService extends EigaBaseService {
     final image = image$ == null
         ? null
         : BasicImage(src: image$, headers: {'referer': baseUrl});
-    final poster$ = document.querySelector(".TPostBg img")?.attributes['data-cfsrc'];
+    final poster$ =
+        document.querySelector(".TPostBg img")?.attributes['data-cfsrc'];
     final poster = poster$ == null
         ? null
         : BasicImage(src: poster$, headers: {'referer': baseUrl});
@@ -395,36 +398,55 @@ class AnimeVietsubService extends EigaBaseService {
             headers: source.headers);
       };
 
+  final Map<String, Future<String>> _callApiStore = {};
+  Future<String> _callApi(String url) {
+    if (_callApiStore[url] != null) return _callApiStore[url]!;
+    return _callApiStore[url] = fetch(url);
+  }
+
+  Future<String?> _getEpisodeIDApi(
+      {required String eigaId,
+      required EpisodeEiga episode,
+      required int episodeIndex,
+      required MetaEiga metaEiga}) async {
+    final episodes = await _callApi('$_apiOpEnd/list-episodes?${[
+      metaEiga.name,
+      ...metaEiga.originalName?.split(",").map((name) => name.trim()) ?? []
+    ].map((name) => 'name=$name').join('&')}');
+
+    final rawName = episode.name.trim();
+    final epName = rawName.replaceAll('^[^0-9.+_-]+', '');
+
+    final list = jsonDecode(episodes)['list'] as List<dynamic>;
+
+    final epFloat = double.parse(epName);
+    final episodeD = list.firstWhereOrNull((item) {
+          if (item['name'] == epName || item['name'] == rawName) {
+            return true;
+          }
+
+          return double.parse(item['name']) == epFloat;
+        }) ??
+        (episodeIndex < list.length - 1 ? list[episodeIndex] : null);
+
+    if (episodeD == null) return null;
+
+    return episodeD['id'];
+  }
+
   @override
   get getThumbnail => (
           {required eigaId,
           required episode,
           required episodeIndex,
           required metaEiga}) async {
-        final episodes = await fetch('$_apiOpEnd/list-episodes?${[
-          metaEiga.name,
-          ...metaEiga.originalName?.split(",").map((name) => name.trim()) ?? []
-        ].map((name) => 'name=$name').join('&')}');
-
-        final rawName = episode.name.trim();
-        final epName = rawName.replaceAll('^[^0-9.+_-]+', '');
-
-        final list = jsonDecode(episodes)['list'] as List<dynamic>;
-
-        final epFloat = double.parse(epName);
-        final episodeD = list.firstWhereOrNull((item) {
-              if (item['name'] == epName || item['name'] == rawName) {
-                return true;
-              }
-
-              return double.parse(item['name']) == epFloat;
-            }) ??
-            (episodeIndex < list.length - 1 ? list[episodeIndex] : null);
-
-        if (episodeD == null) return null;
-
-        final meta = jsonDecode(
-            await fetch('$_apiThumb/episode-skip/${episodeD['id']}'));
+        final episodeId = await _getEpisodeIDApi(
+            eigaId: eigaId,
+            episode: episode,
+            episodeIndex: episodeIndex,
+            metaEiga: metaEiga); 
+        final meta =
+            jsonDecode(await _callApi('$_apiThumb/episode-skip/$episodeId'));
 
         final file = (meta['tracks'] as List<dynamic>)
             .firstWhereOrNull((item) => item['kind'] == "thumbnails");
@@ -432,6 +454,38 @@ class AnimeVietsubService extends EigaBaseService {
         if (file != null) return BasicVtt(src: file['file']);
         return null;
       };
+
+  @override
+  getOpeningEnding(
+      {required eigaId,
+      required episode,
+      required episodeIndex,
+      required metaEiga}) async {
+    final episodeId = await _getEpisodeIDApi(
+        eigaId: eigaId,
+        episode: episode,
+        episodeIndex: episodeIndex,
+        metaEiga: metaEiga);
+    final meta =
+        jsonDecode(await _callApi('$_apiThumb/episode-skip/$episodeId'));
+
+    final opening = (meta['intro'] as Map<String, int>?);
+    final ending = (meta['outro'] as Map<String, int>?);
+
+    return OpeningEnding(
+        opening: opening != null
+            ? DurationRange(
+                Duration(seconds: opening['start']!),
+                Duration(seconds: opening['end']!),
+              )
+            : null,
+        ending: ending != null
+            ? DurationRange(
+                Duration(seconds: ending['start']!),
+                Duration(seconds: ending['end']!),
+              )
+            : null);
+  }
 
   @override
   getSubtitles({required eigaId, required episode}) async {

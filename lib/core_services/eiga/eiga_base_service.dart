@@ -5,6 +5,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga_param.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart';
@@ -28,6 +29,12 @@ abstract class EigaBaseService extends BaseService {
 
   Future<List<Subtitle>> getSubtitles(
       {required String eigaId, required EpisodeEiga episode});
+
+  Future<OpeningEnding?> getOpeningEnding(
+      {required String eigaId,
+      required EpisodeEiga episode,
+      required int episodeIndex,
+      required MetaEiga metaEiga});
 
   Future<List<BasicEiga>> Function({
     required MetaEiga eiga,
