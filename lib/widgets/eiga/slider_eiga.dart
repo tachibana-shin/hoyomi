@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:subtitle/subtitle.dart';
 
@@ -20,6 +21,7 @@ class SliderEiga extends StatefulWidget {
   final ValueNotifier<Duration> duration;
   final ValueNotifier<bool> showThumb;
   final ValueNotifier<BasicVtt?> vttThumbnail;
+  final ValueNotifier<OpeningEnding?> openingEnding;
   final Function(double) onSeek; // Callback for seek
 
   const SliderEiga({
@@ -29,6 +31,7 @@ class SliderEiga extends StatefulWidget {
     required this.onSeek,
     required this.vttThumbnail,
     required this.showThumb,
+    required this.openingEnding,
   });
 
   @override
@@ -227,13 +230,36 @@ class _SliderEigaState extends State<SliderEiga>
           animation: _barHeightAnimation,
           builder: (context, child) {
             return ListenableBuilder(
-                listenable:
-                    Listenable.merge([widget.progress, widget.duration]),
+                listenable: Listenable.merge([
+                  widget.progress,
+                  widget.duration,
+                  widget.openingEnding,
+                ]),
                 builder: (context, child) => CustomPaint(
                       size: Size(parentSize.width, sliderHeightMax),
                       painter: _ProgressBarPainter(
                         progress: widget.progress.value.inMilliseconds /
                             widget.duration.value.inMilliseconds,
+                        range: [
+                          if (widget.openingEnding.value?.opening != null)
+                            (
+                              widget.openingEnding.value!.opening!.start
+                                      .inMilliseconds /
+                                  widget.duration.value.inMilliseconds,
+                              widget.openingEnding.value!.opening!.end
+                                      .inMilliseconds /
+                                  widget.duration.value.inMilliseconds
+                            ),
+                          if (widget.openingEnding.value?.ending != null)
+                            (
+                              widget.openingEnding.value!.ending!.start
+                                      .inMilliseconds /
+                                  widget.duration.value.inMilliseconds,
+                              widget.openingEnding.value!.ending!.end
+                                      .inMilliseconds /
+                                  widget.duration.value.inMilliseconds
+                            )
+                        ],
                         barHeight:
                             _barHeightAnimation.value, // Animate bar height
                       ),
@@ -359,9 +385,11 @@ class _SliderEigaState extends State<SliderEiga>
 class _ProgressBarPainter extends CustomPainter {
   final double progress; // Current progress
   final double barHeight; // Height of the progress bar
+  final List<(double, double)> range;
 
   _ProgressBarPainter({
     required this.progress,
+    required this.range,
     this.barHeight = 5.0, // Default bar height to 5px
   });
 
@@ -372,6 +400,10 @@ class _ProgressBarPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final progressPaint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.fill;
+
+    final rangePaint = Paint()
       ..color = Colors.blue
       ..style = PaintingStyle.fill;
 
@@ -385,6 +417,14 @@ class _ProgressBarPainter extends CustomPainter {
         Rect.fromLTWH(0, (size.height - barHeight) / 2,
             progress.isNaN ? 0 : progress * size.width, barHeight),
         progressPaint);
+
+    // ranges
+    for (final (start, end) in range) {
+      canvas.drawRect(
+          Rect.fromLTWH(start, (size.height - barHeight) / 2,
+              (end - start) * size.width, barHeight),
+          rangePaint);
+    }
   }
 
   @override
