@@ -638,7 +638,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
     return ValueListenableBuilder(
         valueListenable: _fullscreen,
         builder: (context, value, child) => Positioned(
-            bottom: value ? kToolbarHeight : 0,
+            bottom: value ? kToolbarHeight / 2 : 0,
             left: 0,
             right: 0,
             child: SliderEiga(
