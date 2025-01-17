@@ -139,8 +139,6 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
   final ValueNotifier<bool> _firstLoadedSource = ValueNotifier(false);
 
-  bool _firstShowControls = true;
-
   @override
   void initState() {
     super.initState();
@@ -243,10 +241,18 @@ class _PlayerEigaState extends State<PlayerEiga> {
         ? false
         : opening.start <= _position.value && opening.end >= _position.value;
     if (inOpening) {
+      if (_stateOpeningEnding.value == _StateOpeningEnding.opening ||
+          _stateOpeningEnding.value == _StateOpeningEnding.skip) {
+        return;
+      }
       _stateOpeningEnding.value = _StateOpeningEnding.opening;
     } else if (ending == null
         ? false
         : ending.start <= _position.value && ending.end >= _position.value) {
+      if (_stateOpeningEnding.value == _StateOpeningEnding.ending ||
+          _stateOpeningEnding.value == _StateOpeningEnding.skip) {
+        return;
+      }
       _stateOpeningEnding.value = _StateOpeningEnding.ending;
     } else {
       _stateOpeningEnding.value = _StateOpeningEnding.none;
