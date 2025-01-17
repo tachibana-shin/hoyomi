@@ -444,7 +444,7 @@ class AnimeVietsubService extends EigaBaseService {
             eigaId: eigaId,
             episode: episode,
             episodeIndex: episodeIndex,
-            metaEiga: metaEiga); 
+            metaEiga: metaEiga);
         final meta =
             jsonDecode(await _callApi('$_apiThumb/episode-skip/$episodeId'));
 
@@ -469,20 +469,20 @@ class AnimeVietsubService extends EigaBaseService {
     final meta =
         jsonDecode(await _callApi('$_apiThumb/episode-skip/$episodeId'));
 
-    final opening = (meta['intro'] as Map<String, int>?);
-    final ending = (meta['outro'] as Map<String, int>?);
+    final opening = (meta['intro'] as Map<String, dynamic>?);
+    final ending = (meta['outro'] as Map<String, dynamic>?);
 
     return OpeningEnding(
         opening: opening != null
             ? DurationRange(
-                Duration(seconds: opening['start']!),
-                Duration(seconds: opening['end']!),
+                Duration(seconds: opening['start'] as int),
+                Duration(seconds: opening['end'] as int),
               )
             : null,
         ending: ending != null
             ? DurationRange(
-                Duration(seconds: ending['start']!),
-                Duration(seconds: ending['end']!),
+                Duration(seconds: ending['start'] as int),
+                Duration(seconds: ending['end'] as int),
               )
             : null);
   }
