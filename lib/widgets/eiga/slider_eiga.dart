@@ -366,21 +366,18 @@ class _SliderEigaState extends State<SliderEiga>
           return Positioned(
               left: left,
               bottom: 0,
-              child: Transform.translate(
-                  offset: Offset(0, size / 2),
-                  child: AnimatedSize(
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.easeInOut,
-                    child: GestureDetector(
-                      onPanUpdate: (details) {
-                        _onSeek(details.localPosition);
-                      },
-                      child: CustomPaint(
-                          size: Size(
-                              size, size), // Adjust size based on showThumb
-                          painter: _ThumbPainter(size: size)),
-                    ),
-                  )));
+              child: AnimatedSize(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: GestureDetector(
+                  onPanUpdate: (details) {
+                    _onSeek(details.localPosition);
+                  },
+                  child: CustomPaint(
+                      size: Size(size, size), // Adjust size based on showThumb
+                      painter: _ThumbPainter(size: size)),
+                ),
+              ));
         });
   }
 }

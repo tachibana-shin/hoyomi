@@ -33,7 +33,7 @@ final List<String> routeIgnoreLayoutDefault = [
 ];
 
 final GoRouter router = GoRouter(
-  initialLocation: '/home_eiga',
+  initialLocation: '/details_eiga/animevietsub/arifureta-shokugyou-de-sekai-saikyou-3rd-season-a5382',
   observers: [GoTransition.observer],
   routes: [
     StatefulShellRoute.indexedStack(

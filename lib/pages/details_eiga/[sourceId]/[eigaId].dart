@@ -61,6 +61,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       ValueNotifier(null);
   final ValueNotifier<void Function()?> _onPrevNotifier = ValueNotifier(null);
   final ValueNotifier<void Function()?> _onNextNotifier = ValueNotifier(null);
+  final ValueNotifier<Widget Function()?> _overlayNotifier =
+      ValueNotifier(null);
 
   late final ValueNotifier<String> _eigaId;
   final ValueNotifier<String?> _episodeId = ValueNotifier(null);
@@ -229,6 +231,13 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       onBack: () {
         context.pop();
       },
+      onTapPlaylist: (isFullscreen) {
+        if (isFullscreen) {
+          _showModalEpisodesFullscreen(_metaEigaNotifier);
+          return;
+        }
+        _showModalEpisodes(_metaEigaNotifier);
+      },
       subtitlesNotifier: _subtitlesNotifier,
       sourceNotifier: _sourceNotifier,
       posterNotifier: _posterNotifier,
@@ -238,6 +247,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       fetchSourceContent: _service.fetchSourceContent,
       onPrev: _onPrevNotifier,
       onNext: _onNextNotifier,
+      overlayNotifier: _overlayNotifier,
     );
   }
 
@@ -627,6 +637,26 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           },
           onClosing: () => _bottomSheetNotifier.value = null,
         );
+  }
+
+  void _showModalEpisodesFullscreen(ValueNotifier<MetaEiga> metaEiga) {
+    _overlayNotifier.value = () => Positioned(
+        top: 0,
+        bottom: 0,
+        right: 0,
+        child: Container(
+          color: Colors.black.withValues(alpha: 0.5),
+          child: SingleChildScrollView(
+                  child: Padding(
+                      padding:
+                          EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
+                      child: Column(children: [
+                        _buildSchedule(),
+                        SizedBox(height: 7.0),
+                        _buildSeasonArea(metaEiga,
+                            scrollDirection: Axis.vertical,)
+                      ])))
+        ));
   }
 
   void _showModalEpisodes(ValueNotifier<MetaEiga> metaEiga) {

@@ -42,26 +42,30 @@ class PlayerEiga extends StatefulWidget {
   final double aspectRatio;
 
   final void Function() onBack;
+  final void Function(bool isFullscreen) onTapPlaylist;
   final ValueNotifier<List<type.Subtitle>> subtitlesNotifier;
   final ValueNotifier<void Function()?> onNext;
   final ValueNotifier<void Function()?> onPrev;
 
-  const PlayerEiga({
-    super.key,
-    required this.titleNotifier,
-    required this.subtitleNotifier,
-    required this.sourceId,
-    required this.sourceNotifier,
-    required this.posterNotifier,
-    required this.thumbnailVtt,
-    required this.fetchSourceContent,
-    required this.aspectRatio,
-    required this.onBack,
-    required this.subtitlesNotifier,
-    required this.onNext,
-    required this.onPrev,
-    required this.openingEndingNotifier,
-  });
+  final ValueNotifier<Widget Function()?> overlayNotifier;
+
+  const PlayerEiga(
+      {super.key,
+      required this.titleNotifier,
+      required this.subtitleNotifier,
+      required this.sourceId,
+      required this.sourceNotifier,
+      required this.posterNotifier,
+      required this.thumbnailVtt,
+      required this.openingEndingNotifier,
+      required this.fetchSourceContent,
+      required this.aspectRatio,
+      required this.onBack,
+      required this.onTapPlaylist,
+      required this.subtitlesNotifier,
+      required this.onNext,
+      required this.onPrev,
+      required this.overlayNotifier});
   @override
   State<PlayerEiga> createState() => _PlayerEigaState();
 }
@@ -394,6 +398,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
       _buildIndicator(),
       _buildMobileSliderProgress(),
       _buildPopupOpeningEnding(),
+      _buildOverlayInherit()
     ]);
   }
 
@@ -443,7 +448,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                 IconButton(
                   icon: Icon(MaterialCommunityIcons.playlist_play),
                   color: Colors.white,
-                  onPressed: () {},
+                  onPressed: () => widget.onTapPlaylist(_fullscreen.value),
                 ),
                 // icon subtitle
                 ValueListenableBuilder(
@@ -757,6 +762,13 @@ class _PlayerEigaState extends State<PlayerEiga> {
                     : SizedBox.shrink(),
               ));
         });
+  }
+
+  Widget _buildOverlayInherit() {
+    return ValueListenableBuilder(
+        valueListenable: widget.overlayNotifier,
+        builder: (context, value, child) =>
+            value != null ? value() : SizedBox.shrink());
   }
 
   void _setFullscreen(bool value) {
