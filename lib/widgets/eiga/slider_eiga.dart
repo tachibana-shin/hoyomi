@@ -366,18 +366,21 @@ class _SliderEigaState extends State<SliderEiga>
           return Positioned(
               left: left,
               bottom: 0,
-              child: AnimatedSize(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    _onSeek(details.localPosition);
-                  },
-                  child: CustomPaint(
-                      size: Size(size, size), // Adjust size based on showThumb
-                      painter: _ThumbPainter(size: size)),
-                ),
-              ));
+              child: Transform.translate(
+                  offset: Offset(0, size / 2),
+                  child: AnimatedSize(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeInOut,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        _onSeek(details.localPosition);
+                      },
+                      child: CustomPaint(
+                          size: Size(
+                              size, size), // Adjust size based on showThumb
+                          painter: _ThumbPainter(size: size)),
+                    ),
+                  )));
         });
   }
 }
@@ -396,7 +399,7 @@ class _ProgressBarPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final backgroundPaint = Paint()
-      ..color = Colors.grey
+      ..color = Colors.grey.withValues(alpha: 0.8)
       ..style = PaintingStyle.fill;
 
     final progressPaint = Paint()
@@ -409,19 +412,19 @@ class _ProgressBarPainter extends CustomPainter {
 
     // Draw background
     canvas.drawRect(
-        Rect.fromLTWH(0, (size.height - barHeight) / 2, size.width, barHeight),
+        Rect.fromLTWH(0, size.height - barHeight, size.width, barHeight),
         backgroundPaint);
 
     // Draw progress
     canvas.drawRect(
-        Rect.fromLTWH(0, (size.height - barHeight) / 2,
+        Rect.fromLTWH(0, size.height - barHeight,
             progress.isNaN ? 0 : progress * size.width, barHeight),
         progressPaint);
 
     // ranges
     for (final (start, end) in range) {
       canvas.drawRect(
-          Rect.fromLTWH(start, (size.height - barHeight) / 2,
+          Rect.fromLTWH(start * size.width, size.height - barHeight,
               (end - start) * size.width, barHeight),
           rangePaint);
     }
@@ -441,7 +444,7 @@ class _ThumbPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final thumbPaint = Paint()
-      ..color = Colors.blue
+      ..color = Colors.red
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(
