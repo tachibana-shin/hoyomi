@@ -368,31 +368,23 @@ class _PlayerEigaState extends State<PlayerEiga> {
       ListenableBuilder(
           listenable: Listenable.merge([_showControls, _playing]),
           builder: (context, child) {
-            final ended = ValueNotifier<bool>(_firstShowControls);
-
-            return AnimatedOpacity(
-                opacity: !_playing.value || _showControls.value ? 1.0 : 0.0,
+            return AnimatedSwitcher(
                 duration: _durationAnimate,
-                onEnd: () {
-                  ended.value = true;
-                  _firstShowControls = false;
-                },
-                child: ValueListenableBuilder(
-                    valueListenable: ended,
-                    builder: (context, value, child) => Visibility(
-                        visible: (!_playing.value || _showControls.value)
-                            ? true
-                            : !value,
-                        child: GestureDetector(
-                            onTap: () =>
-                                _showControls.value = !_showControls.value,
-                            child: Container(
-                                color: Colors.black.withValues(alpha: 0.5),
-                                child: Stack(children: [
-                                  _buildMobileTopControls(),
-                                  _buildMobileControls(),
-                                  _buildMobileBottomControls()
-                                ]))))));
+                transitionBuilder: (child, animation) => FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    ),
+                child: (!_playing.value || _showControls.value)
+                    ? GestureDetector(
+                        onTap: () => _showControls.value = !_showControls.value,
+                        child: Container(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            child: Stack(children: [
+                              _buildMobileTopControls(),
+                              _buildMobileControls(),
+                              _buildMobileBottomControls()
+                            ])))
+                    : SizedBox.shrink());
           }),
       _buildIndicator(),
       _buildMobileSliderProgress(),
