@@ -370,18 +370,18 @@ class _PlayerEigaState extends State<PlayerEiga> {
                     headers: widget.posterNotifier.value!.headers,
                     fit: BoxFit.cover));
           }),
-      ListenableBuilder(
-          listenable: Listenable.merge([_showControls, _playing]),
-          builder: (context, child) {
+      ValueListenableBuilder(
+          valueListenable: _showControls,
+          builder: (context, value, child) {
             return AnimatedSwitcher(
                 duration: _durationAnimate,
                 transitionBuilder: (child, animation) => FadeTransition(
                       opacity: animation,
                       child: child,
                     ),
-                child: (!_playing.value || _showControls.value)
+                child: value
                     ? GestureDetector(
-                        onTap: () => _showControls.value = !_showControls.value,
+                        onTap: () => _showControls.value = !value,
                         child: Container(
                             color: Colors.black.withValues(alpha: 0.5),
                             child: Stack(children: [
