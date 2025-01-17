@@ -594,7 +594,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
         left: 0,
         right: 0,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Row(
@@ -638,7 +638,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
     return ValueListenableBuilder(
         valueListenable: _fullscreen,
         builder: (context, value, child) => Positioned(
-            bottom: value ? kToolbarHeight / 2 : 0,
+            bottom: value ? kToolbarHeight : 0,
             left: 0,
             right: 0,
             child: SliderEiga(
