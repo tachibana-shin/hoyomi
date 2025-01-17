@@ -241,7 +241,8 @@ class _SliderEigaState extends State<SliderEiga>
                         progress: widget.progress.value.inMilliseconds /
                             widget.duration.value.inMilliseconds,
                         range: [
-                          if (widget.openingEnding.value?.opening != null)
+                          if (widget.openingEnding.value?.opening != null &&
+                              widget.duration.value.inMilliseconds > 0)
                             (
                               widget.openingEnding.value!.opening!.start
                                       .inMilliseconds /
@@ -250,7 +251,8 @@ class _SliderEigaState extends State<SliderEiga>
                                       .inMilliseconds /
                                   widget.duration.value.inMilliseconds
                             ),
-                          if (widget.openingEnding.value?.ending != null)
+                          if (widget.openingEnding.value?.ending != null &&
+                              widget.duration.value.inMilliseconds > 0)
                             (
                               widget.openingEnding.value!.ending!.start
                                       .inMilliseconds /
