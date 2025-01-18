@@ -645,22 +645,26 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     if (_overlayNotifier.value == null) {
       _overlayNotifier.value = (context) {
         final size = MediaQuery.of(context).size;
+        final padding = EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0);
 
-        return Container(
-            width: size.width * 0.45,
-            color: Colors.black.withValues(alpha: 0.8),
-            child: Theme(
-                data: ThemeData.dark(),
-                child: Padding(
-                    padding:
-                        EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
-                    child: Column(children: [
-                      _buildSchedule(),
-                      SizedBox(height: 7.0),
-                      Expanded(
-                          child: _buildSeasonArea(metaEiga,
-                              scrollDirection: Axis.vertical))
-                    ]))));
+        return Theme(
+            data: ThemeData.dark(),
+            child: Container(
+                width: size.width * 0.45,
+                color: Colors.black.withValues(alpha: 0.8),
+                padding: padding,
+                child: Column(children: [
+                  _buildSchedule(),
+                  SizedBox(height: 7.0),
+                  _buildSeasonArea(metaEiga,
+                      scrollDirection: Axis.vertical,
+                      height: size.height -
+                          padding.top -
+                          padding.bottom -
+                          7.0 -
+                          2.0 -
+                          (_schedule.value == null ? 0 : 16.0))
+                ])));
       };
     } else {
       _overlayNotifier.value = null;
@@ -798,7 +802,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Widget _buildSeasonArea(ValueNotifier<MetaEiga> metaEiga,
-      {scrollDirection = Axis.horizontal, ScrollController? controller}) {
+      {scrollDirection = Axis.horizontal,
+      ScrollController? controller,
+      double? height}) {
     return ValueListenableBuilder(
         valueListenable: metaEiga,
         builder: (context, metaEiga$, child) {
@@ -849,13 +855,16 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 }
               });
 
+              final tabBarHeight = 35.0;
+
               final children = [
                 ContentSizeTabBarView(
                     children: metaEiga$.seasons.asMap().entries.map((entry) {
                   final season = entry.value;
                   final index = entry.key;
 
-                  return Padding(
+                  return Container(
+                      height: height == null ? null : height - tabBarHeight,
                       padding: EdgeInsets.symmetric(vertical: 8.0),
                       child: ListEpisodes(
                           season: season,
@@ -890,7 +899,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   tabAlignment: TabAlignment.start,
                   dividerHeight: 0,
                   tabs: metaEiga$.seasons.map((season) {
-                    return Tab(text: season.name, height: 35.0);
+                    return Tab(text: season.name, height: tabBarHeight);
                   }).toList(),
                 ),
               ];
