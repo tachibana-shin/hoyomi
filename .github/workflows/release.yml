@@ -25,10 +25,6 @@ jobs:
       - run: flutter pub get
 
       - run: flutter build apk --release --split-per-abi
-      - uses: actions/upload-artifact@v4
-        with:
-          name: release-apk
-          path: "build/app/outputs/flutter-apk/*.apk"
 
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
