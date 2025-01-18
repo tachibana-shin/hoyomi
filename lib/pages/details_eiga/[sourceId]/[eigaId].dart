@@ -483,28 +483,30 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         builder: (context, schedule, child) {
           if (schedule == null) return SizedBox.shrink();
 
-          return Row(children: [
-            Icon(
-              MaterialCommunityIcons.clock_outline,
-              size: 16.0,
-              color: Theme.of(context).colorScheme.secondary,
-            ),
-            SizedBox(width: 5.0),
-            Text(
-              'Updated on day ${[
-                'Sunday',
-                'Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-                'Saturday'
-              ][schedule.day]} of the week at ${schedule.hour}:${schedule.minute}',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          return SizedBox(
+              height: 16.0,
+              child: Row(children: [
+                Icon(
+                  MaterialCommunityIcons.clock_outline,
+                  size: 16.0,
                   color: Theme.of(context).colorScheme.secondary,
-                  fontSize: 12.0),
-            )
-          ]);
+                ),
+                SizedBox(width: 5.0),
+                Text(
+                  'Updated on day ${[
+                    'Sunday',
+                    'Monday',
+                    'Tuesday',
+                    'Wednesday',
+                    'Thursday',
+                    'Friday',
+                    'Saturday'
+                  ][schedule.day]} of the week at ${schedule.hour}:${schedule.minute}',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 12.0),
+                )
+              ]));
         });
   }
 
