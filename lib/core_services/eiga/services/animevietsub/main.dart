@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart' as material;
 import 'package:get/get.dart';
+import 'package:hoyomi/core_services/eiga/eiga_auth_service.dart';
 import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/base_eiga_home.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
@@ -17,6 +18,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga_param.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:html/dom.dart';
 
@@ -26,19 +28,27 @@ import 'package:pointycastle/export.dart';
 import 'package:archive/archive.dart';
 import 'package:video_player/video_player.dart';
 
-class AnimeVietsubService extends EigaBaseService {
+class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
   @override
   final String name = "AnimeVietsub";
   @override
   final String baseUrl = "https://animevietsub.page";
   @override
   String get faviconUrl => "$baseUrl/favicon.ico";
+  @override
+  String get signInUrl => "$baseUrl/dang-nhap";
 
   final String _apiOpEnd = "https://opend-9animetv.animevsub.eu.org";
   final String _apiThumb = "https://sk-hianime.animevsub.eu.org";
 
   final Map<String, _ParamsEpisode> _paramsEpisodeStore = {};
   final Map<String, Document> _docEigaStore = {};
+
+  @override
+  Future<BasicUser> getUser({String? cookie}) {
+    // TODO: implement getUser
+    throw UnimplementedError();
+  }
 
   @override
   parseURL(String url) {
