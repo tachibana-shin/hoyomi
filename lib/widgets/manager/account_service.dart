@@ -3,14 +3,14 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/cache/get_user.dart';
 import 'package:hoyomi/controller/cookie.dart';
-import 'package:hoyomi/core_services/book/auth_service.dart';
-import 'package:hoyomi/core_services/book/book_base_service.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_user.dart';
+import 'package:hoyomi/core_services/base_auth_service.dart';
+import 'package:hoyomi/core_services/base_service.dart';
+import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/globals.dart';
 
 class AccountService extends StatefulWidget {
-  final BookBaseService service;
+  final BaseService service;
 
   const AccountService({super.key, required this.service});
 
@@ -24,7 +24,7 @@ class _AccountServiceState extends State<AccountService> {
   bool? _signed;
 
   bool get _serviceAccountSupport {
-    return widget.service is AuthService;
+    return widget.service is BaseAuthService;
   }
 
   String get _status {

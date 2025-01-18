@@ -6,7 +6,7 @@ export 'basic_comment.dart';
 export 'basic_filter.dart';
 export '../../interfaces/basic_genre.dart';
 export 'basic_book_section.dart';
-export 'basic_user.dart';
+export '../../interfaces/basic_user.dart';
 export 'book_param.dart';
 export 'comic_modes.dart';
 export 'meta_book.dart';

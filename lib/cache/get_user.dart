@@ -1,16 +1,16 @@
-import 'package:hoyomi/core_services/book/auth_service.dart';
-import 'package:hoyomi/core_services/book/book_base_service.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_user.dart';
+import 'package:hoyomi/core_services/base_service.dart';
+import 'package:hoyomi/core_services/book/book_auth_service.dart';
+import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 
 final Map<String, BasicUser> store = {};
-Future<BasicUser> getUser(BookBaseService service, {String? cookie}) async {
-  if (service is! AuthService) {
+Future<BasicUser> getUser(BaseService service, {String? cookie}) async {
+  if (service is! BookAuthService) {
     throw Exception('Service is not an AuthService');
   }
 
   if (store.containsKey(service.uid)) return store[service.uid]!;
 
-  final user = await (service as AuthService).getUser(cookie: cookie);
+  final user = await (service as BookAuthService).getUser(cookie: cookie);
 
   store[service.uid] = user; // Store the user in the cache
 

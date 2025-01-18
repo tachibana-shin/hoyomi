@@ -7,7 +7,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/controller/history.dart';
 import 'package:hoyomi/controller/settings.dart';
-import 'package:hoyomi/core_services/book/auth_service.dart';
+import 'package:hoyomi/core_services/book/book_auth_service.dart';
 import 'package:hoyomi/core_services/book/book_base_service.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/book/interfaces/comic_modes.dart';
@@ -888,7 +888,7 @@ class _MangaReaderState extends State<MangaReader>
         builder: (context) => CommentsSheet(
               bookId: widget.bookId,
               chapterId: _chapter,
-              service: widget.service as AuthService,
+              service: widget.service as BookAuthService,
             ));
   }
 
@@ -1123,8 +1123,8 @@ class _MangaReaderState extends State<MangaReader>
                                     child: ButtonInset(
                                   icon: Ionicons.chatbox_ellipses_outline,
                                   text: 'Comments',
-                                  disabled: widget.service is! AuthService ||
-                                      (widget.service as AuthService)
+                                  disabled: widget.service is! BookAuthService ||
+                                      (widget.service as BookAuthService)
                                               .getComments ==
                                           null,
                                   onPressed: _showPanelComments,

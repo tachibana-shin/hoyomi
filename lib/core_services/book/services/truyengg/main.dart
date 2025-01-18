@@ -10,13 +10,13 @@ import 'package:hoyomi/core_services/book/interfaces/status_enum.dart';
 import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 
-import 'package:hoyomi/core_services/book/auth_service.dart';
+import 'package:hoyomi/core_services/book/book_auth_service.dart';
 import 'package:hoyomi/core_services/book/interfaces/base_section.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_filter.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book_section.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_user.dart';
+import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/core_services/book/interfaces/book_param.dart';
 import 'package:hoyomi/core_services/book/interfaces/comic_modes.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
@@ -46,7 +46,7 @@ final List<BasicFilter> globalFilters = [
   ]),
 ];
 
-class TruyenGGService extends BookBaseService implements AuthService {
+class TruyenGGService extends BookBaseService implements BookAuthService {
   @override
   final String name = "TruyenGGP";
   @override

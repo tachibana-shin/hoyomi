@@ -3,10 +3,10 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/cache/get_user.dart';
 import 'package:hoyomi/controller/history.dart';
-import 'package:hoyomi/core_services/book/auth_service.dart';
+import 'package:hoyomi/core_services/book/book_auth_service.dart';
 import 'package:hoyomi/core_services/book/book_base_service.dart';
 import 'package:hoyomi/core_services/book/interfaces/base_section.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_user.dart';
+import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:hoyomi/core_services/book/interfaces/status_enum.dart';
@@ -71,8 +71,8 @@ class _DetailsComicState extends State<DetailsComic>
         _book = book;
         _suggestFuture =
             _service.getSuggest == null ? null : _service.getSuggest!(_book!);
-        if (_service is AuthService &&
-            (_service as AuthService).getComments != null) {}
+        if (_service is BookAuthService &&
+            (_service as BookAuthService).getComments != null) {}
 
         HistoryController()
             .createBook(_service.uid, bookId: widget.bookId, book: book);
@@ -145,7 +145,7 @@ class _DetailsComicState extends State<DetailsComic>
             child: Text(_title),
           ),
           actions: [
-            if (_service is AuthService) _AvatarUser(service: (_service)),
+            if (_service is BookAuthService) _AvatarUser(service: (_service)),
             IconButtonShare(),
             IconButtonFollow(
                 sourceId: widget.sourceId, bookId: widget.bookId, book: _book),
@@ -449,21 +449,21 @@ class _DetailsComicState extends State<DetailsComic>
         const SizedBox(height: 20.0),
 
         // Comment
-        if (_service is AuthService &&
-            (_service as AuthService).getComments != null)
+        if (_service is BookAuthService &&
+            (_service as BookAuthService).getComments != null)
           Padding(
               padding: EdgeInsets.only(bottom: 16),
               child: Comments(
                 getComments: ({page, parent}) {
-                  return (_service as AuthService).getComments!(
+                  return (_service as BookAuthService).getComments!(
                       bookId: widget.bookId, page: page, parent: parent);
                 },
                 deleteComment: ({required comment, parent}) {
-                  return (_service as AuthService).deleteComment!(
+                  return (_service as BookAuthService).deleteComment!(
                       bookId: widget.bookId, comment: comment, parent: parent);
                 },
                 setLikeComment: ({required comment, parent, required value}) {
-                  return (_service as AuthService).setLikeComment!(
+                  return (_service as BookAuthService).setLikeComment!(
                       bookId: widget.bookId,
                       comment: comment,
                       parent: parent,
@@ -753,8 +753,8 @@ class _ButtonLikeState extends State<_ButtonLike> {
     super.initState();
     _likes = widget.book.likes;
 
-    if (widget.service is AuthService) {
-      (widget.service as AuthService)
+    if (widget.service is BookAuthService) {
+      (widget.service as BookAuthService)
           .isLiked(bookId: widget.bookId)
           .then((liked) {
         if (mounted) {
@@ -771,7 +771,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
   }
 
   void _onTap() {
-    (widget.service as AuthService)
+    (widget.service as BookAuthService)
         .setLike(bookId: widget.bookId, value: !(_liked ?? false))
         .then((value) {
       if (mounted) {
@@ -791,7 +791,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: (widget.service is AuthService) ? _onTap : null,
+        onTap: (widget.service is BookAuthService) ? _onTap : null,
         child: ClipRRect(
             borderRadius: BorderRadius.circular(30.0),
             child: Padding(
