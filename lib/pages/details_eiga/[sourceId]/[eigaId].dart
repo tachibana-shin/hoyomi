@@ -689,18 +689,16 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             minChildSize: 0,
             maxChildSize: 1,
             builder: (context, scrollController) {
-              return SingleChildScrollView(
-                  controller: scrollController,
-                  child: Padding(
-                      padding:
-                          EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
-                      child: Column(children: [
-                        _buildSchedule(),
-                        SizedBox(height: 7.0),
-                        _buildSeasonArea(metaEiga,
-                            scrollDirection: Axis.vertical,
-                            controller: scrollController)
-                      ])));
+              return Container(
+                  padding:
+                      EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
+                  child: Column(children: [
+                    _buildSchedule(),
+                    SizedBox(height: 7.0),
+                  Expanded(child:   _buildSeasonArea(metaEiga,
+                        scrollDirection: Axis.vertical,
+                        controller: scrollController)),
+                  ]));
             },
           ),
           onDragEnd: (details, {required isClosing}) {
