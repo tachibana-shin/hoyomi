@@ -11,6 +11,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
+import 'package:hoyomi/transition/slide_fade_transition.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:http/http.dart';
 import 'package:hoyomi/utils/format_duration.dart';
@@ -47,7 +48,7 @@ class PlayerEiga extends StatefulWidget {
   final ValueNotifier<void Function()?> onNext;
   final ValueNotifier<void Function()?> onPrev;
 
-  final ValueNotifier<Widget Function()?> overlayNotifier;
+  final ValueNotifier<Widget Function(BuildContext context)?> overlayNotifier;
 
   const PlayerEiga(
       {super.key,
@@ -767,8 +768,35 @@ class _PlayerEigaState extends State<PlayerEiga> {
   Widget _buildOverlayInherit() {
     return ValueListenableBuilder(
         valueListenable: widget.overlayNotifier,
-        builder: (context, value, child) =>
-            value != null ? value() : SizedBox.shrink());
+        builder: (context, value, child) {
+          final child = AnimatedSwitcher(
+              duration: _durationAnimate,
+              transitionBuilder: (child, animation) =>
+                  SlideFadeTransition(animation: animation, child: child),
+              child: value != null ? value(context) : SizedBox.shrink());
+
+          return Positioned(
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Stack(children: [
+                if (value != null)
+                  Positioned(
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () {
+                          widget.overlayNotifier.value = null;
+                        },
+                        child: Container(color: Colors.black.withAlpha(0)),
+                      )),
+                child,
+              ]));
+        });
   }
 
   void _setFullscreen(bool value) {

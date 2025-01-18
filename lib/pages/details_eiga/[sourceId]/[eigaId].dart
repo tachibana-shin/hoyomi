@@ -61,7 +61,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       ValueNotifier(null);
   final ValueNotifier<void Function()?> _onPrevNotifier = ValueNotifier(null);
   final ValueNotifier<void Function()?> _onNextNotifier = ValueNotifier(null);
-  final ValueNotifier<Widget Function()?> _overlayNotifier =
+  final ValueNotifier<Widget Function(BuildContext context)?> _overlayNotifier =
       ValueNotifier(null);
 
   late final ValueNotifier<String> _eigaId;
@@ -640,23 +640,29 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   void _showModalEpisodesFullscreen(ValueNotifier<MetaEiga> metaEiga) {
-    _overlayNotifier.value = () => Positioned(
-        top: 0,
-        bottom: 0,
-        right: 0,
-        child: Container(
-          color: Colors.black.withValues(alpha: 0.5),
-          child: SingleChildScrollView(
-                  child: Padding(
-                      padding:
-                          EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
-                      child: Column(children: [
-                        _buildSchedule(),
-                        SizedBox(height: 7.0),
-                        _buildSeasonArea(metaEiga,
-                            scrollDirection: Axis.vertical,)
-                      ])))
-        ));
+    if (_overlayNotifier.value == null) {
+      _overlayNotifier.value = (context) {
+        final size = MediaQuery.of(context).size;
+
+        return Container(
+            width: size.width * 0.45,
+            color: Colors.black.withValues(alpha: 0.8),
+            child: Theme(
+                data: ThemeData.dark(),
+                child: Padding(
+                    padding:
+                        EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
+                    child: Column(children: [
+                      _buildSchedule(),
+                      SizedBox(height: 7.0),
+                      Expanded(
+                          child: _buildSeasonArea(metaEiga,
+                              scrollDirection: Axis.vertical))
+                    ]))));
+      };
+    } else {
+      _overlayNotifier.value = null;
+    }
   }
 
   void _showModalEpisodes(ValueNotifier<MetaEiga> metaEiga) {
