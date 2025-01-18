@@ -206,23 +206,23 @@ class _ListEpisodesState extends State<ListEpisodes> {
             );
           }
 
-          return SizedBox(
-              height: isVertical ? null : height,
-              child: AnimatedBuilder(
-                  animation: Listenable.merge(
-                      [widget.eigaIdNotifier, widget.episodeIdNotifier]),
-                  builder: (context, child) {
-                    final child = ListView.builder(
-                        scrollDirection: widget.scrollDirection,
-                        itemCount: episodes.episodes.length,
-                        shrinkWrap: true,
-                        itemBuilder: itemBuilder);
+          final child = AnimatedBuilder(
+              animation: Listenable.merge(
+                  [widget.eigaIdNotifier, widget.episodeIdNotifier]),
+              builder: (context, child) {
+                final child = ListView.builder(
+                    scrollDirection: widget.scrollDirection,
+                    itemCount: episodes.episodes.length,
+                    shrinkWrap: true,
+                    controller: widget.controller,
+                    itemBuilder: itemBuilder);
 
-                    if (waiting) {
-                      return Skeletonizer(enabled: true, child: child);
-                    }
-                    return child;
-                  }));
+                if (waiting) {
+                  return Skeletonizer(enabled: true, child: child);
+                }
+                return child;
+              });
+          return isVertical ? child : SizedBox(height: height, child: child);
         });
   }
 }
