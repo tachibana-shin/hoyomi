@@ -696,7 +696,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 return Container(
                     height: constraints.maxHeight,
                     padding: padding,
-                    child: Column(children: [
+                    child: ListView(children: [
                       _buildSchedule(),
                       SizedBox(height: 7.0),
                       _buildSeasonArea(metaEiga,
