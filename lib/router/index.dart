@@ -33,7 +33,8 @@ final List<String> routeIgnoreLayoutDefault = [
 ];
 
 final GoRouter router = GoRouter(
-  initialLocation: '/home_eiga',
+  initialLocation:
+      '/details_eiga/animevietsub/arifureta-shokugyou-de-sekai-saikyou-3rd-season-a5382',
   observers: [GoTransition.observer],
   routes: [
     StatefulShellRoute.indexedStack(
@@ -45,10 +46,11 @@ final GoRouter router = GoRouter(
                 orElse: () => '') !=
             '';
 
-        return ScaffoldWithNestedNavigation(
+        return SafeArea(
+            child: ScaffoldWithNestedNavigation(
           navigationShell: navigationShell,
           disableToolbar: disableToolbar,
-        );
+        ));
       },
       branches: [
         StatefulShellBranch(routes: [
@@ -174,7 +176,7 @@ final GoRouter router = GoRouter(
                         ])
                   ]),
             ]),
-            // branch for details_eiga
+        // branch for details_eiga
         StatefulShellBranch(routes: [
           GoRoute(
               path: "/details_eiga",
@@ -186,18 +188,17 @@ final GoRouter router = GoRouter(
                     pageBuilder: GoTransitions.material.call,
                     routes: [
                       GoRoute(
-                          path: ":eigaId",
-                          pageBuilder: GoTransitions.material.call,
-                          builder: (context, state) => DetailsEigaPage(
-                              sourceId: state.pathParameters['sourceId']!,
-                              eigaId: state.pathParameters['eigaId']!,
-                              episodeId: state.uri.queryParameters['episodeId']
-                          ),
+                        path: ":eigaId",
+                        pageBuilder: GoTransitions.material.call,
+                        builder: (context, state) => DetailsEigaPage(
+                            sourceId: state.pathParameters['sourceId']!,
+                            eigaId: state.pathParameters['eigaId']!,
+                            episodeId: state.uri.queryParameters['episodeId']),
                       )
                     ])
               ]),
         ]),
-        
+
         StatefulShellBranch(routes: [
           GoRoute(
               path: '/webview',
