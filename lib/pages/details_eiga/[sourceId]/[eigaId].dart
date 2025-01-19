@@ -689,16 +689,27 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             minChildSize: 0,
             maxChildSize: 1,
             builder: (context, scrollController) {
-              return Container(
-                  padding:
-                      EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
-                  child: Column(children: [
-                    _buildSchedule(),
-                    SizedBox(height: 7.0),
-                  Expanded(child:   _buildSeasonArea(metaEiga,
-                        scrollDirection: Axis.vertical,
-                        controller: scrollController)),
-                  ]));
+              return LayoutBuilder(builder: (context, constraints) {
+                final padding =
+                    EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0);
+
+                return Container(
+                    height: constraints.maxHeight,
+                    padding: padding,
+                    child: Column(children: [
+                      _buildSchedule(),
+                      SizedBox(height: 7.0),
+                      _buildSeasonArea(metaEiga,
+                          scrollDirection: Axis.vertical,
+                          controller: scrollController,
+                          height: constraints.maxHeight -
+                              padding.top -
+                              padding.bottom -
+                              7.0 -
+                              2.0 -
+                              (_schedule.value == null ? 0 : 16.0)),
+                    ]));
+              });
             },
           ),
           onDragEnd: (details, {required isClosing}) {
