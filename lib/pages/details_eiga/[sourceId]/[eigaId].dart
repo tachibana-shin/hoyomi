@@ -6,6 +6,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hoyomi/composible/bottom_sheet_no_scrim.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
@@ -46,8 +47,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late Future<MetaEiga> _metaEigaFuture;
   late ValueNotifier<MetaEiga> _metaEigaNotifier;
 
-  late final AnimationController _bottomSheetAnimationController;
-
   double _aspectRatio = 16 / 9;
 
   final Map<String, EpisodesEiga> _cacheEpisodesStore = {};
@@ -70,15 +69,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final ValueNotifier<EpisodeEiga?> _episode = ValueNotifier(null);
   final ValueNotifier<Future<List<BasicEiga>>?> _suggestNotifier =
       ValueNotifier(null);
-  final ValueNotifier<Widget Function()?> _bottomSheetNotifier =
-      ValueNotifier(null);
 
   double _initialBottomSheet = 0.5;
 
   @override
   void initState() {
     super.initState();
-    _bottomSheetAnimationController = AnimationController(vsync: this);
 
     _service = getEigaService(widget.sourceId);
     _metaEigaFuture = _service.getDetails(widget.eigaId);
@@ -157,11 +153,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     _aspectRatio = aspectRatio;
 
-    return ValueListenableBuilder(
-        valueListenable: _bottomSheetNotifier,
-        child: _buildBody(),
-        builder: (context, callback, child) => Scaffold(
-            body: child, bottomSheet: callback == null ? null : callback()));
+    return Scaffold(body: _buildBody());
   }
 
   Widget _buildBody() {
@@ -547,98 +539,96 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         size.height - query.padding.top - (size.width * 1 / _aspectRatio);
 
     _initialBottomSheet = max(0.5, heightPlayer / size.height);
-    _bottomSheetNotifier.value = () => BottomSheet(
-          showDragHandle: true,
-          animationController: _bottomSheetAnimationController,
-          builder: (context) => DraggableScrollableSheet(
-            expand: false,
-            snap: true,
-            snapSizes: [_initialBottomSheet],
-            initialChildSize: _initialBottomSheet,
-            minChildSize: 0,
-            maxChildSize: 1,
-            builder: (context, scrollController) {
-              return SingleChildScrollView(
-                  controller: scrollController,
-                  child: Padding(
-                      padding:
-                          EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Description
-                            Text('Description',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 15.0)),
-                            Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: min(110.0,
-                                        MediaQuery.of(context).size.width / 2),
-                                    decoration: BoxDecoration(
-                                        color: Colors.blueGrey.shade200,
-                                        borderRadius:
-                                            BorderRadius.circular(10.0)),
-                                    clipBehavior: Clip.antiAlias,
-                                    child: AspectRatio(
-                                        aspectRatio: 2 / 3,
-                                        child: BasicImage.network(
-                                          metaEiga.value.image.src,
-                                          sourceId: widget.sourceId,
-                                          headers: metaEiga.value.image.headers,
-                                          fit: BoxFit.cover,
-                                        )),
-                                  ),
-                                  SizedBox(width: 7.0),
-                                  Expanded(
-                                      child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 3.0,
-                                      ),
-                                      HtmlWidget(
-                                        metaEiga.value.description,
-                                        textStyle: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall,
-                                      ),
-                                    ],
-                                  ))
-                                ]),
-
-                            SizedBox(height: 10.0),
-
-                            // Trailer
-                            if (metaEiga.value.trailer != null)
-                              Text('Trailer',
+    showModalBottomSheetNoScrim(
+        context: context,
+        isScrollControlled: true,
+        showDragHandle: true,
+        isDismissible: false,
+        builder: (context) => DraggableScrollableSheet(
+              expand: false,
+              snap: true,
+              snapSizes: [_initialBottomSheet],
+              initialChildSize: _initialBottomSheet,
+              minChildSize: 0,
+              maxChildSize: 1,
+              builder: (context, scrollController) {
+                return SingleChildScrollView(
+                    controller: scrollController,
+                    child: Padding(
+                        padding: EdgeInsets.only(
+                            left: 12.0, right: 12.0, bottom: 8.0),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Description
+                              Text('Description',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleMedium
                                       ?.copyWith(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 15.0)),
-                            if (metaEiga.value.trailer != null)
-                              AspectRatio(
-                                  aspectRatio: 16 / 9,
-                                  child: InAppWebView(
-                                      initialUrlRequest: URLRequest(
-                                          url:
-                                              WebUri(metaEiga.value.trailer!))))
-                          ])));
-            },
-          ),
-          onDragEnd: (details, {required isClosing}) {
-            if (isClosing) {
-              _bottomSheetNotifier.value = null;
-            }
-          },
-          onClosing: () => _bottomSheetNotifier.value = null,
-        );
+                              Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: min(
+                                          110.0,
+                                          MediaQuery.of(context).size.width /
+                                              2),
+                                      decoration: BoxDecoration(
+                                          color: Colors.blueGrey.shade200,
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                      clipBehavior: Clip.antiAlias,
+                                      child: AspectRatio(
+                                          aspectRatio: 2 / 3,
+                                          child: BasicImage.network(
+                                            metaEiga.value.image.src,
+                                            sourceId: widget.sourceId,
+                                            headers:
+                                                metaEiga.value.image.headers,
+                                            fit: BoxFit.cover,
+                                          )),
+                                    ),
+                                    SizedBox(width: 7.0),
+                                    Expanded(
+                                        child: Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 3.0,
+                                        ),
+                                        HtmlWidget(
+                                          metaEiga.value.description,
+                                          textStyle: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall,
+                                        ),
+                                      ],
+                                    ))
+                                  ]),
+
+                              SizedBox(height: 10.0),
+
+                              // Trailer
+                              if (metaEiga.value.trailer != null)
+                                Text('Trailer',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 15.0)),
+                              if (metaEiga.value.trailer != null)
+                                AspectRatio(
+                                    aspectRatio: 16 / 9,
+                                    child: InAppWebView(
+                                        initialUrlRequest: URLRequest(
+                                            url: WebUri(
+                                                metaEiga.value.trailer!))))
+                            ])));
+              },
+            ));
   }
 
   void _showModalEpisodesFullscreen(ValueNotifier<MetaEiga> metaEiga) {
@@ -678,47 +668,42 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         size.height - query.padding.top - (size.width * 1 / _aspectRatio);
 
     _initialBottomSheet = max(0.5, heightPlayer / size.height);
-    _bottomSheetNotifier.value = () => BottomSheet(
-          showDragHandle: true,
-          animationController: _bottomSheetAnimationController,
-          builder: (context) => DraggableScrollableSheet(
-            expand: false,
-            snap: true,
-            snapSizes: [_initialBottomSheet],
-            initialChildSize: _initialBottomSheet,
-            minChildSize: 0,
-            maxChildSize: 1,
-            builder: (context, scrollController) {
-              return LayoutBuilder(builder: (context, constraints) {
-                final padding =
-                    EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0);
+    showModalBottomSheetNoScrim(
+        context: context,
+        isScrollControlled: true,
+        showDragHandle: true,
+        isDismissible: false,
+        builder: (context) => DraggableScrollableSheet(
+              expand: false,
+              snap: true,
+              snapSizes: [_initialBottomSheet],
+              initialChildSize: _initialBottomSheet,
+              minChildSize: 0,
+              maxChildSize: 1,
+              builder: (context, scrollController) {
+                return LayoutBuilder(builder: (context, constraints) {
+                  final padding =
+                      EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0);
 
-                return Container(
-                    height: constraints.maxHeight,
-                    padding: padding,
-                    child: ListView(children: [
-                      _buildSchedule(),
-                      SizedBox(height: 7.0),
-                      _buildSeasonArea(metaEiga,
-                          scrollDirection: Axis.vertical,
-                          controller: scrollController,
-                          height: constraints.maxHeight -
-                              padding.top -
-                              padding.bottom -
-                              7.0 -
-                              2.0 -
-                              (_schedule.value == null ? 0 : 16.0)),
-                    ]));
-              });
-            },
-          ),
-          onDragEnd: (details, {required isClosing}) {
-            if (isClosing) _bottomSheetNotifier.value = null;
-          },
-          onClosing: () {
-            _bottomSheetNotifier.value = null;
-          },
-        );
+                  return Container(
+                      height: constraints.maxHeight,
+                      padding: padding,
+                      child: ListView(children: [
+                        _buildSchedule(),
+                        SizedBox(height: 7.0),
+                        _buildSeasonArea(metaEiga,
+                            scrollDirection: Axis.vertical,
+                            controller: scrollController,
+                            height: constraints.maxHeight -
+                                padding.top -
+                                padding.bottom -
+                                7.0 -
+                                2.0 -
+                                (_schedule.value == null ? 0 : 16.0)),
+                      ]));
+                });
+              },
+            ));
   }
 
   void _updateData(
