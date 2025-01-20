@@ -641,24 +641,32 @@ class _PlayerEigaState extends State<PlayerEiga> {
   }
 
   Widget _buildMobileSliderProgress() {
-    return ValueListenableBuilder(
-        valueListenable: _fullscreen,
-        builder: (context, value, child) => Positioned(
-            bottom: value ? kToolbarHeight : 0,
-            left: 0,
-            right: 0,
-            child: SliderEiga(
-              progress: _position,
-              duration: _duration,
-              showThumb: _showControls,
-              vttThumbnail: widget.thumbnailVtt,
-              openingEnding: widget.openingEndingNotifier,
-              onSeek: (position) {
-                final duration = _duration.value;
-                final seek = duration * position;
-                _controller.value?.seekTo(seek);
-              },
-            )));
+    return ListenableBuilder(
+        listenable: Listenable.merge([_fullscreen, _showControls]),
+        builder: (context, child) => AnimatedSwitcher(
+            duration: _durationAnimate,
+            transitionBuilder: (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+            child: (_fullscreen.value ? _showControls.value : true)
+                ? Positioned(
+                    bottom: _fullscreen.value ? kToolbarHeight : 0,
+                    left: 0,
+                    right: 0,
+                    child: SliderEiga(
+                      progress: _position,
+                      duration: _duration,
+                      showThumb: _showControls,
+                      vttThumbnail: widget.thumbnailVtt,
+                      openingEnding: widget.openingEndingNotifier,
+                      onSeek: (position) {
+                        final duration = _duration.value;
+                        final seek = duration * position;
+                        _controller.value?.seekTo(seek);
+                      },
+                    ))
+                : SizedBox.shrink()));
   }
 
   Widget _buildPopupOpeningEnding() {
