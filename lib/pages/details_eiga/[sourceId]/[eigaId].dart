@@ -153,7 +153,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     _aspectRatio = aspectRatio;
 
-    return Scaffold(body: _buildBody());
+    return SafeArea(child: Scaffold(body: _buildBody()));
   }
 
   Widget _buildBody() {

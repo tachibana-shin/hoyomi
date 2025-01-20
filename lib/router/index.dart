@@ -33,8 +33,7 @@ final List<String> routeIgnoreLayoutDefault = [
 ];
 
 final GoRouter router = GoRouter(
-  initialLocation:
-      '/home_eiga',
+  initialLocation: '/home_eiga',
   observers: [GoTransition.observer],
   routes: [
     StatefulShellRoute.indexedStack(
@@ -46,11 +45,10 @@ final GoRouter router = GoRouter(
                 orElse: () => '') !=
             '';
 
-        return SafeArea(
-            child: ScaffoldWithNestedNavigation(
+        return ScaffoldWithNestedNavigation(
           navigationShell: navigationShell,
           disableToolbar: disableToolbar,
-        ));
+        );
       },
       branches: [
         StatefulShellBranch(routes: [
