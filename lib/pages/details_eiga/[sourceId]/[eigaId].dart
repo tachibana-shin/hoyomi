@@ -542,7 +542,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         context: context,
         isScrollControlled: true,
         showDragHandle: true,
-        isDismissible: false,
         builder: (context) => DraggableScrollableSheet(
               expand: false,
               snap: true,
@@ -670,7 +669,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         context: context,
         isScrollControlled: true,
         showDragHandle: true,
-        isDismissible: false,
         builder: (context) => DraggableScrollableSheet(
               expand: false,
               snap: true,
