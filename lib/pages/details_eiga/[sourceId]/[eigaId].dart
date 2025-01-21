@@ -47,6 +47,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late Future<MetaEiga> _metaEigaFuture;
   late ValueNotifier<MetaEiga> _metaEigaNotifier;
 
+  final ScrollController controller = ScrollController();
+
   double _aspectRatio = 16 / 9;
 
   final Map<String, EpisodesEiga> _cacheEpisodesStore = {};
@@ -87,6 +89,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     _eigaId = ValueNotifier(widget.eigaId);
     _episodeId.value = widget.episodeId;
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   void _updatePlayer(MetaEiga metaEiga, EpisodeEiga episode, int episodeIndex) {
@@ -159,6 +167,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   Widget _buildBody() {
     return Stack(children: [
       SingleChildScrollView(
+        controller: controller,
           child: Column(children: [
         AspectRatio(
           aspectRatio: _aspectRatio,
@@ -915,6 +924,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               itemsFuture: suggest,
               items: null,
               service: _service,
+              controller: controller,
               title: 'Suggest',
               more: null);
         });

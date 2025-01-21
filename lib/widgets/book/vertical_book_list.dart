@@ -9,6 +9,7 @@ class VerticalBookList extends StatelessWidget {
   final Future<List<BasicBook>>? itemsFuture;
   final List<BasicBook>? items;
   final BookBaseService? service;
+  final ScrollController? controller;
   final String Function(int index)? getService;
   final Future<double> Function(int index)? getPercentRead;
   final String title;
@@ -20,6 +21,7 @@ class VerticalBookList extends StatelessWidget {
       required this.itemsFuture,
       required this.items,
       required this.service,
+      this.controller,
       this.getService,
       required this.title,
       required this.more,
@@ -37,6 +39,7 @@ class VerticalBookList extends StatelessWidget {
       more: more,
       items: items,
       itemsFuture: itemsFuture,
+      controller: controller,
       getDataLoading: () =>
           List.generate(30, (_) => BasicBook.createFakeData()),
       builder: (context, book, bookIndex) {

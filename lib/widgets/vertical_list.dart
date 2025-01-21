@@ -7,6 +7,7 @@ class VerticalList<T> extends StatelessWidget {
   final String title;
   final String? more;
   final bool noHeader;
+  final ScrollController? controller;
   final Widget Function(BuildContext, T, int) builder;
   final List<T> Function() getDataLoading;
   final Widget? Function(Object? error) builderError;
@@ -18,6 +19,7 @@ class VerticalList<T> extends StatelessWidget {
       required this.title,
       required this.more,
       this.noHeader = false,
+      required this.controller,
       required this.items,
       required this.itemsFuture,
       required this.builder,
@@ -105,6 +107,7 @@ class VerticalList<T> extends StatelessWidget {
       //   childAspectRatio: 1/3,
       // ),
       itemCount: items.length,
+      controller: controller,
       builder: (context, index) {
         return builder(context, items.elementAt(index), index);
       },

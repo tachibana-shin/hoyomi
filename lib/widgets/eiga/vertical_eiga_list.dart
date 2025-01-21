@@ -9,6 +9,7 @@ class VerticalEigaList extends StatelessWidget {
   final Future<List<BasicEiga>>? itemsFuture;
   final List<BasicEiga>? items;
   final EigaBaseService? service;
+  final ScrollController? controller;
   final String Function(int index)? getService;
   final double Function(int index)? getPercentRead;
   final String title;
@@ -20,6 +21,7 @@ class VerticalEigaList extends StatelessWidget {
       required this.itemsFuture,
       required this.items,
       required this.service,
+      this.controller,
       this.getService,
       required this.title,
       required this.more,
@@ -33,6 +35,7 @@ class VerticalEigaList extends StatelessWidget {
       more: more,
       items: items,
       itemsFuture: itemsFuture,
+      controller: controller,
       builder: (context, eiga, index) {
         return VerticalEiga(
           eiga: eiga,
