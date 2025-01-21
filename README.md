@@ -25,6 +25,7 @@ A new Flutter project.
 - [x] API skip opening / ending for eiga
 - [ ] API comment for eiga
 - [ ] Increase font size
+- [ ] Fix zommer mangamanga
 
 
 <!-- provider or mobx -->
