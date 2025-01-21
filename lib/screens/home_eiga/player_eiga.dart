@@ -453,16 +453,26 @@ class _PlayerEigaState extends State<PlayerEiga> {
                 ),
                 // icon subtitle
                 ValueListenableBuilder(
-                    valueListenable: _subtitleCode,
-                    builder: (context, value, child) {
-                      return IconButton(
-                          icon: Icon(value == null
-                              ? MaterialCommunityIcons.subtitles_outline
-                              : MaterialCommunityIcons.subtitles),
-                          color: Colors.white,
-                          onPressed: () => value == null
-                              ? _showSubtitleOptions()
-                              : _setSubtitleCode(null));
+                    valueListenable: _availableResolutions,
+                    builder: (context, availableResolutions, child) {
+                      final isEnabled = availableResolutions.isNotEmpty;
+                      return Opacity(
+                          opacity: isEnabled ? 1.0 : 0.5,
+                          child: IgnorePointer(
+                              ignoring: !isEnabled,
+                              child: ValueListenableBuilder(
+                                  valueListenable: _subtitleCode,
+                                  builder: (context, value, child) {
+                                    return IconButton(
+                                        icon: Icon(value == null
+                                            ? MaterialCommunityIcons
+                                                .subtitles_outline
+                                            : MaterialCommunityIcons.subtitles),
+                                        color: Colors.white,
+                                        onPressed: () => value == null
+                                            ? _showSubtitleOptions()
+                                            : _setSubtitleCode(null));
+                                  })));
                     }),
                 // icon settings
                 IconButton(
@@ -998,27 +1008,42 @@ class _PlayerEigaState extends State<PlayerEiga> {
                                 },
                               )),
                       ValueListenableBuilder(
-                          valueListenable: _subtitleCode,
-                          builder: (context, value, child) => ListTile(
-                                leading: Icon(Icons.subtitles_outlined),
-                                title: Text('Subtitle',
-                                    style: TextStyle(fontSize: 14.0)),
-                                trailing: value == null
-                                    ? null
-                                    : Text(
-                                        widget.subtitlesNotifier.value
-                                            .firstWhere((item) {
-                                          return item.code == value;
-                                        }).language,
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary)),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  _showSubtitleOptions();
-                                },
-                              )),
+                          valueListenable: _availableResolutions,
+                          builder: (context, availableResolutions, child) {
+                            final isEnabled = availableResolutions.isNotEmpty;
+                            return Opacity(
+                                opacity: isEnabled ? 1.0 : 0.5,
+                                child: IgnorePointer(
+                                    ignoring: !isEnabled,
+                                    child: ValueListenableBuilder(
+                                        valueListenable: _subtitleCode,
+                                        builder: (context, value, child) =>
+                                            ListTile(
+                                              leading: Icon(
+                                                  Icons.subtitles_outlined),
+                                              title: Text('Subtitle',
+                                                  style: TextStyle(
+                                                      fontSize: 14.0)),
+                                              trailing: value == null
+                                                  ? null
+                                                  : Text(
+                                                      widget.subtitlesNotifier
+                                                          .value
+                                                          .firstWhere((item) {
+                                                        return item.code ==
+                                                            value;
+                                                      }).language,
+                                                      style: TextStyle(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .secondary)),
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                                _showSubtitleOptions();
+                                              },
+                                            ))));
+                          }),
                       ListTile(
                         leading: Icon(Icons.lock_outline),
                         title: Text('Screen Lock',
