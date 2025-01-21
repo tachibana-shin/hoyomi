@@ -56,7 +56,9 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
           padding: EdgeInsets.symmetric(horizontal: _focusing ? 0.0 : 8.0),
           margin: EdgeInsets.symmetric(horizontal: 18.0, vertical: 16.0),
           decoration: BoxDecoration(
-            color: _focusing ? Colors.transparent : Theme.of(context).colorScheme.surfaceContainerHigh,
+            color: _focusing
+                ? Colors.transparent
+                : Theme.of(context).colorScheme.surfaceContainerHigh,
             borderRadius:
                 _focusing ? BorderRadius.zero : BorderRadius.circular(30.0),
           ),

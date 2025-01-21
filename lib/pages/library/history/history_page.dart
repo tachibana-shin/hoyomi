@@ -190,7 +190,7 @@ class _HistoryState extends State<History> {
                         await _history.getLastChapter(bookHistory.id);
 
                     final currentEpisodeIndex = current == null
-                        ? -1 
+                        ? -1
                         : book.chapters.toList().lastIndexWhere((chapter) {
                             return current.chapterId == chapter.chapterId;
                           });

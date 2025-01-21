@@ -36,7 +36,7 @@ class _ServiceAccounts extends StatelessWidget {
               return _buildCard(bookServices[index]);
             },
           ),
-          SizedBox(height : 5.0),
+          SizedBox(height: 5.0),
           DynamicHeightGridView(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,

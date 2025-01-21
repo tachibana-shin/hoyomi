@@ -28,7 +28,7 @@ class _IconButtonFollowState extends State<IconButtonFollow> {
     _setFollowed(null);
   }
 
-  void _setFollowed(bool? val)async  {
+  void _setFollowed(bool? val) async {
     if (widget.book == null) return;
 
     final book = await _history.createBook(widget.sourceId,

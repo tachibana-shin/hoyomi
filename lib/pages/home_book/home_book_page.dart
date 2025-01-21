@@ -21,7 +21,8 @@ class HomeBook extends StatefulWidget {
   State<HomeBook> createState() => _HomeBookState();
 }
 
-class _HomeBookState extends State<HomeBook> with SingleTickerProviderStateMixin {
+class _HomeBookState extends State<HomeBook>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   Widget? _overlayQuickSearch;
 
@@ -67,16 +68,17 @@ class _HomeBookState extends State<HomeBook> with SingleTickerProviderStateMixin
                 controller: _tabController,
                 isScrollable: true,
                 splashBorderRadius: BorderRadius.circular(35.0),
-                tabs:
-                    bookServices.map((service) => Tab(text: service.name)).toList(),
+                tabs: bookServices
+                    .map((service) => Tab(text: service.name))
+                    .toList(),
               ),
       ),
       body: Stack(children: [
         TabBarView(
           controller: _tabController,
           children: bookServices
-              .map(
-                  (service) => TabViewBook(key: Key(service.uid), service: service))
+              .map((service) =>
+                  TabViewBook(key: Key(service.uid), service: service))
               .toList(),
         ),
         ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : [])

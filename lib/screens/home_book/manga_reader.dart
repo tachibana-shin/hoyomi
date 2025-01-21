@@ -1123,10 +1123,11 @@ class _MangaReaderState extends State<MangaReader>
                                     child: ButtonInset(
                                   icon: Ionicons.chatbox_ellipses_outline,
                                   text: 'Comments',
-                                  disabled: widget.service is! BookAuthService ||
-                                      (widget.service as BookAuthService)
-                                              .getComments ==
-                                          null,
+                                  disabled:
+                                      widget.service is! BookAuthService ||
+                                          (widget.service as BookAuthService)
+                                                  .getComments ==
+                                              null,
                                   onPressed: _showPanelComments,
                                 )),
                                 Expanded(

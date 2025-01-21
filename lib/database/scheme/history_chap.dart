@@ -27,4 +27,3 @@ class HistoryChap {
     required this.updatedAt,
   });
 }
-

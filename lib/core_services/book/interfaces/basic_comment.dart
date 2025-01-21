@@ -10,8 +10,8 @@ class BasicComment {
   final String content;
   final DateTime timeAgo;
 
-   int? countLike;
-   int? countDislike;
+  int? countLike;
+  int? countDislike;
   final int countReply;
 
   final bool canDelete;

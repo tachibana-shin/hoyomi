@@ -6,8 +6,9 @@ enum ComicModes {
 }
 
 bool modeUsingPageView(ComicModes mode) {
-  if (mode == ComicModes.leftToRight || mode == ComicModes.rightToLeft || mode == ComicModes.topToBottom) return true;
+  if (mode == ComicModes.leftToRight ||
+      mode == ComicModes.rightToLeft ||
+      mode == ComicModes.topToBottom) return true;
 
-
-return false;
+  return false;
 }

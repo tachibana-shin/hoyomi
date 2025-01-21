@@ -373,7 +373,7 @@ class _SliderEigaState extends State<SliderEiga>
               child: AnimatedScale(
                 duration: const Duration(milliseconds: 111),
                 curve: Curves.easeInOut,
-                scale: widget.showThumb.value || _isHovering .value ? 1 : 0,
+                scale: widget.showThumb.value || _isHovering.value ? 1 : 0,
                 child: GestureDetector(
                   onPanUpdate: (details) {
                     _onSeek(details.localPosition);
