@@ -278,7 +278,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                         color: Theme.of(context)
                                             .colorScheme
                                             .secondary,
-                                        fontSize: 12.0)),
+                                        fontSize: 14.0)),
 
                           SizedBox(height: 2.0),
 
@@ -293,12 +293,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                           color: Theme.of(context)
                                               .colorScheme
                                               .secondary,
-                                          fontSize: 12.0)),
+                                          fontSize: 14.0)),
                               Text(metaEiga$.author ?? 'Unknown',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
-                                      ?.copyWith(fontSize: 12.0)),
+                                      ?.copyWith(fontSize: 14.0)),
                             ]),
                             if (metaEiga$.studio != null) VerticalSeparator(),
                             if (metaEiga$.studio != null)
@@ -311,7 +311,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .secondary,
-                                            fontSize: 12.0)),
+                                            fontSize: 14.0)),
                                 GestureDetector(
                                     onTap: () {
                                       context.push(
@@ -328,7 +328,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .onSurface,
-                                              fontSize: 12.0),
+                                              fontSize: 14.0),
                                     )),
                               ])
                           ]),
@@ -348,21 +348,21 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
-                                    ?.copyWith(fontSize: 12.0)))),
+                                    ?.copyWith(fontSize: 14.0)))),
                   if (metaEiga$.quality != null) VerticalSeparator(),
                   if (metaEiga$.yearOf != null)
                     Text(metaEiga$.yearOf.toString(),
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
-                            ?.copyWith(fontSize: 12.0)),
+                            ?.copyWith(fontSize: 14.0)),
                   if (metaEiga$.duration != null) VerticalSeparator(),
                   if (metaEiga$.duration != null)
                     Text('Updated to ${metaEiga$.duration}',
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
-                            ?.copyWith(fontSize: 12.0)),
+                            ?.copyWith(fontSize: 14.0)),
                   if (metaEiga$.countries?.isNotEmpty == true)
                     VerticalSeparator(),
                   if (metaEiga$.countries?.isNotEmpty == true)
@@ -380,7 +380,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                       .textTheme
                                       .bodyMedium
                                       ?.copyWith(
-                                          fontSize: 12.0,
+                                          fontSize: 14.0,
                                           color: Theme.of(context)
                                               .colorScheme
                                               .tertiaryFixedDim))));
@@ -400,7 +400,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       Text(
                         ' ${metaEiga$.rate}',
                         style: const TextStyle(
-                          fontSize: 12.0,
+                          fontSize: 14.0,
                         ),
                       )
                     ]),
@@ -409,7 +409,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     Text('${metaEiga$.countRate} people rated',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).colorScheme.secondary,
-                            fontSize: 12.0)),
+                            fontSize: 14.0)),
                   if (metaEiga$.countRate != null) VerticalSeparator(),
                   if (metaEiga$.movieSeason != null)
                     GestureDetector(
@@ -422,7 +422,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                 .textTheme
                                 .bodyMedium
                                 ?.copyWith(
-                                    fontSize: 12.0,
+                                    fontSize: 14.0,
                                     color: Theme.of(context)
                                         .colorScheme
                                         .tertiaryFixedDim)))
@@ -441,7 +441,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       child: Text(
                         '#${genre.name}',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 12.0,
+                              fontSize: 14.0,
                               color: Theme.of(context)
                                   .colorScheme
                                   .tertiaryFixedDim,
@@ -466,13 +466,13 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                 ?.copyWith(
                                     color:
                                         Theme.of(context).colorScheme.secondary,
-                                    fontSize: 12.0)),
+                                    fontSize: 14.0)),
                         TextSpan(
                             text: metaEiga$.originalName!,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
-                                ?.copyWith(fontSize: 12.0))
+                                ?.copyWith(fontSize: 14.0))
                       ]))
               ],
             ));
@@ -505,7 +505,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   ][schedule.day]} of the week at ${schedule.hour}:${schedule.minute}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.secondary,
-                      fontSize: 12.0),
+                      fontSize: 14.0),
                 )
               ]));
         });
