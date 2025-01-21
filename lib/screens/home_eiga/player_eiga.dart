@@ -652,8 +652,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
                 opacity: (_fullscreen.value ? _showControls.value : true)
                     ? 1.0
                     : 0.0,
-                child: AbsorbPointer(
-                    absorbing: (_fullscreen.value ? _showControls.value : true),
+                child: IgnorePointer(
+                    ignoring: !(_fullscreen.value ? _showControls.value : true),
                     child: SliderEiga(
                       progress: _position,
                       duration: _duration,
