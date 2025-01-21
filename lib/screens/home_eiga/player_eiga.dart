@@ -138,6 +138,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
   final ValueNotifier<Duration> _duration = ValueNotifier(Duration());
   final ValueNotifier<bool> _loading = ValueNotifier(true);
   final ValueNotifier<bool> _playing = ValueNotifier(true);
+  final ValueNotifier<double> _aspectRatio = ValueNotifier(1);
 
   final ValueNotifier<_StateOpeningEnding> _stateOpeningEnding =
       ValueNotifier(_StateOpeningEnding.none);
@@ -219,6 +220,10 @@ class _PlayerEigaState extends State<PlayerEiga> {
     _loading.value = _controller.value?.value.isInitialized != true ||
         _controller.value!.value.isBuffering;
     _playing.value = _controller.value?.value.isPlaying ?? _playing.value;
+    if (_aspectRatio.value != _controller.value?.value.aspectRatio) {
+      _aspectRatio.value =
+          _controller.value?.value.aspectRatio ?? _aspectRatio.value;
+    }
     _firstLoadedSource.value = true;
 
     // if (_controller.value?.isBlank == true ||
@@ -339,21 +344,46 @@ class _PlayerEigaState extends State<PlayerEiga> {
             return ValueListenableBuilder<String?>(
                 valueListenable: _qualityCode,
                 builder: (context, value, child) {
-                  return GestureDetector(
-                      onTap: () {
-                        _activeTime = DateTime.now();
-                        _showControls.value = !_showControls.value;
-                      },
-                      child: SubtitleWrapper(
-                        enabled: value != null,
-                        videoPlayerController: controller,
-                        subtitleController: subtitleController,
-                        subtitleStyle: SubtitleStyle(
-                          textColor: Colors.white,
-                          hasBorder: true,
-                        ),
-                        videoChild: VideoPlayer(controller),
-                      ));
+                  return GestureDetector(onTap: () {
+                    _activeTime = DateTime.now();
+                    _showControls.value = !_showControls.value;
+                  }, child: LayoutBuilder(builder: (context, constraints) {
+                    final maxWidth = constraints.biggest.width;
+                    final maxHeight = constraints.biggest.height;
+
+                    return ValueListenableBuilder(
+                        valueListenable: _aspectRatio,
+                        child: VideoPlayer(controller),
+                        builder: (context, aspectRatio, child) {
+                          final aspectRatioView = maxWidth / maxHeight;
+                          // try maxHeight
+                          // aspect = w / h
+                          // width = height * aspectRatio
+                          // if with > maxWidth then width = maxWidth, height = maxWidth / aspectRatio
+                          double width, height;
+                          if (aspectRatioView > aspectRatio) {
+                            width = maxWidth;
+                            height = width / aspectRatio;
+                          } else {
+                            height = maxHeight;
+                            width = height * aspectRatio;
+                          }
+
+                          return SubtitleWrapper(
+                              enabled: value != null,
+                              videoPlayerController: controller,
+                              subtitleController: subtitleController,
+                              subtitleStyle: SubtitleStyle(
+                                textColor: Colors.white,
+                                hasBorder: true,
+                              ),
+                              videoChild: Center(
+                                  child: SizedBox(
+                                      width: width,
+                                      height: height,
+                                      child: child)));
+                        });
+                  }));
                 });
           }),
       ListenableBuilder(
