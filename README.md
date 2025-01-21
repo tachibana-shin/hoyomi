@@ -14,6 +14,7 @@ A new Flutter project.
 - [ ] Page eiga details
 
 - [ ] Fix page `Error: ...` can't pull refresh
+- [ ] Fix zoomer read manga
 
 - [ ] Responsive for video player
 - [ ] AppBar all page
@@ -26,4 +27,4 @@ A new Flutter project.
 - [ ] Increase font size
 
 
-/// provider or mobx
+<!-- provider or mobx -->
