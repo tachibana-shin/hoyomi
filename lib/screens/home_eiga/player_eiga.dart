@@ -643,17 +643,17 @@ class _PlayerEigaState extends State<PlayerEiga> {
   Widget _buildMobileSliderProgress() {
     return ListenableBuilder(
         listenable: Listenable.merge([_fullscreen, _showControls]),
-        builder: (context, child) => AnimatedSwitcher(
-            duration: _durationAnimate,
-            transitionBuilder: (child, animation) => FadeTransition(
-                  opacity: animation,
-                  child: child,
-                ),
-            child: (_fullscreen.value ? _showControls.value : true)
-                ? Positioned(
-                    bottom: _fullscreen.value ? kToolbarHeight : 0,
-                    left: 0,
-                    right: 0,
+        builder: (context, child) => Positioned(
+            bottom: _fullscreen.value ? kToolbarHeight : 0,
+            left: _fullscreen.value ? 16.0 : 0,
+            right: _fullscreen.value ? 16.0 : 0,
+            child: AnimatedOpacity(
+                duration: _durationAnimate,
+                opacity: (_fullscreen.value ? _showControls.value : true)
+                    ? 1.0
+                    : 0.0,
+                child: AbsorbPointer(
+                    absorbing: (_fullscreen.value ? _showControls.value : true),
                     child: SliderEiga(
                       progress: _position,
                       duration: _duration,
@@ -665,8 +665,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                         final seek = duration * position;
                         _controller.value?.seekTo(seek);
                       },
-                    ))
-                : SizedBox.shrink()));
+                    )))));
   }
 
   Widget _buildPopupOpeningEnding() {
