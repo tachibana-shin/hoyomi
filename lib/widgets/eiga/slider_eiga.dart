@@ -235,8 +235,10 @@ class _SliderEigaState extends State<SliderEiga>
                   widget.duration,
                   widget.openingEnding,
                 ]),
-                builder: (context, child) => CustomPaint(
-                      size: Size(parentSize.width, sliderHeightMax),
+                builder: (context, child) => Transform.translate(
+                    offset: Offset(0, _barHeightAnimation.value / 2),
+                    child: CustomPaint(
+                      size: Size(parentSize.width, _barHeightAnimation.value),
                       painter: _ProgressBarPainter(
                         progress: widget.progress.value.inMilliseconds /
                             widget.duration.value.inMilliseconds,
@@ -265,7 +267,7 @@ class _SliderEigaState extends State<SliderEiga>
                         barHeight:
                             _barHeightAnimation.value, // Animate bar height
                       ),
-                    ));
+                    )));
           },
         ));
   }
@@ -446,8 +448,7 @@ class _ThumbPainter extends CustomPainter {
       ..color = Colors.red
       ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(
-        Offset(size.width / 2, size.height / 2), this.size, thumbPaint);
+    canvas.drawCircle(Offset(size.width / 2, size.height / 2), this.size, thumbPaint);
   }
 
   @override
