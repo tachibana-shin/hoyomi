@@ -343,7 +343,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
             return ValueListenableBuilder<String?>(
                 valueListenable: _qualityCode,
-                builder: (context, value, child) {
+                builder: (context, qualityCode, child) {
                   return GestureDetector(onTap: () {
                     _activeTime = DateTime.now();
                     _showControls.value = !_showControls.value;
@@ -370,7 +370,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                           }
 
                           return SubtitleWrapper(
-                              enabled: value != null,
+                              enabled: qualityCode != null,
                               videoPlayerController: controller,
                               subtitleController: subtitleController,
                               subtitleStyle: SubtitleStyle(
