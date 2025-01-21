@@ -355,7 +355,7 @@ class _SliderEigaState extends State<SliderEiga>
 
     return ListenableBuilder(
         listenable: Listenable.merge(
-            [widget.duration, widget.progress, widget.showThumb]),
+            [widget.duration, widget.progress, _isHovering, widget.showThumb]),
         builder: (context, child) {
           final double left = ((widget.duration.value.inMilliseconds == 0
                           ? 0
@@ -363,7 +363,7 @@ class _SliderEigaState extends State<SliderEiga>
                               widget.duration.value.inMilliseconds)) *
                       width -
                   thumbSize / 2)
-              .clamp(0, width - thumbSize);
+              .clamp(thumbSize / 2, width - thumbSize);
 
           final double size = thumbSize;
 
@@ -373,7 +373,7 @@ class _SliderEigaState extends State<SliderEiga>
               child: AnimatedScale(
                 duration: const Duration(milliseconds: 111),
                 curve: Curves.easeInOut,
-                scale: widget.showThumb.value ? 1 : 0,
+                scale: widget.showThumb.value || _isHovering .value ? 1 : 0,
                 child: GestureDetector(
                   onPanUpdate: (details) {
                     _onSeek(details.localPosition);
