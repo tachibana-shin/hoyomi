@@ -365,14 +365,15 @@ class _SliderEigaState extends State<SliderEiga>
                   thumbSize / 2)
               .clamp(0, width - thumbSize);
 
-          final double size = widget.showThumb.value ? thumbSize : 0;
+          final double size = thumbSize;
 
           return Positioned(
               left: left,
               bottom: 0,
-              child: AnimatedSize(
-                duration: const Duration(milliseconds: 300),
+              child: AnimatedScale(
+                duration: const Duration(milliseconds: 111),
                 curve: Curves.easeInOut,
+                scale: widget.showThumb.value ? 1 : 0,
                 child: GestureDetector(
                   onPanUpdate: (details) {
                     _onSeek(details.localPosition);
@@ -448,7 +449,8 @@ class _ThumbPainter extends CustomPainter {
       ..color = Colors.red
       ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(Offset(size.width / 2, size.height / 2), this.size, thumbPaint);
+    canvas.drawCircle(
+        Offset(size.width / 2, size.height), this.size, thumbPaint);
   }
 
   @override
