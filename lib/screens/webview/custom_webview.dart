@@ -33,12 +33,7 @@ class _CustomWebViewState extends State<CustomWebView> {
   void initState() {
     super.initState();
 
-    try {
-      _initialUrl = getBookService(widget.serviceId).baseUrl;
-    } catch (err) {
-      _initialUrl = getEigaService(widget.serviceId).baseUrl;
-    }
-
+    _initialUrl = getBaseService(widget.serviceId).baseUrl;
     _currentTitle = _initialUrl;
     _currentUrl = _initialUrl;
   }
@@ -56,7 +51,7 @@ class _CustomWebViewState extends State<CustomWebView> {
 
       bool signed;
       try {
-        await getUser(getBookService(widget.serviceId), cookie: cookiesText);
+        await getUser(getBaseService(widget.serviceId), cookie: cookiesText);
         signed = true;
       } catch (err) {
         signed = false;
