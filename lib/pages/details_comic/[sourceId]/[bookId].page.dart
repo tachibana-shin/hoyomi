@@ -492,13 +492,7 @@ class _DetailsComicState extends State<DetailsComic>
                   ///
                   context.push("/section/${_service.uid}/${genre.genreId}");
                 },
-                child: Chip(
-                  padding: EdgeInsets.all(0),
-                  label: Text(genre.name,
-                      style: TextStyle(
-                        color: Colors.white,
-                      )),
-                ));
+                child: Chip(label: Text(genre.name)));
           }).toList(),
         ),
         SizedBox(height: 24.0),
