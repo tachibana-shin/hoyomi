@@ -26,6 +26,7 @@ A new Flutter project.
 - [ ] API comment for eiga
 - [x] Increase font size
 - [ ] API follow anime
+- [ ] API notification
 
 
 <!-- provider or mobx -->
