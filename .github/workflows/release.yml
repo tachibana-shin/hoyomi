@@ -24,20 +24,18 @@ jobs:
 
       - run: flutter pub get
 
-      - run: flutter build apk --release --split-per-abi
+      - name: Decode and save keystore file
+        run: |
+          echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > android/app/keystore.jks
 
-      - uses: filippoLeporati93/android-release-signer@v1
-        name: Sign app APK
-        # ID used to access action output
-        id: sign_app
-        with:
-          releaseDirectory: build/app/outputs/flutter-apk
-          signingKeyBase64: ${{ secrets.KEYSTORE_CONTENT }}
-          alias: ${{ secrets.KEYSTORE_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEYSTORE_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "34.0.0"
+      - name: Create key.properties file
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEYSTORE_ALIAS }}" >> android/key.properties
+          echo "storeFile=keystore.jks" >> android/key.properties
+
+      - run: flutter build apk --release --split-per-abi
 
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
