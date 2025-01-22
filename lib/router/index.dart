@@ -21,7 +21,7 @@ import 'package:hoyomi/pages/section/[sourceId]/[sectionId].page.dart';
 import 'package:hoyomi/widgets/navigation_app.dart';
 
 import '../pages/details_comic/[sourceId]/[bookId]/similar/similar_page.dart';
-import '../pages/details_eiga/[sourceId]/[eigaId].dart';
+import '../pages/details_eiga/[sourceId]/[eigaId].page.dart';
 
 final List<String> routeIgnoreLayoutDefault = [
   '/details_comic',
