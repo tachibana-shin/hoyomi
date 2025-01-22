@@ -1,10 +1,9 @@
 name: Test, Build and Release
 
 on:
-  workflow_run:
-    workflows: ["Analyze"]
-    types:
-      - completed
+  push:
+    tags:
+      - "v*"
 
 jobs:
   build_apk:
