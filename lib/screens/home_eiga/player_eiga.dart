@@ -454,7 +454,13 @@ class _PlayerEigaState extends State<PlayerEiga> {
                 IconButton(
                     icon: Icon(Icons.arrow_back_ios),
                     color: Colors.white,
-                    onPressed: widget.onBack),
+                    onPressed: () {
+                      if (_fullscreen.value) {
+                        _setFullscreen(false);
+                      } else {
+                        widget.onBack();
+                      }
+                    }),
                 SizedBox(width: 8.0),
                 // 2 line text
                 Expanded(
