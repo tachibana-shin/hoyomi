@@ -31,12 +31,12 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   late final TextEditingController _controller;
 
   bool _focusing = false;
-  bool _isOverlayVisible = false;
-  String _keyword = "";
+  final bool _isOverlayVisible = false;
+  // String _keyword = "";
 
-  OverlayEntry? _overlayEntry;
+  // OverlayEntry? _overlayEntry;
 
-  final bool _readonly = false;
+  // final bool _readonly = false;
   final _focusNode = FocusNode();
 
   @override
@@ -128,7 +128,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                       ),
                       onChanged: (value) {
                         setState(() {
-                          _keyword = value;
+                          // _keyword = value;
 
                           if (_isOverlayVisible) {
                             _debouncedShowOverlay();
@@ -197,21 +197,21 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
     );
   }
 
-  Widget _createOverlayEntry() {
-    return Positioned.fill(
-      top: 52.0,
-      child: Container(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          child: QuickSearchScreen(
-              onDismissed: () {
-                setState(() {
-                  _focusing = false;
-                  _removeOverlay();
-                });
-              },
-              keyword: _keyword.trim())),
-    );
-  }
+  // Widget _createOverlayEntry() {
+  //   return Positioned.fill(
+  //     top: 52.0,
+  //     child: Container(
+  //         color: Theme.of(context).scaffoldBackgroundColor,
+  //         child: QuickSearchScreen(
+  //             onDismissed: () {
+  //               setState(() {
+  //                 _focusing = false;
+  //                 _removeOverlay();
+  //               });
+  //             },
+  //             keyword: _keyword.trim())),
+  //   );
+  // }
 
   Timer? _debounceTimer;
   void _debouncedShowOverlay() {
@@ -230,23 +230,23 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
 
   void _showOverlay() {
     return;
-    _overlayEntry = OverlayEntry(builder: (context) => _createOverlayEntry());
-    Overlay.of(context).insert(_overlayEntry!);
+    // _overlayEntry = OverlayEntry(builder: (context) => _createOverlayEntry());
+    // Overlay.of(context).insert(_overlayEntry!);
 
-    // Overlay.of(context).insert(_overlayEntry);
-    setState(() {
-      _isOverlayVisible = true;
-    });
+    // // Overlay.of(context).insert(_overlayEntry);
+    // setState(() {
+    //   _isOverlayVisible = true;
+    // });
   }
 
   void _removeOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry?.dispose();
-    _overlayEntry = null;
-    // Overlay.of(context).
-    setState(() {
-      _isOverlayVisible = false;
-    });
+    // _overlayEntry?.remove();
+    // _overlayEntry?.dispose();
+    // _overlayEntry = null;
+    // // Overlay.of(context).
+    // setState(() {
+    //   _isOverlayVisible = false;
+    // });
   }
 }
 

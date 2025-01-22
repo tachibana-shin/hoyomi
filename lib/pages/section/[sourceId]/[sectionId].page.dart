@@ -225,11 +225,12 @@ class _SectionState extends State<Section> {
                                                 color: Theme.of(context)
                                                     .colorScheme
                                                     .onSurface
-                                                    .withOpacity(
-                                                        _data.containsKey(
-                                                                filter.key)
-                                                            ? 1.0
-                                                            : 0.8)),
+                                                    .withValues(
+                                                        alpha:
+                                                            _data.containsKey(
+                                                                    filter.key)
+                                                                ? 1.0
+                                                                : 0.8)),
                                           ),
                                           Padding(
                                               padding: EdgeInsets.only(

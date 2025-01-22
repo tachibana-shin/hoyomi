@@ -552,7 +552,7 @@ String _decryptM3u8(
   final iv = buff.sublist(flag2 ? 9 : 0, flag3 ? 18 : 16);
   final body = buff.sublist(flag4 ? 25 : 16);
 
-  final cipher = CBCBlockCipher(AESFastEngine())
+  final cipher = CBCBlockCipher(AESEngine())
     ..init(
       false,
       ParametersWithIV(KeyParameter(Uint8List.fromList(digest)), iv),
