@@ -45,9 +45,35 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
   final Map<String, Document> _docEigaStore = {};
 
   @override
-  Future<BasicUser> getUser({String? cookie}) {
-    // TODO: implement getUser
-    throw UnimplementedError();
+  Future<BasicUser> getUser({String? cookie}) async {
+    final document =
+        await fetchDocument('$baseUrl/thong-tin-tai-khoan', headers: {
+      'Cookie': cookie ?? '',
+      'Referer': baseUrl,
+    });
+
+    final avatar = document
+        .querySelector('.profile-userpic img')!
+        .attributes['src']!
+        .replaceFirst(
+            RegExp(r'animevietsub\.\w+\/'), '${baseUrl.split('://')[1]}/');
+
+    final name = document.querySelector('.profile-usertitle-name')!.text.trim();
+    final email = document.querySelector('#email')!.attributes['value']!;
+    final username = document.querySelector('#hoten')!.attributes['value']!;
+
+    final sex = document.querySelector('#male')?.attributes['checked'] != null
+        ? Sex.male
+        : document.querySelector('#female')?.attributes['checked'] != null
+            ? Sex.female
+            : Sex.other;
+
+    return BasicUser(
+        user: username,
+        photoUrl: avatar,
+        fullName: name,
+        email: email,
+        sex: sex);
   }
 
   @override
