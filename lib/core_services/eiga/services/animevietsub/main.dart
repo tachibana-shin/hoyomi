@@ -36,7 +36,7 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
   @override
   String get faviconUrl => "$baseUrl/favicon.ico";
   @override
-  String get signInUrl => "$baseUrl/dang-nhap";
+  String get signInUrl => "$baseUrl/account/login/?_fxRef=$baseUrl/";
 
   final String _apiOpEnd = "https://opend-9animetv.animevsub.eu.org";
   final String _apiThumb = "https://sk-hianime.animevsub.eu.org";
@@ -46,11 +46,11 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
 
   @override
   Future<BasicUser> getUser({String? cookie}) async {
-    final document =
-        await fetchDocument('$baseUrl/thong-tin-tai-khoan', headers: {
-      'Cookie': cookie ?? '',
-      'Referer': baseUrl,
-    });
+    final document = await fetchDocument('$baseUrl/account/info/',
+        cookie: cookie,
+        headers: {
+          'Referer': baseUrl,
+        });
 
     final avatar = document
         .querySelector('.profile-userpic img')!
