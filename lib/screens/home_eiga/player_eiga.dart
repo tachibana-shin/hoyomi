@@ -330,67 +330,56 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
   Widget _buildStack() {
     return Stack(children: [
-      GestureDetector(
-          onTap: () {
-            _activeTime = DateTime.now();
-            _showControls.value = !_showControls.value;
-          },
-          child: Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Container(color: Colors.black))),
-      ValueListenableBuilder<VideoPlayerController?>(
-          valueListenable: _controller,
-          builder: (context, controller, child) {
-            if (controller == null) return SizedBox.shrink();
+      Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Container(color: Colors.black)),
+      ListenableBuilder(
+          listenable: Listenable.merge([_controller, _qualityCode]),
+          builder: (context, child) => GestureDetector(onTap: () {
+                _activeTime = DateTime.now();
+                _showControls.value = !_showControls.value;
+              }, child: LayoutBuilder(builder: (context, constraints) {
+                final controller = _controller.value;
+                final qualityCode = _qualityCode.value;
+                if (controller == null) return SizedBox.shrink();
 
-            return ValueListenableBuilder<String?>(
-                valueListenable: _qualityCode,
-                builder: (context, qualityCode, child) {
-                  return GestureDetector(onTap: () {
-                    _activeTime = DateTime.now();
-                    _showControls.value = !_showControls.value;
-                  }, child: LayoutBuilder(builder: (context, constraints) {
-                    final maxWidth = constraints.biggest.width;
-                    final maxHeight = constraints.biggest.height;
+                final maxWidth = constraints.biggest.width;
+                final maxHeight = constraints.biggest.height;
 
-                    return ValueListenableBuilder(
-                        valueListenable: _aspectRatio,
-                        child: VideoPlayer(controller),
-                        builder: (context, aspectRatio, child) {
-                          final aspectRatioView = maxWidth / maxHeight;
-                          // try maxHeight
-                          // aspect = w / h
-                          // width = height * aspectRatio
-                          // if with > maxWidth then width = maxWidth, height = maxWidth / aspectRatio
-                          double width, height;
-                          if (aspectRatioView < aspectRatio) {
-                            width = maxWidth;
-                            height = width / aspectRatio;
-                          } else {
-                            height = maxHeight;
-                            width = height * aspectRatio;
-                          }
+                return ValueListenableBuilder(
+                    valueListenable: _aspectRatio,
+                    child: VideoPlayer(controller),
+                    builder: (context, aspectRatio, child) {
+                      final aspectRatioView = maxWidth / maxHeight;
+                      // try maxHeight
+                      // aspect = w / h
+                      // width = height * aspectRatio
+                      // if with > maxWidth then width = maxWidth, height = maxWidth / aspectRatio
+                      double width, height;
+                      if (aspectRatioView < aspectRatio) {
+                        width = maxWidth;
+                        height = width / aspectRatio;
+                      } else {
+                        height = maxHeight;
+                        width = height * aspectRatio;
+                      }
 
-                          return SubtitleWrapper(
-                              enabled: qualityCode != null,
-                              videoPlayerController: controller,
-                              subtitleController: subtitleController,
-                              subtitleStyle: SubtitleStyle(
-                                textColor: Colors.white,
-                                hasBorder: true,
-                              ),
-                              videoChild: Center(
-                                  child: SizedBox(
-                                      width: width,
-                                      height: height,
-                                      child: child)));
-                        });
-                  }));
-                });
-          }),
+                      return SubtitleWrapper(
+                          enabled: qualityCode != null,
+                          videoPlayerController: controller,
+                          subtitleController: subtitleController,
+                          subtitleStyle: SubtitleStyle(
+                            textColor: Colors.white,
+                            hasBorder: true,
+                          ),
+                          videoChild: Center(
+                              child: SizedBox(
+                                  width: width, height: height, child: child)));
+                    });
+              }))),
       ListenableBuilder(
           listenable:
               Listenable.merge([widget.posterNotifier, _firstLoadedSource]),
