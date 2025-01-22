@@ -77,6 +77,30 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
   }
 
   @override
+  Future<bool> isLiked({required eigaId}) async {
+    final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
+
+    final text = await fetch(
+      "$baseUrl/ajax/notification?Bookmark=true&filmId=$id",
+    );
+
+    return jsonDecode(text)['status'] == 1;
+    // ok
+    // final csrf = document.querySelector("#csrf-token")!.attributes["value"]!;
+  }
+
+  @override
+  Future<bool> setLike({required eigaId, required value}) async {
+    final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
+
+    final text = await fetch(
+      "$baseUrl/ajax/notification?Bookmark=true&filmId=$id&type=${value ? "add" : "remove"}",
+    );
+
+    return int.tryParse(text) == 1;
+  }
+
+  @override
   parseURL(String url) {
     final uri = Uri.parse(url);
     assert(uri.path.startsWith("/phim"));
