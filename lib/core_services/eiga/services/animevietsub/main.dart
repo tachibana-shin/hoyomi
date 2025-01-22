@@ -46,11 +46,10 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
 
   @override
   Future<BasicUser> getUser({String? cookie}) async {
-    final document = await fetchDocument('$baseUrl/account/info/',
-        cookie: cookie,
-        headers: {
-          'Referer': baseUrl,
-        });
+    final document =
+        await fetchDocument('$baseUrl/account/info/', cookie: cookie, headers: {
+      'Referer': baseUrl,
+    });
 
     final avatar = document
         .querySelector('.profile-userpic img')!
