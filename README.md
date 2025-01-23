@@ -29,7 +29,7 @@ A new Flutter project.
 - [ ] API notification
 
 - [ ] A11y manga reader
-- [ ] Back button in fullscreen in eiga
+- [x] Back button in fullscreen in eiga
 - [x] Can't emit event moving progress in eiga
 - [x] Can't show controls if controller pending in eiga
 

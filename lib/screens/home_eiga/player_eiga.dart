@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
@@ -151,7 +152,6 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
     _onSourceChanged();
     widget.sourceNotifier.addListener(_onSourceChanged);
-    _fullscreen.addListener(_onFullscreenChanged);
   }
 
   void _onSourceChanged() {
@@ -317,17 +317,6 @@ class _PlayerEigaState extends State<PlayerEiga> {
         });
   }
 
-  void _onFullscreenChanged() {
-    if (_fullscreen.value) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              fullscreenDialog: true, builder: (context) => _buildStack()));
-    } else {
-      Navigator.pop(context, true);
-    }
-  }
-
   Widget _buildStack() {
     return Stack(children: [
       Positioned(
@@ -454,9 +443,14 @@ class _PlayerEigaState extends State<PlayerEiga> {
             children: [
               Expanded(
                   child: Row(children: [
-// button back
+                // button back
                 IconButton(
-                    icon: Icon(Icons.arrow_back_ios),
+                    icon: ValueListenableBuilder(
+                      valueListenable: _fullscreen,
+                      builder: (context, fullscreen, child) => Transform.rotate(
+                          angle: fullscreen ? 1.5 * pi : 0.0,
+                          child: Icon(Icons.arrow_back_ios)),
+                    ),
                     color: Colors.white,
                     onPressed: () {
                       if (_fullscreen.value) {
@@ -870,10 +864,15 @@ class _PlayerEigaState extends State<PlayerEiga> {
         DeviceOrientation.landscapeLeft,
       ]);
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              fullscreenDialog: true, builder: (context) => _buildStack()));
     } else {
       SystemChrome.setPreferredOrientations([]);
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
           overlays: SystemUiOverlay.values);
+      Navigator.pop(context);
     }
   }
 
@@ -1124,6 +1123,5 @@ class _PlayerEigaState extends State<PlayerEiga> {
     super.dispose();
     _controller.value?.dispose();
     widget.sourceNotifier.removeListener(_onSourceChanged);
-    _fullscreen.removeListener(_onFullscreenChanged);
   }
 }
