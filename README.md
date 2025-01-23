@@ -31,6 +31,6 @@ A new Flutter project.
 - [ ] A11y manga reader
 - [ ] Back button in fullscreen in eiga
 - [ ] Can't emit event moving progress in eiga
-- [ ] Can't show controls if controller pending in eiga
+- [x] Can't show controls if controller pending in eiga
 
 <!-- provider or mobx -->

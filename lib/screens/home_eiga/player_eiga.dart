@@ -336,6 +336,21 @@ class _PlayerEigaState extends State<PlayerEiga> {
           right: 0,
           bottom: 0,
           child: Container(color: Colors.black)),
+      Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Opacity(
+            opacity: 0.0,
+            child: GestureDetector(
+              onTap: () {
+                _activeTime = DateTime.now();
+                _showControls.value = !_showControls.value;
+              },
+              child: Container(color: Colors.black),
+            ),
+          )),
       ListenableBuilder(
           listenable: Listenable.merge([_controller, _qualityCode]),
           builder: (context, child) => GestureDetector(onTap: () {
