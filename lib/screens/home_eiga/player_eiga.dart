@@ -128,6 +128,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
   ];
 
   final ValueNotifier<bool> _showControls = ValueNotifier(false);
+  final ValueNotifier<bool> _pauseAutoHideControls = ValueNotifier(false);
   final ValueNotifier<bool> _autoPlay = ValueNotifier(true);
   final ValueNotifier<String?> _subtitleCode = ValueNotifier(null);
   final ValueNotifier<double> _playbackSpeed = ValueNotifier(1.0);
@@ -152,6 +153,11 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
     _onSourceChanged();
     widget.sourceNotifier.addListener(_onSourceChanged);
+    _pauseAutoHideControls.addListener(() {
+      if (!_pauseAutoHideControls.value) {
+        _activeTime = DateTime.now();
+      }
+    });
   }
 
   void _onSourceChanged() {
@@ -233,12 +239,24 @@ class _PlayerEigaState extends State<PlayerEiga> {
     // } else {
     //   _onCanPlay = false;
     // }
+    if (_pauseAutoHideControls.value) {
+      _activeTime = DateTime.now();
+    }
 
     if (_activeTime.difference(DateTime.now()).inSeconds.abs() > 3) {
       _showControls.value = false;
     }
 
     _updateDurationRangeOpeningEnding();
+  }
+
+  void _onTapToggleControls() {
+    if (_pauseAutoHideControls.value) return;
+
+    _showControls.value = !_showControls.value;
+    if (_showControls.value) {
+      _activeTime = DateTime.now();
+    }
   }
 
   void _updateDurationRangeOpeningEnding() {
@@ -333,19 +351,15 @@ class _PlayerEigaState extends State<PlayerEiga> {
           child: Opacity(
             opacity: 0.0,
             child: GestureDetector(
-              onTap: () {
-                _activeTime = DateTime.now();
-                _showControls.value = !_showControls.value;
-              },
+              onTap: _onTapToggleControls,
               child: Container(color: Colors.black),
             ),
           )),
       ListenableBuilder(
           listenable: Listenable.merge([_controller, _qualityCode]),
-          builder: (context, child) => GestureDetector(onTap: () {
-                _activeTime = DateTime.now();
-                _showControls.value = !_showControls.value;
-              }, child: LayoutBuilder(builder: (context, constraints) {
+          builder: (context, child) => GestureDetector(
+              onTap: _onTapToggleControls,
+              child: LayoutBuilder(builder: (context, constraints) {
                 final controller = _controller.value;
                 final qualityCode = _qualityCode.value;
                 if (controller == null) return SizedBox.shrink();
@@ -414,7 +428,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                     ),
                 child: value
                     ? GestureDetector(
-                        onTap: () => _showControls.value = !value,
+                        onTap: _onTapToggleControls,
                         child: Container(
                             color: Colors.black.withValues(alpha: 0.5),
                             child: Stack(children: [
@@ -707,6 +721,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                       progress: _position,
                       duration: _duration,
                       showThumb: _showControls,
+                      pauseAutoHideControls: _pauseAutoHideControls,
                       vttThumbnail: widget.thumbnailVtt,
                       openingEnding: widget.openingEndingNotifier,
                       onSeek: (position) {

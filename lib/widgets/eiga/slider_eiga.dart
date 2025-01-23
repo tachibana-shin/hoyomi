@@ -20,6 +20,7 @@ class SliderEiga extends StatefulWidget {
   final ValueNotifier<Duration> progress; // Current progress (0.0 to 1.0)
   final ValueNotifier<Duration> duration;
   final ValueNotifier<bool> showThumb;
+  final ValueNotifier<bool> pauseAutoHideControls;
   final ValueNotifier<BasicVtt?> vttThumbnail;
   final ValueNotifier<OpeningEnding?> openingEnding;
   final Function(double) onSeek; // Callback for seek
@@ -31,6 +32,7 @@ class SliderEiga extends StatefulWidget {
       required this.onSeek,
       required this.vttThumbnail,
       required this.showThumb,
+      required this.pauseAutoHideControls,
       required this.openingEnding});
 
   @override
@@ -96,6 +98,7 @@ class _SliderEigaState extends State<SliderEiga>
     final box = context.findRenderObject() as RenderBox;
 
     _isHovering.value = true;
+    widget.pauseAutoHideControls.value = true;
     _hoverPosition.value = (localPosition.dx / box.size.width).clamp(0.0, 1.0);
     _controller.forward();
 
@@ -165,6 +168,7 @@ class _SliderEigaState extends State<SliderEiga>
 
   void _onHoverEnd() {
     _isHovering.value = false;
+    widget.pauseAutoHideControls.value = false;
     _controller.reverse();
   }
 
