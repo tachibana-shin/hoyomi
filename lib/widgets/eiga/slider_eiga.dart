@@ -24,15 +24,14 @@ class SliderEiga extends StatefulWidget {
   final ValueNotifier<OpeningEnding?> openingEnding;
   final Function(double) onSeek; // Callback for seek
 
-  const SliderEiga({
-    super.key,
-    required this.progress,
-    required this.duration,
-    required this.onSeek,
-    required this.vttThumbnail,
-    required this.showThumb,
-    required this.openingEnding,
-  });
+  const SliderEiga(
+      {super.key,
+      required this.progress,
+      required this.duration,
+      required this.onSeek,
+      required this.vttThumbnail,
+      required this.showThumb,
+      required this.openingEnding});
 
   @override
   createState() => _SliderEigaState();
@@ -189,6 +188,7 @@ class _SliderEigaState extends State<SliderEiga>
 
           /// hover event
           onHorizontalDragStart: (details) {
+            _onSeek(details.localPosition);
             _onHoverUpdate(details.localPosition);
           },
           onHorizontalDragEnd: (details) {
@@ -203,12 +203,44 @@ class _SliderEigaState extends State<SliderEiga>
           onTapUp: (details) {
             _onHoverEnd();
           },
+
+          /// long press
+          onLongPressDown: (details) {
+            _onSeek(details.localPosition);
+            _onHoverUpdate(details.localPosition);
+          },
+          onLongPressMoveUpdate: (details) {
+            _onSeek(details.localPosition);
+            _onHoverUpdate(details.localPosition);
+          },
+          onLongPressEnd: (details) {
+            _onHoverEnd();
+          },
+
+          /// pan
+          onPanStart: (details) {
+            _onSeek(details.localPosition);
+            _onHoverUpdate(details.localPosition);
+          },
+          onPanUpdate: (details) {
+            _onSeek(details.localPosition);
+            _onHoverUpdate(details.localPosition);
+          },
+          onPanEnd: (details) {
+            _onHoverEnd();
+          },
           // onTapCancel: _onHoverEnd,
           child: Stack(
             children: [
               SizedBox(
-                height: 200,
+                height: 220,
               ),
+              Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                      height: 10, color: Colors.black.withValues(alpha: 0.0))),
               _buildSliderBar(parentSize),
               // hover popover
               _buildHoverPreview(parentSize),
