@@ -551,6 +551,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         context: context,
         isScrollControlled: true,
         showDragHandle: true,
+        useSafeArea: true,
         builder: (context) => DraggableScrollableSheet(
               expand: false,
               snap: true,
@@ -753,6 +754,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         context: context,
         isScrollControlled: true,
         showDragHandle: true,
+        useSafeArea: true,
         builder: (context) => DraggableScrollableSheet(
               expand: false,
               snap: true,
