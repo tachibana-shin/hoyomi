@@ -650,10 +650,14 @@ class _PlayerEigaState extends State<PlayerEiga> {
               bottom: 0,
               right: 0,
               child: Center(
-                  child: CircularProgressIndicator(
-                strokeWidth: 5.0,
-                color: Colors.white,
-              )));
+                  child: GestureDetector(
+                      onTap: () {
+                        _setPlaying(!_playing.value);
+                      },
+                      child: CircularProgressIndicator(
+                        strokeWidth: 5.0,
+                        color: Colors.white,
+                      ))));
         });
   }
 
