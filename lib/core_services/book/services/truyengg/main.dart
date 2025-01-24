@@ -474,7 +474,7 @@ class TruyenGGService extends BookBaseService implements BookAuthService {
 
   // auth service
   @override
-  getUser({cookie}) async {
+  getUser({required cookie}) async {
     final document = await fetchDocument("$baseUrl/thiet-lap-tai-khoan.html",
         cookie: cookie);
 

@@ -6,11 +6,11 @@ class CookieController {
   static final _cookieManagerBox = isar.cookieManagers;
 
   static CookieManager? get({required String sourceId}) {
-    return _cookieManagerBox.where().uidEqualTo(sourceId).findFirst();
+    return _cookieManagerBox.where().sourceIdEqualTo(sourceId).findFirst();
   }
 
   static Future<CookieManager?> getAsync({required String sourceId}) {
-    return _cookieManagerBox.where().uidEqualTo(sourceId).findFirstAsync();
+    return _cookieManagerBox.where().sourceIdEqualTo(sourceId).findFirstAsync();
   }
 
   static Future<void> save(CookieManager data) async {

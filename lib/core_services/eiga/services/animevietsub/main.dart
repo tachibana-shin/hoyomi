@@ -45,7 +45,7 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
   final Map<String, Document> _docEigaStore = {};
 
   @override
-  Future<BasicUser> getUser({String? cookie}) async {
+  Future<BasicUser> getUser({required cookie}) async {
     final document =
         await fetchDocument('$baseUrl/account/info/', cookie: cookie, headers: {
       'Referer': baseUrl,
