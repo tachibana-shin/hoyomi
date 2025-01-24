@@ -24,7 +24,6 @@ class MetaEiga {
   final String? quality;
   final String? author;
   final List<BasicGenre>? countries;
-  final int? likes;
   final String? language;
   final BasicGenre? studio;
   final BasicGenre? movieSeason;
@@ -46,7 +45,6 @@ class MetaEiga {
     this.quality,
     this.author,
     this.countries,
-    this.likes,
     this.language,
     this.studio,
     this.movieSeason,
@@ -84,7 +82,6 @@ class MetaEiga {
       countries: [
         BasicGenre(name: 'Japan', genreId: ''),
       ],
-      likes: 2500,
       language: 'English',
       studio: BasicGenre(name: 'Studio Ghibli', genreId: ''),
       movieSeason: BasicGenre(name: 'Spring', genreId: ''),

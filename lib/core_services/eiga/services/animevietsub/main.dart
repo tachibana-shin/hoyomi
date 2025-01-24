@@ -42,7 +42,7 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
   final String _apiThumb = "https://sk-hianime.animevsub.eu.org";
 
   final Map<String, _ParamsEpisode> _paramsEpisodeStore = {};
-  final Map<String, Document> _docEigaStore = {};
+  final Map<String, Future<Document>> _docEigaStore = {};
 
   @override
   Future<BasicUser> getUser({required cookie}) async {
@@ -76,7 +76,7 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
   }
 
   @override
-  Future<bool> isLiked({required eigaId}) async {
+  Future<bool> isFollowed({required eigaId}) async {
     final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
 
     final text = await fetch(
@@ -89,7 +89,7 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
   }
 
   @override
-  Future<bool> setLike({required eigaId, required value}) async {
+  Future<bool> setFollow({required eigaId, required value}) async {
     final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
 
     final text = await fetch(
@@ -97,6 +97,24 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
     );
 
     return int.tryParse(text) == 1;
+  }
+
+  @override
+  getFollowCount({required eigaId}) async {
+    final document = await (_docEigaStore[eigaId] ??=
+        fetchDocument('$baseUrl/phim/$eigaId'));
+
+    final infoListLeft =
+        document.querySelectorAll(".mvici-left > .InfoList > .AAIco-adjust");
+
+    final followCount = int.parse(_findInfo(infoListLeft, "số người theo dõi")
+            ?.text
+            .split(":")[1]
+            .trim()
+            .replaceAll(',', '') ??
+        '0');
+
+    return followCount;
   }
 
   @override
@@ -267,9 +285,8 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
 
   @override
   getDetails(String eigaId) async {
-    final document = await fetchDocument('$baseUrl/phim/$eigaId');
-
-    _docEigaStore[eigaId] = document;
+    final document = await (_docEigaStore[eigaId] ??=
+        fetchDocument('$baseUrl/phim/$eigaId'));
 
     final name = document.querySelector(".Title")!.text;
     final originalName = document.querySelector(".SubTitle")!.text;
@@ -327,12 +344,6 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
         ?.querySelectorAll("a")
         .map((item) => _getInfoAnchor(item))
         .toList();
-    final likes = int.parse(_findInfo(infoListLeft, "số người theo dõi")
-            ?.text
-            .split(":")[1]
-            .trim()
-            .replaceAll(',', '') ??
-        '0');
     final language =
         _findInfo(infoListRight, "ngôn ngữ")?.text.split(":")[1].trim();
     final studio = _findInfo(infoListRight, "studio") == null
@@ -359,7 +370,6 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
         quality: quality,
         author: author,
         countries: countries,
-        likes: likes,
         language: language,
         studio: studio,
         movieSeason: movieSeason,
@@ -553,7 +563,7 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
 
   @override
   get getSuggest => ({required eiga, required eigaId, page}) async {
-        final items = _docEigaStore[eigaId]!
+        final items = (await _docEigaStore[eigaId]!)
             .querySelectorAll(".MovieListRelated .TPostMv")
             .map((item) => _parseItem(item))
             .toList();
