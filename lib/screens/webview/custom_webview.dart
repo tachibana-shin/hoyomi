@@ -3,13 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/cache/get_user.dart';
-import 'package:hoyomi/controller/cookie.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/database/isar.dart';
+import 'package:hoyomi/core_services/base_service.dart'; // Add this import
 import 'package:hoyomi/globals.dart';
-import 'package:hoyomi/database/scheme/cookie_manager.dart' as model;
-import 'package:isar/isar.dart';
 
 class CustomWebView extends StatefulWidget {
   final String serviceId;
@@ -22,6 +18,7 @@ class CustomWebView extends StatefulWidget {
 
 class _CustomWebViewState extends State<CustomWebView> {
   late InAppWebViewController _webViewController;
+  late final BaseService _service;
   late final String _initialUrl;
 
   String _currentTitle = "Loading...";
@@ -33,7 +30,8 @@ class _CustomWebViewState extends State<CustomWebView> {
   void initState() {
     super.initState();
 
-    _initialUrl = getBaseService(widget.serviceId).baseUrl;
+    _service = getBaseService(widget.serviceId);
+    _initialUrl = _service.baseUrl;
     _currentTitle = _initialUrl;
     _currentUrl = _initialUrl;
   }
@@ -49,37 +47,7 @@ class _CustomWebViewState extends State<CustomWebView> {
       final userAgent = await _webViewController.evaluateJavascript(
           source: "navigator.userAgent");
 
-      bool signed;
-      try {
-        await getUser(getBaseService(widget.serviceId), cookie: cookiesText);
-        signed = true;
-      } catch (err) {
-        signed = false;
-      }
-
-      final record = await isar.cookieManagers
-          .where()
-          .uidEqualTo(widget.serviceId)
-          .findFirstAsync();
-      if (record != null) {
-        record.cookie = cookiesText;
-        record.userAgent = userAgent;
-        record.signed = signed;
-        record.updatedAt = DateTime.now();
-
-        await CookieController.save(record);
-      } else {
-        final record = model.CookieManager(
-          uid: widget.serviceId,
-          cookie: cookiesText,
-          userAgent: userAgent,
-          signed: signed,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
-
-        await CookieController.save(record);
-      }
+      await _service.onAfterSignIn(cookie: cookiesText, userAgent: userAgent);
     } catch (e) {
       showSnackBar(
         Text('Error while collecting cookies: $e'),

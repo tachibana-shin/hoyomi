@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inappwebview;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/controller/cookie.dart';
+import 'package:hoyomi/core_services/base_auth_service.dart';
+import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/database/scheme/cookie_manager.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:html/dom.dart' as d;
 import 'package:html/parser.dart';
@@ -219,6 +222,7 @@ StackWebView createWebView(Uri uri) {
 abstract class UtilsService {
   String get name;
   String get uid => name.toLowerCase().replaceAll(r"\s", "-");
+  Future<BasicUser?>? _userFuture;
 
   static void showCaptchaResolve(BuildContext? context,
       {String? url, required CaptchaRequiredException error}) {
@@ -436,5 +440,90 @@ abstract class UtilsService {
     );
 
     return newUri;
+  }
+
+  /// After a successful sign in, this function is called to update the cookie and other relevant information in the cache.
+  ///
+  /// This function is called by [BaseAuthService] after a successful sign in.
+  ///
+  /// [cookie] The cookie to save to the cache. Must not be null.
+  ///
+  /// [userAgent] The user agent to save to the cache. Must not be null.
+  ///
+  /// Returns the [BasicUser] object of the user who has just signed in.
+  Future<BasicUser> onAfterSignIn(
+      {required String cookie, required String userAgent}) async {
+    if (this is! BaseAuthService) {
+      throw Exception('Service must be an instance of BaseAuthService');
+    }
+
+    final service = this as BaseAuthService;
+    final user = await service.getUser(cookie: cookie);
+    // save to cache
+    final oldData = await CookieController.getAsync(sourceId: uid) ??
+        CookieManager(
+          sourceId: uid,
+          cookie: cookie,
+          userAgent: userAgent,
+          user: jsonEncode(user.toJson()),
+          createdAt: DateTime.now(),
+          userUpdatedAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
+    if (oldData.user != jsonEncode(user.toJson())) {
+      oldData.userUpdatedAt = DateTime.now();
+    }
+
+    oldData
+      ..cookie = cookie
+      ..userAgent = userAgent
+      ..user = jsonEncode(user.toJson())
+      ..updatedAt = DateTime.now();
+
+    await CookieController.save(oldData);
+
+    return user;
+  }
+
+  Future<BasicUser?> getUserCache() async {
+    return _userFuture ??= _getUserCache();
+  }
+
+  Future<BasicUser?> _getUserCache() async {
+    if (this is! BaseAuthService) {
+      throw Exception('Service must be an instance of BaseAuthService');
+    }
+    final service = this as BaseAuthService;
+
+    var row = await CookieController.getAsync(sourceId: uid);
+    final cookie = row?.cookie;
+    var user = row?.user;
+
+    if (cookie == null) return null;
+
+    // if (user == null) {
+    user = jsonEncode((await service.getUser(cookie: cookie)).toJson());
+
+    row ??= CookieManager(
+      sourceId: uid,
+      cookie: cookie,
+      userAgent: '',
+      user: user,
+      createdAt: DateTime.now(),
+      userUpdatedAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    row.user = user;
+
+    await CookieController.save(row);
+    // }
+
+    return BasicUser.fromJson(jsonDecode(user));
+  }
+
+  Future<bool> isSigned() {
+    return getUserCache().then((user) => user != null);
   }
 }

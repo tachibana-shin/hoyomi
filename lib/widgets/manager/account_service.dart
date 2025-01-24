@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/cache/get_user.dart';
 import 'package:hoyomi/controller/cookie.dart';
 import 'package:hoyomi/core_services/base_auth_service.dart';
 import 'package:hoyomi/core_services/base_service.dart';

@@ -7,25 +7,28 @@ class CookieManager {
   late int id = 0;
 
   @Index(unique: true)
-  late String uid;
+  late String sourceId;
 
   late String cookie;
   late String userAgent;
 
-  late bool signed;
+  late String user;
 
   @Index()
   final DateTime createdAt;
+
+  DateTime userUpdatedAt;
 
   DateTime updatedAt;
 
   // Constructor
   CookieManager({
-    required this.uid,
+    required this.sourceId,
     required this.cookie,
     required this.userAgent,
-    required this.signed,
+    required this.user,
     required this.createdAt,
+    required this.userUpdatedAt,
     required this.updatedAt,
   });
 }

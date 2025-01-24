@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/cache/get_user.dart';
 import 'package:hoyomi/controller/history.dart';
 import 'package:hoyomi/core_services/book/book_auth_service.dart';
 import 'package:hoyomi/core_services/book/book_base_service.dart';
@@ -145,7 +144,7 @@ class _DetailsComicState extends State<DetailsComic>
             child: Text(_title),
           ),
           actions: [
-            if (_service is BookAuthService) _AvatarUser(service: (_service)),
+            if (_service is BookAuthService) _AvatarUser(service: _service),
             IconButtonShare(),
             IconButtonFollow(
                 sourceId: widget.sourceId, bookId: widget.bookId, book: _book),
@@ -823,17 +822,17 @@ class _AvatarUser extends StatefulWidget {
 }
 
 class _AvatarUserState extends State<_AvatarUser> {
-  late Future<BasicUser> _user;
+  late Future<BasicUser?> _user;
 
   @override
   void initState() {
     super.initState();
-    _user = getUser(widget.service);
+    _user = widget.service.getUserCache();
   }
 
   void _updateUser() {
     setState(() {
-      _user = getUser(widget.service);
+      _user = widget.service.getUserCache();
     });
   }
 
@@ -842,7 +841,7 @@ class _AvatarUserState extends State<_AvatarUser> {
     return FutureBuilder(
       future: _user,
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
+        if (snapshot.hasData && snapshot.data != null) {
           return Tooltip(
               message: snapshot.data!.fullName,
               child: CircleAvatar(
@@ -855,7 +854,7 @@ class _AvatarUserState extends State<_AvatarUser> {
                 ),
               ));
         }
-        if (snapshot.hasError) {
+        if (snapshot.hasError || snapshot.data == null) {
           return GestureDetector(
             onTap: () async {
               await context.push("/webview/${widget.service.uid}");
