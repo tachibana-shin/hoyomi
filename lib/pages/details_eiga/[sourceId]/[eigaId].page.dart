@@ -209,6 +209,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         SizedBox(height: 10.0),
                         // button group
                         _buildButtonGroup(_metaEigaNotifier),
+                        SizedBox(height: 5.0),
                         if (done) _buildSchedule(),
                         if (done) _buildSeasonHeader(_metaEigaNotifier),
                         SizedBox(height: 5.0),
