@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hoyomi/composable/use_user_async.dart';
 import 'package:hoyomi/controller/history.dart';
 import 'package:hoyomi/core_services/book/book_auth_service.dart';
 import 'package:hoyomi/core_services/book/book_base_service.dart';
@@ -26,6 +27,7 @@ import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
 import 'package:hoyomi/widgets/pull_to_refresh.dart';
 import 'package:hoyomi/widgets/book/sheet_chapters.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:signals/signals_flutter.dart';
 
 class DetailsComic extends StatefulWidget {
   final String sourceId;
@@ -822,58 +824,77 @@ class _AvatarUser extends StatefulWidget {
 }
 
 class _AvatarUserState extends State<_AvatarUser> {
-  late Future<BasicUser?> _user;
+  Signal<BasicUser?>? _user;
+  Future<void> Function()? _refresh;
+  Function()? _onDispose;
 
   @override
   void initState() {
     super.initState();
-    _user = widget.service.getUserCache();
+
+    useUserAsync(widget.service).then(
+      (value) {
+        if (mounted) {
+          setState(() {
+            _user = value.user;
+            _refresh = value.refresh;
+
+            _onDispose = value.error.subscribe((error) {
+              if (error != null) {
+                showSnackBar(Text('Sign in failed: $error'));
+                value.user.value = null;
+              }
+            });
+          });
+        }
+      },
+    );
   }
 
-  void _updateUser() {
-    setState(() {
-      _user = widget.service.getUserCache();
-    });
+  @override
+  void dispose() {
+    if (_onDispose != null) _onDispose!();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _user,
-      builder: (context, snapshot) {
-        if (snapshot.hasData && snapshot.data != null) {
-          return Tooltip(
-              message: snapshot.data!.fullName,
-              child: CircleAvatar(
-                radius: 15,
-                backgroundColor: Theme.of(context).colorScheme.onSurface,
-                child: BasicImage.network(
-                  snapshot.data!.photoUrl,
-                  sourceId: widget.service.uid,
-                  fit: BoxFit.cover,
-                ),
-              ));
-        }
-        if (snapshot.hasError || snapshot.data == null) {
-          return GestureDetector(
-            onTap: () async {
-              await context.push("/webview/${widget.service.uid}");
-              _updateUser();
-            },
+    if (_user == null) {
+      return SizedBox.shrink();
+    }
+
+    return Watch((context) {
+      final user = _user?.value;
+
+      if (user != null) {
+        return Tooltip(
+            message: user.fullName,
             child: CircleAvatar(
               radius: 15,
               backgroundColor: Theme.of(context).colorScheme.onSurface,
-              child: Icon(
-                Icons.account_circle,
-                color: Theme.of(context).colorScheme.primary,
-                size: 30,
+              child: BasicImage.network(
+                user.photoUrl,
+                sourceId: widget.service.uid,
+                fit: BoxFit.cover,
               ),
-            ),
-          );
-        }
+            ));
+      }
 
-        return const CircularProgressIndicator();
-      },
-    );
+      return GestureDetector(
+        onTap: () async {
+          await context.push("/webview/${widget.service.uid}");
+          _refresh!();
+        },
+        child: CircleAvatar(
+          radius: 15,
+          backgroundColor: Theme.of(context).colorScheme.onSurface,
+          child: Icon(
+            Icons.account_circle,
+            color: Theme.of(context).colorScheme.primary,
+            size: 30,
+          ),
+        ),
+      );
+    });
   }
 }

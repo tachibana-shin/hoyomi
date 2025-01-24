@@ -481,16 +481,18 @@ abstract class UtilsService {
       ..user = jsonEncode(user.toJson())
       ..updatedAt = DateTime.now();
 
+    _userFuture = Future.value(user);
+
     await CookieController.save(oldData);
 
     return user;
   }
 
-  Future<BasicUser?> getUserCache() async {
-    return _userFuture ??= _getUserCache();
+  Future<BasicUser?> fetchUser() async {
+    return _userFuture ??= _fetchUser();
   }
 
-  Future<BasicUser?> _getUserCache() async {
+  Future<BasicUser?> _fetchUser() async {
     if (this is! BaseAuthService) {
       throw Exception('Service must be an instance of BaseAuthService');
     }
@@ -521,9 +523,5 @@ abstract class UtilsService {
     // }
 
     return BasicUser.fromJson(jsonDecode(user));
-  }
-
-  Future<bool> isSigned() {
-    return getUserCache().then((user) => user != null);
   }
 }
