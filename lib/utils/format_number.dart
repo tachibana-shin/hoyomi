@@ -1,4 +1,4 @@
-String formatNumber(num number) {
+String formatNumber(int number) {
   if (number >= 1e9) {
     return '${(number / 1e9).toStringAsFixed(1)}B';
   } else if (number >= 1e6) {
