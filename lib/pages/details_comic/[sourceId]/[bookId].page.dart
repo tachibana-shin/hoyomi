@@ -147,7 +147,8 @@ class _DetailsComicState extends State<DetailsComic>
             child: Text(_title),
           ),
           actions: [
-            if (_service is BookAuthService && _service is BaseAuthService) _AvatarUser(service: _service),
+            if (_service is BookAuthService && _service is BaseAuthService)
+              _AvatarUser(service: _service),
             IconButtonShare(),
             IconButtonFollow(
                 sourceId: widget.sourceId, bookId: widget.bookId, book: _book),
