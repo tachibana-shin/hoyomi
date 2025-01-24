@@ -3,6 +3,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user_async.dart';
 import 'package:hoyomi/controller/history.dart';
+import 'package:hoyomi/core_services/base_auth_service.dart';
 import 'package:hoyomi/core_services/book/book_auth_service.dart';
 import 'package:hoyomi/core_services/book/book_base_service.dart';
 import 'package:hoyomi/core_services/book/interfaces/base_section.dart';
@@ -146,7 +147,7 @@ class _DetailsComicState extends State<DetailsComic>
             child: Text(_title),
           ),
           actions: [
-            if (_service is BookAuthService) _AvatarUser(service: _service),
+            if (_service is BookAuthService && _service is BaseAuthService) _AvatarUser(service: _service),
             IconButtonShare(),
             IconButtonFollow(
                 sourceId: widget.sourceId, bookId: widget.bookId, book: _book),
@@ -832,7 +833,7 @@ class _AvatarUserState extends State<_AvatarUser> {
   void initState() {
     super.initState();
 
-    useUserAsync(widget.service).then(
+    useUserAsync(widget.service as BaseAuthService).then(
       (value) {
         if (mounted) {
           setState(() {

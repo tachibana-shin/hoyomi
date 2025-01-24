@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/controller/cookie.dart';
+import 'package:hoyomi/composable/use_user.dart';
 import 'package:hoyomi/core_services/base_auth_service.dart';
 import 'package:hoyomi/core_services/base_service.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
-import 'package:hoyomi/globals.dart';
+import 'package:signals/signals_flutter.dart';
 
 class AccountService extends StatefulWidget {
   final BaseService service;
@@ -17,57 +17,49 @@ class AccountService extends StatefulWidget {
   createState() => _AccountServiceState();
 }
 
-class _AccountServiceState extends State<AccountService> {
-  BasicUser? _user;
-  Object? _error;
-  bool? _signed;
+class _AccountServiceState extends State<AccountService> with SignalsMixin {
+  late final _user = createSignal<BasicUser?>(null);
+  late final _error = createSignal<String?>(null);
+
+  late final _status = createComputed(() {
+    if (!_serviceAccountSupport) return "NOT_SUPPORT";
+    if (_user.value == null) return "NOT_SIGN";
+    // if (_user.value == false) return "NOT_SIGN";
+    //// _signed is true;
+
+    if (_error.value != null) return "ERROR";
+
+    return "DONE";
+  });
+
+  Future<void> Function()? _refresh;
+
+  void Function()? _onDisposeUser;
+  void Function()? _onDisposeError;
 
   bool get _serviceAccountSupport {
     return widget.service is BaseAuthService;
-  }
-
-  String get _status {
-    if (!_serviceAccountSupport) return "NOT_SUPPORT";
-
-    if (_signed == null) return "LOADING";
-    if (_signed == false) return "NOT_SIGN";
-    // _signed is true;
-
-    if (_error != null) return "ERROR";
-    if (_user == null) return "LOADING";
-
-    return "DONE";
   }
 
   @override
   void initState() {
     super.initState();
     if (_serviceAccountSupport) {
-      _fetchUser();
+      final out = useUser(widget.service as BaseAuthService);
+
+      _refresh = out.refresh;
+
+      _onDisposeUser = out.user.subscribe((user) => _user.value = user);
+      _onDisposeError = out.error.subscribe((error) => _error.value = error);
     }
   }
 
-  Future<void> _fetchUser() async {
-    final row = await CookieController.getAsync(sourceId: widget.service.uid);
+  @override
+  void dispose() {
+    if (_onDisposeUser != null) _onDisposeUser!();
+    if (_onDisposeError != null) _onDisposeError!();
 
-    if (mounted) {
-      setState(() {
-        _signed = row?.signed ?? false;
-      });
-    }
-
-    if (row?.signed != true) return;
-
-    _error = null;
-    await getUser(widget.service).then((user) {
-      setState(() {
-        _user = user;
-      });
-    }).catchError((err) {
-      setState(() {
-        _error = err;
-      });
-    });
+    super.dispose();
   }
 
   @override
@@ -96,7 +88,7 @@ class _AccountServiceState extends State<AccountService> {
   }
 
   Widget _buildUserAvatar() {
-    switch (_status) {
+    switch (_status()) {
       case "NOT_SUPPORT":
         return CircleAvatar(
             backgroundColor: Theme.of(context).colorScheme.surface,
@@ -123,7 +115,7 @@ class _AccountServiceState extends State<AccountService> {
         return CircleAvatar(
             backgroundColor: Colors.grey.shade300,
             child: BasicImage.network(
-              _user!.photoUrl,
+              _user()!.photoUrl,
               sourceId: widget.service.uid,
               fit: BoxFit.cover,
             ));
@@ -132,7 +124,7 @@ class _AccountServiceState extends State<AccountService> {
 
   Widget _buildUserDetails(BuildContext context) {
     Widget oneLine;
-    switch (_status) {
+    switch (_status()) {
       case "NOT_SUPPORT":
         oneLine = Text(
           'This service does not support accounts.',
@@ -159,10 +151,8 @@ class _AccountServiceState extends State<AccountService> {
         oneLine = InkWell(
             onTap: () async {
               await context.push("/webview/${widget.service.uid}");
-              await _fetchUser();
-
-              if (_signed != true) {
-                showSnackBar(Text('Sign in failed.'));
+              if (_refresh != null) {
+                await _refresh!();
               }
             },
             child: Text(
@@ -189,7 +179,9 @@ class _AccountServiceState extends State<AccountService> {
             ),
             const SizedBox(height: 5.0),
             TextButton(
-              onPressed: _fetchUser,
+              onPressed: () {
+                if (_refresh != null) _refresh!();
+              },
               child: const Text('Retry'),
             ),
           ],
@@ -201,7 +193,7 @@ class _AccountServiceState extends State<AccountService> {
               context.push("/webview/${widget.service.uid}");
             },
             child: Text(
-              _user!.fullName,
+              _user()!.fullName,
               style: const TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
