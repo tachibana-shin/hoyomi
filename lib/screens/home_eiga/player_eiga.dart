@@ -180,6 +180,9 @@ class _PlayerEigaState extends State<PlayerEiga> {
             ..initialize().then((_) {
               // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
               if (!_playing.value) _controller.value?.play();
+            }).catchError((err) {
+              debugPrint('Error: $err');
+              _error.value = err + '';
             });
 
       final response = await get(url, headers: source.headers);
@@ -205,6 +208,9 @@ class _PlayerEigaState extends State<PlayerEiga> {
           ..initialize().then((_) {
             // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
             if (!_playing.value) _controller.value?.play();
+          }).catchError((err) {
+            debugPrint('Error: $err');
+            _error.value = err + '';
           });
 
     if (source.type == 'hls') {
@@ -439,6 +445,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                     : SizedBox.shrink());
           }),
       _buildIndicator(),
+      _buildError(),
       _buildMobileSliderProgress(),
       _buildPopupOpeningEnding(),
       _buildOverlayInherit()
@@ -658,6 +665,30 @@ class _PlayerEigaState extends State<PlayerEiga> {
                         strokeWidth: 5.0,
                         color: Colors.white,
                       ))));
+        });
+  }
+
+  Widget _buildError() {
+    return ValueListenableBuilder(
+        valueListenable: _error,
+        builder: (context, error, child) {
+          if (error == null) return SizedBox.shrink();
+
+          return Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Center(
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                    SizedBox(width: 8.0),
+                    Text(error,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        maxLines: 2),
+                    SizedBox(width: 8.0),
+                  ]))); // error
         });
   }
 
