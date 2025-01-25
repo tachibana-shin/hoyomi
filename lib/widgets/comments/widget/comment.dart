@@ -231,6 +231,7 @@ class _CommentState extends State<Comment> {
         widget.comment.like = old;
       });
       showSnackBar(Text('Error: $err'));
+      debugPrint('Error: $err');
     }
   }
 
@@ -274,6 +275,7 @@ class _CommentState extends State<Comment> {
                             });
 
                             showSnackBar(Text('Error: $e'));
+                            debugPrint('Error: $e');
                           }
                         },
                   child: isDeleting
