@@ -556,7 +556,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   void _showModalMetadata(ValueNotifier<MetaEiga> metaEiga) {
     final query = MediaQuery.of(context);
     final size = query.size;
-    final heightPlayer = size.height - (size.width * 1 / _aspectRatio);
+    final heightPlayer =
+        size.height - query.padding.top - (size.width * 1 / _aspectRatio);
 
     _initialBottomSheet = max(0.5, heightPlayer / size.height);
     showModalBottomSheetNoScrim(
@@ -759,7 +760,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   void _showModalEpisodes(ValueNotifier<MetaEiga> metaEiga) {
     final query = MediaQuery.of(context);
     final size = query.size;
-    final heightPlayer = size.height - (size.width * 1 / _aspectRatio);
+    final heightPlayer =
+        size.height - query.padding.top - (size.width * 1 / _aspectRatio);
 
     _initialBottomSheet = max(0.5, heightPlayer / size.height);
     showModalBottomSheetNoScrim(
