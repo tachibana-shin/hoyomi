@@ -52,7 +52,8 @@ class _CustomWebViewState extends State<CustomWebView> {
       showSnackBar(
         Text('Error while collecting cookies: $e'),
       );
-      throw e;
+      debugPrint('Error: $e');
+      rethrow;
     }
   }
 
