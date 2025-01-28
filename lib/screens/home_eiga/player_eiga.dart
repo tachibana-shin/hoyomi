@@ -210,7 +210,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
             if (!_playing.value) _controller.value?.play();
           }).catchError((err) {
             debugPrint('Error: $err');
-            _error.value = err + '';
+            _error.value = '$err';
           });
 
     if (source.type == 'hls') {
