@@ -39,6 +39,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
   @override
   void initState() {
     super.initState();
+    _onUpdateEigaId();
     widget.eigaId.addListener(_onUpdateEigaId);
 
     if (_supportAuth) {

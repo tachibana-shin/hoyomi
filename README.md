@@ -32,7 +32,7 @@ A new Flutter project.
 - [x] Back button in fullscreen in eiga
 - [x] Can't emit event moving progress in eiga
 - [x] Can't show controls if controller pending in eiga
-- [ ] Fix follow eiga
+- [x] Fix follow eiga
 - [ ] API season eiga
 - [ ] API search eiga
 <!-- provider or mobx -->

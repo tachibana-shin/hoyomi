@@ -96,7 +96,7 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
       "$baseUrl/ajax/notification?Bookmark=true&filmId=$id&type=${value ? "add" : "remove"}",
     );
 
-    return int.tryParse(text) == 1;
+    return jsonDecode(text)['status'] == 1 ? value : !value;
   }
 
   @override
