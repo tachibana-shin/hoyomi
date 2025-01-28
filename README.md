@@ -35,4 +35,6 @@ A new Flutter project.
 - [x] Fix follow eiga
 - [ ] API season eiga
 - [ ] API search eiga
+
+- [ ] Cache for API: eiga info, eiga play, eiga follow...
 <!-- provider or mobx -->
