@@ -25,6 +25,7 @@ class ButtonFollowEiga extends StatefulWidget {
 }
 
 class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
+  late final _loading = createSignal(false);
   late final _isFollowed = createSignal(false);
   late final _followCount = createSignal<int?>(null);
 
@@ -64,16 +65,23 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
     super.dispose();
   }
 
-  void _onUpdateEigaId() {
+  void _onUpdateEigaId() async {
     if (!_supportAuth) return;
     final service = widget.service as EigaAuthService;
 
-    service.isFollowed(eigaId: widget.eigaId.value).then((value) {
-      if (mounted) _isFollowed.value = value;
-    });
-    service.getFollowCount(eigaId: widget.eigaId.value).then((value) {
-      if (mounted) _followCount.value = value;
-    });
+    _loading.value = true;
+    try {
+      await Future.wait([
+        service.isFollowed(eigaId: widget.eigaId.value).then((value) {
+          if (mounted) _isFollowed.value = value;
+        }),
+        service.getFollowCount(eigaId: widget.eigaId.value).then((value) {
+          if (mounted) _followCount.value = value;
+        })
+      ]);
+    } finally {
+      _loading.value = false;
+    }
   }
 
   @override
@@ -82,9 +90,9 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
     final followCount = _followCount();
 
     return Opacity(
-        opacity: _supportAuth ? 1.0 : 0.5,
+        opacity: (_supportAuth && !_loading()) ? 1.0 : 0.5,
         child: IgnorePointer(
-            ignoring: !_supportAuth,
+            ignoring: !(_supportAuth && !_loading()),
             child: ElevatedButton.icon(
               onPressed: _onTap,
               icon: Icon(
