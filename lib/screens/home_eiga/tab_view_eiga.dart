@@ -89,7 +89,7 @@ class _TabViewEigaState extends State<TabViewEiga>
                             service: widget.service,
                             title: section.name,
                             more: section.sectionId != null
-                                ? '/section/${widget.service.uid}/${section.sectionId}'
+                                ? '/section_eiga/${widget.service.uid}/${section.sectionId}'
                                 : null,
                           );
                         }
@@ -100,7 +100,7 @@ class _TabViewEigaState extends State<TabViewEiga>
                           service: widget.service,
                           title: section.name,
                           more: section.sectionId != null
-                              ? '/section/${widget.service.uid}/${section.sectionId}'
+                              ? '/section_eiga/${widget.service.uid}/${section.sectionId}'
                               : null,
                         );
                       });

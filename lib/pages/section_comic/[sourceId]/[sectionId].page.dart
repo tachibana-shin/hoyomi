@@ -16,11 +16,11 @@ import 'package:hoyomi/widgets/book/vertical_book.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-class SectionPage extends StatelessWidget {
+class SectionComicPage extends StatelessWidget {
   final String serviceId;
   final String sectionId;
 
-  const SectionPage(
+  const SectionComicPage(
       {super.key, required this.serviceId, required this.sectionId});
 
   @override

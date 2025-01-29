@@ -84,7 +84,7 @@ class _TabViewBookState extends State<TabViewBook>
                                   .toList(),
                               title: section.name,
                               more: section.sectionId != null
-                                  ? '/section/${widget.service.uid}/${section.sectionId}'
+                                  ? '/section_comic/${widget.service.uid}/${section.sectionId}'
                                   : null,
                             );
                           }
@@ -95,7 +95,7 @@ class _TabViewBookState extends State<TabViewBook>
                             service: widget.service,
                             title: section.name,
                             more: section.sectionId != null
-                                ? '/section/${widget.service.uid}/${section.sectionId}'
+                                ? '/section_comic/${widget.service.uid}/${section.sectionId}'
                                 : null,
                           );
                         });

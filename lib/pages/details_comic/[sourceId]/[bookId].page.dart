@@ -493,7 +493,7 @@ class _DetailsComicState extends State<DetailsComic>
             return InkWell(
                 onTap: () {
                   ///
-                  context.push("/section/${_service.uid}/${genre.genreId}");
+                  context.push("/section_comic/${_service.uid}/${genre.genreId}");
                 },
                 child: Chip(label: Text(genre.name)));
           }).toList(),
