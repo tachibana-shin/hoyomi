@@ -15,6 +15,7 @@ import 'package:hoyomi/widgets/eiga/vertical_eiga.dart';
 import 'package:hoyomi/widgets/pull_to_refresh.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class SectionEigaPage extends StatelessWidget {
   final String serviceId;
@@ -276,18 +277,25 @@ class _SectionState extends State<Section> {
               builderDelegate: PagedChildBuilderDelegate<BasicEiga>(
                 animateTransitions: true,
                 itemBuilder: (context, eiga, index) {
-                  return VerticalEiga(eiga: eiga, sourceId: _service.uid);
+                  return Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+                      child: VerticalEiga(eiga: eiga, sourceId: _service.uid));
                 },
                 firstPageProgressIndicatorBuilder: (_) => Center(
                   child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 24.0),
                       child: CircularProgressIndicator()),
                 ),
-                newPageProgressIndicatorBuilder: (_) => Center(
-                  child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 24.0),
-                      child: CircularProgressIndicator()),
-                ),
+                newPageProgressIndicatorBuilder: (_) => Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+                    child: Skeletonizer(
+                        enabled: true,
+                        enableSwitchAnimation: true,
+                        child: VerticalEiga(
+                            eiga: BasicEiga.createFakeData(),
+                            sourceId: _service.uid))),
                 noItemsFoundIndicatorBuilder: (_) => Center(
                   child: Text('No items found.'),
                 ),
