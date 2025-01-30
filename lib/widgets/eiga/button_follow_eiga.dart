@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user.dart';
 import 'package:hoyomi/core_services/base_service.dart';
 import 'package:hoyomi/core_services/eiga/eiga_auth_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/globals.dart';
+import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/utils/format_number.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -96,19 +98,16 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
             child: ElevatedButton.icon(
               onPressed: _onTap,
               icon: Icon(
-                isFollowed
-                    ? MaterialCommunityIcons.bookmark_check
-                    : MaterialCommunityIcons.bookmark_plus_outline,
-                color: Theme.of(context).textTheme.labelLarge?.color,
-              ),
+                  isFollowed
+                      ? MaterialCommunityIcons.bookmark_check
+                      : MaterialCommunityIcons.bookmark_plus_outline,
+                  color: Theme.of(context).textTheme.labelLarge?.color),
               label: Text(
                   followCount == null || followCount == 0
                       ? 'Follow'
                       : formatNumber(followCount),
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelLarge
-                      ?.copyWith(fontWeight: FontWeight.normal)),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.normal, fontSize: 12.0)),
             )));
   }
 
@@ -118,7 +117,13 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
 
     final isSigned = _isSigned.value;
     if (!isSigned) {
-      showSnackBar(Text('Please sign in to follow eiga.'));
+      showSnackBar(Text('Please sign in to follow eiga.'),
+          action: SnackBarAction(
+              label: 'Sign in',
+              onPressed: () async {
+                await context.push('/webview/${widget.service.uid}');
+                router.refresh();
+              }));
 
       return;
     }
