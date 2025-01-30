@@ -218,7 +218,8 @@ class _ListEpisodesState extends State<ListEpisodes> {
                     itemBuilder: itemBuilder);
 
                 if (waiting) {
-                  return Skeletonizer(enabled: true, child: child);
+                  return Skeletonizer(
+                      enabled: true, enableSwitchAnimation: true, child: child);
                 }
                 return child;
               });
@@ -237,6 +238,7 @@ class ListEpisodesSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Skeletonizer(
         enabled: true,
+        enableSwitchAnimation: true,
         child: SizedBox(
             height: height,
             child: ListView.builder(

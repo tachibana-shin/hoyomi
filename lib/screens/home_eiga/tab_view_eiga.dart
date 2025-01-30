@@ -61,6 +61,7 @@ class _TabViewEigaState extends State<TabViewEiga>
         Widget builder(BaseEigaHome data) {
           return Skeletonizer(
               enabled: snapshot.connectionState == ConnectionState.waiting,
+              enableSwitchAnimation: true,
               child: ListView.builder(
                 padding: const EdgeInsets.all(8.0),
                 itemCount:

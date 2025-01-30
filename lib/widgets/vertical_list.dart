@@ -63,6 +63,7 @@ class VerticalList<T> extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Skeletonizer(
                     enabled: true,
+                    enableSwitchAnimation: true,
                     child: _buildGridView(context, getDataLoading()));
               }
               if (snapshot.hasError) {

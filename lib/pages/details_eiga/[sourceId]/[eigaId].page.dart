@@ -205,6 +205,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       children: [
                         Skeletonizer(
                             enabled: !done,
+                            enableSwitchAnimation: true,
                             child: _buildBasicInfo(_metaEigaNotifier)),
                         SizedBox(height: 10.0),
                         // button group
