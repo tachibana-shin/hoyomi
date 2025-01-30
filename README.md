@@ -35,6 +35,9 @@ A new Flutter project.
 - [x] Fix follow eiga
 - [x] API season eiga
 - [ ] API search eiga
+- [ ] API for history online
+- [ ] API playlist
+- [ ] API playlist online
 
 - [ ] Cache for API: eiga info, eiga play, eiga follow...
 - [ ] Replace circular loading with skeleton
