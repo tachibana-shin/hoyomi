@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/base_service.dart'; // Add this import
 import 'package:hoyomi/globals.dart';
@@ -47,7 +48,14 @@ class _CustomWebViewState extends State<CustomWebView> {
       final userAgent = await _webViewController.evaluateJavascript(
           source: "navigator.userAgent");
 
-      await _service.onAfterSignIn(cookie: cookiesText, userAgent: userAgent);
+      final user = await _service.onAfterSignIn(
+          cookie: cookiesText, userAgent: userAgent);
+
+      showSnackBar(Text('Signed in to ${_service.name} as ${user.fullName}'));
+    } on UserNotFoundException catch (_) {
+      showSnackBar(
+        Text('Sign in ${_service.name} failed.'),
+      );
     } catch (e) {
       showSnackBar(
         Text('Error while collecting cookies: $e'),
