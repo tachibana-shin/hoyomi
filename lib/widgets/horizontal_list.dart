@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:expandable_page_view/expandable_page_view.dart';
 
 class HorizontalList<T> extends StatelessWidget {
   final String title;
@@ -36,12 +37,14 @@ class HorizontalList<T> extends StatelessWidget {
       crossAxisCount = 6.5;
     }
 
-    final childAspectRatio = 2 / 4.1;
+    final childAspectRatio = 2 / 3;
     final viewportFraction = 1 / crossAxisCount;
     final height = 1 /
-        childAspectRatio *
-        (MediaQuery.of(context).size.width) *
-        viewportFraction;
+            childAspectRatio *
+            MediaQuery.of(context).size.width *
+            viewportFraction +
+        14.0 * 2 +
+        2.0 * 2 + 2.0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +88,7 @@ class HorizontalList<T> extends StatelessWidget {
         if (items != null)
           SizedBox(
             height: height,
-            child: PageView.builder(
+            child: ExpandablePageView.builder(
               itemCount: items!.length,
               allowImplicitScrolling: true,
               padEnds: false,
@@ -128,7 +131,7 @@ class HorizontalList<T> extends StatelessWidget {
               final items = snapshot.data!;
               return SizedBox(
                 height: height,
-                child: PageView.builder(
+                child:ExpandablePageView.builder(
                   itemCount: items.length,
                   allowImplicitScrolling: true,
                   padEnds: false,

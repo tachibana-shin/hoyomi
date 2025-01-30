@@ -97,7 +97,7 @@ class TruyenGGService extends BookBaseService implements BookAuthService {
     final timeAgo = timeAgoElement != null
         ? convertTimeAgoToUtc(timeAgoElement.text)
         : null;
-    final String? notice = itemBook.querySelector(".type-label")?.text;
+    final String? notice = itemBook.querySelector(".type-label")?.text ?? '';
 
     final rateValueText = itemBook.querySelector(".rate-star")?.text.trim();
     final double? rate =
@@ -107,7 +107,8 @@ class TruyenGGService extends BookBaseService implements BookAuthService {
         image: image,
         lastChap: lastChap,
         timeAgo: timeAgo,
-        notice: notice,
+        notice: (notice == null || notice.isEmpty ? '' : '$notice - ') +
+            (lastChap.name),
         name: name,
         bookId: bookId,
         rate: rate,
