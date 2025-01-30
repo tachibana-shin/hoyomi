@@ -96,19 +96,22 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
         child: IgnorePointer(
             ignoring: !(_supportAuth && !_loading()),
             child: ElevatedButton.icon(
-              onPressed: _onTap,
-              icon: Icon(
-                  isFollowed
-                      ? MaterialCommunityIcons.bookmark_check
-                      : MaterialCommunityIcons.bookmark_plus_outline,
-                  color: Theme.of(context).textTheme.labelLarge?.color),
-              label: Text(
-                  followCount == null || followCount == 0
-                      ? 'Follow'
-                      : formatNumber(followCount),
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.normal, fontSize: 12.0)),
-            )));
+                onPressed: _onTap,
+                icon: Icon(
+                    isFollowed
+                        ? MaterialCommunityIcons.bookmark_check
+                        : MaterialCommunityIcons.bookmark_plus_outline,
+                    color: Theme.of(context).textTheme.labelLarge?.color),
+                label: Text(
+                    followCount == null || followCount == 0
+                        ? 'Follow'
+                        : formatNumber(followCount),
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.normal, fontSize: 12.0)),
+                style: ButtonStyle(
+                    padding: WidgetStateProperty.all(
+                  EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
+                )))));
   }
 
   void _onTap() async {

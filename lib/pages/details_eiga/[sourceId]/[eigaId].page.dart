@@ -11,6 +11,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:hoyomi/widgets/eiga/button_follow_eiga.dart';
+import 'package:hoyomi/widgets/eiga/button_share_eiga.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -209,7 +210,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                             child: _buildBasicInfo(_metaEigaNotifier)),
                         SizedBox(height: 10.0),
                         // button group
-                        _buildButtonGroup(_metaEigaNotifier),
+                         Skeletonizer(
+                            enabled: !done,
+                            enableSwitchAnimation: true,
+                            child:_buildButtonGroup(_metaEigaNotifier)),
                         SizedBox(height: 5.0),
                         if (done) _buildSchedule(),
                         if (done) _buildSeasonHeader(_metaEigaNotifier),
@@ -486,7 +490,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   Widget _buildButtonGroup(ValueNotifier<MetaEiga> metaEiga) {
     return Row(
       children: [
-        ButtonFollowEiga(eigaId: _eigaId, metaEiga: metaEiga, service: _service)
+        ButtonFollowEiga(eigaId: _eigaId, metaEiga: metaEiga, service: _service),
+        SizedBox(width: 10.0),
+        ButtonShareEiga(eigaId: _eigaId, episodeName: _subtitleNotifier , metaEiga: metaEiga, service: _service),
       ],
     );
   }
