@@ -11,6 +11,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
+import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/basic_carousel.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/basic_carousel_item.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
@@ -52,6 +53,10 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
         await fetchDocument('$baseUrl/account/info/', cookie: cookie, headers: {
       'Referer': baseUrl,
     });
+
+    if (document.querySelector('.profile-userpic') == null) {
+      throw UserNotFoundException();
+    }
 
     final avatar = document
         .querySelector('.profile-userpic img')!

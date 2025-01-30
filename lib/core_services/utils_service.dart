@@ -454,7 +454,7 @@ abstract class UtilsService {
   Future<BasicUser> onAfterSignIn(
       {required String cookie, required String userAgent}) async {
     if (this is! BaseAuthService) {
-      throw Exception('Service must be an instance of BaseAuthService');
+      throw Exception('Service must be an instance of auth service');
     }
 
     final service = this as BaseAuthService;
