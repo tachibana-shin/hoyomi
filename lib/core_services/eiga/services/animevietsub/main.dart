@@ -261,7 +261,7 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
   }
 
   @override
-  getSection({required sectionId, page = 1, filters}) async {
+  getSection({required sectionId, required page, required filters}) async {
     final params = filters == null
         ? null
         : [

@@ -14,8 +14,10 @@ abstract class BookBaseService extends BaseService {
 
   Future<List<BasicBookSection>> home();
 
-  Future<BaseBookSection> getSection(String sectionId,
-      {int? page, Map<String, List<String>?>? filters});
+  Future<BaseBookSection> getSection(
+      {required String sectionId,
+      required int page,
+      required Map<String, List<String>?> filters});
 
   Future<MetaBook> getDetails(String bookId);
   Future<List<BasicImage>> getPages(String manga, String chap);

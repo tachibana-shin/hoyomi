@@ -72,8 +72,8 @@ class _SectionState extends State<Section> {
 
   Future<void> _fetchBooks(int pageKey) async {
     try {
-      final newBooks = await _service.getSection(widget.sectionId,
-          page: pageKey, filters: _data);
+      final newBooks = await _service.getSection(
+          sectionId: widget.sectionId, page: pageKey, filters: _data);
       final isLastPage = newBooks.page >= newBooks.totalPages;
       setState(() {
         _title = newBooks.name;

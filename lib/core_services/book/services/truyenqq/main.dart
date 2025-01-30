@@ -224,9 +224,9 @@ class TruyenQQService extends TruyenGGService {
   }
 
   @override
-  getSection(sectionId, {page = 1, filters}) async {
+  getSection({required sectionId, required page, required filters}) async {
     final url =
-        "$baseUrl/${sectionId.replaceAll('*', '/')}${page! > 1 ? '/trang-$page' : ''}.html";
+        "$baseUrl/${sectionId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html";
 
     final Document document =
         await fetchDocument(buildQueryUri(url, filters: filters).toString());

@@ -405,13 +405,17 @@ class TruyenGGService extends BookBaseService implements BookAuthService {
 
   @override
   get getSuggest => (book, {page = 1}) async {
-        return getSection("tim-kiem-nang-cao", page: page, filters: {
-          'category': book.genres
-              .toList()
-              .sublist(0, min(3, book.genres.length))
-              .map((e) => RegExp(r'\d+').allMatches(e.genreId).last.group(0)!)
-              .toList()
-        });
+        return getSection(
+            sectionId: "tim-kiem-nang-cao",
+            page: page!,
+            filters: {
+              'category': book.genres
+                  .toList()
+                  .sublist(0, min(3, book.genres.length))
+                  .map((e) =>
+                      RegExp(r'\d+').allMatches(e.genreId).last.group(0)!)
+                  .toList()
+            });
       };
 
   @override
@@ -441,8 +445,7 @@ class TruyenGGService extends BookBaseService implements BookAuthService {
   }
 
   @override
-  getSection(sectionId, {page = 1, filters}) async {
-    page ??= 1;
+  getSection({required sectionId, required page, required filters}) async {
     final url =
         "$baseUrl/${sectionId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html";
 

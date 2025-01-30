@@ -17,8 +17,8 @@ abstract class EigaBaseService extends BaseService {
 
   Future<BaseEigaSection> getSection(
       {required String sectionId,
-      int? page,
-      Map<String, List<String>?>? filters});
+      required int page,
+      required Map<String, List<String>?> filters});
 
   EigaParam parseURL(String url);
 
