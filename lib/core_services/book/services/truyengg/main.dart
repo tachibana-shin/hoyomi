@@ -11,9 +11,9 @@ import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 
 import 'package:hoyomi/core_services/book/book_auth_service.dart';
-import 'package:hoyomi/core_services/book/interfaces/base_section.dart';
+import 'package:hoyomi/core_services/book/interfaces/base_book_section.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_filter.dart';
+import 'package:hoyomi/core_services/interfaces/basic_filter.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book_section.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
@@ -462,7 +462,7 @@ class TruyenGGService extends BookBaseService implements BookAuthService {
         ? int.parse(RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!)
         : 1;
 
-    return BaseSection(
+    return BaseBookSection(
         name: document.querySelector(".title_cate")!.text,
         url: url,
         items: data.toList(),

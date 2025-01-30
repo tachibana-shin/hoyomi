@@ -6,7 +6,7 @@ import 'package:hoyomi/controller/history.dart';
 import 'package:hoyomi/core_services/base_auth_service.dart';
 import 'package:hoyomi/core_services/book/book_auth_service.dart';
 import 'package:hoyomi/core_services/book/book_base_service.dart';
-import 'package:hoyomi/core_services/book/interfaces/base_section.dart';
+import 'package:hoyomi/core_services/book/interfaces/base_book_section.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
@@ -43,7 +43,7 @@ class DetailsComic extends StatefulWidget {
 class _DetailsComicState extends State<DetailsComic>
     with SingleTickerProviderStateMixin {
   late Future<MetaBook> _metaBookFuture;
-  Future<BaseSection>? _suggestFuture;
+  Future<BaseBookSection>? _suggestFuture;
   late final BookBaseService _service;
 
   late final AnimationController _bottomSheetAnimationController;

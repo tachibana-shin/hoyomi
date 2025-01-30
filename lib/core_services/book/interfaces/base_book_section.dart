@@ -1,14 +1,14 @@
 import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_filter.dart';
+import 'package:hoyomi/core_services/interfaces/basic_filter.dart';
 import 'package:hoyomi/core_services/book/interfaces/paginate.dart';
 
-class BaseSection extends Paginate<BasicBook> {
+class BaseBookSection extends Paginate<BasicBook> {
   final String name;
   final String url;
   final String? description;
   final List<BasicFilter>? filters;
 
-  const BaseSection(
+  const BaseBookSection(
       {required this.name,
       required this.url,
       this.description,

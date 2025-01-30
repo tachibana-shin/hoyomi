@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:hoyomi/core_services/eiga/eiga_auth_service.dart';
 import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/base_eiga_home.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/base_eiga_section.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
@@ -16,6 +17,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga_section.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_param.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
+import 'package:hoyomi/core_services/interfaces/basic_filter.dart';
 import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
@@ -256,6 +258,72 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
                   .map((item) => _parseItem(item))
                   .toList()),
         ]);
+  }
+
+  @override
+  getSection({required sectionId, page = 1, filters}) async {
+    final params = filters == null
+        ? null
+        : [
+            'danh-sach',
+            filters['type']?.first ?? 'all',
+            filters['genres[]']?.join('-') ?? 'all',
+            filters['season']?.first ?? 'all',
+            filters['year']?.first ?? 'all',
+            ''
+            //list-le/2-44-3-4/winter/2025/
+          ].join('/');
+    final url = (params == null
+            ? baseUrl + sectionId.replaceAll('_', '/')
+            : '$baseUrl/$params') +
+        (filters == null || filters['sort'] == null ? '' : '?sort=${filters['sort']}');
+    final document = await fetchDocument(url);
+
+    final name = document.querySelector('title')!.text;
+    final items = document
+        .querySelector(".MovieList")!
+        .querySelectorAll(".TPostMv")
+        .map((item) => _parseItem(item))
+        .toList();
+    final totalPages = int.parse(document
+            .querySelector(".larger:last-child, .wp-pagenavi > *:last-child")
+            ?.attributes["data"] ??
+        document
+            .querySelector(".larger:last-child, .wp-pagenavi > *:last-child")
+            ?.attributes["title"] ??
+        "1");
+
+    final totalItems = items.length * totalPages;
+
+    final List<BasicFilter> iFilters = document
+        .querySelectorAll("div[class^='fc-']")
+        .map((fc) {
+      final name = fc.querySelector('.fc-title')!.text.replaceFirst(r'\n', '').trim();
+      final key = fc.querySelector('input')!.attributes['name']!;
+      final multiple =
+          fc.querySelector('input')!.attributes['type'] == 'checkbox';
+      final options = fc.querySelectorAll('input').map((input) => BasicOption(
+          name: input.parentNode!.text!.trim(), value: input.attributes['value']!));
+
+      return BasicFilter(
+          name: name, key: key, multiple: multiple, options: options.toList());
+    }).toList()
+      ..add(BasicFilter(name: 'Sắp xếp', key: 'sort', multiple: true, options: [
+        BasicOption(name: 'Mới nhất', value: 'latest'),
+        BasicOption(name: 'Tên A-Z', value: 'nameaz'),
+        BasicOption(name: 'Tên Z-A', value: 'nameza'),
+        BasicOption(name: 'Xem nhiều nhất', value: 'view'),
+        BasicOption(name: 'Nhiều lượt bình luận', value: 'rating')
+      ]));
+
+    return BaseEigaSection(
+        name: name,
+        url: url,
+        items: items,
+        page: page!,
+        totalItems: totalItems,
+        totalPages: totalPages,
+        filters: iFilters);
   }
 
   Element? _findInfo(List<Element> elements, String label) {

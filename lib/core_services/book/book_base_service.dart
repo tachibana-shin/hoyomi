@@ -1,5 +1,5 @@
 import 'package:hoyomi/core_services/base_service.dart';
-import 'package:hoyomi/core_services/book/interfaces/base_section.dart';
+import 'package:hoyomi/core_services/book/interfaces/base_book_section.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book_section.dart';
@@ -14,13 +14,13 @@ abstract class BookBaseService extends BaseService {
 
   Future<List<BasicBookSection>> home();
 
-  Future<BaseSection> getSection(String sectionId,
+  Future<BaseBookSection> getSection(String sectionId,
       {int? page, Map<String, List<String>?>? filters});
 
   Future<MetaBook> getDetails(String bookId);
   Future<List<BasicImage>> getPages(String manga, String chap);
 
-  Future<BaseSection> Function(
+  Future<BaseBookSection> Function(
     MetaBook book, {
     int? page,
   })? getSuggest;

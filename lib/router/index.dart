@@ -16,6 +16,7 @@ import 'package:hoyomi/pages/manager_page.dart';
 import 'package:hoyomi/pages/search/[sourceId].page.dart';
 import 'package:hoyomi/pages/search/index_page.dart';
 import 'package:hoyomi/pages/section_comic/[sourceId]/[sectionId].page.dart';
+import 'package:hoyomi/pages/section_eiga/[sourceId]/[sectionId].page.dart';
 import 'package:hoyomi/pages/webview_page.dart';
 
 import 'package:hoyomi/widgets/navigation_app.dart';
@@ -29,7 +30,8 @@ final List<String> routeIgnoreLayoutDefault = [
   '/webview',
   '/search/',
   '/search?q=',
-  '/section_comic'
+  '/section_comic',
+  '/section_eiga'
 ];
 
 final router = createRouter();
@@ -65,6 +67,7 @@ StatefulShellRoute createStatefulShellRoute() {
       createDetailsEigaBranch(),
       createWebviewBranch(),
       createSectionComicBranch(),
+      createSectionEigaBranch(),
     ],
   );
 }
@@ -265,6 +268,30 @@ StatefulShellBranch createSectionComicBranch() {
             GoRoute(
               path: ":sectionId",
               builder: (context, state) => SectionComicPage(
+                serviceId: state.pathParameters['serviceId']!,
+                sectionId: state.pathParameters['sectionId']!,
+              ),
+            )
+          ],
+        )
+      ],
+    ),
+  ]);
+}
+
+StatefulShellBranch createSectionEigaBranch() {
+  return StatefulShellBranch(routes: [
+    GoRoute(
+      path: '/section_eiga',
+      pageBuilder: GoTransitions.material.call,
+      routes: [
+        GoRoute(
+          path: ':serviceId',
+          pageBuilder: GoTransitions.material.call,
+          routes: [
+            GoRoute(
+              path: ":sectionId",
+              builder: (context, state) => SectionEigaPage(
                 serviceId: state.pathParameters['serviceId']!,
                 sectionId: state.pathParameters['sectionId']!,
               ),

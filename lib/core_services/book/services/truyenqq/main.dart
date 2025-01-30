@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:hoyomi/core_services/book/interfaces/base_section.dart';
+import 'package:hoyomi/core_services/book/interfaces/base_book_section.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_chapter.dart';
 import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
@@ -242,7 +242,7 @@ class TruyenQQService extends TruyenGGService {
         ? int.parse(RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!)
         : 1;
 
-    return BaseSection(
+    return BaseBookSection(
         name: document
                 .querySelector(".title_cate, .text_list_update")
                 ?.text

@@ -33,7 +33,7 @@ A new Flutter project.
 - [x] Can't emit event moving progress in eiga
 - [x] Can't show controls if controller pending in eiga
 - [x] Fix follow eiga
-- [ ] API season eiga
+- [x] API season eiga
 - [ ] API search eiga
 
 - [ ] Cache for API: eiga info, eiga play, eiga follow...

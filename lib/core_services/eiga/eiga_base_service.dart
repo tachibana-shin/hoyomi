@@ -1,5 +1,6 @@
 import 'package:hoyomi/core_services/base_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/base_eiga_home.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/base_eiga_section.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_param.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
@@ -13,6 +14,12 @@ import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 
 abstract class EigaBaseService extends BaseService {
   Future<BaseEigaHome> home();
+
+  Future<BaseEigaSection> getSection(
+      {required String sectionId,
+      int? page,
+      Map<String, List<String>?>? filters});
+
   EigaParam parseURL(String url);
 
   Future<MetaEiga> getDetails(String eigaId);

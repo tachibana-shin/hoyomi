@@ -5,22 +5,22 @@ import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/book/book_base_service.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
 import 'package:hoyomi/core_services/interfaces/basic_filter.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/widgets/book/icon_button_open_browser.dart';
+import 'package:hoyomi/widgets/eiga/vertical_eiga.dart';
 import 'package:hoyomi/widgets/pull_to_refresh.dart';
-import 'package:hoyomi/widgets/book/vertical_book.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-class SectionComicPage extends StatelessWidget {
+class SectionEigaPage extends StatelessWidget {
   final String serviceId;
   final String sectionId;
 
-  const SectionComicPage(
+  const SectionEigaPage(
       {super.key, required this.serviceId, required this.sectionId});
 
   @override
@@ -42,9 +42,9 @@ class Section extends StatefulWidget {
 }
 
 class _SectionState extends State<Section> {
-  late final BookBaseService _service;
+  late final EigaBaseService _service;
 
-  final PagingController<int, BasicBook> _pagingController =
+  final PagingController<int, BasicEiga> _pagingController =
       PagingController(firstPageKey: 1);
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -63,7 +63,7 @@ class _SectionState extends State<Section> {
   @override
   void initState() {
     super.initState();
-    _service = getBookService(widget.serviceId);
+    _service = getEigaService(widget.serviceId);
     _pagingController.addPageRequestListener((pageKey) {
       _fetchBooks(pageKey);
     });
@@ -71,8 +71,8 @@ class _SectionState extends State<Section> {
 
   Future<void> _fetchBooks(int pageKey) async {
     try {
-      final newBooks = await _service.getSection(widget.sectionId,
-          page: pageKey, filters: _data);
+      final newBooks = await _service.getSection(
+          sectionId: widget.sectionId, page: pageKey, filters: _data);
       final isLastPage = newBooks.page >= newBooks.totalPages;
       setState(() {
         _title = newBooks.name;
@@ -274,10 +274,10 @@ class _SectionState extends State<Section> {
                   crossAxisSpacing: 0.0,
                   mainAxisSpacing: 10.0,
                   childAspectRatio: 118.0 / 236.0),
-              builderDelegate: PagedChildBuilderDelegate<BasicBook>(
+              builderDelegate: PagedChildBuilderDelegate<BasicEiga>(
                 animateTransitions: true,
-                itemBuilder: (context, book, index) {
-                  return VerticalBook(book: book, sourceId: _service.uid);
+                itemBuilder: (context, eiga, index) {
+                  return VerticalEiga(eiga: eiga, sourceId: _service.uid);
                 },
                 firstPageProgressIndicatorBuilder: (_) => Center(
                   child: Padding(
