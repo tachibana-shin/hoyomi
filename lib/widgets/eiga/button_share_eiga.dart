@@ -32,7 +32,7 @@ class _ButtonShareEigaState extends State<ButtonShareEiga> {
                   '${widget.episodeName.value} ${widget.metaEiga.value.name}, ${widget.metaEiga.value.originalName}';
               Share.share('Watch $title on Hoyomi: ', subject: title);
             },
-            icon: Icon(MaterialCommunityIcons.share,
+            icon: Icon(MaterialCommunityIcons.share_outline,
                 color: Theme.of(context).textTheme.labelLarge?.color),
             label: Text('Share',
                 style: Theme.of(context)
