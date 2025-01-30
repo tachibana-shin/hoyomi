@@ -268,7 +268,6 @@ class _SectionState extends State<Section> {
         initialData: null,
         builder: (data) => PagedGridView(
               pagingController: _pagingController,
-              shrinkWrap: true,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: crossAxisCount,
                   crossAxisSpacing: 0.0,
