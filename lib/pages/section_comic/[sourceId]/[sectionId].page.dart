@@ -128,20 +128,23 @@ class _SectionState extends State<Section> {
             context.pop();
           },
         ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              _title ?? "",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 2),
-            Text(
-              "${_service.name} (${(_currentPage ?? '?')}/${_totalPages ?? '??'}) page",
-              style: TextStyle(fontSize: 12, color: Colors.white70),
-            ),
-          ],
-        ),
+        title: Skeletonizer(
+            enabled: _title == null || _title!.isEmpty,
+            enableSwitchAnimation: true,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _title ?? "Fake title",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  "${_service.name} (${(_currentPage ?? '?')}/${_totalPages ?? '??'}) page",
+                  style: TextStyle(fontSize: 12, color: Colors.white70),
+                ),
+              ],
+            )),
         actions: [if (_url != null) IconButtonOpenBrowser(url: _url!)],
         // actions: [
         //   IconButton(
