@@ -262,7 +262,10 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
 
   @override
   getSection({required sectionId, required page, required filters}) async {
-    final params = filters == null
+    final params = (filters['type'] == null || filters['type']!.isEmpty) &&
+            (filters['genres[]'] == null || filters['genres[]']!.isEmpty) &&
+            (filters['season'] == null || filters['season']!.isEmpty) &&
+            (filters['year'] == null || filters['year']!.isEmpty)
         ? null
         : [
             'danh-sach',
@@ -276,7 +279,7 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
     final url = (params == null
             ? baseUrl + sectionId.replaceAll('_', '/')
             : '$baseUrl/$params') +
-        (filters == null || filters['sort'] == null ? '' : '?sort=${filters['sort']}');
+        (filters['sort'] == null ? '' : '?sort=${filters['sort']}');
     final document = await fetchDocument(url);
 
     final name = document.querySelector('title')!.text;
@@ -298,12 +301,14 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
     final List<BasicFilter> iFilters = document
         .querySelectorAll("div[class^='fc-']")
         .map((fc) {
-      final name = fc.querySelector('.fc-title')!.text.replaceFirst(r'\n', '').trim();
+      final name =
+          fc.querySelector('.fc-title')!.text.replaceFirst(r'\n', '').trim();
       final key = fc.querySelector('input')!.attributes['name']!;
       final multiple =
           fc.querySelector('input')!.attributes['type'] == 'checkbox';
       final options = fc.querySelectorAll('input').map((input) => BasicOption(
-          name: input.parentNode!.text!.trim(), value: input.attributes['value']!));
+          name: input.parentNode!.text!.trim(),
+          value: input.attributes['value']!));
 
       return BasicFilter(
           name: name, key: key, multiple: multiple, options: options.toList());
@@ -320,7 +325,7 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
         name: name,
         url: url,
         items: items,
-        page: page!,
+        page: page,
         totalItems: totalItems,
         totalPages: totalPages,
         filters: iFilters);
