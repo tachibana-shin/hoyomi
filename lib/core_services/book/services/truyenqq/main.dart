@@ -7,7 +7,6 @@ import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book_section.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:hoyomi/core_services/book/interfaces/paginate.dart';
 import 'package:hoyomi/core_services/book/interfaces/rate_value.dart';
 import 'package:hoyomi/core_services/book/interfaces/status_enum.dart';
 import 'package:hoyomi/core_services/book/services/truyengg/main.dart';
@@ -200,10 +199,11 @@ class TruyenQQService extends TruyenGGService {
   }
 
   @override
-  search(keyword, {page = 1}) async {
-    final Document document = await fetchDocument(
-      "$baseUrl/tim-kiem${page! > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}",
-    );
+  search({required keyword, required page, required filters}) async {
+    final url =
+        "$baseUrl/tim-kiem${page > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}";
+
+    final Document document = await fetchDocument(url);
 
     final data = document
         .querySelectorAll(".list_grid_out li")
@@ -216,7 +216,9 @@ class TruyenQQService extends TruyenGGService {
         ? int.parse(RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!)
         : 1;
 
-    return Paginate(
+    return BaseBookSection(
+        name: '',
+        url: url,
         items: data.toList(),
         page: page,
         totalItems: data.length * maxPage,

@@ -648,6 +648,12 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
 
         return items;
       };
+
+  @override
+  search({required keyword, required page, required filters}) {
+    return getSection(
+        sectionId: '/tim-kiem/$keyword/', page: page, filters: {});
+  }
 }
 
 class _ParamsEpisode {

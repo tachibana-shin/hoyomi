@@ -10,6 +10,6 @@ export '../../interfaces/basic_user.dart';
 export 'book_param.dart';
 export 'comic_modes.dart';
 export 'meta_book.dart';
-export 'paginate.dart';
+export '../../interfaces/paginate.dart';
 export 'rate_value.dart';
 export 'status_enum.dart';

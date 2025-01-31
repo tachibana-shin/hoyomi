@@ -1,12 +1,10 @@
 import 'package:hoyomi/core_services/base_service.dart';
 import 'package:hoyomi/core_services/book/interfaces/base_book_section.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book_section.dart';
 import 'package:hoyomi/core_services/book/interfaces/book_param.dart';
 import 'package:hoyomi/core_services/book/interfaces/comic_modes.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:hoyomi/core_services/book/interfaces/paginate.dart';
 
 abstract class BookBaseService extends BaseService {
   String getURL(String bookId, {String? chapterId});
@@ -27,7 +25,10 @@ abstract class BookBaseService extends BaseService {
     int? page,
   })? getSuggest;
 
-  Future<Paginate<BasicBook>> search(String keyword, {int? page});
+  Future<BaseBookSection> search(
+      {required String keyword,
+      required int page,
+      required Map<String, List<String>?> filters});
 
   // Utils
   ComicModes? getComicModes(MetaBook book);

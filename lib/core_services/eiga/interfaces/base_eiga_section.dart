@@ -1,5 +1,5 @@
 import 'package:hoyomi/core_services/interfaces/basic_filter.dart';
-import 'package:hoyomi/core_services/book/interfaces/paginate.dart';
+import 'package:hoyomi/core_services/interfaces/paginate.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
 
 class BaseEigaSection extends Paginate<BasicEiga> {

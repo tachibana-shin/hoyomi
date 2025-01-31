@@ -20,7 +20,6 @@ import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/core_services/book/interfaces/book_param.dart';
 import 'package:hoyomi/core_services/book/interfaces/comic_modes.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:hoyomi/core_services/book/interfaces/paginate.dart';
 import 'package:hoyomi/core_services/book/interfaces/rate_value.dart';
 import 'package:hoyomi/utils/time_utils.dart';
 
@@ -97,7 +96,7 @@ class TruyenGGService extends BookBaseService implements BookAuthService {
     final timeAgo = timeAgoElement != null
         ? convertTimeAgoToUtc(timeAgoElement.text)
         : null;
-    final String? notice = itemBook.querySelector(".type-label")?.text ?? '';
+    final String notice = itemBook.querySelector(".type-label")?.text ?? '';
 
     final rateValueText = itemBook.querySelector(".rate-star")?.text.trim();
     final double? rate =
@@ -107,8 +106,7 @@ class TruyenGGService extends BookBaseService implements BookAuthService {
         image: image,
         lastChap: lastChap,
         timeAgo: timeAgo,
-        notice: (notice == null || notice.isEmpty ? '' : '$notice - ') +
-            (lastChap.name),
+        notice: (notice.isEmpty ? '' : '$notice - ') + (lastChap.name),
         name: name,
         bookId: bookId,
         rate: rate,
@@ -420,9 +418,12 @@ class TruyenGGService extends BookBaseService implements BookAuthService {
       };
 
   @override
-  search(keyword, {page = 1}) async {
+  search({required keyword, required page, required filters}) async {
+    final url =
+        "$baseUrl/tim-kiem${page > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}";
+
     final Document document = await fetchDocument(
-      "$baseUrl/tim-kiem${page! > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}",
+      url,
     );
 
     final sections = document.querySelectorAll(".list_item_home");
@@ -438,7 +439,9 @@ class TruyenGGService extends BookBaseService implements BookAuthService {
         ? int.parse(RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!)
         : 1;
 
-    return Paginate(
+    return BaseBookSection(
+        name: '',
+        url: url,
         items: data.toList(),
         page: page,
         totalItems: data.length * maxPage,

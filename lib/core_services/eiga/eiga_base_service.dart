@@ -48,4 +48,8 @@ abstract class EigaBaseService extends BaseService {
     required String eigaId,
     int? page,
   })? getSuggest;
+
+  Future<BaseEigaSection> search(
+      {required String keyword, required int page, 
+      required Map<String, List<String>?> filters});
 }
