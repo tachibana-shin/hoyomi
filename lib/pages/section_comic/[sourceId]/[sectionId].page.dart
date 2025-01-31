@@ -256,6 +256,14 @@ class _SectionComicPageState extends State<SectionComicPage> {
       crossAxisCount = 6;
     }
 
+    final childAspectRatio = 2 / 3;
+    final viewportFraction = 1 / crossAxisCount;
+    final height = 1 / childAspectRatio * screenWidth * viewportFraction +
+        14.0 * 2 +
+        2.0 * 2 +
+        2.0 +
+        4.0;
+
     return PullToRefresh(
         controller: _refreshController,
         onRefresh: () async {
@@ -270,8 +278,8 @@ class _SectionComicPageState extends State<SectionComicPage> {
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: crossAxisCount,
                   crossAxisSpacing: 0.0,
-                  mainAxisSpacing: 10.0,
-                  childAspectRatio: 118.0 / 236.0),
+                  mainAxisSpacing: 0.0,
+                  childAspectRatio: (screenWidth / crossAxisCount) / height),
               builderDelegate: PagedChildBuilderDelegate<BasicBook>(
                 animateTransitions: true,
                 itemBuilder: (context, book, index) {
