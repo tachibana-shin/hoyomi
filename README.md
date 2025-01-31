@@ -41,4 +41,5 @@ A new Flutter project.
 
 - [ ] Cache for API: eiga info, eiga play, eiga follow...
 - [ ] Replace circular loading with skeleton
+- [ ] Fix pull request, circular, future
 <!-- provider or mobx -->
