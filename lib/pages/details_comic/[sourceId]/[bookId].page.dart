@@ -27,6 +27,7 @@ import 'package:hoyomi/widgets/comments/widget/comments.dart';
 import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
 import 'package:hoyomi/widgets/pull_to_refresh.dart';
 import 'package:hoyomi/widgets/book/sheet_chapters.dart';
+import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -190,8 +191,8 @@ class _DetailsComicState extends State<DetailsComic>
                 onRefresh: () => _service.getDetails(widget.bookId),
                 initialData: snapshot.data!,
                 builder: (book) => SingleChildScrollView(
-                    padding: EdgeInsets.all(16.0).add(EdgeInsets.only(
-                        bottom: MediaQuery.of(context).size.height * 0.15)),
+                    padding: EdgeInsets.all(16.0)
+                        .add(EdgeInsets.only(bottom: 15.h(context))),
                     controller: _scrollController,
                     child: _buildContainer(book)));
           },
@@ -493,7 +494,8 @@ class _DetailsComicState extends State<DetailsComic>
             return InkWell(
                 onTap: () {
                   ///
-                  context.push("/section_comic/${_service.uid}/${genre.genreId}");
+                  context
+                      .push("/section_comic/${_service.uid}/${genre.genreId}");
                 },
                 child: Chip(label: Text(genre.name)));
           }).toList(),

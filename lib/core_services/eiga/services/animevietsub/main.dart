@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart' as material;
 import 'package:get/get.dart';
 import 'package:hoyomi/core_services/eiga/eiga_auth_service.dart';
 import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
@@ -27,6 +26,7 @@ import 'package:html/dom.dart';
 
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
+import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:pointycastle/export.dart';
 import 'package:archive/archive.dart';
 import 'package:video_player/video_player.dart';
@@ -229,8 +229,7 @@ class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
                 .map((item) => _parseCarousel(item))
                 .toList(),
             aspectRatio: 404 / 720,
-            maxHeightBuilder: (context) =>
-                material.MediaQuery.of(context).size.height * 0.3),
+            maxHeightBuilder: (context) => 30.h(context)),
         sections: [
           BasicEigaSection(
               name: 'Top',
