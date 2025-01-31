@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/widgets/search_bar.dart';
+import 'package:hoyomi/screens/search/comic_search_results.dart';
 
 class SimilarPage extends StatefulWidget {
   final String sourceId;
@@ -80,7 +80,7 @@ class _SimilarPageState extends State<SimilarPage> {
             return Center(child: Text('No news items found'));
           }
 
-          return QuickSearchScreen(keyword: snapshot.data!);
+          return ComicSearchResults(keyword: snapshot.data!);
         });
   }
 }

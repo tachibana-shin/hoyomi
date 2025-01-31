@@ -13,7 +13,8 @@ import 'package:hoyomi/pages/library/follow/follow_page.dart';
 import 'package:hoyomi/pages/library/history/history_page.dart';
 import 'package:hoyomi/pages/library/library_page.dart';
 import 'package:hoyomi/pages/manager_page.dart';
-import 'package:hoyomi/pages/search/[sourceId].page.dart';
+import 'package:hoyomi/pages/search/comic/%5BsourceId%5D.page.dart';
+import 'package:hoyomi/pages/search/eiga/%5BsourceId%5D.page.dart';
 import 'package:hoyomi/pages/search/index_page.dart';
 import 'package:hoyomi/pages/section_comic/[sourceId]/[sectionId].page.dart';
 import 'package:hoyomi/pages/section_eiga/[sourceId]/[sectionId].page.dart';
@@ -50,7 +51,8 @@ StatefulShellRoute createStatefulShellRoute() {
   return StatefulShellRoute.indexedStack(
     builder: (context, state, navigationShell) {
       final fullPath = state.uri.toString();
-      final disableToolbar = routeIgnoreLayoutDefault.any((route) => fullPath.startsWith(route));
+      final disableToolbar =
+          routeIgnoreLayoutDefault.any((route) => fullPath.startsWith(route));
 
       return ScaffoldWithNestedNavigation(
         navigationShell: navigationShell,
@@ -97,10 +99,11 @@ StatefulShellBranch createSearchBranch() {
     GoRoute(
       path: '/search',
       pageBuilder: GoTransitions.material.call,
-      builder: (context, state) => SearchPage(keyword: state.uri.queryParameters['q'] ?? ''),
+      builder: (context, state) =>
+          SearchPage(keyword: state.uri.queryParameters['q'] ?? ''),
       routes: [
         GoRoute(
-          path: ':serviceId',
+          path: 'comic/:serviceId',
           pageBuilder: GoTransitions.material.call,
           builder: (context, state) {
             if (state.uri.queryParameters['q'] == null) {
@@ -108,7 +111,22 @@ StatefulShellBranch createSearchBranch() {
               return Stack(children: []);
             }
 
-            return SearchSingleSource(
+            return SearchComicPage(
+              serviceId: state.pathParameters['serviceId']!,
+              keyword: state.uri.queryParameters['q']!,
+            );
+          },
+        ),
+        GoRoute(
+          path: 'eiga/:serviceId',
+          pageBuilder: GoTransitions.material.call,
+          builder: (context, state) {
+            if (state.uri.queryParameters['q'] == null) {
+              context.replace("/search");
+              return Stack(children: []);
+            }
+
+            return SearchEigaPage(
               serviceId: state.pathParameters['serviceId']!,
               keyword: state.uri.queryParameters['q']!,
             );
@@ -196,7 +214,9 @@ StatefulShellBranch createDetailsComicBranch() {
                   builder: (context, state) => SimilarPage(
                     sourceId: state.pathParameters['sourceId']!,
                     bookId: state.pathParameters['bookId']!,
-                    book: (state.extra is Map && (state.extra as Map).containsKey('book')) == true
+                    book: (state.extra is Map &&
+                                (state.extra as Map).containsKey('book')) ==
+                            true
                         ? (state.extra as Map)['book']
                         : null,
                   ),

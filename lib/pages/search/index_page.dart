@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/screens/rss/news_feed.dart';
+import 'package:hoyomi/screens/search/comic_search_results.dart';
+import 'package:hoyomi/screens/search/eiga_search_results.dart';
 import 'package:hoyomi/widgets/search_bar.dart';
 
 class SearchPage extends StatelessWidget {
@@ -25,11 +27,26 @@ class Search extends StatefulWidget {
   State<Search> createState() => _SearchState();
 }
 
-class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin {
+class _SearchState extends State<Search>
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
 
+  late TabController _tabController;
+
   Widget? _overlayQuickSearch;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +67,12 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin {
           titleSpacing: 0,
           automaticallyImplyLeading: false,
           centerTitle: true,
+          bottom: TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            splashBorderRadius: BorderRadius.circular(35.0),
+            tabs: [Tab(text: 'Comic'), Tab(text: 'Eiga')],
+          ),
         ),
         body: Stack(children: [
           widget.keyword.trim().isNotEmpty
@@ -60,9 +83,12 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _buildBodySearch(BuildContext context) {
-    return QuickSearchScreen(
-      keyword: widget.keyword,
-    );
+    return TabBarView(controller: _tabController, children: [
+      ComicSearchResults(
+        keyword: widget.keyword,
+      ),
+      EigaSearchResults(keyword: widget.keyword)
+    ]);
   }
 
   Widget _buildBodyGetStarting(BuildContext context) {

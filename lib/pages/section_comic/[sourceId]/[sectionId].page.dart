@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/book/book_base_service.dart';
+import 'package:hoyomi/core_services/book/interfaces/base_book_section.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:hoyomi/core_services/interfaces/basic_filter.dart';
 import 'package:hoyomi/core_services/main.dart';
@@ -17,32 +18,26 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class SectionComicPage extends StatelessWidget {
+class SectionComicPage extends StatefulWidget {
   final String serviceId;
   final String sectionId;
+  final Future<BaseBookSection> Function({
+    required String sectionId,
+    required int page,
+    required Map<String, List<String>?> filters,
+  })? getSection;
 
   const SectionComicPage(
-      {super.key, required this.serviceId, required this.sectionId});
+      {super.key,
+      required this.serviceId,
+      required this.sectionId,
+      this.getSection});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Section(serviceId: serviceId, sectionId: sectionId),
-    );
-  }
+  createState() => _SectionComicPageState();
 }
 
-class Section extends StatefulWidget {
-  final String serviceId;
-  final String sectionId;
-
-  const Section({super.key, required this.serviceId, required this.sectionId});
-
-  @override
-  createState() => _SectionState();
-}
-
-class _SectionState extends State<Section> {
+class _SectionComicPageState extends State<SectionComicPage> {
   late final BookBaseService _service;
 
   final PagingController<int, BasicBook> _pagingController =
@@ -72,7 +67,7 @@ class _SectionState extends State<Section> {
 
   Future<void> _fetchBooks(int pageKey) async {
     try {
-      final newBooks = await _service.getSection(
+      final newBooks = await (widget.getSection ?? _service.getSection)(
           sectionId: widget.sectionId, page: pageKey, filters: _data);
       final isLastPage = newBooks.page >= newBooks.totalPages;
       setState(() {
