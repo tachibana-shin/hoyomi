@@ -39,6 +39,9 @@ A new Flutter project.
 - [ ] API playlist
 - [ ] API playlist online
 
+- [ ] Search icon for all section
+- [ ] Bottom sheet show all options
+
 - [ ] Cache for API: eiga info, eiga play, eiga follow...
 - [ ] Replace circular loading with skeleton
 - [ ] Fix pull request, circular, future
