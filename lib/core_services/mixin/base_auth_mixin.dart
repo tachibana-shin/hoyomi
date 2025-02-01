@@ -1,6 +1,6 @@
-import 'interfaces/basic_user.dart';
+import '../interfaces/basic_user.dart';
 
-abstract class BaseAuthService {
+mixin BaseAuthMixin {
   String get signInUrl;
   Future<BasicUser> getUser({required String cookie});
 }

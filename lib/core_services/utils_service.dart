@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inappwebview;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/controller/cookie.dart';
-import 'package:hoyomi/core_services/base_auth_service.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
 import 'package:hoyomi/database/scheme/cookie_manager.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:html/dom.dart' as d;
@@ -444,7 +444,7 @@ abstract class UtilsService {
 
   /// After a successful sign in, this function is called to update the cookie and other relevant information in the cache.
   ///
-  /// This function is called by [BaseAuthService] after a successful sign in.
+  /// This function is called by [BaseAuthMixin] after a successful sign in.
   ///
   /// [cookie] The cookie to save to the cache. Must not be null.
   ///
@@ -453,11 +453,11 @@ abstract class UtilsService {
   /// Returns the [BasicUser] object of the user who has just signed in.
   Future<BasicUser> onAfterSignIn(
       {required String cookie, required String userAgent}) async {
-    if (this is! BaseAuthService) {
+    if (this is! BaseAuthMixin) {
       throw Exception('Service must be an instance of auth service');
     }
 
-    final service = this as BaseAuthService;
+    final service = this as BaseAuthMixin;
     final user = await service.getUser(cookie: cookie);
     // save to cache
     final oldData = await CookieController.getAsync(sourceId: uid) ??
@@ -493,10 +493,10 @@ abstract class UtilsService {
   }
 
   Future<BasicUser?> _fetchUser() async {
-    if (this is! BaseAuthService) {
-      throw Exception('Service must be an instance of BaseAuthService');
+    if (this is! BaseAuthMixin) {
+      throw Exception('Service must be an instance of BaseAuthMixin');
     }
-    final service = this as BaseAuthService;
+    final service = this as BaseAuthMixin;
 
     var row = await CookieController.getAsync(sourceId: uid);
     final cookie = row?.cookie;

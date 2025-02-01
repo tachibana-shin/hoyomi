@@ -1,6 +1,6 @@
-import 'package:hoyomi/core_services/base_auth_service.dart';
+import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
 
-abstract class EigaAuthService extends BaseAuthService {
+mixin EigaAuthMixin on BaseAuthMixin {
   Future<bool> isFollowed({required String eigaId});
   Future<bool> setFollow({required String eigaId, required bool value});
   Future<int> getFollowCount({required String eigaId});

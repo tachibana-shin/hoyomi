@@ -3,7 +3,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user.dart';
 import 'package:hoyomi/core_services/base_service.dart';
-import 'package:hoyomi/core_services/eiga/eiga_auth_service.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/globals.dart';
@@ -37,7 +37,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
   void Function()? _onDisposeError;
   void Function()? _onDisposeUser;
 
-  bool get _supportAuth => widget.service is EigaAuthService;
+  bool get _supportAuth => widget.service is EigaAuthMixin;
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
     widget.eigaId.addListener(_onUpdateEigaId);
 
     if (_supportAuth) {
-      final out = useUser(widget.service as EigaAuthService);
+      final out = useUser(widget.service as EigaAuthMixin);
 
       _onDisposeError = out.error.subscribe((error) {
         if (error != null) {
@@ -69,7 +69,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
 
   void _onUpdateEigaId() async {
     if (!_supportAuth) return;
-    final service = widget.service as EigaAuthService;
+    final service = widget.service as EigaAuthMixin;
 
     _loading.value = true;
     try {
@@ -116,7 +116,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
 
   void _onTap() async {
     if (!_supportAuth) return;
-    final service = widget.service as EigaAuthService;
+    final service = widget.service as EigaAuthMixin;
 
     final isSigned = _isSigned.value;
     if (!isSigned) {

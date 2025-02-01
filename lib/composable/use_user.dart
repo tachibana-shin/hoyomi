@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/cookie.dart';
-import 'package:hoyomi/core_services/base_auth_service.dart';
+import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
 import 'package:hoyomi/core_services/base_service.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:signals/signals.dart';
@@ -19,7 +19,7 @@ class UserData {
   });
 }
 
-UserData useUser(BaseAuthService service, {bool immediate = true}) {
+UserData useUser(BaseAuthMixin service, {bool immediate = true}) {
   final user = signal<BasicUser?>(null);
   final error = signal<String?>(null);
   Future<void> refresh() async {

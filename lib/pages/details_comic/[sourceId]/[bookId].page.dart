@@ -3,8 +3,8 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user_async.dart';
 import 'package:hoyomi/controller/history.dart';
-import 'package:hoyomi/core_services/base_auth_service.dart';
-import 'package:hoyomi/core_services/book/book_auth_service.dart';
+import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
+import 'package:hoyomi/core_services/book/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/book/book_base_service.dart';
 import 'package:hoyomi/core_services/book/interfaces/base_book_section.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
@@ -74,8 +74,8 @@ class _DetailsComicState extends State<DetailsComic>
         _book = book;
         _suggestFuture =
             _service.getSuggest == null ? null : _service.getSuggest!(_book!);
-        if (_service is BookAuthService &&
-            (_service as BookAuthService).getComments != null) {}
+        if (_service is ComicAuthMixin &&
+            (_service as ComicAuthMixin).getComments != null) {}
 
         HistoryController()
             .createBook(_service.uid, bookId: widget.bookId, book: book);
@@ -148,7 +148,7 @@ class _DetailsComicState extends State<DetailsComic>
             child: Text(_title),
           ),
           actions: [
-            if (_service is BookAuthService && _service is BaseAuthService)
+            if (_service is ComicAuthMixin && _service is BaseAuthMixin)
               _AvatarUser(service: _service),
             IconButtonShare(),
             IconButtonFollow(
@@ -453,21 +453,21 @@ class _DetailsComicState extends State<DetailsComic>
         const SizedBox(height: 20.0),
 
         // Comment
-        if (_service is BookAuthService &&
-            (_service as BookAuthService).getComments != null)
+        if (_service is ComicAuthMixin &&
+            (_service as ComicAuthMixin).getComments != null)
           Padding(
               padding: EdgeInsets.only(bottom: 16),
               child: Comments(
                 getComments: ({page, parent}) {
-                  return (_service as BookAuthService).getComments!(
+                  return (_service as ComicAuthMixin).getComments!(
                       bookId: widget.bookId, page: page, parent: parent);
                 },
                 deleteComment: ({required comment, parent}) {
-                  return (_service as BookAuthService).deleteComment!(
+                  return (_service as ComicAuthMixin).deleteComment!(
                       bookId: widget.bookId, comment: comment, parent: parent);
                 },
                 setLikeComment: ({required comment, parent, required value}) {
-                  return (_service as BookAuthService).setLikeComment!(
+                  return (_service as ComicAuthMixin).setLikeComment!(
                       bookId: widget.bookId,
                       comment: comment,
                       parent: parent,
@@ -752,8 +752,8 @@ class _ButtonLikeState extends State<_ButtonLike> {
     super.initState();
     _likes = widget.book.likes;
 
-    if (widget.service is BookAuthService) {
-      (widget.service as BookAuthService)
+    if (widget.service is ComicAuthMixin) {
+      (widget.service as ComicAuthMixin)
           .isLiked(bookId: widget.bookId)
           .then((liked) {
         if (mounted) {
@@ -770,7 +770,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
   }
 
   void _onTap() {
-    (widget.service as BookAuthService)
+    (widget.service as ComicAuthMixin)
         .setLike(bookId: widget.bookId, value: !(_liked ?? false))
         .then((value) {
       if (mounted) {
@@ -790,7 +790,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: (widget.service is BookAuthService) ? _onTap : null,
+        onTap: (widget.service is ComicAuthMixin) ? _onTap : null,
         child: ClipRRect(
             borderRadius: BorderRadius.circular(30.0),
             child: Padding(
@@ -836,7 +836,7 @@ class _AvatarUserState extends State<_AvatarUser> {
   void initState() {
     super.initState();
 
-    useUserAsync(widget.service as BaseAuthService).then(
+    useUserAsync(widget.service as BaseAuthMixin).then(
       (value) {
         if (mounted) {
           setState(() {

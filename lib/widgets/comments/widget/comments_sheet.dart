@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/book/book_auth_service.dart';
+import 'package:hoyomi/core_services/book/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/widgets/comments/widget/comments.dart';
 
 class CommentsSheet extends StatefulWidget {
-  final BookAuthService service;
+  final ComicAuthMixin service;
 
   final String bookId;
   final String chapterId;

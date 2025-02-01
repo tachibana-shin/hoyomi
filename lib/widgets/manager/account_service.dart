@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user.dart';
-import 'package:hoyomi/core_services/base_auth_service.dart';
 import 'package:hoyomi/core_services/base_service.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
 import 'package:signals/signals_flutter.dart';
 
 class AccountService extends StatefulWidget {
@@ -38,14 +38,14 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
   void Function()? _onDisposeError;
 
   bool get _serviceAccountSupport {
-    return widget.service is BaseAuthService;
+    return widget.service is BaseAuthMixin;
   }
 
   @override
   void initState() {
     super.initState();
     if (_serviceAccountSupport) {
-      final out = useUser(widget.service as BaseAuthService);
+      final out = useUser(widget.service as BaseAuthMixin);
 
       _refresh = out.refresh;
 

@@ -7,10 +7,11 @@ import 'package:hoyomi/core_services/book/interfaces/basic_chapter.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_comment.dart';
 import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
 import 'package:hoyomi/core_services/book/interfaces/status_enum.dart';
+import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
 import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 
-import 'package:hoyomi/core_services/book/book_auth_service.dart';
+import 'package:hoyomi/core_services/book/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/book/interfaces/base_book_section.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:hoyomi/core_services/interfaces/basic_filter.dart';
@@ -45,7 +46,8 @@ final List<BasicFilter> globalFilters = [
   ]),
 ];
 
-class TruyenGGService extends BookBaseService implements BookAuthService {
+class TruyenGGService extends BookBaseService
+    with BaseAuthMixin, ComicAuthMixin {
   @override
   final String name = "TruyenGGP";
   @override

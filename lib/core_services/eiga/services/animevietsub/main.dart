@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:hoyomi/core_services/eiga/eiga_auth_service.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
 import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/base_eiga_home.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/base_eiga_section.dart';
@@ -22,6 +22,7 @@ import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
+import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
 import 'package:html/dom.dart';
 
 import 'dart:typed_data';
@@ -31,7 +32,8 @@ import 'package:pointycastle/export.dart';
 import 'package:archive/archive.dart';
 import 'package:video_player/video_player.dart';
 
-class AnimeVietsubService extends EigaBaseService implements EigaAuthService {
+class AnimeVietsubService extends EigaBaseService
+    with BaseAuthMixin, EigaAuthMixin {
   @override
   final String name = "AnimeVietsub";
   @override
