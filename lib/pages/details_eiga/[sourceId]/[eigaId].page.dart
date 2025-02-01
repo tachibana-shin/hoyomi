@@ -85,7 +85,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     if (_service.getSuggest != null) {
       _suggestNotifier.value = _metaEigaFuture.then((metaEiga) {
-        return _service.getSuggest!(eiga: metaEiga, eigaId: widget.eigaId);
+        return _service.getSuggest!(metaEiga: metaEiga, eigaId: widget.eigaId);
       });
     }
 
@@ -197,7 +197,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         _titleNotifier.value = _metaEigaNotifier.value.name;
 
                         _suggestNotifier.value = _service.getSuggest!(
-                            eiga: _metaEigaNotifier.value,
+                            metaEiga: _metaEigaNotifier.value,
                             eigaId: _eigaId.value);
                       });
                     }

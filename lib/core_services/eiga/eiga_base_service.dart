@@ -44,7 +44,7 @@ abstract class EigaBaseService extends BaseService {
       required MetaEiga metaEiga});
 
   Future<List<BasicEiga>> Function({
-    required MetaEiga eiga,
+    required MetaEiga metaEiga,
     required String eigaId,
     int? page,
   })? getSuggest;

@@ -641,7 +641,7 @@ class AnimeVietsubService extends EigaBaseService
   }
 
   @override
-  get getSuggest => ({required eiga, required eigaId, page}) async {
+  get getSuggest => ({required metaEiga, required eigaId, page}) async {
         final items = (await _docEigaStore[eigaId]!)
             .querySelectorAll(".MovieListRelated .TPostMv")
             .map((item) => _parseItem(item))
