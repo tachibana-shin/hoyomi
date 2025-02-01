@@ -34,7 +34,7 @@ A new Flutter project.
 - [x] Can't show controls if controller pending in eiga
 - [x] Fix follow eiga
 - [x] API season eiga
-- [ ] API search eiga
+- [x] API search eiga
 - [ ] API for history online
 - [ ] API playlist
 - [ ] API playlist online
