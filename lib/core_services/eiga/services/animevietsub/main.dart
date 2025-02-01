@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
 import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/base_eiga_home.dart';
@@ -10,6 +11,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/basic_carousel.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/basic_carousel_item.dart';
@@ -27,13 +29,14 @@ import 'package:html/dom.dart';
 
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
+import 'package:http/http.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:pointycastle/export.dart';
 import 'package:archive/archive.dart';
 import 'package:video_player/video_player.dart';
 
 class AnimeVietsubService extends EigaBaseService
-    with BaseAuthMixin, EigaAuthMixin {
+    with BaseAuthMixin, EigaAuthMixin, EigaHistoryMixin {
   @override
   final String name = "AnimeVietsub";
   @override
@@ -46,11 +49,15 @@ class AnimeVietsubService extends EigaBaseService
   final String _apiOpEnd = "https://opend-9animetv.animevsub.eu.org";
   final String _apiThumb = "https://sk-hianime.animevsub.eu.org";
 
+  final String _supabaseUrl = "https://ctwwltbkwksgnispcjmq.supabase.co";
+  final String _supabaseKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0d3dsdGJrd2tzZ25pc3Bjam1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAxNjM5ODksImV4cCI6MjAzNTczOTk4OX0.Dva9EPqy4P0KFYLAGpFqFoMBH4I_yz0VWnGny0uA-8U";
+
   final Map<String, _ParamsEpisode> _paramsEpisodeStore = {};
   final Map<String, Future<Document>> _docEigaStore = {};
 
   @override
-  Future<BasicUser> getUser({required cookie}) async {
+  getUser({required cookie}) async {
     final document =
         await fetchDocument('$baseUrl/account/info/', cookie: cookie, headers: {
       'Referer': baseUrl,
@@ -655,6 +662,64 @@ class AnimeVietsubService extends EigaBaseService
     return getSection(
         sectionId: '/tim-kiem/$keyword/', page: page, filters: filters);
   }
+
+  @override
+  get getWatchTime => (
+          {required String eigaId,
+          required EpisodeEiga episode,
+          required int episodeIndex,
+          required MetaEiga metaEiga}) async {
+        final user = await fetchUser();
+
+        if (user == null) {
+          return null;
+        }
+
+        final data = await post(
+            Uri.parse('$_supabaseUrl/rest/v1/rpc/get_single_progress'),
+            headers: {
+              'User-Agent':
+                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
+              'Accept': 'application/vnd.pgrst.object+json',
+              'Accept-Language': 'vi-VN,vi;q=0.8,en-US;q=0.5,en;q=0.3',
+              'Accept-Encoding': 'gzip, deflate, br, zstd',
+              'Content-Type': 'application/json',
+              'Referer': 'https://animevsub.eu.org/',
+              'apikey': _supabaseKey,
+              'content-profile': 'public',
+              'x-client-info': 'supabase-js-web/2.44.4',
+              'Origin': 'https://animevsub.eu.org',
+              'DNT': '1',
+              'Sec-Fetch-Dest': 'empty',
+              'Sec-Fetch-Mode': 'cors',
+              'Sec-Fetch-Site': 'cross-site',
+              'authorization': 'Bearer $_supabaseKey',
+              'Connection': 'keep-alive',
+              'Priority': 'u=4',
+              'Pragma': 'no-cache',
+              'Cache-Control': 'no-cache',
+              'TE': 'trailers'
+            },
+            body: jsonEncode({
+              'user_uid': sha256
+                  .convert(utf8.encode('${user.email}${user.fullName}'))
+                  .toString(),
+              'season_id': eigaId,
+              'p_chap_id':
+                  RegExp(r'\d+$').firstMatch(episode.episodeId)!.group(0)
+            }));
+
+        if (data.statusCode > 299) {
+          print('[${data.reasonPhrase}]: ${data.body}');
+          return null;
+        }
+
+        final json = jsonDecode(data.body);
+
+        return WatchTime(
+            current: Duration(seconds: (json['cur'] as double).round()),
+            duration: Duration(seconds: (json['dur'] as double).round()));
+      };
 }
 
 class _ParamsEpisode {

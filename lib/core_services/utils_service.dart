@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inappwebview;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/controller/cookie.dart';
+import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
@@ -458,34 +459,43 @@ abstract class UtilsService {
     }
 
     final service = this as BaseAuthMixin;
-    final user = await service.getUser(cookie: cookie);
     // save to cache
     final oldData = await CookieController.getAsync(sourceId: uid) ??
         CookieManager(
           sourceId: uid,
           cookie: cookie,
           userAgent: userAgent,
-          user: jsonEncode(user.toJson()),
+          user: null, // jsonEncode(user.toJson()),
           createdAt: DateTime.now(),
           userUpdatedAt: DateTime.now(),
           updatedAt: DateTime.now(),
         );
+    try {
+      final user = await service.getUser(cookie: cookie);
 
-    if (oldData.user != jsonEncode(user.toJson())) {
-      oldData.userUpdatedAt = DateTime.now();
+      if (oldData.user != jsonEncode(user.toJson())) {
+        oldData.userUpdatedAt = DateTime.now();
+      }
+
+      oldData
+        ..cookie = cookie
+        ..userAgent = userAgent
+        ..user = jsonEncode(user.toJson())
+        ..updatedAt = DateTime.now();
+
+      _userFuture = Future.value(user);
+
+      await CookieController.save(oldData);
+
+      return user;
+    } on UserNotFoundException catch (_) {
+      oldData.cookie = cookie;
+      oldData.user = null;
+
+      await CookieController.save(oldData);
+
+      rethrow;
     }
-
-    oldData
-      ..cookie = cookie
-      ..userAgent = userAgent
-      ..user = jsonEncode(user.toJson())
-      ..updatedAt = DateTime.now();
-
-    _userFuture = Future.value(user);
-
-    await CookieController.save(oldData);
-
-    return user;
   }
 
   Future<BasicUser?> fetchUser() async {
@@ -504,24 +514,35 @@ abstract class UtilsService {
 
     if (cookie == null) return null;
 
-    // if (user == null) {
-    user = jsonEncode((await service.getUser(cookie: cookie)).toJson());
+    try {
+      // if (user == null) {
+      user = jsonEncode((await service.getUser(cookie: cookie)).toJson());
 
-    row ??= CookieManager(
-      sourceId: uid,
-      cookie: cookie,
-      userAgent: '',
-      user: user,
-      createdAt: DateTime.now(),
-      userUpdatedAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
+      row ??= CookieManager(
+        sourceId: uid,
+        cookie: cookie,
+        userAgent: null,
+        user: user,
+        createdAt: DateTime.now(),
+        userUpdatedAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
 
-    row.user = user;
+      row.user = user;
 
-    await CookieController.save(row);
-    // }
+      await CookieController.save(row);
+      // }
 
-    return BasicUser.fromJson(jsonDecode(user));
+      return BasicUser.fromJson(jsonDecode(user));
+    } on UserNotFoundException catch (_) {
+      if (row != null) {
+        row.cookie = cookie;
+        row.user = null;
+
+        await CookieController.save(row);
+      }
+
+      rethrow;
+    }
   }
 }

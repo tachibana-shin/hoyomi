@@ -31,7 +31,7 @@ UserData useUser(BaseAuthMixin service, {bool immediate = true}) {
     if (record != null) {
       final json = record.user;
 
-      user.value = BasicUser.fromJson(jsonDecode(json));
+      user.value = json == null ? null : BasicUser.fromJson(jsonDecode(json));
 
       // fetch user online
       (service as BaseService).fetchUser().then((value) {

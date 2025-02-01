@@ -9,10 +9,10 @@ class CookieManager {
   @Index(unique: true)
   late String sourceId;
 
-  late String cookie;
-  late String userAgent;
+  late String? cookie;
+  late String? userAgent;
 
-  late String user;
+  late String? user;
 
   @Index()
   final DateTime createdAt;

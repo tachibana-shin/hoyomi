@@ -79,9 +79,30 @@ const CookieManagerSchema = IsarGeneratedSchema(
 @isarProtected
 int serializeCookieManager(IsarWriter writer, CookieManager object) {
   IsarCore.writeString(writer, 1, object.sourceId);
-  IsarCore.writeString(writer, 2, object.cookie);
-  IsarCore.writeString(writer, 3, object.userAgent);
-  IsarCore.writeString(writer, 4, object.user);
+  {
+    final value = object.cookie;
+    if (value == null) {
+      IsarCore.writeNull(writer, 2);
+    } else {
+      IsarCore.writeString(writer, 2, value);
+    }
+  }
+  {
+    final value = object.userAgent;
+    if (value == null) {
+      IsarCore.writeNull(writer, 3);
+    } else {
+      IsarCore.writeString(writer, 3, value);
+    }
+  }
+  {
+    final value = object.user;
+    if (value == null) {
+      IsarCore.writeNull(writer, 4);
+    } else {
+      IsarCore.writeString(writer, 4, value);
+    }
+  }
   IsarCore.writeLong(
       writer, 5, object.createdAt.toUtc().microsecondsSinceEpoch);
   IsarCore.writeLong(
@@ -95,12 +116,12 @@ int serializeCookieManager(IsarWriter writer, CookieManager object) {
 CookieManager deserializeCookieManager(IsarReader reader) {
   final String _sourceId;
   _sourceId = IsarCore.readString(reader, 1) ?? '';
-  final String _cookie;
-  _cookie = IsarCore.readString(reader, 2) ?? '';
-  final String _userAgent;
-  _userAgent = IsarCore.readString(reader, 3) ?? '';
-  final String _user;
-  _user = IsarCore.readString(reader, 4) ?? '';
+  final String? _cookie;
+  _cookie = IsarCore.readString(reader, 2);
+  final String? _userAgent;
+  _userAgent = IsarCore.readString(reader, 3);
+  final String? _user;
+  _user = IsarCore.readString(reader, 4);
   final DateTime _createdAt;
   {
     final value = IsarCore.readLong(reader, 5);
@@ -155,11 +176,11 @@ dynamic deserializeCookieManagerProp(IsarReader reader, int property) {
     case 1:
       return IsarCore.readString(reader, 1) ?? '';
     case 2:
-      return IsarCore.readString(reader, 2) ?? '';
+      return IsarCore.readString(reader, 2);
     case 3:
-      return IsarCore.readString(reader, 3) ?? '';
+      return IsarCore.readString(reader, 3);
     case 4:
-      return IsarCore.readString(reader, 4) ?? '';
+      return IsarCore.readString(reader, 4);
     case 5:
       {
         final value = IsarCore.readLong(reader, 5);
@@ -643,8 +664,22 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      cookieIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 2));
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      cookieIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 2));
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       cookieEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -660,7 +695,7 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       cookieGreaterThan(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -676,7 +711,7 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       cookieGreaterThanOrEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -692,7 +727,7 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       cookieLessThan(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -708,7 +743,7 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       cookieLessThanOrEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -724,8 +759,8 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       cookieBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -823,8 +858,22 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 3));
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userAgentIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 3));
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       userAgentEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -840,7 +889,7 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       userAgentGreaterThan(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -856,7 +905,7 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       userAgentGreaterThanOrEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -872,7 +921,7 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       userAgentLessThan(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -888,7 +937,7 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       userAgentLessThanOrEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -904,8 +953,8 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       userAgentBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1002,8 +1051,22 @@ extension CookieManagerQueryFilter
     });
   }
 
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 4));
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+      userIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 4));
+    });
+  }
+
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition> userEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1019,7 +1082,7 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       userGreaterThan(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1035,7 +1098,7 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       userGreaterThanOrEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1051,7 +1114,7 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       userLessThan(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1067,7 +1130,7 @@ extension CookieManagerQueryFilter
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
       userLessThanOrEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1082,8 +1145,8 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition> userBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1759,19 +1822,19 @@ extension CookieManagerQueryProperty1
     });
   }
 
-  QueryBuilder<CookieManager, String, QAfterProperty> cookieProperty() {
+  QueryBuilder<CookieManager, String?, QAfterProperty> cookieProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(2);
     });
   }
 
-  QueryBuilder<CookieManager, String, QAfterProperty> userAgentProperty() {
+  QueryBuilder<CookieManager, String?, QAfterProperty> userAgentProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
     });
   }
 
-  QueryBuilder<CookieManager, String, QAfterProperty> userProperty() {
+  QueryBuilder<CookieManager, String?, QAfterProperty> userProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(4);
     });
@@ -1811,19 +1874,20 @@ extension CookieManagerQueryProperty2<R>
     });
   }
 
-  QueryBuilder<CookieManager, (R, String), QAfterProperty> cookieProperty() {
+  QueryBuilder<CookieManager, (R, String?), QAfterProperty> cookieProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(2);
     });
   }
 
-  QueryBuilder<CookieManager, (R, String), QAfterProperty> userAgentProperty() {
+  QueryBuilder<CookieManager, (R, String?), QAfterProperty>
+      userAgentProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
     });
   }
 
-  QueryBuilder<CookieManager, (R, String), QAfterProperty> userProperty() {
+  QueryBuilder<CookieManager, (R, String?), QAfterProperty> userProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(4);
     });
@@ -1866,20 +1930,20 @@ extension CookieManagerQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<CookieManager, (R1, R2, String), QOperations> cookieProperty() {
+  QueryBuilder<CookieManager, (R1, R2, String?), QOperations> cookieProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(2);
     });
   }
 
-  QueryBuilder<CookieManager, (R1, R2, String), QOperations>
+  QueryBuilder<CookieManager, (R1, R2, String?), QOperations>
       userAgentProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
     });
   }
 
-  QueryBuilder<CookieManager, (R1, R2, String), QOperations> userProperty() {
+  QueryBuilder<CookieManager, (R1, R2, String?), QOperations> userProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(4);
     });

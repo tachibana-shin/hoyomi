@@ -8,6 +8,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/bottom_sheet_no_scrim.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:hoyomi/widgets/eiga/button_follow_eiga.dart';
@@ -62,6 +64,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final ValueNotifier<BasicVtt?> _thumbnailVtt = ValueNotifier(null);
   final ValueNotifier<OpeningEnding?> _openingEndingNotifier =
       ValueNotifier(null);
+  final ValueNotifier<WatchTime?> _watchTimeNotifier = ValueNotifier(null);
   final ValueNotifier<void Function()?> _onPrevNotifier = ValueNotifier(null);
   final ValueNotifier<void Function()?> _onNextNotifier = ValueNotifier(null);
   final ValueNotifier<Widget Function(BuildContext context)?> _overlayNotifier =
@@ -148,6 +151,22 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     }).catchError((error) {
       debugPrint('Error: $error');
     });
+
+    _watchTimeNotifier.value = null;
+    if (_service is EigaHistoryMixin &&
+        (_service as EigaHistoryMixin).getWatchTime != null) {
+      (_service as EigaHistoryMixin)
+          .getWatchTime!(
+              eigaId: _eigaId.value,
+              episode: episode,
+              episodeIndex: episodeIndex,
+              metaEiga: metaEiga)
+          .then((data) {
+        _watchTimeNotifier.value = data;
+      }).catchError((error) {
+        debugPrint('Error: $error');
+      });
+    }
   }
 
   @override
@@ -239,6 +258,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       sourceId: widget.sourceId,
       titleNotifier: _titleNotifier,
       subtitleNotifier: _subtitleNotifier,
+      watchTimeNotifier: _watchTimeNotifier,
       onBack: () {
         context.pop();
       },

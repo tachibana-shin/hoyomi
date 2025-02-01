@@ -10,8 +10,10 @@ import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
+import 'package:hoyomi/globals.dart';
 import 'package:hoyomi/transition/slide_fade_transition.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:http/http.dart';
@@ -32,6 +34,7 @@ import 'package:hoyomi/utils/save_file_cache.dart';
 class PlayerEiga extends StatefulWidget {
   final ValueNotifier<String> titleNotifier;
   final ValueNotifier<String> subtitleNotifier;
+  final ValueNotifier<WatchTime?> watchTimeNotifier;
   final String sourceId;
 
   final ValueNotifier<SourceVideo?> sourceNotifier;
@@ -55,6 +58,7 @@ class PlayerEiga extends StatefulWidget {
       {super.key,
       required this.titleNotifier,
       required this.subtitleNotifier,
+      required this.watchTimeNotifier,
       required this.sourceId,
       required this.sourceNotifier,
       required this.posterNotifier,
@@ -157,6 +161,17 @@ class _PlayerEigaState extends State<PlayerEiga> {
       if (!_pauseAutoHideControls.value) {
         _activeTime = DateTime.now();
       }
+    });
+    widget.watchTimeNotifier.addListener(() {
+      final watchTime = widget.watchTimeNotifier.value;
+      if (watchTime == null) return;
+
+      print(watchTime);
+
+      _controller.value?.seekTo(watchTime.current);
+
+      showSnackBar(
+          Text('Watching time restored ${formatDuration(watchTime.current)}'));
     });
   }
 
