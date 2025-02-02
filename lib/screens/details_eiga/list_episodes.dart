@@ -5,8 +5,8 @@ import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
-import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ListEpisodes extends StatefulWidget {
@@ -17,12 +17,11 @@ class ListEpisodes extends StatefulWidget {
   final ValueNotifier<String?> episodeIdNotifier;
   final Axis scrollDirection;
   final ScrollController? controller;
-  final EpisodesEiga? Function() initialData;
-  final void Function(EpisodesEiga episodes)? onUpdate;
+  final Future<EpisodesEiga> Function() getData;
   final void Function({
     required int indexEpisode,
     required EpisodesEiga episodes,
-  }) onTap;
+  }) onTapEpisode;
   final bool eager;
 
   const ListEpisodes(
@@ -32,9 +31,8 @@ class ListEpisodes extends StatefulWidget {
       required this.thumbnail,
       required this.eigaIdNotifier,
       required this.episodeIdNotifier,
-      required this.onUpdate,
-      required this.onTap,
-      required this.initialData,
+      required this.onTapEpisode,
+      required this.getData,
       required this.eager,
       this.scrollDirection = Axis.horizontal,
       this.controller});
@@ -43,188 +41,185 @@ class ListEpisodes extends StatefulWidget {
   State<ListEpisodes> createState() => _ListEpisodesState();
 }
 
-class _ListEpisodesState extends State<ListEpisodes> {
-  late final Future<EpisodesEiga> _seasonFuture;
+class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
+  late final _episodesEiga =
+      createAsyncSignal<EpisodesEiga>(AsyncState.loading());
 
   @override
   initState() {
-    final service = getEigaService(widget.sourceId);
-    final initial = widget.initialData();
-    _seasonFuture = initial != null
-        ? Future.value(initial)
-        : service.getEpisodes(widget.season.eigaId);
-    if (widget.onUpdate != null) _seasonFuture.then(widget.onUpdate!);
+    widget.getData().then((data) {
+      _episodesEiga.value = AsyncState.data(data);
+    }).catchError((error) {
+      _episodesEiga.value = AsyncState.error(error);
+    });
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _seasonFuture,
-        builder: (context, snapshot) {
-          final height = 35.0;
+    final height = 35.0;
 
-          if (snapshot.hasError) {
-            return Center(
-                child: UtilsService.errorWidgetBuilder(context,
-                    error: snapshot.error,
-                    orElse: (error) => Text('Error: $error')));
-          }
+    if (_episodesEiga.value.hasError) {
+      return Center(
+          child: UtilsService.errorWidgetBuilder(context,
+              error: _episodesEiga.value.error,
+              orElse: (error) => Text('Error: $error')));
+    }
 
-          final waiting = snapshot.connectionState == ConnectionState.waiting;
-          if (!waiting && !snapshot.hasData) {
-            return const Center(child: Text('No data available'));
-          }
+    if (!_episodesEiga.value.isLoading && !_episodesEiga.value.hasValue) {
+      return const Center(child: Text('No data available'));
+    }
 
-          late final EpisodesEiga episodes;
+    final waiting = _episodesEiga.value.isLoading;
+
+    final episodesEiga = waiting
+        ? EpisodesEiga.createFakeData()
+        : _episodesEiga.value.requireValue;
+
+    if (!waiting && widget.eager) {
+      for (final episode in episodesEiga.episodes) {
+        final active = checkEpisodeActive(episode, episodesEiga);
+
+        if (active) {
+          final episodeIndex = episodesEiga.episodes.indexOf(episode);
+
+          widget.onTapEpisode(
+            indexEpisode: episodeIndex,
+            episodes: episodesEiga,
+          );
+          break;
+        }
+      }
+    }
+
+    final isVertical = widget.scrollDirection == Axis.vertical;
+
+    final child = AnimatedBuilder(
+        animation:
+            Listenable.merge([widget.eigaIdNotifier, widget.episodeIdNotifier]),
+        builder: (context, child) {
+          final child = ListView.builder(
+              scrollDirection: widget.scrollDirection,
+              itemCount: episodesEiga.episodes.length,
+              shrinkWrap: true,
+              controller: widget.controller,
+              itemBuilder: (context, index) => itemBuilder(context,
+                  index: index,
+                  episodesEiga: episodesEiga,
+                  waiting: waiting,
+                  isVertical: isVertical,
+                  height: height));
+
           if (waiting) {
-            episodes = EpisodesEiga.createFakeData();
-          } else {
-            episodes = snapshot.data as EpisodesEiga;
+            return Skeletonizer(
+                enabled: true, enableSwitchAnimation: true, child: child);
           }
-
-          bool checkEpisodeActive(EpisodeEiga episode) {
-            return widget.eigaIdNotifier.value == widget.season.eigaId &&
-                (widget.episodeIdNotifier.value ??
-                        episodes.episodes[0].episodeId) ==
-                    episode.episodeId;
-          }
-
-          if (!waiting && widget.eager) {
-            for (final episode in episodes.episodes) {
-              final active = checkEpisodeActive(episode);
-
-              if (active) {
-                final episodeIndex = episodes.episodes.indexOf(episode);
-
-                widget.onTap(
-                  indexEpisode: episodeIndex,
-                  episodes: episodes,
-                );
-                break;
-              }
-            }
-          }
-
-          final isVertical = widget.scrollDirection == Axis.vertical;
-          Widget itemBuilder(BuildContext context, int index) {
-            final episode = episodes.episodes[index];
-            final active = !waiting && checkEpisodeActive(episode);
-
-            if (isVertical) {
-              return InkWell(
-                  borderRadius: BorderRadius.circular(7),
-                  onTap: () => widget.onTap(
-                        indexEpisode: index,
-                        episodes: episodes,
-                      ),
-                  child: Container(
-                      decoration: BoxDecoration(
-                          color: active
-                              ? Theme.of(context).colorScheme.tertiaryContainer
-                              : null,
-                          borderRadius: BorderRadius.circular(7.0)),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 7.0, horizontal: 7.0),
-                      child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: min(
-                                  100.0, MediaQuery.of(context).size.width / 2),
-                              decoration: BoxDecoration(
-                                  color: Colors.blueGrey.shade200,
-                                  borderRadius: BorderRadius.circular(10.0)),
-                              clipBehavior: Clip.antiAlias,
-                              child: AspectRatio(
-                                  aspectRatio: 16 / 9,
-                                  child: BasicImage.network(
-                                    episode.image?.src ?? widget.thumbnail.src,
-                                    sourceId: widget.sourceId,
-                                    headers: episodes.image?.headers ??
-                                        widget.thumbnail.headers,
-                                    fit: BoxFit.cover,
-                                  )),
-                            ),
-                            SizedBox(width: 7.0),
-                            Expanded(
-                                child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 3.0,
-                                ),
-                                Text(
-                                  'Episode ${episode.name}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(
-                                          fontSize: 14.0,
-                                          fontWeight: FontWeight.w400),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SizedBox(height: 5.0),
-                                if (episode.description?.isNotEmpty == true)
-                                  Text(
-                                    episode.description!,
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                    maxLines: 2,
-                                  )
-                              ],
-                            ))
-                          ])));
-            }
-
-            return Padding(
-              padding: EdgeInsets.only(right: 8.0),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(7),
-                onTap: () => widget.onTap(
-                  indexEpisode: index,
-                  episodes: episodes,
-                ),
-                child: Ink(
-                  height: height * 0.9,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: active
-                          ? Theme.of(context).colorScheme.tertiaryContainer
-                          : Colors.grey.withAlpha(60),
-                    ),
-                    color: active
-                        ? Theme.of(context).colorScheme.tertiaryContainer
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Center(child: Text(episode.name)),
-                ),
-              ),
-            );
-          }
-
-          final child = AnimatedBuilder(
-              animation: Listenable.merge(
-                  [widget.eigaIdNotifier, widget.episodeIdNotifier]),
-              builder: (context, child) {
-                final child = ListView.builder(
-                    scrollDirection: widget.scrollDirection,
-                    itemCount: episodes.episodes.length,
-                    shrinkWrap: true,
-                    controller: widget.controller,
-                    itemBuilder: itemBuilder);
-
-                if (waiting) {
-                  return Skeletonizer(
-                      enabled: true, enableSwitchAnimation: true, child: child);
-                }
-                return child;
-              });
-          return isVertical ? child : SizedBox(height: height, child: child);
+          return child;
         });
+    return isVertical ? child : SizedBox(height: height, child: child);
+  }
+
+  bool checkEpisodeActive(EpisodeEiga episode, EpisodesEiga episodesEiga) {
+    return widget.eigaIdNotifier.value == widget.season.eigaId &&
+        (widget.episodeIdNotifier.value ??
+                episodesEiga.episodes[0].episodeId) ==
+            episode.episodeId;
+  }
+
+  Widget itemBuilder(BuildContext context,
+      {required int index,
+      required EpisodesEiga episodesEiga,
+      required bool waiting,
+      required bool isVertical,
+      required double height}) {
+    final episode = episodesEiga.episodes[index];
+    final active = !waiting && checkEpisodeActive(episode, episodesEiga);
+
+    if (isVertical) {
+      return InkWell(
+          borderRadius: BorderRadius.circular(7),
+          onTap: () => widget.onTapEpisode(
+                indexEpisode: index,
+                episodes: episodesEiga,
+              ),
+          child: Container(
+              decoration: BoxDecoration(
+                  color: active
+                      ? Theme.of(context).colorScheme.tertiaryContainer
+                      : null,
+                  borderRadius: BorderRadius.circular(7.0)),
+              padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 7.0),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(
+                  width: min(100.0, MediaQuery.of(context).size.width / 2),
+                  decoration: BoxDecoration(
+                      color: Colors.blueGrey.shade200,
+                      borderRadius: BorderRadius.circular(10.0)),
+                  clipBehavior: Clip.antiAlias,
+                  child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: BasicImage.network(
+                        episode.image?.src ?? widget.thumbnail.src,
+                        sourceId: widget.sourceId,
+                        headers: episodesEiga.image?.headers ??
+                            widget.thumbnail.headers,
+                        fit: BoxFit.cover,
+                      )),
+                ),
+                SizedBox(width: 7.0),
+                Expanded(
+                    child: Column(
+                  children: [
+                    SizedBox(
+                      height: 3.0,
+                    ),
+                    Text(
+                      'Episode ${episode.name}',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontSize: 14.0, fontWeight: FontWeight.w400),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 5.0),
+                    if (episode.description?.isNotEmpty == true)
+                      Text(
+                        episode.description!,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        maxLines: 2,
+                      )
+                  ],
+                ))
+              ])));
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(right: 8.0),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(7),
+        onTap: () => widget.onTapEpisode(
+          indexEpisode: index,
+          episodes: episodesEiga,
+        ),
+        child: Ink(
+          height: height * 0.9,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: active
+                  ? Theme.of(context).colorScheme.tertiaryContainer
+                  : Colors.grey.withAlpha(60),
+            ),
+            color: active
+                ? Theme.of(context).colorScheme.tertiaryContainer
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(7),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          child: Center(child: Text(episode.name)),
+        ),
+      ),
+    );
   }
 }
 

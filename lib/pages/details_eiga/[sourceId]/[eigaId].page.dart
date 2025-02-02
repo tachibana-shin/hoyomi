@@ -153,10 +153,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     });
 
     _watchTimeNotifier.value = null;
-    if (_service is EigaHistoryMixin &&
-        (_service as EigaHistoryMixin).getWatchTime != null) {
+    if (_service is EigaHistoryMixin) {
       (_service as EigaHistoryMixin)
-          .getWatchTime!(
+          .getWatchTime(
               eigaId: _eigaId.value,
               episode: episode,
               episodeIndex: episodeIndex,
@@ -941,14 +940,13 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       sourceId: widget.sourceId,
                       eigaIdNotifier: _eigaId,
                       episodeIdNotifier: _episodeId,
-                      initialData: () => _cacheEpisodesStore[eigaId],
+                      getData: () async => _cacheEpisodesStore[eigaId] ??=
+                          await _service.getEpisodes(eigaId),
                       eager: true,
                       scrollDirection: scrollDirection,
                       controller: controller,
-                      onUpdate: (episodes) {
-                        _cacheEpisodesStore[eigaId] = episodes;
-                      },
-                      onTap: ({required episodes, required indexEpisode}) {
+                      onTapEpisode: (
+                          {required episodes, required indexEpisode}) {
                         _onChangeEpisode(
                             metaEiga: metaEiga,
                             indexEpisode: indexEpisode,
@@ -994,14 +992,14 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           thumbnail: metaEiga$.poster ?? metaEiga$.image,
                           eigaIdNotifier: _eigaId,
                           episodeIdNotifier: _episodeId,
-                          initialData: () => _cacheEpisodesStore[season.eigaId],
+                          getData: () async =>
+                              _cacheEpisodesStore[_eigaId.value] ??=
+                                  await _service.getEpisodes(_eigaId.value),
                           eager: true,
                           scrollDirection: scrollDirection,
                           controller: controller,
-                          onUpdate: (episodes) {
-                            _cacheEpisodesStore[season.eigaId] = episodes;
-                          },
-                          onTap: ({required episodes, required indexEpisode}) {
+                          onTapEpisode: (
+                              {required episodes, required indexEpisode}) {
                             _onChangeEpisode(
                                 metaEiga: metaEiga,
                                 indexEpisode: indexEpisode,
