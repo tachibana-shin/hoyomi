@@ -82,7 +82,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
         })
       ]);
     } finally {
-      _loading.value = false;
+      if (mounted) _loading.value = false;
     }
   }
 
