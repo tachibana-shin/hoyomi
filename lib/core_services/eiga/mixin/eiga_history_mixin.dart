@@ -14,4 +14,11 @@ mixin EigaHistoryMixin on BaseAuthMixin {
       {required String eigaId, required List<EpisodeEiga> episodes}) async {
     return {};
   }
+
+  Future<void> setWatchTime(
+      {required String eigaId,
+      required EpisodeEiga episode,
+      required int episodeIndex,
+      required MetaEiga metaEiga,
+      required WatchTime watchTime});
 }

@@ -1,9 +1,9 @@
 class WatchTime {
-  final Duration current;
+  final Duration position;
   final Duration duration;
 
   const WatchTime({
-    required this.current,
+    required this.position,
     required this.duration,
   });
 }

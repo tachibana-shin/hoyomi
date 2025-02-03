@@ -137,7 +137,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
   bool checkEpisodeActive(EpisodeEiga episode, EpisodesEiga episodesEiga) {
     return widget.eigaIdNotifier.value == widget.season.eigaId &&
         (widget.episodeIdNotifier.value ??
-                episodesEiga.episodes[0].episodeId) ==
+                episodesEiga.episodes.first.episodeId) ==
             episode.episodeId;
   }
 
@@ -195,7 +195,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
 
                               
                               LinearProgressIndicator(
-                                value: watchTime.current.inMilliseconds /
+                                value: watchTime.position.inMilliseconds /
                                     watchTime.duration.inMilliseconds,
                                 backgroundColor:
                                     Color.fromRGBO(255, 255, 255, 0.6),
@@ -224,7 +224,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
                     ),
                     if (watchTime != null)
                       Text(
-                        'Last time watch ${formatDuration(watchTime.current)} / ${formatDuration(watchTime.duration)}',
+                        'Last time watch ${formatDuration(watchTime.position)} / ${formatDuration(watchTime.duration)}',
                         style: Theme.of(context)
                             .textTheme
                             .titleMedium
@@ -286,7 +286,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
                       left: 0,
                       right: 0,
                       child: LinearProgressIndicator(
-                        value: watchTime.current.inMilliseconds /
+                        value: watchTime.position.inMilliseconds /
                             watchTime.duration.inMilliseconds,
                         backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
                         valueColor: AlwaysStoppedAnimation<Color>(

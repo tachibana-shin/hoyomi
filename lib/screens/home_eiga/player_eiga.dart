@@ -10,7 +10,7 @@ import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:hoyomi/globals.dart';
@@ -32,9 +32,11 @@ import 'package:hoyomi/utils/save_file_cache.dart';
 // import 'package:video_player_oneplusdream_example/cache.dart';
 
 class PlayerEiga extends StatefulWidget {
+  final ValueNotifier<String> eigaId;
+  final ValueNotifier<String?> episodeId;
   final ValueNotifier<String> titleNotifier;
   final ValueNotifier<String> subtitleNotifier;
-  final ValueNotifier<WatchTime?> watchTimeNotifier;
+  final ValueNotifier<WatchTimeData?> watchTimeDataNotifier;
   final String sourceId;
 
   final ValueNotifier<SourceVideo?> sourceNotifier;
@@ -48,6 +50,8 @@ class PlayerEiga extends StatefulWidget {
 
   final void Function() onBack;
   final void Function(bool isFullscreen) onTapPlaylist;
+  final void Function({required Duration position, required Duration duration})
+      onWatchTimeUpdate;
   final ValueNotifier<List<type.Subtitle>> subtitlesNotifier;
   final ValueNotifier<void Function()?> onNext;
   final ValueNotifier<void Function()?> onPrev;
@@ -56,9 +60,11 @@ class PlayerEiga extends StatefulWidget {
 
   const PlayerEiga(
       {super.key,
+      required this.eigaId,
+      required this.episodeId,
       required this.titleNotifier,
       required this.subtitleNotifier,
-      required this.watchTimeNotifier,
+      required this.watchTimeDataNotifier,
       required this.sourceId,
       required this.sourceNotifier,
       required this.posterNotifier,
@@ -68,6 +74,7 @@ class PlayerEiga extends StatefulWidget {
       required this.aspectRatio,
       required this.onBack,
       required this.onTapPlaylist,
+      required this.onWatchTimeUpdate,
       required this.subtitlesNotifier,
       required this.onNext,
       required this.onPrev,
@@ -162,16 +169,16 @@ class _PlayerEigaState extends State<PlayerEiga> {
         _activeTime = DateTime.now();
       }
     });
-    widget.watchTimeNotifier.addListener(() {
-      final watchTime = widget.watchTimeNotifier.value;
+    widget.watchTimeDataNotifier.addListener(() {
+      final watchTime = widget.watchTimeDataNotifier.value?.watchTime;
       if (watchTime == null) return;
 
       print(watchTime);
 
-      _controller.value?.seekTo(watchTime.current);
+      _controller.value?.seekTo(watchTime.position);
 
-      showSnackBar(
-          Text('Watching time restored ${formatDuration(watchTime.current)}'));
+      showSnackBar(Text(
+          'Watching time restored ${formatDuration(watchTime.position)}'));
     });
   }
 
@@ -252,6 +259,12 @@ class _PlayerEigaState extends State<PlayerEiga> {
           _controller.value?.value.aspectRatio ?? _aspectRatio.value;
     }
     _firstLoadedSource.value = true;
+
+    if (widget.watchTimeDataNotifier.value?.eigaId == widget.eigaId.value &&
+        widget.watchTimeDataNotifier.value?.episodeId ==
+            widget.episodeId.value) {
+      widget.onWatchTimeUpdate(position: _position.value, duration: _duration.value);
+    }
 
     // if (_controller.value?.isBlank == true ||
     //    _loading.value) {

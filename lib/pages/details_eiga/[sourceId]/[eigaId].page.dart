@@ -9,6 +9,7 @@ import 'package:hoyomi/composable/bottom_sheet_no_scrim.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
@@ -65,7 +66,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final ValueNotifier<BasicVtt?> _thumbnailVtt = ValueNotifier(null);
   final ValueNotifier<OpeningEnding?> _openingEndingNotifier =
       ValueNotifier(null);
-  final ValueNotifier<WatchTime?> _watchTimeNotifier = ValueNotifier(null);
+  final ValueNotifier<WatchTimeData?> _watchTimeDataNotifier =
+      ValueNotifier(null);
   final ValueNotifier<void Function()?> _onPrevNotifier = ValueNotifier(null);
   final ValueNotifier<void Function()?> _onNextNotifier = ValueNotifier(null);
   final ValueNotifier<Widget Function(BuildContext context)?> _overlayNotifier =
@@ -75,6 +77,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final ValueNotifier<String?> _episodeId = ValueNotifier(null);
   final ValueNotifier<TimeAndDay?> _schedule = ValueNotifier(null);
   final ValueNotifier<EpisodeEiga?> _episode = ValueNotifier(null);
+  final ValueNotifier<int?> _episodeIndex = ValueNotifier(null);
   final ValueNotifier<Future<List<BasicEiga>>?> _suggestNotifier =
       ValueNotifier(null);
 
@@ -153,17 +156,24 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       debugPrint('Error: $error');
     });
 
-    _watchTimeNotifier.value = null;
+    _watchTimeDataNotifier.value = null;
     if (_service is EigaHistoryMixin) {
+      final eigaId = _eigaId.value;
+      final episodeId = episode.episodeId;
+
       (_service as EigaHistoryMixin)
           .getWatchTime(
-              eigaId: _eigaId.value,
+              eigaId: eigaId,
               episode: episode,
               episodeIndex: episodeIndex,
               metaEiga: metaEiga)
           .then((data) {
-        _watchTimeNotifier.value = data;
+        _watchTimeDataNotifier.value = WatchTimeData(
+            eigaId: eigaId, episodeId: episodeId, watchTime: data);
       }).catchError((error) {
+        _watchTimeDataNotifier.value = WatchTimeData(
+            eigaId: eigaId, episodeId: episodeId, watchTime: null);
+
         debugPrint('Error: $error');
       });
     }
@@ -256,9 +266,11 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   Widget _buildPlayer() {
     return PlayerEiga(
       sourceId: widget.sourceId,
+      eigaId: _eigaId,
+      episodeId: _episodeId,
       titleNotifier: _titleNotifier,
       subtitleNotifier: _subtitleNotifier,
-      watchTimeNotifier: _watchTimeNotifier,
+      watchTimeDataNotifier: _watchTimeDataNotifier,
       onBack: () {
         context.pop();
       },
@@ -268,6 +280,21 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           return;
         }
         _showModalEpisodes(_metaEigaNotifier);
+      },
+      onWatchTimeUpdate: ({required position, required duration}) {
+        if (_service is EigaHistoryMixin) {
+          final eigaId = _eigaId.value;
+          final watchTime = WatchTime(
+              position: position,
+              duration: duration);
+
+          (_service as EigaHistoryMixin).setWatchTime(
+              eigaId: eigaId,
+              episode: _episode.value!,
+              episodeIndex: _episodeIndex.value!,
+              metaEiga: _metaEigaNotifier.value,
+              watchTime: watchTime);
+        }
       },
       subtitlesNotifier: _subtitlesNotifier,
       sourceNotifier: _sourceNotifier,
@@ -871,18 +898,20 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }) {
     final oldEiga = _eigaId.value;
     final seasonChanged = oldEiga != seasons[indexSeason].eigaId;
+    final currentEpisode = episodesEiga.episodes[indexEpisode];
 
     if (seasonChanged) {
       _eigaId.value = seasons[indexSeason].eigaId;
     }
 
     var episodeChanged = false;
-    if (_episodeId.value != episodesEiga.episodes[indexEpisode].episodeId) {
-      _episodeId.value = episodesEiga.episodes[indexEpisode].episodeId;
+    if (_episodeId.value != currentEpisode.episodeId) {
+      _episodeId.value = currentEpisode.episodeId;
       episodeChanged = true;
     }
-    if (_episode.value != episodesEiga.episodes[indexEpisode]) {
-      _episode.value = episodesEiga.episodes[indexEpisode];
+    if (_episode.value != currentEpisode) {
+      _episode.value = currentEpisode;
+      _episodeIndex.value = indexEpisode;
       episodeChanged = true;
     }
 
@@ -911,8 +940,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     });
 
     if (episodeChanged) {
-      _updatePlayer(
-          metaEiga.value, episodesEiga.episodes[indexEpisode], indexEpisode);
+      _updatePlayer(metaEiga.value, currentEpisode, indexEpisode);
     }
     _updateData(metaEiga: metaEiga, episodes: episodesEiga);
 

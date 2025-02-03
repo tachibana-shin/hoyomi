@@ -713,7 +713,7 @@ class AnimeVietsubService extends EigaBaseService
     final json = jsonDecode(data.body);
 
     return WatchTime(
-        current: Duration(seconds: (json['cur'] as double).round()),
+        position: Duration(seconds: (json['cur'] as double).round()),
         duration: Duration(seconds: (json['dur'] as double).round()));
   }
 
@@ -773,10 +773,15 @@ class AnimeVietsubService extends EigaBaseService
       for (final item in json)
         if (chapIdToEpisodeKey.containsKey(item['chap_id']))
           chapIdToEpisodeKey[item['chap_id']]!: WatchTime(
-            current: Duration(seconds: (item['cur'] as double).round()),
+            position: Duration(seconds: (item['cur'] as double).round()),
             duration: Duration(seconds: (item['dur'] as double).round()),
           ),
     };
+  }
+  
+  @override
+  Future<void> setWatchTime({required eigaId, required episode, required episodeIndex, required MetaEiga metaEiga, required WatchTime watchTime}) async {
+
   }
 }
 
