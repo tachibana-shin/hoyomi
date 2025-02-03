@@ -223,7 +223,7 @@ StackWebView createWebView(Uri uri) {
 abstract class UtilsService {
   String get name;
   String get uid => name.toLowerCase().replaceAll(r"\s", "-");
-  Future<BasicUser?>? _userFuture;
+  Future<BasicUser>? _userFuture;
 
   static void showCaptchaResolve(BuildContext? context,
       {String? url, required CaptchaRequiredException error}) {
@@ -498,11 +498,11 @@ abstract class UtilsService {
     }
   }
 
-  Future<BasicUser?> fetchUser() async {
+  Future<BasicUser> fetchUser() async {
     return _userFuture ??= _fetchUser();
   }
 
-  Future<BasicUser?> _fetchUser() async {
+  Future<BasicUser> _fetchUser() async {
     if (this is! BaseAuthMixin) {
       throw Exception('Service must be an instance of BaseAuthMixin');
     }
@@ -512,9 +512,8 @@ abstract class UtilsService {
     final cookie = row?.cookie;
     var user = row?.user;
 
-    if (cookie == null) return null;
-
     try {
+      if (cookie == null) throw UserNotFoundException();
       // if (user == null) {
       user = jsonEncode((await service.getUser(cookie: cookie)).toJson());
 

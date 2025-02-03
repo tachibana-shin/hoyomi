@@ -56,6 +56,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   double _aspectRatio = 16 / 9;
 
   final Map<String, EpisodesEiga> _cacheEpisodesStore = {};
+  final Map<String, Map<String, WatchTime>> _cacheWatchTimeStore = {};
   final ValueNotifier<String> _titleNotifier = ValueNotifier('');
   final ValueNotifier<String> _subtitleNotifier = ValueNotifier('');
   final ValueNotifier<List<Subtitle>> _subtitlesNotifier = ValueNotifier([]);
@@ -864,7 +865,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     required ValueNotifier<MetaEiga> metaEiga,
     required int indexEpisode,
     required int indexSeason,
-    required EpisodesEiga episodes,
+    required EpisodesEiga episodesEiga,
     required List<BasicSeason> seasons,
   }) {
     final oldEiga = _eigaId.value;
@@ -875,34 +876,34 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     }
 
     var episodeChanged = false;
-    if (_episodeId.value != episodes.episodes[indexEpisode].episodeId) {
-      _episodeId.value = episodes.episodes[indexEpisode].episodeId;
+    if (_episodeId.value != episodesEiga.episodes[indexEpisode].episodeId) {
+      _episodeId.value = episodesEiga.episodes[indexEpisode].episodeId;
       episodeChanged = true;
     }
-    if (_episode.value != episodes.episodes[indexEpisode]) {
-      _episode.value = episodes.episodes[indexEpisode];
+    if (_episode.value != episodesEiga.episodes[indexEpisode]) {
+      _episode.value = episodesEiga.episodes[indexEpisode];
       episodeChanged = true;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final currentIndex =
-          episodes.episodes.indexWhere((e) => e.episodeId == _episodeId.value);
+      final currentIndex = episodesEiga.episodes
+          .indexWhere((e) => e.episodeId == _episodeId.value);
       _onPrevNotifier.value = currentIndex > 0
           ? () => _onChangeEpisode(
                 metaEiga: metaEiga,
                 indexEpisode: currentIndex - 1,
                 indexSeason: indexSeason,
-                episodes: episodes,
+                episodesEiga: episodesEiga,
                 seasons: seasons,
               )
           : null;
 
-      _onNextNotifier.value = currentIndex < episodes.episodes.length - 1
+      _onNextNotifier.value = currentIndex < episodesEiga.episodes.length - 1
           ? () => _onChangeEpisode(
                 metaEiga: metaEiga,
                 indexEpisode: currentIndex + 1,
                 indexSeason: indexSeason,
-                episodes: episodes,
+                episodesEiga: episodesEiga,
                 seasons: seasons,
               )
           : null;
@@ -910,9 +911,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     if (episodeChanged) {
       _updatePlayer(
-          metaEiga.value, episodes.episodes[indexEpisode], indexEpisode);
+          metaEiga.value, episodesEiga.episodes[indexEpisode], indexEpisode);
     }
-    _updateData(metaEiga: metaEiga, episodes: episodes);
+    _updateData(metaEiga: metaEiga, episodes: episodesEiga);
 
     if (seasonChanged) {
       _service.getDetails(_eigaId.value).then((value) {
@@ -942,16 +943,24 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       episodeIdNotifier: _episodeId,
                       getData: () async => _cacheEpisodesStore[eigaId] ??=
                           await _service.getEpisodes(eigaId),
+                      getWatchTimeEpisodes: (episodesEiga) async =>
+                          _cacheWatchTimeStore[eigaId] ??=
+                              _service is EigaHistoryMixin
+                                  ? await (_service as EigaHistoryMixin)
+                                      .getWatchTimeEpisodes(
+                                          eigaId: _eigaId.value,
+                                          episodes: episodesEiga.episodes)
+                                  : {},
                       eager: true,
                       scrollDirection: scrollDirection,
                       controller: controller,
                       onTapEpisode: (
-                          {required episodes, required indexEpisode}) {
+                          {required episodesEiga, required indexEpisode}) {
                         _onChangeEpisode(
                             metaEiga: metaEiga,
                             indexEpisode: indexEpisode,
                             indexSeason: 0,
-                            episodes: episodes,
+                            episodesEiga: episodesEiga,
                             seasons: [season]);
                       });
                 });
@@ -993,18 +1002,26 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           eigaIdNotifier: _eigaId,
                           episodeIdNotifier: _episodeId,
                           getData: () async =>
-                              _cacheEpisodesStore[_eigaId.value] ??=
-                                  await _service.getEpisodes(_eigaId.value),
+                              _cacheEpisodesStore[season.eigaId] ??=
+                                  await _service.getEpisodes(season.eigaId),
+                          getWatchTimeEpisodes: (episodesEiga) async =>
+                              _cacheWatchTimeStore[season.eigaId] ??=
+                                  _service is EigaHistoryMixin
+                                      ? await (_service as EigaHistoryMixin)
+                                          .getWatchTimeEpisodes(
+                                              eigaId: season.eigaId,
+                                              episodes: episodesEiga.episodes)
+                                      : {},
                           eager: true,
                           scrollDirection: scrollDirection,
                           controller: controller,
                           onTapEpisode: (
-                              {required episodes, required indexEpisode}) {
+                              {required episodesEiga, required indexEpisode}) {
                             _onChangeEpisode(
                                 metaEiga: metaEiga,
                                 indexEpisode: indexEpisode,
                                 indexSeason: index,
-                                episodes: episodes,
+                                episodesEiga: episodesEiga,
                                 seasons: metaEiga$.seasons);
                           }));
                 }).toList()),

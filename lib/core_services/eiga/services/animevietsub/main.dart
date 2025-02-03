@@ -93,7 +93,7 @@ class AnimeVietsubService extends EigaBaseService
 
   @override
   Future<bool> isFollowed({required eigaId}) async {
-    final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
+    final id = RegExp(r'-(\d+)$').firstMatch(eigaId)!.group(1)!;
 
     final text = await fetch(
       "$baseUrl/ajax/notification?Bookmark=true&filmId=$id",
@@ -106,7 +106,7 @@ class AnimeVietsubService extends EigaBaseService
 
   @override
   Future<bool> setFollow({required eigaId, required value}) async {
-    final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
+    final id = RegExp(r'-(\d+)$').firstMatch(eigaId)!.group(1)!;
 
     final text = await fetch(
       "$baseUrl/ajax/notification?Bookmark=true&filmId=$id&type=${value ? "add" : "remove"}",
@@ -664,19 +664,15 @@ class AnimeVietsubService extends EigaBaseService
   }
 
   @override
-  get getWatchTime => (
-          {required String eigaId,
-          required EpisodeEiga episode,
-          required int episodeIndex,
-          required MetaEiga metaEiga}) async {
-        final user = await fetchUser();
+  getWatchTime(
+      {required String eigaId,
+      required EpisodeEiga episode,
+      required int episodeIndex,
+      required MetaEiga metaEiga}) async {
+    final user = await fetchUser();
 
-        if (user == null) {
-          return null;
-        }
-
-        final data = await post(
-            Uri.parse('$_supabaseUrl/rest/v1/rpc/get_single_progress'),
+    final data =
+        await post(Uri.parse('$_supabaseUrl/rest/v1/rpc/get_single_progress'),
             headers: {
               'User-Agent':
                   'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
@@ -706,20 +702,82 @@ class AnimeVietsubService extends EigaBaseService
                   .toString(),
               'season_id': eigaId,
               'p_chap_id':
-                  RegExp(r'\d+$').firstMatch(episode.episodeId)!.group(0)
+                  RegExp(r'-(\d+)$').firstMatch(episode.episodeId)!.group(1)
             }));
 
-        if (data.statusCode > 299) {
-          print('[${data.reasonPhrase}]: ${data.body}');
-          return null;
-        }
+    if (data.statusCode > 299) {
+      print('[${data.reasonPhrase}]: ${data.body}');
+      throw Exception('[${data.reasonPhrase}]: ${data.body}');
+    }
 
-        final json = jsonDecode(data.body);
+    final json = jsonDecode(data.body);
 
-        return WatchTime(
-            current: Duration(seconds: (json['cur'] as double).round()),
-            duration: Duration(seconds: (json['dur'] as double).round()));
-      };
+    return WatchTime(
+        current: Duration(seconds: (json['cur'] as double).round()),
+        duration: Duration(seconds: (json['dur'] as double).round()));
+  }
+
+  @override
+  Future<Map<String, WatchTime>> getWatchTimeEpisodes({
+    required eigaId,
+    required episodes,
+  }) async {
+    final user = await fetchUser();
+
+    final data = await post(
+      Uri.parse('$_supabaseUrl/rest/v1/rpc/get_watch_progress'),
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
+        'Accept': '*/*',
+        'Accept-Language': 'vi-VN,vi;q=0.8,en-US;q=0.5,en;q=0.3',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Content-Type': 'application/json',
+        'Referer': 'https://animevsub.eu.org/',
+        'apikey': _supabaseKey,
+        'content-profile': 'public',
+        'x-client-info': 'supabase-js-web/2.44.4',
+        'Origin': 'https://animevsub.eu.org',
+        'DNT': '1',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'cross-site',
+        'authorization': 'Bearer $_supabaseKey',
+        'Connection': 'keep-alive',
+        'Priority': 'u=4',
+        'Pragma': 'no-cache',
+        'Cache-Control': 'no-cache',
+        'TE': 'trailers',
+      },
+      body: jsonEncode({
+        'user_uid': sha256.convert(utf8.encode('${user.email}${user.fullName}')).toString(),
+        'season_id': eigaId,
+      }),
+    );
+
+    if (data.statusCode > 299) {
+      print('[${data.reasonPhrase}]: ${data.body}');
+      throw Exception('[${data.reasonPhrase}]: ${data.body}');
+    }
+
+    final json = jsonDecode(data.body) as List;
+
+    final Map<String, String> chapIdToEpisodeKey = {};
+    for (final episode in episodes) {
+      final match = RegExp(r'-(\d+)$').firstMatch(episode.episodeId);
+      if (match != null) {
+        chapIdToEpisodeKey[match.group(1)!] = episode.episodeId;
+      }
+    }
+
+    return {
+      for (final item in json)
+        if (chapIdToEpisodeKey.containsKey(item['chap_id']))
+          chapIdToEpisodeKey[item['chap_id']]!: WatchTime(
+            current: Duration(seconds: (item['cur'] as double).round()),
+            duration: Duration(seconds: (item['dur'] as double).round()),
+          ),
+    };
+  }
 }
 
 class _ParamsEpisode {
