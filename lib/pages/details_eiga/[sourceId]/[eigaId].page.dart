@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -30,6 +31,12 @@ import 'package:hoyomi/screens/details_eiga/list_episodes.dart';
 import 'package:hoyomi/screens/home_eiga/player_eiga.dart';
 import 'package:hoyomi/utils/format_number.dart';
 import 'package:hoyomi/widgets/vertical_separator.dart';
+
+class WatchTimeDataEvent {
+  final WatchTimeData watchTimeData;
+
+  const WatchTimeDataEvent(this.watchTimeData);
+}
 
 class DetailsEigaPage extends StatefulWidget {
   final String sourceId;
@@ -80,6 +87,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final ValueNotifier<int?> _episodeIndex = ValueNotifier(null);
   final ValueNotifier<Future<List<BasicEiga>>?> _suggestNotifier =
       ValueNotifier(null);
+
+  final _eventBus = EventBus();
 
   double _initialBottomSheet = 0.5;
 
@@ -284,10 +293,15 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       onWatchTimeUpdate: ({required position, required duration}) {
         if (_service is EigaHistoryMixin) {
           final eigaId = _eigaId.value;
-          final watchTime = WatchTime(
-              position: position,
-              duration: duration);
+          final watchTime = WatchTime(position: position, duration: duration);
+          
+          if (_episode.value == null) return;
 
+          _eventBus.fire(WatchTimeDataEvent(WatchTimeData(
+            eigaId: eigaId,
+            episodeId: _episode.value!.episodeId,
+            watchTime: watchTime,
+          )));
           (_service as EigaHistoryMixin).setWatchTime(
               eigaId: eigaId,
               episode: _episode.value!,
@@ -970,6 +984,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       sourceId: widget.sourceId,
                       eigaIdNotifier: _eigaId,
                       episodeIdNotifier: _episodeId,
+                      eventBus: _eventBus,
                       getData: () async => _cacheEpisodesStore[eigaId] ??=
                           await _service.getEpisodes(eigaId),
                       getWatchTimeEpisodes: (episodesEiga) async =>
@@ -1030,6 +1045,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           thumbnail: metaEiga$.poster ?? metaEiga$.image,
                           eigaIdNotifier: _eigaId,
                           episodeIdNotifier: _episodeId,
+                          eventBus: _eventBus,
                           getData: () async =>
                               _cacheEpisodesStore[season.eigaId] ??=
                                   await _service.getEpisodes(season.eigaId),

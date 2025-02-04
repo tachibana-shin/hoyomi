@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
@@ -7,8 +8,10 @@ import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:hoyomi/pages/details_eiga/[sourceId]/[eigaId].page.dart';
 import 'package:hoyomi/utils/format_duration.dart';
-import 'package:signals/signals_flutter.dart';
+import 'package:signals/signals.dart';
+import 'package:signals_flutter/signals_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ListEpisodes extends StatefulWidget {
@@ -27,6 +30,7 @@ class ListEpisodes extends StatefulWidget {
   final Future<Map<String, WatchTime>> Function(
     EpisodesEiga episodesEiga,
   ) getWatchTimeEpisodes;
+  final EventBus eventBus;
   final bool eager;
 
   const ListEpisodes(
@@ -40,6 +44,7 @@ class ListEpisodes extends StatefulWidget {
       required this.getData,
       required this.getWatchTimeEpisodes,
       required this.eager,
+      required this.eventBus,
       this.scrollDirection = Axis.horizontal,
       this.controller});
 
@@ -50,24 +55,34 @@ class ListEpisodes extends StatefulWidget {
 class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
   late final _episodesEiga =
       createAsyncSignal<EpisodesEiga>(AsyncState.loading());
-  late final _watchTimeEpisodes =
-      createAsyncSignal<Map<String, WatchTime>?>(AsyncState.data(null));
+  late final _watchTimeEpisodes = createSignal<Map<String, WatchTime>?>(null);
+
+  final List<void Function()> _disposes = [];
 
   @override
   void initState() {
-    widget.getData().then((data) {
-      _episodesEiga.value = AsyncState.data(data);
-
-      widget.getWatchTimeEpisodes(data).then((data) {
-        _watchTimeEpisodes.value = AsyncState.data(data);
-      }).catchError((error) {
-        _watchTimeEpisodes.value = AsyncState.error(error);
-      });
-    }).catchError((error) {
-      _episodesEiga.value = AsyncState.error(error);
-    });
-
     super.initState();
+    _fetchData();
+  }
+
+  void _fetchData() async {
+    try {
+      final episodes = await widget.getData();
+      _episodesEiga.value = AsyncState.data(episodes);
+      final watchTimes = await widget.getWatchTimeEpisodes(episodes);
+      _watchTimeEpisodes.value = watchTimes;
+    } catch (error) {
+      _episodesEiga.value = AsyncState.error(error);
+      _watchTimeEpisodes.value = null;
+    }
+  }
+
+  @override
+  void dispose() {
+    for (var dispose in _disposes) {
+      dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -150,152 +165,179 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
     final episode = episodesEiga.episodes[index];
     final active = !waiting && checkEpisodeActive(episode, episodesEiga);
 
-    final watchTime = _watchTimeEpisodes.value.value == null
-        ? null
-        : _watchTimeEpisodes.value.value![episode.episodeId];
+    return StatefulBuilder(builder: (context, setState2) {
+      final watchTime = _watchTimeEpisodes.value == null
+          ? null
+          : _watchTimeEpisodes.value![episode.episodeId];
 
-    if (isVertical) {
-      return InkWell(
-          borderRadius: BorderRadius.circular(7),
-          onTap: () => widget.onTapEpisode(
-                indexEpisode: index,
-                episodesEiga: episodesEiga,
-              ),
-          child: Container(
-              decoration: BoxDecoration(
+      for (var dispose in _disposes) {
+        dispose();
+      }
+
+      _disposes.clear();
+      void handler(WatchTimeDataEvent event) {
+        if (event.watchTimeData.eigaId == widget.season.eigaId &&
+            event.watchTimeData.episodeId == episode.episodeId &&
+            event.watchTimeData.watchTime != null) {
+          _watchTimeEpisodes.value ??= {};
+          _watchTimeEpisodes.value![episode.episodeId] =
+              event.watchTimeData.watchTime!;
+
+          setState2(() {});
+        }
+      }
+
+      _disposes
+          .add(widget.eventBus.on<WatchTimeDataEvent>().listen(handler).cancel);
+
+      if (isVertical) {
+        return InkWell(
+            borderRadius: BorderRadius.circular(7),
+            onTap: () => widget.onTapEpisode(
+                  indexEpisode: index,
+                  episodesEiga: episodesEiga,
+                ),
+            child: Container(
+                decoration: BoxDecoration(
+                    color: active
+                        ? Theme.of(context).colorScheme.tertiaryContainer
+                        : null,
+                    borderRadius: BorderRadius.circular(7.0)),
+                padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 7.0),
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          width:
+                              min(100.0, MediaQuery.of(context).size.width / 2),
+                          decoration: BoxDecoration(
+                              color: Colors.blueGrey.shade200,
+                              borderRadius: BorderRadius.circular(10.0)),
+                          clipBehavior: Clip.antiAlias,
+                          child: Stack(children: [
+                            AspectRatio(
+                                aspectRatio: 16 / 9,
+                                child: BasicImage.network(
+                                  episode.image?.src ?? widget.thumbnail.src,
+                                  sourceId: widget.sourceId,
+                                  headers: episodesEiga.image?.headers ??
+                                      widget.thumbnail.headers,
+                                  fit: BoxFit.cover,
+                                )),
+                            if (watchTime != null)
+                              Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: Column(children: [
+                                    LinearProgressIndicator(
+                                      value: watchTime.position.inMilliseconds /
+                                          watchTime.duration.inMilliseconds,
+                                      backgroundColor:
+                                          Color.fromRGBO(255, 255, 255, 0.6),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          active
+                                              ? Color(0xFF2196F3)
+                                              : Color(0xFF00C234)),
+                                      minHeight: 3.0,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    )
+                                  ])),
+                          ])),
+                      SizedBox(width: 7.0),
+                      Expanded(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 3.0,
+                          ),
+                          Text(
+                            'Episode ${episode.name}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w400),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (watchTime != null)
+                            Text(
+                              'Last time watch ${formatDuration(watchTime.position)} / ${formatDuration(watchTime.duration)}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.w400,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.color
+                                          ?.withValues(alpha: 0.8)),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          SizedBox(height: 5.0),
+                          if (episode.description?.isNotEmpty == true)
+                            Text(
+                              episode.description!,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(fontSize: 12.0),
+                              maxLines: 2,
+                            )
+                        ],
+                      ))
+                    ])));
+      }
+
+      return Padding(
+        padding: EdgeInsets.only(right: 8.0),
+        child: InkWell(
+            borderRadius: BorderRadius.circular(7),
+            onTap: () => widget.onTapEpisode(
+                  indexEpisode: index,
+                  episodesEiga: episodesEiga,
+                ),
+            child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: active
+                        ? Theme.of(context).colorScheme.tertiaryContainer
+                        : Colors.grey.withAlpha(60),
+                  ),
                   color: active
                       ? Theme.of(context).colorScheme.tertiaryContainer
-                      : null,
-                  borderRadius: BorderRadius.circular(7.0)),
-              padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 7.0),
-              child:
-                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Container(
-                    width: min(100.0, MediaQuery.of(context).size.width / 2),
-                    decoration: BoxDecoration(
-                        color: Colors.blueGrey.shade200,
-                        borderRadius: BorderRadius.circular(10.0)),
-                    clipBehavior: Clip.antiAlias,
-                    child: Stack(children: [
-                      AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: BasicImage.network(
-                            episode.image?.src ?? widget.thumbnail.src,
-                            sourceId: widget.sourceId,
-                            headers: episodesEiga.image?.headers ??
-                                widget.thumbnail.headers,
-                            fit: BoxFit.cover,
-                          )),
-                      if (watchTime != null)
-                        Positioned(
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            child: Column(children: [
-
-                              
-                              LinearProgressIndicator(
-                                value: watchTime.position.inMilliseconds /
-                                    watchTime.duration.inMilliseconds,
-                                backgroundColor:
-                                    Color.fromRGBO(255, 255, 255, 0.6),
-                                valueColor: AlwaysStoppedAnimation<Color>(active
-                                    ? Color(0xFF2196F3)
-                                    : Color(0xFF00C234)),
-                                minHeight: 3.0,
-                                borderRadius: BorderRadius.circular(10.0),
-                              )
-                            ])),
-                    ])),
-                SizedBox(width: 7.0),
-                Expanded(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 3.0,
-                    ),
-                    Text(
-                      'Episode ${episode.name}',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontSize: 14.0, fontWeight: FontWeight.w400),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (watchTime != null)
-                      Text(
-                        'Last time watch ${formatDuration(watchTime.position)} / ${formatDuration(watchTime.duration)}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.w400,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.color
-                                    ?.withValues(alpha: 0.8)),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    SizedBox(height: 5.0),
-                    if (episode.description?.isNotEmpty == true)
-                      Text(
-                        episode.description!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(fontSize: 12.0),
-                        maxLines: 2,
-                      )
-                  ],
-                ))
-              ])));
-    }
-
-    return Padding(
-      padding: EdgeInsets.only(right: 8.0),
-      child: InkWell(
-          borderRadius: BorderRadius.circular(7),
-          onTap: () => widget.onTapEpisode(
-                indexEpisode: index,
-                episodesEiga: episodesEiga,
-              ),
-          child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: active
-                      ? Theme.of(context).colorScheme.tertiaryContainer
-                      : Colors.grey.withAlpha(60),
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(7),
                 ),
-                color: active
-                    ? Theme.of(context).colorScheme.tertiaryContainer
-                    : Colors.transparent,
-                borderRadius: BorderRadius.circular(7),
-              ),
-              child: Stack(children: [
-                Ink(
-                  height: height * 0.9,
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Center(child: Text(episode.name)),
-                ),
-                if (watchTime != null)
-                  Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: LinearProgressIndicator(
-                        value: watchTime.position.inMilliseconds /
-                            watchTime.duration.inMilliseconds,
-                        backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            active ? Color(0xFF2196F3) : Color(0xFF00C234)),
-                        minHeight: 3.0,
-                        borderRadius: BorderRadius.circular(10.0),
-                      )),
-              ]))),
-    );
+                child: Stack(children: [
+                  Ink(
+                    height: height * 0.9,
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Center(child: Text(episode.name)),
+                  ),
+                  if (watchTime != null)
+                    Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: LinearProgressIndicator(
+                          value: watchTime.position.inMilliseconds /
+                              watchTime.duration.inMilliseconds,
+                          backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              active ? Color(0xFF2196F3) : Color(0xFF00C234)),
+                          minHeight: 3.0,
+                          borderRadius: BorderRadius.circular(10.0),
+                        )),
+                ]))),
+      );
+    });
   }
 }
 
