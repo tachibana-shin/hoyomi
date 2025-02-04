@@ -294,7 +294,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         if (_service is EigaHistoryMixin) {
           final eigaId = _eigaId.value;
           final watchTime = WatchTime(position: position, duration: duration);
-          
+
           if (_episode.value == null) return;
 
           _eventBus.fire(WatchTimeDataEvent(WatchTimeData(

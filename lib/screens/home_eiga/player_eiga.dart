@@ -177,8 +177,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
       _controller.value?.seekTo(watchTime.position);
 
-      showSnackBar(Text(
-          'Watching time restored ${formatDuration(watchTime.position)}'));
+      showSnackBar(
+          Text('Watching time restored ${formatDuration(watchTime.position)}'));
     });
   }
 
@@ -263,7 +263,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
     if (widget.watchTimeDataNotifier.value?.eigaId == widget.eigaId.value &&
         widget.watchTimeDataNotifier.value?.episodeId ==
             widget.episodeId.value) {
-      widget.onWatchTimeUpdate(position: _position.value, duration: _duration.value);
+      widget.onWatchTimeUpdate(
+          position: _position.value, duration: _duration.value);
     }
 
     // if (_controller.value?.isBlank == true ||

@@ -727,7 +727,8 @@ class AnimeVietsubService extends EigaBaseService
     final data = await post(
       Uri.parse('$_supabaseUrl/rest/v1/rpc/get_watch_progress'),
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
+        'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
         'Accept': '*/*',
         'Accept-Language': 'vi-VN,vi;q=0.8,en-US;q=0.5,en;q=0.3',
         'Accept-Encoding': 'gzip, deflate, br, zstd',
@@ -749,7 +750,9 @@ class AnimeVietsubService extends EigaBaseService
         'TE': 'trailers',
       },
       body: jsonEncode({
-        'user_uid': sha256.convert(utf8.encode('${user.email}${user.fullName}')).toString(),
+        'user_uid': sha256
+            .convert(utf8.encode('${user.email}${user.fullName}'))
+            .toString(),
         'season_id': eigaId,
       }),
     );
@@ -778,11 +781,14 @@ class AnimeVietsubService extends EigaBaseService
           ),
     };
   }
-  
-  @override
-  Future<void> setWatchTime({required eigaId, required episode, required episodeIndex, required MetaEiga metaEiga, required WatchTime watchTime}) async {
 
-  }
+  @override
+  Future<void> setWatchTime(
+      {required eigaId,
+      required episode,
+      required episodeIndex,
+      required MetaEiga metaEiga,
+      required WatchTime watchTime}) async {}
 }
 
 class _ParamsEpisode {

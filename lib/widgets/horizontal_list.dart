@@ -44,7 +44,8 @@ class HorizontalList<T> extends StatelessWidget {
             MediaQuery.of(context).size.width *
             viewportFraction +
         14.0 * 2 +
-        2.0 * 2 + 2.0;
+        2.0 * 2 +
+        2.0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +132,7 @@ class HorizontalList<T> extends StatelessWidget {
               final items = snapshot.data!;
               return SizedBox(
                 height: height,
-                child:ExpandablePageView.builder(
+                child: ExpandablePageView.builder(
                   itemCount: items.length,
                   allowImplicitScrolling: true,
                   padEnds: false,
