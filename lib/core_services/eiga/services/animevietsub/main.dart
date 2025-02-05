@@ -93,7 +93,7 @@ class AnimeVietsubService extends EigaBaseService
 
   @override
   Future<bool> isFollowed({required eigaId}) async {
-    final id = RegExp(r'-(\d+)$').firstMatch(eigaId)!.group(1)!;
+    final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
 
     final text = await fetch(
       "$baseUrl/ajax/notification?Bookmark=true&filmId=$id",
@@ -106,7 +106,7 @@ class AnimeVietsubService extends EigaBaseService
 
   @override
   Future<bool> setFollow({required eigaId, required value}) async {
-    final id = RegExp(r'-(\d+)$').firstMatch(eigaId)!.group(1)!;
+    final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
 
     final text = await fetch(
       "$baseUrl/ajax/notification?Bookmark=true&filmId=$id&type=${value ? "add" : "remove"}",
@@ -766,7 +766,7 @@ class AnimeVietsubService extends EigaBaseService
 
     final Map<String, String> chapIdToEpisodeKey = {};
     for (final episode in episodes) {
-      final match = RegExp(r'-(\d+)$').firstMatch(episode.episodeId);
+      final match = RegExp(r'(\d+)$').firstMatch(episode.episodeId);
       if (match != null) {
         chapIdToEpisodeKey[match.group(1)!] = episode.episodeId;
       }
