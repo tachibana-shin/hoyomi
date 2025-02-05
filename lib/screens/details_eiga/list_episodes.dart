@@ -57,7 +57,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
       createAsyncSignal<EpisodesEiga>(AsyncState.loading());
   late final _watchTimeEpisodes = createSignal<Map<String, WatchTime>?>(null);
 
-  final List<void Function()> _disposes = [];
+  final Map<int, void Function()> _disposes = {};
 
   @override
   void initState() {
@@ -68,6 +68,8 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
   void _fetchData() async {
     try {
       final episodes = await widget.getData();
+
+      
       _episodesEiga.value = AsyncState.data(episodes);
       final watchTimes = await widget.getWatchTimeEpisodes(episodes);
       _watchTimeEpisodes.value = watchTimes;
@@ -79,7 +81,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
 
   @override
   void dispose() {
-    for (var dispose in _disposes) {
+    for (var dispose in _disposes.values) {
       dispose();
     }
     super.dispose();
@@ -170,11 +172,9 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
           ? null
           : _watchTimeEpisodes.value![episode.episodeId];
 
-      for (var dispose in _disposes) {
-        dispose();
-      }
+if (_disposes[index] != null){
+_disposes[index]!();}
 
-      _disposes.clear();
       void handler(WatchTimeDataEvent event) {
         if (event.watchTimeData.eigaId == widget.season.eigaId &&
             event.watchTimeData.episodeId == episode.episodeId &&
@@ -188,7 +188,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
       }
 
       _disposes
-          .add(widget.eventBus.on<WatchTimeDataEvent>().listen(handler).cancel);
+          [index] = widget.eventBus.on<WatchTimeDataEvent>().listen(handler).cancel;
 
       if (isVertical) {
         return InkWell(

@@ -15,6 +15,8 @@ import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:hoyomi/globals.dart';
 import 'package:hoyomi/transition/slide_fade_transition.dart';
+import 'package:hoyomi/utils/debouncer.dart';
+import 'package:hoyomi/utils/throttler.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:http/http.dart';
 import 'package:hoyomi/utils/format_duration.dart';
@@ -158,9 +160,18 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
   final ValueNotifier<bool> _firstLoadedSource = ValueNotifier(false);
 
+  bool _needRestoreWatchTime = false;
+
+  late Debouncer _initialDebouncer;
+  late Throttler _subsequentThrottler;
+  bool _firstUpdateWatchTime = true;
+
   @override
   void initState() {
     super.initState();
+
+    _initialDebouncer = Debouncer(milliseconds: 7500); // 7.5
+    _subsequentThrottler = Throttler(milliseconds: 30000); // 30
 
     _onSourceChanged();
     widget.sourceNotifier.addListener(_onSourceChanged);
@@ -171,6 +182,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
     });
     widget.watchTimeDataNotifier.addListener(() {
       final watchTime = widget.watchTimeDataNotifier.value?.watchTime;
+      _firstUpdateWatchTime = false;
       if (watchTime == null) return;
 
       print(watchTime);
@@ -249,6 +261,19 @@ class _PlayerEigaState extends State<PlayerEiga> {
     } else {
       _error.value = null;
     }
+
+    if (_needRestoreWatchTime) {
+      final watchTime = widget.watchTimeDataNotifier.value?.watchTime;
+      if (watchTime != null &&
+          _controller.value != null &&
+          _controller.value!.value.isInitialized) {
+        _controller.value!.seekTo(watchTime.position);
+      }
+      if (watchTime == null || _position.value != watchTime.position) {
+        _needRestoreWatchTime = false;
+      }
+    }
+
     _position.value = _controller.value?.value.position ?? Duration();
     _duration.value = _controller.value?.value.duration ?? Duration();
     _loading.value = _controller.value?.value.isInitialized != true ||
@@ -260,11 +285,21 @@ class _PlayerEigaState extends State<PlayerEiga> {
     }
     _firstLoadedSource.value = true;
 
-    if (widget.watchTimeDataNotifier.value?.eigaId == widget.eigaId.value &&
+    if (!_needRestoreWatchTime &&
+        widget.watchTimeDataNotifier.value?.eigaId == widget.eigaId.value &&
         widget.watchTimeDataNotifier.value?.episodeId ==
             widget.episodeId.value) {
-      widget.onWatchTimeUpdate(
-          position: _position.value, duration: _duration.value);
+          widget.onWatchTimeUpdate(
+              position: _position.value, duration: _duration.value);
+      if (_firstUpdateWatchTime) {
+        _initialDebouncer.run (() {
+        });
+      } else {
+        _subsequentThrottler.run (() {
+          widget.onWatchTimeUpdate(
+              position: _position.value, duration: _duration.value);
+        });
+      }
     }
 
     // if (_controller.value?.isBlank == true ||
