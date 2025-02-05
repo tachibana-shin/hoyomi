@@ -289,13 +289,12 @@ class _PlayerEigaState extends State<PlayerEiga> {
         widget.watchTimeDataNotifier.value?.eigaId == widget.eigaId.value &&
         widget.watchTimeDataNotifier.value?.episodeId ==
             widget.episodeId.value) {
-          widget.onWatchTimeUpdate(
-              position: _position.value, duration: _duration.value);
+      widget.onWatchTimeUpdate(
+          position: _position.value, duration: _duration.value);
       if (_firstUpdateWatchTime) {
-        _initialDebouncer.run (() {
-        });
+        _initialDebouncer.run(() {});
       } else {
-        _subsequentThrottler.run (() {
+        _subsequentThrottler.run(() {
           widget.onWatchTimeUpdate(
               position: _position.value, duration: _duration.value);
         });
