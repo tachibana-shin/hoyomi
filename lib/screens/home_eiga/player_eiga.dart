@@ -272,8 +272,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
       _error.value = null;
     }
 
-    _position.value =
-        _controller.value?.value.position ?? _position.value;
+    _position.value = _controller.value?.value.position ?? _position.value;
     _duration.value = _controller.value?.value.duration ?? Duration.zero;
     _loading.value = _controller.value?.value.isInitialized != true ||
         _controller.value!.value.isBuffering;
