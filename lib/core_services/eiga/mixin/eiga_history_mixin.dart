@@ -20,5 +20,6 @@ mixin EigaHistoryMixin on BaseAuthMixin {
       required EpisodeEiga episode,
       required int episodeIndex,
       required MetaEiga metaEiga,
+      required BasicSeason season,
       required WatchTime watchTime});
 }

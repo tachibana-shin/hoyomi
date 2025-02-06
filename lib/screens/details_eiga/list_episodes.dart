@@ -325,15 +325,19 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        child: LinearProgressIndicator(
-                          value: watchTime.position.inMilliseconds /
-                              watchTime.duration.inMilliseconds,
-                          backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              active ? Color(0xFF2196F3) : Color(0xFF00C234)),
-                          minHeight: 3.0,
-                          borderRadius: BorderRadius.circular(10.0),
-                        )),
+                        child: Transform.translate(
+                            offset: Offset(0, 1),
+                            child: LinearProgressIndicator(
+                              value: watchTime.position.inMilliseconds /
+                                  watchTime.duration.inMilliseconds,
+                              backgroundColor:
+                                  Color.fromRGBO(255, 255, 255, 0.6),
+                              valueColor: AlwaysStoppedAnimation<Color>(active
+                                  ? Color(0xFF2196F3)
+                                  : Color(0xFF00C234)),
+                              minHeight: 3.0,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ))),
                 ]))),
       );
     });

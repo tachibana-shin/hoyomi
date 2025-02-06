@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
@@ -161,6 +162,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
   final ValueNotifier<bool> _firstLoadedSource = ValueNotifier(false);
 
   bool _needRestoreWatchTime = false;
+  bool _restoredWatchTime = false;
 
   late Debouncer _initialDebouncer;
   late Throttler _subsequentThrottler;
@@ -183,10 +185,18 @@ class _PlayerEigaState extends State<PlayerEiga> {
     widget.watchTimeDataNotifier.addListener(() {
       final watchTime = widget.watchTimeDataNotifier.value?.watchTime;
       _firstUpdateWatchTime = false;
-      if (watchTime == null) return;
+      if (watchTime == null) {
+        _needRestoreWatchTime = false;
+        _restoredWatchTime = true;
+        return;
+      }
 
-      print(watchTime);
+      if (kDebugMode) {
+        print(watchTime);
+      }
 
+      _needRestoreWatchTime = true;
+      _restoredWatchTime = false;
       _controller.value?.seekTo(watchTime.position);
 
       showSnackBar(
@@ -262,20 +272,9 @@ class _PlayerEigaState extends State<PlayerEiga> {
       _error.value = null;
     }
 
-    if (_needRestoreWatchTime) {
-      final watchTime = widget.watchTimeDataNotifier.value?.watchTime;
-      if (watchTime != null &&
-          _controller.value != null &&
-          _controller.value!.value.isInitialized) {
-        _controller.value!.seekTo(watchTime.position);
-      }
-      if (watchTime == null || _position.value != watchTime.position) {
-        _needRestoreWatchTime = false;
-      }
-    }
-
-    _position.value = _controller.value?.value.position ?? Duration();
-    _duration.value = _controller.value?.value.duration ?? Duration();
+    _position.value =
+        _controller.value?.value.position ?? _position.value;
+    _duration.value = _controller.value?.value.duration ?? Duration.zero;
     _loading.value = _controller.value?.value.isInitialized != true ||
         _controller.value!.value.isBuffering;
     _playing.value = _controller.value?.value.isPlaying ?? _playing.value;
@@ -285,14 +284,31 @@ class _PlayerEigaState extends State<PlayerEiga> {
     }
     _firstLoadedSource.value = true;
 
+    if (_needRestoreWatchTime) {
+      final watchTime = widget.watchTimeDataNotifier.value?.watchTime;
+      if (watchTime != null &&
+          _controller.value != null &&
+          _controller.value!.value.isInitialized &&
+          _controller.value!.value.position > Duration.zero) {
+        _controller.value!.seekTo(watchTime.position);
+        if (_controller.value!.value.position == watchTime.position) {
+          _needRestoreWatchTime = false;
+          _restoredWatchTime = true;
+        }
+      }
+    }
+
     if (!_needRestoreWatchTime &&
+        _restoredWatchTime &&
         widget.watchTimeDataNotifier.value?.eigaId == widget.eigaId.value &&
         widget.watchTimeDataNotifier.value?.episodeId ==
-            widget.episodeId.value) {
-      widget.onWatchTimeUpdate(
-          position: _position.value, duration: _duration.value);
+            widget.episodeId.value &&
+        _duration.value > Duration.zero) {
       if (_firstUpdateWatchTime) {
-        _initialDebouncer.run(() {});
+        _initialDebouncer.run(() {
+          widget.onWatchTimeUpdate(
+              position: _position.value, duration: _duration.value);
+        });
       } else {
         _subsequentThrottler.run(() {
           widget.onWatchTimeUpdate(

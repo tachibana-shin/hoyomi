@@ -85,6 +85,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final ValueNotifier<TimeAndDay?> _schedule = ValueNotifier(null);
   final ValueNotifier<EpisodeEiga?> _episode = ValueNotifier(null);
   final ValueNotifier<int?> _episodeIndex = ValueNotifier(null);
+  final ValueNotifier<BasicSeason?> _currentSeason = ValueNotifier(null);
   final ValueNotifier<Future<List<BasicEiga>>?> _suggestNotifier =
       ValueNotifier(null);
 
@@ -295,7 +296,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           final eigaId = _eigaId.value;
           final watchTime = WatchTime(position: position, duration: duration);
 
-          if (_episode.value == null) return;
+          if (_episode.value == null || _currentSeason.value == null) return;
 
           _eventBus.fire(WatchTimeDataEvent(WatchTimeData(
             eigaId: eigaId,
@@ -307,6 +308,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               episode: _episode.value!,
               episodeIndex: _episodeIndex.value!,
               metaEiga: _metaEigaNotifier.value,
+              season: _currentSeason.value!,
               watchTime: watchTime);
         }
       },
@@ -927,6 +929,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       _episode.value = currentEpisode;
       _episodeIndex.value = indexEpisode;
       episodeChanged = true;
+    }
+
+    if (_currentSeason.value != seasons[indexSeason]) {
+      _currentSeason.value = seasons[indexSeason];
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

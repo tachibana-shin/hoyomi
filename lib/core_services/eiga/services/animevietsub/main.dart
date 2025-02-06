@@ -28,7 +28,6 @@ import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
 import 'package:html/dom.dart';
 
-import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
@@ -38,10 +37,12 @@ import 'package:video_player/video_player.dart';
 
 class AnimeVietsubService extends EigaBaseService
     with BaseAuthMixin, EigaAuthMixin, EigaHistoryMixin {
+  final hostCUrl = "animevietsub.page";
+
   @override
   final String name = "AnimeVietsub";
   @override
-  final String baseUrl = "https://animevietsub.page";
+  String get baseUrl => "https://$hostCUrl";
   @override
   String get faviconUrl => "$baseUrl/favicon.ico";
   @override
@@ -56,6 +57,7 @@ class AnimeVietsubService extends EigaBaseService
 
   final Map<String, _ParamsEpisode> _paramsEpisodeStore = {};
   final Map<String, Future<Document>> _docEigaStore = {};
+  final Expando<String> _uidUserStore = Expando<String>();
 
   @override
   getUser({required cookie}) async {
@@ -664,13 +666,20 @@ class AnimeVietsubService extends EigaBaseService
         sectionId: '/tim-kiem/$keyword/', page: page, filters: filters);
   }
 
+  Future<String> _getUidUser() async {
+    final user = await fetchUser();
+
+    return _uidUserStore[user] ??=
+        sha256.convert(utf8.encode('${user.email}${user.fullName}')).toString();
+  }
+
   @override
   getWatchTime(
       {required String eigaId,
       required EpisodeEiga episode,
       required int episodeIndex,
       required MetaEiga metaEiga}) async {
-    final user = await fetchUser();
+    final userUid = await _getUidUser();
 
     final data =
         await post(Uri.parse('$_supabaseUrl/rest/v1/rpc/get_single_progress'),
@@ -698,9 +707,7 @@ class AnimeVietsubService extends EigaBaseService
               'TE': 'trailers'
             },
             body: jsonEncode({
-              'user_uid': sha256
-                  .convert(utf8.encode('${user.email}${user.fullName}'))
-                  .toString(),
+              'user_uid': userUid,
               'season_id': eigaId,
               'p_chap_id':
                   RegExp(r'-(\d+)$').firstMatch(episode.episodeId)!.group(1)
@@ -723,7 +730,7 @@ class AnimeVietsubService extends EigaBaseService
     required eigaId,
     required episodes,
   }) async {
-    final user = await fetchUser();
+    final userUid = await _getUidUser();
 
     final data = await post(
       Uri.parse('$_supabaseUrl/rest/v1/rpc/get_watch_progress'),
@@ -751,9 +758,7 @@ class AnimeVietsubService extends EigaBaseService
         'TE': 'trailers',
       },
       body: jsonEncode({
-        'user_uid': sha256
-            .convert(utf8.encode('${user.email}${user.fullName}'))
-            .toString(),
+        'user_uid': userUid,
         'season_id': eigaId,
       }),
     );
@@ -779,8 +784,8 @@ class AnimeVietsubService extends EigaBaseService
       for (final item in json)
         if (chapIdToEpisodeKey.containsKey(item['chap_id']))
           chapIdToEpisodeKey[item['chap_id']]!: WatchTime(
-            position: Duration(seconds: (item['cur'] as double).round()),
-            duration: Duration(seconds: (item['dur'] as double).round()),
+            position: Duration(seconds: (item['cur'] as num).round()),
+            duration: Duration(seconds: (item['dur'] as num).round()),
           ),
     };
   }
@@ -791,7 +796,79 @@ class AnimeVietsubService extends EigaBaseService
       required episode,
       required episodeIndex,
       required MetaEiga metaEiga,
-      required WatchTime watchTime}) async {}
+      required season,
+      required WatchTime watchTime}) async {
+    final userUid = await _getUidUser();
+
+    final data = await post(
+      Uri.parse('$_supabaseUrl/rest/v1/rpc/set_single_progress'),
+      headers: {
+        'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
+        'Accept': '*/*',
+        'Accept-Language': 'vi-VN,vi;q=0.8,en-US;q=0.5,en;q=0.3',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Content-Type': 'application/json',
+        'Referer': 'https://animevsub.eu.org/',
+        'apikey': _supabaseKey,
+        'content-profile': 'public',
+        'x-client-info': 'supabase-js-web/2.44.4',
+        'Origin': 'https://animevsub.eu.org',
+        'DNT': '1',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'cross-site',
+        'authorization': 'Bearer $_supabaseKey',
+        'Connection': 'keep-alive',
+        'Priority': 'u=4',
+        'Pragma': 'no-cache',
+        'Cache-Control': 'no-cache',
+        'TE': 'trailers',
+      },
+      body: jsonEncode({
+        'user_uid': userUid,
+        'p_name': metaEiga.name,
+        'p_poster':
+            _removeHostUrlImage(metaEiga.poster?.src ?? metaEiga.image.src),
+        'season_id': eigaId,
+        'p_season_name': season.name,
+        'e_cur': watchTime.position.inMilliseconds / 1e3,
+        'e_dur': watchTime.duration.inMilliseconds / 1e3,
+        'e_name': episode.name,
+        'e_chap': RegExp(r'(\d+)$').firstMatch(episode.episodeId)!.group(1)!,
+        'gmt': "Asia/Saigon"
+      }),
+    );
+
+    if (data.statusCode > 299) {
+      if (kDebugMode) {
+        print('[${data.reasonPhrase}]: ${data.body}');
+      }
+      throw Exception('[${data.reasonPhrase}]: ${data.body}');
+    }
+  }
+
+  String _redirectOldDomainCDN(String url) {
+    return url.replaceAll(r'/animevietsub\.(?:\w+)/i', hostCUrl);
+  }
+
+  String _removeHostUrlImage(String url) {
+    final pattern = RegExp(
+        r'https?:\/\/([^/]+.)?' + RegExp.escape(hostCUrl) + r'(?=(?:\:\d+)?\/)',
+        caseSensitive: false);
+    return _redirectOldDomainCDN(url)
+        .replaceAllMapped(pattern, (match) => '${match[1]}\$@');
+  }
+
+  // String _addHostUrlImage(String url) {
+  //   // for old data from database
+  //   final pattern = RegExp(r'^([^/]+.)?\$@(:\d+)?(?=\/)', caseSensitive: false);
+  //   return _redirectOldDomainCDN(url).replaceAllMapped(pattern, (match) {
+  //     final part1 = match.group(1) ?? '';
+  //     final part2 = match.group(2) ?? '';
+  //     return 'https://$part1$hostCUrl$part2';
+  //   });
+  // }
 }
 
 class _ParamsEpisode {
