@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
@@ -758,7 +759,9 @@ class AnimeVietsubService extends EigaBaseService
     );
 
     if (data.statusCode > 299) {
-      print('[${data.reasonPhrase}]: ${data.body}');
+      if (kDebugMode) {
+        print('[${data.reasonPhrase}]: ${data.body}');
+      }
       throw Exception('[${data.reasonPhrase}]: ${data.body}');
     }
 
