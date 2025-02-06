@@ -177,31 +177,37 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
     _onSourceChanged();
     widget.sourceNotifier.addListener(_onSourceChanged);
-    _pauseAutoHideControls.addListener(() {
-      if (!_pauseAutoHideControls.value) {
-        _activeTime = DateTime.now();
-      }
-    });
-    widget.watchTimeDataNotifier.addListener(() {
-      final watchTime = widget.watchTimeDataNotifier.value?.watchTime;
-      _firstUpdateWatchTime = false;
-      if (watchTime == null) {
-        _needRestoreWatchTime = false;
-        _restoredWatchTime = true;
-        return;
-      }
+    _onPauseAutoHideControlsChanged();
+    _pauseAutoHideControls.addListener(_onPauseAutoHideControlsChanged);
+    _onWatchTimeChanged();
+    widget.watchTimeDataNotifier.addListener(_onWatchTimeChanged);
+  }
 
-      if (kDebugMode) {
-        print(watchTime);
-      }
+  void _onPauseAutoHideControlsChanged() {
+    if (!_pauseAutoHideControls.value) {
+      _activeTime = DateTime.now();
+    }
+  }
 
-      _needRestoreWatchTime = true;
-      _restoredWatchTime = false;
-      _controller.value?.seekTo(watchTime.position);
+  void _onWatchTimeChanged() {
+    final watchTime = widget.watchTimeDataNotifier.value?.watchTime;
+    _firstUpdateWatchTime = false;
+    if (watchTime == null) {
+      _needRestoreWatchTime = false;
+      _restoredWatchTime = true;
+      return;
+    }
 
-      showSnackBar(
-          Text('Watching time restored ${formatDuration(watchTime.position)}'));
-    });
+    if (kDebugMode) {
+      print(watchTime);
+    }
+
+    _needRestoreWatchTime = true;
+    _restoredWatchTime = false;
+    _controller.value?.seekTo(watchTime.position);
+
+    showSnackBar(
+        Text('Watching time restored ${formatDuration(watchTime.position)}'));
   }
 
   void _onSourceChanged() {
@@ -1250,8 +1256,12 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.value?.dispose();
+
     widget.sourceNotifier.removeListener(_onSourceChanged);
+    _pauseAutoHideControls.removeListener(_onPauseAutoHideControlsChanged);
+    widget.watchTimeDataNotifier.removeListener(_onWatchTimeChanged);
+
+    super.dispose();
   }
 }
