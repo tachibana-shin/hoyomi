@@ -22,7 +22,7 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
   late final _status = createComputed(() {
     if (!_serviceAccountSupport) return "NOT_SUPPORT";
     if (_user?.fetching.value == true) return "LOADING";
-    if (_user?.error.value != null)return 'ERROR';
+    if (_user?.error.value != null) return 'ERROR';
     if (_user?.user.value == null) return 'NOT_SIGN';
 
     return "DONE";
