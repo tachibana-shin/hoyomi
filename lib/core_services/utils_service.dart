@@ -498,17 +498,19 @@ abstract class UtilsService {
     }
   }
 
-  Future<BasicUser> fetchUser() async {
-    return _userFuture ??= _fetchUser();
+  Future<BasicUser> fetchUser({CookieManager? row, bool? recordLoaded}) async {
+    return _userFuture ??= _fetchUser(row: row, recordLoaded: recordLoaded);
   }
 
-  Future<BasicUser> _fetchUser() async {
+  Future<BasicUser> _fetchUser({CookieManager? row, bool? recordLoaded}) async {
     if (this is! BaseAuthMixin) {
       throw Exception('Service must be an instance of BaseAuthMixin');
     }
     final service = this as BaseAuthMixin;
 
-    var row = await CookieController.getAsync(sourceId: uid);
+    row = recordLoaded == true
+        ? row
+        : await CookieController.getAsync(sourceId: uid);
     final cookie = row?.cookie;
     var user = row?.user;
 

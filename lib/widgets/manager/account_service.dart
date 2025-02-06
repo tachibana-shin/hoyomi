@@ -3,7 +3,6 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user.dart';
 import 'package:hoyomi/core_services/base_service.dart';
-import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
 import 'package:signals/signals_flutter.dart';
@@ -18,16 +17,13 @@ class AccountService extends StatefulWidget {
 }
 
 class _AccountServiceState extends State<AccountService> with SignalsMixin {
-  late final _user = createSignal<BasicUser?>(null);
-  late final _error = createSignal<String?>(null);
+  late final UserData? _user;
 
   late final _status = createComputed(() {
     if (!_serviceAccountSupport) return "NOT_SUPPORT";
-    if (_user.value == null) return "NOT_SIGN";
-    // if (_user.value == false) return "NOT_SIGN";
-    //// _signed is true;
-
-    if (_error.value != null) return "ERROR";
+    if (_user?.fetching.value == true) return "LOADING";
+    if (_user?.error.value != null)return 'ERROR';
+    if (_user?.user.value == null) return 'NOT_SIGN';
 
     return "DONE";
   });
@@ -45,12 +41,9 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
   void initState() {
     super.initState();
     if (_serviceAccountSupport) {
-      final out = useUser(widget.service as BaseAuthMixin);
-
-      _refresh = out.refresh;
-
-      _onDisposeUser = out.user.subscribe((user) => _user.value = user);
-      _onDisposeError = out.error.subscribe((error) => _error.value = error);
+      _user = useUser(widget.service as BaseAuthMixin, context: this);
+    } else {
+      _user = null;
     }
   }
 
@@ -115,7 +108,7 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
         return CircleAvatar(
             backgroundColor: Colors.grey.shade300,
             child: BasicImage.network(
-              _user()!.photoUrl,
+              _user!.user.value!.photoUrl,
               sourceId: widget.service.uid,
               fit: BoxFit.cover,
             ));
@@ -193,7 +186,7 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
               context.push("/webview/${widget.service.uid}");
             },
             child: Text(
-              _user()!.fullName,
+              _user!.user.value!.fullName,
               style: const TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
