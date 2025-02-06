@@ -35,7 +35,7 @@ A new Flutter project.
 - [x] Fix follow eiga
 - [x] API season eiga
 - [x] API search eiga
-- [ ] API for history online
+- [x] API for history online
 - [ ] API playlist
 - [ ] API playlist online
 
