@@ -48,12 +48,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-ios-action@v1
-        with:
-          xcode-version: 14.3
-          sdk: iphoneos
-          tools: latest
-
       - uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
