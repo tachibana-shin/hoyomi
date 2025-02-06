@@ -290,7 +290,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
           _controller.value!.value.isInitialized &&
           _controller.value!.value.position > Duration.zero) {
         _controller.value!.seekTo(watchTime.position);
-        if (_controller.value!.value.position == watchTime.position) {
+        if (_controller.value!.value.position == watchTime.position &&
+            _controller.value!.value.duration > Duration.zero) {
           _needRestoreWatchTime = false;
           _restoredWatchTime = true;
         }
@@ -302,7 +303,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
         widget.watchTimeDataNotifier.value?.eigaId == widget.eigaId.value &&
         widget.watchTimeDataNotifier.value?.episodeId ==
             widget.episodeId.value &&
-        _duration.value > Duration.zero) {
+        _duration.value > Duration.zero &&
+        _controller.value!.value.position > Duration.zero) {
       if (_firstUpdateWatchTime) {
         _initialDebouncer.run(() {
           widget.onWatchTimeUpdate(
