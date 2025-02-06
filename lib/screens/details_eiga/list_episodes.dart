@@ -10,6 +10,7 @@ import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/pages/details_eiga/[sourceId]/[eigaId].page.dart';
 import 'package:hoyomi/utils/format_duration.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ListEpisodes extends StatefulWidget {
