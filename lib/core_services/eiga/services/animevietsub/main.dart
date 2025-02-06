@@ -714,7 +714,9 @@ class AnimeVietsubService extends EigaBaseService
             }));
 
     if (data.statusCode > 299) {
-      print('[${data.reasonPhrase}]: ${data.body}');
+      if (kDebugMode) {
+        print('[${data.reasonPhrase}]: ${data.body}');
+      }
       throw Exception('[${data.reasonPhrase}]: ${data.body}');
     }
 
