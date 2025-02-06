@@ -39,6 +39,53 @@ jobs:
 
       - run: flutter build apk --release --split-per-abi
 
+  build_ipa:
+    name: Build Release IPA
+    runs-on: macOS-latest
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-ios-action@v1
+        with:
+          xcode-version: 14.3
+          sdk: iphoneos
+          tools: latest
+
+      - uses: flutter-actions/setup-flutter@v4
+        with:
+          channel: stable
+          version: 3.27.1
+
+      - run: flutter pub get
+
+      - run: pod repo update
+        working-directory: ios
+
+      
+      - run: flutter build ios --release --no-codesign
+
+            
+      - run: mkdir Payload
+        working-directory: build/ios/iphoneos
+
+            
+      - run: mv Runner.app/ Payload
+        working-directory: build/ios/iphoneos
+
+            
+      - name: Zip output
+        run: zip -qq -r -9 app-iphoneos-release-unsigned.ipa Payload
+        working-directory: build/ios/iphoneos
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [build_apk, build_ipa]
+
+    steps:
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
         if: ${{ failure() }}
@@ -62,5 +109,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v0.1.14
         with:
-          files: build/app/outputs/flutter-apk/*.apk
+          files: |
+            build/app/outputs/flutter-apk/*.apk
+            build/ios/iphoneos/*.ipa
           body: ${{ steps.changelog.outputs.changelog }}
