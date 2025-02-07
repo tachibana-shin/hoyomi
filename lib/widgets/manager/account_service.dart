@@ -28,8 +28,6 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
     return "DONE";
   });
 
-  Future<void> Function()? _refresh;
-
   void Function()? _onDisposeUser;
   void Function()? _onDisposeError;
 
@@ -144,9 +142,7 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
         oneLine = InkWell(
             onTap: () async {
               await context.push("/webview/${widget.service.uid}");
-              if (_refresh != null) {
-                await _refresh!();
-              }
+              _user?.refresh();
             },
             child: Text(
               "(Tap to sign in)",
@@ -173,7 +169,7 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
             const SizedBox(height: 5.0),
             TextButton(
               onPressed: () {
-                if (_refresh != null) _refresh!();
+                _user?.refresh();
               },
               child: const Text('Retry'),
             ),
