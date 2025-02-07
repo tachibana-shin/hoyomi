@@ -9,6 +9,8 @@ jobs:
   build_apk:
     name: Build Release APK
     runs-on: ubuntu-latest
+    outputs:
+      apk-path: ${{ steps.upload_apk.outputs.path }}
 
     steps:
       - uses: actions/checkout@v1
@@ -39,15 +41,17 @@ jobs:
 
       - run: flutter build apk --release --split-per-abi
 
-      - name: Upload APK as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: apk-files
-          path: build/app/outputs/flutter-apk/*.apk
+      - name: Move APK to workspace folder
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/build_apk
+          mv build/app/outputs/flutter-apk/*.apk $GITHUB_WORKSPACE/build_apk/
+        id: upload_apk
 
   build_ipa:
     name: Build Release IPA
     runs-on: macOS-latest
+    outputs:
+      ipa-path: ${{ steps.upload_ipa.outputs.path }}
 
     steps:
       - uses: actions/checkout@v1
@@ -76,11 +80,11 @@ jobs:
         run: zip -qq -r -9 app-iphoneos-release-unsigned.ipa Payload
         working-directory: build/ios/iphoneos
 
-      - name: Upload IPA as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ipa-files
-          path: build/ios/iphoneos/*.ipa
+      - name: Move IPA to workspace folder
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/build_ipa
+          mv build/ios/iphoneos/*.ipa $GITHUB_WORKSPACE/build_ipa/
+        id: upload_ipa
 
   release:
     name: Create Release
@@ -88,15 +92,10 @@ jobs:
     needs: [build_apk, build_ipa]
 
     steps:
-      - name: Download APK artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: apk-files
-
-      - name: Download IPA artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ipa-files
+      - name: Download APK and IPA files
+        run: |
+          cp -r $GITHUB_WORKSPACE/build_apk/* ./apk/
+          cp -r $GITHUB_WORKSPACE/build_ipa/* ./ipa/
 
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
@@ -121,6 +120,6 @@ jobs:
         uses: softprops/action-gh-release@v0.1.14
         with:
           files: |
-            *.apk
-            *.ipa
+            ./apk/*.apk
+            ./ipa/*.ipa
           body: ${{ steps.changelog.outputs.changelog }}
