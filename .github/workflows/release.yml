@@ -9,9 +9,6 @@ jobs:
   build_apk:
     name: Build Release APK
     runs-on: ubuntu-latest
-    outputs:
-      apk-path: ${{ steps.upload_apk.outputs.path }}
-
     steps:
       - uses: actions/checkout@v1
         with:
@@ -41,18 +38,20 @@ jobs:
 
       - run: flutter build apk --release --split-per-abi
 
-      - name: Move APK to workspace folder
+      - name: Commit APK to temp-apk branch
         run: |
-          mkdir -p $GITHUB_WORKSPACE/build_apk
-          mv build/app/outputs/flutter-apk/*.apk $GITHUB_WORKSPACE/build_apk/
-        id: upload_apk
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b temp-apk
+          mkdir -p temp-apk/apk_files
+          mv build/app/outputs/flutter-apk/*.apk temp-apk/apk_files/
+          git add temp-apk/
+          git commit -m "Add APK files"
+          git push origin temp-apk -f
 
   build_ipa:
     name: Build Release IPA
     runs-on: macOS-latest
-    outputs:
-      ipa-path: ${{ steps.upload_ipa.outputs.path }}
-
     steps:
       - uses: actions/checkout@v1
         with:
@@ -80,11 +79,16 @@ jobs:
         run: zip -qq -r -9 app-iphoneos-release-unsigned.ipa Payload
         working-directory: build/ios/iphoneos
 
-      - name: Move IPA to workspace folder
+      - name: Commit IPA to temp-ipa branch
         run: |
-          mkdir -p $GITHUB_WORKSPACE/build_ipa
-          mv build/ios/iphoneos/*.ipa $GITHUB_WORKSPACE/build_ipa/
-        id: upload_ipa
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b temp-ipa
+          mkdir -p temp-ipa/ipa_files
+          mv build/ios/iphoneos/*.ipa temp-ipa/ipa_files/
+          git add temp-ipa/
+          git commit -m "Add IPA files"
+          git push origin temp-ipa -f
 
   release:
     name: Create Release
@@ -92,10 +96,25 @@ jobs:
     needs: [build_apk, build_ipa]
 
     steps:
-      - name: Download APK and IPA files
+      - name: Checkout temp-apk branch
+        uses: actions/checkout@v1
+        with:
+          ref: temp-apk
+
+      - name: Copy APK files
         run: |
-          cp -r $GITHUB_WORKSPACE/build_apk/* ./apk/
-          cp -r $GITHUB_WORKSPACE/build_ipa/* ./ipa/
+          mkdir -p apk
+          cp -r temp-apk/apk_files/* ./apk/
+
+      - name: Checkout temp-ipa branch
+        uses: actions/checkout@v1
+        with:
+          ref: temp-ipa
+
+      - name: Copy IPA files
+        run: |
+          mkdir -p ipa
+          cp -r temp-ipa/ipa_files/* ./ipa/
 
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
