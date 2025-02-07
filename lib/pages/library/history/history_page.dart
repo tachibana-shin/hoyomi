@@ -170,40 +170,41 @@ class _HistoryState extends State<History> {
                 int index = 0;
 
                 return VerticalBookList(
-                    itemsFuture: Future.wait(
-                        currentElement.value.indexed.map((item) async {
-                      final bookHistory = currentElement.value.elementAt(index);
-                      final book = items.elementAt(index);
+                  itemsFuture: Future.wait(
+                      currentElement.value.indexed.map((item) async {
+                    final bookHistory = currentElement.value.elementAt(index);
+                    final book = items.elementAt(index);
 
-                      final current =
-                          await _history.getLastChapter(bookHistory.id);
+                    final current =
+                        await _history.getLastChapter(bookHistory.id);
 
-                      final currentEpisodeIndex = current == null
-                          ? -1
-                          : book.chapters.toList().lastIndexWhere((chapter) {
-                              return current.chapterId == chapter.chapterId;
-                            });
+                    final currentEpisodeIndex = current == null
+                        ? -1
+                        : book.chapters.toList().lastIndexWhere((chapter) {
+                            return current.chapterId == chapter.chapterId;
+                          });
 
-                      final percentRead =
-                          (book.chapters.length - currentEpisodeIndex) /
-                              book.chapters.length;
-                      // currentElement.value
-                      //     .elementAt(index)
-                      //     .histories
-                      //     .fold(0.0, (p, c) => p + c.currentPage / c.maxPage) /
-                      // items.elementAt(index).chapters.length
+                    final percentRead =
+                        (book.chapters.length - currentEpisodeIndex) /
+                            book.chapters.length;
+                    // currentElement.value
+                    //     .elementAt(index)
+                    //     .histories
+                    //     .fold(0.0, (p, c) => p + c.currentPage / c.maxPage) /
+                    // items.elementAt(index).chapters.length
 
-                      return BasicBookExtend(
-                          book: BasicBook.fromMeta(
-                            item.$2.bookId,
-                            book: MetaBook.fromJson(jsonDecode(item.$2.meta)),
-                          ),
-                          sourceId:
-                              currentElement.value.elementAt(item.$1).sourceId,
-                          percentRead: percentRead);
-                    }).toList()),
-                    more: null,
-                    title: '',);
+                    return BasicBookExtend(
+                        book: BasicBook.fromMeta(
+                          item.$2.bookId,
+                          book: MetaBook.fromJson(jsonDecode(item.$2.meta)),
+                        ),
+                        sourceId:
+                            currentElement.value.elementAt(item.$1).sourceId,
+                        percentRead: percentRead);
+                  }).toList()),
+                  more: null,
+                  title: '',
+                );
               })),
     );
   }

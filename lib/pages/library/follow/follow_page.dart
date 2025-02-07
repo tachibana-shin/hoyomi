@@ -165,21 +165,22 @@ class _FollowState extends State<Follow> {
                 nextElement,
               ) =>
                   VerticalBookList(
-                      itemsFuture: Future.value(currentElement.value.indexed
-                          .map(
-                            (item) => BasicBookExtend(
-                                book: BasicBook.fromMeta(
-                                  item.$2.bookId,
-                                  book: MetaBook.fromJson(
-                                      jsonDecode(item.$2.meta)),
-                                ),
-                                sourceId: currentElement.value
-                                    .elementAt(item.$1)
-                                    .sourceId),
-                          )
-                          .toList()),
-                      more: null,
-                      title: '',))),
+                    itemsFuture: Future.value(currentElement.value.indexed
+                        .map(
+                          (item) => BasicBookExtend(
+                              book: BasicBook.fromMeta(
+                                item.$2.bookId,
+                                book:
+                                    MetaBook.fromJson(jsonDecode(item.$2.meta)),
+                              ),
+                              sourceId: currentElement.value
+                                  .elementAt(item.$1)
+                                  .sourceId),
+                        )
+                        .toList()),
+                    more: null,
+                    title: '',
+                  ))),
     );
   }
 }
