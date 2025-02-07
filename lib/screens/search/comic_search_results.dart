@@ -89,7 +89,6 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
               title: service.name,
               subtitle: subtitle,
               more: '/search/comic/${service.uid}?q=${widget.keyword}',
-              onTapChild: widget.onDismissed,
             );
           });
         }).toList(),

@@ -16,7 +16,6 @@ class BasicBookExtend {
 
 class HorizontalBookList extends StatelessWidget {
   final Future<List<BasicBookExtend>> itemsFuture;
-  final Function()? onTapChild;
   final String title;
   final String? subtitle;
   final String? more;
@@ -24,7 +23,6 @@ class HorizontalBookList extends StatelessWidget {
   const HorizontalBookList({
     super.key,
     required this.itemsFuture,
-    this.onTapChild,
     required this.title,
     this.subtitle,
     this.more,

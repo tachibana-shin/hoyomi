@@ -16,7 +16,6 @@ class BasicEigaExtend {
 
 class HorizontalEigaList extends StatelessWidget {
   final Future<List<BasicEigaExtend>> itemsFuture;
-  final Function()? onTapChild;
   final String title;
   final String? subtitle;
   final String? more;
@@ -24,7 +23,6 @@ class HorizontalEigaList extends StatelessWidget {
   const HorizontalEigaList({
     super.key,
     required this.itemsFuture,
-    this.onTapChild,
     required this.title,
     this.subtitle,
     this.more,

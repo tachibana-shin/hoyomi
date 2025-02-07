@@ -5,7 +5,6 @@ class HorizontalList<T> extends StatelessWidget {
   final String title;
   final String? subtitle;
   final String? more;
-  final bool noHeader;
   final Widget Function(BuildContext, T, int) builder;
   final List<T>? items;
   final Widget? child;
@@ -17,7 +16,6 @@ class HorizontalList<T> extends StatelessWidget {
       required this.title,
       this.subtitle,
       required this.more,
-      this.noHeader = false,
       this.items,
       this.child,
       required this.builder,
