@@ -2,6 +2,13 @@
 
 A new Flutter project.
 
+> [!WARNING]
+> App is development
+
+> [!TIP]
+> Multi-source, multi-platform manga reading and anime viewing application for free
+
+
 ## Todo
 - [ ] Add background image for `details_comic`
 - [ ] Add `pull to refresh` for eiga
