@@ -40,7 +40,7 @@ jobs:
       - run: flutter build apk --release --split-per-abi
 
       - name: Upload APK as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: apk-files
           path: build/app/outputs/flutter-apk/*.apk
@@ -77,7 +77,7 @@ jobs:
         working-directory: build/ios/iphoneos
 
       - name: Upload IPA as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ipa-files
           path: build/ios/iphoneos/*.ipa
@@ -89,12 +89,12 @@ jobs:
 
     steps:
       - name: Download APK artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: apk-files
 
       - name: Download IPA artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ipa-files
 
