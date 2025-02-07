@@ -88,7 +88,6 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
               title: service.name,
               subtitle: subtitle,
               more: '/search/eiga/${service.uid}?q=${widget.keyword}',
-              onTapChild: widget.onDismissed,
             );
           });
         }).toList(),

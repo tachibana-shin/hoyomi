@@ -90,9 +90,10 @@ class _TabViewBookState extends State<TabViewBook>
                           }
 
                           return VerticalBookList(
-                            itemsFuture: null,
-                            items: section.items,
-                            service: widget.service,
+                            itemsFuture: Future.value(section.items
+                                .map((item) => BasicBookExtend(
+                                    book: item, sourceId: widget.service.uid))
+                                .toList()),
                             title: section.name,
                             more: section.sectionId != null
                                 ? '/section_comic/${widget.service.uid}/${section.sectionId}'

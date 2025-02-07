@@ -16,6 +16,7 @@ import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:hoyomi/widgets/eiga/button_follow_eiga.dart';
 import 'package:hoyomi/widgets/eiga/button_share_eiga.dart';
+import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -1115,12 +1116,13 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           if (suggest == null) return SizedBox.shrink();
 
           return VerticalEigaList(
-              itemsFuture: suggest,
-              items: null,
-              service: _service,
-              controller: controller,
-              title: 'Suggest',
-              more: null);
+            itemsFuture: suggest.then((data) => data
+                .map((item) =>
+                    BasicEigaExtend(eiga: item, sourceId: _service.uid))
+                .toList()),
+            title: 'Suggest',
+            more: null,
+          );
         });
   }
 }

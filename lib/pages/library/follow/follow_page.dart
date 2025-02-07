@@ -8,6 +8,7 @@ import 'package:hoyomi/controller/history.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:hoyomi/database/scheme/book.dart';
+import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
 import 'package:hoyomi/widgets/pull_to_refresh.dart';
 import 'package:hoyomi/widgets/book/vertical_book_list.dart';
 import 'package:intl/intl.dart';
@@ -164,19 +165,21 @@ class _FollowState extends State<Follow> {
                 nextElement,
               ) =>
                   VerticalBookList(
-                      items: currentElement.value
+                      itemsFuture: Future.value(currentElement.value.indexed
                           .map(
-                            (item) => BasicBook.fromMeta(item.bookId,
-                                book: MetaBook.fromJson(jsonDecode(item.meta))),
+                            (item) => BasicBookExtend(
+                                book: BasicBook.fromMeta(
+                                  item.$2.bookId,
+                                  book: MetaBook.fromJson(
+                                      jsonDecode(item.$2.meta)),
+                                ),
+                                sourceId: currentElement.value
+                                    .elementAt(item.$1)
+                                    .sourceId),
                           )
-                          .toList(),
-                      itemsFuture: null,
-                      service: null,
-                      getService: (index) =>
-                          currentElement.value.elementAt(index).sourceId,
+                          .toList()),
                       more: null,
-                      title: '',
-                      noHeader: true))),
+                      title: '',))),
     );
   }
 }
