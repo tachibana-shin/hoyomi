@@ -39,6 +39,12 @@ jobs:
 
       - run: flutter build apk --release --split-per-abi
 
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: apk-files
+          path: build/app/outputs/flutter-apk/*.apk
+
   build_ipa:
     name: Build Release IPA
     runs-on: macOS-latest
@@ -74,12 +80,28 @@ jobs:
         run: zip -qq -r -9 app-iphoneos-release-unsigned.ipa Payload
         working-directory: build/ios/iphoneos
 
+      - name: Upload IPA as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ipa-files
+          path: build/ios/iphoneos/*.ipa
+
   release:
     name: Create Release
     runs-on: ubuntu-latest
     needs: [build_apk, build_ipa]
 
     steps:
+      - name: Download APK artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: apk-files
+
+      - name: Download IPA artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ipa-files
+
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
         if: ${{ failure() }}
@@ -104,6 +126,6 @@ jobs:
         uses: softprops/action-gh-release@v0.1.14
         with:
           files: |
-            build/app/outputs/flutter-apk/*.apk
-            build/ios/iphoneos/*.ipa
+            *.apk
+            *.ipa
           body: ${{ steps.changelog.outputs.changelog }}
