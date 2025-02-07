@@ -39,15 +39,12 @@ jobs:
       - run: flutter build apk --release --split-per-abi
 
       - name: Commit APK to temp-apk branch
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b temp-apk
-          mkdir -p temp-apk/apk_files
-          mv build/app/outputs/flutter-apk/*.apk temp-apk/apk_files/
-          git add temp-apk/
-          git commit -m "Add APK files"
-          git push origin temp-apk -f
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          branch: temp-apk
+          message: "Add APK files"
+          add: "build/app/outputs/flutter-apk/*.apk"
+          create_branch: true
 
   build_ipa:
     name: Build Release IPA
@@ -80,15 +77,12 @@ jobs:
         working-directory: build/ios/iphoneos
 
       - name: Commit IPA to temp-ipa branch
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b temp-ipa
-          mkdir -p temp-ipa/ipa_files
-          mv build/ios/iphoneos/*.ipa temp-ipa/ipa_files/
-          git add temp-ipa/
-          git commit -m "Add IPA files"
-          git push origin temp-ipa -f
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          branch: temp-ipa
+          message: "Add IPA files"
+          add: "build/ios/iphoneos/*.ipa"
+          create_branch: true
 
   release:
     name: Create Release
@@ -104,7 +98,7 @@ jobs:
       - name: Copy APK files
         run: |
           mkdir -p apk
-          cp -r temp-apk/apk_files/* ./apk/
+          cp -r build/app/outputs/flutter-apk/*.apk ./apk/
 
       - name: Checkout temp-ipa branch
         uses: actions/checkout@v1
@@ -114,7 +108,7 @@ jobs:
       - name: Copy IPA files
         run: |
           mkdir -p ipa
-          cp -r temp-ipa/ipa_files/* ./ipa/
+          cp -r build/ios/iphoneos/*.ipa ./ipa/
 
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
