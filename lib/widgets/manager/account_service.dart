@@ -81,9 +81,7 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
         return CircleAvatar(
             backgroundColor: Theme.of(context).colorScheme.onSecondary,
             child: SpinKitFadingCircle(
-              color: Theme.of(context).colorScheme.secondary,
-              size: 25.0
-            ));
+                color: Theme.of(context).colorScheme.secondary, size: 25.0));
       case "NOT_SIGN":
         return CircleAvatar(
             backgroundColor: Theme.of(context).colorScheme.onSecondary,
