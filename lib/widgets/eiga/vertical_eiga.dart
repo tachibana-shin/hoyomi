@@ -7,8 +7,12 @@ import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/circular_progress.dart';
 
 class VerticalEiga extends StatelessWidget {
+  static bool checkNeedSubtitle(BasicEiga book) {
+    return book.lastEpisode != null;
+  }
+
   final BasicEiga eiga;
-  final String sourceId;
+  final String? sourceId;
   final double? percentRead;
 
   const VerticalEiga(
@@ -63,12 +67,14 @@ class VerticalEiga extends StatelessWidget {
                     aspectRatio: 2 / 3,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
-                      child: BasicImage.network(
-                        eiga.image.src,
-                        sourceId: sourceId,
-                        headers: eiga.image.headers,
-                        fit: BoxFit.cover,
-                      ),
+                      child: sourceId != null
+                          ? BasicImage.network(
+                              eiga.image.src,
+                              sourceId: sourceId!,
+                              headers: eiga.image.headers,
+                              fit: BoxFit.cover,
+                            )
+                          : SizedBox.shrink(),
                     ),
                   ),
 

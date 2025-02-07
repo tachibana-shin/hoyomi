@@ -69,15 +69,28 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: eigaServices.map((service) {
           final searchResult = _searchFutures[service.uid]!;
-          return HorizontalEigaList(
-              itemsFuture: searchResult.then((data) => data.items
-                  .map((item) =>
-                      BasicEigaExtend(eiga: item, sourceId: service.uid))
-                  .toList()),
-              totalItems: searchResult.then((data) => data.totalItems),
+          final itemsFuture = searchResult.then((data) => data.items
+              .map((item) => BasicEigaExtend(eiga: item, sourceId: service.uid))
+              .toList());
+          String subtitle = '';
+
+          return StatefulBuilder(builder: (context, setState) {
+            if (subtitle == '') {
+              searchResult.then((data) {
+                setState(() {
+                  subtitle = '${data.totalItems} results';
+                });
+              });
+            }
+
+            return HorizontalEigaList(
+              itemsFuture: itemsFuture,
               title: service.name,
+              subtitle: subtitle,
               more: '/search/eiga/${service.uid}?q=${widget.keyword}',
-              onTapChild: widget.onDismissed);
+              onTapChild: widget.onDismissed,
+            );
+          });
         }).toList(),
       ),
     );

@@ -70,15 +70,28 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: bookServices.map((service) {
           final searchResult = _searchFutures[service.uid]!;
-          return HorizontalBookList(
-              itemsFuture: searchResult.then((data) => data.items
-                  .map((item) =>
-                      BasicBookExtend(book: item, sourceId: service.uid))
-                  .toList()),
-              totalItems: searchResult.then((data) => data.totalItems),
+          final itemsFuture = searchResult.then((data) => data.items
+              .map((item) => BasicBookExtend(book: item, sourceId: service.uid))
+              .toList());
+          String subtitle = '';
+
+          return StatefulBuilder(builder: (context, setState) {
+            if (subtitle == '') {
+              searchResult.then((data) {
+                setState(() {
+                  subtitle = '${data.totalItems} results';
+                });
+              });
+            }
+
+            return HorizontalBookList(
+              itemsFuture: itemsFuture,
               title: service.name,
+              subtitle: subtitle,
               more: '/search/comic/${service.uid}?q=${widget.keyword}',
-              onTapChild: widget.onDismissed);
+              onTapChild: widget.onDismissed,
+            );
+          });
         }).toList(),
       ),
     );

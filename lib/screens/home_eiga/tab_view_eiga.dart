@@ -86,10 +86,10 @@ class _TabViewEigaState extends State<TabViewEiga>
 
                         if (value == false) {
                           return HorizontalEigaList(
-                            items: section.items
+                            itemsFuture: Future.value(section.items
                                 .map((item) => BasicEigaExtend(
                                     eiga: item, sourceId: widget.service.uid))
-                                .toList(),
+                                .toList()),
                             title: section.name,
                             more: section.sectionId != null
                                 ? '/section_eiga/${widget.service.uid}/${section.sectionId}'

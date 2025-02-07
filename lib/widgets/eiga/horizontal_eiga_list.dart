@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga.dart';
@@ -6,7 +7,7 @@ import 'package:hoyomi/widgets/horizontal_list.dart';
 
 class BasicEigaExtend {
   final BasicEiga eiga;
-  final String sourceId;
+  final String? sourceId;
   final double? percentRead;
 
   BasicEigaExtend(
@@ -14,47 +15,69 @@ class BasicEigaExtend {
 }
 
 class HorizontalEigaList extends StatelessWidget {
-  final List<BasicEigaExtend>? items;
-  final Future<List<BasicEigaExtend>>? itemsFuture;
-  final String Function(int index)? getService;
-  final double Function(int index)? getPercentRead;
+  final Future<List<BasicEigaExtend>> itemsFuture;
   final Function()? onTapChild;
   final String title;
+  final String? subtitle;
   final String? more;
-  final Future<int>? totalItems;
 
   const HorizontalEigaList({
     super.key,
-    this.items,
-    this.itemsFuture,
-    this.getService,
-    this.getPercentRead,
+    required this.itemsFuture,
     this.onTapChild,
     required this.title,
-    required this.more,
-    this.totalItems,
-  }) : assert(items != null || itemsFuture != null);
+    this.subtitle,
+    this.more,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return HorizontalList(
-      title: title,
-      more: more,
-      items: items,
-      itemsFuture: itemsFuture,
-      builder: (context, eiga, index) {
-        return VerticalEiga(
-          eiga: eiga.eiga,
-          sourceId: eiga.sourceId,
-          percentRead: getPercentRead != null ? getPercentRead!(index) : null,
-        );
-      },
-      builderError: (Object? error) {
-        return Center(
-            child: UtilsService.errorWidgetBuilder(context,
-                error: error, orElse: (error) => Text('Error: $error')));
-      },
-      totalFuture: totalItems,
-    );
+    return FutureBuilder(
+        future: itemsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return HorizontalList<BasicEigaExtend>(
+              title: title,
+              subtitle: subtitle,
+              more: more,
+              items: List.generate(
+                  30,
+                  (index) => BasicEigaExtend(
+                      eiga: BasicEiga.createFakeData(), sourceId: null)),
+              needSubtitle: false,
+              builder: (context, eiga, index) {
+                return VerticalEiga(
+                  eiga: eiga.eiga,
+                  sourceId: eiga.sourceId,
+                  percentRead: eiga.percentRead,
+                );
+              },
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+                child: UtilsService.errorWidgetBuilder(context,
+                    error: snapshot.error,
+                    orElse: (error) => Text('Error: $error')));
+          }
+
+          return HorizontalList<BasicEigaExtend>(
+            title: title,
+            subtitle: subtitle,
+            more: more,
+            items: snapshot.data!,
+            needSubtitle: snapshot.data!.firstWhereOrNull(
+                    (eiga) => VerticalEiga.checkNeedSubtitle(eiga.eiga)) !=
+                null,
+            builder: (context, eiga, index) {
+              return VerticalEiga(
+                eiga: eiga.eiga,
+                sourceId: eiga.sourceId,
+                percentRead: eiga.percentRead,
+              );
+            },
+          );
+        });
   }
 }

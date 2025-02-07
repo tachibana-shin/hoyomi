@@ -7,9 +7,13 @@ import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/circular_progress.dart';
 
 class VerticalBook extends StatelessWidget {
+  static bool checkNeedSubtitle(BasicBook book) {
+    return book.lastChap != null;
+  }
+
   final BasicBook book;
-  final String sourceId;
-  final Future<double>? percentRead;
+  final String? sourceId;
+  final double? percentRead;
 
   const VerticalBook(
       {super.key,
@@ -63,12 +67,14 @@ class VerticalBook extends StatelessWidget {
                     aspectRatio: 2 / 3,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
-                      child: BasicImage.network(
-                        book.image.src,
-                        sourceId: sourceId,
-                        headers: book.image.headers,
-                        fit: BoxFit.cover,
-                      ),
+                      child: sourceId != null
+                          ? BasicImage.network(
+                              book.image.src,
+                              sourceId: sourceId!,
+                              headers: book.image.headers,
+                              fit: BoxFit.cover,
+                            )
+                          : SizedBox.shrink(),
                     ),
                   ),
 
@@ -171,29 +177,21 @@ class VerticalBook extends StatelessWidget {
                     Positioned(
                         bottom: 4,
                         right: 4,
-                        child: FutureBuilder(
-                            future: percentRead!,
-                            builder: (context, snapshot) {
-                              return CircularProgress(
-                                  value: snapshot.data!,
-                                  strokeWidth: 7.0,
-                                  textStyle: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w600,
-                                    color:
-                                        Theme.of(context).colorScheme.surface,
-                                  ),
-                                  borderColor: AlwaysStoppedAnimation<Color>(
-                                    Theme.of(context)
-                                        .colorScheme
-                                        .onTertiaryFixed,
-                                  ),
-                                  backgroundBorder: Colors.transparent,
-                                  backgroundColor: Theme.of(context)
-                                      .colorScheme
-                                      .tertiaryFixedDim,
-                                  size: 25);
-                            })),
+                        child: CircularProgress(
+                            value: percentRead!,
+                            strokeWidth: 7.0,
+                            textStyle: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).colorScheme.surface,
+                            ),
+                            borderColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).colorScheme.onTertiaryFixed,
+                            ),
+                            backgroundBorder: Colors.transparent,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.tertiaryFixedDim,
+                            size: 25))
                 ],
               ),
               Padding(

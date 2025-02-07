@@ -639,12 +639,12 @@ class _DetailsComicState extends State<DetailsComic>
     if (_suggestFuture == null) return SizedBox.shrink();
 
     return HorizontalBookList(
-        itemsFuture: _suggestFuture!.then((value) => value.items
-            .map((book) => BasicBookExtend(book: book, sourceId: _service.uid))
-            .toList()),
-        // totalItems: _suggestFuture!.then((value) => value.totalItems),
-        title: 'Suggest',
-        more: null);
+      itemsFuture: _suggestFuture!.then((value) => value.items
+          .map((book) => BasicBookExtend(book: book, sourceId: _service.uid))
+          .toList()),
+      // totalItems: _suggestFuture!.then((value) => value.totalItems),
+      title: 'Suggest',
+    );
   }
 
   PopupMenuItem<String> _buildMenuItem(String id, String text) {

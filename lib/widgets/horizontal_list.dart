@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:expandable_page_view/expandable_page_view.dart';
 
 class HorizontalList<T> extends StatelessWidget {
   final String title;
+  final String? subtitle;
   final String? more;
   final bool noHeader;
   final Widget Function(BuildContext, T, int) builder;
-  final Widget? Function(Object? error) builderError;
   final List<T>? items;
-  final Future<List<T>>? itemsFuture;
-  final Future<int>? totalFuture;
+  final Widget? child;
+
+  final bool needSubtitle;
 
   const HorizontalList(
       {super.key,
       required this.title,
+      this.subtitle,
       required this.more,
       this.noHeader = false,
-      required this.items,
-      required this.itemsFuture,
+      this.items,
+      this.child,
       required this.builder,
-      required this.builderError,
-      required this.totalFuture})
-      : assert(items == null || itemsFuture == null);
+      required this.needSubtitle})
+      : assert(items != null || child != null);
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildContainer(BuildContext context,
+      {required Widget Function(double viewFraction) builder}) {
     double screenWidth = MediaQuery.of(context).size.width;
     double crossAxisCount;
 
@@ -44,9 +44,13 @@ class HorizontalList<T> extends StatelessWidget {
             MediaQuery.of(context).size.width *
             viewportFraction +
         14.0 * 2 +
-        2.0 * 2 +
-        2.0;
+        (needSubtitle ? 12.0 * 2 : 12.0 / 2);
 
+    return SizedBox(height: height, child: builder(viewportFraction));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -60,22 +64,11 @@ class HorizontalList<T> extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
-            if (totalFuture != null)
-              FutureBuilder(
-                  future: totalFuture!,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Column(children: [
-                        SizedBox(height: 2),
-                        Text(
-                          "${snapshot.data} results",
-                          style: TextStyle(fontSize: 14, color: Colors.white70),
-                        ),
-                      ]);
-                    }
-
-                    return Stack(children: []);
-                  })
+            if (subtitle != null)
+              Text(
+                subtitle!,
+                style: TextStyle(fontSize: 14, color: Colors.white70),
+              ),
           ]),
           if (more != null)
             ElevatedButton(
@@ -86,67 +79,23 @@ class HorizontalList<T> extends StatelessWidget {
           else
             SizedBox.shrink()
         ]),
-        if (items != null)
-          SizedBox(
-            height: height,
-            child: ExpandablePageView.builder(
-              itemCount: items!.length,
-              allowImplicitScrolling: true,
-              padEnds: false,
-              controller: PageController(
-                viewportFraction: viewportFraction,
-                initialPage: 0,
-              ),
-              itemBuilder: (context, index) {
-                return builder(context, items!.elementAt(index), index);
-              },
-            ),
-          )
-        else
-          FutureBuilder(
-            future: itemsFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return SizedBox(
-                    height: height,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ));
-              }
-              if (snapshot.hasError) {
-                return builderError(snapshot.error) ??
-                    SizedBox(
-                        height: height,
-                        child: Center(
-                          child: Text('Error: ${snapshot.error}'),
-                        ));
-              }
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return SizedBox(
-                    height: height,
-                    child: Center(
-                      child: Text('No data available.'),
-                    ));
-              }
-
-              final items = snapshot.data!;
-              return SizedBox(
-                height: height,
-                child: ExpandablePageView.builder(
-                  itemCount: items.length,
-                  allowImplicitScrolling: true,
-                  padEnds: false,
-                  controller: PageController(
-                    viewportFraction: viewportFraction,
-                    initialPage: 0,
-                  ),
-                  itemBuilder: (context, index) {
-                    return builder(context, items.elementAt(index), index);
-                  },
+        _buildContainer(
+          context,
+          builder: (viewportFraction) =>
+              child ??
+              PageView.builder(
+                itemCount: items!.length,
+                allowImplicitScrolling: true,
+                padEnds: false,
+                controller: PageController(
+                  viewportFraction: viewportFraction,
+                  initialPage: 0,
                 ),
-              );
-            },
-          ),
+                itemBuilder: (context, index) {
+                  return builder(context, items!.elementAt(index), index);
+                },
+              ),
+        )
       ],
     );
   }

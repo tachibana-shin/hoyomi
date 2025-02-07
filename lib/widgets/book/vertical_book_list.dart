@@ -43,12 +43,24 @@ class VerticalBookList extends StatelessWidget {
       getDataLoading: () =>
           List.generate(30, (_) => BasicBook.createFakeData()),
       builder: (context, book, bookIndex) {
-        return VerticalBook(
-          book: book,
-          sourceId: service?.uid ?? getService!(bookIndex),
-          percentRead:
-              getPercentRead != null ? getPercentRead!(bookIndex) : null,
-        );
+        final percentRead = getPercentRead != null
+            ? getPercentRead!(bookIndex)
+            : Future.value(0.0);
+        return FutureBuilder(
+            future: percentRead,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return VerticalBook(
+                  book: book,
+                  sourceId: service?.uid ?? getService!(bookIndex),
+                  percentRead: snapshot.data as double,
+                );
+              }
+              return VerticalBook(
+                  book: book,
+                  sourceId: service?.uid ?? getService!(bookIndex),
+                  percentRead: null);
+            });
       },
       builderError: (Object? error) {
         return Center(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/widgets/horizontal_list.dart';
@@ -6,7 +7,7 @@ import 'vertical_book.dart';
 
 class BasicBookExtend {
   final BasicBook book;
-  final String sourceId;
+  final String? sourceId;
   final double? percentRead;
 
   BasicBookExtend(
@@ -14,44 +15,69 @@ class BasicBookExtend {
 }
 
 class HorizontalBookList extends StatelessWidget {
-  final List<BasicBookExtend>? items;
-  final Future<List<BasicBookExtend>>? itemsFuture;
+  final Future<List<BasicBookExtend>> itemsFuture;
   final Function()? onTapChild;
   final String title;
+  final String? subtitle;
   final String? more;
-  final Future<int>? totalItems;
 
   const HorizontalBookList({
     super.key,
-    this.items,
-    this.itemsFuture,
+    required this.itemsFuture,
     this.onTapChild,
     required this.title,
-    required this.more,
-    this.totalItems,
-  }) : assert(items != null || itemsFuture != null);
+    this.subtitle,
+    this.more,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return HorizontalList(
-      title: title,
-      more: more,
-      items: items,
-      itemsFuture: itemsFuture,
-      builder: (context, book, index) {
-        return VerticalBook(
-          book: book.book,
-          sourceId: book.sourceId,
-          percentRead:
-              book.percentRead == null ? null : Future.value(book.percentRead),
-        );
-      },
-      builderError: (Object? error) {
-        return Center(
-            child: UtilsService.errorWidgetBuilder(context,
-                error: error, orElse: (error) => Text('Error: $error')));
-      },
-      totalFuture: totalItems,
-    );
+    return FutureBuilder(
+        future: itemsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return HorizontalList<BasicBookExtend>(
+              title: title,
+              subtitle: subtitle,
+              more: more,
+              items: List.generate(
+                  30,
+                  (index) => BasicBookExtend(
+                      book: BasicBook.createFakeData(), sourceId: null)),
+              needSubtitle: false,
+              builder: (context, book, index) {
+                return VerticalBook(
+                  book: book.book,
+                  sourceId: book.sourceId,
+                  percentRead: book.percentRead,
+                );
+              },
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+                child: UtilsService.errorWidgetBuilder(context,
+                    error: snapshot.error,
+                    orElse: (error) => Text('Error: $error')));
+          }
+
+          return HorizontalList<BasicBookExtend>(
+            title: title,
+            subtitle: subtitle,
+            more: more,
+            items: snapshot.data!,
+            needSubtitle: snapshot.data!.firstWhereOrNull(
+                    (book) => VerticalBook.checkNeedSubtitle(book.book)) !=
+                null,
+            builder: (context, book, index) {
+              return VerticalBook(
+                book: book.book,
+                sourceId: book.sourceId,
+                percentRead: book.percentRead,
+              );
+            },
+          );
+        });
   }
 }
