@@ -6,18 +6,21 @@ on:
       - "v*"
 
 jobs:
-  build_apk:
-    name: Build Release APK
+  build_and_release:
+    name: Build APK & IPA and Create Release
     runs-on: ubuntu-latest
     steps:
+      # Checkout the code
       - uses: actions/checkout@v1
         with:
           fetch-depth: 0
 
+      # Setup Java for APK build
       - uses: actions/setup-java@v1
         with:
           java-version: "20.x"
 
+      # Setup Flutter SDK
       - uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
@@ -25,97 +28,25 @@ jobs:
 
       - run: flutter pub get
 
-      - name: Decode and save keystore file
+      # Build APK (Android)
+      - name: Build Release APK
         run: |
           echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > android/app/keystore.jks
-
-      - name: Create key.properties file
-        run: |
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
           echo "keyPassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEYSTORE_ALIAS }}" >> android/key.properties
           echo "storeFile=keystore.jks" >> android/key.properties
+          flutter build apk --release --split-per-abi
 
-      - run: flutter build apk --release --split-per-abi
-
-      - name: Commit APK to temp-apk branch
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          branch: temp-apk
-          message: "Add APK files"
-          add: "build/app/outputs/flutter-apk/*.apk"
-          create_branch: true
-
-  build_ipa:
-    name: Build Release IPA
-    runs-on: macOS-latest
-    steps:
-      - uses: actions/checkout@v1
-        with:
-          fetch-depth: 0
-
-      - uses: flutter-actions/setup-flutter@v4
-        with:
-          channel: stable
-          version: 3.27.1
-
-      - run: flutter pub get
-
-      - run: pod repo update
-        working-directory: ios
-
-      - run: flutter build ios --release --no-codesign
-
-      - run: mkdir Payload
-        working-directory: build/ios/iphoneos
-
-      - run: mv Runner.app/ Payload
-        working-directory: build/ios/iphoneos
-
-      - name: Zip output
-        run: zip -qq -r -9 app-iphoneos-release-unsigned.ipa Payload
-        working-directory: build/ios/iphoneos
-
-      - name: Commit IPA to temp-ipa branch
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          branch: temp-ipa
-          message: "Add IPA files"
-          add: "build/ios/iphoneos/*.ipa"
-          create_branch: true
-
-  release:
-    name: Create Release
-    runs-on: ubuntu-latest
-    needs: [build_apk, build_ipa]
-
-    steps:
-      - name: Checkout temp-apk branch
-        uses: actions/checkout@v1
-        with:
-          ref: temp-apk
-
-      - name: Copy APK files
+      # Build IPA (iOS)
+      - name: Build Release IPA
         run: |
-          mkdir -p apk
-          cp -r build/app/outputs/flutter-apk/*.apk ./apk/
+          flutter build ios --release --no-codesign
+          mkdir Payload
+          mv build/ios/iphoneos/Runner.app Payload
+          zip -qq -r -9 build/ios/iphoneos/app-iphoneos-release-unsigned.ipa Payload
 
-      - name: Checkout temp-ipa branch
-        uses: actions/checkout@v1
-        with:
-          ref: temp-ipa
-
-      - name: Copy IPA files
-        run: |
-          mkdir -p ipa
-          cp -r build/ios/iphoneos/*.ipa ./ipa/
-
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        if: ${{ failure() }}
-        with:
-          wait-timeout-minutes: 5
-
+      # Create release directly
       - name: Generate changelog
         id: changelog
         uses: metcalfc/changelog-generator@v4.0.0
@@ -129,10 +60,11 @@ jobs:
           ${{ steps.changelog.outputs.changelog }}
           EOF
 
-      - name: Release
+      # Upload APK and IPA files for release
+      - name: Release APK and IPA
         uses: softprops/action-gh-release@v0.1.14
         with:
           files: |
-            ./apk/*.apk
-            ./ipa/*.ipa
+            build/app/outputs/flutter-apk/*.apk
+            build/ios/iphoneos/app-iphoneos-release-unsigned.ipa
           body: ${{ steps.changelog.outputs.changelog }}
