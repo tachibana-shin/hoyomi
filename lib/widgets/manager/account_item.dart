@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hoyomi/composable/use_user.dart';
 import 'package:hoyomi/core_services/base_service.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
 import 'package:signals/signals_flutter.dart';
 
-class AccountService extends StatefulWidget {
+class AccountItem extends StatefulWidget {
   final BaseService service;
 
-  const AccountService({super.key, required this.service});
+  const AccountItem({super.key, required this.service});
 
   @override
-  createState() => _AccountServiceState();
+  State<AccountItem> createState() => _AccountItemState();
 }
 
-class _AccountServiceState extends State<AccountService> with SignalsMixin {
+class _AccountItemState extends State<AccountItem> with SignalsMixin {
   late final UserData? _user;
+
+  bool get _serviceAccountSupport {
+    return widget.service is BaseAuthMixin;
+  }
 
   late final _status = createComputed(() {
     if (!_serviceAccountSupport) return "NOT_SUPPORT";
@@ -28,10 +31,6 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
 
     return "DONE";
   });
-
-  bool get _serviceAccountSupport {
-    return widget.service is BaseAuthMixin;
-  }
 
   @override
   void initState() {
@@ -45,67 +44,69 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-                backgroundColor: Theme.of(context).colorScheme.onSecondary,
-                child: BasicImage.network(
-                  widget.service.faviconUrl,
-                  sourceId: widget.service.uid,
-                  headers: {"referer": widget.service.baseUrl},
-                  fit: BoxFit.cover,
-                )),
-            const SizedBox(width: 5.0),
-            _buildUserAvatar(),
-          ],
-        ),
-        const SizedBox(height: 12.0),
-        _buildUserDetails(context),
-      ],
+    return ListTile(
+      leading: CircleAvatar(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          child: BasicImage.network(
+            widget.service.faviconUrl,
+            sourceId: widget.service.uid,
+            headers: {"referer": widget.service.baseUrl},
+            fit: BoxFit.cover,
+          )),
+      title: Text(
+        widget.service.name,
+        // style: TextStyle(
+        //   fontSize: 12.0,
+        //   fontWeight: FontWeight.w500,
+        //   color: Colors.grey.shade400,
+        // ),
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Row(
+        children: [
+          _buildUserAvatar(),
+          const SizedBox(width: 5.0),
+          _buildUserDetails(context),
+        ],
+      ),
     );
   }
 
   Widget _buildUserAvatar() {
+    Widget avatar;
     switch (_status()) {
       case "NOT_SUPPORT":
-        return CircleAvatar(
-            backgroundColor: Theme.of(context).colorScheme.onSecondary,
-            child: const Icon(
-              MaterialCommunityIcons.block_helper,
-              // color: Colors.red,
-            ));
+        avatar = const Icon(
+          MaterialCommunityIcons.block_helper,
+          // color: Colors.red,
+        );
+        break;
       case "LOADING":
-        return CircleAvatar(
-            backgroundColor: Theme.of(context).colorScheme.onSecondary,
-            child: SpinKitFadingCircle(
-              color: Theme.of(context).colorScheme.secondary,
-              size: 25.0
-            ));
+        avatar = CircularProgressIndicator();
+        break;
       case "NOT_SIGN":
-        return CircleAvatar(
-            backgroundColor: Theme.of(context).colorScheme.onSecondary,
-            child: const Icon(
-              MaterialCommunityIcons.help,
-            ));
+        avatar = const Icon(
+          MaterialCommunityIcons.help,
+        );
+        break;
       case "ERROR":
-        return CircleAvatar(
-            backgroundColor: Theme.of(context).colorScheme.onSecondary,
-            child: const Icon(
-              MaterialCommunityIcons.alert_circle_outline,
-              color: Colors.orange,
-            ));
+        avatar = const Icon(
+          MaterialCommunityIcons.alert_circle_outline,
+          color: Colors.orange,
+        );
+        break;
       default:
-        return CircleAvatar(
-            backgroundColor: Colors.grey.shade300,
-            child: BasicImage.network(
-              _user!.user.value!.photoUrl,
-              sourceId: widget.service.uid,
-              fit: BoxFit.cover,
-            ));
+        avatar = BasicImage.network(
+          _user!.user.value!.photoUrl,
+          sourceId: widget.service.uid,
+          fit: BoxFit.cover,
+        );
     }
+
+    return CircleAvatar(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      child: SizedBox(width: 10, height: 10, child: avatar),
+    );
   }
 
   Widget _buildUserDetails(BuildContext context) {
@@ -125,8 +126,8 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
         oneLine = Text(
           'Loading...',
           style: TextStyle(
-            fontSize: 14.0,
-            color: Colors.grey.shade400,
+            fontSize: 16.0,
+            color: Colors.grey.shade300,
           ),
           textAlign: TextAlign.center,
         );
@@ -139,9 +140,8 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
             },
             child: Text(
               "(Tap to sign in)",
-              style: TextStyle(
-                fontSize: 14.0,
-                color: Colors.grey.shade400,
+              style: const TextStyle(
+                fontSize: 16.0,
               ),
               overflow: TextOverflow.ellipsis,
             ));
@@ -154,7 +154,7 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
               'Failed to fetch user.',
               style: TextStyle(
                 fontSize: 14.0,
-                color: Colors.grey.shade400,
+                color: Colors.orange.shade400,
               ),
               textAlign: TextAlign.center,
             ),
@@ -175,27 +175,14 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
             },
             child: Text(
               _user!.user.value!.fullName,
-              style: TextStyle(
-                fontSize: 14.0,
-                color: Colors.grey.shade400,
+              style: const TextStyle(
+                fontSize: 16.0,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ));
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          widget.service.name,
-          style: TextStyle(
-            fontSize: 16.0,
-          ),
-          overflow: TextOverflow.ellipsis,
-        ),
-        oneLine,
-      ],
-    );
+    return oneLine;
   }
 }

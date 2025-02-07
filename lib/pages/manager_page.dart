@@ -21,6 +21,7 @@ class _ServiceAccounts extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: Text("Accounts manager")),
         body: Column(children: [
+          Text('Comic services', style: Theme.of(context).textTheme.bodyMedium),
           DynamicHeightGridView(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -36,7 +37,8 @@ class _ServiceAccounts extends StatelessWidget {
               return _buildCard(bookServices[index]);
             },
           ),
-          SizedBox(height: 5.0),
+          SizedBox(height: 15.0),
+          Text('Eiga services', style: Theme.of(context).textTheme.bodyMedium),
           DynamicHeightGridView(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
