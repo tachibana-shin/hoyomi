@@ -296,8 +296,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
           _controller.value!.value.isInitialized &&
           _controller.value!.value.position > Duration.zero) {
         _controller.value!.seekTo(watchTime.position);
-          _needRestoreWatchTime = false;
-          _restoredWatchTime = true;
+        _needRestoreWatchTime = false;
+        _restoredWatchTime = true;
       }
     }
 
