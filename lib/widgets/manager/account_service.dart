@@ -52,7 +52,7 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
           children: [
             CircleAvatar(
                 backgroundColor: Theme.of(context).colorScheme.onSecondary,
-          radius: 100,
+                radius: 100,
                 child: BasicImage.network(
                   widget.service.faviconUrl,
                   sourceId: widget.service.uid,
@@ -74,7 +74,7 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
       case "NOT_SUPPORT":
         return CircleAvatar(
             backgroundColor: Theme.of(context).colorScheme.onSecondary,
-          radius: 100,
+            radius: 100,
             child: const Icon(
               MaterialCommunityIcons.block_helper,
               // color: Colors.red,
@@ -82,20 +82,20 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
       case "LOADING":
         return CircleAvatar(
             backgroundColor: Theme.of(context).colorScheme.onSecondary,
-          radius: 100,
+            radius: 100,
             child: SpinKitFadingCircle(
                 color: Theme.of(context).colorScheme.secondary, size: 25.0));
       case "NOT_SIGN":
         return CircleAvatar(
             backgroundColor: Theme.of(context).colorScheme.onSecondary,
-          radius: 100,
+            radius: 100,
             child: const Icon(
               MaterialCommunityIcons.help,
             ));
       case "ERROR":
         return CircleAvatar(
             backgroundColor: Theme.of(context).colorScheme.onSecondary,
-          radius: 100,
+            radius: 100,
             child: const Icon(
               MaterialCommunityIcons.alert_circle_outline,
               color: Colors.orange,
