@@ -46,7 +46,7 @@ UserData useUser(BaseAuthMixin service,
       if (record != null) {
         final json = record.user;
 
-        if (context == null && context is State && (context as State).mounted) {
+        if (context != null && (context as State).mounted) {
           user.value =
               json == null ? null : BasicUser.fromJson(jsonDecode(json));
         }
@@ -55,11 +55,11 @@ UserData useUser(BaseAuthMixin service,
       (service as BaseService)
           .fetchUser(row: record, recordLoaded: true)
           .then((value) {
-        if (context == null && context is State && (context as State).mounted) {
+        if (context != null && (context as State).mounted) {
           user.value = value;
         }
       }).catchError((err) {
-        if (context == null && context is State && (context as State).mounted) {
+        if (context != null && (context as State).mounted) {
           error.value = '$err';
         }
         debugPrint('Error: $err');
