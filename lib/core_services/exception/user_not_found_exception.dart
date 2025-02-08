@@ -1,5 +1,12 @@
 class UserNotFoundException implements Exception {
-  final String? message = 'User not found';
+  final String message;
+  final StackTrace trace;
 
-  const UserNotFoundException();
+  UserNotFoundException([this.message = 'User not found', StackTrace? trace])
+      : trace = trace ?? StackTrace.current;
+
+  @override
+  String toString() {
+    return "UserNotFoundException: $message\n$trace";
+  }
 }
