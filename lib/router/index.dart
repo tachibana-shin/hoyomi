@@ -35,330 +35,245 @@ final List<String> routeIgnoreLayoutDefault = [
   '/section_eiga'
 ];
 
-final router = createRouter();
+final router = GoRouter(
+  initialLocation: '/home_eiga',
+  observers: [GoTransition.observer],
+  routes: [
+    // --- Shell route cho bottom navigation (5 items) ---
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        // Decide immediately whether to show the toolbar.
+        final showToolbar = shouldShowToolbar(state.uri.toString());
+        return PersistentScaffold(
+          navigationShell: navigationShell,
+          showToolbar: showToolbar,
+        );
+      },
+      branches: [
+        // Bottom Navigation Item: Home Book
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: '/home_book',
+            pageBuilder: GoTransitions.material.call,
+            builder: (context, state) => HomeBookPage(),
+          )
+        ]),
+        // Bottom Navigation Item: Home Eiga
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: '/home_eiga',
+            pageBuilder: GoTransitions.material.call,
+            builder: (context, state) => HomeEigaPage(),
+          )
+        ]),
+        // Bottom Navigation Item: Search
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: '/search',
+            pageBuilder: GoTransitions.material.call,
+            builder: (context, state) => SearchPage(
+              keyword: state.uri.queryParameters['q'] ?? '',
+            ),
+            routes: [
+              GoRoute(
+                path: 'comic/:serviceId',
+                pageBuilder: GoTransitions.material.call,
+                builder: (context, state) {
+                  if (state.uri.queryParameters['q'] == null) {
+                    context.replace("/search");
+                    return const SizedBox();
+                  }
+                  return SearchComicPage(
+                    serviceId: state.pathParameters['serviceId']!,
+                    keyword: state.uri.queryParameters['q']!,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'eiga/:serviceId',
+                pageBuilder: GoTransitions.material.call,
+                builder: (context, state) {
+                  if (state.uri.queryParameters['q'] == null) {
+                    context.replace("/search");
+                    return const SizedBox();
+                  }
+                  return SearchEigaPage(
+                    serviceId: state.pathParameters['serviceId']!,
+                    keyword: state.uri.queryParameters['q']!,
+                  );
+                },
+              )
+            ],
+          ),
+        ]),
+        // Bottom Navigation Item: Library
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: '/library',
+            pageBuilder: GoTransitions.material.call,
+            builder: (context, state) => LibraryPage(),
+            routes: [
+              GoRoute(
+                path: 'history',
+                pageBuilder: GoTransitions.material.call,
+                builder: (context, state) => HistoryPage(),
+              ),
+              GoRoute(
+                path: 'follow',
+                pageBuilder: GoTransitions.material.call,
+                builder: (context, state) => FollowPage(),
+              )
+            ],
+          ),
+        ]),
+        // Bottom Navigation Item: Manager
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: '/manager',
+            pageBuilder: GoTransitions.material.call,
+            builder: (context, state) => ManagerPage(),
+          ),
+        ]),
+      ],
+    ),
 
-GoRouter createRouter() {
-  return GoRouter(
-    initialLocation: '/home_eiga',
-    observers: [GoTransition.observer],
-    routes: [
-      createStatefulShellRoute(),
-    ],
-  );
-}
-
-StatefulShellRoute createStatefulShellRoute() {
-  return StatefulShellRoute.indexedStack(
-    builder: (context, state, navigationShell) {
-      final fullPath = state.uri.toString();
-      final disableToolbar =
-          routeIgnoreLayoutDefault.any((route) => fullPath.startsWith(route));
-
-      return ScaffoldWithNestedNavigation(
-        navigationShell: navigationShell,
-        disableToolbar: disableToolbar,
-      );
-    },
-    branches: [
-      createHomeBookBranch(),
-      createHomeEigaBranch(),
-      createSearchBranch(),
-      createLibraryBranch(),
-      createManagerBranch(),
-      createDetailsComicBranch(),
-      createDetailsEigaBranch(),
-      createWebviewBranch(),
-      createSectionComicBranch(),
-      createSectionEigaBranch(),
-    ],
-  );
-}
-
-StatefulShellBranch createHomeBookBranch() {
-  return StatefulShellBranch(routes: [
+    // --- Top-level routes ---
+    // Details Comic Route
     GoRoute(
-      path: '/home_book',
+      path: '/details_comic/:sourceId/:bookId',
+      name: 'details_comic',
       pageBuilder: GoTransitions.material.call,
-      builder: (context, state) => HomeBookPage(),
-    )
-  ]);
-}
-
-StatefulShellBranch createHomeEigaBranch() {
-  return StatefulShellBranch(routes: [
-    GoRoute(
-      path: '/home_eiga',
-      pageBuilder: GoTransitions.material.call,
-      builder: (context, state) => HomeEigaPage(),
-    )
-  ]);
-}
-
-StatefulShellBranch createSearchBranch() {
-  return StatefulShellBranch(routes: [
-    GoRoute(
-      path: '/search',
-      pageBuilder: GoTransitions.material.call,
-      builder: (context, state) =>
-          SearchPage(keyword: state.uri.queryParameters['q'] ?? ''),
+      builder: (context, state) => DetailsComic(
+        sourceId: state.pathParameters['sourceId']!,
+        bookId: state.pathParameters['bookId']!,
+      ),
       routes: [
         GoRoute(
-          path: 'comic/:serviceId',
+          path: 'view',
+          name: 'details_comic_reader',
           pageBuilder: GoTransitions.material.call,
           builder: (context, state) {
-            if (state.uri.queryParameters['q'] == null) {
-              context.replace("/search");
-              return Stack(children: []);
-            }
-
-            return SearchComicPage(
-              serviceId: state.pathParameters['serviceId']!,
-              keyword: state.uri.queryParameters['q']!,
+            final chapterId = state.uri.queryParameters['chap']!;
+            return DetailsComicReader(
+              key: Key(state.pathParameters['bookId']!),
+              sourceId: state.pathParameters['sourceId']!,
+              bookId: state.pathParameters['bookId']!,
+              chapterId: chapterId,
+              book: state.extra != null
+                  ? (state.extra as Map)['book'] as MetaBook
+                  : null,
             );
           },
         ),
         GoRoute(
-          path: 'eiga/:serviceId',
+          path: 'similar',
           pageBuilder: GoTransitions.material.call,
-          builder: (context, state) {
-            if (state.uri.queryParameters['q'] == null) {
-              context.replace("/search");
-              return Stack(children: []);
-            }
-
-            return SearchEigaPage(
-              serviceId: state.pathParameters['serviceId']!,
-              keyword: state.uri.queryParameters['q']!,
-            );
-          },
-        )
-      ],
-    ),
-  ]);
-}
-
-StatefulShellBranch createLibraryBranch() {
-  return StatefulShellBranch(routes: [
-    GoRoute(
-      path: '/library',
-      pageBuilder: GoTransitions.material.call,
-      builder: (context, state) => LibraryPage(),
-      routes: [
-        GoRoute(
-          path: 'history',
-          pageBuilder: GoTransitions.material.call,
-          builder: (context, state) => HistoryPage(),
-        ),
-        GoRoute(
-          path: 'follow',
-          pageBuilder: GoTransitions.material.call,
-          builder: (context, state) => FollowPage(),
-        )
-      ],
-    ),
-  ]);
-}
-
-StatefulShellBranch createManagerBranch() {
-  return StatefulShellBranch(routes: [
-    GoRoute(
-      path: '/manager',
-      pageBuilder: GoTransitions.material.call,
-      builder: (context, state) => ManagerPage(),
-    ),
-  ]);
-}
-
-StatefulShellBranch createDetailsComicBranch() {
-  return StatefulShellBranch(routes: [
-    GoRoute(
-      path: "/details_comic",
-      name: "details_comic",
-      pageBuilder: GoTransitions.material.call,
-      routes: [
-        GoRoute(
-          path: ":sourceId",
-          pageBuilder: GoTransitions.material.call,
-          routes: [
-            GoRoute(
-              path: ":bookId",
-              pageBuilder: GoTransitions.material.call,
-              builder: (context, state) => DetailsComic(
-                sourceId: state.pathParameters['sourceId']!,
-                bookId: state.pathParameters['bookId']!,
-              ),
-              routes: [
-                GoRoute(
-                  path: "view",
-                  name: "details_comic_reader",
-                  pageBuilder: GoTransitions.material.call,
-                  builder: (context, state) {
-                    final sourceId = state.pathParameters['sourceId'];
-                    final bookId = state.pathParameters['bookId'];
-                    final chapterId = state.uri.queryParameters['chap']!;
-
-                    return DetailsComicReader(
-                      key: Key(bookId!),
-                      sourceId: sourceId!,
-                      bookId: bookId,
-                      chapterId: chapterId,
-                      book: state.extra != null
-                          ? (state.extra as Map)['book'] as MetaBook
-                          : null,
-                    );
-                  },
-                ),
-                GoRoute(
-                  path: "similar",
-                  pageBuilder: GoTransitions.material.call,
-                  builder: (context, state) => SimilarPage(
-                    sourceId: state.pathParameters['sourceId']!,
-                    bookId: state.pathParameters['bookId']!,
-                    book: (state.extra is Map &&
-                                (state.extra as Map).containsKey('book')) ==
-                            true
-                        ? (state.extra as Map)['book']
-                        : null,
-                  ),
-                )
-              ],
-            )
-          ],
-        )
-      ],
-    ),
-  ]);
-}
-
-StatefulShellBranch createDetailsEigaBranch() {
-  return StatefulShellBranch(routes: [
-    GoRoute(
-      path: "/details_eiga",
-      name: "details_eiga",
-      pageBuilder: GoTransitions.material.call,
-      routes: [
-        GoRoute(
-          path: ":sourceId",
-          pageBuilder: GoTransitions.material.call,
-          routes: [
-            GoRoute(
-              path: ":eigaId",
-              pageBuilder: GoTransitions.material.call,
-              builder: (context, state) => DetailsEigaPage(
-                sourceId: state.pathParameters['sourceId']!,
-                eigaId: state.pathParameters['eigaId']!,
-                episodeId: state.uri.queryParameters['episodeId'],
-              ),
-            )
-          ],
-        )
-      ],
-    ),
-  ]);
-}
-
-StatefulShellBranch createWebviewBranch() {
-  return StatefulShellBranch(routes: [
-    GoRoute(
-      path: '/webview',
-      pageBuilder: GoTransitions.material.call,
-      routes: [
-        GoRoute(
-          path: ':serviceId',
-          pageBuilder: GoTransitions.material.call,
-          builder: (context, state) => WebviewPage(
-            serviceId: state.pathParameters['serviceId']!,
+          builder: (context, state) => SimilarPage(
+            sourceId: state.pathParameters['sourceId']!,
+            bookId: state.pathParameters['bookId']!,
+            book:
+                (state.extra is Map && (state.extra as Map).containsKey('book'))
+                    ? (state.extra as Map)['book']
+                    : null,
           ),
         )
       ],
     ),
-  ]);
-}
 
-StatefulShellBranch createSectionComicBranch() {
-  return StatefulShellBranch(routes: [
+    // Details Eiga Route
     GoRoute(
-      path: '/section_comic',
+      path: '/details_eiga/:sourceId/:eigaId',
+      name: 'details_eiga',
       pageBuilder: GoTransitions.material.call,
-      routes: [
-        GoRoute(
-          path: ':serviceId',
-          pageBuilder: GoTransitions.material.call,
-          routes: [
-            GoRoute(
-              path: ":sectionId",
-              builder: (context, state) => SectionComicPage(
-                serviceId: state.pathParameters['serviceId']!,
-                sectionId: state.pathParameters['sectionId']!,
-              ),
-            )
-          ],
-        )
-      ],
+      builder: (context, state) => DetailsEigaPage(
+        sourceId: state.pathParameters['sourceId']!,
+        eigaId: state.pathParameters['eigaId']!,
+        episodeId: state.uri.queryParameters['episodeId'],
+      ),
     ),
-  ]);
-}
 
-StatefulShellBranch createSectionEigaBranch() {
-  return StatefulShellBranch(routes: [
+    // Webview Route
     GoRoute(
-      path: '/section_eiga',
+      path: '/webview/:serviceId',
       pageBuilder: GoTransitions.material.call,
-      routes: [
-        GoRoute(
-          path: ':serviceId',
-          pageBuilder: GoTransitions.material.call,
-          routes: [
-            GoRoute(
-              path: ":sectionId",
-              builder: (context, state) => SectionEigaPage(
-                serviceId: state.pathParameters['serviceId']!,
-                sectionId: state.pathParameters['sectionId']!,
-              ),
-            )
-          ],
-        )
-      ],
+      builder: (context, state) => WebviewPage(
+        serviceId: state.pathParameters['serviceId']!,
+      ),
     ),
-  ]);
+
+    // Section Comic Route
+    GoRoute(
+      path: '/section_comic/:serviceId/:sectionId',
+      pageBuilder: GoTransitions.material.call,
+      builder: (context, state) => SectionComicPage(
+        serviceId: state.pathParameters['serviceId']!,
+        sectionId: state.pathParameters['sectionId']!,
+      ),
+    ),
+
+    // Section Eiga Route
+    GoRoute(
+      path: '/section_eiga/:serviceId/:sectionId',
+      pageBuilder: GoTransitions.material.call,
+      builder: (context, state) => SectionEigaPage(
+        serviceId: state.pathParameters['serviceId']!,
+        sectionId: state.pathParameters['sectionId']!,
+      ),
+    ),
+  ],
+);
+
+/// 日本語のコメント: 現在のURIに基づいてボトムツールバーを表示するかどうかを判定する関数。
+bool shouldShowToolbar(String uriString) {
+  const mainRoutes = [
+    '/home_book',
+    '/home_eiga',
+    '/search',
+    '/library',
+    '/manager',
+  ];
+
+  for (final route in mainRoutes) {
+    if (uriString == route || uriString.startsWith('$route/')) {
+      return true;
+    }
+  }
+  return false;
 }
 
-class ScaffoldWithNestedNavigation extends StatelessWidget {
+class PersistentScaffold extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
-  final bool disableToolbar;
+  final bool showToolbar;
 
-  const ScaffoldWithNestedNavigation({
+  const PersistentScaffold({
     super.key,
     required this.navigationShell,
-    required this.disableToolbar,
+    required this.showToolbar,
   });
-
-  void _goBranch(int index) {
-    navigationShell.goBranch(
-      index,
-      initialLocation: index == navigationShell.currentIndex,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final railMode = constraints.maxWidth > 600;
-        return railMode ? _buildRailMode() : _buildBottomNavigationBar();
-      },
-    );
+    // 日本語のコメント:
+    // ボトムナビゲーションバーはアニメーションするコンテンツの外側に構築される。
+
+    final railMode = MediaQuery.of(context).size.width > 600;
+    return railMode ? _buildRailMode() : _buildBottomNavigationBar();
   }
 
   Widget _buildRailMode() {
     return Scaffold(
       body: Row(
         children: [
-          if (!disableToolbar) ...[
+          if (!showToolbar) ...[
             NavigationApp(
               selectedIndex: navigationShell.currentIndex,
               rail: true,
-              onDestinationSelected: _goBranch,
+              onDestinationSelected: (index) {
+                navigationShell.goBranch(
+                  index,
+                  initialLocation: index == navigationShell.currentIndex,
+                );
+              },
             ),
             const VerticalDivider(thickness: 1, width: 1),
           ],
@@ -372,14 +287,19 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
 
   Widget _buildBottomNavigationBar() {
     return Scaffold(
-      body: navigationShell,
-      bottomNavigationBar: disableToolbar
-          ? null
-          : NavigationApp(
+      body: navigationShell, // This area will have transition animations.
+      bottomNavigationBar: showToolbar
+          ? NavigationApp(
               selectedIndex: navigationShell.currentIndex,
               rail: false,
-              onDestinationSelected: _goBranch,
-            ),
+              onDestinationSelected: (index) {
+                navigationShell.goBranch(
+                  index,
+                  initialLocation: index == navigationShell.currentIndex,
+                );
+              },
+            )
+          : null,
     );
   }
 }
