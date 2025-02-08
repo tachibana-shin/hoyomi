@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/cookie.dart';
+import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
 import 'package:hoyomi/core_services/base_service.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
@@ -36,6 +37,7 @@ UserData useUser(BaseAuthMixin service,
 
   Future<void> refresh() async {
     fetching.value = true;
+    error.value = null;
 
     try {
       if (service is! BaseService) return;
@@ -59,10 +61,18 @@ UserData useUser(BaseAuthMixin service,
           user.value = value;
         }
       }).catchError((err) {
+        debugPrint('Error: $err');
+
+        if (err is UserNotFoundException) {
+          if (context != null && (context as State).mounted) {
+            user.value = null;
+          }
+
+          return;
+        }
         if (context != null && (context as State).mounted) {
           error.value = '$err';
         }
-        debugPrint('Error: $err');
       });
     } finally {
       fetching.value = false;
