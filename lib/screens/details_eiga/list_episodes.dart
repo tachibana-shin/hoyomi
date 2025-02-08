@@ -315,6 +315,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(7),
                 ),
+                clipBehavior: Clip.antiAlias,
                 child: Stack(children: [
                   Ink(
                     height: height * 0.9,
