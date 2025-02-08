@@ -52,7 +52,6 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
           children: [
             CircleAvatar(
                 backgroundColor: Theme.of(context).colorScheme.onSecondary,
-                radius: 100,
                 child: BasicImage.network(
                   widget.service.faviconUrl,
                   sourceId: widget.service.uid,
