@@ -24,27 +24,28 @@ class HorizontalList<T> extends StatelessWidget {
 
   Widget _buildContainer(BuildContext context,
       {required Widget Function(double viewFraction) builder}) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double crossAxisCount;
+    return LayoutBuilder(builder: (context, constraints) {
+      double screenWidth = constraints.biggest.width;
+      double crossAxisCount;
 
-    if (screenWidth <= 600) {
-      crossAxisCount = 3.5;
-    } else if (screenWidth <= 900) {
-      crossAxisCount = 4.5;
-    } else {
-      crossAxisCount = 6.5;
-    }
+      if (screenWidth <= 600) {
+        crossAxisCount = 3.5;
+      } else if (screenWidth <= 900) {
+        crossAxisCount = 4.5;
+      } else {
+        crossAxisCount = 6.5;
+      }
 
-    final childAspectRatio = 2 / 3;
-    final viewportFraction = 1 / crossAxisCount;
-    final height = 1 /
-            childAspectRatio *
-            MediaQuery.of(context).size.width *
-            viewportFraction +
-        14.0 * 2 +
-        (needSubtitle ? 12.0 * 2 : 12.0 / 2);
+      final childAspectRatio = 2 / 3;
+      final viewportFraction = 1 / crossAxisCount;
+      final height =
+          1 / childAspectRatio * (screenWidth * viewportFraction - 8.0) +
+              14.0 * 2 +
+              18.0 +
+              (needSubtitle ? 12.0 * 2 : 12.0 / 2);
 
-    return SizedBox(height: height, child: builder(viewportFraction));
+      return SizedBox(height: height, child: builder(viewportFraction));
+    });
   }
 
   @override
