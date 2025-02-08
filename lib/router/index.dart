@@ -35,7 +35,10 @@ final List<String> routeIgnoreLayoutDefault = [
   '/section_eiga'
 ];
 
+/// 日本語のコメント: ルートナビゲーターのためのグローバルキー。
+final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final router = GoRouter(
+  navigatorKey: _rootNavigatorKey,
   initialLocation: '/home_eiga',
   observers: [GoTransition.observer],
   routes: [
@@ -142,6 +145,7 @@ final router = GoRouter(
     GoRoute(
       path: '/details_comic/:sourceId/:bookId',
       name: 'details_comic',
+      parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: GoTransitions.material.call,
       builder: (context, state) => DetailsComic(
         sourceId: state.pathParameters['sourceId']!,
@@ -151,6 +155,7 @@ final router = GoRouter(
         GoRoute(
           path: 'view',
           name: 'details_comic_reader',
+          parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: GoTransitions.material.call,
           builder: (context, state) {
             final chapterId = state.uri.queryParameters['chap']!;
@@ -167,6 +172,7 @@ final router = GoRouter(
         ),
         GoRoute(
           path: 'similar',
+          parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: GoTransitions.material.call,
           builder: (context, state) => SimilarPage(
             sourceId: state.pathParameters['sourceId']!,
@@ -184,6 +190,7 @@ final router = GoRouter(
     GoRoute(
       path: '/details_eiga/:sourceId/:eigaId',
       name: 'details_eiga',
+      parentNavigatorKey: _rootNavigatorKey, // Sử dụng root navigator
       pageBuilder: GoTransitions.material.call,
       builder: (context, state) => DetailsEigaPage(
         sourceId: state.pathParameters['sourceId']!,
@@ -195,6 +202,7 @@ final router = GoRouter(
     // Webview Route
     GoRoute(
       path: '/webview/:serviceId',
+      parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: GoTransitions.material.call,
       builder: (context, state) => WebviewPage(
         serviceId: state.pathParameters['serviceId']!,
@@ -204,6 +212,7 @@ final router = GoRouter(
     // Section Comic Route
     GoRoute(
       path: '/section_comic/:serviceId/:sectionId',
+      parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: GoTransitions.material.call,
       builder: (context, state) => SectionComicPage(
         serviceId: state.pathParameters['serviceId']!,
@@ -214,6 +223,7 @@ final router = GoRouter(
     // Section Eiga Route
     GoRoute(
       path: '/section_eiga/:serviceId/:sectionId',
+      parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: GoTransitions.material.call,
       builder: (context, state) => SectionEigaPage(
         serviceId: state.pathParameters['serviceId']!,
