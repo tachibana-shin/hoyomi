@@ -57,7 +57,7 @@ final router = GoRouter(
         StatefulShellBranch(routes: [
           GoRoute(
             path: '/home_book',
-            pageBuilder: GoTransitions.material.call,
+            pageBuilder: GoTransitions.zoom.call,
             builder: (context, state) => HomeBookPage(),
           )
         ]),
@@ -65,7 +65,7 @@ final router = GoRouter(
         StatefulShellBranch(routes: [
           GoRoute(
             path: '/home_eiga',
-            pageBuilder: GoTransitions.material.call,
+            pageBuilder: GoTransitions.zoom.call,
             builder: (context, state) => HomeEigaPage(),
           )
         ]),
@@ -73,14 +73,14 @@ final router = GoRouter(
         StatefulShellBranch(routes: [
           GoRoute(
             path: '/search',
-            pageBuilder: GoTransitions.material.call,
+            pageBuilder: GoTransitions.zoom.call,
             builder: (context, state) => SearchPage(
               keyword: state.uri.queryParameters['q'] ?? '',
             ),
             routes: [
               GoRoute(
                 path: 'comic/:serviceId',
-                pageBuilder: GoTransitions.material.call,
+                pageBuilder: GoTransitions.zoom.call,
                 builder: (context, state) {
                   if (state.uri.queryParameters['q'] == null) {
                     context.replace("/search");
@@ -94,7 +94,7 @@ final router = GoRouter(
               ),
               GoRoute(
                 path: 'eiga/:serviceId',
-                pageBuilder: GoTransitions.material.call,
+                pageBuilder: GoTransitions.zoom.call,
                 builder: (context, state) {
                   if (state.uri.queryParameters['q'] == null) {
                     context.replace("/search");
@@ -113,17 +113,17 @@ final router = GoRouter(
         StatefulShellBranch(routes: [
           GoRoute(
             path: '/library',
-            pageBuilder: GoTransitions.material.call,
+            pageBuilder: GoTransitions.zoom.call,
             builder: (context, state) => LibraryPage(),
             routes: [
               GoRoute(
                 path: 'history',
-                pageBuilder: GoTransitions.material.call,
+                pageBuilder: GoTransitions.zoom.call,
                 builder: (context, state) => HistoryPage(),
               ),
               GoRoute(
                 path: 'follow',
-                pageBuilder: GoTransitions.material.call,
+                pageBuilder: GoTransitions.zoom.call,
                 builder: (context, state) => FollowPage(),
               )
             ],
@@ -133,7 +133,7 @@ final router = GoRouter(
         StatefulShellBranch(routes: [
           GoRoute(
             path: '/manager',
-            pageBuilder: GoTransitions.material.call,
+            pageBuilder: GoTransitions.zoom.call,
             builder: (context, state) => ManagerPage(),
           ),
         ]),
@@ -146,7 +146,7 @@ final router = GoRouter(
       path: '/details_comic/:sourceId/:bookId',
       name: 'details_comic',
       parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: GoTransitions.material.call,
+      pageBuilder: GoTransitions.zoom.call,
       builder: (context, state) => DetailsComic(
         sourceId: state.pathParameters['sourceId']!,
         bookId: state.pathParameters['bookId']!,
@@ -156,7 +156,7 @@ final router = GoRouter(
           path: 'view',
           name: 'details_comic_reader',
           parentNavigatorKey: _rootNavigatorKey,
-          pageBuilder: GoTransitions.material.call,
+          pageBuilder: GoTransitions.zoom.call,
           builder: (context, state) {
             final chapterId = state.uri.queryParameters['chap']!;
             return DetailsComicReader(
@@ -173,7 +173,7 @@ final router = GoRouter(
         GoRoute(
           path: 'similar',
           parentNavigatorKey: _rootNavigatorKey,
-          pageBuilder: GoTransitions.material.call,
+          pageBuilder: GoTransitions.zoom.call,
           builder: (context, state) => SimilarPage(
             sourceId: state.pathParameters['sourceId']!,
             bookId: state.pathParameters['bookId']!,
@@ -191,7 +191,7 @@ final router = GoRouter(
       path: '/details_eiga/:sourceId/:eigaId',
       name: 'details_eiga',
       parentNavigatorKey: _rootNavigatorKey, // Sử dụng root navigator
-      pageBuilder: GoTransitions.material.call,
+      pageBuilder: GoTransitions.zoom.call,
       builder: (context, state) => DetailsEigaPage(
         sourceId: state.pathParameters['sourceId']!,
         eigaId: state.pathParameters['eigaId']!,
@@ -203,7 +203,7 @@ final router = GoRouter(
     GoRoute(
       path: '/webview/:serviceId',
       parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: GoTransitions.material.call,
+      pageBuilder: GoTransitions.zoom.call,
       builder: (context, state) => WebviewPage(
         serviceId: state.pathParameters['serviceId']!,
       ),
@@ -213,7 +213,7 @@ final router = GoRouter(
     GoRoute(
       path: '/section_comic/:serviceId/:sectionId',
       parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: GoTransitions.material.call,
+      pageBuilder: GoTransitions.zoom.call,
       builder: (context, state) => SectionComicPage(
         serviceId: state.pathParameters['serviceId']!,
         sectionId: state.pathParameters['sectionId']!,
@@ -224,7 +224,7 @@ final router = GoRouter(
     GoRoute(
       path: '/section_eiga/:serviceId/:sectionId',
       parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: GoTransitions.material.call,
+      pageBuilder: GoTransitions.zoom.call,
       builder: (context, state) => SectionEigaPage(
         serviceId: state.pathParameters['serviceId']!,
         sectionId: state.pathParameters['sectionId']!,
