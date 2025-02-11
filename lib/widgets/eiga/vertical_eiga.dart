@@ -67,14 +67,12 @@ class VerticalEiga extends StatelessWidget {
                     aspectRatio: 2 / 3,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
-                      child: sourceId != null
-                          ? BasicImage.network(
-                              eiga.image.src,
-                              sourceId: sourceId!,
-                              headers: eiga.image.headers,
-                              fit: BoxFit.cover,
-                            )
-                          : SizedBox.shrink(),
+                      child: BasicImage.network(
+                        eiga.image.src,
+                        sourceId: sourceId ?? '',
+                        headers: eiga.image.headers,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
 

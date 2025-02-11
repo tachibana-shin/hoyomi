@@ -67,14 +67,12 @@ class VerticalBook extends StatelessWidget {
                     aspectRatio: 2 / 3,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
-                      child: sourceId != null
-                          ? BasicImage.network(
-                              book.image.src,
-                              sourceId: sourceId!,
-                              headers: book.image.headers,
-                              fit: BoxFit.cover,
-                            )
-                          : SizedBox.shrink(),
+                      child: BasicImage.network(
+                        book.image.src,
+                        sourceId: sourceId ?? '',
+                        headers: book.image.headers,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
 
