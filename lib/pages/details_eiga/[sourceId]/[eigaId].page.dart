@@ -825,6 +825,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           padding.bottom -
                           7.0 -
                           2.0 -
+                          12.0 -
                           (_schedule.value == null ? 0 : 16.0 * 1.5))
                 ])));
       };
