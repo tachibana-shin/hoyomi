@@ -3,6 +3,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/vertical_list.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'vertical_eiga.dart';
 
 class VerticalEigaList extends StatelessWidget {
@@ -26,23 +27,26 @@ class VerticalEigaList extends StatelessWidget {
         future: itemsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return VerticalList<BasicEigaExtend>(
-              title: title,
-              subtitle: subtitle,
-              more: more,
-              disableScroll: disableScroll,
-              items: List.generate(
-                  30,
-                  (index) => BasicEigaExtend(
-                      eiga: BasicEiga.createFakeData(), sourceId: null)),
-              builder: (context, eiga, index) {
-                return VerticalEiga(
-                  eiga: eiga.eiga,
-                  sourceId: eiga.sourceId,
-                  percentRead: eiga.percentRead,
-                );
-              },
-            );
+            return Skeletonizer(
+                enabled: true,
+                enableSwitchAnimation: true,
+                child: VerticalList<BasicEigaExtend>(
+                  title: title,
+                  subtitle: subtitle,
+                  more: more,
+                  disableScroll: disableScroll,
+                  items: List.generate(
+                      30,
+                      (index) => BasicEigaExtend(
+                          eiga: BasicEiga.createFakeData(), sourceId: null)),
+                  builder: (context, eiga, index) {
+                    return VerticalEiga(
+                      eiga: eiga.eiga,
+                      sourceId: eiga.sourceId,
+                      percentRead: eiga.percentRead,
+                    );
+                  },
+                ));
           }
 
           if (snapshot.hasError) {

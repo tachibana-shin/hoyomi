@@ -120,7 +120,10 @@ class _TabViewEigaState extends State<TabViewEiga>
                 return null;
               },
               initialData: null,
-              builder: (_) => builder(BaseEigaHome.createFakeData()));
+              builder: (_) => Skeletonizer(
+                  enabled: true,
+                  enableSwitchAnimation: true,
+                  child: builder(BaseEigaHome.createFakeData())));
         }
 
         return PullToRefresh<BaseEigaHome>(
