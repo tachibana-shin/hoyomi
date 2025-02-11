@@ -9,7 +9,7 @@ import 'package:hoyomi/router/index.dart';
 import 'globals.dart';
 
 import 'package:flutter/material.dart';
-import 'package:go_transitions/go_transitions.dart';
+// import 'package:go_transitions/go_transitions.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,8 +56,8 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     /// Set default transition values for the entire app.
-    GoTransition.defaultCurve = Curves.easeInOut;
-    GoTransition.defaultDuration = const Duration(milliseconds: 600);
+    // GoTransition.defaultCurve = Curves.easeInOut;
+    // GoTransition.defaultDuration = const Duration(milliseconds: 600);
 
     return MaterialApp.router(
       title: 'Flutter App',
