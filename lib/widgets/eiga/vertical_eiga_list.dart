@@ -10,14 +10,15 @@ class VerticalEigaList extends StatelessWidget {
   final String title;
   final String? subtitle;
   final String? more;
+  final bool disableScroll;
 
-  const VerticalEigaList({
-    super.key,
-    required this.itemsFuture,
-    required this.title,
-    this.subtitle,
-    this.more,
-  });
+  const VerticalEigaList(
+      {super.key,
+      required this.itemsFuture,
+      required this.title,
+      this.subtitle,
+      this.more,
+      this.disableScroll = false});
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +30,7 @@ class VerticalEigaList extends StatelessWidget {
               title: title,
               subtitle: subtitle,
               more: more,
+              disableScroll: disableScroll,
               items: List.generate(
                   30,
                   (index) => BasicEigaExtend(
@@ -54,6 +56,7 @@ class VerticalEigaList extends StatelessWidget {
             title: title,
             subtitle: subtitle,
             more: more,
+            disableScroll: disableScroll,
             items: snapshot.data!,
             builder: (context, eiga, index) {
               return VerticalEiga(

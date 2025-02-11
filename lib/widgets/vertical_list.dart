@@ -9,6 +9,7 @@ class VerticalList<T> extends StatelessWidget {
   final Widget Function(BuildContext, T, int) builder;
   final List<T>? items;
   final Widget? child;
+  final bool disableScroll;
 
   const VerticalList(
       {super.key,
@@ -17,6 +18,7 @@ class VerticalList<T> extends StatelessWidget {
       required this.more,
       this.items,
       this.child,
+      this.disableScroll = false,
       required this.builder})
       : assert(items != null || child != null);
 
@@ -69,6 +71,7 @@ class VerticalList<T> extends StatelessWidget {
       crossAxisCount: crossAxisCount,
       crossAxisSpacing: 8.0,
       mainAxisSpacing: 10.0,
+      physics: disableScroll ? const NeverScrollableScrollPhysics() : null,
       //   childAspectRatio: 1/3,
       // ),
       itemCount: items.length,

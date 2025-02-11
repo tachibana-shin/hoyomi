@@ -1121,6 +1121,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     BasicEigaExtend(eiga: item, sourceId: _service.uid))
                 .toList()),
             title: 'Suggest',
+            disableScroll: true,
             more: null,
           );
         });
