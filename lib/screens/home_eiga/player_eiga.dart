@@ -1000,7 +1000,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              fullscreenDialog: true, builder: (context) => _buildStack()));
+              fullscreenDialog: true,
+              builder: (context) => Material(child: _buildStack())));
     } else {
       SystemChrome.setPreferredOrientations([]);
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
