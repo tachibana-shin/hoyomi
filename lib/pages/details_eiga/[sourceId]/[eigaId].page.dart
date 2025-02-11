@@ -865,6 +865,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       (_schedule.value == null ? 0 : 16.0 * 1.5);
 
                   if (heightChild <= 0 || constraints.maxHeight <= 0) {
+                    context.pop();
                     return SizedBox.shrink();
                   }
                   return ClipRect(
