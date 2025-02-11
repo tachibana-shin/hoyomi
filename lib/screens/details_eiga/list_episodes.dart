@@ -67,12 +67,15 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
   void _fetchData() async {
     try {
       final episodes = await widget.getData();
+      if (!mounted) return;
 
       _episodesEiga.value = AsyncState.data(episodes);
-      widget
-          .getWatchTimeEpisodes(episodes)
-          .then((watchTimes) => _watchTimeEpisodes.value = watchTimes);
+      widget.getWatchTimeEpisodes(episodes).then((watchTimes) {
+        if (mounted) _watchTimeEpisodes.value = watchTimes;
+      });
     } catch (error) {
+      if (!mounted) return;
+
       _episodesEiga.value = AsyncState.error(error);
       _watchTimeEpisodes.value = null;
     }
