@@ -357,55 +357,66 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           SizedBox(height: 2.0),
 
                           // author
-                          Row(children: [
-                            Row(children: [
-                              Text('Author ',
+                          Wrap(
+                            children: [
+                              Text(
+                                'Author ',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      fontSize: 14.0,
+                                    ),
+                              ),
+                              Text(
+                                metaEiga$.author ?? 'Unknown',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(fontSize: 14.0),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (metaEiga$.studio != null) VerticalSeparator(),
+                              if (metaEiga$.studio != null) ...[
+                                Text(
+                                  'Studio ',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
                                       ?.copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          fontSize: 14.0)),
-                              Text(metaEiga$.author ?? 'Unknown',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(fontSize: 14.0)),
-                            ]),
-                            if (metaEiga$.studio != null) VerticalSeparator(),
-                            if (metaEiga$.studio != null)
-                              Row(children: [
-                                Text('Studio ',
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        fontSize: 14.0,
+                                      ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    context.push(
+                                        '/section_eiga/${widget.sourceId}/${metaEiga$.studio!.genreId}');
+                                  },
+                                  child: Text(
+                                    metaEiga$.studio!.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
                                         ?.copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                            fontSize: 14.0)),
-                                GestureDetector(
-                                    onTap: () {
-                                      context.push(
-                                          '/section_eiga/${widget.sourceId}/${metaEiga$.studio!.genreId}');
-                                    },
-                                    child: Text(
-                                      metaEiga$.studio!.name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface,
-                                              fontSize: 14.0),
-                                    )),
-                              ])
-                          ]),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface,
+                                          fontSize: 14.0,
+                                        ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          )
                         ])),
                 SizedBox(height: 2.0),
 
