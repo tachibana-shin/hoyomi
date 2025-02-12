@@ -7,7 +7,7 @@ Future<File> saveFileCache(
   final directory = await getTemporaryDirectory();
 
   final file = File('${directory.path}/$path');
-  await file.writeAsString(content);
+  if (await file.exists() == false) await file.writeAsString(content);
 
   return file;
 }
