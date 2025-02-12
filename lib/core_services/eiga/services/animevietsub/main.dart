@@ -37,7 +37,7 @@ import 'package:video_player/video_player.dart';
 
 class AnimeVietsubService extends EigaBaseService
     with BaseAuthMixin, EigaAuthMixin, EigaHistoryMixin {
-  final hostCUrl = "animevietsub.page";
+  final hostCUrl = "animevietsub.bio";
 
   @override
   final String name = "AnimeVietsub";
