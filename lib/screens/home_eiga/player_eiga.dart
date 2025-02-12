@@ -640,7 +640,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
                   SizedBox(width: 8.0),
                   Text(error,
                       style: Theme.of(context).textTheme.bodySmall,
-                      maxLines: 2),
+                      maxLines: 4),
                   SizedBox(width: 8.0),
                 ]));
           }
