@@ -1,25 +1,26 @@
 import 'dart:convert';
-
+import 'package:drift/drift.dart';
+import 'package:hoyomi/database/drift.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:hoyomi/database/isar.dart';
-import 'package:hoyomi/database/scheme/book.dart';
-import 'package:hoyomi/database/scheme/history_chap.dart';
-
-import 'package:isar/isar.dart';
 
 class HistoryController {
-  final _bookBox = isar.books;
-  final _historyChapBox = isar.historyChaps;
+  final AppDatabase _db;
+
+  HistoryController._(this._db);
+  static final HistoryController _instance =
+      HistoryController._(AppDatabase());
+
+  static HistoryController get instance => _instance;
 
   Future<List<HistoryChap>?> getHistory(String sourceId, String bookId) async {
-    final book = await _bookBox
-        .where()
-        .bookIdEqualTo(bookId)
-        .sourceIdEqualTo(sourceId)
-        .findFirstAsync();
+    final book = await (_db.managers.books.filter(
+            (t) => t.bookId.equals(bookId) & t.sourceId.equals(sourceId)))
+        .getSingleOrNull();
     if (book == null) return null;
 
-    return _historyChapBox.where().bookEqualTo(book.id).findAll();
+    return _db.managers.historyChaps
+        .filter((t) => t.book.equals(book.id))
+        .get();
   }
 
   Future<Book> createBook(
@@ -28,89 +29,116 @@ class HistoryController {
     required MetaBook book,
     bool? followed,
   }) async {
-    Book? bookObject = await _bookBox
-        .where()
-        .sourceIdEqualTo(sourceId)
-        .and()
-        .bookIdEqualTo(bookId)
-        .findFirstAsync();
+    final bookObject = await _db.managers.books
+        .filter((t) => t.sourceId.equals(sourceId) & t.bookId.equals(bookId))
+        .getSingleOrNull();
 
-    bookObject ??= Book(
-      sourceId: sourceId,
-      bookId: bookId,
-      status: book.status.name,
-      meta: jsonEncode(book.toJson()),
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
+    Book bookToSave = bookObject ??
+        await _db.managers.books.createReturning((row) => row(
+              sourceId: sourceId,
+              bookId: bookId,
+              status: book.status.name,
+              meta: jsonEncode(book.toJson()),
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+            ));
+
+    BooksCompanion companion = BooksCompanion();
 
     if (followed != null) {
-      bookObject.followedAt = followed == true ? DateTime.now() : null;
+      companion = companion.copyWith(
+        followedAt: Value(followed ? DateTime.now() : null),
+      );
     }
 
-    if (bookObject.status != book.status.name) {
-      bookObject.status = book.status.name;
+    if (bookToSave.status != book.status.name) {
+      companion = companion.copyWith(
+        status: Value(book.status.name),
+      );
     }
 
     final newMeta = jsonEncode(book.toJson());
-    if (newMeta != bookObject.meta) {
-      bookObject.meta = newMeta;
+    if (newMeta != bookToSave.meta) {
+      companion = companion.copyWith(
+        meta: Value(newMeta),
+      );
     }
 
-    await isar.writeAsync((isar) {
-      isar.books.put(bookObject!);
-    });
+    await _db
+        .update(_db.books)
+        .replace(bookToSave.copyWithCompanion(companion));
 
-    return bookObject;
+    return bookToSave;
   }
 
-  Future<void> saveHistory(Book book,
-      {required String chapterId,
-      required double currentPage,
-      required int maxPage}) async {
+  Future<void> saveHistory(
+    Book book, {
+    required String chapterId,
+    required double currentPage,
+    required int maxPage,
+  }) async {
     final existingHistory = await getCurrentPage(book, chapterId: chapterId);
 
     if (existingHistory != null) {
-      existingHistory.currentPage = currentPage;
-      existingHistory.maxPage = maxPage;
-      book.updatedAt = existingHistory.updatedAt = DateTime.now();
+      // Create companions to update the data
+      final historyChapCompanion = HistoryChapsCompanion(
+        currentPage: Value(currentPage),
+        maxPage: Value(maxPage),
+        updatedAt: Value(DateTime.now()),
+      );
 
-      await isar.writeAsync((isar) {
-        isar.historyChaps.put(existingHistory);
-        isar.books.put(book);
+      final bookCompanion = BooksCompanion(
+        updatedAt: Value(DateTime.now()),
+      );
+
+      await _db.transaction(() async {
+        // Update both history and book
+        await _db
+            .update(_db.historyChaps)
+            .replace(existingHistory.copyWithCompanion(historyChapCompanion));
+        await _db
+            .update(_db.books)
+            .replace(book.copyWithCompanion(bookCompanion));
       });
     } else {
-      final newHistory = HistoryChap(
-          chapterId: chapterId,
-          currentPage: currentPage,
-          maxPage: maxPage,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now());
+      // Insert new history if it doesn't exist
+      final newHistory = HistoryChapsCompanion(
+        chapterId: Value(chapterId),
+        currentPage: Value(currentPage),
+        maxPage: Value(maxPage),
+        createdAt: Value(DateTime.now()),
+        updatedAt: Value(DateTime.now()),
+        book: Value(book.id),
+      );
 
-      newHistory.book = book.id;
-      book.updatedAt = newHistory.updatedAt;
+      final bookCompanion = BooksCompanion(
+        updatedAt: Value(DateTime.now()),
+      );
 
-      await isar.writeAsync((isar) {
-        isar.historyChaps.put(newHistory);
-        isar.books.put(book);
+      await _db.transaction(() async {
+        // Insert new history and update book
+        await _db.into(_db.historyChaps).insert(newHistory);
+        await _db
+            .update(_db.books)
+            .replace(book.copyWithCompanion(bookCompanion));
       });
     }
   }
 
   Future<HistoryChap?> getCurrentPage(Book book,
       {required String chapterId}) async {
-    return _historyChapBox
-        .where()
-        .chapterIdEqualTo(chapterId)
-        .and()
-        .bookEqualTo(book.id)
-        .findFirstAsync();
+    return _db.managers.historyChaps
+        .filter((t) => t.chapterId.equals(chapterId) & t.book.equals(book.id))
+        .getSingleOrNull();
   }
 
   Future<List<Book>> getListHistory(int limit, {required int offset}) async {
-    final query = _bookBox.where().sortByUpdatedAtDesc();
+    final query = _db.select(_db.books)
+      ..orderBy([
+        (u) => OrderingTerm(expression: u.updatedAt, mode: OrderingMode.desc),
+      ]);
 
-    final items = await query.findAllAsync(offset: offset, limit: limit);
+    final items = await (query..limit(limit, offset: offset)).get();
     final dropOut = limit - items.length;
 
     if (dropOut > 0 && items.isNotEmpty) {
@@ -122,16 +150,22 @@ class HistoryController {
   }
 
   Future<List<Book>> getListFollows(int limit, {required int offset}) async {
-    final query = _bookBox.where().followedAtIsNotNull().sortByFollowedAtDesc();
+    final query = _db.select(_db.books)
+      ..where((t) => t.followedAt.isNotNull())
+      ..orderBy([
+        (u) => OrderingTerm(expression: u.followedAt, mode: OrderingMode.desc),
+      ]);
 
-    return query.findAllAsync(offset: offset, limit: limit);
+    return (query..limit(limit, offset: offset)).get();
   }
 
   Future<HistoryChap?> getLastChapter(int bookId) async {
-    return _historyChapBox
-        .where()
-        .bookEqualTo(bookId)
-        .sortByUpdatedAtDesc()
-        .findFirstAsync();
+    return (_db.select(_db.historyChaps)
+          ..where((t) => t.book.equals(bookId))
+          ..orderBy([
+            (u) =>
+                OrderingTerm(expression: u.updatedAt, mode: OrderingMode.desc),
+          ]))
+        .getSingleOrNull();
   }
 }

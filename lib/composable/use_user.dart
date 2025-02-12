@@ -42,8 +42,8 @@ UserData useUser(BaseAuthMixin service,
     try {
       if (service is! BaseService) return;
 
-      final record = await CookieController.getAsync(
-          sourceId: (service as BaseService).uid);
+      final record = await CookieController.instance
+          .getAsync(sourceId: (service as BaseService).uid);
 
       if (record != null) {
         final json = record.user;

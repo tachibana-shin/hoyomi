@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inappwebview;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -10,7 +11,7 @@ import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/basic_user.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
-import 'package:hoyomi/database/scheme/cookie_manager.dart';
+import 'package:hoyomi/database/drift.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:html/dom.dart' as d;
 import 'package:html/parser.dart';
@@ -303,7 +304,7 @@ abstract class UtilsService {
       Map<String, String>? headers}) async {
     String? cookiesText = cookie;
 
-    final row = await CookieController.getAsync(sourceId: uid);
+    final row = await CookieController.instance.getAsync(sourceId: uid);
     if (cookie == null) {
       cookiesText = row?.cookie;
     }
@@ -460,39 +461,49 @@ abstract class UtilsService {
 
     final service = this as BaseAuthMixin;
     // save to cache
-    final oldData = await CookieController.getAsync(sourceId: uid) ??
-        CookieManager(
-          sourceId: uid,
-          cookie: cookie,
-          userAgent: userAgent,
-          user: null, // jsonEncode(user.toJson()),
-          createdAt: DateTime.now(),
-          userUpdatedAt: DateTime.now(),
-          updatedAt: DateTime.now(),
+    var oldData = await CookieController.instance.getAsync(sourceId: uid) ??
+        CookieManagersCompanion(
+          sourceId: Value(uid),
+          cookie: Value(cookie),
+          userAgent: Value(userAgent),
+          user: Value(null), // jsonEncode(user.toJson()),
+          createdAt: Value(DateTime.now()),
+          userUpdatedAt: Value(DateTime.now()),
+          updatedAt: Value(DateTime.now()),
         );
     try {
       final user = await service.getUser(cookie: cookie);
 
-      if (oldData.user != jsonEncode(user.toJson())) {
-        oldData.userUpdatedAt = DateTime.now();
+      if (oldData is CookieManager &&
+          oldData.user != jsonEncode(user.toJson())) {
+        oldData = oldData.copyWithCompanion(
+            CookieManagersCompanion(userUpdatedAt: Value(DateTime.now())));
       }
-
-      oldData
-        ..cookie = cookie
-        ..userAgent = userAgent
-        ..user = jsonEncode(user.toJson())
-        ..updatedAt = DateTime.now();
+      oldData = (oldData is CookieManager
+              ? oldData.copyWithCompanion
+              : (oldData as CookieManagersCompanion).copyWith)
+          .call(
+        CookieManagersCompanion(
+          cookie: Value(cookie),
+          userAgent: Value(userAgent),
+          user: Value(jsonEncode(user.toJson())),
+          updatedAt: Value(DateTime.now()),
+        ),
+      );
 
       _userFuture = Future.value(user);
 
-      await CookieController.save(oldData);
+      await CookieController.instance.save(oldData);
 
       return user;
     } on UserNotFoundException catch (_) {
-      oldData.cookie = cookie;
-      oldData.user = null;
+      oldData = (oldData is CookieManager
+              ? oldData.copyWithCompanion
+              : (oldData as CookieManagersCompanion).copyWith)
+          .call(CookieManagersCompanion(
+              cookie: Value(cookie), user: Value(null)));
 
-      await CookieController.save(oldData);
+      await CookieController.instance.save(oldData);
 
       rethrow;
     }
@@ -510,7 +521,7 @@ abstract class UtilsService {
 
     row = recordLoaded == true
         ? row
-        : await CookieController.getAsync(sourceId: uid);
+        : await CookieController.instance.getAsync(sourceId: uid);
     final cookie = row?.cookie;
     var user = row?.user;
 
@@ -519,28 +530,24 @@ abstract class UtilsService {
       // if (user == null) {
       user = jsonEncode((await service.getUser(cookie: cookie)).toJson());
 
-      row ??= CookieManager(
-        sourceId: uid,
-        cookie: cookie,
-        userAgent: null,
-        user: user,
-        createdAt: DateTime.now(),
-        userUpdatedAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+      final companion = CookieManagersCompanion(
+        sourceId: Value(uid),
+        cookie: Value(cookie),
+        userAgent: Value(null),
+        user: Value(user),
+        createdAt: Value(DateTime.now()),
+        userUpdatedAt: Value(DateTime.now()),
+        updatedAt: Value(DateTime.now()),
       );
 
-      row.user = user;
-
-      await CookieController.save(row);
-      // }
+      await CookieController.instance
+          .save(row != null ? row.copyWithCompanion(companion) : companion);
 
       return BasicUser.fromJson(jsonDecode(user));
     } on UserNotFoundException catch (_) {
       if (row != null) {
-        row.cookie = cookie;
-        row.user = null;
-
-        await CookieController.save(row);
+        await CookieController.instance.save(row.copyWithCompanion(
+            CookieManagersCompanion(cookie: Value(cookie), user: Value(null))));
       }
 
       rethrow;

@@ -1,18 +1,9 @@
-import 'package:isar/isar.dart';
+import 'package:drift/drift.dart';
 
-part 'settings.g.dart';
-
-@Collection()
-class Settings {
-  late int id = 0;
-
-  late bool mangaReadLazyPage;
-
-  /// Time to seconds
-  /// Default to 3 hours
-  late int pollingIntervalBook = 60 * 60 * 3; // 3 hours
-
-  Settings({
-    this.mangaReadLazyPage = true,
-  });
+@DataClassName('Setting')
+class Settings extends Table {
+  late final id = integer().autoIncrement()();
+  late final mangaReadLazyPage = boolean().withDefault(const Constant(true))();
+  late final pollingIntervalBook =
+      integer().withDefault(Constant(60 * 60 * 3))();
 }

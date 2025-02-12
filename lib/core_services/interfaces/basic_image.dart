@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/controller/cookie.dart';
 
 class BasicImage {
   final String src;
@@ -82,7 +81,7 @@ class BasicImage {
           cacheHeight: cacheHeight);
     }
 
-    final cookie = CookieController.get(sourceId: sourceId);
+    final cookie = null;// await CookieController.instance.getAsync(sourceId: sourceId);
 
     return Image.network(src,
         key: key,

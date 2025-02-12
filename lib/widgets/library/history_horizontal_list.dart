@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/history.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:hoyomi/database/scheme/book.dart';
 import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
 
 class HistoryHorizontalList extends StatefulWidget {

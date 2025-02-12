@@ -20,7 +20,7 @@ class IconButtonFollow extends StatefulWidget {
 
 class _IconButtonFollowState extends State<IconButtonFollow> {
   final ValueNotifier<bool> _isFollowed = ValueNotifier<bool>(false);
-  final _history = HistoryController();
+  final _history = HistoryController.instance;
 
   @override
   void initState() {

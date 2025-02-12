@@ -2,21 +2,17 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:ui';
-
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:hoyomi/controller/settings.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:hoyomi/core_services/book/interfaces/status_enum.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/database/isar.dart';
-import 'package:hoyomi/database/scheme/book.dart';
-import 'package:hoyomi/database/scheme/settings.dart';
-import 'package:isar/isar.dart';
+import 'package:hoyomi/database/drift.dart'; // Drift import
 
 class BookChanges {
-  final _bookBox = isar.books;
-  late final Settings _settings;
+  final AppDatabase _db = AppDatabase(); // Replace Isar with Drift database
+  late final Setting _settings;
 
   Timer? _timer;
 
@@ -102,11 +98,8 @@ class BookChanges {
     final oldData = MetaBook.fromJson(jsonDecode(book.meta));
 
     if (saveDatabase == true) {
-      book.meta = jsonEncode(newData.toJson());
-
-      await isar.writeAsync((isar) {
-        isar.books.put(book);
-      });
+      await _db.managers.books
+          .update((f) => f(meta: Value(jsonEncode(newData.toJson()))));
     }
 
     final oldChaptersSet =
@@ -126,16 +119,13 @@ class BookChanges {
     return groupedBooks;
   }
 
-  Future<List<Book>> fetchAndSortBooksForUpdate() {
+  Future<List<Book>> fetchAndSortBooksForUpdate() async {
     DateTime thirtyMinutesAgo = DateTime.now()
         .subtract(Duration(minutes: _settings.pollingIntervalBook));
 
-    final itemsToUpdate = _bookBox
-        .where()
-        .updatedAtLessThan(thirtyMinutesAgo)
-        .statusEqualTo(StatusEnum.ongoing.name)
-        .sortByUpdatedAtDesc()
-        .findAllAsync();
+    final itemsToUpdate = await _db.managers.books
+        .filter((f) => f.createdAt.isAfter(thirtyMinutesAgo))
+        .get();
 
     return itemsToUpdate;
   }

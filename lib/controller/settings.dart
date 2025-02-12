@@ -1,31 +1,33 @@
-import 'package:hoyomi/database/isar.dart';
-import 'package:hoyomi/database/scheme/settings.dart';
-import 'package:isar/isar.dart';
+import 'package:drift/drift.dart';
+import 'package:hoyomi/database/drift.dart';
 
 class SettingsController {
-  final _settingsBox = isar.settings;
+  final AppDatabase _db = AppDatabase(); // Drift database instance
+  Setting? _settings;
 
-  Settings? _settings;
-
-  Future<Settings> getSettings() async {
+  // Method to retrieve settings
+  Future<Setting> getSettings() async {
     if (_settings != null) return _settings!;
 
-    _settings = await _settingsBox.getAsync(0);
-    if (_settings == null) {
-      _settings = Settings();
-      await isar.writeAsync((isar) {
-        isar.settings.put(_settings!);
-      });
-    }
+    // Fetch settings using Drift's DAO
+    final settings =
+        await _db.managers.settings.limit(1).getSingleOrNull(); // Use Drift
 
-    return _settings!;
+    // If settings not found, create default and save
+    if (settings == null) {
+      await _db.managers.settings.create((row) => row());
+      return getSettings();
+    } else {
+      _settings = settings;
+      return _settings!;
+    }
   }
 
-  Future<void> setSettings(Settings settings) async {
+  // Method to set/update settings
+  Future<void> setSettings(Setting settings) async {
     _settings = settings;
-
-    await isar.writeAsync((isar) {
-      isar.settings.put(_settings!);
-    });
+    
+    // Update the settings using Drift's DAO
+    await _db.settings.insertOne(settings);
   }
 }

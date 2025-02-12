@@ -1,27 +1,32 @@
-import 'package:hoyomi/database/isar.dart';
-import 'package:hoyomi/database/scheme/cookie_manager.dart';
-import 'package:isar/isar.dart';
+import 'package:drift/drift.dart';
+import 'package:hoyomi/database/drift.dart';
 
 class CookieController {
-  static final _cookieManagerBox = isar.cookieManagers;
-  static final Map<String, Future<CookieManager?>> _dataStore = {};
+  final AppDatabase _db;
 
-  static CookieManager? get({required String sourceId}) {
-    final data =
-        _cookieManagerBox.where().sourceIdEqualTo(sourceId).findFirst();
-    if (data == null) return null;
-    return data;
+  CookieController._(this._db);
+  static final CookieController _instance =
+      CookieController._(AppDatabase());
+
+  static CookieController get instance => _instance;
+
+  // Synchronously fetch the cookie manager
+  Future<CookieManager?> get({required String sourceId}) async {
+    final result = await _db.managers.cookieManagers
+        .filter((f) => f.sourceId.equals(sourceId))
+        .getSingleOrNull();
+    return result;
   }
 
-  static Future<CookieManager?> getAsync({required String sourceId}) {
-    return _dataStore[sourceId] ??=
-        _cookieManagerBox.where().sourceIdEqualTo(sourceId).findFirstAsync();
+  // Asynchronously fetch the cookie manager
+  Future<CookieManager?> getAsync({required String sourceId}) async {
+    return await _db.managers.cookieManagers
+        .filter((t) => t.sourceId.equals(sourceId))
+        .getSingleOrNull();
   }
 
-  static Future<void> save(CookieManager data) async {
-    await isar.writeAsync((isar) {
-      _dataStore[data.sourceId] = Future.value(data);
-      isar.cookieManagers.put(data);
-    });
+  // Save the cookie manager (insert or update)
+  Future<void> save(Insertable<CookieManager> data) async {
+    await _db.into(_db.cookieManagers).insertOnConflictUpdate(data);
   }
 }

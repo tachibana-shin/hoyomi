@@ -14,9 +14,9 @@ import 'package:hoyomi/core_services/book/interfaces/status_enum.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:hoyomi/database/drift.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:hoyomi/globals.dart';
-import 'package:hoyomi/database/scheme/history_chap.dart';
 import 'package:hoyomi/plugins/event_bus.dart';
 import 'package:hoyomi/utils/format_number.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
@@ -77,7 +77,7 @@ class _DetailsComicState extends State<DetailsComic>
         if (_service is ComicAuthMixin &&
             (_service as ComicAuthMixin).getComments != null) {}
 
-        HistoryController()
+        HistoryController.instance
             .createBook(_service.uid, bookId: widget.bookId, book: book);
 
         _updateGetHistory();
@@ -99,7 +99,7 @@ class _DetailsComicState extends State<DetailsComic>
   }
 
   void _updateGetHistory() async {
-    final history = HistoryController();
+    final history = HistoryController.instance;
     final map = await history.getHistory(_service.uid, widget.bookId);
 
     if (mounted) {

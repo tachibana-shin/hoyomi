@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:hoyomi/database/isar.dart';
 import 'package:hoyomi/router/index.dart';
 
 import 'globals.dart';
@@ -15,7 +14,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (!kIsWeb) await _installCert();
-  await initializeIsar();
+  // await initializeIsar();
 
   runApp(const MainApp());
 

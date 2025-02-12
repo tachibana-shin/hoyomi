@@ -12,9 +12,7 @@ import 'package:hoyomi/core_services/book/book_base_service.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/book/interfaces/comic_modes.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:hoyomi/database/scheme/book.dart';
-import 'package:hoyomi/database/scheme/history_chap.dart';
-import 'package:hoyomi/database/scheme/settings.dart';
+import 'package:hoyomi/database/drift.dart';
 import 'package:hoyomi/plugins/event_bus.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/widgets/button_inset.dart';
@@ -90,7 +88,7 @@ class _MangaReaderState extends State<MangaReader>
   ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
 
   Map<String, HistoryChap>? _historyChapters;
-  Settings? _settingsObject;
+  Setting? _settingsObject;
 
   double get _realCurrentPage {
     for (int i = 0; i <= _currentPage; i++) {
@@ -127,7 +125,7 @@ class _MangaReaderState extends State<MangaReader>
 
   @override
   void initState() {
-    _history = HistoryController();
+    _history = HistoryController.instance;
     _historyObjectFuture = _history.createBook(widget.service.uid,
         bookId: widget.bookId, book: widget.book);
 
@@ -192,7 +190,7 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   void _updateGetHistory() async {
-    final history = HistoryController();
+    final history = HistoryController.instance;
     final map = await history.getHistory(widget.service.uid, widget.bookId);
 
     if (mounted && map != null) {

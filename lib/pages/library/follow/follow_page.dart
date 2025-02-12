@@ -7,7 +7,7 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:hoyomi/controller/history.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:hoyomi/database/scheme/book.dart';
+import 'package:hoyomi/database/drift.dart';
 import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
 import 'package:hoyomi/widgets/pull_to_refresh.dart';
 import 'package:hoyomi/widgets/book/vertical_book_list.dart';
@@ -33,7 +33,7 @@ class Follow extends StatefulWidget {
 }
 
 class _FollowState extends State<Follow> {
-  final _history = HistoryController();
+  final _history = HistoryController.instance;
   final List<Book> _items = [];
   int _page = 1;
 

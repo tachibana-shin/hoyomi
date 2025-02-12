@@ -1,34 +1,13 @@
-import 'package:isar/isar.dart';
+import 'package:drift/drift.dart';
 
-part 'cookie_manager.g.dart';
-
-@Collection()
-class CookieManager {
-  late int id = 0;
-
-  @Index(unique: true)
-  late String sourceId;
-
-  late String? cookie;
-  late String? userAgent;
-
-  late String? user;
-
-  @Index()
-  final DateTime createdAt;
-
-  DateTime userUpdatedAt;
-
-  DateTime updatedAt;
-
-  // Constructor
-  CookieManager({
-    required this.sourceId,
-    required this.cookie,
-    required this.userAgent,
-    required this.user,
-    required this.createdAt,
-    required this.userUpdatedAt,
-    required this.updatedAt,
-  });
+@DataClassName('CookieManager')
+class CookieManagers extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get sourceId => text().unique()();
+  TextColumn? get cookie => text().nullable()();
+  TextColumn? get userAgent => text().nullable()();
+  TextColumn? get user => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get userUpdatedAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
 }
