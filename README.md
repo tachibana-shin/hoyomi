@@ -24,6 +24,12 @@ A new Flutter project.
 ![1000008183](https://github.com/user-attachments/assets/2dfc89c9-3c67-48e6-aa8e-c3f2cfdc5931)
 ![1000008184](https://github.com/user-attachments/assets/581a25c7-5b63-498b-8ec7-93ee2dc9e738)
 
+## Support platform
+[x] Android
+[ ] Isar for android SDK <= 23
+[x] iOS side via TrollStore
+[ ] iOS side by other methods
+
 
 ## Todo
 - [ ] Add background image for `details_comic`
