@@ -6,7 +6,6 @@ part 'book.g.dart';
 class Book {
   Id? id;
 
-
   @Index(unique: true)
   late String uid;
 

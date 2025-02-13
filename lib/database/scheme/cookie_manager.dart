@@ -6,7 +6,6 @@ part 'cookie_manager.g.dart';
 class CookieManager {
   Id? id;
 
-
   @Index(unique: true)
   late String sourceId;
 
