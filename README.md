@@ -26,7 +26,7 @@ A new Flutter project.
 
 ## Support platform
 - [x] Android
-- [ ] Isar for android SDK <= 23
+- [x] Isar for android SDK <= 23
 - [x] iOS side via TrollStore
 - [ ] iOS side by other methods
 
