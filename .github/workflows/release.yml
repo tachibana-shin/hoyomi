@@ -97,6 +97,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build_apk, build_ipa]
     steps:
+      - uses: actions/checkout@v1
+
       - name: Download APK artifact
         uses: actions/download-artifact@v4
         with:
@@ -106,10 +108,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ipa-files
-
-      - uses: actions/checkout@v1
-        with:
-          fetch-depth: 0
 
       - name: Generate changelog
         id: changelog
