@@ -17,6 +17,7 @@ import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:hoyomi/globals.dart';
 import 'package:hoyomi/transition/slide_fade_transition.dart';
 import 'package:hoyomi/utils/debouncer.dart';
+import 'package:hoyomi/utils/proxy_cache.dart';
 import 'package:hoyomi/utils/throttler.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:http/http.dart';
@@ -224,16 +225,19 @@ class _PlayerEigaState extends State<PlayerEiga> {
     if (widget.fetchSourceContent == null) {
       final url = Uri.parse(source.src);
       _controller.value?.dispose();
-      _controller.value =
-          VideoPlayerController.networkUrl(url, httpHeaders: source.headers)
-            ..addListener(_onPlayerValueChanged)
-            ..initialize().then((_) {
-              // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-              if (!_playing.value) _controller.value?.play();
-            }).catchError((err) {
-              debugPrint('Error: $err');
-              _error.value = err + '';
-            });
+      _controller.value = VideoPlayerController.networkUrl(url,
+          httpHeaders: source.headers,
+          videoPlayerOptions: VideoPlayerOptions(
+            allowBackgroundPlayback: true,
+          ))
+        ..addListener(_onPlayerValueChanged)
+        ..initialize().then((_) {
+          // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+          if (!_playing.value) _controller.value?.play();
+        }).catchError((err) {
+          debugPrint('Error: $err');
+          _error.value = err + '';
+        });
 
       final response = await get(url, headers: source.headers);
       if (response.statusCode > 299) throw response;
@@ -251,17 +255,25 @@ class _PlayerEigaState extends State<PlayerEiga> {
         path: "${sha256.convert(utf8.encode(content.content))}.m3u8");
     if (!mounted) return;
 
+    await ProxyCache.instance.start();
+
+    if (!mounted) return;
+
     _controller.value?.dispose();
-    _controller.value =
-        VideoPlayerController.file(fileCache, httpHeaders: source.headers)
-          ..addListener(_onPlayerValueChanged)
-          ..initialize().then((_) {
-            // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-            if (!_playing.value) _controller.value?.play();
-          }).catchError((err) {
-            debugPrint('Error: $err');
-            _error.value = '$err';
-          });
+    _controller.value = VideoPlayerController.networkUrl(
+        ProxyCache.instance.getUrlHttp(fileCache),
+        httpHeaders: source.headers,
+        videoPlayerOptions: VideoPlayerOptions(
+          allowBackgroundPlayback: true,
+        ))
+      ..addListener(_onPlayerValueChanged)
+      ..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        if (!_playing.value) _controller.value?.play();
+      }).catchError((err) {
+        debugPrint('Error: $err');
+        _error.value = '$err';
+      });
 
     if (source.type == 'hls') {
       _initializeHls(
