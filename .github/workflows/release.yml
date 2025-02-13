@@ -38,6 +38,12 @@ jobs:
 
       - run: flutter build apk --release --split-per-abi
 
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+        if: ${{ failure() }}
+        with:
+          wait-timeout-minutes: 5
+
       - name: Upload APK as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -74,6 +80,12 @@ jobs:
         run: zip -qq -r -9 app-iphoneos-release-unsigned.ipa Payload
         working-directory: build/ios/iphoneos
 
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+        if: ${{ failure() }}
+        with:
+          wait-timeout-minutes: 5
+
       - name: Upload IPA as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -95,11 +107,9 @@ jobs:
         with:
           name: ipa-files
 
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        if: ${{ failure() }}
+      - uses: actions/checkout@v1
         with:
-          wait-timeout-minutes: 5
+          fetch-depth: 0
 
       - name: Generate changelog
         id: changelog
@@ -107,6 +117,12 @@ jobs:
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
           fetch: false
+
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+        if: ${{ failure() }}
+        with:
+          wait-timeout-minutes: 5
 
       - name: Get the changelog
         run: |
