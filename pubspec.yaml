@@ -66,6 +66,7 @@ dependencies:
       ref: main
   url_launcher: ^6.3.1
   video_player: ^2.9.2
+  wakelock: ^0.4.0
   webview_flutter: ^4.10.0
   xml: ^6.5.0
 

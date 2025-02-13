@@ -24,6 +24,7 @@ import 'package:http/http.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wakelock/wakelock.dart';
 
 import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart' as type;
@@ -284,6 +285,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
   DateTime _activeTime = DateTime.now();
   void _onPlayerValueChanged() {
     if (_controller.value?.value.hasError == true) {
+      Wakelock.disable();
       debugPrint(
           "[video_player]: ${_error.value = _controller.value!.value.errorDescription}");
     } else {
@@ -294,7 +296,16 @@ class _PlayerEigaState extends State<PlayerEiga> {
     _duration.value = _controller.value?.value.duration ?? Duration.zero;
     _loading.value = _controller.value?.value.isInitialized != true ||
         _controller.value!.value.isBuffering;
-    _playing.value = _controller.value?.value.isPlaying ?? _playing.value;
+    final playing = _controller.value?.value.isPlaying ?? _playing.value;
+    if (_playing.value != playing) {
+      _playing.value = playing;
+
+      if (_playing.value) {
+        Wakelock.enable();
+      } else {
+        Wakelock.disable();
+      }
+    }
     if (_aspectRatio.value != _controller.value?.value.aspectRatio) {
       _aspectRatio.value =
           _controller.value?.value.aspectRatio ?? _aspectRatio.value;
@@ -645,14 +656,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
         valueListenable: _error,
         builder: (context, error, child) {
           if (error != null) {
-            return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                child: Center(
-                  child: Text(error,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis),
-                ));
+            return SizedBox.shrink();
           }
 
           return Center(
@@ -690,22 +694,27 @@ class _PlayerEigaState extends State<PlayerEiga> {
                           width: 50.0, height: 50.0, child: SizedBox.shrink());
                     }
 
-                    return ElevatedButton(
-                      onPressed: () {
-                        _activeTime = DateTime.now();
-                        _setPlaying(!_playing.value);
-                      },
-                      style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          padding: EdgeInsets.all(15),
-                          backgroundColor: Colors.grey.shade300.withAlpha(20),
-                          shadowColor: Colors.transparent),
-                      child: Icon(
-                        _playing.value ? Icons.pause : Icons.play_arrow,
-                        color: Colors.white,
-                        size: 42.0,
-                      ),
-                    );
+                    return IgnorePointer(
+                        ignoring: _loading.value,
+                        child: Opacity(
+                            opacity: _loading.value ? 0 : 1,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _activeTime = DateTime.now();
+                                _setPlaying(!_playing.value);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  shape: CircleBorder(),
+                                  padding: EdgeInsets.all(15),
+                                  backgroundColor:
+                                      Colors.grey.shade300.withAlpha(20),
+                                  shadowColor: Colors.transparent),
+                              child: Icon(
+                                _playing.value ? Icons.pause : Icons.play_arrow,
+                                color: Colors.white,
+                                size: 42.0,
+                              ),
+                            )));
                   },
                 ),
                 ValueListenableBuilder<void Function()?>(
@@ -772,16 +781,15 @@ class _PlayerEigaState extends State<PlayerEiga> {
               left: 0,
               right: 0,
               bottom: 0,
-              child: Center(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                    SizedBox(width: 8.0),
-                    Text(error,
+              child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                  child: Center(
+                    child: Text(error,
                         style: Theme.of(context).textTheme.bodySmall,
-                        maxLines: 2),
-                    SizedBox(width: 8.0),
-                  ]))); // error
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis),
+                  ))); // error
         });
   }
 
