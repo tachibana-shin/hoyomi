@@ -5,7 +5,7 @@ import 'package:hoyomi/composable/use_user.dart';
 import 'package:hoyomi/core_services/base_service.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:hoyomi/core_services/interfaces/basic_user.dart';
+import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
 import 'package:hoyomi/globals.dart';
 import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/utils/format_number.dart';
@@ -31,11 +31,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
   late final _isFollowed = createSignal(false);
   late final _followCount = createSignal<int?>(null);
 
-  late final _user = createSignal<BasicUser?>(null);
-  late final _isSigned = createComputed<bool>(() => _user.value != null);
-
-  void Function()? _onDisposeError;
-  void Function()? _onDisposeUser;
+  late final UserData? _user;
 
   bool get _supportAuth => widget.service is EigaAuthMixin;
 
@@ -46,23 +42,15 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
     widget.eigaId.addListener(_onUpdateEigaId);
 
     if (_supportAuth) {
-      final out = useUser(widget.service as EigaAuthMixin);
-
-      _onDisposeError = out.error.subscribe((error) {
-        if (error != null) {
-          showSnackBar(Text('Sign in failed: $error'));
-          out.user.value = null;
-        }
-      });
-      _onDisposeUser = out.user.subscribe((user) => _user.value = user);
+      _user = useUser(widget.service as BaseAuthMixin, context: this);
+    } else {
+      _user = null;
     }
   }
 
   @override
   void dispose() {
     widget.eigaId.removeListener(_onUpdateEigaId);
-    if (_onDisposeError != null) _onDisposeError!();
-    if (_onDisposeUser != null) _onDisposeUser!();
 
     super.dispose();
   }
@@ -118,7 +106,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
     if (!_supportAuth) return;
     final service = widget.service as EigaAuthMixin;
 
-    final isSigned = _isSigned.value;
+    final isSigned = _user?.user() != null;
     if (!isSigned) {
       showSnackBar(Text('Please sign in to follow eiga.'),
           action: SnackBarAction(
@@ -137,6 +125,10 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
     try {
       _isFollowed.value = await service.setFollow(
           eigaId: widget.eigaId.value, value: !oldFollowed);
+
+      showSnackBar(Text(_isFollowed.value
+          ? 'Added to watch list'
+          : 'Removed from watch list'));
     } catch (err) {
       // restore value
       _isFollowed.value = oldFollowed;
