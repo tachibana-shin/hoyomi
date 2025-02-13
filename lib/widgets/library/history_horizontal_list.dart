@@ -32,7 +32,7 @@ class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
                 final book = BasicBook.fromMeta(item.bookId, book: meta);
 
                 final current =
-                    await HistoryController().getLastChapter(item.id);
+                    await HistoryController().getLastChapter(item.id!);
 
                 final currentEpisodeIndex = current == null
                     ? -1

@@ -4,7 +4,7 @@ part 'book.g.dart';
 
 @collection
 class Book {
-  late int id = 0;
+  Id? id;
 
   @Index(unique: true)
   late String uid;

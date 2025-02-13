@@ -104,8 +104,8 @@ class BookChanges {
     if (saveDatabase == true) {
       book.meta = jsonEncode(newData.toJson());
 
-      await isar.writeAsync((isar) {
-        isar.books.put(book);
+      await isar.writeTxn(() async {
+        await isar.books.put(book);
       });
     }
 
@@ -131,11 +131,11 @@ class BookChanges {
         .subtract(Duration(minutes: _settings.pollingIntervalBook));
 
     final itemsToUpdate = _bookBox
-        .where()
+        .filter()
         .updatedAtLessThan(thirtyMinutesAgo)
         .statusEqualTo(StatusEnum.ongoing.name)
         .sortByUpdatedAtDesc()
-        .findAllAsync();
+        .findAll();
 
     return itemsToUpdate;
   }

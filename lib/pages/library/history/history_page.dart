@@ -176,7 +176,7 @@ class _HistoryState extends State<History> {
                     final book = items.elementAt(index);
 
                     final current =
-                        await _history.getLastChapter(bookHistory.id);
+                        await _history.getLastChapter(bookHistory.id!);
 
                     final currentEpisodeIndex = current == null
                         ? -1

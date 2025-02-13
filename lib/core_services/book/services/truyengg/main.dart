@@ -5,6 +5,7 @@ import 'package:hoyomi/core_services/book/book_base_service.dart';
 import 'package:hoyomi/core_services/book/interfaces/base_comments.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_chapter.dart';
 import 'package:hoyomi/core_services/book/interfaces/basic_comment.dart';
+import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
 import 'package:hoyomi/core_services/book/interfaces/status_enum.dart';
 import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
@@ -488,7 +489,7 @@ class TruyenGGService extends BookBaseService
         cookie: cookie);
 
     if (document.querySelector("title")!.text != 'Thông Tin Tài Khoản') {
-      throw Exception("Not logged in"); // Not logged in
+      throw UserNotFoundException(); // Not logged in
     }
 
     final txtCms = document.querySelectorAll("input.txt_cm");
