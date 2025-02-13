@@ -633,16 +633,14 @@ class _PlayerEigaState extends State<PlayerEiga> {
         valueListenable: _error,
         builder: (context, error, child) {
           if (error != null) {
-            return Center(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                  SizedBox(width: 8.0),
-                  Text(error,
+            return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                child: Center(
+                  child: Text(error,
                       style: Theme.of(context).textTheme.bodySmall,
-                      maxLines: 4),
-                  SizedBox(width: 8.0),
-                ]));
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis),
+                ));
           }
 
           return Center(
