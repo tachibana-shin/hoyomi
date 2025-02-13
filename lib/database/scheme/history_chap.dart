@@ -4,7 +4,8 @@ part 'history_chap.g.dart';
 
 @collection
 class HistoryChap {
-  late int id = 0;
+  Id? id;
+
 
   late int book;
 

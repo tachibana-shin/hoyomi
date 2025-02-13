@@ -3,500 +3,445 @@
 part of 'history_chap.dart';
 
 // **************************************************************************
-// _IsarCollectionGenerator
+// IsarCollectionGenerator
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, invalid_use_of_protected_member, lines_longer_than_80_chars, constant_identifier_names, avoid_js_rounded_ints, no_leading_underscores_for_local_identifiers, require_trailing_commas, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_in_if_null_operators, library_private_types_in_public_api, prefer_const_constructors
-// ignore_for_file: type=lint
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
 extension GetHistoryChapCollection on Isar {
-  IsarCollection<int, HistoryChap> get historyChaps => this.collection();
+  IsarCollection<HistoryChap> get historyChaps => this.collection();
 }
 
-const HistoryChapSchema = IsarGeneratedSchema(
-  schema: IsarSchema(
-    name: 'HistoryChap',
-    idName: 'id',
-    embedded: false,
-    properties: [
-      IsarPropertySchema(
-        name: 'book',
-        type: IsarType.long,
-      ),
-      IsarPropertySchema(
-        name: 'chapterId',
-        type: IsarType.string,
-      ),
-      IsarPropertySchema(
-        name: 'currentPage',
-        type: IsarType.double,
-      ),
-      IsarPropertySchema(
-        name: 'maxPage',
-        type: IsarType.long,
-      ),
-      IsarPropertySchema(
-        name: 'createdAt',
-        type: IsarType.dateTime,
-      ),
-      IsarPropertySchema(
-        name: 'updatedAt',
-        type: IsarType.dateTime,
-      ),
-    ],
-    indexes: [
-      IsarIndexSchema(
-        name: 'chapterId',
-        properties: [
-          "chapterId",
-        ],
-        unique: false,
-        hash: false,
-      ),
-      IsarIndexSchema(
-        name: 'createdAt',
-        properties: [
-          "createdAt",
-        ],
-        unique: false,
-        hash: false,
-      ),
-    ],
-  ),
-  converter: IsarObjectConverter<int, HistoryChap>(
-    serialize: serializeHistoryChap,
-    deserialize: deserializeHistoryChap,
-    deserializeProperty: deserializeHistoryChapProp,
-  ),
-  embeddedSchemas: [],
+const HistoryChapSchema = CollectionSchema(
+  name: r'HistoryChap',
+  id: -1381802241183101931,
+  properties: {
+    r'book': PropertySchema(
+      id: 0,
+      name: r'book',
+      type: IsarType.long,
+    ),
+    r'chapterId': PropertySchema(
+      id: 1,
+      name: r'chapterId',
+      type: IsarType.string,
+    ),
+    r'createdAt': PropertySchema(
+      id: 2,
+      name: r'createdAt',
+      type: IsarType.dateTime,
+    ),
+    r'currentPage': PropertySchema(
+      id: 3,
+      name: r'currentPage',
+      type: IsarType.double,
+    ),
+    r'maxPage': PropertySchema(
+      id: 4,
+      name: r'maxPage',
+      type: IsarType.long,
+    ),
+    r'updatedAt': PropertySchema(
+      id: 5,
+      name: r'updatedAt',
+      type: IsarType.dateTime,
+    )
+  },
+  estimateSize: _historyChapEstimateSize,
+  serialize: _historyChapSerialize,
+  deserialize: _historyChapDeserialize,
+  deserializeProp: _historyChapDeserializeProp,
+  idName: r'id',
+  indexes: {
+    r'chapterId': IndexSchema(
+      id: -1917949875430644359,
+      name: r'chapterId',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'chapterId',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    ),
+    r'createdAt': IndexSchema(
+      id: -3433535483987302584,
+      name: r'createdAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'createdAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
+  links: {},
+  embeddedSchemas: {},
+  getId: _historyChapGetId,
+  getLinks: _historyChapGetLinks,
+  attach: _historyChapAttach,
+  version: '3.1.0+1',
 );
 
-@isarProtected
-int serializeHistoryChap(IsarWriter writer, HistoryChap object) {
-  IsarCore.writeLong(writer, 1, object.book);
-  IsarCore.writeString(writer, 2, object.chapterId);
-  IsarCore.writeDouble(writer, 3, object.currentPage);
-  IsarCore.writeLong(writer, 4, object.maxPage);
-  IsarCore.writeLong(
-      writer, 5, object.createdAt.toUtc().microsecondsSinceEpoch);
-  IsarCore.writeLong(
-      writer, 6, object.updatedAt.toUtc().microsecondsSinceEpoch);
-  return object.id;
+int _historyChapEstimateSize(
+  HistoryChap object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.chapterId.length * 3;
+  return bytesCount;
 }
 
-@isarProtected
-HistoryChap deserializeHistoryChap(IsarReader reader) {
-  final String _chapterId;
-  _chapterId = IsarCore.readString(reader, 2) ?? '';
-  final double _currentPage;
-  _currentPage = IsarCore.readDouble(reader, 3);
-  final int _maxPage;
-  _maxPage = IsarCore.readLong(reader, 4);
-  final DateTime _createdAt;
-  {
-    final value = IsarCore.readLong(reader, 5);
-    if (value == -9223372036854775808) {
-      _createdAt =
-          DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
-    } else {
-      _createdAt =
-          DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true).toLocal();
-    }
-  }
-  final DateTime _updatedAt;
-  {
-    final value = IsarCore.readLong(reader, 6);
-    if (value == -9223372036854775808) {
-      _updatedAt =
-          DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
-    } else {
-      _updatedAt =
-          DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true).toLocal();
-    }
-  }
+void _historyChapSerialize(
+  HistoryChap object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeLong(offsets[0], object.book);
+  writer.writeString(offsets[1], object.chapterId);
+  writer.writeDateTime(offsets[2], object.createdAt);
+  writer.writeDouble(offsets[3], object.currentPage);
+  writer.writeLong(offsets[4], object.maxPage);
+  writer.writeDateTime(offsets[5], object.updatedAt);
+}
+
+HistoryChap _historyChapDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
   final object = HistoryChap(
-    chapterId: _chapterId,
-    currentPage: _currentPage,
-    maxPage: _maxPage,
-    createdAt: _createdAt,
-    updatedAt: _updatedAt,
+    chapterId: reader.readString(offsets[1]),
+    createdAt: reader.readDateTime(offsets[2]),
+    currentPage: reader.readDouble(offsets[3]),
+    maxPage: reader.readLong(offsets[4]),
+    updatedAt: reader.readDateTime(offsets[5]),
   );
-  object.id = IsarCore.readId(reader);
-  object.book = IsarCore.readLong(reader, 1);
+  object.book = reader.readLong(offsets[0]);
+  object.id = id;
   return object;
 }
 
-@isarProtected
-dynamic deserializeHistoryChapProp(IsarReader reader, int property) {
-  switch (property) {
+P _historyChapDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
     case 0:
-      return IsarCore.readId(reader);
+      return (reader.readLong(offset)) as P;
     case 1:
-      return IsarCore.readLong(reader, 1);
+      return (reader.readString(offset)) as P;
     case 2:
-      return IsarCore.readString(reader, 2) ?? '';
+      return (reader.readDateTime(offset)) as P;
     case 3:
-      return IsarCore.readDouble(reader, 3);
+      return (reader.readDouble(offset)) as P;
     case 4:
-      return IsarCore.readLong(reader, 4);
+      return (reader.readLong(offset)) as P;
     case 5:
-      {
-        final value = IsarCore.readLong(reader, 5);
-        if (value == -9223372036854775808) {
-          return DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
-        } else {
-          return DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true)
-              .toLocal();
-        }
-      }
-    case 6:
-      {
-        final value = IsarCore.readLong(reader, 6);
-        if (value == -9223372036854775808) {
-          return DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
-        } else {
-          return DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true)
-              .toLocal();
-        }
-      }
+      return (reader.readDateTime(offset)) as P;
     default:
-      throw ArgumentError('Unknown property: $property');
+      throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-sealed class _HistoryChapUpdate {
-  bool call({
-    required int id,
-    int? book,
-    String? chapterId,
-    double? currentPage,
-    int? maxPage,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  });
+Id _historyChapGetId(HistoryChap object) {
+  return object.id ?? Isar.autoIncrement;
 }
 
-class _HistoryChapUpdateImpl implements _HistoryChapUpdate {
-  const _HistoryChapUpdateImpl(this.collection);
+List<IsarLinkBase<dynamic>> _historyChapGetLinks(HistoryChap object) {
+  return [];
+}
 
-  final IsarCollection<int, HistoryChap> collection;
+void _historyChapAttach(
+    IsarCollection<dynamic> col, Id id, HistoryChap object) {
+  object.id = id;
+}
 
-  @override
-  bool call({
-    required int id,
-    Object? book = ignore,
-    Object? chapterId = ignore,
-    Object? currentPage = ignore,
-    Object? maxPage = ignore,
-    Object? createdAt = ignore,
-    Object? updatedAt = ignore,
-  }) {
-    return collection.updateProperties([
-          id
-        ], {
-          if (book != ignore) 1: book as int?,
-          if (chapterId != ignore) 2: chapterId as String?,
-          if (currentPage != ignore) 3: currentPage as double?,
-          if (maxPage != ignore) 4: maxPage as int?,
-          if (createdAt != ignore) 5: createdAt as DateTime?,
-          if (updatedAt != ignore) 6: updatedAt as DateTime?,
-        }) >
-        0;
+extension HistoryChapQueryWhereSort
+    on QueryBuilder<HistoryChap, HistoryChap, QWhere> {
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhere> anyId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
   }
-}
 
-sealed class _HistoryChapUpdateAll {
-  int call({
-    required List<int> id,
-    int? book,
-    String? chapterId,
-    double? currentPage,
-    int? maxPage,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  });
-}
-
-class _HistoryChapUpdateAllImpl implements _HistoryChapUpdateAll {
-  const _HistoryChapUpdateAllImpl(this.collection);
-
-  final IsarCollection<int, HistoryChap> collection;
-
-  @override
-  int call({
-    required List<int> id,
-    Object? book = ignore,
-    Object? chapterId = ignore,
-    Object? currentPage = ignore,
-    Object? maxPage = ignore,
-    Object? createdAt = ignore,
-    Object? updatedAt = ignore,
-  }) {
-    return collection.updateProperties(id, {
-      if (book != ignore) 1: book as int?,
-      if (chapterId != ignore) 2: chapterId as String?,
-      if (currentPage != ignore) 3: currentPage as double?,
-      if (maxPage != ignore) 4: maxPage as int?,
-      if (createdAt != ignore) 5: createdAt as DateTime?,
-      if (updatedAt != ignore) 6: updatedAt as DateTime?,
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhere> anyCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'createdAt'),
+      );
     });
   }
 }
 
-extension HistoryChapUpdate on IsarCollection<int, HistoryChap> {
-  _HistoryChapUpdate get update => _HistoryChapUpdateImpl(this);
-
-  _HistoryChapUpdateAll get updateAll => _HistoryChapUpdateAllImpl(this);
-}
-
-sealed class _HistoryChapQueryUpdate {
-  int call({
-    int? book,
-    String? chapterId,
-    double? currentPage,
-    int? maxPage,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  });
-}
-
-class _HistoryChapQueryUpdateImpl implements _HistoryChapQueryUpdate {
-  const _HistoryChapQueryUpdateImpl(this.query, {this.limit});
-
-  final IsarQuery<HistoryChap> query;
-  final int? limit;
-
-  @override
-  int call({
-    Object? book = ignore,
-    Object? chapterId = ignore,
-    Object? currentPage = ignore,
-    Object? maxPage = ignore,
-    Object? createdAt = ignore,
-    Object? updatedAt = ignore,
-  }) {
-    return query.updateProperties(limit: limit, {
-      if (book != ignore) 1: book as int?,
-      if (chapterId != ignore) 2: chapterId as String?,
-      if (currentPage != ignore) 3: currentPage as double?,
-      if (maxPage != ignore) 4: maxPage as int?,
-      if (createdAt != ignore) 5: createdAt as DateTime?,
-      if (updatedAt != ignore) 6: updatedAt as DateTime?,
+extension HistoryChapQueryWhere
+    on QueryBuilder<HistoryChap, HistoryChap, QWhereClause> {
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhereClause> idEqualTo(Id id) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
     });
   }
-}
 
-extension HistoryChapQueryUpdate on IsarQuery<HistoryChap> {
-  _HistoryChapQueryUpdate get updateFirst =>
-      _HistoryChapQueryUpdateImpl(this, limit: 1);
-
-  _HistoryChapQueryUpdate get updateAll => _HistoryChapQueryUpdateImpl(this);
-}
-
-class _HistoryChapQueryBuilderUpdateImpl implements _HistoryChapQueryUpdate {
-  const _HistoryChapQueryBuilderUpdateImpl(this.query, {this.limit});
-
-  final QueryBuilder<HistoryChap, HistoryChap, QOperations> query;
-  final int? limit;
-
-  @override
-  int call({
-    Object? book = ignore,
-    Object? chapterId = ignore,
-    Object? currentPage = ignore,
-    Object? maxPage = ignore,
-    Object? createdAt = ignore,
-    Object? updatedAt = ignore,
-  }) {
-    final q = query.build();
-    try {
-      return q.updateProperties(limit: limit, {
-        if (book != ignore) 1: book as int?,
-        if (chapterId != ignore) 2: chapterId as String?,
-        if (currentPage != ignore) 3: currentPage as double?,
-        if (maxPage != ignore) 4: maxPage as int?,
-        if (createdAt != ignore) 5: createdAt as DateTime?,
-        if (updatedAt != ignore) 6: updatedAt as DateTime?,
-      });
-    } finally {
-      q.close();
-    }
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhereClause> idNotEqualTo(
+      Id id) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            );
+      }
+    });
   }
-}
 
-extension HistoryChapQueryBuilderUpdate
-    on QueryBuilder<HistoryChap, HistoryChap, QOperations> {
-  _HistoryChapQueryUpdate get updateFirst =>
-      _HistoryChapQueryBuilderUpdateImpl(this, limit: 1);
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhereClause> idGreaterThan(Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: id, includeLower: include),
+      );
+    });
+  }
 
-  _HistoryChapQueryUpdate get updateAll =>
-      _HistoryChapQueryBuilderUpdateImpl(this);
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhereClause> idLessThan(Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: id, includeUpper: include),
+      );
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhereClause> idBetween(
+    Id lowerId,
+    Id upperId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhereClause> chapterIdEqualTo(
+      String chapterId) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'chapterId',
+        value: [chapterId],
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhereClause> chapterIdNotEqualTo(
+      String chapterId) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'chapterId',
+              lower: [],
+              upper: [chapterId],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'chapterId',
+              lower: [chapterId],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'chapterId',
+              lower: [chapterId],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'chapterId',
+              lower: [],
+              upper: [chapterId],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhereClause> createdAtEqualTo(
+      DateTime createdAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'createdAt',
+        value: [createdAt],
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhereClause> createdAtNotEqualTo(
+      DateTime createdAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [],
+              upper: [createdAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [createdAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [createdAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [],
+              upper: [createdAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhereClause>
+      createdAtGreaterThan(
+    DateTime createdAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [createdAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhereClause> createdAtLessThan(
+    DateTime createdAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [],
+        upper: [createdAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterWhereClause> createdAtBetween(
+    DateTime lowerCreatedAt,
+    DateTime upperCreatedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [lowerCreatedAt],
+        includeLower: includeLower,
+        upper: [upperCreatedAt],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension HistoryChapQueryFilter
     on QueryBuilder<HistoryChap, HistoryChap, QFilterCondition> {
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> idEqualTo(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EqualCondition(
-          property: 0,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> idGreaterThan(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterCondition(
-          property: 0,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      idGreaterThanOrEqualTo(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterOrEqualCondition(
-          property: 0,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> idLessThan(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessCondition(
-          property: 0,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      idLessThanOrEqualTo(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessOrEqualCondition(
-          property: 0,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> idBetween(
-    int lower,
-    int upper,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        BetweenCondition(
-          property: 0,
-          lower: lower,
-          upper: upper,
-        ),
-      );
-    });
-  }
-
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> bookEqualTo(
-    int value,
-  ) {
+      int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EqualCondition(
-          property: 1,
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'book',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> bookGreaterThan(
-    int value,
-  ) {
+    int value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterCondition(
-          property: 1,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      bookGreaterThanOrEqualTo(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterOrEqualCondition(
-          property: 1,
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'book',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> bookLessThan(
-    int value,
-  ) {
+    int value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessCondition(
-          property: 1,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      bookLessThanOrEqualTo(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessOrEqualCondition(
-          property: 1,
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'book',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> bookBetween(
     int lower,
-    int upper,
-  ) {
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        BetweenCondition(
-          property: 1,
-          lower: lower,
-          upper: upper,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'book',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 
@@ -506,77 +451,43 @@ extension HistoryChapQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EqualCondition(
-          property: 2,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'chapterId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       chapterIdGreaterThan(
     String value, {
+    bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterCondition(
-          property: 2,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      chapterIdGreaterThanOrEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterOrEqualCondition(
-          property: 2,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'chapterId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       chapterIdLessThan(
     String value, {
+    bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessCondition(
-          property: 2,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      chapterIdLessThanOrEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessOrEqualCondition(
-          property: 2,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'chapterId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
@@ -584,17 +495,19 @@ extension HistoryChapQueryFilter
       chapterIdBetween(
     String lower,
     String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        BetweenCondition(
-          property: 2,
-          lower: lower,
-          upper: upper,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'chapterId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
@@ -604,13 +517,11 @@ extension HistoryChapQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        StartsWithCondition(
-          property: 2,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'chapterId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
@@ -620,143 +531,155 @@ extension HistoryChapQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EndsWithCondition(
-          property: 2,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'chapterId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       chapterIdContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        ContainsCondition(
-          property: 2,
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'chapterId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       chapterIdMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        MatchesCondition(
-          property: 2,
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'chapterId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       chapterIdIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const EqualCondition(
-          property: 2,
-          value: '',
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'chapterId',
+        value: '',
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       chapterIdIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const GreaterCondition(
-          property: 2,
-          value: '',
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'chapterId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
+      createdAtEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
+      createdAtGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
+      createdAtLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
+      createdAtBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'createdAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       currentPageEqualTo(
     double value, {
-    double epsilon = Filter.epsilon,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EqualCondition(
-          property: 3,
-          value: value,
-          epsilon: epsilon,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'currentPage',
+        value: value,
+        epsilon: epsilon,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       currentPageGreaterThan(
     double value, {
-    double epsilon = Filter.epsilon,
+    bool include = false,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterCondition(
-          property: 3,
-          value: value,
-          epsilon: epsilon,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      currentPageGreaterThanOrEqualTo(
-    double value, {
-    double epsilon = Filter.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterOrEqualCondition(
-          property: 3,
-          value: value,
-          epsilon: epsilon,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'currentPage',
+        value: value,
+        epsilon: epsilon,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       currentPageLessThan(
     double value, {
-    double epsilon = Filter.epsilon,
+    bool include = false,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessCondition(
-          property: 3,
-          value: value,
-          epsilon: epsilon,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      currentPageLessThanOrEqualTo(
-    double value, {
-    double epsilon = Filter.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessOrEqualCondition(
-          property: 3,
-          value: value,
-          epsilon: epsilon,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'currentPage',
+        value: value,
+        epsilon: epsilon,
+      ));
     });
   }
 
@@ -764,272 +687,198 @@ extension HistoryChapQueryFilter
       currentPageBetween(
     double lower,
     double upper, {
-    double epsilon = Filter.epsilon,
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        BetweenCondition(
-          property: 3,
-          lower: lower,
-          upper: upper,
-          epsilon: epsilon,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'currentPage',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> idEqualTo(
+      Id? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> idGreaterThan(
+    Id? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> idLessThan(
+    Id? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> idBetween(
+    Id? lower,
+    Id? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> maxPageEqualTo(
-    int value,
-  ) {
+      int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EqualCondition(
-          property: 4,
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'maxPage',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       maxPageGreaterThan(
-    int value,
-  ) {
+    int value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterCondition(
-          property: 4,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      maxPageGreaterThanOrEqualTo(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterOrEqualCondition(
-          property: 4,
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'maxPage',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> maxPageLessThan(
-    int value,
-  ) {
+    int value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessCondition(
-          property: 4,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      maxPageLessThanOrEqualTo(
-    int value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessOrEqualCondition(
-          property: 4,
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'maxPage',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> maxPageBetween(
     int lower,
-    int upper,
-  ) {
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        BetweenCondition(
-          property: 4,
-          lower: lower,
-          upper: upper,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'maxPage',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      createdAtEqualTo(
-    DateTime value,
-  ) {
+      updatedAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EqualCondition(
-          property: 5,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      createdAtGreaterThan(
-    DateTime value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterCondition(
-          property: 5,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      createdAtGreaterThanOrEqualTo(
-    DateTime value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterOrEqualCondition(
-          property: 5,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      createdAtLessThan(
-    DateTime value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessCondition(
-          property: 5,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      createdAtLessThanOrEqualTo(
-    DateTime value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessOrEqualCondition(
-          property: 5,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      createdAtBetween(
-    DateTime lower,
-    DateTime upper,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        BetweenCondition(
-          property: 5,
-          lower: lower,
-          upper: upper,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      updatedAtEqualTo(
-    DateTime value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        EqualCondition(
-          property: 6,
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'updatedAt',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       updatedAtGreaterThan(
-    DateTime value,
-  ) {
+    DateTime value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterCondition(
-          property: 6,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      updatedAtGreaterThanOrEqualTo(
-    DateTime value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        GreaterOrEqualCondition(
-          property: 6,
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       updatedAtLessThan(
-    DateTime value,
-  ) {
+    DateTime value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessCondition(
-          property: 6,
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      updatedAtLessThanOrEqualTo(
-    DateTime value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        LessOrEqualCondition(
-          property: 6,
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       updatedAtBetween(
     DateTime lower,
-    DateTime upper,
-  ) {
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        BetweenCondition(
-          property: 6,
-          lower: lower,
-          upper: upper,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'updatedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 }
@@ -1037,366 +886,252 @@ extension HistoryChapQueryFilter
 extension HistoryChapQueryObject
     on QueryBuilder<HistoryChap, HistoryChap, QFilterCondition> {}
 
+extension HistoryChapQueryLinks
+    on QueryBuilder<HistoryChap, HistoryChap, QFilterCondition> {}
+
 extension HistoryChapQuerySortBy
     on QueryBuilder<HistoryChap, HistoryChap, QSortBy> {
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortById() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(0);
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(0, sort: Sort.desc);
-    });
-  }
-
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByBook() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(1);
+      return query.addSortBy(r'book', Sort.asc);
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByBookDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(1, sort: Sort.desc);
+      return query.addSortBy(r'book', Sort.desc);
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByChapterId(
-      {bool caseSensitive = true}) {
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByChapterId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(
-        2,
-        caseSensitive: caseSensitive,
-      );
+      return query.addSortBy(r'chapterId', Sort.asc);
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByChapterIdDesc(
-      {bool caseSensitive = true}) {
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByChapterIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(
-        2,
-        sort: Sort.desc,
-        caseSensitive: caseSensitive,
-      );
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByCurrentPage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(3);
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByCurrentPageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(3, sort: Sort.desc);
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByMaxPage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(4);
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByMaxPageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(4, sort: Sort.desc);
+      return query.addSortBy(r'chapterId', Sort.desc);
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(5);
+      return query.addSortBy(r'createdAt', Sort.asc);
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(5, sort: Sort.desc);
+      return query.addSortBy(r'createdAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByCurrentPage() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentPage', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByCurrentPageDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentPage', Sort.desc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByMaxPage() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'maxPage', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByMaxPageDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'maxPage', Sort.desc);
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(6);
+      return query.addSortBy(r'updatedAt', Sort.asc);
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(6, sort: Sort.desc);
+      return query.addSortBy(r'updatedAt', Sort.desc);
     });
   }
 }
 
 extension HistoryChapQuerySortThenBy
     on QueryBuilder<HistoryChap, HistoryChap, QSortThenBy> {
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenById() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(0);
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(0, sort: Sort.desc);
-    });
-  }
-
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByBook() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(1);
+      return query.addSortBy(r'book', Sort.asc);
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByBookDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(1, sort: Sort.desc);
+      return query.addSortBy(r'book', Sort.desc);
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByChapterId(
-      {bool caseSensitive = true}) {
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByChapterId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(2, caseSensitive: caseSensitive);
+      return query.addSortBy(r'chapterId', Sort.asc);
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByChapterIdDesc(
-      {bool caseSensitive = true}) {
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByChapterIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(2, sort: Sort.desc, caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByCurrentPage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(3);
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByCurrentPageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(3, sort: Sort.desc);
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByMaxPage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(4);
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByMaxPageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(4, sort: Sort.desc);
+      return query.addSortBy(r'chapterId', Sort.desc);
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(5);
+      return query.addSortBy(r'createdAt', Sort.asc);
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(5, sort: Sort.desc);
+      return query.addSortBy(r'createdAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByCurrentPage() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentPage', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByCurrentPageDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentPage', Sort.desc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenById() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByMaxPage() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'maxPage', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByMaxPageDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'maxPage', Sort.desc);
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(6);
+      return query.addSortBy(r'updatedAt', Sort.asc);
     });
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(6, sort: Sort.desc);
+      return query.addSortBy(r'updatedAt', Sort.desc);
     });
   }
 }
 
 extension HistoryChapQueryWhereDistinct
     on QueryBuilder<HistoryChap, HistoryChap, QDistinct> {
-  QueryBuilder<HistoryChap, HistoryChap, QAfterDistinct> distinctByBook() {
+  QueryBuilder<HistoryChap, HistoryChap, QDistinct> distinctByBook() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(1);
+      return query.addDistinctBy(r'book');
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterDistinct> distinctByChapterId(
+  QueryBuilder<HistoryChap, HistoryChap, QDistinct> distinctByChapterId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(2, caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'chapterId', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterDistinct>
-      distinctByCurrentPage() {
+  QueryBuilder<HistoryChap, HistoryChap, QDistinct> distinctByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(3);
+      return query.addDistinctBy(r'createdAt');
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterDistinct> distinctByMaxPage() {
+  QueryBuilder<HistoryChap, HistoryChap, QDistinct> distinctByCurrentPage() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(4);
+      return query.addDistinctBy(r'currentPage');
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterDistinct> distinctByCreatedAt() {
+  QueryBuilder<HistoryChap, HistoryChap, QDistinct> distinctByMaxPage() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(5);
+      return query.addDistinctBy(r'maxPage');
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterDistinct> distinctByUpdatedAt() {
+  QueryBuilder<HistoryChap, HistoryChap, QDistinct> distinctByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(6);
-    });
-  }
-}
-
-extension HistoryChapQueryProperty1
-    on QueryBuilder<HistoryChap, HistoryChap, QProperty> {
-  QueryBuilder<HistoryChap, int, QAfterProperty> idProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(0);
-    });
-  }
-
-  QueryBuilder<HistoryChap, int, QAfterProperty> bookProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(1);
-    });
-  }
-
-  QueryBuilder<HistoryChap, String, QAfterProperty> chapterIdProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(2);
-    });
-  }
-
-  QueryBuilder<HistoryChap, double, QAfterProperty> currentPageProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(3);
-    });
-  }
-
-  QueryBuilder<HistoryChap, int, QAfterProperty> maxPageProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(4);
-    });
-  }
-
-  QueryBuilder<HistoryChap, DateTime, QAfterProperty> createdAtProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(5);
-    });
-  }
-
-  QueryBuilder<HistoryChap, DateTime, QAfterProperty> updatedAtProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(6);
+      return query.addDistinctBy(r'updatedAt');
     });
   }
 }
 
-extension HistoryChapQueryProperty2<R>
-    on QueryBuilder<HistoryChap, R, QAfterProperty> {
-  QueryBuilder<HistoryChap, (R, int), QAfterProperty> idProperty() {
+extension HistoryChapQueryProperty
+    on QueryBuilder<HistoryChap, HistoryChap, QQueryProperty> {
+  QueryBuilder<HistoryChap, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(0);
+      return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<HistoryChap, (R, int), QAfterProperty> bookProperty() {
+  QueryBuilder<HistoryChap, int, QQueryOperations> bookProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(1);
+      return query.addPropertyName(r'book');
     });
   }
 
-  QueryBuilder<HistoryChap, (R, String), QAfterProperty> chapterIdProperty() {
+  QueryBuilder<HistoryChap, String, QQueryOperations> chapterIdProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(2);
+      return query.addPropertyName(r'chapterId');
     });
   }
 
-  QueryBuilder<HistoryChap, (R, double), QAfterProperty> currentPageProperty() {
+  QueryBuilder<HistoryChap, DateTime, QQueryOperations> createdAtProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(3);
+      return query.addPropertyName(r'createdAt');
     });
   }
 
-  QueryBuilder<HistoryChap, (R, int), QAfterProperty> maxPageProperty() {
+  QueryBuilder<HistoryChap, double, QQueryOperations> currentPageProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(4);
+      return query.addPropertyName(r'currentPage');
     });
   }
 
-  QueryBuilder<HistoryChap, (R, DateTime), QAfterProperty> createdAtProperty() {
+  QueryBuilder<HistoryChap, int, QQueryOperations> maxPageProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(5);
+      return query.addPropertyName(r'maxPage');
     });
   }
 
-  QueryBuilder<HistoryChap, (R, DateTime), QAfterProperty> updatedAtProperty() {
+  QueryBuilder<HistoryChap, DateTime, QQueryOperations> updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(6);
-    });
-  }
-}
-
-extension HistoryChapQueryProperty3<R1, R2>
-    on QueryBuilder<HistoryChap, (R1, R2), QAfterProperty> {
-  QueryBuilder<HistoryChap, (R1, R2, int), QOperations> idProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(0);
-    });
-  }
-
-  QueryBuilder<HistoryChap, (R1, R2, int), QOperations> bookProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(1);
-    });
-  }
-
-  QueryBuilder<HistoryChap, (R1, R2, String), QOperations> chapterIdProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(2);
-    });
-  }
-
-  QueryBuilder<HistoryChap, (R1, R2, double), QOperations>
-      currentPageProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(3);
-    });
-  }
-
-  QueryBuilder<HistoryChap, (R1, R2, int), QOperations> maxPageProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(4);
-    });
-  }
-
-  QueryBuilder<HistoryChap, (R1, R2, DateTime), QOperations>
-      createdAtProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(5);
-    });
-  }
-
-  QueryBuilder<HistoryChap, (R1, R2, DateTime), QOperations>
-      updatedAtProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addProperty(6);
+      return query.addPropertyName(r'updatedAt');
     });
   }
 }

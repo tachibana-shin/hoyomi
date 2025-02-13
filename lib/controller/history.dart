@@ -4,7 +4,6 @@ import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:hoyomi/database/isar.dart';
 import 'package:hoyomi/database/scheme/book.dart';
 import 'package:hoyomi/database/scheme/history_chap.dart';
-
 import 'package:isar/isar.dart';
 
 class HistoryController {
@@ -15,11 +14,12 @@ class HistoryController {
     final book = await _bookBox
         .where()
         .bookIdEqualTo(bookId)
+        .filter()
         .sourceIdEqualTo(sourceId)
-        .findFirstAsync();
+        .findFirst();
     if (book == null) return null;
 
-    return _historyChapBox.where().bookEqualTo(book.id).findAll();
+    return _historyChapBox.filter().bookEqualTo(book.id!).findAll();
   }
 
   Future<Book> createBook(
@@ -31,9 +31,9 @@ class HistoryController {
     Book? bookObject = await _bookBox
         .where()
         .sourceIdEqualTo(sourceId)
-        .and()
+        .filter()
         .bookIdEqualTo(bookId)
-        .findFirstAsync();
+        .findFirst();
 
     bookObject ??= Book(
       sourceId: sourceId,
@@ -57,8 +57,8 @@ class HistoryController {
       bookObject.meta = newMeta;
     }
 
-    await isar.writeAsync((isar) {
-      isar.books.put(bookObject!);
+    await isar.writeTxn(() async {
+      await isar.books.put(bookObject!);
     });
 
     return bookObject;
@@ -75,9 +75,9 @@ class HistoryController {
       existingHistory.maxPage = maxPage;
       book.updatedAt = existingHistory.updatedAt = DateTime.now();
 
-      await isar.writeAsync((isar) {
-        isar.historyChaps.put(existingHistory);
-        isar.books.put(book);
+      await isar.writeTxn(() async {
+        await isar.historyChaps.put(existingHistory);
+        await isar.books.put(book);
       });
     } else {
       final newHistory = HistoryChap(
@@ -87,12 +87,12 @@ class HistoryController {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
 
-      newHistory.book = book.id;
+      newHistory.book = book.id!;
       book.updatedAt = newHistory.updatedAt;
 
-      await isar.writeAsync((isar) {
-        isar.historyChaps.put(newHistory);
-        isar.books.put(book);
+      await isar.writeTxn(() async {
+        await isar.historyChaps.put(newHistory);
+        await isar.books.put(book);
       });
     }
   }
@@ -102,15 +102,15 @@ class HistoryController {
     return _historyChapBox
         .where()
         .chapterIdEqualTo(chapterId)
-        .and()
-        .bookEqualTo(book.id)
-        .findFirstAsync();
+        .filter()
+        .bookEqualTo(book.id!)
+        .findFirst();
   }
 
   Future<List<Book>> getListHistory(int limit, {required int offset}) async {
     final query = _bookBox.where().sortByUpdatedAtDesc();
 
-    final items = await query.findAllAsync(offset: offset, limit: limit);
+    final items = await query.offset(offset).limit(limit).findAll();
     final dropOut = limit - items.length;
 
     if (dropOut > 0 && items.isNotEmpty) {
@@ -124,14 +124,14 @@ class HistoryController {
   Future<List<Book>> getListFollows(int limit, {required int offset}) async {
     final query = _bookBox.where().followedAtIsNotNull().sortByFollowedAtDesc();
 
-    return query.findAllAsync(offset: offset, limit: limit);
+    return query.offset(offset).limit(limit).findAll();
   }
 
   Future<HistoryChap?> getLastChapter(int bookId) async {
     return _historyChapBox
-        .where()
+        .filter()
         .bookEqualTo(bookId)
         .sortByUpdatedAtDesc()
-        .findFirstAsync();
+        .findFirst();
   }
 }
