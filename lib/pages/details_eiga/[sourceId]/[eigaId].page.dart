@@ -19,6 +19,7 @@ import 'package:hoyomi/widgets/eiga/button_share_eiga.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
@@ -313,15 +314,15 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               watchTime: watchTime);
         }
       },
-      subtitlesNotifier: _subtitlesNotifier,
+      subtitlesNotifier: _subtitlesNotifier.toSignal(),
       sourceNotifier: _sourceNotifier,
       posterNotifier: _posterNotifier,
-      thumbnailVtt: _thumbnailVtt,
-      openingEndingNotifier: _openingEndingNotifier,
+      thumbnailVtt: _thumbnailVtt.toSignal(),
+      openingEndingNotifier: _openingEndingNotifier.toSignal(),
       aspectRatio: _aspectRatio,
       fetchSourceContent: _service.fetchSourceContent,
-      onPrev: _onPrevNotifier,
-      onNext: _onNextNotifier,
+      onPrev: _onPrevNotifier.toSignal(),
+      onNext: _onNextNotifier.toSignal(),
       overlayNotifier: _overlayNotifier,
     );
   }

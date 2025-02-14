@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
+import 'package:signals/signals_flutter.dart';
 import 'package:subtitle/subtitle.dart';
 
 import 'package:hoyomi/utils/format_duration.dart';
@@ -17,12 +18,12 @@ class _PreviewMeta {
 }
 
 class SliderEiga extends StatefulWidget {
-  final ValueNotifier<Duration> progress; // Current progress (0.0 to 1.0)
-  final ValueNotifier<Duration> duration;
-  final ValueNotifier<bool> showThumb;
-  final ValueNotifier<bool> pauseAutoHideControls;
-  final ValueNotifier<BasicVtt?> vttThumbnail;
-  final ValueNotifier<OpeningEnding?> openingEnding;
+  final ReadonlySignal<Duration> progress; // Current progress (0.0 to 1.0)
+  final ReadonlySignal<Duration> duration;
+  final ReadonlySignal<bool> showThumb;
+  final ReadonlySignal<bool> pauseAutoHideControls;
+  final ReadonlySignal<BasicVtt?> vttThumbnail;
+  final ReadonlySignal<OpeningEnding?> openingEnding;
   final Function(double) onSeek; // Callback for seek
 
   const SliderEiga(
@@ -40,7 +41,7 @@ class SliderEiga extends StatefulWidget {
 }
 
 class _SliderEigaState extends State<SliderEiga>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, SignalsMixin {
   late AnimationController _controller;
   late Animation<double> _barHeightAnimation;
 
@@ -48,11 +49,10 @@ class _SliderEigaState extends State<SliderEiga>
   final double sliderHeightMin = 2;
   final double sliderHeightMax = Platform.isAndroid || Platform.isIOS ? 4 : 3;
 
-  final ValueNotifier<double> _hoverPosition =
-      ValueNotifier(0.0); // Hover position
-  final ValueNotifier<bool> _isHovering = ValueNotifier(false);
-  final ValueNotifier<Future<_PreviewMeta>?> _preview = ValueNotifier(null);
-  final ValueNotifier<Widget?> _previewBlank = ValueNotifier(null);
+  late final _hoverPosition = createSignal(0.0); // Hover position
+  late final _isHovering = createSignal(false);
+  late final _preview = createSignal<Future<_PreviewMeta>?>(null);
+  late final _previewBlank = createSignal<Widget?>(null);
 
   SubtitleController? _subtitleController;
 
@@ -68,29 +68,27 @@ class _SliderEigaState extends State<SliderEiga>
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
-    widget.vttThumbnail.addListener(_onVttThumbnailChanged);
-  }
+    createEffect(() {
+      final vtt = widget.vttThumbnail();
+      if (vtt != null) {
+        // TODO: Controls this
+        var url = Uri.parse(vtt.src);
 
-  void _onVttThumbnailChanged() {
-    if (widget.vttThumbnail.value != null) {
-      // TODO: Controls this
-      var url = Uri.parse(widget.vttThumbnail.value!.src);
+        SubtitleProvider provider = NetworkSubtitle(url);
 
-      SubtitleProvider provider = NetworkSubtitle(url);
-
-      _subtitleController = SubtitleController(provider: provider)
-        ..initial().catchError((error) {
-          debugPrint('[thumbnail]: Error $error');
-        });
-    } else {
-      _subtitleController = null;
-    }
+        _subtitleController = SubtitleController(provider: provider)
+          ..initial().catchError((error) {
+            debugPrint('[thumbnail]: Error $error');
+          });
+      } else {
+        _subtitleController = null;
+      }
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    widget.vttThumbnail.removeListener(_onVttThumbnailChanged);
     super.dispose();
   }
 
@@ -98,17 +96,16 @@ class _SliderEigaState extends State<SliderEiga>
     final box = context.findRenderObject() as RenderBox;
 
     _isHovering.value = true;
-    widget.pauseAutoHideControls.value = true;
+    // widget.pauseAutoHideControls.value = true;
     _hoverPosition.value = (localPosition.dx / box.size.width).clamp(0.0, 1.0);
     _controller.forward();
 
-    final baseValue =
-        _subtitleController?.durationSearch(widget.progress.value);
+    final baseValue = _subtitleController?.durationSearch(widget.progress());
     if (baseValue != null) {
       final [path, meta] = baseValue.data.split("#xywh=");
       final [x, y, w, h] = meta.split(",").map((e) => double.parse(e)).toList();
 
-      final spriteUrl = Uri.parse(widget.vttThumbnail.value!.src).resolve(path);
+      final spriteUrl = Uri.parse(widget.vttThumbnail()!.src).resolve(path);
       // spriteUrl is image sprite, get image with size = (w, h) at offset (x, y) in spriteUrl (please cache this sprite because 1 of sprite 30 frame)
 
       debugPrint("spriteUrl: $spriteUrl, x: $x, y: $y, w: $w, h: $h");
@@ -168,7 +165,7 @@ class _SliderEigaState extends State<SliderEiga>
 
   void _onHoverEnd() {
     _isHovering.value = false;
-    widget.pauseAutoHideControls.value = false;
+    // widget.pauseAutoHideControls.value = false;
     _controller.reverse();
   }
 
@@ -265,161 +262,146 @@ class _SliderEigaState extends State<SliderEiga>
         child: AnimatedBuilder(
           animation: _barHeightAnimation,
           builder: (context, child) {
-            return ListenableBuilder(
-                listenable: Listenable.merge([
-                  widget.progress,
-                  widget.duration,
-                  widget.openingEnding,
-                ]),
-                builder: (context, child) => Transform.translate(
-                    offset: Offset(0, _barHeightAnimation.value / 2),
-                    child: CustomPaint(
-                      size: Size(parentSize.width, _barHeightAnimation.value),
-                      painter: _ProgressBarPainter(
-                        progress: widget.progress.value.inMilliseconds /
-                            widget.duration.value.inMilliseconds,
-                        range: [
-                          if (widget.openingEnding.value?.opening != null &&
-                              widget.duration.value.inMilliseconds > 0)
-                            (
-                              widget.openingEnding.value!.opening!.start
-                                      .inMilliseconds /
-                                  widget.duration.value.inMilliseconds,
-                              widget.openingEnding.value!.opening!.end
-                                      .inMilliseconds /
-                                  widget.duration.value.inMilliseconds
-                            ),
-                          if (widget.openingEnding.value?.ending != null &&
-                              widget.duration.value.inMilliseconds > 0)
-                            (
-                              widget.openingEnding.value!.ending!.start
-                                      .inMilliseconds /
-                                  widget.duration.value.inMilliseconds,
-                              widget.openingEnding.value!.ending!.end
-                                      .inMilliseconds /
-                                  widget.duration.value.inMilliseconds
-                            )
-                        ],
-                        barHeight:
-                            _barHeightAnimation.value, // Animate bar height
-                      ),
-                    )));
+            return Watch((context) {
+              final opening = widget.openingEnding()?.opening;
+              final ending = widget.openingEnding()?.ending;
+
+              final duration = widget.duration();
+
+              return Transform.translate(
+                  offset: Offset(0, _barHeightAnimation.value / 2),
+                  child: CustomPaint(
+                    size: Size(parentSize.width, _barHeightAnimation.value),
+                    painter: _ProgressBarPainter(
+                      progress: widget.progress().inMilliseconds /
+                          duration.inMilliseconds,
+                      range: [
+                        if (opening != null && duration.inMilliseconds > 0)
+                          (
+                            opening.start.inMilliseconds /
+                                duration.inMilliseconds,
+                            opening.end.inMilliseconds / duration.inMilliseconds
+                          ),
+                        if (ending != null && duration.inMilliseconds > 0)
+                          (
+                            ending.start.inMilliseconds /
+                                duration.inMilliseconds,
+                            ending.end.inMilliseconds / duration.inMilliseconds
+                          )
+                      ],
+                      barHeight:
+                          _barHeightAnimation.value, // Animate bar height
+                    ),
+                  ));
+            }, dependencies: [widget.openingEnding]);
           },
         ));
   }
 
   Widget _buildHoverPreview(Size parentSize) {
-    return ListenableBuilder(
-        listenable: Listenable.merge([
-          _preview,
-          _previewBlank,
-          _isHovering,
-          _hoverPosition,
-          widget.duration
-        ]),
-        builder: (context, child) {
-          if (!_isHovering.value) return SizedBox.shrink();
+    return Watch((context) {
+      if (!_isHovering()) return SizedBox.shrink();
 
-          Widget builder(
-              BuildContext context, _PreviewMeta? preview, bool done) {
-            final String text =
-                formatDuration(widget.duration.value * _hoverPosition.value);
-            const double fontSize = 12;
-            const double paddingX = 5;
+      Widget builder(BuildContext context, _PreviewMeta? preview, bool done) {
+        final String text =
+            formatDuration(widget.duration() * _hoverPosition());
+        const double fontSize = 12;
+        const double paddingX = 5;
 
-            double width;
-            if (preview != null) {
-              width = preview.width;
-            } else {
-              // calc text
-              width = (text.length * fontSize / 2) + paddingX * 2;
-            }
+        double width;
 
-            final left = (_hoverPosition.value * parentSize.width - (width / 2))
-                .clamp(3, parentSize.width - width - 3)
-                .toDouble();
+        if (preview != null) {
+          width = preview.width;
+        } else {
+          // calc text
+          width = (text.length * fontSize / 2) + paddingX * 2;
+        }
 
-            final child = Center(
-                child: Container(
-              padding: EdgeInsets.symmetric(vertical: 3, horizontal: paddingX),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.7),
-                borderRadius: BorderRadius.circular(3),
-              ),
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-              ),
-            ));
-            final previewWidget =
-                preview?.widget ?? (done ? null : _previewBlank.value);
-            return Positioned(
-              left: left,
-              bottom: sliderHeightMax + thumbSize / 2 + 7,
-              child: previewWidget != null
-                  ? Stack(
-                      children: [
-                        previewWidget,
-                        Positioned(
-                          bottom: 10,
-                          left: 0,
-                          right: 0,
-                          child: child,
-                        ),
-                      ],
-                    )
-                  : child,
-            );
-          }
+        final left = (_hoverPosition() * parentSize.width - (width / 2))
+            .clamp(3, parentSize.width - width - 3)
+            .toDouble();
 
-          return FutureBuilder(
-              future: _preview.value,
-              builder: (context, snapshot) => builder(
-                  context,
-                  snapshot.data,
-                  snapshot.connectionState != ConnectionState.waiting ||
-                      snapshot.connectionState == ConnectionState.done));
-        });
+        final child = Center(
+            child: Container(
+          padding: EdgeInsets.symmetric(vertical: 3, horizontal: paddingX),
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.7),
+            borderRadius: BorderRadius.circular(3),
+          ),
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+        ));
+        final previewWidget =
+            preview?.widget ?? (done ? null : _previewBlank());
+        return Positioned(
+          left: left,
+          bottom: sliderHeightMax + thumbSize / 2 + 7,
+          child: previewWidget != null
+              ? Stack(
+                  children: [
+                    previewWidget,
+                    Positioned(
+                      bottom: 10,
+                      left: 0,
+                      right: 0,
+                      child: child,
+                    ),
+                  ],
+                )
+              : child,
+        );
+      }
+
+      return FutureBuilder(
+          future: _preview(),
+          builder: (context, snapshot) => builder(
+              context,
+              snapshot.data,
+              snapshot.connectionState != ConnectionState.waiting ||
+                  snapshot.connectionState == ConnectionState.done));
+    }, dependencies: [_isHovering, _preview]);
   }
 
   Widget _buildSliderThumb(Size parentSize) {
     final width = parentSize.width;
 
-    return ListenableBuilder(
-        listenable: Listenable.merge(
-            [widget.duration, widget.progress, _isHovering, widget.showThumb]),
-        builder: (context, child) {
-          final double left = ((widget.duration.value.inMilliseconds == 0
-                          ? 0
-                          : (widget.progress.value.inMilliseconds /
-                              widget.duration.value.inMilliseconds)) *
-                      width -
-                  thumbSize / 2)
-              .clamp(thumbSize / 2, width - thumbSize);
+    return Watch((context) {
+      // NOTE: animate?
+      if (!widget.showThumb()) return SizedBox.shrink();
 
-          final double size = thumbSize;
+      final double left = ((widget.duration().inMilliseconds == 0
+                      ? 0
+                      : (widget.progress().inMilliseconds /
+                          widget.duration().inMilliseconds)) *
+                  width -
+              thumbSize / 2)
+          .clamp(thumbSize / 2, width - thumbSize);
 
-          return Positioned(
-              left: left,
-              bottom: 0,
-              child: AnimatedScale(
-                duration: const Duration(milliseconds: 111),
-                curve: Curves.easeInOut,
-                scale: widget.showThumb.value || _isHovering.value ? 1 : 0,
-                child: GestureDetector(
-                  onPanUpdate: (details) {
-                    _onSeek(details.localPosition);
-                  },
-                  child: CustomPaint(
-                      size: Size(size, size), // Adjust size based on showThumb
-                      painter: _ThumbPainter(size: size)),
-                ),
-              ));
-        });
+      final double size = thumbSize;
+
+      return Positioned(
+          left: left,
+          bottom: 0,
+          child: AnimatedScale(
+            duration: const Duration(milliseconds: 111),
+            curve: Curves.easeInOut,
+            scale: widget.showThumb() || _isHovering() ? 1 : 0,
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                _onSeek(details.localPosition);
+              },
+              child: CustomPaint(
+                  size: Size(size, size), // Adjust size based on showThumb
+                  painter: _ThumbPainter(size: size)),
+            ),
+          ));
+    });
   }
 }
 
