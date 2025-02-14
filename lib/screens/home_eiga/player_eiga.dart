@@ -1021,7 +1021,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
               fullscreenDialog: true,
               builder: (context) => Material(child: _buildStack())));
     } else {
-      SystemChrome.setPreferredOrientations([]);
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
           overlays: SystemUiOverlay.values);
       Navigator.pop(context);
