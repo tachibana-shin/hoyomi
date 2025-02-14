@@ -1010,146 +1010,160 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   Widget _buildBottomBar() {
-    return AnimatedPositioned(
+    return AnimatedSwitcher(
         duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOutCubic,
-        bottom: _showToolbar ? 0 : -kToolbarHeight * 2.5,
-        left: 0,
-        right: 0,
-        child: Column(children: [
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Material(
-                        color: Colors.transparent,
-                        child: AbsorbPointer(
-                            absorbing: _prevChapter == null,
-                            child: Ink(
-                                decoration: ShapeDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .surface
-                                      .withValues(alpha: 0.9),
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                  iconSize: 30.0,
-                                  icon: Icon(
-                                    MaterialCommunityIcons.skip_previous,
-                                  ),
-                                  color: _prevChapter != null
-                                      ? Theme.of(context).colorScheme.onSurface
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withValues(alpha: 0.5),
-                                  onPressed: () {
-                                    context.replace(
-                                        "/details_comic/${widget.service}/${widget.bookId}/view?chap=${_prevChapter!.chapterId}",
-                                        extra: {'book': widget.book});
-                                  },
-                                )))),
-                    Expanded(
-                        child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 6.0),
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: Material(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .surface
-                                        .withValues(alpha: 0.9),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0, vertical: 15.0),
-                                      child: _buildProgressControl(),
-                                    ))))),
-                    Material(
-                        color: Colors.transparent,
-                        child: AbsorbPointer(
-                            absorbing: _nextChapter == null,
-                            child: Ink(
-                                decoration: ShapeDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .surface
-                                      .withValues(alpha: 0.9),
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                    iconSize: 30.0,
-                                    icon:
-                                        Icon(MaterialCommunityIcons.skip_next),
-                                    color: _nextChapter != null
-                                        ? Theme.of(context)
+        transitionBuilder: (child, animation) {
+          const begin = Offset(0.0, -kToolbarHeight * 2.5);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(position: offsetAnimation, child: child);
+        },
+        child: !_showToolbar
+            ? null
+            : Column(children: [
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Material(
+                              color: Colors.transparent,
+                              child: AbsorbPointer(
+                                  absorbing: _prevChapter == null,
+                                  child: Ink(
+                                      decoration: ShapeDecoration(
+                                        color: Theme.of(context)
                                             .colorScheme
-                                            .onSurface
-                                        : Theme.of(context)
+                                            .surface
+                                            .withValues(alpha: 0.9),
+                                        shape: CircleBorder(),
+                                      ),
+                                      child: IconButton(
+                                        iconSize: 30.0,
+                                        icon: Icon(
+                                          MaterialCommunityIcons.skip_previous,
+                                        ),
+                                        color: _prevChapter != null
+                                            ? Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withValues(alpha: 0.5),
+                                        onPressed: () {
+                                          context.replace(
+                                              "/details_comic/${widget.service}/${widget.bookId}/view?chap=${_prevChapter!.chapterId}",
+                                              extra: {'book': widget.book});
+                                        },
+                                      )))),
+                          Expanded(
+                              child: Container(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 6.0),
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: Material(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surface
+                                              .withValues(alpha: 0.9),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 16.0,
+                                                vertical: 15.0),
+                                            child: _buildProgressControl(),
+                                          ))))),
+                          Material(
+                              color: Colors.transparent,
+                              child: AbsorbPointer(
+                                  absorbing: _nextChapter == null,
+                                  child: Ink(
+                                      decoration: ShapeDecoration(
+                                        color: Theme.of(context)
                                             .colorScheme
-                                            .onSurface
-                                            .withValues(alpha: 0.5),
-                                    onPressed: () {
-                                      context.replace(
-                                          "/details_comic/${widget.service}/${widget.bookId}/view?chap=${_nextChapter!.chapterId}",
-                                          extra: {'book': widget.book});
-                                    }))))
-                  ])),
-          SizedBox(height: 8.0),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0)
-                .add(EdgeInsets.only(bottom: 8.0)),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                    child: Material(
-                        color: Theme.of(context)
-                            .scaffoldBackgroundColor
-                            .withValues(alpha: 0.8),
-                        child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 12.0, vertical: 8.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                    child: ButtonInset(
-                                  icon: Ionicons.heart_outline,
-                                  text: 'Like',
-                                  onPressed: () {},
-                                )),
-                                Expanded(
-                                    child: ButtonInset(
-                                  icon: Ionicons.chatbox_ellipses_outline,
-                                  text: 'Comments',
-                                  disabled: widget.service is! ComicAuthMixin ||
-                                      (widget.service as ComicAuthMixin)
-                                              .getComments ==
-                                          null,
-                                  onPressed: _showPanelComments,
-                                )),
-                                Expanded(
-                                    child: ButtonInset(
-                                  icon: Ionicons.list,
-                                  text: 'Chapters',
-                                  onPressed: _showPanelListChapters,
-                                )),
-                                Expanded(
-                                    child: ButtonInset(
-                                  icon: Ionicons.settings_outline,
-                                  text: 'Settings',
-                                  onPressed: _showPanelSettings,
-                                )),
-                                Expanded(
-                                    child: ButtonInset(
-                                        icon: Ionicons.arrow_forward,
-                                        text: 'Skip',
-                                        onPressed: _showPanelSkipPages)),
-                              ],
-                            ))))),
-          )
-        ]));
+                                            .surface
+                                            .withValues(alpha: 0.9),
+                                        shape: CircleBorder(),
+                                      ),
+                                      child: IconButton(
+                                          iconSize: 30.0,
+                                          icon: Icon(
+                                              MaterialCommunityIcons.skip_next),
+                                          color: _nextChapter != null
+                                              ? Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface
+                                              : Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface
+                                                  .withValues(alpha: 0.5),
+                                          onPressed: () {
+                                            context.replace(
+                                                "/details_comic/${widget.service}/${widget.bookId}/view?chap=${_nextChapter!.chapterId}",
+                                                extra: {'book': widget.book});
+                                          }))))
+                        ])),
+                SizedBox(height: 8.0),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0)
+                      .add(EdgeInsets.only(bottom: 8.0)),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                          child: Material(
+                              color: Theme.of(context)
+                                  .scaffoldBackgroundColor
+                                  .withValues(alpha: 0.8),
+                              child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 8.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: ButtonInset(
+                                        icon: Ionicons.heart_outline,
+                                        text: 'Like',
+                                        onPressed: () {},
+                                      )),
+                                      Expanded(
+                                          child: ButtonInset(
+                                        icon: Ionicons.chatbox_ellipses_outline,
+                                        text: 'Comments',
+                                        disabled: widget.service
+                                                is! ComicAuthMixin ||
+                                            (widget.service as ComicAuthMixin)
+                                                    .getComments ==
+                                                null,
+                                        onPressed: _showPanelComments,
+                                      )),
+                                      Expanded(
+                                          child: ButtonInset(
+                                        icon: Ionicons.list,
+                                        text: 'Chapters',
+                                        onPressed: _showPanelListChapters,
+                                      )),
+                                      Expanded(
+                                          child: ButtonInset(
+                                        icon: Ionicons.settings_outline,
+                                        text: 'Settings',
+                                        onPressed: _showPanelSettings,
+                                      )),
+                                      Expanded(
+                                          child: ButtonInset(
+                                              icon: Ionicons.arrow_forward,
+                                              text: 'Skip',
+                                              onPressed: _showPanelSkipPages)),
+                                    ],
+                                  ))))),
+                )
+              ]));
   }
 
   Widget _buildPage(int index) {
