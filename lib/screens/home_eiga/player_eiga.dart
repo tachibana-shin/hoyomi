@@ -24,11 +24,11 @@ import 'package:http/http.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
-import 'package:wakelock/wakelock.dart';
 
 import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart' as type;
 import 'package:hoyomi/utils/save_file_cache.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 // import 'package:bitmovin_player/bitmovin_player.dart';
 // import 'package:theoplayer/theoplayer.dart';
@@ -285,7 +285,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
   DateTime _activeTime = DateTime.now();
   void _onPlayerValueChanged() {
     if (_controller.value?.value.hasError == true) {
-      Wakelock.disable();
+      WakelockPlus.disable();
       debugPrint(
           "[video_player]: ${_error.value = _controller.value!.value.errorDescription}");
     } else {
@@ -301,9 +301,9 @@ class _PlayerEigaState extends State<PlayerEiga> {
       _playing.value = playing;
 
       if (_playing.value) {
-        Wakelock.enable();
+        WakelockPlus.enable();
       } else {
-        Wakelock.disable();
+        WakelockPlus.disable();
       }
     }
     if (_aspectRatio.value != _controller.value?.value.aspectRatio) {
