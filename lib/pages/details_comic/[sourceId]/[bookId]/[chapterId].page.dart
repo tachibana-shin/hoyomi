@@ -143,61 +143,72 @@ class _AppBarState extends State<_AppBar> {
     return ValueListenableBuilder(
         valueListenable: widget.enabled,
         builder: (context, value, child) {
-          return AnimatedPositioned(
+          return AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOutCubic,
-            top: value ? 0 : -kToolbarHeight,
-            left: 0,
-            right: 0,
-            child: ClipRRect(
-                child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                    child: AppBar(
-                      backgroundColor: Theme.of(context)
-                          .scaffoldBackgroundColor
-                          .withValues(alpha: 0.8),
-                      elevation: 0,
-                      leading: IconButton(
-                        icon: const Icon(MaterialCommunityIcons.arrow_left),
-                        onPressed: () {
-                          context.pop();
-                        },
-                      ),
-                      title: ValueListenableBuilder(
-                          valueListenable: widget.chapter,
-                          builder: (context, value, child) {
-                            return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: (widget.book != null)
-                                    ? [
-                                        Text(
-                                          widget.book!.name,
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        SizedBox(height: 2),
-                                        if (value != null)
-                                          Text(
-                                            value.name,
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.white70),
-                                          ),
-                                      ]
-                                    : []);
-                          }),
-                      actions: [
-                        IconButtonFollow(
-                            sourceId: widget.service.uid,
-                            bookId: widget.bookId,
-                            book: widget.book),
-                        IconButtonOpenBrowser(
-                            url: widget.service.getURL(widget.bookId,
-                                chapterId: widget.chapter.value?.chapterId)),
-                        IconButtonShare()
-                      ],
-                    ))),
+            transitionBuilder: (child, animation) {
+              const begin = Offset(0.0, 50.0);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
+
+              var tween =
+                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var offsetAnimation = animation.drive(tween);
+
+              return SlideTransition(position: offsetAnimation, child: child);
+            },
+            child: value
+                ? ClipRRect(
+                    child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                        child: AppBar(
+                          backgroundColor: Theme.of(context)
+                              .scaffoldBackgroundColor
+                              .withValues(alpha: 0.8),
+                          elevation: 0,
+                          leading: IconButton(
+                            icon: const Icon(MaterialCommunityIcons.arrow_left),
+                            onPressed: () {
+                              context.pop();
+                            },
+                          ),
+                          title: ValueListenableBuilder(
+                              valueListenable: widget.chapter,
+                              builder: (context, value, child) {
+                                return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: (widget.book != null)
+                                        ? [
+                                            Text(
+                                              widget.book!.name,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(height: 2),
+                                            if (value != null)
+                                              Text(
+                                                value.name,
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.white70),
+                                              ),
+                                          ]
+                                        : []);
+                              }),
+                          actions: [
+                            IconButtonFollow(
+                                sourceId: widget.service.uid,
+                                bookId: widget.bookId,
+                                book: widget.book),
+                            IconButtonOpenBrowser(
+                                url: widget.service.getURL(widget.bookId,
+                                    chapterId:
+                                        widget.chapter.value?.chapterId)),
+                            IconButtonShare()
+                          ],
+                        )))
+                : null,
           );
         });
   }
