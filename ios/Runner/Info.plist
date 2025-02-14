@@ -49,6 +49,8 @@
 	<dict>
 		<key>NSAllowsArbitraryLoadsForMedia</key>
 		<true/>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>
