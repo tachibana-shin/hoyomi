@@ -146,7 +146,7 @@ class _AppBarState extends State<_AppBar> {
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
             transitionBuilder: (child, animation) {
-              const begin = Offset(0.0, 50.0);
+              const begin = Offset(0.0, -50.0);
               const end = Offset.zero;
               const curve = Curves.easeInOut;
 
@@ -158,56 +158,61 @@ class _AppBarState extends State<_AppBar> {
             },
             child: value
                 ? ClipRRect(
-                    child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                        child: AppBar(
-                          backgroundColor: Theme.of(context)
-                              .scaffoldBackgroundColor
-                              .withValues(alpha: 0.8),
-                          elevation: 0,
-                          leading: IconButton(
-                            icon: const Icon(MaterialCommunityIcons.arrow_left),
-                            onPressed: () {
-                              context.pop();
-                            },
-                          ),
-                          title: ValueListenableBuilder(
-                              valueListenable: widget.chapter,
-                              builder: (context, value, child) {
-                                return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: (widget.book != null)
-                                        ? [
-                                            Text(
-                                              widget.book!.name,
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            SizedBox(height: 2),
-                                            if (value != null)
-                                              Text(
-                                                value.name,
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.white70),
-                                              ),
-                                          ]
-                                        : []);
-                              }),
-                          actions: [
-                            IconButtonFollow(
-                                sourceId: widget.service.uid,
-                                bookId: widget.bookId,
-                                book: widget.book),
-                            IconButtonOpenBrowser(
-                                url: widget.service.getURL(widget.bookId,
-                                    chapterId:
-                                        widget.chapter.value?.chapterId)),
-                            IconButtonShare()
-                          ],
-                        )))
+                    child: SizedBox(
+                        height: 53.0,
+                        child: BackdropFilter(
+                            filter:
+                                ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                            child: AppBar(
+                              backgroundColor: Theme.of(context)
+                                  .scaffoldBackgroundColor
+                                  .withValues(alpha: 0.8),
+                              elevation: 0,
+                              leading: IconButton(
+                                icon: const Icon(
+                                    MaterialCommunityIcons.arrow_left),
+                                onPressed: () {
+                                  context.pop();
+                                },
+                              ),
+                              title: ValueListenableBuilder(
+                                  valueListenable: widget.chapter,
+                                  builder: (context, value, child) {
+                                    return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: (widget.book != null)
+                                            ? [
+                                                Text(
+                                                  widget.book!.name,
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                SizedBox(height: 2),
+                                                if (value != null)
+                                                  Text(
+                                                    value.name,
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.white70),
+                                                  ),
+                                              ]
+                                            : []);
+                                  }),
+                              actions: [
+                                IconButtonFollow(
+                                    sourceId: widget.service.uid,
+                                    bookId: widget.bookId,
+                                    book: widget.book),
+                                IconButtonOpenBrowser(
+                                    url: widget.service.getURL(widget.bookId,
+                                        chapterId:
+                                            widget.chapter.value?.chapterId)),
+                                IconButtonShare()
+                              ],
+                            ))))
                 : null,
           );
         });

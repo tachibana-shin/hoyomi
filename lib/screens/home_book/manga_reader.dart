@@ -666,7 +666,7 @@ class _MangaReaderState extends State<MangaReader>
         body: Stack(children: [
       TapListener(
           rows: 3, columns: 3, onTap: _onTapGrid, child: _buildReader()),
-      _buildBottomBar()
+      Positioned(left: 0, right: 0, bottom: 0, child: _buildBottomBar())
     ]));
   }
 
@@ -1013,7 +1013,7 @@ class _MangaReaderState extends State<MangaReader>
     return AnimatedSwitcher(
         duration: const Duration(milliseconds: 200),
         transitionBuilder: (child, animation) {
-          const begin = Offset(0.0, -kToolbarHeight * 2.5);
+          const begin = Offset(0.0, kToolbarHeight * 2.5);
           const end = Offset.zero;
           const curve = Curves.easeInOut;
 
