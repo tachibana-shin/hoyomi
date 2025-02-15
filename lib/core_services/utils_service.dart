@@ -7,9 +7,9 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inappwebview;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/controller/cookie.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
-import 'package:hoyomi/core_services/interfaces/basic_user.dart';
+import 'package:hoyomi/core_services/interfaces/user.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
+import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/database/scheme/cookie_manager.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:html/dom.dart' as d;
@@ -223,7 +223,7 @@ StackWebView createWebView(Uri uri) {
 abstract class UtilsService {
   String get name;
   String get uid => name.toLowerCase().replaceAll(r"\s", "-");
-  Future<BasicUser>? _userFuture;
+  Future<User>? _userFuture;
 
   static void showCaptchaResolve(BuildContext? context,
       {String? url, required CaptchaRequiredException error}) {
@@ -367,7 +367,7 @@ abstract class UtilsService {
 
     if ([429, 503, 403].contains(response.statusCode)) {
       // return Future.error(response);
-      final error = CaptchaRequiredException(getBaseService(uid));
+      final error = CaptchaRequiredException(getService(uid));
 
       // // required captcha resolve
       showCaptchaResolve(null, url: url, error: error);
@@ -445,20 +445,20 @@ abstract class UtilsService {
 
   /// After a successful sign in, this function is called to update the cookie and other relevant information in the cache.
   ///
-  /// This function is called by [BaseAuthMixin] after a successful sign in.
+  /// This function is called by [AuthMixin] after a successful sign in.
   ///
   /// [cookie] The cookie to save to the cache. Must not be null.
   ///
   /// [userAgent] The user agent to save to the cache. Must not be null.
   ///
-  /// Returns the [BasicUser] object of the user who has just signed in.
-  Future<BasicUser> onAfterSignIn(
+  /// Returns the [User] object of the user who has just signed in.
+  Future<User> onAfterSignIn(
       {required String cookie, required String userAgent}) async {
-    if (this is! BaseAuthMixin) {
+    if (this is! AuthMixin) {
       throw Exception('Service must be an instance of auth service');
     }
 
-    final service = this as BaseAuthMixin;
+    final service = this as AuthMixin;
     // save to cache
     final oldData = await CookieController.getAsync(sourceId: uid) ??
         CookieManager(
@@ -498,15 +498,15 @@ abstract class UtilsService {
     }
   }
 
-  Future<BasicUser> fetchUser({CookieManager? row, bool? recordLoaded}) async {
+  Future<User> fetchUser({CookieManager? row, bool? recordLoaded}) async {
     return _userFuture ??= _fetchUser(row: row, recordLoaded: recordLoaded);
   }
 
-  Future<BasicUser> _fetchUser({CookieManager? row, bool? recordLoaded}) async {
-    if (this is! BaseAuthMixin) {
-      throw Exception('Service must be an instance of BaseAuthMixin');
+  Future<User> _fetchUser({CookieManager? row, bool? recordLoaded}) async {
+    if (this is! AuthMixin) {
+      throw Exception('Service must be an instance of AuthMixin');
     }
-    final service = this as BaseAuthMixin;
+    final service = this as AuthMixin;
 
     row = recordLoaded == true
         ? row
@@ -534,7 +534,7 @@ abstract class UtilsService {
       await CookieController.save(row);
       // }
 
-      return BasicUser.fromJson(jsonDecode(user));
+      return User.fromJson(jsonDecode(user));
     } on UserNotFoundException catch (_) {
       if (row != null) {
         row.cookie = cookie;

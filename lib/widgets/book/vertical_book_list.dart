@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:hoyomi/core_services/book/interfaces/book.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
 import 'package:hoyomi/widgets/vertical_list.dart';
@@ -7,7 +7,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'vertical_book.dart';
 
 class VerticalBookList extends StatelessWidget {
-  final Future<List<BasicBookExtend>> itemsFuture;
+  final Future<List<BookExtend>> itemsFuture;
   final String title;
   final String? subtitle;
   final String? more;
@@ -28,14 +28,14 @@ class VerticalBookList extends StatelessWidget {
             return Skeletonizer(
                 enabled: true,
                 enableSwitchAnimation: true,
-                child: VerticalList<BasicBookExtend>(
+                child: VerticalList<BookExtend>(
                   title: title,
                   subtitle: subtitle,
                   more: more,
                   items: List.generate(
                       30,
-                      (index) => BasicBookExtend(
-                          book: BasicBook.createFakeData(), sourceId: null)),
+                      (index) => BookExtend(
+                          book: Book.createFakeData(), sourceId: null)),
                   builder: (context, book, index) {
                     return VerticalBook(
                       book: book.book,
@@ -53,7 +53,7 @@ class VerticalBookList extends StatelessWidget {
                     orElse: (error) => Text('Error: $error')));
           }
 
-          return VerticalList<BasicBookExtend>(
+          return VerticalList<BookExtend>(
             title: title,
             subtitle: subtitle,
             more: more,

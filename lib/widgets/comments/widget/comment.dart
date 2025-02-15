@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:hoyomi/core_services/book/interfaces/base_comments.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_comment.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_comments.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_comment.dart';
 import 'package:hoyomi/globals.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:hoyomi/widgets/comments/widget/comments.dart';
 
 class Comment extends StatefulWidget {
-  final BasicComment comment;
-  final BasicComment? parent;
+  final BookComment comment;
+  final BookComment? parent;
 
-  final Future<BaseComments> Function(
-      {required BasicComment? parent, int? page})? getComments;
+  final Future<BookComments> Function(
+      {required BookComment? parent, int? page})? getComments;
   final Future<void> Function(
-      {required BasicComment? parent,
-      required BasicComment comment}) deleteComment;
+      {required BookComment? parent,
+      required BookComment comment}) deleteComment;
   final Future<bool> Function(
-      {required BasicComment? parent,
-      required BasicComment comment,
+      {required BookComment? parent,
+      required BookComment comment,
       required bool value}) setLikeComment;
   final void Function() onPop;
 

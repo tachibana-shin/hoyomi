@@ -220,7 +220,7 @@ Id _bookGetId(Book object) {
   return object.id ?? Isar.autoIncrement;
 }
 
-List<IsarLinkBase<dynamic>> _bookGetLinks(Book object) {
+List<IsarLink<dynamic>> _bookGetLinks(Book object) {
   return [];
 }
 

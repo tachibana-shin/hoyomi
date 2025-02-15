@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/history.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:hoyomi/core_services/book/interfaces/book.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:hoyomi/database/scheme/book.dart';
+import 'package:hoyomi/database/scheme/book.dart' as i_book;
 import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
 
 class HistoryHorizontalList extends StatefulWidget {
@@ -15,7 +15,7 @@ class HistoryHorizontalList extends StatefulWidget {
 }
 
 class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
-  late final Future<List<Book>> _itemsFuture;
+  late final Future<List<i_book.Book>> _itemsFuture;
 
   @override
   initState() {
@@ -29,7 +29,7 @@ class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
       itemsFuture: _itemsFuture
           .then((items) async => Future.wait(items.map((item) async {
                 final meta = MetaBook.fromJson(jsonDecode(item.meta));
-                final book = BasicBook.fromMeta(item.bookId, book: meta);
+                final book = Book.fromMeta(item.bookId, book: meta);
 
                 final current =
                     await HistoryController().getLastChapter(item.id!);
@@ -40,7 +40,7 @@ class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
                         return current.chapterId == chapter.chapterId;
                       });
 
-                return BasicBookExtend(
+                return BookExtend(
                     sourceId: item.sourceId,
                     book: book,
                     percentRead: (meta.chapters.length - currentEpisodeIndex) /

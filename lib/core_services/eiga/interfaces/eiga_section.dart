@@ -1,14 +1,14 @@
-import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
-import 'package:hoyomi/core_services/interfaces/basic_filter.dart';
+import 'package:hoyomi/core_services/interfaces/filter.dart';
 import 'package:hoyomi/core_services/interfaces/paginate.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 
-class BaseBookSection extends Paginate<BasicBook> {
+class EigaSection extends Paginate<Eiga> {
   final String name;
   final String url;
   final String? description;
-  final List<BasicFilter>? filters;
+  final List<Filter>? filters;
 
-  const BaseBookSection(
+  const EigaSection(
       {required this.name,
       required this.url,
       this.description,

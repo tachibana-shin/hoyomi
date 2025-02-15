@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/basic_carousel_item.dart';
-import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
+import 'package:hoyomi/core_services/interfaces/genre.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
-class BasicCarousel {
-  final List<BasicCarouselItem> items;
+class Carousel {
+  final List<CarouselItem> items;
   final double aspectRatio;
   final double Function(BuildContext context) maxHeightBuilder;
 
-  const BasicCarousel(
+  const Carousel(
       {required this.items,
       required this.aspectRatio,
       required this.maxHeightBuilder});
 
-  factory BasicCarousel.createFakeData() {
-    return BasicCarousel(items: [
-      BasicCarouselItem(
-        image: BasicImage.createFakeData(),
+  factory Carousel.createFakeData() {
+    return Carousel(items: [
+      CarouselItem(
+        image: OImage.createFakeData(),
         eigaId: 'eiga1',
         name: 'Eiga 1',
         originalName: 'Eiga 1 Original',
@@ -27,8 +27,8 @@ class BasicCarousel {
         description: 'Description 1',
         studio: 'Studio 1',
         genres: [
-          BasicGenre(name: 'Genre 1', genreId: 'genre1'),
-          BasicGenre(name: 'Genre 2', genreId: 'genre2'),
+          Genre(name: 'Genre 1', genreId: 'genre1'),
+          Genre(name: 'Genre 2', genreId: 'genre2'),
         ],
         actors: null,
         duration: null,

@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:hoyomi/core_services/book/interfaces/book.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/widgets/horizontal_list.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'vertical_book.dart';
 
-class BasicBookExtend {
-  final BasicBook book;
+class BookExtend {
+  final Book book;
   final String? sourceId;
   final double? percentRead;
 
-  BasicBookExtend(
+  BookExtend(
       {required this.book, required this.sourceId, this.percentRead});
 }
 
 class HorizontalBookList extends StatelessWidget {
-  final Future<List<BasicBookExtend>> itemsFuture;
+  final Future<List<BookExtend>> itemsFuture;
   final String title;
   final String? subtitle;
   final String? more;
@@ -38,14 +38,14 @@ class HorizontalBookList extends StatelessWidget {
             return Skeletonizer(
                 enabled: true,
                 enableSwitchAnimation: true,
-                child: HorizontalList<BasicBookExtend>(
+                child: HorizontalList<BookExtend>(
                   title: title,
                   subtitle: subtitle,
                   more: more,
                   items: List.generate(
                       30,
-                      (index) => BasicBookExtend(
-                          book: BasicBook.createFakeData(), sourceId: null)),
+                      (index) => BookExtend(
+                          book: Book.createFakeData(), sourceId: null)),
                   needSubtitle: false,
                   builder: (context, book, index) {
                     return VerticalBook(
@@ -64,7 +64,7 @@ class HorizontalBookList extends StatelessWidget {
                     orElse: (error) => Text('Error: $error')));
           }
 
-          return HorizontalList<BasicBookExtend>(
+          return HorizontalList<BookExtend>(
             title: title,
             subtitle: subtitle,
             more: more,

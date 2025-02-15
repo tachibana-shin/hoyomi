@@ -1,18 +1,18 @@
-import 'package:hoyomi/core_services/book/interfaces/basic_chapter.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_chapter.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 
-class BasicBook {
+class Book {
   final String name;
   final String bookId;
   final String? originalName;
-  final BasicImage image;
-  final BasicChapter? lastChap;
+  final OImage image;
+  final BookChapter? lastChap;
   final DateTime? timeAgo;
   final String? notice;
   final double? rate;
 
-  BasicBook({
+  Book({
     required this.name,
     required this.bookId,
     required this.originalName,
@@ -23,8 +23,8 @@ class BasicBook {
     required this.rate,
   });
 
-  factory BasicBook.fromMeta(String bookId, {required MetaBook book}) {
-    return BasicBook(
+  factory Book.fromMeta(String bookId, {required MetaBook book}) {
+    return Book(
       name: book.name,
       bookId: bookId,
       originalName: book.originalName,
@@ -36,12 +36,12 @@ class BasicBook {
     );
   }
 
-  factory BasicBook.createFakeData() {
-    return BasicBook(
+  factory Book.createFakeData() {
+    return Book(
         name: 'Dragon Ball Daima',
         bookId: 'eiga-fake-id',
         originalName: null,
-        image: BasicImage.createFakeData(),
+        image: OImage.createFakeData(),
         lastChap: null,
         timeAgo: null,
         notice: 'Notice Fake',

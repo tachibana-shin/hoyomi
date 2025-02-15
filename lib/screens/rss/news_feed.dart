@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/book/book_base_service.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/book/book_service.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/globals.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/pull_to_refresh.dart';
@@ -15,10 +15,10 @@ class RssItem {
   final String link;
   final String? description;
   final DateTime? pubDate;
-  final BasicImage? image;
-  final BasicImage? avatar;
+  final OImage? image;
+  final OImage? avatar;
   final String? creator;
-  final BookBaseService service;
+  final BookService service;
 
   RssItem(
       {required this.title,
@@ -32,7 +32,7 @@ class RssItem {
 }
 
 class NewsFeedScreen extends StatefulWidget {
-  final List<BookBaseService> services;
+  final List<BookService> services;
 
   const NewsFeedScreen({super.key, required this.services});
 
@@ -53,7 +53,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
   }
 
   Future<List<RssItem>> fetchAndParseFeeds(
-      List<BookBaseService> services) async {
+      List<BookService> services) async {
     final items = <RssItem>[];
 
     for (final service in services) {
@@ -78,7 +78,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
     return items;
   }
 
-  List<RssItem> parseRss(String xmlData, {required BookBaseService service}) {
+  List<RssItem> parseRss(String xmlData, {required BookService service}) {
     final document = XmlDocument.parse(xmlData);
     final items = <RssItem>[];
 
@@ -119,10 +119,10 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
         description: description,
         pubDate: pubDate,
         image: imageUrl != null
-            ? BasicImage(
+            ? OImage(
                 src: imageUrl, headers: {"referer": Uri.parse(link).host})
             : null,
-        avatar: BasicImage(src: service.faviconUrl),
+        avatar: OImage(src: service.faviconUrl),
         creator: creator,
         service: service,
       ));
@@ -216,7 +216,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                               .colorScheme
                                               .surface,
                                           radius: 10.0,
-                                          child: BasicImage.network(
+                                          child: OImage.network(
                                             item.avatar!.src,
                                             sourceId: item.service.uid,
                                             headers: item.avatar!.headers,
@@ -237,7 +237,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                   padding: const EdgeInsets.only(left: 16.0),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: BasicImage.network(
+                                    child: OImage.network(
                                       item.image!.src,
                                       sourceId: item.service.uid,
                                       headers: item.image!.headers,

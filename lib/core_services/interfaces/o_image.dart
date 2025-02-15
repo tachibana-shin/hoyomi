@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/cookie.dart';
 
-class BasicImage {
+class OImage {
   final String src;
   final Map<String, String>? headers;
 
   static final fake = "fake:";
 
-  BasicImage({required this.src, this.headers});
+  OImage({required this.src, this.headers});
 
   // Convert from JSON
-  factory BasicImage.fromJson(Map<String, dynamic> json) {
-    return BasicImage(
+  factory OImage.fromJson(Map<String, dynamic> json) {
+    return OImage(
       src: json['src'],
       headers: (json['headers'] as Map<String, dynamic>?)
           ?.map((key, value) => MapEntry(key, value as String)),
@@ -26,8 +26,8 @@ class BasicImage {
     };
   }
 
-  factory BasicImage.createFakeData() {
-    return BasicImage(src: fake);
+  factory OImage.createFakeData() {
+    return OImage(src: fake);
   }
 
   static Widget network(

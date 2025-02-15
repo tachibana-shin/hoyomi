@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
-import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
+import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:subtitle/subtitle.dart';
 
@@ -22,7 +22,7 @@ class SliderEiga extends StatefulWidget {
   final ReadonlySignal<Duration> duration;
   final ReadonlySignal<bool> showThumb;
   final ReadonlySignal<bool> pauseAutoHideControls;
-  final ReadonlySignal<BasicVtt?> vttThumbnail;
+  final ReadonlySignal<Vtt?> vttThumbnail;
   final ReadonlySignal<OpeningEnding?> openingEnding;
   final Function(double) onSeek; // Callback for seek
 

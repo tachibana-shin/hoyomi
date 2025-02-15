@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user.dart';
-import 'package:hoyomi/core_services/base_service.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
-import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
+import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:signals/signals_flutter.dart';
 
 class AccountItem extends StatefulWidget {
-  final BaseService service;
+  final Service service;
 
   const AccountItem({super.key, required this.service});
 
@@ -20,7 +20,7 @@ class _AccountItemState extends State<AccountItem> with SignalsMixin {
   late final UserData? _user;
 
   bool get _serviceAccountSupport {
-    return widget.service is BaseAuthMixin;
+    return widget.service is AuthMixin;
   }
 
   late final _status = createComputed(() {
@@ -36,7 +36,7 @@ class _AccountItemState extends State<AccountItem> with SignalsMixin {
   void initState() {
     super.initState();
     if (_serviceAccountSupport) {
-      _user = useUser(widget.service as BaseAuthMixin, context: this);
+      _user = useUser(widget.service as AuthMixin, context: this);
     } else {
       _user = null;
     }
@@ -47,7 +47,7 @@ class _AccountItemState extends State<AccountItem> with SignalsMixin {
     return ListTile(
       leading: CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.surface,
-          child: BasicImage.network(
+          child: OImage.network(
             widget.service.faviconUrl,
             sourceId: widget.service.uid,
             headers: {"referer": widget.service.baseUrl},
@@ -96,7 +96,7 @@ class _AccountItemState extends State<AccountItem> with SignalsMixin {
         );
         break;
       default:
-        avatar = BasicImage.network(
+        avatar = OImage.network(
           _user!.user.value!.photoUrl,
           sourceId: widget.service.uid,
           fit: BoxFit.cover,

@@ -12,8 +12,8 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
-import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:hoyomi/globals.dart';
 import 'package:hoyomi/transition/slide_fade_transition.dart';
 import 'package:hoyomi/utils/debouncer.dart';
@@ -47,8 +47,8 @@ class PlayerEiga extends StatefulWidget {
   final String sourceId;
 
   final ValueNotifier<SourceVideo?> sourceNotifier;
-  final ValueNotifier<BasicImage?> posterNotifier;
-  final Signal<BasicVtt?> thumbnailVtt;
+  final ValueNotifier<OImage?> posterNotifier;
+  final Signal<Vtt?> thumbnailVtt;
   final Signal<OpeningEnding?> openingEndingNotifier;
   final Future<SourceContent> Function({required SourceVideo source})?
       fetchSourceContent;
@@ -111,7 +111,7 @@ enum _StateOpeningEnding { opening, ending, none, skip }
 // video player
 // djangoflow_video_player
 class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
-  /// Basic control player
+  ///  control player
 //  late final ShararaVideoPlayerController controller;
 //   @override
 //   void initState() {
@@ -537,7 +537,7 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                child: BasicImage.network(widget.posterNotifier.value!.src,
+                child: OImage.network(widget.posterNotifier.value!.src,
                     sourceId: widget.sourceId,
                     headers: widget.posterNotifier.value!.headers,
                     fit: BoxFit.cover));

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/book/interfaces/book.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/circular_progress.dart';
 
 class VerticalBook extends StatelessWidget {
-  static bool checkNeedSubtitle(BasicBook book) {
+  static bool checkNeedSubtitle(Book book) {
     return book.lastChap != null;
   }
 
-  final BasicBook book;
+  final Book book;
   final String? sourceId;
   final double? percentRead;
 
@@ -67,7 +67,7 @@ class VerticalBook extends StatelessWidget {
                     aspectRatio: 2 / 3,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
-                      child: BasicImage.network(
+                      child: OImage.network(
                         book.image.src,
                         sourceId: sourceId ?? '',
                         headers: book.image.headers,

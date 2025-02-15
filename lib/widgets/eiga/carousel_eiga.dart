@@ -4,15 +4,15 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/basic_carousel_item.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/widgets/vertical_separator.dart';
 
 class CarouselEiga extends StatefulWidget {
   final double aspectRatio;
   final double maxHeight;
   final String sourceId;
-  final List<BasicCarouselItem> items;
+  final List<CarouselItem> items;
 
   const CarouselEiga(
       {super.key,
@@ -49,7 +49,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                     borderRadius: BorderRadius.circular(16.0),
                     child: Stack(
                       children: [
-                        BasicImage.network(
+                        OImage.network(
                           item.image.src,
                           sourceId: widget.sourceId,
                           headers: item.image.headers,

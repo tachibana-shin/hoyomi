@@ -1,54 +1,54 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:hoyomi/core_services/book/book_base_service.dart';
-import 'package:hoyomi/core_services/book/interfaces/base_comments.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_chapter.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_comment.dart';
+import 'package:hoyomi/core_services/book/book_service.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_comments.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_chapter.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_comment.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
-import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
+import 'package:hoyomi/core_services/interfaces/genre.dart';
 import 'package:hoyomi/core_services/book/interfaces/status_enum.dart';
-import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
+import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 
 import 'package:hoyomi/core_services/book/mixin/comic_auth_mixin.dart';
-import 'package:hoyomi/core_services/book/interfaces/base_book_section.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
-import 'package:hoyomi/core_services/interfaces/basic_filter.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book_section.dart';
-import 'package:hoyomi/core_services/interfaces/basic_user.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_section.dart';
+import 'package:hoyomi/core_services/book/interfaces/book.dart';
+import 'package:hoyomi/core_services/interfaces/filter.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/core_services/book/interfaces/home_book_section.dart';
+import 'package:hoyomi/core_services/interfaces/user.dart';
 import 'package:hoyomi/core_services/book/interfaces/book_param.dart';
 import 'package:hoyomi/core_services/book/interfaces/comic_modes.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:hoyomi/core_services/book/interfaces/rate_value.dart';
 import 'package:hoyomi/utils/time_utils.dart';
 
-final List<BasicFilter> globalFilters = [
-  BasicFilter(name: 'Trạng thái', key: 'status', multiple: false, options: [
-    BasicOption(name: 'Đang tiến hành', value: '0'),
-    BasicOption(name: 'Hoàn thành', value: '1')
+final List<Filter> globalFilters = [
+  Filter(name: 'Trạng thái', key: 'status', multiple: false, options: [
+    Option(name: 'Đang tiến hành', value: '0'),
+    Option(name: 'Hoàn thành', value: '1')
   ]),
-  BasicFilter(name: 'Quốc Gia', key: 'country', multiple: false, options: [
-    BasicOption(name: 'Trung Quốc', value: '1'),
-    BasicOption(name: 'Hàn Quốc', value: '2'),
-    BasicOption(name: 'Nhật Bản', value: '3'),
-    BasicOption(name: 'Việt Nam', value: '4'),
-    BasicOption(name: 'Hoa Kỳ', value: '5'),
+  Filter(name: 'Quốc Gia', key: 'country', multiple: false, options: [
+    Option(name: 'Trung Quốc', value: '1'),
+    Option(name: 'Hàn Quốc', value: '2'),
+    Option(name: 'Nhật Bản', value: '3'),
+    Option(name: 'Việt Nam', value: '4'),
+    Option(name: 'Hoa Kỳ', value: '5'),
   ]),
-  BasicFilter(name: 'Sắp Xếp', key: 'sort', multiple: false, options: [
-    BasicOption(name: 'Ngày đăng giảm dần', value: '0'),
-    BasicOption(name: 'Ngày đăng tăng dần', value: '1'),
-    BasicOption(name: 'Ngày cập nhật giảm dần', value: '2'),
-    BasicOption(name: 'Ngày cập nhật tăng dần', value: '3'),
-    BasicOption(name: 'Lượt xem giảm dần', value: '4'),
-    BasicOption(name: 'Lượt xem tăng dần', value: '5')
+  Filter(name: 'Sắp Xếp', key: 'sort', multiple: false, options: [
+    Option(name: 'Ngày đăng giảm dần', value: '0'),
+    Option(name: 'Ngày đăng tăng dần', value: '1'),
+    Option(name: 'Ngày cập nhật giảm dần', value: '2'),
+    Option(name: 'Ngày cập nhật tăng dần', value: '3'),
+    Option(name: 'Lượt xem giảm dần', value: '4'),
+    Option(name: 'Lượt xem tăng dần', value: '5')
   ]),
 ];
 
-class TruyenGGService extends BookBaseService
-    with BaseAuthMixin, ComicAuthMixin {
+class TruyenGGService extends BookService
+    with AuthMixin, ComicAuthMixin {
   @override
   final String name = "TruyenGGP";
   @override
@@ -72,7 +72,7 @@ class TruyenGGService extends BookBaseService
   }
 
   // Utils
-  BasicBook parseBasicBook(Element itemBook, String referer) {
+  Book parseBook(Element itemBook, String referer) {
     final String bookId = itemBook
         .querySelector("a")!
         .attributes["href"]!
@@ -80,12 +80,12 @@ class TruyenGGService extends BookBaseService
         .last
         .replaceFirst(".html", "");
     final $image = itemBook.querySelector("img")!;
-    final BasicImage image = BasicImage(
+    final OImage image = OImage(
         src: $image.attributes["data-src"]!, headers: {"referer": referer});
     final String name = itemBook.querySelector(".book_name")?.text ??
         itemBook.querySelector("img")!.attributes['alt']!;
 
-    final BasicChapter lastChap = BasicChapter(
+    final BookChapter lastChap = BookChapter(
         name: itemBook.querySelector(".cl99")!.text.trim(),
         chapterId: itemBook
             .querySelector(".cl99")!
@@ -105,7 +105,7 @@ class TruyenGGService extends BookBaseService
     final double? rate =
         rateValueText != null ? double.tryParse(rateValueText) : null;
 
-    return BasicBook(
+    return Book(
         image: image,
         lastChap: lastChap,
         timeAgo: timeAgo,
@@ -118,30 +118,30 @@ class TruyenGGService extends BookBaseService
 
   // Main
   @override
-  Future<List<BasicBookSection>> home() async {
+  Future<List<HomeBookSection>> home() async {
     final Document document = await fetchDocument(baseUrl);
 
     final sections = document.querySelectorAll(".list_item_home");
 
     return [
-      BasicBookSection(
+      HomeBookSection(
           items: sections[0]
               .querySelectorAll(".item_home")
-              .map((element) => parseBasicBook(element, baseUrl))
+              .map((element) => parseBook(element, baseUrl))
               .toList(),
           name: 'Mới Cập Nhật',
           sectionId: 'truyen-moi-cap-nhat'),
-      BasicBookSection(
+      HomeBookSection(
           items: sections[1]
               .querySelectorAll(".item_home")
-              .map((element) => parseBasicBook(element, baseUrl))
+              .map((element) => parseBook(element, baseUrl))
               .toList(),
           name: "Bình Chọn",
           sectionId: "top-binh-chon"),
-      BasicBookSection(
+      HomeBookSection(
           items: sections[2]
               .querySelectorAll(".item_home")
-              .map((element) => parseBasicBook(element, baseUrl))
+              .map((element) => parseBook(element, baseUrl))
               .toList(),
           name: "Xem Nhiều",
           sectionId: "top-thang")
@@ -155,7 +155,7 @@ class TruyenGGService extends BookBaseService
 
     final String name =
         document.querySelector("h1[itemprop=name]")!.text.trim();
-    final BasicImage image = BasicImage(
+    final OImage image = OImage(
         src: document.querySelector(".thumbblock > img")!.attributes["src"]!,
         headers: {"referer": baseUrl});
 
@@ -191,7 +191,7 @@ class TruyenGGService extends BookBaseService
             value: double.parse(rate$['aggregateRating']['ratingValue']))
         : null;
 
-    final genres = document.querySelectorAll(".clblue").map((anchor) => BasicGenre(
+    final genres = document.querySelectorAll(".clblue").map((anchor) => Genre(
         name: anchor.text.trim(),
         genreId:
             "the-loai*${anchor.attributes["href"]!.split("/").last.replaceFirst(".html", "")}"));
@@ -269,7 +269,7 @@ class TruyenGGService extends BookBaseService
   }
 
   @override
-  Future<List<BasicImage>> getPages(String manga, String chap) async {
+  Future<List<OImage>> getPages(String manga, String chap) async {
     final document = await fetchDocument(getURL(manga, chapterId: chap));
 
     _episodeIdStore[chap] =
@@ -278,7 +278,7 @@ class TruyenGGService extends BookBaseService
     return document.querySelectorAll(".content_detail_manga > img").map((img) {
       final src = img.attributes["src"]!;
 
-      return BasicImage(src: src, headers: {"referer": baseUrl});
+      return OImage(src: src, headers: {"referer": baseUrl});
     }).toList();
   }
 
@@ -334,14 +334,14 @@ class TruyenGGService extends BookBaseService
 
           final canDelete = element.querySelector(".remove_comnent") != null;
 
-          return BasicComment(
+          return BookComment(
               id: id,
               bookId: bookId,
               chapterId: chapterId,
               userId: name,
               name: name,
               photoUrl:
-                  BasicImage(src: photoUrl, headers: {"referer": baseUrl}),
+                  OImage(src: photoUrl, headers: {"referer": baseUrl}),
               content: content,
               countLike: like,
               countDislike: dislike,
@@ -361,7 +361,7 @@ class TruyenGGService extends BookBaseService
                 ?.group(1) ??
             '1');
 
-        return BaseComments(
+        return BookComments(
             items: items.toList(),
             page: page!,
             totalItems: totalItems,
@@ -433,7 +433,7 @@ class TruyenGGService extends BookBaseService
 
     final data = sections[0]
         .querySelectorAll(".item_home")
-        .map((element) => parseBasicBook(element, baseUrl));
+        .map((element) => parseBook(element, baseUrl));
 
     final lastPageLink = document
         .querySelector(".pagination > a:last-child")
@@ -442,7 +442,7 @@ class TruyenGGService extends BookBaseService
         ? int.parse(RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!)
         : 1;
 
-    return BaseBookSection(
+    return BookSection(
         name: '',
         url: url,
         items: data.toList(),
@@ -463,7 +463,7 @@ class TruyenGGService extends BookBaseService
     final data = document
         .querySelector(".list_item_home, .list_grid")!
         .querySelectorAll(".item_home")
-        .map((element) => parseBasicBook(element, baseUrl));
+        .map((element) => parseBook(element, baseUrl));
 
     final lastPageLink = document
         .querySelector(".pagination > a:last-child")
@@ -472,7 +472,7 @@ class TruyenGGService extends BookBaseService
         ? int.parse(RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!)
         : 1;
 
-    return BaseBookSection(
+    return BookSection(
         name: document.querySelector(".title_cate")!.text,
         url: url,
         items: data.toList(),
@@ -501,7 +501,7 @@ class TruyenGGService extends BookBaseService
         "${document.querySelector("#first_name")!.attributes['value']!} ${document.querySelector("#last_name")!.attributes['value']!}"
             .trim();
 
-    return BasicUser(
+    return User(
         user: user,
         email: email,
         photoUrl: photoUrl,

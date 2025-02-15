@@ -7,13 +7,13 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/bottom_sheet_no_scrim.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
-import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:hoyomi/widgets/eiga/button_follow_eiga.dart';
 import 'package:hoyomi/widgets/eiga/button_share_eiga.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
@@ -22,9 +22,9 @@ import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
+import 'package:hoyomi/core_services/eiga/eiga_service.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart';
@@ -57,7 +57,7 @@ class DetailsEigaPage extends StatefulWidget {
 
 class _DetailsEigaPageState extends State<DetailsEigaPage>
     with TickerProviderStateMixin {
-  late final EigaBaseService _service;
+  late final EigaService _service;
   late Future<MetaEiga> _metaEigaFuture;
   late ValueNotifier<MetaEiga> _metaEigaNotifier;
 
@@ -65,14 +65,14 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   double _aspectRatio = 16 / 9;
 
-  final Map<String, EpisodesEiga> _cacheEpisodesStore = {};
+  final Map<String, EigaEpisodes> _cacheEpisodesStore = {};
   final Map<String, Map<String, WatchTime>> _cacheWatchTimeStore = {};
   final ValueNotifier<String> _titleNotifier = ValueNotifier('');
   final ValueNotifier<String> _subtitleNotifier = ValueNotifier('');
   final ValueNotifier<List<Subtitle>> _subtitlesNotifier = ValueNotifier([]);
   final ValueNotifier<SourceVideo?> _sourceNotifier = ValueNotifier(null);
-  final ValueNotifier<BasicImage?> _posterNotifier = ValueNotifier(null);
-  final ValueNotifier<BasicVtt?> _thumbnailVtt = ValueNotifier(null);
+  final ValueNotifier<OImage?> _posterNotifier = ValueNotifier(null);
+  final ValueNotifier<Vtt?> _thumbnailVtt = ValueNotifier(null);
   final ValueNotifier<OpeningEnding?> _openingEndingNotifier =
       ValueNotifier(null);
   final ValueNotifier<WatchTimeData?> _watchTimeDataNotifier =
@@ -85,10 +85,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final ValueNotifier<String> _eigaId;
   final ValueNotifier<String?> _episodeId = ValueNotifier(null);
   final ValueNotifier<TimeAndDay?> _schedule = ValueNotifier(null);
-  final ValueNotifier<EpisodeEiga?> _episode = ValueNotifier(null);
+  final ValueNotifier<EigaEpisode?> _episode = ValueNotifier(null);
   final ValueNotifier<int?> _episodeIndex = ValueNotifier(null);
-  final ValueNotifier<BasicSeason?> _currentSeason = ValueNotifier(null);
-  final ValueNotifier<Future<List<BasicEiga>>?> _suggestNotifier =
+  final ValueNotifier<Season?> _currentSeason = ValueNotifier(null);
+  final ValueNotifier<Future<List<Eiga>>?> _suggestNotifier =
       ValueNotifier(null);
 
   final _eventBus = EventBus();
@@ -118,7 +118,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     super.dispose();
   }
 
-  void _updatePlayer(MetaEiga metaEiga, EpisodeEiga episode, int episodeIndex) {
+  void _updatePlayer(MetaEiga metaEiga, EigaEpisode episode, int episodeIndex) {
     assert(_episode.value != null);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -249,7 +249,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         Skeletonizer(
                             enabled: !done,
                             enableSwitchAnimation: true,
-                            child: _buildBasicInfo(_metaEigaNotifier)),
+                            child: _buildInfo(_metaEigaNotifier)),
                         SizedBox(height: 10.0),
                         // button group
                         Skeletonizer(
@@ -327,7 +327,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     );
   }
 
-  Widget _buildBasicInfo(ValueNotifier<MetaEiga> metaEiga) {
+  Widget _buildInfo(ValueNotifier<MetaEiga> metaEiga) {
     return ValueListenableBuilder(
         valueListenable: metaEiga,
         builder: (context, metaEiga$, child) => Column(
@@ -681,7 +681,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                   clipBehavior: Clip.antiAlias,
                                   child: AspectRatio(
                                       aspectRatio: 2 / 3,
-                                      child: BasicImage.network(
+                                      child: OImage.network(
                                         metaEiga.value.image.src,
                                         sourceId: widget.sourceId,
                                         headers: metaEiga.value.image.headers,
@@ -899,7 +899,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   void _updateData(
       {required ValueNotifier<MetaEiga> metaEiga,
-      required EpisodesEiga episodes}) {
+      required EigaEpisodes episodes}) {
     var eigaChanged = false;
     if (episodes.image != metaEiga.value.image && episodes.image != null) {
       metaEiga.value.image = episodes.image!;
@@ -928,8 +928,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     required ValueNotifier<MetaEiga> metaEiga,
     required int indexEpisode,
     required int indexSeason,
-    required EpisodesEiga episodesEiga,
-    required List<BasicSeason> seasons,
+    required EigaEpisodes episodesEiga,
+    required List<Season> seasons,
   }) {
     final oldEiga = _eigaId.value;
     final seasonChanged = oldEiga != seasons[indexSeason].eigaId;
@@ -1002,7 +1002,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             return ValueListenableBuilder(
                 valueListenable: _eigaId,
                 builder: (context, eigaId, child) {
-                  final season = BasicSeason(eigaId: eigaId, name: 'Episodes');
+                  final season = Season(eigaId: eigaId, name: 'Episodes');
                   return ListEpisodes(
                       season: season,
                       thumbnail: metaEiga$.poster ?? metaEiga$.image,
@@ -1131,7 +1131,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           return VerticalEigaList(
             itemsFuture: suggest.then((data) => data
                 .map((item) =>
-                    BasicEigaExtend(eiga: item, sourceId: _service.uid))
+                    EigaExtend(eiga: item, sourceId: _service.uid))
                 .toList()),
             title: 'Suggest',
             disableScroll: true,

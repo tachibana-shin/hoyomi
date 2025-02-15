@@ -1,11 +1,11 @@
-class BasicUser {
+class User {
   final String user;
   final String? email;
   final String photoUrl;
   final String fullName;
   final Sex sex;
 
-  BasicUser({
+  User({
     required this.user,
     required this.email,
     required this.photoUrl,
@@ -13,8 +13,8 @@ class BasicUser {
     this.sex = Sex.other,
   });
 
-  factory BasicUser.fromJson(Map<String, dynamic> json) {
-    return BasicUser(
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
       user: json['user'],
       email: json['email'],
       photoUrl: json['photoUrl'],

@@ -1,8 +1,8 @@
-import 'package:hoyomi/core_services/base_service.dart';
+import 'package:hoyomi/core_services/service.dart';
 
 class CaptchaRequiredException implements Exception {
   final String? message = "Captcha required";
-  final BaseService service;
+  final Service service;
 
   CaptchaRequiredException(this.service);
 }

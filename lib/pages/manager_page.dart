@@ -1,6 +1,6 @@
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/base_service.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/manager/account_service.dart';
 
@@ -57,7 +57,7 @@ class _ServiceAccounts extends StatelessWidget {
         ]));
   }
 
-  Widget _buildCard(BaseService service) {
+  Widget _buildCard(Service service) {
     return AccountService(
         key: Key(DateTime.now().millisecond.toString()), service: service);
   }

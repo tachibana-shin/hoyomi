@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/circular_progress.dart';
 
 class VerticalEiga extends StatelessWidget {
-  static bool checkNeedSubtitle(BasicEiga book) {
+  static bool checkNeedSubtitle(Eiga book) {
     return book.lastEpisode != null;
   }
 
-  final BasicEiga eiga;
+  final Eiga eiga;
   final String? sourceId;
   final double? percentRead;
 
@@ -67,7 +67,7 @@ class VerticalEiga extends StatelessWidget {
                     aspectRatio: 2 / 3,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
-                      child: BasicImage.network(
+                      child: OImage.network(
                         eiga.image.src,
                         sourceId: sourceId ?? '',
                         headers: eiga.image.headers,

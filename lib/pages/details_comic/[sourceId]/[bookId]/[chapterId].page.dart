@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/book/book_base_service.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/book/book_service.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 
 import 'package:hoyomi/core_services/main.dart';
@@ -33,10 +33,10 @@ class DetailsComicReader extends StatefulWidget {
 }
 
 class _DetailsComicReaderState extends State<DetailsComicReader> {
-  late Future<List<BasicImage>> _pagesFuture;
+  late Future<List<OImage>> _pagesFuture;
   late Future<MetaBook> _metaBookFuture;
   MetaBook? _metaBook;
-  late final BookBaseService _service;
+  late final BookService _service;
   final ValueNotifier<Chapter?> _chapter = ValueNotifier(null);
   final ValueNotifier<bool> _showToolbar = ValueNotifier(true);
 
@@ -91,7 +91,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
               return const Center(child: Text('No data available.'));
             }
 
-            final [pages as List<BasicImage>, metaBook as MetaBook] =
+            final [pages as List<OImage>, metaBook as MetaBook] =
                 snapshot.data!; //book] = snapshot.data!;
 
             return MangaReader(
@@ -122,7 +122,7 @@ class _AppBar extends StatefulWidget {
   final MetaBook? book;
   final ValueNotifier<Chapter?> chapter;
   final ValueNotifier<bool> enabled;
-  final BookBaseService service;
+  final BookService service;
   final String bookId;
 
   const _AppBar({

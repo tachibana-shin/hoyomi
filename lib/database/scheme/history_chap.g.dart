@@ -159,7 +159,7 @@ Id _historyChapGetId(HistoryChap object) {
   return object.id ?? Isar.autoIncrement;
 }
 
-List<IsarLinkBase<dynamic>> _historyChapGetLinks(HistoryChap object) {
+List<IsarLink<dynamic>> _historyChapGetLinks(HistoryChap object) {
   return [];
 }
 

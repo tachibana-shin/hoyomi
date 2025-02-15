@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/vertical_list.dart';
@@ -7,7 +7,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'vertical_eiga.dart';
 
 class VerticalEigaList extends StatelessWidget {
-  final Future<List<BasicEigaExtend>> itemsFuture;
+  final Future<List<EigaExtend>> itemsFuture;
   final String title;
   final String? subtitle;
   final String? more;
@@ -30,15 +30,15 @@ class VerticalEigaList extends StatelessWidget {
             return Skeletonizer(
                 enabled: true,
                 enableSwitchAnimation: true,
-                child: VerticalList<BasicEigaExtend>(
+                child: VerticalList<EigaExtend>(
                   title: title,
                   subtitle: subtitle,
                   more: more,
                   disableScroll: disableScroll,
                   items: List.generate(
                       30,
-                      (index) => BasicEigaExtend(
-                          eiga: BasicEiga.createFakeData(), sourceId: null)),
+                      (index) => EigaExtend(
+                          eiga: Eiga.createFakeData(), sourceId: null)),
                   builder: (context, eiga, index) {
                     return VerticalEiga(
                       eiga: eiga.eiga,
@@ -56,7 +56,7 @@ class VerticalEigaList extends StatelessWidget {
                     orElse: (error) => Text('Error: $error')));
           }
 
-          return VerticalList<BasicEigaExtend>(
+          return VerticalList<EigaExtend>(
             title: title,
             subtitle: subtitle,
             more: more,

@@ -5,10 +5,10 @@ import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/book/book_base_service.dart';
-import 'package:hoyomi/core_services/book/interfaces/base_book_section.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
-import 'package:hoyomi/core_services/interfaces/basic_filter.dart';
+import 'package:hoyomi/core_services/book/book_service.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_section.dart';
+import 'package:hoyomi/core_services/book/interfaces/book.dart';
+import 'package:hoyomi/core_services/interfaces/filter.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/widgets/book/icon_button_open_browser.dart';
@@ -21,7 +21,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 class SectionComicPage extends StatefulWidget {
   final String serviceId;
   final String sectionId;
-  final Future<BaseBookSection> Function({
+  final Future<BookSection> Function({
     required String sectionId,
     required int page,
     required Map<String, List<String>?> filters,
@@ -38,9 +38,9 @@ class SectionComicPage extends StatefulWidget {
 }
 
 class _SectionComicPageState extends State<SectionComicPage> {
-  late final BookBaseService _service;
+  late final BookService _service;
 
-  final PagingController<int, BasicBook> _pagingController =
+  final PagingController<int, Book> _pagingController =
       PagingController(firstPageKey: 1);
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -48,7 +48,7 @@ class _SectionComicPageState extends State<SectionComicPage> {
   String? _title;
   String? _url;
   // String? _description;
-  List<BasicFilter>? _filters;
+  List<Filter>? _filters;
   int? _currentPage;
   int? _totalPages;
 
@@ -280,7 +280,7 @@ class _SectionComicPageState extends State<SectionComicPage> {
                   crossAxisSpacing: 0.0,
                   mainAxisSpacing: 0.0,
                   childAspectRatio: (screenWidth / crossAxisCount) / height),
-              builderDelegate: PagedChildBuilderDelegate<BasicBook>(
+              builderDelegate: PagedChildBuilderDelegate<Book>(
                 animateTransitions: true,
                 itemBuilder: (context, book, index) {
                   return Padding(
@@ -300,7 +300,7 @@ class _SectionComicPageState extends State<SectionComicPage> {
                         enabled: true,
                         enableSwitchAnimation: true,
                         child: VerticalBook(
-                            book: BasicBook.createFakeData(),
+                            book: Book.createFakeData(),
                             sourceId: _service.uid))),
                 noItemsFoundIndicatorBuilder: (_) => Center(
                   child: Text('No items found.'),

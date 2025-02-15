@@ -1,32 +1,32 @@
-import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/genre.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 
-class BasicSeason {
+class Season {
   final String name;
   final String eigaId;
 
-  BasicSeason({required this.name, required this.eigaId});
+  Season({required this.name, required this.eigaId});
 }
 
 class MetaEiga {
   final String name;
   final String? originalName;
-  BasicImage image;
-  BasicImage? poster;
+  OImage image;
+  OImage? poster;
   final String description;
   final double? rate;
   final int? countRate;
   final String? duration;
   final int? yearOf;
   final int? views;
-  final List<BasicSeason> seasons;
-  final List<BasicGenre> genres;
+  final List<Season> seasons;
+  final List<Genre> genres;
   final String? quality;
   final String? author;
-  final List<BasicGenre>? countries;
+  final List<Genre>? countries;
   final String? language;
-  final BasicGenre? studio;
-  final BasicGenre? movieSeason;
+  final Genre? studio;
+  final Genre? movieSeason;
   final String? trailer;
 
   MetaEiga({
@@ -56,8 +56,8 @@ class MetaEiga {
     return MetaEiga(
       name: '5-toubun no Hanayome',
       originalName: '5-toubun no Hanayome',
-      image: BasicImage.createFakeData(),
-      poster: BasicImage.createFakeData(),
+      image: OImage.createFakeData(),
+      poster: OImage.createFakeData(),
       description: 'This is a fake movie description.',
       rate: 8.5,
       countRate: 1200,
@@ -65,26 +65,26 @@ class MetaEiga {
       yearOf: 2023,
       views: 500000,
       seasons: [
-        BasicSeason(name: 'Season 1', eigaId: 'S1'),
-        BasicSeason(name: 'Season 2', eigaId: 'S2'),
+        Season(name: 'Season 1', eigaId: 'S1'),
+        Season(name: 'Season 2', eigaId: 'S2'),
       ],
       genres: [
-        BasicGenre(name: 'Action', genreId: ''),
-        BasicGenre(name: 'Drama', genreId: ''),
-        BasicGenre(name: 'Drama', genreId: ''),
-        BasicGenre(name: 'Drama', genreId: ''),
-        BasicGenre(name: 'Drama', genreId: ''),
-        BasicGenre(name: 'Drama', genreId: ''),
-        BasicGenre(name: 'Drama', genreId: ''),
+        Genre(name: 'Action', genreId: ''),
+        Genre(name: 'Drama', genreId: ''),
+        Genre(name: 'Drama', genreId: ''),
+        Genre(name: 'Drama', genreId: ''),
+        Genre(name: 'Drama', genreId: ''),
+        Genre(name: 'Drama', genreId: ''),
+        Genre(name: 'Drama', genreId: ''),
       ],
       quality: 'HD',
       author: 'John Doe',
       countries: [
-        BasicGenre(name: 'Japan', genreId: ''),
+        Genre(name: 'Japan', genreId: ''),
       ],
       language: 'English',
-      studio: BasicGenre(name: 'Studio Ghibli', genreId: ''),
-      movieSeason: BasicGenre(name: 'Spring', genreId: ''),
+      studio: Genre(name: 'Studio Ghibli', genreId: ''),
+      movieSeason: Genre(name: 'Spring', genreId: ''),
     );
   }
 }

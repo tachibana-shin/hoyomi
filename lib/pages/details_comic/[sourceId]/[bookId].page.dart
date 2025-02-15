@@ -3,15 +3,15 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user_async.dart';
 import 'package:hoyomi/controller/history.dart';
-import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
+import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/core_services/book/mixin/comic_auth_mixin.dart';
-import 'package:hoyomi/core_services/book/book_base_service.dart';
-import 'package:hoyomi/core_services/book/interfaces/base_book_section.dart';
-import 'package:hoyomi/core_services/interfaces/basic_user.dart';
+import 'package:hoyomi/core_services/book/book_service.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_section.dart';
+import 'package:hoyomi/core_services/interfaces/user.dart';
 
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:hoyomi/core_services/book/interfaces/status_enum.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
@@ -44,8 +44,8 @@ class DetailsComic extends StatefulWidget {
 class _DetailsComicState extends State<DetailsComic>
     with SingleTickerProviderStateMixin {
   late Future<MetaBook> _metaBookFuture;
-  Future<BaseBookSection>? _suggestFuture;
-  late final BookBaseService _service;
+  Future<BookSection>? _suggestFuture;
+  late final BookService _service;
 
   late final AnimationController _bottomSheetAnimationController;
 
@@ -148,7 +148,7 @@ class _DetailsComicState extends State<DetailsComic>
             child: Text(_title),
           ),
           actions: [
-            if (_service is ComicAuthMixin && _service is BaseAuthMixin)
+            if (_service is ComicAuthMixin && _service is AuthMixin)
               _AvatarUser(service: _service),
             IconButtonShare(),
             IconButtonFollow(
@@ -221,7 +221,7 @@ class _DetailsComicState extends State<DetailsComic>
                 aspectRatio: 2 / 3,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
-                  child: BasicImage.network(
+                  child: OImage.network(
                     book.image.src,
                     sourceId: widget.sourceId,
                     headers: book.image.headers,
@@ -640,7 +640,7 @@ class _DetailsComicState extends State<DetailsComic>
 
     return HorizontalBookList(
       itemsFuture: _suggestFuture!.then((value) => value.items
-          .map((book) => BasicBookExtend(book: book, sourceId: _service.uid))
+          .map((book) => BookExtend(book: book, sourceId: _service.uid))
           .toList()),
       // totalItems: _suggestFuture!.then((value) => value.totalItems),
       title: 'Suggest',
@@ -734,7 +734,7 @@ class _DetailsComicState extends State<DetailsComic>
 class _ButtonLike extends StatefulWidget {
   final String bookId;
   final MetaBook book;
-  final BookBaseService service;
+  final BookService service;
 
   const _ButtonLike(
       {required this.bookId, required this.book, required this.service});
@@ -819,7 +819,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
 }
 
 class _AvatarUser extends StatefulWidget {
-  final BookBaseService service;
+  final BookService service;
 
   const _AvatarUser({required this.service});
 
@@ -828,7 +828,7 @@ class _AvatarUser extends StatefulWidget {
 }
 
 class _AvatarUserState extends State<_AvatarUser> {
-  Signal<BasicUser?>? _user;
+  Signal<User?>? _user;
   Future<void> Function()? _refresh;
   Function()? _onDispose;
 
@@ -836,7 +836,7 @@ class _AvatarUserState extends State<_AvatarUser> {
   void initState() {
     super.initState();
 
-    useUserAsync(widget.service as BaseAuthMixin).then(
+    useUserAsync(widget.service as AuthMixin).then(
       (value) {
         if (mounted) {
           setState(() {
@@ -876,7 +876,7 @@ class _AvatarUserState extends State<_AvatarUser> {
             child: CircleAvatar(
               radius: 15,
               backgroundColor: Theme.of(context).colorScheme.onSurface,
-              child: BasicImage.network(
+              child: OImage.network(
                 user.photoUrl,
                 sourceId: widget.service.uid,
                 fit: BoxFit.cover,

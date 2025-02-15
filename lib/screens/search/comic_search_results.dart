@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:hoyomi/core_services/book/interfaces/book.dart';
 import 'package:hoyomi/core_services/interfaces/paginate.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
@@ -22,7 +22,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
   bool get wantKeepAlive => true;
 
   final RefreshController _refreshController = RefreshController();
-  final Map<String, Future<Paginate<BasicBook>>> _searchFutures = {};
+  final Map<String, Future<Paginate<Book>>> _searchFutures = {};
 
   @override
   void initState() {
@@ -71,7 +71,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
         children: bookServices.map((service) {
           final searchResult = _searchFutures[service.uid]!;
           final itemsFuture = searchResult.then((data) => data.items
-              .map((item) => BasicBookExtend(book: item, sourceId: service.uid))
+              .map((item) => BookExtend(book: item, sourceId: service.uid))
               .toList());
           String subtitle = '';
 

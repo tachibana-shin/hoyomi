@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/episode_eiga.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/pages/details_eiga/[sourceId]/[eigaId].page.dart';
 import 'package:hoyomi/utils/format_duration.dart';
@@ -15,19 +15,19 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 class ListEpisodes extends StatefulWidget {
   final String sourceId;
-  final BasicSeason season;
-  final BasicImage thumbnail;
+  final Season season;
+  final OImage thumbnail;
   final ValueNotifier<String> eigaIdNotifier;
   final ValueNotifier<String?> episodeIdNotifier;
   final Axis scrollDirection;
   final ScrollController? controller;
-  final Future<EpisodesEiga> Function() getData;
+  final Future<EigaEpisodes> Function() getData;
   final void Function({
     required int indexEpisode,
-    required EpisodesEiga episodesEiga,
+    required EigaEpisodes episodesEiga,
   }) onTapEpisode;
   final Future<Map<String, WatchTime>> Function(
-    EpisodesEiga episodesEiga,
+    EigaEpisodes episodesEiga,
   ) getWatchTimeEpisodes;
   final EventBus eventBus;
   final bool eager;
@@ -53,7 +53,7 @@ class ListEpisodes extends StatefulWidget {
 
 class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
   late final _episodesEiga =
-      createAsyncSignal<EpisodesEiga>(AsyncState.loading());
+      createAsyncSignal<EigaEpisodes>(AsyncState.loading());
   late final _watchTimeEpisodes = createSignal<Map<String, WatchTime>?>(null);
 
   final Map<int, void Function()> _disposes = {};
@@ -107,7 +107,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
     final waiting = _episodesEiga.value.isLoading;
 
     final episodesEiga = waiting
-        ? EpisodesEiga.createFakeData()
+        ? EigaEpisodes.createFakeData()
         : _episodesEiga.value.requireValue;
 
     if (!waiting && widget.eager) {
@@ -153,7 +153,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
     return isVertical ? child : SizedBox(height: height, child: child);
   }
 
-  bool checkEpisodeActive(EpisodeEiga episode, EpisodesEiga episodesEiga) {
+  bool checkEpisodeActive(EigaEpisode episode, EigaEpisodes episodesEiga) {
     return widget.eigaIdNotifier.value == widget.season.eigaId &&
         (widget.episodeIdNotifier.value ??
                 episodesEiga.episodes.first.episodeId) ==
@@ -162,7 +162,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
 
   Widget itemBuilder(BuildContext context,
       {required int index,
-      required EpisodesEiga episodesEiga,
+      required EigaEpisodes episodesEiga,
       required bool waiting,
       required bool isVertical,
       required double height}) {
@@ -220,7 +220,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
                           child: Stack(children: [
                             AspectRatio(
                                 aspectRatio: 16 / 9,
-                                child: BasicImage.network(
+                                child: OImage.network(
                                   episode.image?.src ?? widget.thumbnail.src,
                                   sourceId: widget.sourceId,
                                   headers: episodesEiga.image?.headers ??
@@ -351,7 +351,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
 
 class ListEpisodesSkeleton extends StatelessWidget {
   final height = 35.0;
-  final episodes = EpisodesEiga.createFakeData().episodes;
+  final episodes = EigaEpisodes.createFakeData().episodes;
 
   ListEpisodesSkeleton({super.key});
 

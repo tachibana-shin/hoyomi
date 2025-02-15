@@ -8,8 +8,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hoyomi/controller/history.dart';
 import 'package:hoyomi/controller/settings.dart';
 import 'package:hoyomi/core_services/book/mixin/comic_auth_mixin.dart';
-import 'package:hoyomi/core_services/book/book_base_service.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/book/book_service.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/book/interfaces/comic_modes.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:hoyomi/database/scheme/book.dart';
@@ -24,21 +24,21 @@ import 'package:hoyomi/widgets/book/sheet_chapters.dart';
 import 'package:hoyomi/widgets/tap_listener.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-class BasicImageWithGroup extends BasicImage {
+class ImageWithGroup extends OImage {
   final String chapterId;
 
-  BasicImageWithGroup(
+  ImageWithGroup(
       {required this.chapterId, required super.src, super.headers});
 }
 
 class MangaReader extends StatefulWidget {
-  final BookBaseService service;
+  final BookService service;
   final String bookId;
 
-  final List<BasicImage> pages;
+  final List<OImage> pages;
   final MetaBook book;
   final String chapterId;
-  final Future<List<BasicImage>> Function(String chapterId) getPages;
+  final Future<List<OImage>> Function(String chapterId) getPages;
 
   final Function(String chap) onChangeChap;
   final Function(bool enabled) onChangeEnabled;
@@ -72,7 +72,7 @@ class _MangaReaderState extends State<MangaReader>
   late final Future<Book> _historyObjectFuture;
   late final bool _restored;
 
-  late List<BasicImageWithGroup> pages;
+  late List<ImageWithGroup> pages;
   late String _chapter;
   late ComicModes _mode;
   late List<bool> _isImageLoaded;
@@ -94,7 +94,7 @@ class _MangaReaderState extends State<MangaReader>
 
   double get _realCurrentPage {
     for (int i = 0; i <= _currentPage; i++) {
-      if (pages[i].chapterId == _chapter && pages[i].src != BasicImage.fake) {
+      if (pages[i].chapterId == _chapter && pages[i].src != OImage.fake) {
         return _currentPage - i;
       }
     }
@@ -145,7 +145,7 @@ class _MangaReaderState extends State<MangaReader>
             chapterCurrent: _currentChapter.name,
             chapterPrev: _prevChapter!.name),
       ...widget.pages.map((page) {
-        return BasicImageWithGroup(
+        return ImageWithGroup(
             chapterId: _chapter, src: page.src, headers: page.headers);
       })
     ];
@@ -342,7 +342,7 @@ class _MangaReaderState extends State<MangaReader>
                     chapterCurrent: _currentChapter.name,
                     chapterPrev: null));
               }
-              pages.addAll($pages.map((page) => BasicImageWithGroup(
+              pages.addAll($pages.map((page) => ImageWithGroup(
                   chapterId: chapterId, src: page.src, headers: page.headers)));
               _refreshStoreImageLoaded();
               // NOTICE: No action `_pageController`
@@ -365,11 +365,11 @@ class _MangaReaderState extends State<MangaReader>
 
           final $pages = [
             ...(await widget.getPages(_prevChapter!.chapterId)).map((page) =>
-                BasicImageWithGroup(
+                ImageWithGroup(
                     chapterId: chapterId,
                     src: page.src,
                     headers: page.headers)),
-            if (pages.elementAtOrNull(0)?.src != BasicImage.fake &&
+            if (pages.elementAtOrNull(0)?.src != OImage.fake &&
                 _prevChapter != null)
               _buildSplashImage(
                   chapterId: _currentChapter.chapterId,
@@ -409,14 +409,14 @@ class _MangaReaderState extends State<MangaReader>
     //
   }
 
-  BasicImageWithGroup _buildSplashImage(
+  ImageWithGroup _buildSplashImage(
       {required String chapterId,
       required String? chapterNext,
       required String? chapterPrev,
       required String chapterCurrent}) {
-    return BasicImageWithGroup(
+    return ImageWithGroup(
         chapterId: chapterId,
-        src: BasicImage.fake,
+        src: OImage.fake,
         headers: {
           if (chapterPrev != null) 'prev': chapterPrev,
           'current': chapterCurrent,
@@ -426,7 +426,7 @@ class _MangaReaderState extends State<MangaReader>
 
   Widget _buildImage(int index) {
     final item = pages.elementAt(index);
-    if (item.src == BasicImage.fake) {
+    if (item.src == OImage.fake) {
       return SizedBox(
         width: double.infinity,
         height: _usingPageView
@@ -491,7 +491,7 @@ class _MangaReaderState extends State<MangaReader>
       );
     }
 
-    return BasicImage.network(
+    return OImage.network(
       item.src,
       sourceId: widget.service.uid,
       headers: item.headers,

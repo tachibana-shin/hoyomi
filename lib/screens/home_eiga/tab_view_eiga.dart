@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/base_eiga_home.dart';
+import 'package:hoyomi/core_services/eiga/eiga_service.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/widgets/eiga/carousel_eiga.dart';
@@ -11,7 +11,7 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class TabViewEiga extends StatefulWidget {
-  final EigaBaseService service;
+  final EigaService service;
 
   const TabViewEiga({super.key, required this.service});
 
@@ -27,7 +27,7 @@ class _TabViewEigaState extends State<TabViewEiga>
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  late Future<BaseEigaHome> _data;
+  late Future<EigaHome> _data;
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class _TabViewEigaState extends State<TabViewEiga>
   Widget build(BuildContext context) {
     super.build(context);
 
-    return FutureBuilder<BaseEigaHome>(
+    return FutureBuilder<EigaHome>(
       future: _data,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -58,7 +58,7 @@ class _TabViewEigaState extends State<TabViewEiga>
         //   return const Center(child: Text('No data available'));
         // }
 
-        Widget builder(BaseEigaHome data) {
+        Widget builder(EigaHome data) {
           return Skeletonizer(
               enabled: snapshot.connectionState == ConnectionState.waiting,
               enableSwitchAnimation: true,
@@ -87,7 +87,7 @@ class _TabViewEigaState extends State<TabViewEiga>
                         if (value == false) {
                           return HorizontalEigaList(
                             itemsFuture: Future.value(section.items
-                                .map((item) => BasicEigaExtend(
+                                .map((item) => EigaExtend(
                                     eiga: item, sourceId: widget.service.uid))
                                 .toList()),
                             title: section.name,
@@ -99,7 +99,7 @@ class _TabViewEigaState extends State<TabViewEiga>
 
                         return VerticalEigaList(
                           itemsFuture: Future.value(section.items
-                              .map((item) => BasicEigaExtend(
+                              .map((item) => EigaExtend(
                                   eiga: item, sourceId: widget.service.uid))
                               .toList()),
                           title: section.name,
@@ -123,10 +123,10 @@ class _TabViewEigaState extends State<TabViewEiga>
               builder: (_) => Skeletonizer(
                   enabled: true,
                   enableSwitchAnimation: true,
-                  child: builder(BaseEigaHome.createFakeData())));
+                  child: builder(EigaHome.createFakeData())));
         }
 
-        return PullToRefresh<BaseEigaHome>(
+        return PullToRefresh<EigaHome>(
             controller: _refreshController,
             onRefresh: widget.service.home,
             initialData: snapshot.data!,

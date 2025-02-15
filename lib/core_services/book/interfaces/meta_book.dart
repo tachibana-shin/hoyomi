@@ -1,5 +1,5 @@
-import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/genre.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/book/interfaces/rate_value.dart';
 import 'package:hoyomi/core_services/book/interfaces/status_enum.dart';
 
@@ -7,7 +7,7 @@ class MetaBook {
   final String name;
   final String? originalName;
 
-  final BasicImage image;
+  final OImage image;
 
   final String? author;
   final String? translator;
@@ -17,7 +17,7 @@ class MetaBook {
   final int? likes;
 
   final RateValue? rate;
-  final List<BasicGenre> genres;
+  final List<Genre> genres;
   final String description;
   final List<Chapter> chapters;
   final DateTime lastModified;
@@ -43,7 +43,7 @@ class MetaBook {
     return MetaBook(
       name: json['name'],
       originalName: json['originalName'],
-      image: BasicImage.fromJson(json['image']),
+      image: OImage.fromJson(json['image']),
       author: json['author'],
       translator: json['translator'],
       status: StatusEnum.values.firstWhere(
@@ -53,7 +53,7 @@ class MetaBook {
       likes: json['likes'],
       rate: json['rate'] != null ? RateValue.fromJson(json['rate']) : null,
       genres:
-          (json['genres'] as List).map((e) => BasicGenre.fromJson(e)).toList(),
+          (json['genres'] as List).map((e) => Genre.fromJson(e)).toList(),
       description: json['description'],
       chapters:
           (json['chapters'] as List).map((e) => Chapter.fromJson(e)).toList(),

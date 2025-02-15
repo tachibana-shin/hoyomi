@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:hoyomi/core_services/book/interfaces/base_comments.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_comment.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_comments.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_comment.dart';
 import 'package:hoyomi/widgets/comments/widget/comment.dart';
 import 'package:hoyomi/widgets/pull_to_refresh.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class Comments extends StatefulWidget {
-  final Future<BaseComments> Function(
-      {required BasicComment? parent, int? page})? getComments;
+  final Future<BookComments> Function(
+      {required BookComment? parent, int? page})? getComments;
   final Future<void> Function(
-      {required BasicComment? parent,
-      required BasicComment comment}) deleteComment;
+      {required BookComment? parent,
+      required BookComment comment}) deleteComment;
   final Future<bool> Function(
-      {required BasicComment? parent,
-      required BasicComment comment,
+      {required BookComment? parent,
+      required BookComment comment,
       required bool value}) setLikeComment;
   final ScrollController? controller;
-  final BasicComment? parent;
+  final BookComment? parent;
   final bool activatorMode;
 
   const Comments({
@@ -36,7 +36,7 @@ class Comments extends StatefulWidget {
 
 class _CommentsState extends State<Comments> {
   final _refreshController = RefreshController(initialRefresh: false);
-  late Future<BaseComments> _futureComments;
+  late Future<BookComments> _futureComments;
 
   int page = 1;
 
@@ -55,12 +55,12 @@ class _CommentsState extends State<Comments> {
     }
   }
 
-  Future<BaseComments> _onRefresh() async {
+  Future<BookComments> _onRefresh() async {
     page = 1;
     return widget.getComments!(page: page, parent: widget.parent);
   }
 
-  Future<BaseComments?> _onLoading(BaseComments oldData) async {
+  Future<BookComments?> _onLoading(BookComments oldData) async {
     final newData =
         await widget.getComments!(page: ++page, parent: widget.parent);
 
@@ -68,7 +68,7 @@ class _CommentsState extends State<Comments> {
       return null;
     }
 
-    return BaseComments(
+    return BookComments(
       items: oldData.items.toList()..addAll(newData.items),
       page: newData.page,
       totalItems: newData.totalItems,
@@ -78,7 +78,7 @@ class _CommentsState extends State<Comments> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<BaseComments>(
+    return FutureBuilder<BookComments>(
       future: _futureComments,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -101,11 +101,11 @@ class _CommentsState extends State<Comments> {
     );
   }
 
-  Widget _buildFullComments(BaseComments comments,
+  Widget _buildFullComments(BookComments comments,
       {ScrollController? controller}) {
     controller ??= widget.controller;
 
-    Widget itemBuilder(BaseComments comments, int index) {
+    Widget itemBuilder(BookComments comments, int index) {
       final comment = comments.items.elementAt(index);
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
@@ -143,7 +143,7 @@ class _CommentsState extends State<Comments> {
             .toList());
   }
 
-  Widget _buildLastComment(BaseComments comments) {
+  Widget _buildLastComment(BookComments comments) {
     final comment = comments.items.firstOrNull;
     if (comment == null) {
       return InkWell(
@@ -210,7 +210,7 @@ class _CommentsState extends State<Comments> {
             )));
   }
 
-  void _showBottomSheet(BaseComments comments) {
+  void _showBottomSheet(BookComments comments) {
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,

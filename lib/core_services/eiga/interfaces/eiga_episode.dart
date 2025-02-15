@@ -1,19 +1,19 @@
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 
-class EpisodeEiga {
+class EigaEpisode {
   final String name;
   final String episodeId;
-  final BasicImage? image;
+  final OImage? image;
   final String? description;
 
-  EpisodeEiga(
+  EigaEpisode(
       {required this.name,
       required this.episodeId,
       this.image,
       this.description});
 
-  factory EpisodeEiga.createFakeData() {
-    return EpisodeEiga(
+  factory EigaEpisode.createFakeData() {
+    return EigaEpisode(
       name: "Episode 1",
       episodeId: "1",
     );

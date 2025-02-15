@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 
 class ImagePicker extends StatefulWidget {
-  final List<BasicImage> images;
+  final List<OImage> images;
   final String sourceId;
   final Function(Set<int>) onChange;
 
@@ -82,7 +82,7 @@ class _ImagePickerState extends State<ImagePicker> {
                                     borderRadius: BorderRadius.circular(20.0),
                                   ),
                                   clipBehavior: Clip.antiAlias,
-                                  child: BasicImage.network(
+                                  child: OImage.network(
                                     widget.images.elementAt(index).src,
                                     sourceId: widget.sourceId,
                                     headers:

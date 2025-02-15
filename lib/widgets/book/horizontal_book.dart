@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/book/interfaces/book.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 
 class HorizontalBook extends StatelessWidget {
-  final BasicBook book;
+  final Book book;
   final String sourceId;
 
   const HorizontalBook({super.key, required this.book, required this.sourceId});
@@ -24,7 +24,7 @@ class HorizontalBook extends StatelessWidget {
             aspectRatio: 2 / 3,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
-              child: BasicImage.network(
+              child: OImage.network(
                 book.image.src,
                 sourceId: sourceId,
                 headers: book.image.headers,

@@ -5,7 +5,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/core_services/base_service.dart'; // Add this import
+import 'package:hoyomi/core_services/service.dart'; // Add this import
 import 'package:hoyomi/globals.dart';
 
 class CustomWebView extends StatefulWidget {
@@ -19,7 +19,7 @@ class CustomWebView extends StatefulWidget {
 
 class _CustomWebViewState extends State<CustomWebView> {
   late InAppWebViewController _webViewController;
-  late final BaseService _service;
+  late final Service _service;
   late final String _initialUrl;
 
   String _currentTitle = "Loading...";
@@ -31,7 +31,7 @@ class _CustomWebViewState extends State<CustomWebView> {
   void initState() {
     super.initState();
 
-    _service = getBaseService(widget.serviceId);
+    _service = getService(widget.serviceId);
     _initialUrl = _service.baseUrl;
     _currentTitle = _initialUrl;
     _currentUrl = _initialUrl;

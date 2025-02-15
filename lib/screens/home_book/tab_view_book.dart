@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/book/book_base_service.dart';
+import 'package:hoyomi/core_services/book/book_service.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/stores.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book_section.dart';
+import 'package:hoyomi/core_services/book/interfaces/home_book_section.dart';
 import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
 import 'package:hoyomi/widgets/pull_to_refresh.dart';
 import 'package:hoyomi/widgets/book/vertical_book_list.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class TabViewBook extends StatefulWidget {
-  final BookBaseService service;
+  final BookService service;
 
   const TabViewBook({super.key, required this.service});
 
@@ -25,7 +25,7 @@ class _TabViewBookState extends State<TabViewBook>
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  late Future<List<BasicBookSection>> _data;
+  late Future<List<HomeBookSection>> _data;
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _TabViewBookState extends State<TabViewBook>
   Widget build(BuildContext context) {
     super.build(context);
 
-    return FutureBuilder<List<BasicBookSection>>(
+    return FutureBuilder<List<HomeBookSection>>(
       future: _data,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -59,7 +59,7 @@ class _TabViewBookState extends State<TabViewBook>
           return const Center(child: Text('No data available'));
         }
 
-        return PullToRefresh<List<BasicBookSection>>(
+        return PullToRefresh<List<HomeBookSection>>(
             controller: _refreshController,
             onRefresh: widget.service.home,
             initialData: snapshot.data!,
@@ -79,7 +79,7 @@ class _TabViewBookState extends State<TabViewBook>
                           if (value == false) {
                             return HorizontalBookList(
                               itemsFuture: Future.value(section.items
-                                  .map((item) => BasicBookExtend(
+                                  .map((item) => BookExtend(
                                       book: item, sourceId: widget.service.uid))
                                   .toList()),
                               title: section.name,
@@ -91,7 +91,7 @@ class _TabViewBookState extends State<TabViewBook>
 
                           return VerticalBookList(
                             itemsFuture: Future.value(section.items
-                                .map((item) => BasicBookExtend(
+                                .map((item) => BookExtend(
                                     book: item, sourceId: widget.service.uid))
                                 .toList()),
                             title: section.name,

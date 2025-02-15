@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/cookie.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
-import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
-import 'package:hoyomi/core_services/base_service.dart';
-import 'package:hoyomi/core_services/interfaces/basic_user.dart';
+import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
+import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/core_services/interfaces/user.dart';
 import 'package:signals/signals.dart' as core_signals;
 import 'package:signals/signals_flutter.dart' as flutter_signals;
 
 class UserData {
-  final core_signals.Signal<BasicUser?> user;
+  final core_signals.Signal<User?> user;
   final core_signals.Signal<String?> error;
   final core_signals.Signal<bool> fetching;
   final Future<void> Function() refresh;
@@ -23,11 +23,11 @@ class UserData {
   });
 }
 
-UserData useUser(BaseAuthMixin service,
+UserData useUser(AuthMixin service,
     {bool immediate = true, flutter_signals.SignalsMixin? context}) {
   final user = context != null
-      ? context.createSignal<BasicUser?>(null)
-      : core_signals.signal<BasicUser?>(null);
+      ? context.createSignal<User?>(null)
+      : core_signals.signal<User?>(null);
   final error = context != null
       ? context.createSignal<String?>(null)
       : core_signals.signal<String?>(null);
@@ -40,21 +40,21 @@ UserData useUser(BaseAuthMixin service,
     error.value = null;
 
     try {
-      if (service is! BaseService) return;
+      if (service is! Service) return;
 
       final record = await CookieController.getAsync(
-          sourceId: (service as BaseService).uid);
+          sourceId: (service as Service).uid);
 
       if (record != null) {
         final json = record.user;
 
         if (context != null && (context as State).mounted) {
           user.value =
-              json == null ? null : BasicUser.fromJson(jsonDecode(json));
+              json == null ? null : User.fromJson(jsonDecode(json));
         }
       }
       // fetch user online
-      (service as BaseService)
+      (service as Service)
           .fetchUser(row: record, recordLoaded: true)
           .then((value) {
         if (context != null && (context as State).mounted) {

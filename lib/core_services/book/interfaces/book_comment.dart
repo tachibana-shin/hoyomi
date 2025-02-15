@@ -1,12 +1,12 @@
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 
-class BasicComment {
+class BookComment {
   final String id;
   final String bookId;
   final String? chapterId;
   final String userId;
   final String name;
-  final BasicImage photoUrl;
+  final OImage photoUrl;
   final String content;
   final DateTime timeAgo;
 
@@ -17,7 +17,7 @@ class BasicComment {
   final bool canDelete;
   bool? like;
 
-  BasicComment(
+  BookComment(
       {required this.id,
       required this.bookId,
       this.chapterId,

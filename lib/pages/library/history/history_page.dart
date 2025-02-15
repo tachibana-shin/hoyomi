@@ -4,15 +4,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:intl/intl.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+
 import 'package:hoyomi/controller/history.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
+import 'package:hoyomi/core_services/book/interfaces/book.dart' as i_book;
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:hoyomi/database/scheme/book.dart';
 import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
-import 'package:hoyomi/widgets/pull_to_refresh.dart';
 import 'package:hoyomi/widgets/book/vertical_book_list.dart';
-import 'package:intl/intl.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:hoyomi/widgets/pull_to_refresh.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
@@ -193,8 +194,8 @@ class _HistoryState extends State<History> {
                     //     .fold(0.0, (p, c) => p + c.currentPage / c.maxPage) /
                     // items.elementAt(index).chapters.length
 
-                    return BasicBookExtend(
-                        book: BasicBook.fromMeta(
+                    return BookExtend(
+                        book:i_book. Book.fromMeta(
                           item.$2.bookId,
                           book: MetaBook.fromJson(jsonDecode(item.$2.meta)),
                         ),

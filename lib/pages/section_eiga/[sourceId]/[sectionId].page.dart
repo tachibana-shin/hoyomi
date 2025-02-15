@@ -5,10 +5,10 @@ import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/eiga/eiga_base_service.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/base_eiga_section.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
-import 'package:hoyomi/core_services/interfaces/basic_filter.dart';
+import 'package:hoyomi/core_services/eiga/eiga_service.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_section.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
+import 'package:hoyomi/core_services/interfaces/filter.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/widgets/book/icon_button_open_browser.dart';
@@ -21,7 +21,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 class SectionEigaPage extends StatefulWidget {
   final String serviceId;
   final String sectionId;
-  final Future<BaseEigaSection> Function({
+  final Future<EigaSection> Function({
     required String sectionId,
     required int page,
     required Map<String, List<String>?> filters,
@@ -38,9 +38,9 @@ class SectionEigaPage extends StatefulWidget {
 }
 
 class _SectionEigaPageState extends State<SectionEigaPage> {
-  late final EigaBaseService _service;
+  late final EigaService _service;
 
-  final PagingController<int, BasicEiga> _pagingController =
+  final PagingController<int, Eiga> _pagingController =
       PagingController(firstPageKey: 1);
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -48,7 +48,7 @@ class _SectionEigaPageState extends State<SectionEigaPage> {
   String? _title;
   String? _url;
   // String? _description;
-  List<BasicFilter>? _filters;
+  List<Filter>? _filters;
   int? _currentPage;
   int? _totalPages;
 
@@ -280,7 +280,7 @@ class _SectionEigaPageState extends State<SectionEigaPage> {
                   crossAxisSpacing: 0.0,
                   mainAxisSpacing: 0.0,
                   childAspectRatio: (screenWidth / crossAxisCount) / height),
-              builderDelegate: PagedChildBuilderDelegate<BasicEiga>(
+              builderDelegate: PagedChildBuilderDelegate<Eiga>(
                 animateTransitions: true,
                 itemBuilder: (context, eiga, index) {
                   return Padding(
@@ -300,7 +300,7 @@ class _SectionEigaPageState extends State<SectionEigaPage> {
                         enabled: true,
                         enableSwitchAnimation: true,
                         child: VerticalEiga(
-                            eiga: BasicEiga.createFakeData(),
+                            eiga: Eiga.createFakeData(),
                             sourceId: _service.uid))),
                 noItemsFoundIndicatorBuilder: (_) => Center(
                   child: Text('No items found.'),

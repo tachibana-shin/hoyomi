@@ -1,18 +1,18 @@
-class BasicGenre {
+class Genre {
   final String name;
   final String genreId;
   final String? description;
   final String? image;
 
-  const BasicGenre(
+  const Genre(
       {required this.name,
       required this.genreId,
       this.description,
       this.image});
 
   // Convert from JSON
-  factory BasicGenre.fromJson(Map<String, dynamic> json) {
-    return BasicGenre(
+  factory Genre.fromJson(Map<String, dynamic> json) {
+    return Genre(
       name: json['name'],
       genreId: json['genreId'],
       description: json['description'],

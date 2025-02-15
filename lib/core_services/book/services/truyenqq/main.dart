@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:hoyomi/core_services/book/interfaces/base_book_section.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_chapter.dart';
-import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
-import 'package:hoyomi/core_services/book/interfaces/basic_book_section.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_section.dart';
+import 'package:hoyomi/core_services/book/interfaces/book.dart';
+import 'package:hoyomi/core_services/book/interfaces/book_chapter.dart';
+import 'package:hoyomi/core_services/interfaces/genre.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/core_services/book/interfaces/home_book_section.dart';
 import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
 import 'package:hoyomi/core_services/book/interfaces/rate_value.dart';
 import 'package:hoyomi/core_services/book/interfaces/status_enum.dart';
@@ -22,7 +22,7 @@ class TruyenQQService extends TruyenGGService {
 
   // Utils
   @override
-  BasicBook parseBasicBook(Element itemBook, String referer) {
+  Book parseBook(Element itemBook, String referer) {
     final String bookId = itemBook
         .querySelector("a")!
         .attributes["href"]!
@@ -30,13 +30,13 @@ class TruyenQQService extends TruyenGGService {
         .last
         .replaceFirst(".html", "");
     final $image = itemBook.querySelector("img")!;
-    final BasicImage image = BasicImage(
+    final OImage image = OImage(
         src: $image.attributes["src"]!, headers: {"referer": referer});
     final String name = (itemBook.querySelector(".book_name a")?.text ??
             itemBook.querySelector("img")!.attributes['alt']!)
         .trim();
 
-    final BasicChapter lastChap = BasicChapter(
+    final BookChapter lastChap = BookChapter(
         name: itemBook.querySelector(".last_chapter > a")!.text.trim(),
         chapterId: itemBook
             .querySelector(".cl99, .last_chapter > a")!
@@ -56,7 +56,7 @@ class TruyenQQService extends TruyenGGService {
     final double? rate =
         rateValueText != null ? double.tryParse(rateValueText) : null;
 
-    return BasicBook(
+    return Book(
         image: image,
         lastChap: lastChap,
         timeAgo: timeAgo,
@@ -68,21 +68,21 @@ class TruyenQQService extends TruyenGGService {
   }
 
   @override
-  Future<List<BasicBookSection>> home() async {
+  Future<List<HomeBookSection>> home() async {
     final document = await fetchDocument(baseUrl);
 
     return [
-      BasicBookSection(
+      HomeBookSection(
         items: document
             .querySelectorAll("#list_suggest > li")
-            .map((element) => parseBasicBook(element, baseUrl))
+            .map((element) => parseBook(element, baseUrl))
             .toList(),
         name: 'Truyện Hay',
       ),
-      BasicBookSection(
+      HomeBookSection(
           items: document
               .querySelectorAll("#list_new > li")
-              .map((element) => parseBasicBook(element, baseUrl))
+              .map((element) => parseBook(element, baseUrl))
               .toList(),
           name: 'Truyện Mới Cập Nhật',
           sectionId: 'truyen-moi-cap-nhat'),
@@ -95,7 +95,7 @@ class TruyenQQService extends TruyenGGService {
 
     final String name =
         document.querySelector("h1[itemprop=name]")!.text.trim();
-    final BasicImage image = BasicImage(
+    final OImage image = OImage(
         src: document.querySelector(".book_avatar img")!.attributes["src"]!,
         headers: {"referer": baseUrl});
 
@@ -133,7 +133,7 @@ class TruyenQQService extends TruyenGGService {
         : null;
 
     final genres = document.querySelectorAll(".list01 a").map((anchor) =>
-        BasicGenre(
+        Genre(
             name: anchor.text.trim(),
             genreId:
                 "the-loai*${anchor.attributes["href"]!.split("/").last.replaceFirst(".html", "")}"));
@@ -178,13 +178,13 @@ class TruyenQQService extends TruyenGGService {
   }
 
   @override
-  Future<List<BasicImage>> getPages(String manga, String chap) async {
+  Future<List<OImage>> getPages(String manga, String chap) async {
     final document = await fetchDocument(getURL(manga, chapterId: chap));
 
     return document.querySelectorAll(".chapter_content img").map((img) {
       final src = img.attributes["src"]!;
 
-      return BasicImage(src: src, headers: {"referer": baseUrl});
+      return OImage(src: src, headers: {"referer": baseUrl});
     }).toList();
   }
 
@@ -207,7 +207,7 @@ class TruyenQQService extends TruyenGGService {
 
     final data = document
         .querySelectorAll(".list_grid_out li")
-        .map((element) => parseBasicBook(element, baseUrl));
+        .map((element) => parseBook(element, baseUrl));
 
     final lastPageLink = document
         .querySelector(".page_redirect > a:last-child")
@@ -216,7 +216,7 @@ class TruyenQQService extends TruyenGGService {
         ? int.parse(RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!)
         : 1;
 
-    return BaseBookSection(
+    return BookSection(
         name: '',
         url: url,
         items: data.toList(),
@@ -235,7 +235,7 @@ class TruyenQQService extends TruyenGGService {
 
     final data = document
         .querySelectorAll(".list_grid_out li")
-        .map((element) => parseBasicBook(element, baseUrl));
+        .map((element) => parseBook(element, baseUrl));
 
     final lastPageLink = document
         .querySelector(".page_redirect > a:last-child")
@@ -244,7 +244,7 @@ class TruyenQQService extends TruyenGGService {
         ? int.parse(RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!)
         : 1;
 
-    return BaseBookSection(
+    return BookSection(
         name: document
                 .querySelector(".title_cate, .text_list_update")
                 ?.text

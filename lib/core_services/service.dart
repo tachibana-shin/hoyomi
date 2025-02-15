@@ -1,6 +1,6 @@
 import 'package:hoyomi/core_services/utils_service.dart';
 
-abstract class BaseService extends UtilsService {
+abstract class Service extends UtilsService {
   @override
   String get name;
   @override

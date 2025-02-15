@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user.dart';
-import 'package:hoyomi/core_services/base_service.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
+import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/globals.dart';
 import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/utils/format_number.dart';
@@ -14,7 +14,7 @@ import 'package:signals/signals_flutter.dart';
 class ButtonFollowEiga extends StatefulWidget {
   final ValueNotifier<String> eigaId;
   final ValueNotifier<MetaEiga> metaEiga;
-  final BaseService service;
+  final Service service;
 
   const ButtonFollowEiga(
       {super.key,
@@ -42,7 +42,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
     widget.eigaId.addListener(_onUpdateEigaId);
 
     if (_supportAuth) {
-      _user = useUser(widget.service as BaseAuthMixin, context: this);
+      _user = useUser(widget.service as AuthMixin, context: this);
     } else {
       _user = null;
     }

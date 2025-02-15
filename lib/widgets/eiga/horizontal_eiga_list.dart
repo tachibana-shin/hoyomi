@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga.dart';
 import 'package:hoyomi/widgets/horizontal_list.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class BasicEigaExtend {
-  final BasicEiga eiga;
+class EigaExtend {
+  final Eiga eiga;
   final String? sourceId;
   final double? percentRead;
 
-  BasicEigaExtend(
+  EigaExtend(
       {required this.eiga, required this.sourceId, this.percentRead});
 }
 
 class HorizontalEigaList extends StatelessWidget {
-  final Future<List<BasicEigaExtend>> itemsFuture;
+  final Future<List<EigaExtend>> itemsFuture;
   final String title;
   final String? subtitle;
   final String? more;
@@ -38,14 +38,14 @@ class HorizontalEigaList extends StatelessWidget {
             return Skeletonizer(
                 enabled: true,
                 enableSwitchAnimation: true,
-                child: HorizontalList<BasicEigaExtend>(
+                child: HorizontalList<EigaExtend>(
                   title: title,
                   subtitle: subtitle,
                   more: more,
                   items: List.generate(
                       30,
-                      (index) => BasicEigaExtend(
-                          eiga: BasicEiga.createFakeData(), sourceId: null)),
+                      (index) => EigaExtend(
+                          eiga: Eiga.createFakeData(), sourceId: null)),
                   needSubtitle: false,
                   builder: (context, eiga, index) {
                     return VerticalEiga(
@@ -64,7 +64,7 @@ class HorizontalEigaList extends StatelessWidget {
                     orElse: (error) => Text('Error: $error')));
           }
 
-          return HorizontalList<BasicEigaExtend>(
+          return HorizontalList<EigaExtend>(
             title: title,
             subtitle: subtitle,
             more: more,

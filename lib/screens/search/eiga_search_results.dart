@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/interfaces/paginate.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
@@ -21,7 +21,7 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
   bool get wantKeepAlive => true;
 
   final RefreshController _refreshController = RefreshController();
-  final Map<String, Future<Paginate<BasicEiga>>> _searchFutures = {};
+  final Map<String, Future<Paginate<Eiga>>> _searchFutures = {};
 
   @override
   void initState() {
@@ -70,7 +70,7 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
         children: eigaServices.map((service) {
           final searchResult = _searchFutures[service.uid]!;
           final itemsFuture = searchResult.then((data) => data.items
-              .map((item) => BasicEigaExtend(eiga: item, sourceId: service.uid))
+              .map((item) => EigaExtend(eiga: item, sourceId: service.uid))
               .toList());
           String subtitle = '';
 

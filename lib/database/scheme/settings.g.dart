@@ -95,7 +95,7 @@ Id _settingsGetId(Settings object) {
   return object.id ?? Isar.autoIncrement;
 }
 
-List<IsarLinkBase<dynamic>> _settingsGetLinks(Settings object) {
+List<IsarLink<dynamic>> _settingsGetLinks(Settings object) {
   return [];
 }
 

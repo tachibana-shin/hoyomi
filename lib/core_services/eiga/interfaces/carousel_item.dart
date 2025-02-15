@@ -1,8 +1,8 @@
-import 'package:hoyomi/core_services/interfaces/basic_genre.dart';
-import 'package:hoyomi/core_services/interfaces/basic_image.dart';
+import 'package:hoyomi/core_services/interfaces/genre.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 
-class BasicCarouselItem {
-  final BasicImage image;
+class CarouselItem {
+  final OImage image;
   final String eigaId;
   final String name;
   final String? originalName;
@@ -12,10 +12,10 @@ class BasicCarouselItem {
   final String? description;
   final String? studio;
   final String? duration;
-  final List<BasicGenre>? genres;
-  final List<BasicGenre>? actors;
+  final List<Genre>? genres;
+  final List<Genre>? actors;
 
-  BasicCarouselItem(
+  CarouselItem(
       {required this.image,
       required this.eigaId,
       required this.name,

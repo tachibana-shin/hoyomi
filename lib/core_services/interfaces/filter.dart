@@ -1,19 +1,19 @@
-class BasicOption {
+class Option {
   final String name;
   final String value;
   final bool selected;
 
-  const BasicOption(
+  const Option(
       {required this.name, required this.value, this.selected = false});
 }
 
-class BasicFilter {
+class Filter {
   final String name;
   final String key;
   final bool multiple;
-  final List<BasicOption> options;
+  final List<Option> options;
 
-  const BasicFilter(
+  const Filter(
       {required this.name,
       required this.key,
       required this.multiple,
