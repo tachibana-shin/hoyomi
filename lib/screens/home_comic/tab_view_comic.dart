@@ -80,7 +80,8 @@ class _TabViewComicState extends State<TabViewComic>
                             return HorizontalComicList(
                               itemsFuture: Future.value(section.items
                                   .map((item) => ComicExtend(
-                                      comic: item, sourceId: widget.service.uid))
+                                      comic: item,
+                                      sourceId: widget.service.uid))
                                   .toList()),
                               title: section.name,
                               more: section.sectionId != null

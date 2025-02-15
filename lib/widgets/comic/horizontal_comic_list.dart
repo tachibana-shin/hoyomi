@@ -11,8 +11,7 @@ class ComicExtend {
   final String? sourceId;
   final double? percentRead;
 
-  ComicExtend(
-      {required this.comic, required this.sourceId, this.percentRead});
+  ComicExtend({required this.comic, required this.sourceId, this.percentRead});
 }
 
 class HorizontalComicList extends StatelessWidget {

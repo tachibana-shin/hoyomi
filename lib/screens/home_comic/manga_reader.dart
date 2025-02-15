@@ -27,8 +27,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 class ImageWithGroup extends OImage {
   final String chapterId;
 
-  ImageWithGroup(
-      {required this.chapterId, required super.src, super.headers});
+  ImageWithGroup({required this.chapterId, required super.src, super.headers});
 }
 
 class MangaReader extends StatefulWidget {
@@ -187,7 +186,8 @@ class _MangaReaderState extends State<MangaReader>
           currentPage: _realCurrentPage,
           maxPage: _realLength);
 
-      eventBus.fire(UpdatedHistory(comicId: widget.comicId, chapterId: _chapter));
+      eventBus
+          .fire(UpdatedHistory(comicId: widget.comicId, chapterId: _chapter));
     });
   }
 
@@ -414,14 +414,11 @@ class _MangaReaderState extends State<MangaReader>
       required String? chapterNext,
       required String? chapterPrev,
       required String chapterCurrent}) {
-    return ImageWithGroup(
-        chapterId: chapterId,
-        src: OImage.fake,
-        headers: {
-          if (chapterPrev != null) 'prev': chapterPrev,
-          'current': chapterCurrent,
-          if (chapterNext != null) 'next': chapterNext
-        });
+    return ImageWithGroup(chapterId: chapterId, src: OImage.fake, headers: {
+      if (chapterPrev != null) 'prev': chapterPrev,
+      'current': chapterCurrent,
+      if (chapterNext != null) 'next': chapterNext
+    });
   }
 
   Widget _buildImage(int index) {

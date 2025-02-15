@@ -35,7 +35,8 @@ class DetailsComic extends StatefulWidget {
   final String sourceId;
   final String comicId;
 
-  const DetailsComic({super.key, required this.sourceId, required this.comicId});
+  const DetailsComic(
+      {super.key, required this.sourceId, required this.comicId});
 
   @override
   createState() => _DetailsComicState();
@@ -152,7 +153,9 @@ class _DetailsComicState extends State<DetailsComic>
               _AvatarUser(service: _service),
             IconButtonShare(),
             IconButtonFollow(
-                sourceId: widget.sourceId, comicId: widget.comicId, comic: _comic),
+                sourceId: widget.sourceId,
+                comicId: widget.comicId,
+                comic: _comic),
             PopupMenuButton<String>(
               onSelected: (value) {
                 _handleMenuSelection(context, value);
@@ -464,7 +467,9 @@ class _DetailsComicState extends State<DetailsComic>
                 },
                 deleteComment: ({required comment, parent}) {
                   return (_service as ComicAuthMixin).deleteComment!(
-                      comicId: widget.comicId, comment: comment, parent: parent);
+                      comicId: widget.comicId,
+                      comment: comment,
+                      parent: parent);
                 },
                 setLikeComment: ({required comment, parent, required value}) {
                   return (_service as ComicAuthMixin).setLikeComment!(

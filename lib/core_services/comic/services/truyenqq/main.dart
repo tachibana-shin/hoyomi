@@ -30,8 +30,8 @@ class TruyenQQService extends TruyenGGService {
         .last
         .replaceFirst(".html", "");
     final $image = itemComic.querySelector("img")!;
-    final OImage image = OImage(
-        src: $image.attributes["src"]!, headers: {"referer": referer});
+    final OImage image =
+        OImage(src: $image.attributes["src"]!, headers: {"referer": referer});
     final String name = (itemComic.querySelector(".comic_name a")?.text ??
             itemComic.querySelector("img")!.attributes['alt']!)
         .trim();
@@ -132,11 +132,10 @@ class TruyenQQService extends TruyenGGService {
             value: double.parse(rate$['aggregateRating']['ratingValue']))
         : null;
 
-    final genres = document.querySelectorAll(".list01 a").map((anchor) =>
-        Genre(
-            name: anchor.text.trim(),
-            genreId:
-                "the-loai*${anchor.attributes["href"]!.split("/").last.replaceFirst(".html", "")}"));
+    final genres = document.querySelectorAll(".list01 a").map((anchor) => Genre(
+        name: anchor.text.trim(),
+        genreId:
+            "the-loai*${anchor.attributes["href"]!.split("/").last.replaceFirst(".html", "")}"));
     final description =
         document.querySelector(".story-detail-info")!.text.trim();
     final chapters =

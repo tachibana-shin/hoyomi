@@ -47,8 +47,7 @@ final List<Filter> globalFilters = [
   ]),
 ];
 
-class TruyenGGService extends ComicService
-    with AuthMixin, ComicAuthMixin {
+class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
   @override
   final String name = "TruyenGGP";
   @override
@@ -150,8 +149,8 @@ class TruyenGGService extends ComicService
 
   @override
   Future<MetaComic> getDetails(String comicId) async {
-    final document =
-        parseDocument(_comicCachedStore[comicId] = await fetch(getURL(comicId)));
+    final document = parseDocument(
+        _comicCachedStore[comicId] = await fetch(getURL(comicId)));
 
     final String name =
         document.querySelector("h1[itemprop=name]")!.text.trim();
@@ -340,8 +339,7 @@ class TruyenGGService extends ComicService
               chapterId: chapterId,
               userId: name,
               name: name,
-              photoUrl:
-                  OImage(src: photoUrl, headers: {"referer": baseUrl}),
+              photoUrl: OImage(src: photoUrl, headers: {"referer": baseUrl}),
               content: content,
               countLike: like,
               countDislike: dislike,

@@ -195,7 +195,7 @@ class _HistoryState extends State<History> {
                     // items.elementAt(index).chapters.length
 
                     return ComicExtend(
-                        comic:i_comic. Comic.fromMeta(
+                        comic: i_comic.Comic.fromMeta(
                           item.$2.comicId,
                           comic: MetaComic.fromJson(jsonDecode(item.$2.meta)),
                         ),

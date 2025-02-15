@@ -52,8 +52,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
         widget.services.where((service) => service.rss != null).toList());
   }
 
-  Future<List<RssItem>> fetchAndParseFeeds(
-      List<ComicService> services) async {
+  Future<List<RssItem>> fetchAndParseFeeds(List<ComicService> services) async {
     final items = <RssItem>[];
 
     for (final service in services) {
@@ -119,8 +118,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
         description: description,
         pubDate: pubDate,
         image: imageUrl != null
-            ? OImage(
-                src: imageUrl, headers: {"referer": Uri.parse(link).host})
+            ? OImage(src: imageUrl, headers: {"referer": Uri.parse(link).host})
             : null,
         avatar: OImage(src: service.faviconUrl),
         creator: creator,

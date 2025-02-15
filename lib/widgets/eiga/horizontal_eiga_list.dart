@@ -11,8 +11,7 @@ class EigaExtend {
   final String? sourceId;
   final double? percentRead;
 
-  EigaExtend(
-      {required this.eiga, required this.sourceId, this.percentRead});
+  EigaExtend({required this.eiga, required this.sourceId, this.percentRead});
 }
 
 class HorizontalEigaList extends StatelessWidget {

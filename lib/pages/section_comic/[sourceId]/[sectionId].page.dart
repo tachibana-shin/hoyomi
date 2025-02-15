@@ -286,7 +286,8 @@ class _SectionComicPageState extends State<SectionComicPage> {
                   return Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
-                      child: VerticalComic(comic: comic, sourceId: _service.uid));
+                      child:
+                          VerticalComic(comic: comic, sourceId: _service.uid));
                 },
                 firstPageProgressIndicatorBuilder: (_) => Center(
                   child: Padding(

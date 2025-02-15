@@ -170,8 +170,8 @@ class _FollowState extends State<Follow> {
                           (item) => ComicExtend(
                               comic: i_comic.Comic.fromMeta(
                                 item.$2.comicId,
-                                comic:
-                                    MetaComic.fromJson(jsonDecode(item.$2.meta)),
+                                comic: MetaComic.fromJson(
+                                    jsonDecode(item.$2.meta)),
                               ),
                               sourceId: currentElement.value
                                   .elementAt(item.$1)

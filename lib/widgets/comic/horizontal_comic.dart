@@ -8,7 +8,8 @@ class HorizontalComic extends StatelessWidget {
   final Comic comic;
   final String sourceId;
 
-  const HorizontalComic({super.key, required this.comic, required this.sourceId});
+  const HorizontalComic(
+      {super.key, required this.comic, required this.sourceId});
 
   @override
   Widget build(BuildContext context) {

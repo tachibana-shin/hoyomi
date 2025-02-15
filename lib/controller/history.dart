@@ -122,7 +122,8 @@ class HistoryController {
   }
 
   Future<List<Comic>> getListFollows(int limit, {required int offset}) async {
-    final query = _comicBox.where().followedAtIsNotNull().sortByFollowedAtDesc();
+    final query =
+        _comicBox.where().followedAtIsNotNull().sortByFollowedAtDesc();
 
     return query.offset(offset).limit(limit).findAll();
   }

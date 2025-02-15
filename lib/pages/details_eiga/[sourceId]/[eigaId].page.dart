@@ -1130,8 +1130,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
           return VerticalEigaList(
             itemsFuture: suggest.then((data) => data
-                .map((item) =>
-                    EigaExtend(eiga: item, sourceId: _service.uid))
+                .map((item) => EigaExtend(eiga: item, sourceId: _service.uid))
                 .toList()),
             title: 'Suggest',
             disableScroll: true,

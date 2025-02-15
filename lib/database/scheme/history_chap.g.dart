@@ -402,7 +402,8 @@ extension HistoryChapQueryFilter
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> comicGreaterThan(
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
+      comicGreaterThan(
     int value, {
     bool include = false,
   }) {

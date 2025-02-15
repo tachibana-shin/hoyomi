@@ -415,7 +415,8 @@ extension ComicQueryWhere on QueryBuilder<Comic, Comic, QWhereClause> {
     });
   }
 
-  QueryBuilder<Comic, Comic, QAfterWhereClause> sourceIdEqualTo(String sourceId) {
+  QueryBuilder<Comic, Comic, QAfterWhereClause> sourceIdEqualTo(
+      String sourceId) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'sourceId',
@@ -468,7 +469,8 @@ extension ComicQueryWhere on QueryBuilder<Comic, Comic, QWhereClause> {
     });
   }
 
-  QueryBuilder<Comic, Comic, QAfterWhereClause> comicIdNotEqualTo(String comicId) {
+  QueryBuilder<Comic, Comic, QAfterWhereClause> comicIdNotEqualTo(
+      String comicId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -792,7 +794,8 @@ extension ComicQueryFilter on QueryBuilder<Comic, Comic, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Comic, Comic, QAfterFilterCondition> comicIdContains(String value,
+  QueryBuilder<Comic, Comic, QAfterFilterCondition> comicIdContains(
+      String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -803,7 +806,8 @@ extension ComicQueryFilter on QueryBuilder<Comic, Comic, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Comic, Comic, QAfterFilterCondition> comicIdMatches(String pattern,
+  QueryBuilder<Comic, Comic, QAfterFilterCondition> comicIdMatches(
+      String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -1238,7 +1242,8 @@ extension ComicQueryFilter on QueryBuilder<Comic, Comic, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Comic, Comic, QAfterFilterCondition> sourceIdContains(String value,
+  QueryBuilder<Comic, Comic, QAfterFilterCondition> sourceIdContains(
+      String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -1378,7 +1383,8 @@ extension ComicQueryFilter on QueryBuilder<Comic, Comic, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Comic, Comic, QAfterFilterCondition> statusMatches(String pattern,
+  QueryBuilder<Comic, Comic, QAfterFilterCondition> statusMatches(
+      String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(

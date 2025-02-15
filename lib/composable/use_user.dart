@@ -42,15 +42,14 @@ UserData useUser(AuthMixin service,
     try {
       if (service is! Service) return;
 
-      final record = await CookieController.getAsync(
-          sourceId: (service as Service).uid);
+      final record =
+          await CookieController.getAsync(sourceId: (service as Service).uid);
 
       if (record != null) {
         final json = record.user;
 
         if (context != null && (context as State).mounted) {
-          user.value =
-              json == null ? null : User.fromJson(jsonDecode(json));
+          user.value = json == null ? null : User.fromJson(jsonDecode(json));
         }
       }
       // fetch user online

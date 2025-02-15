@@ -52,8 +52,7 @@ class MetaComic {
       views: json['views'],
       likes: json['likes'],
       rate: json['rate'] != null ? RateValue.fromJson(json['rate']) : null,
-      genres:
-          (json['genres'] as List).map((e) => Genre.fromJson(e)).toList(),
+      genres: (json['genres'] as List).map((e) => Genre.fromJson(e)).toList(),
       description: json['description'],
       chapters:
           (json['chapters'] as List).map((e) => Chapter.fromJson(e)).toList(),

@@ -165,10 +165,10 @@ final router = GoRouter(
           builder: (context, state) => SimilarPage(
             sourceId: state.pathParameters['sourceId']!,
             comicId: state.pathParameters['comicId']!,
-            comic:
-                (state.extra is Map && (state.extra as Map).containsKey('comic'))
-                    ? (state.extra as Map)['comic']
-                    : null,
+            comic: (state.extra is Map &&
+                    (state.extra as Map).containsKey('comic'))
+                ? (state.extra as Map)['comic']
+                : null,
           ),
         )
       ],
