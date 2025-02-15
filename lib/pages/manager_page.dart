@@ -32,9 +32,9 @@ class _ServiceAccounts extends StatelessWidget {
             mainAxisSpacing: 10.0,
             //   childAspectRatio: 1/3,
             // ),
-            itemCount: bookServices.length,
+            itemCount: comicServices.length,
             builder: (context, index) {
-              return _buildCard(bookServices[index]);
+              return _buildCard(comicServices[index]);
             },
           ),
           SizedBox(height: 15.0),

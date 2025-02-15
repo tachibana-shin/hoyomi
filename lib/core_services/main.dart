@@ -1,15 +1,15 @@
 import 'package:hoyomi/core_services/service.dart';
-import 'package:hoyomi/core_services/book/book_service.dart';
+import 'package:hoyomi/core_services/comic/comic_service.dart';
 import 'package:hoyomi/core_services/eiga/eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/services/animevietsub/main.dart';
 
-import 'book/services/truyengg/main.dart';
-import 'book/services/truyenqq/main.dart';
+import 'comic/services/truyengg/main.dart';
+import 'comic/services/truyenqq/main.dart';
 
-List<BookService> bookServices = [TruyenGGService(), TruyenQQService()];
+List<ComicService> comicServices = [TruyenGGService(), TruyenQQService()];
 
-BookService getBookService(String id) {
-  for (final service in bookServices) {
+ComicService getComicService(String id) {
+  for (final service in comicServices) {
     if (service.uid == id) {
       return service;
     }
@@ -32,7 +32,7 @@ EigaService getEigaService(String id) {
 
 Service getService(String uid) {
   try {
-    return getBookService(uid);
+    return getComicService(uid);
   } catch (err) {
     return getEigaService(uid);
   }

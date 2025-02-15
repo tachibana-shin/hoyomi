@@ -7,8 +7,8 @@ import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/circular_progress.dart';
 
 class VerticalEiga extends StatelessWidget {
-  static bool checkNeedSubtitle(Eiga book) {
-    return book.lastEpisode != null;
+  static bool checkNeedSubtitle(Eiga comic) {
+    return comic.lastEpisode != null;
   }
 
   final Eiga eiga;
@@ -127,7 +127,7 @@ class VerticalEiga extends StatelessWidget {
                       //  Row(
                       //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       //     children: [
-                      //       if (book.rate != null)
+                      //       if (comic.rate != null)
                       //         Row(
                       //           children: [
                       //             Icon(
@@ -137,15 +137,15 @@ class VerticalEiga extends StatelessWidget {
                       //             ),
                       //             const SizedBox(width: 4.0),
                       //             Text(
-                      //               book.rate!.toString(),
+                      //               comic.rate!.toString(),
                       //               style: const TextStyle(
                       //                   fontSize: 14.0, color: Colors.white),
                       //             ),
                       //           ],
                       //         ),
-                      //       if (book.notice != null)
+                      //       if (comic.notice != null)
                       //         Text(
-                      //           book.notice!,
+                      //           comic.notice!,
                       //           style: const TextStyle(
                       //               fontSize: 12.0, color: Colors.orange),
                       //         ),

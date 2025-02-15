@@ -11,7 +11,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/interfaces/filter.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
-import 'package:hoyomi/widgets/book/icon_button_open_browser.dart';
+import 'package:hoyomi/widgets/comic/icon_button_open_browser.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga.dart';
 import 'package:hoyomi/widgets/pull_to_refresh.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -61,32 +61,32 @@ class _SectionEigaPageState extends State<SectionEigaPage> {
     super.initState();
     _service = getEigaService(widget.serviceId);
     _pagingController.addPageRequestListener((pageKey) {
-      _fetchBooks(pageKey);
+      _fetchComics(pageKey);
     });
   }
 
-  Future<void> _fetchBooks(int pageKey) async {
+  Future<void> _fetchComics(int pageKey) async {
     try {
-      final newBooks = await (widget.getSection ?? _service.getSection)(
+      final newComics = await (widget.getSection ?? _service.getSection)(
           sectionId: widget.sectionId, page: pageKey, filters: _data);
-      final isLastPage = newBooks.page >= newBooks.totalPages;
+      final isLastPage = newComics.page >= newComics.totalPages;
       setState(() {
-        _title = newBooks.name;
-        _url = newBooks.url;
-        // _description = newBooks.description;
-        _filters = newBooks.filters;
+        _title = newComics.name;
+        _url = newComics.url;
+        // _description = newComics.description;
+        _filters = newComics.filters;
         _filters?.map((filter) {
           _data[filter.key] = null;
         });
         _currentPage = pageKey;
-        _totalPages = newBooks.totalPages;
+        _totalPages = newComics.totalPages;
       });
 
       if (isLastPage) {
-        _pagingController.appendLastPage(newBooks.items.toList());
+        _pagingController.appendLastPage(newComics.items.toList());
       } else {
         final nextPageKey = pageKey + 1;
-        _pagingController.appendPage(newBooks.items.toList(), nextPageKey);
+        _pagingController.appendPage(newComics.items.toList(), nextPageKey);
       }
 
       _refreshCompleter?.complete();

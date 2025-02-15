@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
-import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
+import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 
-import 'package:hoyomi/pages/details_comic/[sourceId]/[bookId].page.dart';
-import 'package:hoyomi/pages/details_comic/[sourceId]/[bookId]/[chapterId].page.dart';
+import 'package:hoyomi/pages/details_comic/[sourceId]/[comicId].page.dart';
+import 'package:hoyomi/pages/details_comic/[sourceId]/[comicId]/[chapterId].page.dart';
 import 'package:hoyomi/pages/home_comic/home_comic_page.dart';
 import 'package:hoyomi/pages/home_eiga/home_eiga_page.dart';
 import 'package:hoyomi/pages/library/follow/follow_page.dart';
@@ -22,7 +22,7 @@ import 'package:hoyomi/pages/webview_page.dart';
 
 import 'package:hoyomi/widgets/navigation_app.dart';
 
-import '../pages/details_comic/[sourceId]/[bookId]/similar/similar_page.dart';
+import '../pages/details_comic/[sourceId]/[comicId]/similar/similar_page.dart';
 import '../pages/details_eiga/[sourceId]/[eigaId].page.dart';
 
 final List<String> routeIgnoreLayoutDefault = [
@@ -53,11 +53,11 @@ final router = GoRouter(
         );
       },
       branches: [
-        // Bottom Navigation Item: Home Book
+        // Bottom Navigation Item: Home Comic
         StatefulShellBranch(routes: [
           GoRoute(
-            path: '/home_book',
-            builder: (context, state) => HomeBookPage(),
+            path: '/home_comic',
+            builder: (context, state) => HomeComicPage(),
           )
         ]),
         // Bottom Navigation Item: Home Eiga
@@ -134,12 +134,12 @@ final router = GoRouter(
     // --- Top-level routes ---
     // Details Comic Route
     GoRoute(
-      path: '/details_comic/:sourceId/:bookId',
+      path: '/details_comic/:sourceId/:comicId',
       name: 'details_comic',
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => DetailsComic(
         sourceId: state.pathParameters['sourceId']!,
-        bookId: state.pathParameters['bookId']!,
+        comicId: state.pathParameters['comicId']!,
       ),
       routes: [
         GoRoute(
@@ -149,12 +149,12 @@ final router = GoRouter(
           builder: (context, state) {
             final chapterId = state.uri.queryParameters['chap']!;
             return DetailsComicReader(
-              key: Key(state.pathParameters['bookId']!),
+              key: Key(state.pathParameters['comicId']!),
               sourceId: state.pathParameters['sourceId']!,
-              bookId: state.pathParameters['bookId']!,
+              comicId: state.pathParameters['comicId']!,
               chapterId: chapterId,
-              book: state.extra != null
-                  ? (state.extra as Map)['book'] as MetaBook
+              comic: state.extra != null
+                  ? (state.extra as Map)['comic'] as MetaComic
                   : null,
             );
           },
@@ -164,10 +164,10 @@ final router = GoRouter(
           parentNavigatorKey: _rootNavigatorKey,
           builder: (context, state) => SimilarPage(
             sourceId: state.pathParameters['sourceId']!,
-            bookId: state.pathParameters['bookId']!,
-            book:
-                (state.extra is Map && (state.extra as Map).containsKey('book'))
-                    ? (state.extra as Map)['book']
+            comicId: state.pathParameters['comicId']!,
+            comic:
+                (state.extra is Map && (state.extra as Map).containsKey('comic'))
+                    ? (state.extra as Map)['comic']
                     : null,
           ),
         )
@@ -221,7 +221,7 @@ final router = GoRouter(
 /// 日本語のコメント: 現在のURIに基づいてボトムツールバーを表示するかどうかを判定する関数。
 bool shouldShowToolbar(String uriString) {
   const mainRoutes = [
-    '/home_book',
+    '/home_comic',
     '/home_eiga',
     '/search',
     '/library',

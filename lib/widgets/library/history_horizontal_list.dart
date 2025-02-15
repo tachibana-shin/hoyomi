@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/history.dart';
-import 'package:hoyomi/core_services/book/interfaces/book.dart';
-import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:hoyomi/database/scheme/book.dart' as i_book;
-import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
+import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
+import 'package:hoyomi/database/scheme/comic.dart' as i_comic;
+import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
 
 class HistoryHorizontalList extends StatefulWidget {
   const HistoryHorizontalList({super.key});
@@ -15,7 +15,7 @@ class HistoryHorizontalList extends StatefulWidget {
 }
 
 class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
-  late final Future<List<i_book.Book>> _itemsFuture;
+  late final Future<List<i_comic.Comic>> _itemsFuture;
 
   @override
   initState() {
@@ -25,11 +25,11 @@ class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
 
   @override
   Widget build(BuildContext context) {
-    return HorizontalBookList(
+    return HorizontalComicList(
       itemsFuture: _itemsFuture
           .then((items) async => Future.wait(items.map((item) async {
-                final meta = MetaBook.fromJson(jsonDecode(item.meta));
-                final book = Book.fromMeta(item.bookId, book: meta);
+                final meta = MetaComic.fromJson(jsonDecode(item.meta));
+                final comic = Comic.fromMeta(item.comicId, comic: meta);
 
                 final current =
                     await HistoryController().getLastChapter(item.id!);
@@ -40,9 +40,9 @@ class _HistoryHorizontalListState extends State<HistoryHorizontalList> {
                         return current.chapterId == chapter.chapterId;
                       });
 
-                return BookExtend(
+                return ComicExtend(
                     sourceId: item.sourceId,
-                    book: book,
+                    comic: comic,
                     percentRead: (meta.chapters.length - currentEpisodeIndex) /
                         meta.chapters.length);
               }))),

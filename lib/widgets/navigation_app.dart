@@ -19,7 +19,7 @@ class NavigationApp extends StatelessWidget {
     final destinations = const [
       (
         icon: Icon(HugeIcons.strokeRoundedBook04),
-        label: ('Book'),
+        label: ('Comic'),
       ),
       (
         icon: Icon(HugeIcons.strokeRoundedFlimSlate),

@@ -5,15 +5,15 @@ import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/book/book_service.dart';
-import 'package:hoyomi/core_services/book/interfaces/book_section.dart';
-import 'package:hoyomi/core_services/book/interfaces/book.dart';
+import 'package:hoyomi/core_services/comic/comic_service.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic_section.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 import 'package:hoyomi/core_services/interfaces/filter.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
-import 'package:hoyomi/widgets/book/icon_button_open_browser.dart';
+import 'package:hoyomi/widgets/comic/icon_button_open_browser.dart';
 import 'package:hoyomi/widgets/pull_to_refresh.dart';
-import 'package:hoyomi/widgets/book/vertical_book.dart';
+import 'package:hoyomi/widgets/comic/vertical_comic.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -21,7 +21,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 class SectionComicPage extends StatefulWidget {
   final String serviceId;
   final String sectionId;
-  final Future<BookSection> Function({
+  final Future<ComicSection> Function({
     required String sectionId,
     required int page,
     required Map<String, List<String>?> filters,
@@ -38,9 +38,9 @@ class SectionComicPage extends StatefulWidget {
 }
 
 class _SectionComicPageState extends State<SectionComicPage> {
-  late final BookService _service;
+  late final ComicService _service;
 
-  final PagingController<int, Book> _pagingController =
+  final PagingController<int, Comic> _pagingController =
       PagingController(firstPageKey: 1);
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -59,34 +59,34 @@ class _SectionComicPageState extends State<SectionComicPage> {
   @override
   void initState() {
     super.initState();
-    _service = getBookService(widget.serviceId);
+    _service = getComicService(widget.serviceId);
     _pagingController.addPageRequestListener((pageKey) {
-      _fetchBooks(pageKey);
+      _fetchComics(pageKey);
     });
   }
 
-  Future<void> _fetchBooks(int pageKey) async {
+  Future<void> _fetchComics(int pageKey) async {
     try {
-      final newBooks = await (widget.getSection ?? _service.getSection)(
+      final newComics = await (widget.getSection ?? _service.getSection)(
           sectionId: widget.sectionId, page: pageKey, filters: _data);
-      final isLastPage = newBooks.page >= newBooks.totalPages;
+      final isLastPage = newComics.page >= newComics.totalPages;
       setState(() {
-        _title = newBooks.name;
-        _url = newBooks.url;
-        // _description = newBooks.description;
-        _filters = newBooks.filters;
+        _title = newComics.name;
+        _url = newComics.url;
+        // _description = newComics.description;
+        _filters = newComics.filters;
         _filters?.map((filter) {
           _data[filter.key] = null;
         });
         _currentPage = pageKey;
-        _totalPages = newBooks.totalPages;
+        _totalPages = newComics.totalPages;
       });
 
       if (isLastPage) {
-        _pagingController.appendLastPage(newBooks.items.toList());
+        _pagingController.appendLastPage(newComics.items.toList());
       } else {
         final nextPageKey = pageKey + 1;
-        _pagingController.appendPage(newBooks.items.toList(), nextPageKey);
+        _pagingController.appendPage(newComics.items.toList(), nextPageKey);
       }
 
       _refreshCompleter?.complete();
@@ -280,13 +280,13 @@ class _SectionComicPageState extends State<SectionComicPage> {
                   crossAxisSpacing: 0.0,
                   mainAxisSpacing: 0.0,
                   childAspectRatio: (screenWidth / crossAxisCount) / height),
-              builderDelegate: PagedChildBuilderDelegate<Book>(
+              builderDelegate: PagedChildBuilderDelegate<Comic>(
                 animateTransitions: true,
-                itemBuilder: (context, book, index) {
+                itemBuilder: (context, comic, index) {
                   return Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
-                      child: VerticalBook(book: book, sourceId: _service.uid));
+                      child: VerticalComic(comic: comic, sourceId: _service.uid));
                 },
                 firstPageProgressIndicatorBuilder: (_) => Center(
                   child: Padding(
@@ -299,8 +299,8 @@ class _SectionComicPageState extends State<SectionComicPage> {
                     child: Skeletonizer(
                         enabled: true,
                         enableSwitchAnimation: true,
-                        child: VerticalBook(
-                            book: Book.createFakeData(),
+                        child: VerticalComic(
+                            comic: Comic.createFakeData(),
                             sourceId: _service.uid))),
                 noItemsFoundIndicatorBuilder: (_) => Center(
                   child: Text('No items found.'),

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/book/mixin/comic_auth_mixin.dart';
+import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/widgets/comments/widget/comments.dart';
 
 class CommentsSheet extends StatefulWidget {
   final ComicAuthMixin service;
 
-  final String bookId;
+  final String comicId;
   final String chapterId;
 
   const CommentsSheet({
     super.key,
-    required this.bookId,
+    required this.comicId,
     required this.chapterId,
     required this.service,
   });
@@ -32,14 +32,14 @@ class _CommentsSheetState extends State<CommentsSheet> {
         return Comments(
           getComments: ({page, parent}) {
             return widget.service.getComments!(
-                bookId: widget.bookId,
+                comicId: widget.comicId,
                 chapterId: widget.chapterId,
                 page: page,
                 parent: parent);
           },
           deleteComment: ({required comment, parent}) {
             return widget.service.deleteComment!(
-                bookId: widget.bookId,
+                comicId: widget.comicId,
                 chapterId: widget.chapterId,
                 parent: parent,
                 comment: comment);
@@ -47,7 +47,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
           controller: scrollController,
           setLikeComment: ({required comment, parent, required value}) {
             return widget.service.setLikeComment!(
-                bookId: widget.bookId,
+                comicId: widget.comicId,
                 chapterId: widget.chapterId,
                 parent: parent,
                 comment: comment,

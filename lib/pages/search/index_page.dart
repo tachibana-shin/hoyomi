@@ -93,7 +93,7 @@ class _SearchState extends State<Search>
 
   Widget _buildBodyGetStarting(BuildContext context) {
     return NewsFeedScreen(
-      services: bookServices,
+      services: comicServices,
     );
   }
 }

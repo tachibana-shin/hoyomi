@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:hoyomi/controller/history.dart';
-import 'package:hoyomi/core_services/book/interfaces/book.dart' as i_book;
-import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
-import 'package:hoyomi/database/scheme/book.dart';
-import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic.dart' as i_comic;
+import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
+import 'package:hoyomi/database/scheme/comic.dart';
+import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
 import 'package:hoyomi/widgets/pull_to_refresh.dart';
-import 'package:hoyomi/widgets/book/vertical_book_list.dart';
+import 'package:hoyomi/widgets/comic/vertical_comic_list.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
@@ -34,7 +34,7 @@ class Follow extends StatefulWidget {
 
 class _FollowState extends State<Follow> {
   final _history = HistoryController();
-  final List<Book> _items = [];
+  final List<Comic> _items = [];
   int _page = 1;
 
   final ScrollController _scrollController = ScrollController();
@@ -88,19 +88,19 @@ class _FollowState extends State<Follow> {
   }
 
   // _groupsのgetter
-  List<MapEntry<DateTime, List<Book>>> get _groups {
+  List<MapEntry<DateTime, List<Comic>>> get _groups {
     // グループを日付で分類
-    final Map<DateTime, List<Book>> groupedItems = {};
+    final Map<DateTime, List<Comic>> groupedItems = {};
 
-    for (var book in _items) {
+    for (var comic in _items) {
       // 同じ日付でグループ化 (年月日のみを使用)
       final dateOnly = DateTime(
-          book.updatedAt.year, book.updatedAt.month, book.updatedAt.day);
+          comic.updatedAt.year, comic.updatedAt.month, comic.updatedAt.day);
 
       if (!groupedItems.containsKey(dateOnly)) {
         groupedItems[dateOnly] = [];
       }
-      groupedItems[dateOnly]!.add(book);
+      groupedItems[dateOnly]!.add(comic);
     }
 
     return groupedItems.entries.toList();
@@ -118,7 +118,7 @@ class _FollowState extends State<Follow> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           scrolledUnderElevation: 0.0,
-          title: const Text('My book follows'),
+          title: const Text('My comic follows'),
           // back button
           leading: IconButton(
             icon: const Icon(MaterialCommunityIcons.arrow_left),
@@ -139,7 +139,7 @@ class _FollowState extends State<Follow> {
           controller: _scrollController,
           thumbVisibility: true,
           radius: const Radius.circular(15),
-          child: GroupedListView<MapEntry<DateTime, List<Book>>, DateTime>(
+          child: GroupedListView<MapEntry<DateTime, List<Comic>>, DateTime>(
               controller: _scrollController,
               elements: _groups,
               order: GroupedListOrder.DESC,
@@ -164,14 +164,14 @@ class _FollowState extends State<Follow> {
                 currentElement,
                 nextElement,
               ) =>
-                  VerticalBookList(
+                  VerticalComicList(
                     itemsFuture: Future.value(currentElement.value.indexed
                         .map(
-                          (item) => BookExtend(
-                              book: i_book.Book.fromMeta(
-                                item.$2.bookId,
-                                book:
-                                    MetaBook.fromJson(jsonDecode(item.$2.meta)),
+                          (item) => ComicExtend(
+                              comic: i_comic.Comic.fromMeta(
+                                item.$2.comicId,
+                                comic:
+                                    MetaComic.fromJson(jsonDecode(item.$2.meta)),
                               ),
                               sourceId: currentElement.value
                                   .elementAt(item.$1)

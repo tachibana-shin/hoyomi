@@ -15,7 +15,7 @@ class SearchComicPage extends StatelessWidget {
         serviceId: serviceId,
         sectionId: keyword,
         getSection: ({required filters, required page, required sectionId}) =>
-            getBookService(serviceId)
+            getComicService(serviceId)
                 .search(filters: filters, page: page, keyword: sectionId));
   }
 }

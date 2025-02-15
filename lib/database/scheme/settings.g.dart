@@ -22,9 +22,9 @@ const SettingsSchema = CollectionSchema(
       name: r'mangaReadLazyPage',
       type: IsarType.bool,
     ),
-    r'pollingIntervalBook': PropertySchema(
+    r'pollingIntervalComic': PropertySchema(
       id: 1,
-      name: r'pollingIntervalBook',
+      name: r'pollingIntervalComic',
       type: IsarType.long,
     )
   },
@@ -58,7 +58,7 @@ void _settingsSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeBool(offsets[0], object.mangaReadLazyPage);
-  writer.writeLong(offsets[1], object.pollingIntervalBook);
+  writer.writeLong(offsets[1], object.pollingIntervalComic);
 }
 
 Settings _settingsDeserialize(
@@ -71,7 +71,7 @@ Settings _settingsDeserialize(
     mangaReadLazyPage: reader.readBoolOrNull(offsets[0]) ?? true,
   );
   object.id = id;
-  object.pollingIntervalBook = reader.readLong(offsets[1]);
+  object.pollingIntervalComic = reader.readLong(offsets[1]);
   return object;
 }
 
@@ -259,45 +259,45 @@ extension SettingsQueryFilter
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-      pollingIntervalBookEqualTo(int value) {
+      pollingIntervalComicEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'pollingIntervalBook',
+        property: r'pollingIntervalComic',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-      pollingIntervalBookGreaterThan(
+      pollingIntervalComicGreaterThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'pollingIntervalBook',
+        property: r'pollingIntervalComic',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-      pollingIntervalBookLessThan(
+      pollingIntervalComicLessThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'pollingIntervalBook',
+        property: r'pollingIntervalComic',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-      pollingIntervalBookBetween(
+      pollingIntervalComicBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -305,7 +305,7 @@ extension SettingsQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'pollingIntervalBook',
+        property: r'pollingIntervalComic',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -334,16 +334,16 @@ extension SettingsQuerySortBy on QueryBuilder<Settings, Settings, QSortBy> {
     });
   }
 
-  QueryBuilder<Settings, Settings, QAfterSortBy> sortByPollingIntervalBook() {
+  QueryBuilder<Settings, Settings, QAfterSortBy> sortByPollingIntervalComic() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pollingIntervalBook', Sort.asc);
+      return query.addSortBy(r'pollingIntervalComic', Sort.asc);
     });
   }
 
   QueryBuilder<Settings, Settings, QAfterSortBy>
-      sortByPollingIntervalBookDesc() {
+      sortByPollingIntervalComicDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pollingIntervalBook', Sort.desc);
+      return query.addSortBy(r'pollingIntervalComic', Sort.desc);
     });
   }
 }
@@ -374,16 +374,16 @@ extension SettingsQuerySortThenBy
     });
   }
 
-  QueryBuilder<Settings, Settings, QAfterSortBy> thenByPollingIntervalBook() {
+  QueryBuilder<Settings, Settings, QAfterSortBy> thenByPollingIntervalComic() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pollingIntervalBook', Sort.asc);
+      return query.addSortBy(r'pollingIntervalComic', Sort.asc);
     });
   }
 
   QueryBuilder<Settings, Settings, QAfterSortBy>
-      thenByPollingIntervalBookDesc() {
+      thenByPollingIntervalComicDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'pollingIntervalBook', Sort.desc);
+      return query.addSortBy(r'pollingIntervalComic', Sort.desc);
     });
   }
 }
@@ -396,9 +396,9 @@ extension SettingsQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Settings, Settings, QDistinct> distinctByPollingIntervalBook() {
+  QueryBuilder<Settings, Settings, QDistinct> distinctByPollingIntervalComic() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'pollingIntervalBook');
+      return query.addDistinctBy(r'pollingIntervalComic');
     });
   }
 }
@@ -417,9 +417,9 @@ extension SettingsQueryProperty
     });
   }
 
-  QueryBuilder<Settings, int, QQueryOperations> pollingIntervalBookProperty() {
+  QueryBuilder<Settings, int, QQueryOperations> pollingIntervalComicProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'pollingIntervalBook');
+      return query.addPropertyName(r'pollingIntervalComic');
     });
   }
 }

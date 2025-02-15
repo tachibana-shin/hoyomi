@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/book/interfaces/book.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 import 'package:hoyomi/core_services/interfaces/paginate.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/widgets/book/horizontal_book_list.dart';
+import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class ComicSearchResults extends StatefulWidget {
@@ -22,7 +22,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
   bool get wantKeepAlive => true;
 
   final RefreshController _refreshController = RefreshController();
-  final Map<String, Future<Paginate<Book>>> _searchFutures = {};
+  final Map<String, Future<Paginate<Comic>>> _searchFutures = {};
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
 
   void _fetchSearchResults() {
     // Trigger search for each service
-    for (var service in bookServices) {
+    for (var service in comicServices) {
       _searchFutures[service.uid] =
           service.search(keyword: widget.keyword, page: 1, filters: {});
     }
@@ -68,10 +68,10 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
       enablePullDown: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: bookServices.map((service) {
+        children: comicServices.map((service) {
           final searchResult = _searchFutures[service.uid]!;
           final itemsFuture = searchResult.then((data) => data.items
-              .map((item) => BookExtend(book: item, sourceId: service.uid))
+              .map((item) => ComicExtend(comic: item, sourceId: service.uid))
               .toList());
           String subtitle = '';
 
@@ -84,7 +84,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
               });
             }
 
-            return HorizontalBookList(
+            return HorizontalComicList(
               itemsFuture: itemsFuture,
               title: service.name,
               subtitle: subtitle,

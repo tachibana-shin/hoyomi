@@ -1,83 +1,83 @@
 import 'dart:convert';
 
-import 'package:hoyomi/core_services/book/interfaces/meta_book.dart';
+import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 import 'package:hoyomi/database/isar.dart';
-import 'package:hoyomi/database/scheme/book.dart';
+import 'package:hoyomi/database/scheme/comic.dart';
 import 'package:hoyomi/database/scheme/history_chap.dart';
 import 'package:isar/isar.dart';
 
 class HistoryController {
-  final _bookBox = isar.books;
+  final _comicBox = isar.comics;
   final _historyChapBox = isar.historyChaps;
 
-  Future<List<HistoryChap>?> getHistory(String sourceId, String bookId) async {
-    final book = await _bookBox
+  Future<List<HistoryChap>?> getHistory(String sourceId, String comicId) async {
+    final comic = await _comicBox
         .where()
-        .bookIdEqualTo(bookId)
+        .comicIdEqualTo(comicId)
         .filter()
         .sourceIdEqualTo(sourceId)
         .findFirst();
-    if (book == null) return null;
+    if (comic == null) return null;
 
-    return _historyChapBox.filter().bookEqualTo(book.id!).findAll();
+    return _historyChapBox.filter().comicEqualTo(comic.id!).findAll();
   }
 
-  Future<Book> createBook(
+  Future<Comic> createComic(
     String sourceId, {
-    required String bookId,
-    required MetaBook book,
+    required String comicId,
+    required MetaComic comic,
     bool? followed,
   }) async {
-    Book? bookObject = await _bookBox
+    Comic? comicObject = await _comicBox
         .where()
         .sourceIdEqualTo(sourceId)
         .filter()
-        .bookIdEqualTo(bookId)
+        .comicIdEqualTo(comicId)
         .findFirst();
 
-    bookObject ??= Book(
+    comicObject ??= Comic(
       sourceId: sourceId,
-      bookId: bookId,
-      status: book.status.name,
-      meta: jsonEncode(book.toJson()),
+      comicId: comicId,
+      status: comic.status.name,
+      meta: jsonEncode(comic.toJson()),
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
 
     if (followed != null) {
-      bookObject.followedAt = followed == true ? DateTime.now() : null;
+      comicObject.followedAt = followed == true ? DateTime.now() : null;
     }
 
-    if (bookObject.status != book.status.name) {
-      bookObject.status = book.status.name;
+    if (comicObject.status != comic.status.name) {
+      comicObject.status = comic.status.name;
     }
 
-    final newMeta = jsonEncode(book.toJson());
-    if (newMeta != bookObject.meta) {
-      bookObject.meta = newMeta;
+    final newMeta = jsonEncode(comic.toJson());
+    if (newMeta != comicObject.meta) {
+      comicObject.meta = newMeta;
     }
 
     await isar.writeTxn(() async {
-      await isar.books.put(bookObject!);
+      await isar.comics.put(comicObject!);
     });
 
-    return bookObject;
+    return comicObject;
   }
 
-  Future<void> saveHistory(Book book,
+  Future<void> saveHistory(Comic comic,
       {required String chapterId,
       required double currentPage,
       required int maxPage}) async {
-    final existingHistory = await getCurrentPage(book, chapterId: chapterId);
+    final existingHistory = await getCurrentPage(comic, chapterId: chapterId);
 
     if (existingHistory != null) {
       existingHistory.currentPage = currentPage;
       existingHistory.maxPage = maxPage;
-      book.updatedAt = existingHistory.updatedAt = DateTime.now();
+      comic.updatedAt = existingHistory.updatedAt = DateTime.now();
 
       await isar.writeTxn(() async {
         await isar.historyChaps.put(existingHistory);
-        await isar.books.put(book);
+        await isar.comics.put(comic);
       });
     } else {
       final newHistory = HistoryChap(
@@ -87,28 +87,28 @@ class HistoryController {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now());
 
-      newHistory.book = book.id!;
-      book.updatedAt = newHistory.updatedAt;
+      newHistory.comic = comic.id!;
+      comic.updatedAt = newHistory.updatedAt;
 
       await isar.writeTxn(() async {
         await isar.historyChaps.put(newHistory);
-        await isar.books.put(book);
+        await isar.comics.put(comic);
       });
     }
   }
 
-  Future<HistoryChap?> getCurrentPage(Book book,
+  Future<HistoryChap?> getCurrentPage(Comic comic,
       {required String chapterId}) async {
     return _historyChapBox
         .where()
         .chapterIdEqualTo(chapterId)
         .filter()
-        .bookEqualTo(book.id!)
+        .comicEqualTo(comic.id!)
         .findFirst();
   }
 
-  Future<List<Book>> getListHistory(int limit, {required int offset}) async {
-    final query = _bookBox.where().sortByUpdatedAtDesc();
+  Future<List<Comic>> getListHistory(int limit, {required int offset}) async {
+    final query = _comicBox.where().sortByUpdatedAtDesc();
 
     final items = await query.offset(offset).limit(limit).findAll();
     final dropOut = limit - items.length;
@@ -121,16 +121,16 @@ class HistoryController {
     return items;
   }
 
-  Future<List<Book>> getListFollows(int limit, {required int offset}) async {
-    final query = _bookBox.where().followedAtIsNotNull().sortByFollowedAtDesc();
+  Future<List<Comic>> getListFollows(int limit, {required int offset}) async {
+    final query = _comicBox.where().followedAtIsNotNull().sortByFollowedAtDesc();
 
     return query.offset(offset).limit(limit).findAll();
   }
 
-  Future<HistoryChap?> getLastChapter(int bookId) async {
+  Future<HistoryChap?> getLastChapter(int comicId) async {
     return _historyChapBox
         .filter()
-        .bookEqualTo(bookId)
+        .comicEqualTo(comicId)
         .sortByUpdatedAtDesc()
         .findFirst();
   }

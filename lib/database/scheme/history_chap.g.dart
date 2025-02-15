@@ -17,9 +17,9 @@ const HistoryChapSchema = CollectionSchema(
   name: r'HistoryChap',
   id: -1381802241183101931,
   properties: {
-    r'book': PropertySchema(
+    r'comic': PropertySchema(
       id: 0,
-      name: r'book',
+      name: r'comic',
       type: IsarType.long,
     ),
     r'chapterId': PropertySchema(
@@ -105,7 +105,7 @@ void _historyChapSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.book);
+  writer.writeLong(offsets[0], object.comic);
   writer.writeString(offsets[1], object.chapterId);
   writer.writeDateTime(offsets[2], object.createdAt);
   writer.writeDouble(offsets[3], object.currentPage);
@@ -126,7 +126,7 @@ HistoryChap _historyChapDeserialize(
     maxPage: reader.readLong(offsets[4]),
     updatedAt: reader.readDateTime(offsets[5]),
   );
-  object.book = reader.readLong(offsets[0]);
+  object.comic = reader.readLong(offsets[0]);
   object.id = id;
   return object;
 }
@@ -392,43 +392,43 @@ extension HistoryChapQueryWhere
 
 extension HistoryChapQueryFilter
     on QueryBuilder<HistoryChap, HistoryChap, QFilterCondition> {
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> bookEqualTo(
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> comicEqualTo(
       int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'book',
+        property: r'comic',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> bookGreaterThan(
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> comicGreaterThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'book',
+        property: r'comic',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> bookLessThan(
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> comicLessThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'book',
+        property: r'comic',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> bookBetween(
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> comicBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -436,7 +436,7 @@ extension HistoryChapQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'book',
+        property: r'comic',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -891,15 +891,15 @@ extension HistoryChapQueryLinks
 
 extension HistoryChapQuerySortBy
     on QueryBuilder<HistoryChap, HistoryChap, QSortBy> {
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByBook() {
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByComic() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'book', Sort.asc);
+      return query.addSortBy(r'comic', Sort.asc);
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByBookDesc() {
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByComicDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'book', Sort.desc);
+      return query.addSortBy(r'comic', Sort.desc);
     });
   }
 
@@ -966,15 +966,15 @@ extension HistoryChapQuerySortBy
 
 extension HistoryChapQuerySortThenBy
     on QueryBuilder<HistoryChap, HistoryChap, QSortThenBy> {
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByBook() {
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByComic() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'book', Sort.asc);
+      return query.addSortBy(r'comic', Sort.asc);
     });
   }
 
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByBookDesc() {
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByComicDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'book', Sort.desc);
+      return query.addSortBy(r'comic', Sort.desc);
     });
   }
 
@@ -1053,9 +1053,9 @@ extension HistoryChapQuerySortThenBy
 
 extension HistoryChapQueryWhereDistinct
     on QueryBuilder<HistoryChap, HistoryChap, QDistinct> {
-  QueryBuilder<HistoryChap, HistoryChap, QDistinct> distinctByBook() {
+  QueryBuilder<HistoryChap, HistoryChap, QDistinct> distinctByComic() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'book');
+      return query.addDistinctBy(r'comic');
     });
   }
 
@@ -1099,9 +1099,9 @@ extension HistoryChapQueryProperty
     });
   }
 
-  QueryBuilder<HistoryChap, int, QQueryOperations> bookProperty() {
+  QueryBuilder<HistoryChap, int, QQueryOperations> comicProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'book');
+      return query.addPropertyName(r'comic');
     });
   }
 

@@ -1,0 +1,151 @@
+import 'dart:async';
+import 'dart:collection';
+import 'dart:convert';
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:hoyomi/controller/settings.dart';
+import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
+import 'package:hoyomi/core_services/comic/interfaces/status_enum.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/database/isar.dart';
+import 'package:hoyomi/database/scheme/comic.dart';
+import 'package:hoyomi/database/scheme/settings.dart';
+import 'package:isar/isar.dart';
+
+class ComicChanges {
+  final _comicBox = isar.comics;
+  late final Settings _settings;
+
+  Timer? _timer;
+
+  ComicChanges();
+
+  // Method to initialize background service
+  void initializeBackgroundService() async {
+    _settings = await SettingsController().getSettings();
+
+    FlutterBackgroundService().configure(
+      androidConfiguration: AndroidConfiguration(
+        onStart: onStart,
+        autoStart: true,
+        isForegroundMode:
+            false, // Can set this to true if you need foreground service
+      ),
+      iosConfiguration: IosConfiguration(
+          autoStart: true,
+          onForeground: onStart,
+          onBackground: (ServiceInstance service) {
+            WidgetsFlutterBinding.ensureInitialized();
+            DartPluginRegistrant.ensureInitialized();
+
+            return true;
+          }),
+    );
+  }
+
+  bool onStart(ServiceInstance instance) {
+    // Start the periodic updates when the service is started
+    _startPeriodicUpdates(instance);
+    return true;
+  }
+
+  void _startPeriodicUpdates(ServiceInstance instance) {
+    // Cancel the timer if it was already running
+    _timer?.cancel();
+
+    // Timer to call checkUpdateAll at regular intervals
+    _timer = Timer.periodic(Duration(minutes: _settings.pollingIntervalComic),
+        (timer) async {
+      if (instance is AndroidServiceInstance
+          ? await instance.isForegroundService()
+          : true) {
+        await checkUpdateAll();
+      }
+    });
+  }
+
+  Future<void> checkUpdateAll() async {
+    final allComics = await fetchAndSortComicsForUpdate();
+
+    final groupedComics = groupComicsBySourceId(allComics);
+
+    List<Future<void>> tasks = [];
+
+    for (final sourceId in groupedComics.keys) {
+      final itemsWithSameSourceId = groupedComics[sourceId]!;
+
+      final chunkedComics = _chunkList(itemsWithSameSourceId, 5);
+
+      for (final comicBatch in chunkedComics) {
+        tasks.add(Future.wait(comicBatch.map((comic) async {
+          final changes = await updateComic(
+              sourceId: sourceId, comic: comic, saveDatabase: false);
+          if (changes.isNotEmpty) {
+            // Debug print if there are changes
+            debugPrint("[changes]: $changes");
+          }
+        })));
+      }
+    }
+
+    await Future.wait(tasks);
+  }
+
+  Future<Iterable<Chapter>> updateComic(
+      {required String sourceId,
+      required Comic comic,
+      bool? saveDatabase}) async {
+    final service = getComicService(sourceId);
+    final newData = await service.getDetails(comic.comicId);
+    final oldData = MetaComic.fromJson(jsonDecode(comic.meta));
+
+    if (saveDatabase == true) {
+      comic.meta = jsonEncode(newData.toJson());
+
+      await isar.writeTxn(() async {
+        await isar.comics.put(comic);
+      });
+    }
+
+    final oldChaptersSet =
+        oldData.chapters.map((chapter) => chapter.chapterId).toSet();
+
+    return newData.chapters
+        .where((chapter) => !oldChaptersSet.contains(chapter.chapterId));
+  }
+
+  Map<String, List<Comic>> groupComicsBySourceId(List<Comic> allComics) {
+    final groupedComics = HashMap<String, List<Comic>>();
+
+    for (final comic in allComics) {
+      groupedComics.putIfAbsent(comic.sourceId, () => []).add(comic);
+    }
+
+    return groupedComics;
+  }
+
+  Future<List<Comic>> fetchAndSortComicsForUpdate() {
+    DateTime thirtyMinutesAgo = DateTime.now()
+        .subtract(Duration(minutes: _settings.pollingIntervalComic));
+
+    final itemsToUpdate = _comicBox
+        .filter()
+        .updatedAtLessThan(thirtyMinutesAgo)
+        .statusEqualTo(StatusEnum.ongoing.name)
+        .sortByUpdatedAtDesc()
+        .findAll();
+
+    return itemsToUpdate;
+  }
+
+  List<List<T>> _chunkList<T>(List<T> list, int chunkSize) {
+    List<List<T>> chunks = [];
+    for (int i = 0; i < list.length; i += chunkSize) {
+      chunks.add(list.sublist(
+          i, i + chunkSize > list.length ? list.length : i + chunkSize));
+    }
+    return chunks;
+  }
+}

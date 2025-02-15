@@ -6,7 +6,7 @@ part 'history_chap.g.dart';
 class HistoryChap {
   Id? id;
 
-  late int book;
+  late int comic;
 
   @Index()
   late String chapterId;

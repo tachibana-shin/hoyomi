@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/screens/home_book/tab_view_book.dart';
+import 'package:hoyomi/screens/home_comic/tab_view_comic.dart';
 import 'package:hoyomi/widgets/search_bar.dart';
 
-class HomeBookPage extends StatelessWidget {
-  const HomeBookPage({super.key});
+class HomeComicPage extends StatelessWidget {
+  const HomeComicPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: HomeBook(),
+      body: HomeComic(),
     );
   }
 }
 
-class HomeBook extends StatefulWidget {
-  const HomeBook({super.key});
+class HomeComic extends StatefulWidget {
+  const HomeComic({super.key});
 
   @override
-  State<HomeBook> createState() => _HomeBookState();
+  State<HomeComic> createState() => _HomeComicState();
 }
 
-class _HomeBookState extends State<HomeBook>
+class _HomeComicState extends State<HomeComic>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   Widget? _overlayQuickSearch;
@@ -29,7 +29,7 @@ class _HomeBookState extends State<HomeBook>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: bookServices.length, vsync: this);
+    _tabController = TabController(length: comicServices.length, vsync: this);
   }
 
   @override
@@ -68,7 +68,7 @@ class _HomeBookState extends State<HomeBook>
                 controller: _tabController,
                 isScrollable: true,
                 splashBorderRadius: BorderRadius.circular(35.0),
-                tabs: bookServices
+                tabs: comicServices
                     .map((service) => Tab(text: service.name))
                     .toList(),
               ),
@@ -76,9 +76,9 @@ class _HomeBookState extends State<HomeBook>
       body: Stack(children: [
         TabBarView(
           controller: _tabController,
-          children: bookServices
+          children: comicServices
               .map((service) =>
-                  TabViewBook(key: Key(service.uid), service: service))
+                  TabViewComic(key: Key(service.uid), service: service))
               .toList(),
         ),
         ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : [])

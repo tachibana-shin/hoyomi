@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/book/book_service.dart';
+import 'package:hoyomi/core_services/comic/comic_service.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/globals.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
@@ -18,7 +18,7 @@ class RssItem {
   final OImage? image;
   final OImage? avatar;
   final String? creator;
-  final BookService service;
+  final ComicService service;
 
   RssItem(
       {required this.title,
@@ -32,7 +32,7 @@ class RssItem {
 }
 
 class NewsFeedScreen extends StatefulWidget {
-  final List<BookService> services;
+  final List<ComicService> services;
 
   const NewsFeedScreen({super.key, required this.services});
 
@@ -53,7 +53,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
   }
 
   Future<List<RssItem>> fetchAndParseFeeds(
-      List<BookService> services) async {
+      List<ComicService> services) async {
     final items = <RssItem>[];
 
     for (final service in services) {
@@ -78,7 +78,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
     return items;
   }
 
-  List<RssItem> parseRss(String xmlData, {required BookService service}) {
+  List<RssItem> parseRss(String xmlData, {required ComicService service}) {
     final document = XmlDocument.parse(xmlData);
     final items = <RssItem>[];
 
@@ -175,7 +175,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                           final param = item.service.parseURL(item.link);
 
                           context.push(
-                              "/details_comic/${item.service.uid}/${param.bookId}${param.chapterId == null ? '' : '/view?chap=${param.chapterId}'}");
+                              "/details_comic/${item.service.uid}/${param.comicId}${param.chapterId == null ? '' : '/view?chap=${param.chapterId}'}");
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),

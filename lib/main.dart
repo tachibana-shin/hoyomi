@@ -21,8 +21,8 @@ Future<void> main() async {
 
   // register background service
   // if (Platform.isAndroid || Platform.isIOS) {
-  //   BookChanges().initializeBackgroundService();
-  // BookChanges().checkUpdateAll();
+  //   ComicChanges().initializeBackgroundService();
+  // ComicChanges().checkUpdateAll();
   // }
 }
 
