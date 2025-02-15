@@ -23,7 +23,7 @@ class NavigationApp extends StatelessWidget {
       ),
       (
         icon: Icon(HugeIcons.strokeRoundedFlimSlate),
-        label: ('Eigo'),
+        label: ('Eiga'),
       ),
       (
         icon: Icon(MaterialCommunityIcons.magnify),
