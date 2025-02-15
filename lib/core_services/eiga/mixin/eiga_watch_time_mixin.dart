@@ -3,7 +3,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/mixin/base_auth_mixin.dart';
 
-mixin EigaHistoryMixin on BaseAuthMixin {
+mixin EigaWatchTimeMixin on BaseAuthMixin {
   Future<WatchTime> getWatchTime(
       {required String eigaId,
       required EpisodeEiga episode,

@@ -12,7 +12,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/episodes_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/basic_carousel.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/basic_carousel_item.dart';
@@ -36,7 +36,7 @@ import 'package:archive/archive.dart';
 import 'package:video_player/video_player.dart';
 
 class AnimeVietsubService extends EigaBaseService
-    with BaseAuthMixin, EigaAuthMixin, EigaHistoryMixin {
+    with BaseAuthMixin, EigaAuthMixin, EigaWatchTimeMixin {
   final hostCUrl = "animevietsub.bio";
 
   @override

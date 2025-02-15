@@ -11,7 +11,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/basic_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/basic_image.dart';
 import 'package:hoyomi/core_services/interfaces/basic_vtt.dart';
 import 'package:hoyomi/widgets/eiga/button_follow_eiga.dart';
@@ -169,11 +169,11 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     });
 
     _watchTimeDataNotifier.value = null;
-    if (_service is EigaHistoryMixin) {
+    if (_service is EigaWatchTimeMixin) {
       final eigaId = _eigaId.value;
       final episodeId = episode.episodeId;
 
-      (_service as EigaHistoryMixin)
+      (_service as EigaWatchTimeMixin)
           .getWatchTime(
               eigaId: eigaId,
               episode: episode,
@@ -294,7 +294,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         _showModalEpisodes(_metaEigaNotifier);
       },
       onWatchTimeUpdate: ({required position, required duration}) {
-        if (_service is EigaHistoryMixin) {
+        if (_service is EigaWatchTimeMixin) {
           final eigaId = _eigaId.value;
           final watchTime = WatchTime(position: position, duration: duration);
 
@@ -305,7 +305,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             episodeId: _episode.value!.episodeId,
             watchTime: watchTime,
           )));
-          (_service as EigaHistoryMixin).setWatchTime(
+          (_service as EigaWatchTimeMixin).setWatchTime(
               eigaId: eigaId,
               episode: _episode.value!,
               episodeIndex: _episodeIndex.value!,
@@ -1014,8 +1014,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           await _service.getEpisodes(eigaId),
                       getWatchTimeEpisodes: (episodesEiga) async =>
                           _cacheWatchTimeStore[eigaId] ??=
-                              _service is EigaHistoryMixin
-                                  ? await (_service as EigaHistoryMixin)
+                              _service is EigaWatchTimeMixin
+                                  ? await (_service as EigaWatchTimeMixin)
                                       .getWatchTimeEpisodes(
                                           eigaId: _eigaId.value,
                                           episodes: episodesEiga.episodes)
@@ -1076,8 +1076,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                   await _service.getEpisodes(season.eigaId),
                           getWatchTimeEpisodes: (episodesEiga) async =>
                               _cacheWatchTimeStore[season.eigaId] ??=
-                                  _service is EigaHistoryMixin
-                                      ? await (_service as EigaHistoryMixin)
+                                  _service is EigaWatchTimeMixin
+                                      ? await (_service as EigaWatchTimeMixin)
                                           .getWatchTimeEpisodes(
                                               eigaId: season.eigaId,
                                               episodes: episodesEiga.episodes)
