@@ -16,12 +16,12 @@ class Eiga {
   Eiga(
       {required this.name,
       required this.eigaId,
-      required this.originalName,
+      this.originalName,
       required this.image,
-      required this.lastEpisode,
-      required this.timeAgo,
-      required this.notice,
-      required this.rate,
+      this.lastEpisode,
+      this.timeAgo,
+      this.notice,
+      this.rate,
       this.pending = false,
       this.preRelease});
 

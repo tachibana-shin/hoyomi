@@ -12,6 +12,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/carousel.dart';
@@ -22,6 +23,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga_param.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/interfaces/filter.dart';
 import 'package:hoyomi/core_services/interfaces/genre.dart';
+import 'package:hoyomi/core_services/interfaces/history_item.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/interfaces/user.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
@@ -81,7 +83,12 @@ mixin _SupabaseRPC {
 }
 
 class AnimeVietsubService extends EigaService
-    with AuthMixin, EigaAuthMixin, EigaWatchTimeMixin, _SupabaseRPC {
+    with
+        AuthMixin,
+        EigaAuthMixin,
+        EigaWatchTimeMixin,
+        EigaHistoryMixin,
+        _SupabaseRPC {
   final hostCUrl = "animevietsub.bio";
 
   @override
@@ -355,9 +362,8 @@ class AnimeVietsubService extends EigaService
 
     final totalItems = items.length * totalPages;
 
-    final List<Filter> iFilters = document
-        .querySelectorAll("div[class^='fc-']")
-        .map((fc) {
+    final List<Filter> iFilters =
+        document.querySelectorAll("div[class^='fc-']").map((fc) {
       final name =
           fc.querySelector('.fc-title')!.text.replaceFirst(r'\n', '').trim();
       final key = fc.querySelector('input')!.attributes['name']!;
@@ -370,13 +376,13 @@ class AnimeVietsubService extends EigaService
       return Filter(
           name: name, key: key, multiple: multiple, options: options.toList());
     }).toList()
-      ..add(Filter(name: 'Sắp xếp', key: 'sort', multiple: true, options: [
-        Option(name: 'Mới nhất', value: 'latest'),
-        Option(name: 'Tên A-Z', value: 'nameaz'),
-        Option(name: 'Tên Z-A', value: 'nameza'),
-        Option(name: 'Xem nhiều nhất', value: 'view'),
-        Option(name: 'Nhiều lượt bình luận', value: 'rating')
-      ]));
+          ..add(Filter(name: 'Sắp xếp', key: 'sort', multiple: true, options: [
+            Option(name: 'Mới nhất', value: 'latest'),
+            Option(name: 'Tên A-Z', value: 'nameaz'),
+            Option(name: 'Tên Z-A', value: 'nameza'),
+            Option(name: 'Xem nhiều nhất', value: 'view'),
+            Option(name: 'Nhiều lượt bình luận', value: 'rating')
+          ]));
 
     return EigaSection(
         name: name,
@@ -722,24 +728,15 @@ class AnimeVietsubService extends EigaService
       required MetaEiga metaEiga}) async {
     final userUid = await _getUidUser();
 
-    final data = await rpc('get_single_progress', {
+    final json = await rpc('get_single_progress', {
       'user_uid': userUid,
       'season_id': eigaId,
       'p_chap_id': RegExp(r'-(\d+)$').firstMatch(episode.episodeId)!.group(1)
     });
 
-    if (data.statusCode > 299) {
-      if (kDebugMode) {
-        print('[${data.reasonPhrase}]: ${data.body}');
-      }
-      throw Exception('[${data.reasonPhrase}]: ${data.body}');
-    }
-
-    final json = jsonDecode(data.body);
-
     return WatchTime(
-        position: Duration(seconds: (json['cur'] as double).round()),
-        duration: Duration(seconds: (json['dur'] as double).round()));
+        position: Duration(seconds: (json['cur'] as num).round()),
+        duration: Duration(seconds: (json['dur'] as num).round()));
   }
 
   @override
@@ -749,19 +746,10 @@ class AnimeVietsubService extends EigaService
   }) async {
     final userUid = await _getUidUser();
 
-    final data = await rpc('get_watch_progress', {
+    final json = await rpc('get_watch_progress', {
       'user_uid': userUid,
       'season_id': eigaId,
-    });
-
-    if (data.statusCode > 299) {
-      if (kDebugMode) {
-        print('[${data.reasonPhrase}]: ${data.body}');
-      }
-      throw Exception('[${data.reasonPhrase}]: ${data.body}');
-    }
-
-    final json = jsonDecode(data.body) as List;
+    }) as List;
 
     final Map<String, String> chapIdToEpisodeKey = {};
     for (final episode in episodes) {
@@ -791,7 +779,7 @@ class AnimeVietsubService extends EigaService
       required WatchTime watchTime}) async {
     final userUid = await _getUidUser();
 
-    final data = await rpc('set_single_progress', {
+    await rpc('set_single_progress', {
       'user_uid': userUid,
       'p_name': metaEiga.name,
       'p_poster':
@@ -804,13 +792,6 @@ class AnimeVietsubService extends EigaService
       'e_chap': RegExp(r'(\d+)$').firstMatch(episode.episodeId)!.group(1)!,
       'gmt': "Asia/Saigon"
     });
-
-    if (data.statusCode > 299) {
-      if (kDebugMode) {
-        print('[${data.reasonPhrase}]: ${data.body}');
-      }
-      throw Exception('[${data.reasonPhrase}]: ${data.body}');
-    }
   }
 
   String _redirectOldDomainCDN(String url) {
@@ -825,15 +806,43 @@ class AnimeVietsubService extends EigaService
         .replaceAllMapped(pattern, (match) => '${match[1]}\$@');
   }
 
-  // String _addHostUrlImage(String url) {
-  //   // for old data from database
-  //   final pattern = RegExp(r'^([^/]+.)?\$@(:\d+)?(?=\/)', caseSensitive: false);
-  //   return _redirectOldDomainCDN(url).replaceAllMapped(pattern, (match) {
-  //     final part1 = match.group(1) ?? '';
-  //     final part2 = match.group(2) ?? '';
-  //     return 'https://$part1$hostCUrl$part2';
-  //   });
-  // }
+  @override
+  Future<List<HistoryItem<Eiga>>> getWatchHistory({required int page}) async {
+    final userUid = await _getUidUser();
+
+    final data = (await rpc('query_history',
+            {'user_uid': userUid, 'page': page, 'size': 30}) as List)
+        .map((item) => _WatchInfo.fromJson(item));
+
+    return data.map((item) {
+      return HistoryItem<Eiga>(
+        item: Eiga(
+          name: item.name,
+          eigaId: item.season,
+          originalName: item.seasonName,
+          image: OImage(src: _addHostUrlImage(item.poster)),
+        ),
+        watchUpdatedAt: item.watchUpdatedAt,
+        lastEpisode: EigaEpisode(
+          name: item.watchName,
+          episodeId: item.watchId,
+        ),
+        watchTime: WatchTime(
+            position: Duration(seconds: item.watchCur.round()),
+            duration: Duration(seconds: item.watchDur.round())),
+      );
+    }).toList();
+  }
+
+  String _addHostUrlImage(String url) {
+    // for old data from database
+    final pattern = RegExp(r'^([^/]+.)?\$@(:\d+)?(?=\/)', caseSensitive: false);
+    return _redirectOldDomainCDN(url).replaceAllMapped(pattern, (match) {
+      final part1 = match.group(1) ?? '';
+      final part2 = match.group(2) ?? '';
+      return 'https://$part1$hostCUrl$part2';
+    });
+  }
 }
 
 class _ParamsEpisode {
@@ -911,5 +920,63 @@ class _Inflate {
   static Uint8List raw(List<int> input) {
     final archive = ZLibDecoder().decodeBytes(input, verify: true, raw: true);
     return archive;
+  }
+}
+
+class _WatchInfo {
+  final DateTime createdAt;
+  final String season;
+  final String name;
+  final String poster;
+  final String seasonName;
+  final DateTime watchUpdatedAt;
+  final String watchName;
+  final String watchId;
+  final double watchCur;
+  final double watchDur;
+
+  _WatchInfo({
+    required this.createdAt,
+    required this.season,
+    required this.name,
+    required this.poster,
+    required this.seasonName,
+    required this.watchUpdatedAt,
+    required this.watchName,
+    required this.watchId,
+    required this.watchCur,
+    required this.watchDur,
+  });
+
+  // From JSON
+  factory _WatchInfo.fromJson(Map<String, dynamic> json) {
+    return _WatchInfo(
+      createdAt: DateTime.parse(json['created_at']),
+      season: json['season'],
+      name: json['name'],
+      poster: json['poster'],
+      seasonName: json['season_name'],
+      watchUpdatedAt: DateTime.parse(json['watch_updated_at']),
+      watchName: json['watch_name'],
+      watchId: json['watch_id'],
+      watchCur: json['watch_cur'].toDouble(),
+      watchDur: json['watch_dur'].toDouble(),
+    );
+  }
+
+  // To JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'created_at': createdAt.toIso8601String(),
+      'season': season,
+      'name': name,
+      'poster': poster,
+      'season_name': seasonName,
+      'watch_updated_at': watchUpdatedAt.toIso8601String(),
+      'watch_name': watchName,
+      'watch_id': watchId,
+      'watch_cur': watchCur,
+      'watch_dur': watchDur,
+    };
   }
 }
