@@ -879,7 +879,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
                   if (heightChild <= 0 || constraints.maxHeight <= 0) {
                     context.pop();
-                    return SizedBox.shrink();
                   }
                   return ClipRect(
                       child: Container(
