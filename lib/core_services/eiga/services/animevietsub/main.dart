@@ -35,8 +35,53 @@ import 'package:pointycastle/export.dart';
 import 'package:archive/archive.dart';
 import 'package:video_player/video_player.dart';
 
+mixin _SupabaseRPC {
+  final String _supabaseUrl = "https://ctwwltbkwksgnispcjmq.supabase.co";
+  final String _supabaseKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0d3dsdGJrd2tzZ25pc3Bjam1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAxNjM5ODksImV4cCI6MjAzNTczOTk4OX0.Dva9EPqy4P0KFYLAGpFqFoMBH4I_yz0VWnGny0uA-8U";
+
+  rpc(String name, Object requestData) async {
+    final response = await post(
+      Uri.parse('$_supabaseUrl/rest/v1/rpc/$name'),
+      headers: {
+        'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
+        'Accept': '*/*',
+        'Accept-Language': 'vi-VN,vi;q=0.8,en-US;q=0.5,en;q=0.3',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Content-Type': 'application/json',
+        'Referer': 'https://animevsub.eu.org/',
+        'apikey': _supabaseKey,
+        'content-profile': 'public',
+        'x-client-info': 'supabase-js-web/2.44.4',
+        'Origin': 'https://animevsub.eu.org',
+        'DNT': '1',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'cross-site',
+        'authorization': 'Bearer $_supabaseKey',
+        'Connection': 'keep-alive',
+        'Priority': 'u=4',
+        'Pragma': 'no-cache',
+        'Cache-Control': 'no-cache',
+        'TE': 'trailers',
+      },
+      body: jsonEncode(requestData),
+    );
+
+    if (response.statusCode > 299) {
+      if (kDebugMode) {
+        print('[${response.reasonPhrase}]: ${response.body}');
+      }
+      throw Exception('[${response.reasonPhrase}]: ${response.body}');
+    }
+
+    return jsonDecode(response.body);
+  }
+}
+
 class AnimeVietsubService extends EigaBaseService
-    with BaseAuthMixin, EigaAuthMixin, EigaWatchTimeMixin {
+    with BaseAuthMixin, EigaAuthMixin, EigaWatchTimeMixin, _SupabaseRPC {
   final hostCUrl = "animevietsub.bio";
 
   @override
@@ -50,10 +95,6 @@ class AnimeVietsubService extends EigaBaseService
 
   final String _apiOpEnd = "https://opend-9animetv.animevsub.eu.org";
   final String _apiThumb = "https://sk-hianime.animevsub.eu.org";
-
-  final String _supabaseUrl = "https://ctwwltbkwksgnispcjmq.supabase.co";
-  final String _supabaseKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0d3dsdGJrd2tzZ25pc3Bjam1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAxNjM5ODksImV4cCI6MjAzNTczOTk4OX0.Dva9EPqy4P0KFYLAGpFqFoMBH4I_yz0VWnGny0uA-8U";
 
   final Map<String, _ParamsEpisode> _paramsEpisodeStore = {};
   final Map<String, Future<Document>> _docEigaStore = {};
@@ -681,37 +722,11 @@ class AnimeVietsubService extends EigaBaseService
       required MetaEiga metaEiga}) async {
     final userUid = await _getUidUser();
 
-    final data =
-        await post(Uri.parse('$_supabaseUrl/rest/v1/rpc/get_single_progress'),
-            headers: {
-              'User-Agent':
-                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
-              'Accept': 'application/vnd.pgrst.object+json',
-              'Accept-Language': 'vi-VN,vi;q=0.8,en-US;q=0.5,en;q=0.3',
-              'Accept-Encoding': 'gzip, deflate, br, zstd',
-              'Content-Type': 'application/json',
-              'Referer': 'https://animevsub.eu.org/',
-              'apikey': _supabaseKey,
-              'content-profile': 'public',
-              'x-client-info': 'supabase-js-web/2.44.4',
-              'Origin': 'https://animevsub.eu.org',
-              'DNT': '1',
-              'Sec-Fetch-Dest': 'empty',
-              'Sec-Fetch-Mode': 'cors',
-              'Sec-Fetch-Site': 'cross-site',
-              'authorization': 'Bearer $_supabaseKey',
-              'Connection': 'keep-alive',
-              'Priority': 'u=4',
-              'Pragma': 'no-cache',
-              'Cache-Control': 'no-cache',
-              'TE': 'trailers'
-            },
-            body: jsonEncode({
-              'user_uid': userUid,
-              'season_id': eigaId,
-              'p_chap_id':
-                  RegExp(r'-(\d+)$').firstMatch(episode.episodeId)!.group(1)
-            }));
+    final data = await rpc('get_single_progress', {
+      'user_uid': userUid,
+      'season_id': eigaId,
+      'p_chap_id': RegExp(r'-(\d+)$').firstMatch(episode.episodeId)!.group(1)
+    });
 
     if (data.statusCode > 299) {
       if (kDebugMode) {
@@ -734,36 +749,10 @@ class AnimeVietsubService extends EigaBaseService
   }) async {
     final userUid = await _getUidUser();
 
-    final data = await post(
-      Uri.parse('$_supabaseUrl/rest/v1/rpc/get_watch_progress'),
-      headers: {
-        'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
-        'Accept': '*/*',
-        'Accept-Language': 'vi-VN,vi;q=0.8,en-US;q=0.5,en;q=0.3',
-        'Accept-Encoding': 'gzip, deflate, br, zstd',
-        'Content-Type': 'application/json',
-        'Referer': 'https://animevsub.eu.org/',
-        'apikey': _supabaseKey,
-        'content-profile': 'public',
-        'x-client-info': 'supabase-js-web/2.44.4',
-        'Origin': 'https://animevsub.eu.org',
-        'DNT': '1',
-        'Sec-Fetch-Dest': 'empty',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Site': 'cross-site',
-        'authorization': 'Bearer $_supabaseKey',
-        'Connection': 'keep-alive',
-        'Priority': 'u=4',
-        'Pragma': 'no-cache',
-        'Cache-Control': 'no-cache',
-        'TE': 'trailers',
-      },
-      body: jsonEncode({
-        'user_uid': userUid,
-        'season_id': eigaId,
-      }),
-    );
+    final data = await rpc('get_watch_progress', {
+      'user_uid': userUid,
+      'season_id': eigaId,
+    });
 
     if (data.statusCode > 299) {
       if (kDebugMode) {
@@ -802,45 +791,19 @@ class AnimeVietsubService extends EigaBaseService
       required WatchTime watchTime}) async {
     final userUid = await _getUidUser();
 
-    final data = await post(
-      Uri.parse('$_supabaseUrl/rest/v1/rpc/set_single_progress'),
-      headers: {
-        'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
-        'Accept': '*/*',
-        'Accept-Language': 'vi-VN,vi;q=0.8,en-US;q=0.5,en;q=0.3',
-        'Accept-Encoding': 'gzip, deflate, br, zstd',
-        'Content-Type': 'application/json',
-        'Referer': 'https://animevsub.eu.org/',
-        'apikey': _supabaseKey,
-        'content-profile': 'public',
-        'x-client-info': 'supabase-js-web/2.44.4',
-        'Origin': 'https://animevsub.eu.org',
-        'DNT': '1',
-        'Sec-Fetch-Dest': 'empty',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Site': 'cross-site',
-        'authorization': 'Bearer $_supabaseKey',
-        'Connection': 'keep-alive',
-        'Priority': 'u=4',
-        'Pragma': 'no-cache',
-        'Cache-Control': 'no-cache',
-        'TE': 'trailers',
-      },
-      body: jsonEncode({
-        'user_uid': userUid,
-        'p_name': metaEiga.name,
-        'p_poster':
-            _removeHostUrlImage(metaEiga.poster?.src ?? metaEiga.image.src),
-        'season_id': eigaId,
-        'p_season_name': season.name,
-        'e_cur': watchTime.position.inMilliseconds / 1e3,
-        'e_dur': watchTime.duration.inMilliseconds / 1e3,
-        'e_name': episode.name,
-        'e_chap': RegExp(r'(\d+)$').firstMatch(episode.episodeId)!.group(1)!,
-        'gmt': "Asia/Saigon"
-      }),
-    );
+    final data = await rpc('set_single_progress', {
+      'user_uid': userUid,
+      'p_name': metaEiga.name,
+      'p_poster':
+          _removeHostUrlImage(metaEiga.poster?.src ?? metaEiga.image.src),
+      'season_id': eigaId,
+      'p_season_name': season.name,
+      'e_cur': watchTime.position.inMilliseconds / 1e3,
+      'e_dur': watchTime.duration.inMilliseconds / 1e3,
+      'e_name': episode.name,
+      'e_chap': RegExp(r'(\d+)$').firstMatch(episode.episodeId)!.group(1)!,
+      'gmt': "Asia/Saigon"
+    });
 
     if (data.statusCode > 299) {
       if (kDebugMode) {
