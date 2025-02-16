@@ -771,7 +771,9 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
               child: Center(
                 child: Text(error,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.white,
+                        ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis),
               ))); // error
