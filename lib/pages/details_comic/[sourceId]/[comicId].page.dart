@@ -82,7 +82,7 @@ class _DetailsComicState extends State<DetailsComic>
         eventBus.on<UpdatedHistory>().listen((event) {
           if (!mounted) return;
           // ignore: use_build_context_synchronously
-          final name = GoRouter.of(context).state?.name;
+          final name = GoRouter.of(context).state.name;
 
           // lazy call history
           if (event.comicId == widget.comicId &&
