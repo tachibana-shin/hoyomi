@@ -74,4 +74,7 @@ A new Flutter project.
 - [ ] Cache for API: eiga info, eiga play, eiga follow...
 - [ ] Replace circular loading with skeleton
 - [ ] Fix pull request, circular, future
+
+- [ ] Fix infinite scroll
+- [ ] Fix section not update on change filters
 <!-- provider or mobx -->
