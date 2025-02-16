@@ -15,7 +15,7 @@ extension GetComicCollection on Isar {
 
 const ComicSchema = CollectionSchema(
   name: r'Comic',
-  id: 4089735379470416465,
+  id: -3252613868855704773,
   properties: {
     r'comicId': PropertySchema(
       id: 0,
@@ -91,7 +91,7 @@ const ComicSchema = CollectionSchema(
       ],
     ),
     r'comicId': IndexSchema(
-      id: 3567540928881766442,
+      id: -8766803587155448640,
       name: r'comicId',
       unique: false,
       replace: false,
@@ -220,7 +220,7 @@ Id _comicGetId(Comic object) {
   return object.id ?? Isar.autoIncrement;
 }
 
-List<IsarLink<dynamic>> _comicGetLinks(Comic object) {
+List<IsarLinkBase<dynamic>> _comicGetLinks(Comic object) {
   return [];
 }
 

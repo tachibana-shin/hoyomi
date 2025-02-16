@@ -186,7 +186,7 @@ Id _cookieManagerGetId(CookieManager object) {
   return object.id ?? Isar.autoIncrement;
 }
 
-List<IsarLink<dynamic>> _cookieManagerGetLinks(CookieManager object) {
+List<IsarLinkBase<dynamic>> _cookieManagerGetLinks(CookieManager object) {
   return [];
 }
 

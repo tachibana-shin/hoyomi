@@ -17,15 +17,15 @@ const HistoryChapSchema = CollectionSchema(
   name: r'HistoryChap',
   id: -1381802241183101931,
   properties: {
-    r'comic': PropertySchema(
-      id: 0,
-      name: r'comic',
-      type: IsarType.long,
-    ),
     r'chapterId': PropertySchema(
-      id: 1,
+      id: 0,
       name: r'chapterId',
       type: IsarType.string,
+    ),
+    r'comic': PropertySchema(
+      id: 1,
+      name: r'comic',
+      type: IsarType.long,
     ),
     r'createdAt': PropertySchema(
       id: 2,
@@ -105,8 +105,8 @@ void _historyChapSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.comic);
-  writer.writeString(offsets[1], object.chapterId);
+  writer.writeString(offsets[0], object.chapterId);
+  writer.writeLong(offsets[1], object.comic);
   writer.writeDateTime(offsets[2], object.createdAt);
   writer.writeDouble(offsets[3], object.currentPage);
   writer.writeLong(offsets[4], object.maxPage);
@@ -120,13 +120,13 @@ HistoryChap _historyChapDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = HistoryChap(
-    chapterId: reader.readString(offsets[1]),
+    chapterId: reader.readString(offsets[0]),
     createdAt: reader.readDateTime(offsets[2]),
     currentPage: reader.readDouble(offsets[3]),
     maxPage: reader.readLong(offsets[4]),
     updatedAt: reader.readDateTime(offsets[5]),
   );
-  object.comic = reader.readLong(offsets[0]);
+  object.comic = reader.readLong(offsets[1]);
   object.id = id;
   return object;
 }
@@ -139,9 +139,9 @@ P _historyChapDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
-    case 1:
       return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readLong(offset)) as P;
     case 2:
       return (reader.readDateTime(offset)) as P;
     case 3:
@@ -159,7 +159,7 @@ Id _historyChapGetId(HistoryChap object) {
   return object.id ?? Isar.autoIncrement;
 }
 
-List<IsarLink<dynamic>> _historyChapGetLinks(HistoryChap object) {
+List<IsarLinkBase<dynamic>> _historyChapGetLinks(HistoryChap object) {
   return [];
 }
 
@@ -392,60 +392,6 @@ extension HistoryChapQueryWhere
 
 extension HistoryChapQueryFilter
     on QueryBuilder<HistoryChap, HistoryChap, QFilterCondition> {
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> comicEqualTo(
-      int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'comic',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-      comicGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'comic',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> comicLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'comic',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> comicBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'comic',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
       chapterIdEqualTo(
     String value, {
@@ -578,6 +524,60 @@ extension HistoryChapQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'chapterId',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> comicEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'comic',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
+      comicGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'comic',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> comicLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'comic',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition> comicBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'comic',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -892,18 +892,6 @@ extension HistoryChapQueryLinks
 
 extension HistoryChapQuerySortBy
     on QueryBuilder<HistoryChap, HistoryChap, QSortBy> {
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByComic() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'comic', Sort.asc);
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByComicDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'comic', Sort.desc);
-    });
-  }
-
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByChapterId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'chapterId', Sort.asc);
@@ -913,6 +901,18 @@ extension HistoryChapQuerySortBy
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByChapterIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'chapterId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByComic() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'comic', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> sortByComicDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'comic', Sort.desc);
     });
   }
 
@@ -967,18 +967,6 @@ extension HistoryChapQuerySortBy
 
 extension HistoryChapQuerySortThenBy
     on QueryBuilder<HistoryChap, HistoryChap, QSortThenBy> {
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByComic() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'comic', Sort.asc);
-    });
-  }
-
-  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByComicDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'comic', Sort.desc);
-    });
-  }
-
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByChapterId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'chapterId', Sort.asc);
@@ -988,6 +976,18 @@ extension HistoryChapQuerySortThenBy
   QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByChapterIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'chapterId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByComic() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'comic', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QAfterSortBy> thenByComicDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'comic', Sort.desc);
     });
   }
 
@@ -1054,16 +1054,16 @@ extension HistoryChapQuerySortThenBy
 
 extension HistoryChapQueryWhereDistinct
     on QueryBuilder<HistoryChap, HistoryChap, QDistinct> {
-  QueryBuilder<HistoryChap, HistoryChap, QDistinct> distinctByComic() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'comic');
-    });
-  }
-
   QueryBuilder<HistoryChap, HistoryChap, QDistinct> distinctByChapterId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'chapterId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<HistoryChap, HistoryChap, QDistinct> distinctByComic() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'comic');
     });
   }
 
@@ -1100,15 +1100,15 @@ extension HistoryChapQueryProperty
     });
   }
 
-  QueryBuilder<HistoryChap, int, QQueryOperations> comicProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'comic');
-    });
-  }
-
   QueryBuilder<HistoryChap, String, QQueryOperations> chapterIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'chapterId');
+    });
+  }
+
+  QueryBuilder<HistoryChap, int, QQueryOperations> comicProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'comic');
     });
   }
 
