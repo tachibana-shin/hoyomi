@@ -6,6 +6,15 @@ class HomeComicSection {
   final bool? gridView;
   final List<Comic> items;
 
-  HomeComicSection(
+  const HomeComicSection(
       {required this.items, required this.name, this.sectionId, this.gridView});
+
+  factory HomeComicSection.createFakeData() {
+    return HomeComicSection(
+      name: "Popular Manga",
+      sectionId: "sec1",
+      gridView: true,
+      items: List.generate(5, (index) => Comic.createFakeData()),
+    );
+  }
 }

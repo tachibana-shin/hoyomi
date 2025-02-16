@@ -76,27 +76,27 @@ final router = GoRouter(
             ),
             routes: [
               GoRoute(
-                path: 'comic/:serviceId',
+                path: 'comic/:sourceId',
                 builder: (context, state) {
                   if (state.uri.queryParameters['q'] == null) {
                     context.replace("/search");
                     return const SizedBox();
                   }
                   return SearchComicPage(
-                    serviceId: state.pathParameters['serviceId']!,
+                    sourceId: state.pathParameters['sourceId']!,
                     keyword: state.uri.queryParameters['q']!,
                   );
                 },
               ),
               GoRoute(
-                path: 'eiga/:serviceId',
+                path: 'eiga/:sourceId',
                 builder: (context, state) {
                   if (state.uri.queryParameters['q'] == null) {
                     context.replace("/search");
                     return const SizedBox();
                   }
                   return SearchEigaPage(
-                    serviceId: state.pathParameters['serviceId']!,
+                    sourceId: state.pathParameters['sourceId']!,
                     keyword: state.uri.queryParameters['q']!,
                   );
                 },
@@ -189,29 +189,29 @@ final router = GoRouter(
 
     // Webview Route
     GoRoute(
-      path: '/webview/:serviceId',
+      path: '/webview/:sourceId',
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => WebviewPage(
-        serviceId: state.pathParameters['serviceId']!,
+        sourceId: state.pathParameters['sourceId']!,
       ),
     ),
 
     // Section Comic Route
     GoRoute(
-      path: '/section_comic/:serviceId/:sectionId',
+      path: '/section_comic/:sourceId/:sectionId',
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => SectionComicPage(
-        serviceId: state.pathParameters['serviceId']!,
+        sourceId: state.pathParameters['sourceId']!,
         sectionId: state.pathParameters['sectionId']!,
       ),
     ),
 
     // Section Eiga Route
     GoRoute(
-      path: '/section_eiga/:serviceId/:sectionId',
+      path: '/section_eiga/:sourceId/:sectionId',
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => SectionEigaPage(
-        serviceId: state.pathParameters['serviceId']!,
+        sourceId: state.pathParameters['sourceId']!,
         sectionId: state.pathParameters['sectionId']!,
       ),
     ),

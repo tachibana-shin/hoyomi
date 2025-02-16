@@ -7,6 +7,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/controller/history.dart';
 import 'package:hoyomi/controller/settings.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic_chapter.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/comic_service.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
@@ -297,9 +298,9 @@ class _MangaReaderState extends State<MangaReader>
     });
   }
 
-  Chapter get _currentChapter => widget.comic.chapters
+  ComicChapter get _currentChapter => widget.comic.chapters
       .firstWhere((element) => element.chapterId == _chapter);
-  Chapter? get _nextChapter {
+  ComicChapter? get _nextChapter {
     for (int i = 1; i < widget.comic.chapters.length; i++) {
       if (widget.comic.chapters.elementAt(i).chapterId == _chapter) {
         return widget.comic.chapters.elementAtOrNull(i - 1);
@@ -309,7 +310,7 @@ class _MangaReaderState extends State<MangaReader>
     return null;
   }
 
-  Chapter? get _prevChapter {
+  ComicChapter? get _prevChapter {
     for (int i = 0; i < widget.comic.chapters.length - 1; i++) {
       if (widget.comic.chapters.elementAt(i).chapterId == _chapter) {
         return widget.comic.chapters.elementAtOrNull(i + 1);

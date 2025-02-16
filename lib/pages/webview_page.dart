@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:hoyomi/screens/webview/custom_webview.dart';
 
 class WebviewPage extends StatelessWidget {
-  final String serviceId;
+  final String sourceId;
 
-  const WebviewPage({super.key, required this.serviceId});
+  const WebviewPage({super.key, required this.sourceId});
 
   @override
   Widget build(BuildContext context) {
     return CustomWebView(
-      serviceId: serviceId,
+      sourceId: sourceId,
     );
   }
 }

@@ -7,4 +7,13 @@ class ComicComments extends Paginate<ComicComment> {
       required super.page,
       required super.totalItems,
       required super.totalPages});
+
+  factory ComicComments.createFakeData() {
+    return ComicComments(
+      items: List.generate(5, (index) => ComicComment.createFakeData()),
+      page: 1,
+      totalItems: 50,
+      totalPages: 10,
+    );
+  }
 }

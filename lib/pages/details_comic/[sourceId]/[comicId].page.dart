@@ -25,10 +25,9 @@ import 'package:hoyomi/widgets/comic/icon_button_open_browser.dart';
 import 'package:hoyomi/widgets/comic/icon_button_share.dart';
 import 'package:hoyomi/widgets/comments/widget/comments.dart';
 import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
-import 'package:hoyomi/widgets/pull_to_refresh.dart';
 import 'package:hoyomi/widgets/comic/sheet_chapters.dart';
+import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:signals/signals_flutter.dart';
 
 class DetailsComic extends StatefulWidget {
@@ -51,8 +50,6 @@ class _DetailsComicState extends State<DetailsComic>
   late final AnimationController _bottomSheetAnimationController;
 
   final ScrollController _scrollController = ScrollController();
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
 
   bool _isTitleVisible = false;
   String _title = "";
@@ -117,7 +114,6 @@ class _DetailsComicState extends State<DetailsComic>
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
 
-    _refreshController.dispose();
     super.dispose();
   }
 
@@ -189,11 +185,10 @@ class _DetailsComicState extends State<DetailsComic>
               return const Center(child: Text('No data available.'));
             }
 
-            return PullToRefresh(
-                controller: _refreshController,
-                onRefresh: () => _service.getDetails(widget.comicId),
-                initialData: snapshot.data!,
-                builder: (comic) => SingleChildScrollView(
+            return PullRefreshPage(
+                onLoadData: () => _service.getDetails(widget.comicId),
+                onLoadFake: () => MetaComic.createFakeData(),
+                builder: (comic, _) => SingleChildScrollView(
                     padding: EdgeInsets.all(16.0)
                         .add(EdgeInsets.only(bottom: 15.h(context))),
                     controller: _scrollController,

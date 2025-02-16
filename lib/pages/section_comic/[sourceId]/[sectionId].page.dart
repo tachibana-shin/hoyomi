@@ -10,16 +10,14 @@ import 'package:hoyomi/core_services/comic/interfaces/comic_section.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 import 'package:hoyomi/core_services/interfaces/filter.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
 import 'package:hoyomi/widgets/comic/icon_button_open_browser.dart';
-import 'package:hoyomi/widgets/pull_to_refresh.dart';
-import 'package:hoyomi/widgets/comic/vertical_comic.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:hoyomi/widgets/comic/vertical_comic_list.dart';
+import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class SectionComicPage extends StatefulWidget {
-  final String serviceId;
+  final String sourceId;
   final String sectionId;
   final Future<ComicSection> Function({
     required String sectionId,
@@ -29,7 +27,7 @@ class SectionComicPage extends StatefulWidget {
 
   const SectionComicPage(
       {super.key,
-      required this.serviceId,
+      required this.sourceId,
       required this.sectionId,
       this.getSection});
 
@@ -39,11 +37,7 @@ class SectionComicPage extends StatefulWidget {
 
 class _SectionComicPageState extends State<SectionComicPage> {
   late final ComicService _service;
-
-  final PagingController<int, Comic> _pagingController =
-      PagingController(firstPageKey: 1);
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  int _pageKey = 1;
 
   String? _title;
   String? _url;
@@ -52,60 +46,32 @@ class _SectionComicPageState extends State<SectionComicPage> {
   int? _currentPage;
   int? _totalPages;
 
-  Completer<void>? _refreshCompleter;
-
-  final Map<String, List<String>?> _data = {};
+  final Map<String, List<String>?> _selectFilters = {};
 
   @override
   void initState() {
     super.initState();
-    _service = getComicService(widget.serviceId);
-    _pagingController.addPageRequestListener((pageKey) {
-      _fetchComics(pageKey);
-    });
+    _service = getComicService(widget.sourceId);
   }
 
-  Future<void> _fetchComics(int pageKey) async {
-    try {
-      final newComics = await (widget.getSection ?? _service.getSection)(
-          sectionId: widget.sectionId, page: pageKey, filters: _data);
-      final isLastPage = newComics.page >= newComics.totalPages;
-      setState(() {
-        _title = newComics.name;
-        _url = newComics.url;
-        // _description = newComics.description;
-        _filters = newComics.filters;
-        _filters?.map((filter) {
-          _data[filter.key] = null;
-        });
-        _currentPage = pageKey;
-        _totalPages = newComics.totalPages;
+  Future<(bool, List<Comic>)> _fetchComics(int pageKey) async {
+    final newComics = await (widget.getSection ?? _service.getSection)(
+        sectionId: widget.sectionId, page: pageKey, filters: _selectFilters);
+    final isLastPage = newComics.page >= newComics.totalPages;
+
+    setState(() {
+      _title = newComics.name;
+      _url = newComics.url;
+      // _description = newComics.description;
+      _filters = newComics.filters;
+      _filters?.map((filter) {
+        _selectFilters[filter.key] = null;
       });
+      _currentPage = pageKey;
+      _totalPages = newComics.totalPages;
+    });
 
-      if (isLastPage) {
-        _pagingController.appendLastPage(newComics.items.toList());
-      } else {
-        final nextPageKey = pageKey + 1;
-        _pagingController.appendPage(newComics.items.toList(), nextPageKey);
-      }
-
-      _refreshCompleter?.complete();
-    } catch (error) {
-      _pagingController.error = error;
-
-      _refreshCompleter?.completeError(error);
-    }
-  }
-
-  void _filtersChanged() {
-    _pagingController.refresh();
-  }
-
-  @override
-  void dispose() {
-    _refreshController.dispose();
-    _pagingController.dispose();
-    super.dispose();
+    return (isLastPage, newComics.items.toList());
   }
 
   @override
@@ -185,18 +151,21 @@ class _SectionComicPageState extends State<SectionComicPage> {
                                           .map((option) => SelectedListItem(
                                               name: option.name,
                                               value: option.value,
-                                              isSelected: _data[filter.key]
-                                                      ?.contains(
-                                                          option.value) ??
-                                                  option.selected))
+                                              isSelected:
+                                                  _selectFilters[filter.key]
+                                                          ?.contains(
+                                                              option.value) ??
+                                                      option.selected))
                                           .toList(),
                                       onSelected: (selectedList) {
                                         ///
                                         setState(() {
-                                          _data[filter.key] = selectedList
-                                              .map((option) => option.value!)
-                                              .toList();
-                                          _filtersChanged();
+                                          _selectFilters[filter.key] =
+                                              selectedList
+                                                  .map(
+                                                      (option) => option.value!)
+                                                  .toList();
+                                          _pageKey = 1;
                                         });
                                       },
                                       enableMultipleSelection: filter.multiple,
@@ -211,8 +180,9 @@ class _SectionComicPageState extends State<SectionComicPage> {
                                         backgroundColor: Colors.transparent,
                                         label: Row(children: [
                                           Text(
-                                            _data.containsKey(filter.key)
-                                                ? _data[filter.key]!
+                                            _selectFilters
+                                                    .containsKey(filter.key)
+                                                ? _selectFilters[filter.key]!
                                                     .map((value) => options
                                                         .firstWhere((option) =>
                                                             option.value ==
@@ -225,11 +195,11 @@ class _SectionComicPageState extends State<SectionComicPage> {
                                                     .colorScheme
                                                     .onSurface
                                                     .withValues(
-                                                        alpha:
-                                                            _data.containsKey(
+                                                        alpha: _selectFilters
+                                                                .containsKey(
                                                                     filter.key)
-                                                                ? 1.0
-                                                                : 0.8)),
+                                                            ? 1.0
+                                                            : 0.8)),
                                           ),
                                           Padding(
                                               padding: EdgeInsets.only(
@@ -245,77 +215,24 @@ class _SectionComicPageState extends State<SectionComicPage> {
   }
 
   Widget _buildBody() {
-    double screenWidth = MediaQuery.of(context).size.width;
-    int crossAxisCount;
+    return PullRefreshPage<List<Comic>>(
+        onLoadData: () => _fetchComics(1).then((param) => param.$2),
+        onLoadFake: () => List.generate(30, (_) => Comic.createFakeData()),
+        onLoadMore: (oldData, endList) async {
+          final newData = await _fetchComics(_pageKey + 1);
 
-    if (screenWidth <= 600) {
-      crossAxisCount = 3;
-    } else if (screenWidth <= 900) {
-      crossAxisCount = 4;
-    } else {
-      crossAxisCount = 6;
-    }
+          // if end list
+          if (newData.$1) endList();
 
-    final childAspectRatio = 2 / 3;
-    final viewportFraction = 1 / crossAxisCount;
-    final height = 1 / childAspectRatio * screenWidth * viewportFraction +
-        14.0 * 2 +
-        2.0 * 2 +
-        2.0 +
-        4.0;
-
-    return PullToRefresh(
-        controller: _refreshController,
-        onRefresh: () async {
-          _refreshCompleter = Completer();
-          _pagingController.refresh();
-
-          await _refreshCompleter?.future;
+          _pageKey++;
+          return newData.$2;
         },
-        initialData: null,
-        builder: (data) => PagedGridView(
-              pagingController: _pagingController,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: 0.0,
-                  mainAxisSpacing: 0.0,
-                  childAspectRatio: (screenWidth / crossAxisCount) / height),
-              builderDelegate: PagedChildBuilderDelegate<Comic>(
-                animateTransitions: true,
-                itemBuilder: (context, comic, index) {
-                  return Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
-                      child:
-                          VerticalComic(comic: comic, sourceId: _service.uid));
-                },
-                firstPageProgressIndicatorBuilder: (_) => Center(
-                  child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 24.0),
-                      child: CircularProgressIndicator()),
-                ),
-                newPageProgressIndicatorBuilder: (_) => Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
-                    child: Skeletonizer(
-                        enabled: true,
-                        enableSwitchAnimation: true,
-                        child: VerticalComic(
-                            comic: Comic.createFakeData(),
-                            sourceId: _service.uid))),
-                noItemsFoundIndicatorBuilder: (_) => Center(
-                  child: Text('No items found.'),
-                ),
-                newPageErrorIndicatorBuilder: _buildError,
-                firstPageErrorIndicatorBuilder: _buildError,
-              ),
-            ));
-  }
-
-  Widget _buildError(BuildContext context) {
-    return Center(
-        child: UtilsService.errorWidgetBuilder(context,
-            error: _pagingController.error,
-            orElse: (error) => Text('Error: $error')));
+        builder: (data, controller) => VerticalComicList(
+            itemsFuture: Future.value(data
+                .map((comic) =>
+                    ComicExtend(comic: comic, sourceId: widget.sourceId))
+                .toList()),
+            title: '',
+            skeleton: false));
   }
 }

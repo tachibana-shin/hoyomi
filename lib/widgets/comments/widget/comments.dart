@@ -3,8 +3,7 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comments.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comment.dart';
 import 'package:hoyomi/widgets/comments/widget/comment.dart';
-import 'package:hoyomi/widgets/pull_to_refresh.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:hoyomi/widgets/pull_refresh_page.dart';
 
 class Comments extends StatefulWidget {
   final Future<ComicComments> Function(
@@ -35,76 +34,23 @@ class Comments extends StatefulWidget {
 }
 
 class _CommentsState extends State<Comments> {
-  final _refreshController = RefreshController(initialRefresh: false);
-  late Future<ComicComments> _futureComments;
-
   int page = 1;
 
   @override
   void initState() {
     super.initState();
-    _loadComments();
-  }
-
-  void _loadComments() async {
-    if (widget.getComments != null) {
-      setState(() {
-        _futureComments =
-            widget.getComments!(page: page, parent: widget.parent);
-      });
-    }
-  }
-
-  Future<ComicComments> _onRefresh() async {
-    page = 1;
-    return widget.getComments!(page: page, parent: widget.parent);
-  }
-
-  Future<ComicComments?> _onLoading(ComicComments oldData) async {
-    final newData =
-        await widget.getComments!(page: ++page, parent: widget.parent);
-
-    if (newData.items.isEmpty) {
-      return null;
-    }
-
-    return ComicComments(
-      items: oldData.items.toList()..addAll(newData.items),
-      page: newData.page,
-      totalItems: newData.totalItems,
-      totalPages: newData.totalPages,
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<ComicComments>(
-      future: _futureComments,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(
-            child: Text('Error: ${snapshot.error}'),
-          );
-        } else if (snapshot.hasData && snapshot.data!.items.isEmpty) {
-          return const Center(child: Text('No comments available.'));
-        } else if (snapshot.hasData) {
-          final comments = snapshot.data!;
-
-          if (widget.activatorMode) return _buildLastComment(comments);
-          return _buildFullComments(comments);
-        } else {
-          return const Center(child: Text('Unexpected error.'));
-        }
-      },
-    );
+    return PullRefreshPage<ComicComments>(
+        onLoadData: () =>
+            widget.getComments!(page: page, parent: widget.parent),
+        onLoadFake: () => ComicComments.createFakeData(),
+        builder: (data, _) => _buildLastComment(data));
   }
 
-  Widget _buildFullComments(ComicComments comments,
-      {ScrollController? controller}) {
-    controller ??= widget.controller;
-
+  Widget _buildFullComments(ComicComments comments) {
     Widget itemBuilder(ComicComments comments, int index) {
       final comment = comments.items.elementAt(index);
       return Padding(
@@ -122,18 +68,6 @@ class _CommentsState extends State<Comments> {
           parent: widget.parent,
         ),
       );
-    }
-
-    if (controller != null) {
-      return PullToRefresh(
-          controller: _refreshController,
-          onRefresh: _onRefresh,
-          onLoading: _onLoading,
-          initialData: comments,
-          builder: (data) => ListView.builder(
-              controller: controller,
-              itemCount: data.items.length,
-              itemBuilder: (_, index) => itemBuilder(data, index)));
     }
 
     int index = 0;
@@ -222,8 +156,7 @@ class _CommentsState extends State<Comments> {
               minChildSize: 0.3,
               maxChildSize: 0.9,
               builder: (context, scrollController) {
-                return _buildFullComments(comments,
-                    controller: scrollController);
+                return _buildFullComments(comments);
               },
             ));
   }

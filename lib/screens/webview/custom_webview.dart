@@ -9,9 +9,9 @@ import 'package:hoyomi/core_services/service.dart'; // Add this import
 import 'package:hoyomi/globals.dart';
 
 class CustomWebView extends StatefulWidget {
-  final String serviceId;
+  final String sourceId;
 
-  const CustomWebView({super.key, required this.serviceId});
+  const CustomWebView({super.key, required this.sourceId});
 
   @override
   State<CustomWebView> createState() => _CustomWebViewState();
@@ -31,7 +31,7 @@ class _CustomWebViewState extends State<CustomWebView> {
   void initState() {
     super.initState();
 
-    _service = getService(widget.serviceId);
+    _service = getService(widget.sourceId);
     _initialUrl = _service.baseUrl;
     _currentTitle = _initialUrl;
     _currentUrl = _initialUrl;

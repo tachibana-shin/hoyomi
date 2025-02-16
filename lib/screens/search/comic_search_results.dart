@@ -3,7 +3,7 @@ import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 import 'package:hoyomi/core_services/interfaces/paginate.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:hoyomi/widgets/pull_refresh_page.dart';
 
 class ComicSearchResults extends StatefulWidget {
   final String keyword;
@@ -21,33 +21,15 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
   @override
   bool get wantKeepAlive => true;
 
-  final RefreshController _refreshController = RefreshController();
   final Map<String, Future<Paginate<Comic>>> _searchFutures = {};
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchSearchResults();
-  }
-
-  void _fetchSearchResults() {
+  Future<void> _fetchSearchResults() async {
     // Trigger search for each service
     for (var service in comicServices) {
       _searchFutures[service.uid] =
           service.search(keyword: widget.keyword, page: 1, filters: {});
     }
-  }
-
-  Future<void> _onRefresh() async {
-    try {
-      _fetchSearchResults();
-      await Future.wait(_searchFutures.values);
-      _refreshController.refreshCompleted();
-      setState(() {});
-    } catch (e) {
-      debugPrint('Refresh error: $e');
-      _refreshController.refreshFailed();
-    }
+    await Future.wait(_searchFutures.values);
   }
 
   @override
@@ -62,11 +44,10 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
       );
     }
 
-    return SmartRefresher(
-      controller: _refreshController,
-      onRefresh: _onRefresh,
-      enablePullDown: true,
-      child: Column(
+    return PullRefreshPage(
+      onLoadData: _fetchSearchResults,
+      onLoadFake: () => [],
+      builder: (_, __) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: comicServices.map((service) {
           final searchResult = _searchFutures[service.uid]!;
@@ -94,11 +75,5 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
         }).toList(),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _refreshController.dispose();
-    super.dispose();
   }
 }

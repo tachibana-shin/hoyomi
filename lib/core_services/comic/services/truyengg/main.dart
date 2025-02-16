@@ -209,7 +209,7 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
       final time$ = chap.querySelector('.cl99')?.text;
       final time = time$ != null ? DateFormat("dd/MM/yyyy").parse(time$) : null;
 
-      return Chapter(name: name, chapterId: chapterId, time: time);
+      return ComicChapter(name: name, chapterId: chapterId, time: time);
     });
     final lastModified = rate$.containsKey("dateModified")
         ? DateTime.parse(rate$["dateModified"])

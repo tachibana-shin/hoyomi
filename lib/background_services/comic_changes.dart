@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:hoyomi/controller/settings.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic_chapter.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 import 'package:hoyomi/core_services/comic/interfaces/status_enum.dart';
 import 'package:hoyomi/core_services/main.dart';
@@ -93,7 +94,7 @@ class ComicChanges {
     await Future.wait(tasks);
   }
 
-  Future<Iterable<Chapter>> updateComic(
+  Future<Iterable<ComicChapter>> updateComic(
       {required String sourceId,
       required Comic comic,
       bool? saveDatabase}) async {

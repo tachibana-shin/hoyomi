@@ -17,6 +17,24 @@ class ComicComment {
   final bool canDelete;
   bool? like;
 
+  factory ComicComment.createFakeData() {
+    return ComicComment(
+      id: "comment_1",
+      comicId: "comic_123",
+      chapterId: "ch1",
+      userId: "user_456",
+      name: "Fake User",
+      photoUrl: OImage.createFakeData(),
+      content: "This is a fake comment for testing purposes.",
+      timeAgo: DateTime.now().subtract(Duration(hours: 5)),
+      countLike: 12,
+      countDislike: 2,
+      countReply: 3,
+      canDelete: false,
+      like: true,
+    );
+  }
+
   ComicComment(
       {required this.id,
       required this.comicId,

@@ -1,3 +1,4 @@
+import 'package:hoyomi/core_services/comic/interfaces/comic_chapter.dart';
 import 'package:hoyomi/core_services/interfaces/genre.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/comic/interfaces/rate_value.dart';
@@ -19,7 +20,7 @@ class MetaComic {
   final RateValue? rate;
   final List<Genre> genres;
   final String description;
-  final List<Chapter> chapters;
+  final List<ComicChapter> chapters;
   final DateTime lastModified;
 
   MetaComic({
@@ -38,6 +39,27 @@ class MetaComic {
     required this.lastModified,
   });
 
+  factory MetaComic.createFakeData() {
+    return MetaComic(
+      name: "Fake Comic Title",
+      originalName: "フェイクコミックタイトル",
+      image: OImage.createFakeData(),
+      author: "Fake Author",
+      translator: "Fake Translator",
+      status: StatusEnum.ongoing,
+      views: 100000,
+      likes: 5000,
+      rate: RateValue.createFakeData(),
+      genres: [Genre.createFakeData(), Genre.createFakeData()],
+      description: "これはダミーの説明です。",
+      chapters: [
+        ComicChapter.createFakeData(),
+        ComicChapter.createFakeData(),
+      ],
+      lastModified: DateTime.now(),
+    );
+  }
+
   // Convert from JSON
   factory MetaComic.fromJson(Map<String, dynamic> json) {
     return MetaComic(
@@ -54,8 +76,9 @@ class MetaComic {
       rate: json['rate'] != null ? RateValue.fromJson(json['rate']) : null,
       genres: (json['genres'] as List).map((e) => Genre.fromJson(e)).toList(),
       description: json['description'],
-      chapters:
-          (json['chapters'] as List).map((e) => Chapter.fromJson(e)).toList(),
+      chapters: (json['chapters'] as List)
+          .map((e) => ComicChapter.fromJson(e))
+          .toList(),
       lastModified: DateTime.parse(json['lastModified']),
     );
   }
@@ -76,36 +99,6 @@ class MetaComic {
       'description': description,
       'chapters': chapters.map((e) => e.toJson()).toList(),
       'lastModified': lastModified.toIso8601String(),
-    };
-  }
-}
-
-class Chapter {
-  final String name;
-  final String chapterId;
-  final DateTime? time;
-
-  Chapter({
-    required this.name,
-    required this.chapterId,
-    this.time,
-  });
-
-  // Convert from JSON
-  factory Chapter.fromJson(Map<String, dynamic> json) {
-    return Chapter(
-      name: json['name'],
-      chapterId: json['chapterId'],
-      time: json['time'] != null ? DateTime.parse(json['time']) : null,
-    );
-  }
-
-  // Convert to JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'chapterId': chapterId,
-      'time': time?.toIso8601String(),
     };
   }
 }

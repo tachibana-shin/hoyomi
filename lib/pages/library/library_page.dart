@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/widgets/library/follow_horizontal_list.dart';
 import 'package:hoyomi/widgets/library/history_horizontal_list.dart';
-import 'package:hoyomi/widgets/pull_to_refresh.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:hoyomi/widgets/pull_refresh_page.dart';
 
 class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
@@ -13,15 +12,6 @@ class LibraryPage extends StatefulWidget {
 }
 
 class _LibraryPageState extends State<LibraryPage> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-
-  @override
-  void dispose() {
-    _refreshController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,13 +24,12 @@ class _LibraryPageState extends State<LibraryPage> {
   }
 
   Widget _buildBody() {
-    return PullToRefresh(
-        controller: _refreshController,
-        onRefresh: () async {
+    return PullRefreshPage(
+        onLoadData: () async {
           GoRouter.of(context).refresh();
         },
-        initialData: null,
-        builder: (data) => Scrollbar(
+        onLoadFake: () => [],
+        builder: (data, controller) => Scrollbar(
                 child: SingleChildScrollView(
               child: Column(
                 children: [

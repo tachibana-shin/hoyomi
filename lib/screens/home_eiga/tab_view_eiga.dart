@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
-import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/widgets/eiga/carousel_eiga.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
-import 'package:hoyomi/widgets/pull_to_refresh.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
-import 'package:skeletonizer/skeletonizer.dart';
+import 'package:hoyomi/widgets/pull_refresh_page.dart';
 
 class TabViewEiga extends StatefulWidget {
   final EigaService service;
@@ -24,114 +21,61 @@ class _TabViewEigaState extends State<TabViewEiga>
   @override
   bool get wantKeepAlive => true;
 
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-
-  late Future<EigaHome> _data;
-
-  @override
-  void initState() {
-    super.initState();
-    _data = widget.service.home();
-  }
-
-  @override
-  void dispose() {
-    _refreshController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
-    return FutureBuilder<EigaHome>(
-      future: _data,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(
-              child: UtilsService.errorWidgetBuilder(context,
-                  error: snapshot.error,
-                  orElse: (error) => Text('Error: $error')));
-        }
-        // if (!snapshot.hasData) {
-        //   return const Center(child: Text('No data available'));
-        // }
+    return PullRefreshPage<EigaHome>(
+        onLoadData: () => widget.service.home(),
+        onLoadFake: () => EigaHome.createFakeData(),
+        builder: (EigaHome data, _) {
+          return ListView.builder(
+            padding: const EdgeInsets.all(8.0),
+            itemCount: data.sections.length + (data.carousel == null ? 0 : 1),
+            itemBuilder: (context, sectionIndex) {
+              if (sectionIndex == 0 && data.carousel != null) {
+                return CarouselEiga(
+                    aspectRatio: data.carousel!.aspectRatio,
+                    sourceId: widget.service.uid,
+                    items: data.carousel!.items,
+                    maxHeight: data.carousel!.maxHeightBuilder(context));
+              }
 
-        Widget builder(EigaHome data) {
-          return Skeletonizer(
-              enabled: snapshot.connectionState == ConnectionState.waiting,
-              enableSwitchAnimation: true,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(8.0),
-                itemCount:
-                    data.sections.length + (data.carousel == null ? 0 : 1),
-                itemBuilder: (context, sectionIndex) {
-                  if (sectionIndex == 0 && data.carousel != null) {
-                    return CarouselEiga(
-                        aspectRatio: data.carousel!.aspectRatio,
-                        sourceId: widget.service.uid,
-                        items: data.carousel!.items,
-                        maxHeight: data.carousel!.maxHeightBuilder(context));
-                  }
+              final section = data.sections
+                  .elementAt(sectionIndex - (data.carousel != null ? 1 : 0));
+              return ValueListenableBuilder<bool>(
+                  valueListenable: isGridViewEnabled,
+                  builder: (context, value, _) {
+                    if (section.gridView != null) {
+                      value = section.gridView!;
+                    }
 
-                  final section = data.sections.elementAt(
-                      sectionIndex - (data.carousel != null ? 1 : 0));
-                  return ValueListenableBuilder<bool>(
-                      valueListenable: isGridViewEnabled,
-                      builder: (context, value, _) {
-                        if (section.gridView != null) {
-                          value = section.gridView!;
-                        }
+                    if (value == false) {
+                      return HorizontalEigaList(
+                        itemsFuture: Future.value(section.items
+                            .map((item) => EigaExtend(
+                                eiga: item, sourceId: widget.service.uid))
+                            .toList()),
+                        title: section.name,
+                        more: section.sectionId != null
+                            ? '/section_eiga/${widget.service.uid}/${section.sectionId}'
+                            : null,
+                      );
+                    }
 
-                        if (value == false) {
-                          return HorizontalEigaList(
-                            itemsFuture: Future.value(section.items
-                                .map((item) => EigaExtend(
-                                    eiga: item, sourceId: widget.service.uid))
-                                .toList()),
-                            title: section.name,
-                            more: section.sectionId != null
-                                ? '/section_eiga/${widget.service.uid}/${section.sectionId}'
-                                : null,
-                          );
-                        }
-
-                        return VerticalEigaList(
-                          itemsFuture: Future.value(section.items
-                              .map((item) => EigaExtend(
-                                  eiga: item, sourceId: widget.service.uid))
-                              .toList()),
-                          title: section.name,
-                          more: section.sectionId != null
-                              ? '/section_eiga/${widget.service.uid}/${section.sectionId}'
-                              : null,
-                        );
-                      });
-                },
-              ));
-        }
-
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return PullToRefresh(
-              controller: RefreshController(),
-              onRefresh: () async {
-                setState(() {});
-                return null;
-              },
-              initialData: null,
-              builder: (_) => Skeletonizer(
-                  enabled: true,
-                  enableSwitchAnimation: true,
-                  child: builder(EigaHome.createFakeData())));
-        }
-
-        return PullToRefresh<EigaHome>(
-            controller: _refreshController,
-            onRefresh: widget.service.home,
-            initialData: snapshot.data!,
-            builder: builder);
-      },
-    );
+                    return VerticalEigaList(
+                      itemsFuture: Future.value(section.items
+                          .map((item) => EigaExtend(
+                              eiga: item, sourceId: widget.service.uid))
+                          .toList()),
+                      title: section.name,
+                      more: section.sectionId != null
+                          ? '/section_eiga/${widget.service.uid}/${section.sectionId}'
+                          : null,
+                    );
+                  });
+            },
+          );
+        });
   }
 }

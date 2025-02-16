@@ -4,100 +4,34 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:grouped_list/grouped_list.dart';
-import 'package:intl/intl.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
-
 import 'package:hoyomi/controller/history.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart' as i_comic;
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
-import 'package:hoyomi/database/scheme/comic.dart';
 import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
 import 'package:hoyomi/widgets/comic/vertical_comic_list.dart';
-import 'package:hoyomi/widgets/pull_to_refresh.dart';
+import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:intl/intl.dart';
 
-class HistoryPage extends StatelessWidget {
+class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: History(),
-    );
-  }
+  State<HistoryPage> createState() => _HistoryPageState();
 }
 
-class History extends StatefulWidget {
-  const History({super.key});
-
-  @override
-  State<History> createState() => _HistoryState();
-}
-
-class _HistoryState extends State<History> {
+class _HistoryPageState extends State<HistoryPage> {
   final _history = HistoryController();
-  final List<Comic> _items = [];
   int _page = 1;
 
-  final ScrollController _scrollController = ScrollController();
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-
-  bool _initd = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    onUserScrolls();
-    _scrollController.addListener(onUserScrolls);
-    _initd = true;
-  }
-
-  Future<void> _onRefresh() async {
-    onUserScrolls();
-  }
-
-  bool keepFetchingData = true;
-  Completer<bool>? _scrollCompleter;
-  Future<void> onUserScrolls() async {
-    if (!keepFetchingData) return;
-    if (!(_scrollCompleter?.isCompleted ?? true)) return;
-
-    if (_initd) {
-      double screenSize = MediaQuery.of(context).size.height,
-          scrollLimit = _scrollController.position.maxScrollExtent,
-          missingScroll = scrollLimit - screenSize,
-          scrollLimitActivation = scrollLimit - missingScroll * 0.05;
-
-      if (_scrollController.position.pixels < scrollLimitActivation) return;
-      if (!(_scrollCompleter?.isCompleted ?? true)) return;
-    }
-    _scrollCompleter = Completer();
-
-    final data = await _history.getListHistory(30, offset: (_page - 1) * 30);
-    if (mounted) {
-      setState(() {
-        _items.addAll(data);
-
-        if (data.length < 30) {
-          _page++;
-          keepFetchingData = true;
-        }
-
-        _scrollCompleter!.complete(keepFetchingData);
-      });
-    }
-  }
-
   // _groupsのgetter
-  List<MapEntry<DateTime, List<Comic>>> get _groups {
+  List<MapEntry<DateTime, List<ComicExtend>>> _groups(
+      List<(DateTime, ComicExtend)> items) {
     // グループを日付で分類
-    final Map<DateTime, List<Comic>> groupedItems = {};
+    final Map<DateTime, List<ComicExtend>> groupedItems = {};
 
-    for (var comic in _items) {
+    for (var (updatedAt, comic) in items) {
       // 同じ日付でグループ化 (年月日のみを使用)
-      final dateOnly = DateTime(
-          comic.updatedAt.year, comic.updatedAt.month, comic.updatedAt.day);
+      final dateOnly = DateTime(updatedAt.year, updatedAt.month, updatedAt.day);
 
       if (!groupedItems.containsKey(dateOnly)) {
         groupedItems[dateOnly] = [];
@@ -106,12 +40,6 @@ class _HistoryState extends State<History> {
     }
 
     return groupedItems.entries.toList();
-  }
-
-  @override
-  void dispose() {
-    _refreshController.dispose();
-    super.dispose();
   }
 
   @override
@@ -133,80 +61,84 @@ class _HistoryState extends State<History> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return PullToRefresh(
-      controller: _refreshController,
-      onRefresh: _onRefresh,
-      initialData: null,
-      builder: (data) => Scrollbar(
-          controller: _scrollController,
+    return PullRefreshPage<List<(DateTime, ComicExtend)>>(
+      onLoadData: () =>
+          _history.getListHistory(30, offset: 0).then((items) => items
+              .map(
+                (item) => (
+                  item.updatedAt,
+                  ComicExtend(
+                      comic: i_comic.Comic.fromMeta(
+                        item.comicId,
+                        comic: MetaComic.fromJson(jsonDecode(item.meta)),
+                      ),
+                      sourceId: item.sourceId)
+                ),
+              )
+              .toList()),
+      onLoadFake: () => List.generate(
+          30,
+          (_) => (
+                DateTime.now(),
+                ComicExtend(comic: i_comic.Comic.createFakeData(), sourceId: '')
+              )),
+      onLoadMore: (oldData, endList) async {
+        final data =
+            await _history.getListHistory(30, offset: (_page - 1) * 30);
+        _page++;
+
+        if (data.length < 30) endList();
+
+        return [
+          ...oldData,
+          ...data.map(
+            (item) => (
+              item.updatedAt,
+              ComicExtend(
+                  comic: i_comic.Comic.fromMeta(
+                    item.comicId,
+                    comic: MetaComic.fromJson(jsonDecode(item.meta)),
+                  ),
+                  sourceId: item.sourceId)
+            ),
+          )
+        ];
+      },
+      builder: (data, controller) => Scrollbar(
+          controller: controller,
           thumbVisibility: true,
           radius: const Radius.circular(15),
-          child: GroupedListView<MapEntry<DateTime, List<Comic>>, DateTime>(
-              controller: _scrollController,
-              elements: _groups,
-              order: GroupedListOrder.DESC,
-              sort: true,
-              reverse: false,
-              floatingHeader: false,
-              useStickyGroupSeparators: true,
-              stickyHeaderBackgroundColor: Colors.transparent,
-              // padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-              groupBy: (element) => DateTime(
-                    element.key.year,
-                    element.key.month,
-                    element.key.day,
-                  ),
-              groupHeaderBuilder: (element) => Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Text(DateFormat.yMMMd().format(element.key))),
-              interdependentItemBuilder: (
-                context,
-                previousElement,
-                currentElement,
-                nextElement,
-              ) {
-                final items = currentElement.value
-                    .map((item) => MetaComic.fromJson(jsonDecode(item.meta)));
-                int index = 0;
-
-                return VerticalComicList(
-                  itemsFuture: Future.wait(
-                      currentElement.value.indexed.map((item) async {
-                    final comicHistory = currentElement.value.elementAt(index);
-                    final comic = items.elementAt(index);
-
-                    final current =
-                        await _history.getLastChapter(comicHistory.id!);
-
-                    final currentEpisodeIndex = current == null
-                        ? -1
-                        : comic.chapters.toList().lastIndexWhere((chapter) {
-                            return current.chapterId == chapter.chapterId;
-                          });
-
-                    final percentRead =
-                        (comic.chapters.length - currentEpisodeIndex) /
-                            comic.chapters.length;
-                    // currentElement.value
-                    //     .elementAt(index)
-                    //     .histories
-                    //     .fold(0.0, (p, c) => p + c.currentPage / c.maxPage) /
-                    // items.elementAt(index).chapters.length
-
-                    return ComicExtend(
-                        comic: i_comic.Comic.fromMeta(
-                          item.$2.comicId,
-                          comic: MetaComic.fromJson(jsonDecode(item.$2.meta)),
-                        ),
-                        sourceId:
-                            currentElement.value.elementAt(item.$1).sourceId,
-                        percentRead: percentRead);
-                  }).toList()),
-                  more: null,
-                  title: '',
-                );
-              })),
+          child:
+              GroupedListView<MapEntry<DateTime, List<ComicExtend>>, DateTime>(
+                  controller: controller,
+                  elements: _groups(data),
+                  order: GroupedListOrder.DESC,
+                  sort: true,
+                  reverse: false,
+                  floatingHeader: false,
+                  useStickyGroupSeparators: true,
+                  stickyHeaderBackgroundColor: Colors.transparent,
+                  // padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  groupBy: (element) => DateTime(
+                        element.key.year,
+                        element.key.month,
+                        element.key.day,
+                      ),
+                  groupHeaderBuilder: (element) => Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      child: Text(DateFormat.yMMMd().format(element.key))),
+                  interdependentItemBuilder: (
+                    context,
+                    previousElement,
+                    currentElement,
+                    nextElement,
+                  ) =>
+                      VerticalComicList(
+                        itemsFuture: Future.value(currentElement.value),
+                        more: null,
+                        title: '',
+                      ))),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/comic_service.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic_chapter.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 
@@ -37,7 +38,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
   late Future<MetaComic> _metaComicFuture;
   MetaComic? _metaComic;
   late final ComicService _service;
-  final ValueNotifier<Chapter?> _chapter = ValueNotifier(null);
+  final ValueNotifier<ComicChapter?> _chapter = ValueNotifier(null);
   final ValueNotifier<bool> _showToolbar = ValueNotifier(true);
 
   @override
@@ -120,7 +121,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
 
 class _AppBar extends StatefulWidget {
   final MetaComic? comic;
-  final ValueNotifier<Chapter?> chapter;
+  final ValueNotifier<ComicChapter?> chapter;
   final ValueNotifier<bool> enabled;
   final ComicService service;
   final String comicId;

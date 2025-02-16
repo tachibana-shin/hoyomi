@@ -5,6 +5,10 @@ class RateValue {
 
   RateValue({required this.best, required this.count, required this.value});
 
+  factory RateValue.createFakeData() {
+    return RateValue(value: 4.5, count: 1000, best: 5);
+  }
+
   factory RateValue.fromJson(Map<String, dynamic> json) {
     return RateValue(
       best: json['best'],

@@ -11,13 +11,15 @@ class VerticalComicList extends StatelessWidget {
   final String title;
   final String? subtitle;
   final String? more;
+  final bool skeleton;
 
   const VerticalComicList(
       {super.key,
       required this.itemsFuture,
       required this.title,
       this.subtitle,
-      this.more});
+      this.more,
+      this.skeleton = true});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class VerticalComicList extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Skeletonizer(
-                enabled: true,
+                enabled: skeleton,
                 enableSwitchAnimation: true,
                 child: VerticalList<ComicExtend>(
                   title: title,

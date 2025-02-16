@@ -13,13 +13,16 @@ class VerticalEigaList extends StatelessWidget {
   final String? more;
   final bool disableScroll;
 
+  final bool skeleton;
+
   const VerticalEigaList(
       {super.key,
       required this.itemsFuture,
       required this.title,
       this.subtitle,
       this.more,
-      this.disableScroll = false});
+      this.disableScroll = false,
+      this.skeleton = true});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,7 @@ class VerticalEigaList extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Skeletonizer(
-                enabled: true,
+                enabled: skeleton,
                 enableSwitchAnimation: true,
                 child: VerticalList<EigaExtend>(
                   title: title,
