@@ -19,7 +19,7 @@ class PullRefreshPage<T> extends StatefulWidget {
   createState() => _PullRefreshPageState<T>();
 }
 
-class _PullRefreshPageState<T> extends State<PullRefreshPage> {
+class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
   late Future<T> dataFuture;
   late final ScrollController? _scrollController;
 
@@ -32,7 +32,7 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage> {
   @override
   void initState() {
     super.initState();
-    dataFuture = widget.onLoadData() as Future<T>;
+    dataFuture = widget.onLoadData();
 
     if (widget.onLoadMore != null) {
       _scrollController = ScrollController()
@@ -42,12 +42,14 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage> {
               !_scrollController.position.outOfRange) {
             if (!_end) {
               setState(() {
-                dataFuture =
-                    widget.onLoadMore!(dataFuture, _endList) as Future<T>;
+                dataFuture = dataFuture
+                    .then((oldData) => widget.onLoadMore!(oldData, _endList));
               });
             }
           }
         });
+    } else {
+      _scrollController = null;
     }
   }
 
@@ -78,11 +80,12 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage> {
           child: UtilsService.errorWidgetBuilder(context,
               error: snapshot.error, orElse: (err) => Text('Error: $err')));
     }
-    if (!snapshot.hasData) {
+    final loading = snapshot.connectionState == ConnectionState.waiting;
+
+    if (!loading && !snapshot.hasData) {
       return const Center(child: Text('No data available.'));
     }
 
-    final loading = snapshot.connectionState == ConnectionState.waiting;
     final data = loading ? widget.onLoadFake() : snapshot.data!;
 
     return Skeletonizer(
@@ -92,7 +95,7 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage> {
   }
 
   Future<void> _pullRefresh() async {
-    final data = await widget.onLoadData() as Future<T>;
+    final data = await widget.onLoadData();
     setState(() {
       dataFuture = Future.value(data);
     });
