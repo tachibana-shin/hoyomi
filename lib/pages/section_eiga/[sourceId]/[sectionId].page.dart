@@ -220,7 +220,7 @@ class _SectionEigaPageState extends State<SectionEigaPage> {
     return PullRefreshPage<List<Eiga>>(
         onLoadData: () => _fetchComics(1).then((param) => param.$2),
         onLoadFake: () => List.generate(30, (_) => Eiga.createFakeData()),
-        builder: (data) => InfiniteGrid(
+        builder: (data, _) => InfiniteGrid(
             data: data,
             crossAxisCount: VerticalList.getCrossAxisCount(context),
             crossAxisSpacing: 4.0,

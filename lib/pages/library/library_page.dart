@@ -29,7 +29,7 @@ class _LibraryPageState extends State<LibraryPage> {
           GoRouter.of(context).refresh();
         },
         onLoadFake: () => [],
-        builder: (data) => Scrollbar(
+        builder: (data, _) => Scrollbar(
                 child: SingleChildScrollView(
               child: Column(
                 children: [

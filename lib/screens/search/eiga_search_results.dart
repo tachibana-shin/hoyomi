@@ -47,7 +47,7 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
     return PullRefreshPage(
       onLoadData: _fetchSearchResults,
       onLoadFake: () => null,
-      builder: (_) => Column(
+      builder: (_, __) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: eigaServices.map((service) {
           final searchResult = _searchFutures[service.uid]!;

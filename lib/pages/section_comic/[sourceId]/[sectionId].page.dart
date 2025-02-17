@@ -219,7 +219,7 @@ class _SectionComicPageState extends State<SectionComicPage> {
     return PullRefreshPage<List<Comic>>(
         onLoadData: () => _fetchComics(1).then((param) => param.$2),
         onLoadFake: () => List.generate(30, (_) => Comic.createFakeData()),
-        builder: (data) => InfiniteGrid(
+        builder: (data, _) => InfiniteGrid(
             data: data,
             crossAxisCount: VerticalList.getCrossAxisCount(context),
             crossAxisSpacing: 4.0,

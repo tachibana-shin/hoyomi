@@ -18,9 +18,9 @@ import 'package:hoyomi/widgets/eiga/button_follow_eiga.dart';
 import 'package:hoyomi/widgets/eiga/button_share_eiga.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
+import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:signals/signals_flutter.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:hoyomi/core_services/eiga/eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
@@ -61,8 +61,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late Future<MetaEiga> _metaEigaFuture;
   late ValueNotifier<MetaEiga> _metaEigaNotifier;
 
-  final ScrollController controller = ScrollController();
-
   double _aspectRatio = 16 / 9;
 
   final Map<String, EigaEpisodes> _cacheEpisodesStore = {};
@@ -100,7 +98,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     super.initState();
 
     _service = getEigaService(widget.sourceId);
-    _metaEigaFuture = _service.getDetails(widget.eigaId);
 
     if (_service.getSuggest != null) {
       _suggestNotifier.value = _metaEigaFuture.then((metaEiga) {
@@ -110,12 +107,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     _eigaId = ValueNotifier(widget.eigaId);
     _episodeId.value = widget.episodeId;
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
   }
 
   void _updatePlayer(MetaEiga metaEiga, EigaEpisode episode, int episodeIndex) {
@@ -209,68 +200,54 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   Widget _buildBody() {
     return Stack(children: [
-      SingleChildScrollView(
-          controller: controller,
-          child: Column(children: [
-            AspectRatio(
-              aspectRatio: _aspectRatio,
-            ),
-            Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: FutureBuilder(
-                  future: _metaEigaFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
+      PullRefreshPage(
+          onLoadData: () =>
+              (_metaEigaFuture = _service.getDetails(_eigaId.value)),
+          onLoadFake: () => MetaEiga.createFakeData(),
+          builder: (data, loading) {
+            _metaEigaNotifier =
+                ValueNotifier(!loading ? data : MetaEiga.createFakeData());
+            if (!loading) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                _titleNotifier.value = _metaEigaNotifier.value.name;
+              });
 
-                    final done =
-                        snapshot.connectionState != ConnectionState.waiting;
+              _metaEigaNotifier.addListener(() {
+                _titleNotifier.value = _metaEigaNotifier.value.name;
 
-                    _metaEigaNotifier = ValueNotifier(
-                        done ? snapshot.data! : MetaEiga.createFakeData());
-                    if (done) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        _titleNotifier.value = _metaEigaNotifier.value.name;
-                      });
+                _suggestNotifier.value = _service.getSuggest!(
+                    metaEiga: _metaEigaNotifier.value, eigaId: _eigaId.value);
+              });
+            }
 
-                      _metaEigaNotifier.addListener(() {
-                        _titleNotifier.value = _metaEigaNotifier.value.name;
-
-                        _suggestNotifier.value = _service.getSuggest!(
-                            metaEiga: _metaEigaNotifier.value,
-                            eigaId: _eigaId.value);
-                      });
-                    }
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Skeletonizer(
-                            enabled: !done,
-                            enableSwitchAnimation: true,
-                            child: _buildInfo(_metaEigaNotifier)),
-                        SizedBox(height: 10.0),
-                        // button group
-                        Skeletonizer(
-                            enabled: !done,
-                            enableSwitchAnimation: true,
-                            child: _buildButtonGroup(_metaEigaNotifier)),
-                        SizedBox(height: 5.0),
-                        if (done) _buildSchedule(),
-                        if (done) _buildSeasonHeader(_metaEigaNotifier),
-                        SizedBox(height: 5.0),
-                        if (!done)
-                          ListEpisodesSkeleton()
-                        else
-                          _buildSeasonArea(_metaEigaNotifier),
-                        SizedBox(height: 12.0),
-                        _buildSuggest()
-                      ],
-                    );
-                  },
-                )),
-          ])),
+            return Column(children: [
+              AspectRatio(
+                aspectRatio: _aspectRatio,
+              ),
+              Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildInfo(_metaEigaNotifier),
+                      SizedBox(height: 10.0),
+                      // button group
+                      _buildButtonGroup(_metaEigaNotifier),
+                      SizedBox(height: 5.0),
+                      if (!loading) _buildSchedule(),
+                      if (!loading) _buildSeasonHeader(_metaEigaNotifier),
+                      SizedBox(height: 5.0),
+                      if (loading)
+                        ListEpisodesSkeleton()
+                      else
+                        _buildSeasonArea(_metaEigaNotifier),
+                      SizedBox(height: 12.0),
+                      _buildSuggest()
+                    ],
+                  )),
+            ]);
+          }),
       Positioned(top: 0, left: 0, right: 0, child: _buildPlayer()),
     ]);
   }

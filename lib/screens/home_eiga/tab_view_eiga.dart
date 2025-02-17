@@ -28,7 +28,7 @@ class _TabViewEigaState extends State<TabViewEiga>
     return PullRefreshPage<EigaHome>(
         onLoadData: () => widget.service.home(),
         onLoadFake: () => EigaHome.createFakeData(),
-        builder: (data) {
+        builder: (data, _) {
           return ListView.builder(
             padding: const EdgeInsets.all(8.0),
             itemCount: data.sections.length + (data.carousel == null ? 0 : 1),

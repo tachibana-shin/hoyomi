@@ -188,7 +188,7 @@ class _DetailsComicState extends State<DetailsComic>
             return PullRefreshPage(
                 onLoadData: () => _service.getDetails(widget.comicId),
                 onLoadFake: () => MetaComic.createFakeData(),
-                builder: (comic) => SingleChildScrollView(
+                builder: (comic, _) => SingleChildScrollView(
                     padding: EdgeInsets.all(16.0)
                         .add(EdgeInsets.only(bottom: 15.h(context))),
                     controller: _scrollController,

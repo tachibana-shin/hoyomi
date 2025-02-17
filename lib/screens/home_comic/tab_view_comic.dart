@@ -28,7 +28,7 @@ class _TabViewComicState extends State<TabViewComic>
         onLoadData: widget.service.home,
         onLoadFake: () =>
             List.generate(4, (_) => HomeComicSection.createFakeData()),
-        builder: (data) => ListView.builder(
+        builder: (data, _) => ListView.builder(
               padding: const EdgeInsets.all(8.0),
               itemCount: data.length,
               itemBuilder: (context, sectionIndex) {

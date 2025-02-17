@@ -113,7 +113,7 @@ class _FollowPageState extends State<FollowPage> {
       //     )
       //   ];
       // },
-      builder: (data) => Scrollbar(
+      builder: (data, _) => Scrollbar(
           controller: _controller,
           thumbVisibility: true,
           radius: const Radius.circular(15),
