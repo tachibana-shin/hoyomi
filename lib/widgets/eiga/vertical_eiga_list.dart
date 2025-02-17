@@ -11,6 +11,7 @@ class VerticalEigaList extends StatelessWidget {
   final String title;
   final String? subtitle;
   final String? more;
+  final ScrollController? controller;
   final bool disableScroll;
 
   final bool skeleton;
@@ -21,6 +22,7 @@ class VerticalEigaList extends StatelessWidget {
       required this.title,
       this.subtitle,
       this.more,
+      this.controller,
       this.disableScroll = false,
       this.skeleton = true});
 
@@ -63,6 +65,7 @@ class VerticalEigaList extends StatelessWidget {
             title: title,
             subtitle: subtitle,
             more: more,
+            controller: controller,
             disableScroll: disableScroll,
             items: snapshot.data!,
             builder: (context, eiga, index) {

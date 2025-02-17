@@ -3,67 +3,34 @@ import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class PullRefreshPage<T> extends StatefulWidget {
-  final Widget Function(T data, ScrollController? controller) builder;
+  final Widget Function(T data) builder;
   final Future<T> Function() onLoadData;
-  final Future<T> Function(T oldData, void Function() endList)? onLoadMore;
   final T Function() onLoadFake;
 
   const PullRefreshPage(
       {super.key,
       required this.builder,
       required this.onLoadData,
-      required this.onLoadFake,
-      this.onLoadMore});
+      required this.onLoadFake});
 
   @override
   createState() => _PullRefreshPageState<T>();
 }
 
 class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
-  late Future<T> dataFuture;
-  late final ScrollController? _scrollController;
-
-  bool _end = false;
-
-  void _endList() {
-    _end = true;
-  }
+  late Future<T> _dataFuture;
 
   @override
   void initState() {
     super.initState();
-    dataFuture = widget.onLoadData();
-
-    if (widget.onLoadMore != null) {
-      _scrollController = ScrollController()
-        ..addListener(() {
-          if (_scrollController!.position.pixels ==
-                  _scrollController.position.maxScrollExtent &&
-              !_scrollController.position.outOfRange) {
-            if (!_end) {
-              setState(() {
-                dataFuture = dataFuture
-                    .then((oldData) => widget.onLoadMore!(oldData, _endList));
-              });
-            }
-          }
-        });
-    } else {
-      _scrollController = null;
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollController?.dispose();
+    _dataFuture = widget.onLoadData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder<T>(
-        future: dataFuture,
+        future: _dataFuture,
         builder: (context, snapshot) {
           return RefreshIndicator(
             onRefresh: _pullRefresh,
@@ -86,18 +53,18 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
       return const Center(child: Text('No data available.'));
     }
 
-    final data = loading ? widget.onLoadFake() : snapshot.data!;
+    var data = loading ? widget.onLoadFake() : snapshot.data!;
 
     return Skeletonizer(
         enabled: loading,
         enableSwitchAnimation: true,
-        child: widget.builder(data, _scrollController));
+        child: widget.builder(data));
   }
 
   Future<void> _pullRefresh() async {
     final data = await widget.onLoadData();
     setState(() {
-      dataFuture = Future.value(data);
+      _dataFuture = Future.value(data);
     });
   }
 }

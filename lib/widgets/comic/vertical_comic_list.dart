@@ -11,6 +11,7 @@ class VerticalComicList extends StatelessWidget {
   final String title;
   final String? subtitle;
   final String? more;
+  final ScrollController? controller;
   final bool skeleton;
 
   const VerticalComicList(
@@ -19,6 +20,7 @@ class VerticalComicList extends StatelessWidget {
       required this.title,
       this.subtitle,
       this.more,
+      this.controller,
       this.skeleton = true});
 
   @override
@@ -59,6 +61,7 @@ class VerticalComicList extends StatelessWidget {
             title: title,
             subtitle: subtitle,
             more: more,
+            controller: controller,
             items: snapshot.data!,
             builder: (context, comic, index) {
               return VerticalComic(

@@ -20,7 +20,9 @@ class FollowPage extends StatefulWidget {
 }
 
 class _FollowPageState extends State<FollowPage> {
+  final _controller = ScrollController();
   final _history = HistoryController();
+
   int _page = 1;
 
   // _groupsのgetter
@@ -40,6 +42,13 @@ class _FollowPageState extends State<FollowPage> {
     }
 
     return groupedItems.entries.toList();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -82,35 +91,35 @@ class _FollowPageState extends State<FollowPage> {
                 DateTime.now(),
                 ComicExtend(comic: i_comic.Comic.createFakeData(), sourceId: '')
               )),
-      onLoadMore: (oldData, endList) async {
-        final data =
-            await _history.getListFollows(30, offset: (_page - 1) * 30);
-        _page++;
+      // onLoadMore: (oldData, endList) async {
+      //   final data =
+      //       await _history.getListFollows(30, offset: (_page - 1) * 30);
+      //   _page++;
 
-        if (data.length < 30) endList();
+      //   if (data.length < 30) endList();
 
-        return [
-          ...oldData,
-          ...data.map(
-            (item) => (
-              item.updatedAt,
-              ComicExtend(
-                  comic: i_comic.Comic.fromMeta(
-                    item.comicId,
-                    comic: MetaComic.fromJson(jsonDecode(item.meta)),
-                  ),
-                  sourceId: item.sourceId)
-            ),
-          )
-        ];
-      },
-      builder: (data, controller) => Scrollbar(
-          controller: controller,
+      //   return [
+      //     ...oldData,
+      //     ...data.map(
+      //       (item) => (
+      //         item.updatedAt,
+      //         ComicExtend(
+      //             comic: i_comic.Comic.fromMeta(
+      //               item.comicId,
+      //               comic: MetaComic.fromJson(jsonDecode(item.meta)),
+      //             ),
+      //             sourceId: item.sourceId)
+      //       ),
+      //     )
+      //   ];
+      // },
+      builder: (data) => Scrollbar(
+          controller: _controller,
           thumbVisibility: true,
           radius: const Radius.circular(15),
           child:
               GroupedListView<MapEntry<DateTime, List<ComicExtend>>, DateTime>(
-                  controller: controller,
+                  controller: _controller,
                   elements: _groups(data),
                   order: GroupedListOrder.DESC,
                   sort: true,

@@ -47,7 +47,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
     return PullRefreshPage(
       onLoadData: _fetchSearchResults,
       onLoadFake: () => [],
-      builder: (_, __) => Column(
+      builder: (_) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: comicServices.map((service) {
           final searchResult = _searchFutures[service.uid]!;

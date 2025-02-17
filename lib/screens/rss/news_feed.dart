@@ -135,7 +135,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
         onLoadData: () => fetchAndParseFeeds(
             widget.services.where((service) => service.rss != null).toList()),
         onLoadFake: () => List.generate(30, (_) => RssItem.createFakeData()),
-        builder: (items, _) => ListView.builder(
+        builder: (items) => ListView.builder(
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final item = items[index];

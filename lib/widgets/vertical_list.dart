@@ -2,10 +2,12 @@ import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+// kinawa de Suki ni Natta Ko ga Hougen
 class VerticalList<T> extends StatelessWidget {
   final String title;
   final String? subtitle;
   final String? more;
+  final ScrollController? controller;
   final Widget Function(BuildContext, T, int) builder;
   final List<T>? items;
   final Widget? child;
@@ -16,11 +18,27 @@ class VerticalList<T> extends StatelessWidget {
       required this.title,
       this.subtitle,
       required this.more,
+      this.controller,
       this.items,
       this.child,
       this.disableScroll = false,
       required this.builder})
       : assert(items != null || child != null);
+
+  static int getCrossAxisCount(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    int crossAxisCount;
+
+    if (screenWidth <= 600) {
+      crossAxisCount = 3;
+    } else if (screenWidth <= 900) {
+      crossAxisCount = 4;
+    } else {
+      crossAxisCount = 6;
+    }
+
+    return crossAxisCount;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,22 +71,12 @@ class VerticalList<T> extends StatelessWidget {
   }
 
   Widget _buildGridView(BuildContext context, List<T> items) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    int crossAxisCount;
-
-    if (screenWidth <= 600) {
-      crossAxisCount = 3;
-    } else if (screenWidth <= 900) {
-      crossAxisCount = 4;
-    } else {
-      crossAxisCount = 6;
-    }
-
     return DynamicHeightGridView(
       shrinkWrap: true,
       // padding: const EdgeInsets.all(8.0),
       // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: crossAxisCount,
+      crossAxisCount: getCrossAxisCount(context),
+      controller: controller,
       crossAxisSpacing: 8.0,
       mainAxisSpacing: 10.0,
       physics: disableScroll ? const NeverScrollableScrollPhysics() : null,

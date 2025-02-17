@@ -47,7 +47,7 @@ class _CommentsState extends State<Comments> {
         onLoadData: () =>
             widget.getComments!(page: page, parent: widget.parent),
         onLoadFake: () => ComicComments.createFakeData(),
-        builder: (data, _) => _buildLastComment(data));
+        builder: (data) => _buildLastComment(data));
   }
 
   Widget _buildFullComments(ComicComments comments) {

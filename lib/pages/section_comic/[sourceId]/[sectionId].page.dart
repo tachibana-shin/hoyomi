@@ -10,10 +10,11 @@ import 'package:hoyomi/core_services/comic/interfaces/comic_section.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 import 'package:hoyomi/core_services/interfaces/filter.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
 import 'package:hoyomi/widgets/comic/icon_button_open_browser.dart';
-import 'package:hoyomi/widgets/comic/vertical_comic_list.dart';
+import 'package:hoyomi/widgets/comic/vertical_comic.dart';
+import 'package:hoyomi/widgets/infinite_grid.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:hoyomi/widgets/vertical_list.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class SectionComicPage extends StatefulWidget {
@@ -102,7 +103,7 @@ class _SectionComicPageState extends State<SectionComicPage> {
                 SizedBox(height: 2),
                 Text(
                   "${_service.name} (${(_currentPage ?? '?')}/${_totalPages ?? '??'}) page",
-                  style: TextStyle(fontSize: 12, color: Colors.white70),
+                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.secondary),
                 ),
               ],
             )),
@@ -218,21 +219,22 @@ class _SectionComicPageState extends State<SectionComicPage> {
     return PullRefreshPage<List<Comic>>(
         onLoadData: () => _fetchComics(1).then((param) => param.$2),
         onLoadFake: () => List.generate(30, (_) => Comic.createFakeData()),
-        onLoadMore: (oldData, endList) async {
-          final newData = await _fetchComics(_pageKey + 1);
+        builder: (data) => InfiniteGrid(
+            data: data,
+            crossAxisCount: VerticalList.getCrossAxisCount(context),
+            crossAxisSpacing: 4.0,
+            mainAxisSpacing: 4.0,
+            fetchData: () async {
+              final result = await _fetchComics(_pageKey);
+              _pageKey++;
 
-          // if end list
-          if (newData.$1) endList();
-
-          _pageKey++;
-          return newData.$2;
-        },
-        builder: (data, controller) => VerticalComicList(
-            itemsFuture: Future.value(data
-                .map((comic) =>
-                    ComicExtend(comic: comic, sourceId: widget.sourceId))
-                .toList()),
-            title: '',
-            skeleton: false));
+              return result;
+            },
+            itemBuilder: (context, comic, index) {
+              return VerticalComic(
+                comic: comic,
+                sourceId: widget.sourceId,
+              );
+            }));
   }
 }
