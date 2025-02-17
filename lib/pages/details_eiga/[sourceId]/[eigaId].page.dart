@@ -200,54 +200,59 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   Widget _buildBody() {
     return Stack(children: [
-      PullRefreshPage(
-          onLoadData: () =>
-              (_metaEigaFuture = _service.getDetails(_eigaId.value)),
-          onLoadFake: () => MetaEiga.createFakeData(),
-          builder: (data, loading) {
-            _metaEigaNotifier =
-                ValueNotifier(!loading ? data : MetaEiga.createFakeData());
-            if (!loading) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                _titleNotifier.value = _metaEigaNotifier.value.name;
-              });
+      Column(children: [
+        AspectRatio(
+          aspectRatio: _aspectRatio,
+        ),
+        Expanded(
+          child: PullRefreshPage(
+              onLoadData: () =>
+                  (_metaEigaFuture = _service.getDetails(_eigaId.value)),
+              onLoadFake: () => MetaEiga.createFakeData(),
+              builder: (data, loading) {
+                _metaEigaNotifier =
+                    ValueNotifier(!loading ? data : MetaEiga.createFakeData());
+                if (!loading) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _titleNotifier.value = _metaEigaNotifier.value.name;
+                  });
 
-              _metaEigaNotifier.addListener(() {
-                _titleNotifier.value = _metaEigaNotifier.value.name;
+                  _metaEigaNotifier.addListener(() {
+                    _titleNotifier.value = _metaEigaNotifier.value.name;
 
-                _suggestNotifier.value = _service.getSuggest!(
-                    metaEiga: _metaEigaNotifier.value, eigaId: _eigaId.value);
-              });
-            }
+                    _suggestNotifier.value = _service.getSuggest!(
+                        metaEiga: _metaEigaNotifier.value,
+                        eigaId: _eigaId.value);
+                  });
+                }
 
-            return Column(children: [
-              AspectRatio(
-                aspectRatio: _aspectRatio,
-              ),
-              Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildInfo(_metaEigaNotifier),
-                      SizedBox(height: 10.0),
-                      // button group
-                      _buildButtonGroup(_metaEigaNotifier),
-                      SizedBox(height: 5.0),
-                      if (!loading) _buildSchedule(),
-                      if (!loading) _buildSeasonHeader(_metaEigaNotifier),
-                      SizedBox(height: 5.0),
-                      if (loading)
-                        ListEpisodesSkeleton()
-                      else
-                        _buildSeasonArea(_metaEigaNotifier),
-                      SizedBox(height: 12.0),
-                      _buildSuggest()
-                    ],
-                  )),
-            ]);
-          }),
+                return SingleChildScrollView(
+                  child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildInfo(_metaEigaNotifier),
+                          SizedBox(height: 10.0),
+                          // button group
+                          _buildButtonGroup(_metaEigaNotifier),
+                          SizedBox(height: 5.0),
+                          if (!loading) _buildSchedule(),
+                          if (!loading) _buildSeasonHeader(_metaEigaNotifier),
+                          SizedBox(height: 5.0),
+                          if (loading)
+                            ListEpisodesSkeleton()
+                          else
+                            _buildSeasonArea(_metaEigaNotifier),
+                          SizedBox(height: 12.0),
+                          _buildSuggest()
+                        ],
+                      )),
+                );
+              }),
+        )
+      ]),
       Positioned(top: 0, left: 0, right: 0, child: _buildPlayer()),
     ]);
   }
