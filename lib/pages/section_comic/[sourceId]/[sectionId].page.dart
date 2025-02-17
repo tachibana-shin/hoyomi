@@ -103,7 +103,9 @@ class _SectionComicPageState extends State<SectionComicPage> {
                 SizedBox(height: 2),
                 Text(
                   "${_service.name} (${(_currentPage ?? '?')}/${_totalPages ?? '??'}) page",
-                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.secondary),
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
               ],
             )),
