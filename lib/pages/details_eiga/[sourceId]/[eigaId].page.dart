@@ -58,7 +58,6 @@ class DetailsEigaPage extends StatefulWidget {
 class _DetailsEigaPageState extends State<DetailsEigaPage>
     with TickerProviderStateMixin {
   late final EigaService _service;
-  late Future<MetaEiga> _metaEigaFuture;
   late ValueNotifier<MetaEiga> _metaEigaNotifier;
 
   double _aspectRatio = 16 / 9;
@@ -98,12 +97,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     super.initState();
 
     _service = getEigaService(widget.sourceId);
-
-    if (_service.getSuggest != null) {
-      _suggestNotifier.value = _metaEigaFuture.then((metaEiga) {
-        return _service.getSuggest!(metaEiga: metaEiga, eigaId: widget.eigaId);
-      });
-    }
 
     _eigaId = ValueNotifier(widget.eigaId);
     _episodeId.value = widget.episodeId;
@@ -206,8 +199,18 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         ),
         Expanded(
           child: PullRefreshPage(
-              onLoadData: () =>
-                  (_metaEigaFuture = _service.getDetails(_eigaId.value)),
+              onLoadData: () {
+                final metaEigaFuture = _service.getDetails(_eigaId.value);
+
+                if (_service.getSuggest != null) {
+                  _suggestNotifier.value = metaEigaFuture.then((metaEiga) {
+                    return _service.getSuggest!(
+                        metaEiga: metaEiga, eigaId: widget.eigaId);
+                  });
+                }
+
+                return metaEigaFuture;
+              },
               onLoadFake: () => MetaEiga.createFakeData(),
               builder: (data, loading) {
                 _metaEigaNotifier =
