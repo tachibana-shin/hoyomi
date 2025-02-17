@@ -18,6 +18,8 @@ class _PreviewMeta {
 }
 
 class SliderEiga extends StatefulWidget {
+  static final double thumbSize = 5;
+
   final ReadonlySignal<Duration> progress; // Current progress (0.0 to 1.0)
   final ReadonlySignal<Duration> duration;
   final ReadonlySignal<bool> showThumb;
@@ -45,7 +47,7 @@ class _SliderEigaState extends State<SliderEiga>
   late AnimationController _controller;
   late Animation<double> _barHeightAnimation;
 
-  final double thumbSize = 5;
+  double get thumbSize => SliderEiga.thumbSize;
   final double sliderHeightMin = 2;
   final double sliderHeightMax = Platform.isAndroid || Platform.isIOS ? 4 : 3;
 
@@ -181,82 +183,82 @@ class _SliderEigaState extends State<SliderEiga>
     return LayoutBuilder(
       builder: (context, constraints) {
         final parentSize = constraints.biggest;
-        return GestureDetector(
-          onHorizontalDragUpdate: (details) {
-            _onSeek(details.localPosition);
-            _onHoverUpdate(details.localPosition);
-          },
+        return Stack(children: [
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: GestureDetector(
+              onHorizontalDragUpdate: (details) {
+                _onSeek(details.localPosition);
+                _onHoverUpdate(details.localPosition);
+              },
 
-          /// hover event
-          onHorizontalDragStart: (details) {
-            _onSeek(details.localPosition);
-            _onHoverUpdate(details.localPosition);
-          },
-          onHorizontalDragEnd: (details) {
-            _onHoverEnd();
-          },
+              /// hover event
+              onHorizontalDragStart: (details) {
+                _onSeek(details.localPosition);
+                _onHoverUpdate(details.localPosition);
+              },
+              onHorizontalDragEnd: (details) {
+                _onHoverEnd();
+              },
 
-          /// progress
-          onTapDown: (details) {
-            _onSeek(details.localPosition);
-            _onHoverUpdate(details.localPosition);
-          },
-          onTapUp: (details) {
-            _onHoverEnd();
-          },
+              /// progress
+              onTapDown: (details) {
+                _onSeek(details.localPosition);
+                _onHoverUpdate(details.localPosition);
+              },
+              onTapUp: (details) {
+                _onHoverEnd();
+              },
 
-          /// long press
-          onLongPressDown: (details) {
-            _onSeek(details.localPosition);
-            _onHoverUpdate(details.localPosition);
-          },
-          onLongPressMoveUpdate: (details) {
-            _onSeek(details.localPosition);
-            _onHoverUpdate(details.localPosition);
-          },
-          onLongPressEnd: (details) {
-            _onHoverEnd();
-          },
+              /// long press
+              onLongPressDown: (details) {
+                _onSeek(details.localPosition);
+                _onHoverUpdate(details.localPosition);
+              },
+              onLongPressMoveUpdate: (details) {
+                _onSeek(details.localPosition);
+                _onHoverUpdate(details.localPosition);
+              },
+              onLongPressEnd: (details) {
+                _onHoverEnd();
+              },
 
-          /// pan
-          onPanStart: (details) {
-            _onSeek(details.localPosition);
-            _onHoverUpdate(details.localPosition);
-          },
-          onPanUpdate: (details) {
-            _onSeek(details.localPosition);
-            _onHoverUpdate(details.localPosition);
-          },
-          onPanEnd: (details) {
-            _onHoverEnd();
-          },
-          // onTapCancel: _onHoverEnd,
-          child: Stack(
-            children: [
-              SizedBox(
-                height: 220,
+              /// pan
+              onPanStart: (details) {
+                _onSeek(details.localPosition);
+                _onHoverUpdate(details.localPosition);
+              },
+              onPanUpdate: (details) {
+                _onSeek(details.localPosition);
+                _onHoverUpdate(details.localPosition);
+              },
+              onPanEnd: (details) {
+                _onHoverEnd();
+              },
+              // onTapCancel: _onHoverEnd,
+              child: Stack(
+                children: [
+                  Container(height: thumbSize * 2),
+                  _buildSliderBar(parentSize),
+                  _buildSliderThumb(parentSize),
+                ],
               ),
-              Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                      height: 10, color: Colors.black.withValues(alpha: 0.0))),
-              _buildSliderBar(parentSize),
-              // hover popover
-              _buildHoverPreview(parentSize),
-
-              _buildSliderThumb(parentSize)
-            ],
+            ),
           ),
-        );
+
+          Container(height: parentSize.height),
+          // hover popover
+          _buildHoverPreview(parentSize),
+        ]);
       },
     );
   }
 
   Widget _buildSliderBar(Size parentSize) {
     return Positioned(
-        bottom: 0,
+        bottom: thumbSize,
         left: 0,
         right: 0,
         child: AnimatedBuilder(
@@ -387,7 +389,7 @@ class _SliderEigaState extends State<SliderEiga>
 
       return Positioned(
           left: left,
-          bottom: 0,
+          bottom: size,
           child: AnimatedScale(
             duration: const Duration(milliseconds: 111),
             curve: Curves.easeInOut,

@@ -446,8 +446,13 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
     return Watch(
         (context2) => _fullscreen()
             ? SizedBox.shrink()
-            : AspectRatio(
-                aspectRatio: widget.aspectRatio, child: _buildStack()),
+            : Stack(children: [
+                Padding(
+                    padding: EdgeInsets.only(bottom: SliderEiga.thumbSize),
+                    child: AspectRatio(
+                        aspectRatio: widget.aspectRatio, child: _buildStack())),
+                _buildMobileSliderProgress(),
+              ]),
         dependencies: [_fullscreen]);
   }
 
@@ -563,7 +568,10 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
       }, dependencies: [_showControls]),
       _buildIndicator(),
       _buildError(),
-      _buildMobileSliderProgress(),
+      Watch(
+          (context) =>
+              _fullscreen() ? _buildMobileSliderProgress() : SizedBox.shrink(),
+          dependencies: [_fullscreen]),
       _buildPopupOpeningEnding(),
       _buildOverlayInherit()
     ]);
@@ -821,6 +829,7 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
   Widget _buildMobileSliderProgress() {
     return Watch(
         (context) => Positioned(
+            top: 0,
             bottom: _fullscreen() ? kToolbarHeight : 0,
             left: _fullscreen() ? 16.0 : 0,
             right: _fullscreen() ? 16.0 : 0,
