@@ -230,28 +230,26 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 }
 
                 return SingleChildScrollView(
-                  child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildInfo(_metaEigaNotifier),
-                          SizedBox(height: 10.0),
-                          // button group
-                          _buildButtonGroup(_metaEigaNotifier),
-                          SizedBox(height: 5.0),
-                          if (!loading) _buildSchedule(),
-                          if (!loading) _buildSeasonHeader(_metaEigaNotifier),
-                          SizedBox(height: 5.0),
-                          if (loading)
-                            ListEpisodesSkeleton()
-                          else
-                            _buildSeasonArea(_metaEigaNotifier),
-                          SizedBox(height: 12.0),
-                          _buildSuggest()
-                        ],
-                      )),
+                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildInfo(_metaEigaNotifier),
+                      SizedBox(height: 10.0),
+                      // button group
+                      _buildButtonGroup(_metaEigaNotifier),
+                      SizedBox(height: 5.0),
+                      if (!loading) _buildSchedule(),
+                      if (!loading) _buildSeasonHeader(_metaEigaNotifier),
+                      SizedBox(height: 5.0),
+                      if (loading)
+                        ListEpisodesSkeleton()
+                      else
+                        _buildSeasonArea(_metaEigaNotifier),
+                      SizedBox(height: 12.0),
+                      _buildSuggest()
+                    ],
+                  ),
                 );
               }),
         )
