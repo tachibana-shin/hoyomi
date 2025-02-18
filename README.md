@@ -78,5 +78,5 @@ A new Flutter project.
 - [x] Fix infinite scroll
 - [ ] Fix section not update on change filters
 
-- [ ] Fix manga layout
+- [x] Fix manga layout
 <!-- provider or mobx -->

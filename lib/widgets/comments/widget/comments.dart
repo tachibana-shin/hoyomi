@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comments.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comment.dart';
+import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/widgets/comments/widget/comment.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 
@@ -43,6 +44,27 @@ class _CommentsState extends State<Comments> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.activatorMode) {
+      return FutureBuilder(
+        future: widget.getComments!(page: page, parent: widget.parent),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+                child: UtilsService.errorWidgetBuilder(context,
+                    error: snapshot.error,
+                    orElse: (err) => Text('Error: $err')));
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            return _buildLastComment(snapshot.data!);
+          }
+          return Center(child: Text('Error: ${snapshot.error}'));
+        },
+      );
+    }
+
     return PullRefreshPage<ComicComments>(
         onLoadData: () =>
             widget.getComments!(page: page, parent: widget.parent),
@@ -156,7 +178,9 @@ class _CommentsState extends State<Comments> {
               minChildSize: 0.3,
               maxChildSize: 0.9,
               builder: (context, scrollController) {
-                return _buildFullComments(comments);
+                return SingleChildScrollView(
+                    controller: scrollController,
+                    child: _buildFullComments(comments));
               },
             ));
   }

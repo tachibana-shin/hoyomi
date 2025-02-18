@@ -13,7 +13,6 @@ import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 import 'package:hoyomi/core_services/comic/interfaces/status_enum.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:hoyomi/globals.dart';
 import 'package:hoyomi/database/scheme/history_chap.dart';
@@ -43,7 +42,6 @@ class DetailsComic extends StatefulWidget {
 
 class _DetailsComicState extends State<DetailsComic>
     with SingleTickerProviderStateMixin {
-  late Future<MetaComic> _metaComicFuture;
   Future<ComicSection>? _suggestFuture;
   late final ComicService _service;
 
@@ -65,33 +63,6 @@ class _DetailsComicState extends State<DetailsComic>
     _bottomSheetAnimationController = AnimationController(vsync: this);
 
     _service = getComicService(widget.sourceId);
-    _metaComicFuture = _service.getDetails(widget.comicId);
-    _metaComicFuture.then((comic) {
-      setState(() {
-        _title = comic.name;
-        _comic = comic;
-        _suggestFuture =
-            _service.getSuggest == null ? null : _service.getSuggest!(_comic!);
-        if (_service is ComicAuthMixin &&
-            (_service as ComicAuthMixin).getComments != null) {}
-
-        HistoryController()
-            .createComic(_service.uid, comicId: widget.comicId, comic: comic);
-
-        _updateGetHistory();
-        eventBus.on<UpdatedHistory>().listen((event) {
-          if (!mounted) return;
-          // ignore: use_build_context_synchronously
-          final name = GoRouter.of(context).state.name;
-
-          // lazy call history
-          if (event.comicId == widget.comicId &&
-              (name == "details_comic" || event.force)) {
-            _updateGetHistory();
-          }
-        });
-      });
-    });
 
     _scrollController.addListener(_onScroll);
   }
@@ -129,80 +100,83 @@ class _DetailsComicState extends State<DetailsComic>
 
   @override
   Widget build(BuildContext context2) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          scrolledUnderElevation: 0.0,
-          leading: IconButton(
-            icon: const Icon(MaterialCommunityIcons.arrow_left),
-            onPressed: () {
-              context.pop();
-            },
-          ),
-          title: AnimatedOpacity(
-            duration: const Duration(milliseconds: 200),
-            opacity: _isTitleVisible ? 1.0 : 0.0,
-            child: Text(_title),
-          ),
-          actions: [
-            if (_service is ComicAuthMixin && _service is AuthMixin)
-              _AvatarUser(service: _service),
-            IconButtonShare(),
-            IconButtonFollow(
-                sourceId: widget.sourceId,
-                comicId: widget.comicId,
-                comic: _comic),
-            PopupMenuButton<String>(
-              onSelected: (value) {
-                _handleMenuSelection(context, value);
-              },
-              itemBuilder: (BuildContext context) {
-                return [
-                  _buildMenuItem('download', 'Download'),
-                  _buildMenuItem('find_similar', 'Find similar'),
-                  _buildMenuItem('open_browser', 'Open with browser'),
-                  _buildMenuItem('create_shortcut', 'Create shortcut'),
-                ];
-              },
+    return PullRefreshPage(
+        onLoadData: () => _service.getDetails(widget.comicId)
+          ..then((comic) {
+            _title = comic.name;
+            _comic = comic;
+            _suggestFuture = _service.getSuggest == null
+                ? null
+                : _service.getSuggest!(_comic!);
+
+            HistoryController().createComic(_service.uid,
+                comicId: widget.comicId, comic: comic);
+
+            _updateGetHistory();
+            eventBus.on<UpdatedHistory>().listen((event) {
+              if (!mounted) return;
+              // ignore: use_build_context_synchronously
+              final name = GoRouter.of(context).state.name;
+
+              // lazy call history
+              if (event.comicId == widget.comicId &&
+                  (name == "details_comic" || event.force)) {
+                _updateGetHistory();
+              }
+            });
+          }),
+        onLoadFake: () => MetaComic.createFakeData(),
+        builder: (comic, _) => Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              scrolledUnderElevation: 0.0,
+              leading: IconButton(
+                icon: const Icon(MaterialCommunityIcons.arrow_left),
+                onPressed: () {
+                  context.pop();
+                },
+              ),
+              title: AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: _isTitleVisible ? 1.0 : 0.0,
+                child: Text(_title),
+              ),
+              actions: [
+                if (_service is ComicAuthMixin && _service is AuthMixin)
+                  _AvatarUser(service: _service),
+                IconButtonShare(),
+                IconButtonFollow(
+                    sourceId: widget.sourceId,
+                    comicId: widget.comicId,
+                    comic: _comic),
+                PopupMenuButton<String>(
+                  onSelected: (value) {
+                    _handleMenuSelection(context, value);
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      _buildMenuItem('download', 'Download'),
+                      _buildMenuItem('find_similar', 'Find similar'),
+                      _buildMenuItem('open_browser', 'Open with browser'),
+                      _buildMenuItem('create_shortcut', 'Create shortcut'),
+                    ];
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-        body: FutureBuilder<MetaComic>(
-          future: _metaComicFuture,
-          builder: (context2, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (snapshot.hasError) {
-              return Center(
-                  child: UtilsService.errorWidgetBuilder(context,
-                      error: snapshot.error,
-                      orElse: (err) => Text('Error: $err')));
-            }
-
-            if (!snapshot.hasData) {
-              return const Center(child: Text('No data available.'));
-            }
-
-            return PullRefreshPage(
-                onLoadData: () => _service.getDetails(widget.comicId),
-                onLoadFake: () => MetaComic.createFakeData(),
-                builder: (comic, _) => SingleChildScrollView(
-                    padding: EdgeInsets.all(16.0)
-                        .add(EdgeInsets.only(bottom: 15.h(context))),
-                    controller: _scrollController,
-                    child: _buildContainer(comic)));
-          },
-        ),
-        bottomSheet: _comic == null
-            ? null
-            : BottomSheet(
-                animationController: _bottomSheetAnimationController,
-                showDragHandle: true,
-                builder: (context) => _buildSheetChapters()!,
-                onClosing: () {},
-              ));
+            body: SingleChildScrollView(
+                padding: EdgeInsets.all(16.0)
+                    .add(EdgeInsets.only(bottom: 15.h(context))),
+                controller: _scrollController,
+                child: _buildContainer(comic)),
+            bottomSheet: _comic == null
+                ? null
+                : BottomSheet(
+                    animationController: _bottomSheetAnimationController,
+                    showDragHandle: true,
+                    builder: (context) => _buildSheetChapters()!,
+                    onClosing: () {},
+                  )));
   }
 
   Widget _buildContainer(MetaComic comic) {
@@ -244,21 +218,19 @@ class _DetailsComicState extends State<DetailsComic>
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  ...comic.originalName != null
-                      ? [
-                          SizedBox(height: 4.0),
-                          Text(
-                            comic.originalName!,
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: Theme.of(context).colorScheme.secondary,
-                              height: 1.2,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        ]
-                      : [],
+                  if (comic.originalName != null) ...[
+                    SizedBox(height: 4.0),
+                    Text(
+                      comic.originalName!,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Theme.of(context).colorScheme.secondary,
+                        height: 1.2,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  ],
                   const SizedBox(height: 8.0),
                   if (comic.author != null)
                     Row(
@@ -365,82 +337,78 @@ class _DetailsComicState extends State<DetailsComic>
           ],
         ),
         const SizedBox(height: 16.0),
-        Container(
-          color: Colors.transparent,
-          padding: EdgeInsets.zero,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(MaterialCommunityIcons.television,
-                          size: 20.0, color: Colors.blueGrey.shade100),
-                      const SizedBox(height: 4.0),
-                      Text(
-                        comic.views != null ? formatNumber(comic.views!) : '?',
-                        style: TextStyle(
-                            fontSize: 14.0, color: Colors.blueGrey.shade100),
-                      ),
-                    ],
-                  ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(MaterialCommunityIcons.television,
+                        size: 20.0, color: Colors.blueGrey.shade100),
+                    const SizedBox(height: 4.0),
+                    Text(
+                      comic.views != null ? formatNumber(comic.views!) : '?',
+                      style: TextStyle(
+                          fontSize: 14.0, color: Colors.blueGrey.shade100),
+                    ),
+                  ],
                 ),
               ),
-              Expanded(
-                child: _ButtonLike(
-                  comic: comic,
-                  comicId: widget.comicId,
-                  service: _service,
+            ),
+            Expanded(
+              child: _ButtonLike(
+                comic: comic,
+                comicId: widget.comicId,
+                service: _service,
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(MaterialCommunityIcons.update,
+                        size: 20.0, color: Colors.blueGrey.shade100),
+                    const SizedBox(height: 4.0),
+                    Text(
+                      formatTimeAgo(comic.lastModified),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 14.0, color: Colors.blueGrey.shade100),
+                    ),
+                  ],
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(MaterialCommunityIcons.update,
-                          size: 20.0, color: Colors.blueGrey.shade100),
-                      const SizedBox(height: 4.0),
-                      Text(
-                        formatTimeAgo(comic.lastModified),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 14.0, color: Colors.blueGrey.shade100),
-                      ),
-                    ],
-                  ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(MaterialCommunityIcons.star_outline,
+                        size: 20.0, color: Colors.blueGrey.shade100),
+                    const SizedBox(height: 4.0),
+                    Text(
+                      (comic.rate != null)
+                          ? "${comic.rate!.value} / ${comic.rate!.best}"
+                          : "?", // 星星評分
+                      style: TextStyle(
+                          fontSize: 14.0, color: Colors.blueGrey.shade100),
+                    ),
+                  ],
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(MaterialCommunityIcons.star_outline,
-                          size: 20.0, color: Colors.blueGrey.shade100),
-                      const SizedBox(height: 4.0),
-                      Text(
-                        (comic.rate != null)
-                            ? "${comic.rate!.value} / ${comic.rate!.best}"
-                            : "?", // 星星評分
-                        style: TextStyle(
-                            fontSize: 14.0, color: Colors.blueGrey.shade100),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
         const SizedBox(height: 16.0),
         Row(children: [
