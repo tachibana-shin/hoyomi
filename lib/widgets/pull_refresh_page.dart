@@ -3,7 +3,8 @@ import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class PullRefreshPage<T> extends StatefulWidget {
-  final Widget Function(T data, (bool loading, Future<void> Function() refresh)) builder;
+  final Widget Function(T data, (bool loading, Future<void> Function() refresh))
+      builder;
   final Future<T> Function() onLoadData;
   final T Function() onLoadFake;
 

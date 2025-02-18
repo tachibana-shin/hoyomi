@@ -170,8 +170,8 @@ class _SectionEigaPageState extends State<SectionEigaPage> {
                                             selectedList
                                                 .map((option) => option.value!)
                                                 .toList();
-                                          _pageKey = 1;
-                                          
+                                        _pageKey = 1;
+
                                         refresh();
                                       },
                                       enableMultipleSelection: filter.multiple,
@@ -224,7 +224,7 @@ class _SectionEigaPageState extends State<SectionEigaPage> {
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
         child: InfiniteGrid(
-          key: Key(jsonEncode(_selectFilters)),
+            key: Key(jsonEncode(_selectFilters)),
             data: data,
             crossAxisCount: VerticalList.getCrossAxisCount(context),
             crossAxisSpacing: 4.0,
