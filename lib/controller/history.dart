@@ -38,6 +38,7 @@ class HistoryController {
     comicObject ??= Comic(
       sourceId: sourceId,
       comicId: comicId,
+      uid: Comic.genUid(sourceId, comicId: comicId),
       status: comic.status.name,
       meta: jsonEncode(comic.toJson()),
       createdAt: DateTime.now(),

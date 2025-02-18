@@ -34,6 +34,7 @@ class Comic {
   Comic({
     required this.sourceId,
     required this.comicId,
+    required this.uid,
     required this.status,
     required this.meta,
     this.followedAt,

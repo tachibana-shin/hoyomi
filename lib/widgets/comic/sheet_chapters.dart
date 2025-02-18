@@ -48,7 +48,7 @@ class _SheetChaptersState extends State<SheetChapters> {
     return DraggableScrollableSheet(
       expand: false,
       snap: true,
-      snapSizes: [0.5],
+      snapSizes: [0.15, 0.5, 0.9],
       initialChildSize: widget.initialChildSize,
       minChildSize: .15,
       maxChildSize: 0.9,

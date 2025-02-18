@@ -181,10 +181,10 @@ Comic _comicDeserialize(
     meta: reader.readString(offsets[3]),
     sourceId: reader.readString(offsets[4]),
     status: reader.readString(offsets[5]),
+    uid: reader.readString(offsets[6]),
     updatedAt: reader.readDateTime(offsets[7]),
   );
   object.id = id;
-  object.uid = reader.readString(offsets[6]);
   return object;
 }
 
