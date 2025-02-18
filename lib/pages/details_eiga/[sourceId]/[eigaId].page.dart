@@ -212,7 +212,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 return metaEigaFuture;
               },
               onLoadFake: () => MetaEiga.createFakeData(),
-              builder: (data, loading) {
+              builder: (data, param) {
+                final loading = param.$1;
+
                 _metaEigaNotifier =
                     ValueNotifier(!loading ? data : MetaEiga.createFakeData());
                 if (!loading) {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
@@ -77,10 +78,14 @@ class _SectionComicPageState extends State<SectionComicPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: _buildAppBar(), body: _buildBody());
+    return PullRefreshPage<List<Comic>>(
+        onLoadData: () => _fetchComics(1).then((param) => param.$2),
+        onLoadFake: () => List.generate(30, (_) => Comic.createFakeData()),
+        builder: (data, param) =>
+            Scaffold(appBar: _buildAppBar(param.$2), body: _buildBody(data)));
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(Future<void> Function() refresh) {
     return AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         scrolledUnderElevation: 0.0,
@@ -161,15 +166,13 @@ class _SectionComicPageState extends State<SectionComicPage> {
                                                       option.selected))
                                           .toList(),
                                       onSelected: (selectedList) {
-                                        ///
-                                        setState(() {
-                                          _selectFilters[filter.key] =
-                                              selectedList
-                                                  .map(
-                                                      (option) => option.value!)
-                                                  .toList();
-                                          _pageKey = 1;
-                                        });
+                                        _selectFilters[filter.key] =
+                                            selectedList
+                                                .map((option) => option.value!)
+                                                .toList();
+                                        _pageKey = 1;
+
+                                        refresh();
                                       },
                                       enableMultipleSelection: filter.multiple,
                                     ),
@@ -217,11 +220,11 @@ class _SectionComicPageState extends State<SectionComicPage> {
               ));
   }
 
-  Widget _buildBody() {
-    return PullRefreshPage<List<Comic>>(
-        onLoadData: () => _fetchComics(1).then((param) => param.$2),
-        onLoadFake: () => List.generate(30, (_) => Comic.createFakeData()),
-        builder: (data, _) => InfiniteGrid(
+  Widget _buildBody(List<Comic> data) {
+    return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+        child: InfiniteGrid(
+            key: Key(jsonEncode(_selectFilters)),
             data: data,
             crossAxisCount: VerticalList.getCrossAxisCount(context),
             crossAxisSpacing: 4.0,
