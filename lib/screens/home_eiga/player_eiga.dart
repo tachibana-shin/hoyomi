@@ -494,40 +494,36 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
                     final maxWidth = calcMaxWidth;
                     final maxHeight = calcMaxHeight;
 
-                    return WatchBuilder(
-                        child: VideoPlayer(controller),
-                        builder: (context, child) {
-                          final aspectRatio = _aspectRatio();
+                    final aspectRatio = _aspectRatio();
 
-                          final aspectRatioView = maxWidth / maxHeight;
-                          // try maxHeight
-                          // aspect = w / h
-                          // width = height * aspectRatio
-                          // if with > maxWidth then width = maxWidth, height = maxWidth / aspectRatio
-                          double width, height;
-                          if (aspectRatioView < aspectRatio) {
-                            width = maxWidth;
-                            height = width / aspectRatio;
-                          } else {
-                            height = maxHeight;
-                            width = height * aspectRatio;
-                          }
+                    final aspectRatioView = maxWidth / maxHeight;
+                    // try maxHeight
+                    // aspect = w / h
+                    // width = height * aspectRatio
+                    // if with > maxWidth then width = maxWidth, height = maxWidth / aspectRatio
+                    double width, height;
+                    if (aspectRatioView < aspectRatio) {
+                      width = maxWidth;
+                      height = width / aspectRatio;
+                    } else {
+                      height = maxHeight;
+                      width = height * aspectRatio;
+                    }
 
-                          return SubtitleWrapper(
-                              enabled: qualityCode != null,
-                              videoPlayerController: controller,
-                              subtitleController: subtitleController,
-                              subtitleStyle: SubtitleStyle(
-                                textColor: Colors.white,
-                                hasBorder: true,
-                              ),
-                              videoChild: Center(
-                                  child: SizedBox(
-                                      width: width,
-                                      height: height,
-                                      child: child)));
-                        });
-                  }, dependencies: [_controller]))),
+                    return SubtitleWrapper(
+                        enabled: qualityCode != null,
+                        videoPlayerController: controller,
+                        subtitleController: subtitleController,
+                        subtitleStyle: SubtitleStyle(
+                          textColor: Colors.white,
+                          hasBorder: true,
+                        ),
+                        videoChild: Center(
+                            child: SizedBox(
+                                width: width,
+                                height: height,
+                                child: VideoPlayer(controller))));
+                  }))),
       ListenableBuilder(
           listenable:
               Listenable.merge([widget.posterNotifier, _firstLoadedSource]),
