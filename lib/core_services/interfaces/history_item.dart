@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 
@@ -14,4 +13,17 @@ class HistoryItem<T> {
     required this.lastEpisode,
     required this.watchTime,
   });
+
+  factory HistoryItem.createFakeData(T item) {
+    return HistoryItem(
+      item: item,
+      watchUpdatedAt: DateTime.now(),
+      lastEpisode:
+          EigaEpisode(episodeId: 'fake_episode_id', name: 'Fake Episode'),
+      watchTime: WatchTime(
+        position: Duration(minutes: 12),
+        duration: Duration(minutes: 24),
+      ),
+    );
+  }
 }
