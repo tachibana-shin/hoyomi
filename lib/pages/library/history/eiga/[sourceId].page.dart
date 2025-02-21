@@ -8,6 +8,7 @@ import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/format_duration.dart';
+import 'package:hoyomi/utils/format_watch_update_at.dart';
 import 'package:hoyomi/widgets/infinite_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
@@ -62,12 +63,12 @@ class _HistoryEigaPageState extends State<HistoryEigaPage> {
 
                   return (isLastPage, result);
                 },
-                itemBuilder: (context, history, index) {
+                itemBuilder: (context, history, index, historyNext) {
                   final eiga = history.item;
                   final episode = history.lastEpisode;
                   final watchTime = history.watchTime;
 
-                  return InkWell(
+                  final main = InkWell(
                       borderRadius: BorderRadius.circular(7),
                       child: Container(
                           decoration: BoxDecoration(
@@ -186,6 +187,19 @@ class _HistoryEigaPageState extends State<HistoryEigaPage> {
                                   ],
                                 ))
                               ])));
+
+                  if (history.watchUpdatedAt.day !=
+                      historyNext?.watchUpdatedAt.day) {
+                    return Column(
+                      children: [
+                        Text(
+                          formatWatchUpdatedAt(history.watchUpdatedAt, null),
+                        ),
+                        main
+                      ],
+                    );
+                  }
+                  return main;
                 })));
   }
 }
