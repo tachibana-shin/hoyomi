@@ -39,7 +39,7 @@ class SectionEigaPage extends StatefulWidget {
 
 class _SectionEigaPageState extends State<SectionEigaPage> {
   late final EigaService _service;
-  int _pageKey = 1;
+  int _pageKey = 2;
 
   String? _title;
   String? _url;

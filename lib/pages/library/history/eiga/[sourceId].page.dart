@@ -6,9 +6,11 @@ import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/history_item.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:hoyomi/widgets/infinite_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
 class HistoryEigaPage extends StatefulWidget {
   final String sourceId;
@@ -23,7 +25,7 @@ class HistoryEigaPage extends StatefulWidget {
 }
 
 class _HistoryEigaPageState extends State<HistoryEigaPage> {
-  int _pageKey = 1;
+  int _pageKey = 2;
   late final EigaHistoryMixin _service;
 
   @override
@@ -33,7 +35,17 @@ class _HistoryEigaPageState extends State<HistoryEigaPage> {
   }
 
   @override
-  Widget build(context) {
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('History ${(_service as Service).name}'),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          scrolledUnderElevation: 0.0,
+        ),
+        body: _buildBody());
+  }
+
+  Widget _buildBody() {
     return PullRefreshPage(
         onLoadData: () => _service.getWatchHistory(page: 1),
         onLoadFake: () => List.generate(
@@ -67,8 +79,7 @@ class _HistoryEigaPageState extends State<HistoryEigaPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                    width: min(100.0,
-                                        MediaQuery.of(context).size.width / 2),
+                                    width: min(180.0, 30.w(context)),
                                     decoration: BoxDecoration(
                                         color: Colors.blueGrey.shade200,
                                         borderRadius:
@@ -115,20 +126,39 @@ class _HistoryEigaPageState extends State<HistoryEigaPage> {
                                       height: 3.0,
                                     ),
                                     Text(
-                                      'Episode ${eiga.name}',
+                                      eiga.name,
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleMedium
                                           ?.copyWith(
-                                              fontSize: 14.0,
+                                              fontSize: 16.0,
                                               fontWeight: FontWeight.w400),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
 
+                                    Text(
+                                      'Episode ${episode.name}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                              fontSize: 14.0,
+                                              fontWeight: FontWeight.w400,
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.color
+                                                  ?.withValues(alpha: 0.8)),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+
+                                    SizedBox(height: 2.0),
+
                                     ///
                                     Text(
-                                      'Last time watch ${formatDuration(watchTime.position)} / ${formatDuration(watchTime.duration)}',
+                                      '${formatDuration(watchTime.position)} / ${formatDuration(watchTime.duration)}',
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleMedium
