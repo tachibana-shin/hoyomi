@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/history_item.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/widgets/eiga/vertical_eiga.dart';
+import 'package:hoyomi/utils/format_duration.dart';
 import 'package:hoyomi/widgets/infinite_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 
@@ -48,10 +51,111 @@ class _HistoryEigaPageState extends State<HistoryEigaPage> {
                   return (isLastPage, result);
                 },
                 itemBuilder: (context, history, index) {
-                  return VerticalEiga(
-                    eiga: history.item,
-                    sourceId: widget.sourceId,
-                  );
+                  final eiga = history.item;
+                  final episode = history.lastEpisode;
+                  final watchTime = history.watchTime;
+
+                  return InkWell(
+                      borderRadius: BorderRadius.circular(7),
+                      child: Container(
+                          decoration: BoxDecoration(
+                              color: null,
+                              borderRadius: BorderRadius.circular(7.0)),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 7.0, horizontal: 7.0),
+                          child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                    width: min(100.0,
+                                        MediaQuery.of(context).size.width / 2),
+                                    decoration: BoxDecoration(
+                                        color: Colors.blueGrey.shade200,
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
+                                    clipBehavior: Clip.antiAlias,
+                                    child: Stack(children: [
+                                      AspectRatio(
+                                          aspectRatio: 16 / 9,
+                                          child: OImage.network(
+                                            eiga.image.src,
+                                            sourceId: widget.sourceId,
+                                            headers: eiga.image.headers,
+                                            fit: BoxFit.cover,
+                                          )),
+
+                                      ///
+                                      Positioned(
+                                          bottom: 0,
+                                          left: 0,
+                                          right: 0,
+                                          child: Column(children: [
+                                            LinearProgressIndicator(
+                                              value: watchTime
+                                                      .position.inMilliseconds /
+                                                  watchTime
+                                                      .duration.inMilliseconds,
+                                              backgroundColor: Color.fromRGBO(
+                                                  255, 255, 255, 0.6),
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      Color(0xFF00C234)),
+                                              minHeight: 3.0,
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            )
+                                          ])),
+                                    ])),
+                                SizedBox(width: 7.0),
+                                Expanded(
+                                    child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 3.0,
+                                    ),
+                                    Text(
+                                      'Episode ${eiga.name}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                              fontSize: 14.0,
+                                              fontWeight: FontWeight.w400),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+
+                                    ///
+                                    Text(
+                                      'Last time watch ${formatDuration(watchTime.position)} / ${formatDuration(watchTime.duration)}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                              fontSize: 12.0,
+                                              fontWeight: FontWeight.w400,
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.color
+                                                  ?.withValues(alpha: 0.8)),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    SizedBox(height: 5.0),
+                                    if (episode.description?.isNotEmpty == true)
+                                      Text(
+                                        episode.description!,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(fontSize: 12.0),
+                                        maxLines: 2,
+                                      )
+                                  ],
+                                ))
+                              ])));
                 })));
   }
 }
