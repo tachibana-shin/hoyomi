@@ -5,7 +5,7 @@
     pkgs.unzip
   ];
   idx.extensions = [
-    
+    pkgs.gh
   ];
   idx.previews = {
     previews = {
