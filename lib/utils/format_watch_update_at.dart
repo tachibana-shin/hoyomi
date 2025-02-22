@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 
 String formatWatchUpdatedAt(DateTime date, String? locale) {
   final now = DateTime.now();
-  
+
   final Map<String, Map<String, String>> translations = {
     'vi': {
       'today': 'Hôm nay',
@@ -31,7 +31,7 @@ String formatWatchUpdatedAt(DateTime date, String? locale) {
   };
 
   final lang = translations[locale] ?? translations['en']!;
-  
+
   if (now.year == date.year && now.month == date.month) {
     switch (now.difference(date).inDays) {
       case 0:
