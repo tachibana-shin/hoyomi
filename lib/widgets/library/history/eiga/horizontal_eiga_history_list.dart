@@ -43,11 +43,11 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
       double crossAxisCount;
 
       if (screenWidth <= 600) {
-        crossAxisCount = 3.5;
+        crossAxisCount = 2.5;
       } else if (screenWidth <= 900) {
-        crossAxisCount = 4.5;
+        crossAxisCount = 3.5;
       } else {
-        crossAxisCount = 6.5;
+        crossAxisCount = 5.5;
       }
 
       final childAspectRatio = 16 / 9;

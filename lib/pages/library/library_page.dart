@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_follow_mixin.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/widgets/library/follow/eiga/horizontal_eiga_follow_list.dart';
 import 'package:hoyomi/widgets/library/history/eiga/horizontal_eiga_history_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 
@@ -70,9 +74,21 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
+  late final Service _service;
+
+  @override
+  void initState() {
+    _service = getEigaService(widget.sourceId);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    if (_service is! EigaHistoryMixin && _service is! EigaFollowMixin) {
+      return Center(child: Text('This service not support history or follow'));
+    }
 
     return PullRefreshPage(
         onLoadData: () async {
@@ -81,15 +97,15 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
         },
         onLoadFake: () => [0x0, 0x0],
         builder: (data, _) {
-          return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-              child: Column(
-                children: [
-                  HorizontalEigaHistoryList(
-                    sourceId: widget.sourceId,
-                  )
-                ],
-              ));
+          return ListView(
+            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+            children: [
+              if (_service is EigaHistoryMixin)
+                HorizontalEigaHistoryList(sourceId: widget.sourceId),
+              if (_service is EigaFollowMixin)
+                HorizontalEigaFollowList(sourceId: widget.sourceId)
+            ],
+          );
         });
   }
 }

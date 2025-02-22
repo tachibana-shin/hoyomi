@@ -21,7 +21,7 @@ class HistoryItem<T> {
       lastEpisode:
           EigaEpisode(episodeId: 'fake_episode_id', name: 'Fake Episode'),
       watchTime: WatchTime(
-        position: Duration(minutes: 12),
+        position: Duration(minutes: 0),
         duration: Duration(minutes: 24),
       ),
     );

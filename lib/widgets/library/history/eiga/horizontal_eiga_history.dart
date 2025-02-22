@@ -5,6 +5,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/interfaces/history_item.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/utils/format_duration.dart';
+import 'package:hoyomi/widgets/blurred_part_background.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
 class HorizontalEigaHistory extends StatefulWidget {
@@ -31,6 +32,8 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistory> {
     final episode = widget.history.lastEpisode;
     final watchTime = widget.history.watchTime;
 
+    final isVertical = widget.direction == Axis.vertical;
+
     final poster = Container(
         width: widget.width ?? min(180.0, 30.w(context)),
         decoration: BoxDecoration(
@@ -46,6 +49,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistory> {
                 headers: eiga.image.headers,
                 fit: BoxFit.cover,
               )),
+          BlurredPartBackground(),
 
           ///
           Positioned(
@@ -62,6 +66,21 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistory> {
                   borderRadius: BorderRadius.circular(10.0),
                 )
               ])),
+
+          ///
+          Positioned(
+            bottom: 5,
+            right: 5,
+            child: Text(
+              '${formatDuration(watchTime.position)} / ${formatDuration(watchTime.duration)}',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w400,
+                  color: Theme.of(context).textTheme.titleMedium?.color),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          )
         ]));
     final titleAndSubtitle = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,10 +90,8 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistory> {
         ),
         Text(
           eiga.name,
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontSize: 16.0, fontWeight: FontWeight.w400),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontSize: isVertical ? 14.0 : 16.0, fontWeight: FontWeight.w400),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -82,7 +99,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistory> {
         Text(
           'Episode ${episode.name}',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontSize: 14.0,
+              fontSize: isVertical ? 12.0 : 14.0,
               fontWeight: FontWeight.w400,
               color: Theme.of(context)
                   .textTheme
@@ -96,25 +113,14 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistory> {
         SizedBox(height: 2.0),
 
         ///
-        Text(
-          '${formatDuration(watchTime.position)} / ${formatDuration(watchTime.duration)}',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontSize: 12.0,
-              fontWeight: FontWeight.w400,
-              color: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.color
-                  ?.withValues(alpha: 0.8)),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
         SizedBox(height: 5.0),
         if (episode.description?.isNotEmpty == true)
           Text(
             episode.description!,
-            style:
-                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12.0),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(fontSize: isVertical ? 11.0 : 12.0),
             maxLines: 2,
           )
       ],
