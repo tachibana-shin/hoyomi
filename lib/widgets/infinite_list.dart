@@ -7,7 +7,7 @@ import 'package:very_good_infinite_list/very_good_infinite_list.dart'
 class InfiniteList<T> extends StatefulWidget {
   final List<T> data;
   final Future<(bool, List<T>)> Function() fetchData;
-  final Widget Function(BuildContext context, T item, int index, T? next)
+  final Widget Function(BuildContext context, T item, int index, T? prev)
       itemBuilder;
 
   const InfiniteList(
@@ -64,8 +64,11 @@ class _InfiniteListState<T> extends State<InfiniteList<T>> {
             setState(() {});
           }
         },
-        itemBuilder: (context, index) => widget.itemBuilder(context,
-            _data.elementAt(index), index, _data.elementAtOrNull(index + 1)),
+        itemBuilder: (context, index) => widget.itemBuilder(
+            context,
+            _data.elementAt(index),
+            index,
+            index < 1 ? null : _data.elementAtOrNull(index - 1)),
         loadingBuilder: (context) => Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
             child: SpinKitSpinningLines(

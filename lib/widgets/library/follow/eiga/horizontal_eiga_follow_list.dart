@@ -55,11 +55,11 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
               : snapshot.data!;
 
           return HorizontalList<FollowItem<Eiga>>(
-            title: 'History',
+            title: 'Follow',
             subtitle: data.firstOrNull?.updatedAt == null
                 ? ''
-                : formatWatchUpdatedAt(data.first.updatedAt, null),
-            more: '/library/history/eiga/${widget.sourceId}',
+                : formatWatchUpdatedAt(data.first.updatedAt!, null),
+            more: '/library/follow/eiga/${widget.sourceId}',
             items: data,
             needSubtitle: data.firstWhereOrNull(
                     (eiga) => VerticalEiga.checkNeedSubtitle(eiga.item)) !=

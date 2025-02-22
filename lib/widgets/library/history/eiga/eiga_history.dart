@@ -8,13 +8,13 @@ import 'package:hoyomi/utils/format_duration.dart';
 import 'package:hoyomi/widgets/blurred_part_background.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
-class HorizontalEigaHistory extends StatefulWidget {
+class EigaHistory extends StatefulWidget {
   final String sourceId;
   final HistoryItem<Eiga> history;
   final double? width;
   final Axis direction;
 
-  const HorizontalEigaHistory(
+  const EigaHistory(
       {super.key,
       required this.sourceId,
       required this.history,
@@ -22,10 +22,10 @@ class HorizontalEigaHistory extends StatefulWidget {
       this.direction = Axis.horizontal});
 
   @override
-  State<HorizontalEigaHistory> createState() => _HorizontalEigaHistoryState();
+  State<EigaHistory> createState() => _EigaHistoryState();
 }
 
-class _HorizontalEigaHistoryState extends State<HorizontalEigaHistory> {
+class _EigaHistoryState extends State<EigaHistory> {
   @override
   Widget build(context) {
     final eiga = widget.history.item;
@@ -131,7 +131,9 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistory> {
         child: Container(
             decoration: BoxDecoration(
                 color: null, borderRadius: BorderRadius.circular(7.0)),
-            padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 7.0),
+            padding: isVertical
+                ? EdgeInsets.symmetric(horizontal: 5.0)
+                : EdgeInsets.symmetric(vertical: 7.0),
             child: widget.direction == Axis.horizontal
                 ? Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     poster,

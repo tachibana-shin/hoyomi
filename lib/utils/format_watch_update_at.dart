@@ -2,10 +2,7 @@ import 'package:intl/intl.dart';
 
 String formatWatchUpdatedAt(DateTime date, String? locale) {
   final now = DateTime.now();
-  final today = DateTime(now.year, now.month, now.day);
-  final yesterday = today.subtract(Duration(days: 1));
-  final twoDaysAgo = today.subtract(Duration(days: 2));
-
+  
   final Map<String, Map<String, String>> translations = {
     'vi': {
       'today': 'Hôm nay',
@@ -33,16 +30,18 @@ String formatWatchUpdatedAt(DateTime date, String? locale) {
     },
   };
 
-  // Lấy bản dịch tương ứng
   final lang = translations[locale] ?? translations['en']!;
-
-  if (date.isAfter(today)) {
-    return lang['today']!;
-  } else if (date.isAfter(yesterday)) {
-    return lang['yesterday']!;
-  } else if (date.isAfter(twoDaysAgo)) {
-    return lang['twoDaysAgo']!;
-  } else {
-    return DateFormat(lang['format']).format(date);
+  
+  if (now.year == date.year && now.month == date.month) {
+    switch (now.difference(date).inDays) {
+      case 0:
+        return lang['today']!;
+      case 1:
+        return lang['yesterday']!;
+      case 2:
+        return lang['twoDaysAgo']!;
+    }
   }
+
+  return DateFormat(lang['format']).format(date);
 }

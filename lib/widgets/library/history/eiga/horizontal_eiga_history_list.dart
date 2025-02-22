@@ -7,8 +7,7 @@ import 'package:hoyomi/core_services/interfaces/history_item.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/utils/format_watch_update_at.dart';
-import 'package:hoyomi/widgets/eiga/vertical_eiga.dart';
-import 'package:hoyomi/widgets/library/history/eiga/horizontal_eiga_history.dart';
+import 'package:hoyomi/widgets/library/history/eiga/eiga_history.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
 class HorizontalEigaHistoryList extends StatefulWidget {
@@ -54,14 +53,12 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
       final viewportFraction = 1 / crossAxisCount;
       final height =
           1 / childAspectRatio * (screenWidth * viewportFraction - 8.0) +
-              7.0 +
               3.0 +
-              16.0 * 2 +
               14.0 * 2 +
-              2.0 +
               12.0 * 2 +
+              2.0 +
               5.0 +
-              12.0 * 2;
+              (needSubtitle ? 11.0 * 2 : 0);
 
       return SizedBox(height: height, child: builder(viewportFraction));
     });
@@ -95,7 +92,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
           final more = '/library/history/eiga/${widget.sourceId}';
           final items = data;
           final needSubtitle = data.firstWhereOrNull(
-                  (eiga) => VerticalEiga.checkNeedSubtitle(eiga.item)) !=
+                  (eiga) => eiga.lastEpisode.description?.isNotEmpty == true) !=
               null;
 
           return Column(
@@ -133,7 +130,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
                       viewportFraction: viewportFraction,
                       initialPage: 0,
                     ),
-                    itemBuilder: (context, index) => HorizontalEigaHistory(
+                    itemBuilder: (context, index) => EigaHistory(
                           sourceId: widget.sourceId,
                           history: items.elementAt(index),
                           width: 100.w(context) / 1 / viewportFraction,

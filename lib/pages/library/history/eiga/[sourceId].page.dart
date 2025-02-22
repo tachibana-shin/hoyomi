@@ -6,7 +6,7 @@ import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/format_watch_update_at.dart';
 import 'package:hoyomi/widgets/infinite_list.dart';
-import 'package:hoyomi/widgets/library/history/eiga/horizontal_eiga_history.dart';
+import 'package:hoyomi/widgets/library/history/eiga/eiga_history.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 
 class HistoryEigaPage extends StatefulWidget {
@@ -59,17 +59,20 @@ class _HistoryEigaPageState extends State<HistoryEigaPage> {
 
                   return (isLastPage, result);
                 },
-                itemBuilder: (context, history, index, historyNext) {
-                  final main = HorizontalEigaHistory(
-                      sourceId: widget.sourceId, history: history);
+                itemBuilder: (context, history, index, historyPrev) {
+                  final main =
+                      EigaHistory(sourceId: widget.sourceId, history: history);
 
                   if (history.watchUpdatedAt.day !=
-                      historyNext?.watchUpdatedAt.day) {
+                      historyPrev?.watchUpdatedAt.day) {
                     return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          formatWatchUpdatedAt(history.watchUpdatedAt, null),
-                        ),
+                        SizedBox(height: 3.0),
+                        Text(formatWatchUpdatedAt(history.watchUpdatedAt, null),
+                            style: TextStyle(
+                                color:
+                                    Theme.of(context).colorScheme.secondary)),
                         main
                       ],
                     );

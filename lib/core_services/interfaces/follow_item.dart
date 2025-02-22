@@ -2,13 +2,13 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
 
 class FollowItem<T> {
   final T item;
-  final DateTime updatedAt;
-  final EigaEpisode lastEpisode;
+  final DateTime? updatedAt;
+  final EigaEpisode? lastEpisode;
 
   const FollowItem({
     required this.item,
-    required this.updatedAt,
-    required this.lastEpisode,
+    this.updatedAt,
+    this.lastEpisode,
   });
 
   factory FollowItem.createFakeData(T item) {

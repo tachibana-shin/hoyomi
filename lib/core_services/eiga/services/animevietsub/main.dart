@@ -12,6 +12,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_follow_mixin.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
@@ -22,6 +23,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/home_eiga_section.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_param.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/interfaces/filter.dart';
+import 'package:hoyomi/core_services/interfaces/follow_item.dart';
 import 'package:hoyomi/core_services/interfaces/genre.dart';
 import 'package:hoyomi/core_services/interfaces/history_item.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
@@ -88,6 +90,7 @@ class AnimeVietsubService extends EigaService
         EigaAuthMixin,
         EigaWatchTimeMixin,
         EigaHistoryMixin,
+        EigaFollowMixin,
         _SupabaseRPC {
   final hostCUrl = "animevietsub.bio";
 
@@ -343,6 +346,7 @@ class AnimeVietsubService extends EigaService
     final url = (params == null
             ? baseUrl + sectionId.replaceAll('_', '/')
             : '$baseUrl/$params') +
+        (page > 1 ? '/trang-$page' : '') +
         (filters['sort'] == null ? '' : '?sort=${filters['sort']}');
     final document = await fetchDocument(url);
 
@@ -822,7 +826,7 @@ class AnimeVietsubService extends EigaService
           originalName: item.seasonName,
           image: OImage(src: _addHostUrlImage(item.poster)),
         ),
-        watchUpdatedAt: item.watchUpdatedAt,
+        watchUpdatedAt: item.createdAt,
         lastEpisode: EigaEpisode(
           name: item.watchName,
           episodeId: item.watchId,
@@ -842,6 +846,13 @@ class AnimeVietsubService extends EigaService
       final part2 = match.group(2) ?? '';
       return 'https://$part1$hostCUrl$part2';
     });
+  }
+
+  @override
+  getFollows({required int page}) async {
+    final section =
+        await getSection(sectionId: '/tu-phim/', page: page, filters: {});
+    return section.items.map((item) => FollowItem<Eiga>(item: item)).toList();
   }
 }
 
