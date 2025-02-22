@@ -11,7 +11,6 @@ import 'package:hoyomi/pages/home_comic/home_comic_page.dart';
 import 'package:hoyomi/pages/home_eiga/home_eiga_page.dart';
 import 'package:hoyomi/pages/library/follow/follow_page.dart';
 import 'package:hoyomi/pages/library/history/eiga/%5BsourceId%5D.page.dart';
-import 'package:hoyomi/pages/library/history/history_page.dart';
 import 'package:hoyomi/pages/library/library_page.dart';
 import 'package:hoyomi/pages/manager_page.dart';
 import 'package:hoyomi/pages/search/comic/%5BsourceId%5D.page.dart';
@@ -112,14 +111,9 @@ final router = GoRouter(
             builder: (context, state) => LibraryPage(),
             routes: [
               GoRoute(
-                  path: 'history',
-                  builder: (context, state) => HistoryPage(),
-                  routes: [
-                    GoRoute(
-                        path: 'eiga/:sourceId',
-                        builder: (context, state) => HistoryEigaPage(
-                            sourceId: state.pathParameters['sourceId']!)),
-                  ]),
+                  path: 'history/eiga/:sourceId',
+                  builder: (context, state) => HistoryEigaPage(
+                      sourceId: state.pathParameters['sourceId']!)),
               GoRoute(
                 path: 'follow',
                 builder: (context, state) => FollowPage(),
