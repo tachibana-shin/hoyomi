@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hoyomi/widgets/library/history/eiga/horizontal_eiga_history_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 
 class LibraryPage extends StatefulWidget {
@@ -25,12 +26,18 @@ class _LibraryPageState extends State<LibraryPage> {
     return PullRefreshPage(
         onLoadData: () async {
           GoRouter.of(context).refresh();
+          return [0x0];
         },
-        onLoadFake: () => [],
+        onLoadFake: () => [0x0],
         builder: (data, _) => Scrollbar(
                 child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
               child: Column(
-                children: [],
+                children: [
+                  HorizontalEigaHistoryList(
+                    sourceId: 'animevietsub',
+                  )
+                ],
               ),
             )));
   }
