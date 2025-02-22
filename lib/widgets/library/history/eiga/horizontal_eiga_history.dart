@@ -7,18 +7,18 @@ import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
-class VerticalEigaHistory extends StatefulWidget {
+class HorizontalEigaHistory extends StatefulWidget {
   final String sourceId;
   final HistoryItem<Eiga> history;
 
-  const VerticalEigaHistory(
+  const HorizontalEigaHistory(
       {super.key, required this.sourceId, required this.history});
 
   @override
-  State<VerticalEigaHistory> createState() => _VerticalEigaHistoryState();
+  State<HorizontalEigaHistory> createState() => _HorizontalEigaHistoryState();
 }
 
-class _VerticalEigaHistoryState extends State<VerticalEigaHistory> {
+class _HorizontalEigaHistoryState extends State<HorizontalEigaHistory> {
   @override
   Widget build(context) {
     final eiga = widget.history.item;
