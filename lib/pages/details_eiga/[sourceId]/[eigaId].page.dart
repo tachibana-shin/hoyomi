@@ -649,153 +649,150 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               builder: (context, scrollController) {
                 return SingleChildScrollView(
                     controller: scrollController,
-                    child: Padding(
-                        padding: EdgeInsets.only(
-                            left: 12.0, right: 12.0, bottom: 8.0),
-                        child: Column(
+                    padding:
+                        EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: min(110.0, 50.w(context)),
-                                  decoration: BoxDecoration(
-                                      color: Colors.blueGrey.shade200,
-                                      borderRadius:
-                                          BorderRadius.circular(10.0)),
-                                  clipBehavior: Clip.antiAlias,
-                                  child: AspectRatio(
-                                      aspectRatio: 2 / 3,
-                                      child: OImage.network(
-                                        metaEiga.value.image.src,
-                                        sourceId: widget.sourceId,
-                                        headers: metaEiga.value.image.headers,
-                                        fit: BoxFit.cover,
-                                      )),
-                                ),
-                                SizedBox(width: 8),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          metaEiga.value.name,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium
-                                              ?.copyWith(
-                                                fontSize: 16,
-                                              ),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          '${metaEiga.value.language ?? 'unknown'} | ${metaEiga.value.countries?.firstOrNull?.name ?? 'unknown'}',
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                        ),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          'Release year: ${metaEiga.value.yearOf}',
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                        ),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          'Episode: ${metaEiga.value.duration}',
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            Container(
+                              width: min(110.0, 50.w(context)),
+                              decoration: BoxDecoration(
+                                  color: Colors.blueGrey.shade200,
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              clipBehavior: Clip.antiAlias,
+                              child: AspectRatio(
+                                  aspectRatio: 2 / 3,
+                                  child: OImage.network(
+                                    metaEiga.value.image.src,
+                                    sourceId: widget.sourceId,
+                                    headers: metaEiga.value.image.headers,
+                                    fit: BoxFit.cover,
+                                  )),
                             ),
-                            SizedBox(height: 16),
-                            if (metaEiga.value.originalName != null)
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 8.0, bottom: 4.0),
-                                    child: Text(
-                                      'Other name',
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      metaEiga.value.name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            fontSize: 16,
+                                          ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      '${metaEiga.value.language ?? 'unknown'} | ${metaEiga.value.countries?.firstOrNull?.name ?? 'unknown'}',
                                       style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
                                     ),
-                                  ),
-                                  Text(
-                                    metaEiga.value.originalName!,
-                                  ),
-                                ],
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Release year: ${metaEiga.value.yearOf}',
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Episode: ${metaEiga.value.duration}',
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0, bottom: 4.0),
-                                  child: Text(
-                                    'Description',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  metaEiga.value.description,
-                                ),
-                                Wrap(
-                                  spacing: 8.0,
-                                  runSpacing: 4.0,
-                                  children: metaEiga.value.genres
-                                      .map<Widget>((genre) =>
-                                          Chip(label: Text(genre.name)))
-                                      .toList(),
-                                ),
-                              ],
                             ),
-                            if (metaEiga.value.trailer != null)
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 8.0, bottom: 4.0),
-                                    child: Text(
-                                      'Trailer',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  AspectRatio(
-                                    aspectRatio: 16 / 9,
-                                    child: InAppWebView(
-                                        initialUrlRequest: URLRequest(
-                                            url: WebUri.uri(Uri.parse(
-                                                metaEiga.value.trailer!)))),
-                                  ),
-                                ],
-                              ),
                           ],
-                        )));
+                        ),
+                        SizedBox(height: 16),
+                        if (metaEiga.value.originalName != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 8.0, bottom: 4.0),
+                                child: Text(
+                                  'Other name',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                metaEiga.value.originalName!,
+                              ),
+                            ],
+                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                              child: Text(
+                                'Description',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              metaEiga.value.description,
+                            ),
+                            Wrap(
+                              spacing: 8.0,
+                              runSpacing: 4.0,
+                              children: metaEiga.value.genres
+                                  .map<Widget>(
+                                      (genre) => Chip(label: Text(genre.name)))
+                                  .toList(),
+                            ),
+                          ],
+                        ),
+                        if (metaEiga.value.trailer != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 8.0, bottom: 4.0),
+                                child: Text(
+                                  'Trailer',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              AspectRatio(
+                                aspectRatio: 16 / 9,
+                                child: InAppWebView(
+                                    initialUrlRequest: URLRequest(
+                                        url: WebUri.uri(Uri.parse(
+                                            metaEiga.value.trailer!)))),
+                              ),
+                            ],
+                          ),
+                      ],
+                    ));
               },
             ));
   }
