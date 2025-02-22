@@ -318,8 +318,7 @@ abstract class UtilsService {
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
       'accept-language': 'vi',
       'cache-control': 'no-cache',
-      'cookie':
-          (kDebugMode ? dotenv.env['TEMP_FETCH_COOKIE'] : cookiesText) ?? '',
+      'cookie': cookiesText ?? '',
       'pragma': 'no-cache',
       'priority': 'u=0, i',
       'sec-ch-ua':
