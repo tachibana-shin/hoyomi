@@ -22,8 +22,9 @@ class HorizontalList<T> extends StatelessWidget {
       required this.needSubtitle})
       : assert(items != null || child != null);
 
-  Widget _buildContainer(BuildContext context,
-      {required Widget Function(double viewFraction) builder}) {
+  static Widget buildContainer(BuildContext context,
+      {required bool needSubtitle,
+      required Widget Function(double viewFraction) builder}) {
     return LayoutBuilder(builder: (context, constraints) {
       double screenWidth = constraints.biggest.width;
       double crossAxisCount;
@@ -78,8 +79,9 @@ class HorizontalList<T> extends StatelessWidget {
           else
             SizedBox.shrink()
         ]),
-        _buildContainer(
+        buildContainer(
           context,
+          needSubtitle: needSubtitle,
           builder: (viewportFraction) =>
               child ??
               PageView.builder(

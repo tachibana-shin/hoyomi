@@ -57,10 +57,14 @@ class HorizontalEigaList extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return Center(
-                child: UtilsService.errorWidgetBuilder(context,
-                    error: snapshot.error,
-                    orElse: (error) => Text('Error: $error')));
+            return HorizontalList.buildContainer(
+              context,
+              builder: (viewFraction) => Center(
+                  child: UtilsService.errorWidgetBuilder(context,
+                      error: snapshot.error,
+                      orElse: (error) => Text('Error: $error'))),
+              needSubtitle: false,
+            );
           }
 
           return HorizontalList<EigaExtend>(
