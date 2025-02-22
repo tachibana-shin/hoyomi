@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/widgets/library/follow_horizontal_list.dart';
-import 'package:hoyomi/widgets/library/history_horizontal_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 
 class LibraryPage extends StatefulWidget {
@@ -32,10 +30,7 @@ class _LibraryPageState extends State<LibraryPage> {
         builder: (data, _) => Scrollbar(
                 child: SingleChildScrollView(
               child: Column(
-                children: [
-                  HistoryHorizontalList(),
-                  FollowHorizontalList(),
-                ],
+                children: [],
               ),
             )));
   }
