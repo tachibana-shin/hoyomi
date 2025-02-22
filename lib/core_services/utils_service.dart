@@ -2,7 +2,9 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inappwebview;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/controller/cookie.dart';
@@ -316,7 +318,8 @@ abstract class UtilsService {
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
       'accept-language': 'vi',
       'cache-control': 'no-cache',
-      'cookie': cookiesText ?? '',
+      'cookie':
+          (kDebugMode ? dotenv.env['TEMP_FETCH_COOKIE'] : cookiesText) ?? '',
       'pragma': 'no-cache',
       'priority': 'u=0, i',
       'sec-ch-ua':
