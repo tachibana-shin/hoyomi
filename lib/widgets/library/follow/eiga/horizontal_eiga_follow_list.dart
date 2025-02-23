@@ -8,6 +8,7 @@ import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/utils/format_watch_update_at.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga.dart';
 import 'package:hoyomi/widgets/horizontal_list.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class HorizontalEigaFollowList extends StatefulWidget {
   final String sourceId;
@@ -49,25 +50,30 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
             );
           }
 
-          final data = snapshot.connectionState == ConnectionState.waiting
+          final loading = snapshot.connectionState == ConnectionState.waiting;
+          final data = loading
               ? List.generate(
                   30, (_) => FollowItem.createFakeData(Eiga.createFakeData()))
               : snapshot.data!;
 
-          return HorizontalList<FollowItem<Eiga>>(
-            title: 'Follow',
-            subtitle: data.firstOrNull?.updatedAt == null
-                ? ''
-                : formatWatchUpdatedAt(data.first.updatedAt!, null),
-            more: '/library/follow/eiga/${widget.sourceId}',
-            items: data,
-            needSubtitle: data.firstWhereOrNull(
-                    (eiga) => VerticalEiga.checkNeedSubtitle(eiga.item)) !=
-                null,
-            builder: (context, follow, index) {
-              return VerticalEiga(sourceId: widget.sourceId, eiga: follow.item);
-            },
-          );
+          return Skeletonizer(
+              enabled: loading,
+              enableSwitchAnimation: true,
+              child: HorizontalList<FollowItem<Eiga>>(
+                title: 'Follow',
+                subtitle: data.firstOrNull?.updatedAt == null
+                    ? ''
+                    : formatWatchUpdatedAt(data.first.updatedAt!, null),
+                more: '/library/follow/eiga/${widget.sourceId}',
+                items: data,
+                needSubtitle: data.firstWhereOrNull(
+                        (eiga) => VerticalEiga.checkNeedSubtitle(eiga.item)) !=
+                    null,
+                builder: (context, follow, index) {
+                  return VerticalEiga(
+                      sourceId: widget.sourceId, eiga: follow.item);
+                },
+              ));
         });
   }
 }

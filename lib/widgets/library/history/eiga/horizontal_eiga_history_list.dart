@@ -9,6 +9,7 @@ import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/utils/format_watch_update_at.dart';
 import 'package:hoyomi/widgets/library/history/eiga/eiga_history.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class HorizontalEigaHistoryList extends StatefulWidget {
   final String sourceId;
@@ -80,7 +81,8 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
             );
           }
 
-          final data = snapshot.connectionState == ConnectionState.waiting
+          final loading = snapshot.connectionState == ConnectionState.waiting;
+          final data = loading
               ? List.generate(
                   30, (_) => HistoryItem.createFakeData(Eiga.createFakeData()))
               : snapshot.data!;
@@ -95,50 +97,59 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
                   (eiga) => eiga.lastEpisode.description?.isNotEmpty == true) !=
               null;
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: TextStyle(fontSize: 14, color: Colors.white70),
-                  ),
-                ]),
-                ElevatedButton(
-                    onPressed: () {
-                      context.push(more);
-                    },
-                    child: Text('More'))
-              ]),
-              _buildContainer(
-                context,
-                needSubtitle: needSubtitle,
-                builder: (viewportFraction) => PageView.builder(
-                    itemCount: items.length,
-                    allowImplicitScrolling: true,
-                    padEnds: false,
-                    controller: PageController(
-                      viewportFraction: viewportFraction,
-                      initialPage: 0,
-                    ),
-                    itemBuilder: (context, index) => EigaHistory(
-                          sourceId: widget.sourceId,
-                          history: items.elementAt(index),
-                          width: 100.w(context) / 1 / viewportFraction,
-                          direction: Axis.vertical,
-                        )),
-              )
-            ],
-          );
+          return Skeletonizer(
+              enabled: loading,
+              enableSwitchAnimation: true,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                title,
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                              Text(
+                                subtitle,
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.white70),
+                              ),
+                            ]),
+                        ElevatedButton(
+                            onPressed: () {
+                              context.push(more);
+                            },
+                            child: Text('More'))
+                      ]),
+                  _buildContainer(
+                    context,
+                    needSubtitle: needSubtitle,
+                    builder: (viewportFraction) => PageView.builder(
+                        itemCount: items.length,
+                        allowImplicitScrolling: true,
+                        padEnds: false,
+                        controller: PageController(
+                          viewportFraction: viewportFraction,
+                          initialPage: 0,
+                        ),
+                        itemBuilder: (context, index) => EigaHistory(
+                              sourceId: widget.sourceId,
+                              history: items.elementAt(index),
+                              width: 100.w(context) / 1 / viewportFraction,
+                              direction: Axis.vertical,
+                            )),
+                  )
+                ],
+              ));
         });
   }
 }
