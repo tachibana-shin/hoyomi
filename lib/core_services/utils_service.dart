@@ -316,9 +316,7 @@ abstract class UtilsService {
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
       'accept-language': 'vi',
       'cache-control': 'no-cache',
-      'cookie':
-          'PHPSESSID=vscr0e0dcu6vnu8d6didtiehdi; tokenfc9e07af25d640b2f1eea6b2d356442e=f6f8c9058e523778c5d0cf6bd2f97361; popupOpened=true; user_id=35738; user_pw_hash=0eac58d4f2e0237a984f8f07b2e06cef' ??
-              '',
+      'cookie': cookiesText ?? '',
       'pragma': 'no-cache',
       'priority': 'u=0, i',
       'sec-ch-ua':
