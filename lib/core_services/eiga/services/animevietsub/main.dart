@@ -27,6 +27,7 @@ import 'package:hoyomi/core_services/interfaces/follow_item.dart';
 import 'package:hoyomi/core_services/interfaces/genre.dart';
 import 'package:hoyomi/core_services/interfaces/history_item.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/core_services/interfaces/paginate.dart';
 import 'package:hoyomi/core_services/interfaces/user.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
@@ -852,7 +853,14 @@ class AnimeVietsubService extends EigaService
   getFollows({required int page}) async {
     final section =
         await getSection(sectionId: '/tu-phim/', page: page, filters: {});
-    return section.items.map((item) => FollowItem<Eiga>(item: item)).toList();
+    final items =
+        section.items.map((item) => FollowItem<Eiga>(item: item)).toList();
+
+    return Paginate(
+        items: items,
+        page: section.page,
+        totalItems: section.totalItems,
+        totalPages: section.totalPages);
   }
 }
 

@@ -9,4 +9,13 @@ class Paginate<T> {
       required this.page,
       required this.totalItems,
       required this.totalPages});
+
+  factory Paginate.createFakeData(List<T> items) {
+    return Paginate(
+      items: items,
+      page: 1,
+      totalItems: items.length,
+      totalPages: 1,
+    );
+  }
 }

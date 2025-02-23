@@ -9,7 +9,7 @@ import 'package:hoyomi/pages/details_comic/[sourceId]/[comicId].page.dart';
 import 'package:hoyomi/pages/details_comic/[sourceId]/[comicId]/[chapterId].page.dart';
 import 'package:hoyomi/pages/home_comic/home_comic_page.dart';
 import 'package:hoyomi/pages/home_eiga/home_eiga_page.dart';
-import 'package:hoyomi/pages/library/follow/follow_page.dart';
+import 'package:hoyomi/pages/library/follow/eiga/%5BsourceId%5D.page.dart';
 import 'package:hoyomi/pages/library/history/eiga/%5BsourceId%5D.page.dart';
 import 'package:hoyomi/pages/library/library_page.dart';
 import 'package:hoyomi/pages/manager_page.dart';
@@ -115,9 +115,9 @@ final router = GoRouter(
                   builder: (context, state) => HistoryEigaPage(
                       sourceId: state.pathParameters['sourceId']!)),
               GoRoute(
-                path: 'follow',
-                builder: (context, state) => FollowPage(),
-              )
+                  path: 'follow/eiga/:sourceId',
+                  builder: (context, state) => FollowsEigaPage(
+                      sourceId: state.pathParameters['sourceId']!))
             ],
           ),
         ]),
