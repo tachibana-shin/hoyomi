@@ -29,7 +29,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
   @override
   void initState() {
     _service = getEigaService(widget.sourceId) as EigaFollowMixin;
-    _followsFuture = _service.getFollows(page: 1);
+    _followsFuture = _service.getFollows(page: 1).then((data) => data.items);
 
     super.initState();
   }
