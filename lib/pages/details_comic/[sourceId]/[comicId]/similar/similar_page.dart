@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/screens/search/comic_search_results.dart';
+import 'package:hoyomi/widgets/pull_refresh_page.dart';
 
 class SimilarPage extends StatefulWidget {
   final String sourceId;
@@ -17,27 +18,26 @@ class SimilarPage extends StatefulWidget {
 }
 
 class _SimilarPageState extends State<SimilarPage> {
-  late final Future<String> _keyword;
-
-  @override
-  void initState() {
+  Future<String> _getKeyword() {
     if (widget.comic != null) {
-      _keyword = Future.value(widget.comic!.name);
-    } else {
-      _keyword = getComicService(widget.sourceId)
-          .getDetails(widget.comicId)
-          .then((value) => value.name);
+      return Future.value(widget.comic!.name);
     }
 
-    super.initState();
+    return getComicService(widget.sourceId)
+        .getDetails(widget.comicId)
+        .then((value) => value.name);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: _buildAppBar(), body: _buildBody());
+    return PullRefreshPage<String>(
+        onLoadData: () => _getKeyword(),
+        onLoadFake: () => 'Keyword search',
+        builder: (keyword, param) =>
+            Scaffold(appBar: _buildAppBar(keyword), body: _buildBody(keyword)));
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(String keyword) {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       scrolledUnderElevation: 0.0,
@@ -50,14 +50,10 @@ class _SimilarPageState extends State<SimilarPage> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          FutureBuilder(
-              future: _keyword,
-              builder: (context, snapshot) {
-                return Text(
-                  snapshot.data ?? "",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                );
-              }),
+          Text(
+            keyword,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
           SizedBox(height: 2),
           Text(
             "Results search",
@@ -68,19 +64,7 @@ class _SimilarPageState extends State<SimilarPage> {
     );
   }
 
-  Widget _buildBody() {
-    return FutureBuilder(
-        future: _keyword,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No news items found'));
-          }
-
-          return ComicSearchResults(keyword: snapshot.data!);
-        });
+  Widget _buildBody(String keyword) {
+    return ComicSearchResults(keyword: keyword);
   }
 }
