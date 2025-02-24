@@ -15,7 +15,7 @@ import 'package:html/dom.dart' as d;
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
 
-import 'package:hoyomi/globals.dart';
+import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/router/index.dart';
 
 abstract class UtilsService {

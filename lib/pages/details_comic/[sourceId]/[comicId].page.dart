@@ -14,7 +14,7 @@ import 'package:hoyomi/core_services/comic/interfaces/status_enum.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
-import 'package:hoyomi/globals.dart';
+import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/database/scheme/history_chap.dart';
 import 'package:hoyomi/plugins/event_bus.dart';
 import 'package:hoyomi/utils/format_number.dart';

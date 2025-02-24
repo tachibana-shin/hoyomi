@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comments.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comment.dart';
-import 'package:hoyomi/globals.dart';
+import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:hoyomi/widgets/comments/widget/comments.dart';

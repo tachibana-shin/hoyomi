@@ -6,7 +6,7 @@ import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/composable/bottom_sheet_no_scrim.dart';
+import 'package:hoyomi/apis/bottom_sheet_no_scrim.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';

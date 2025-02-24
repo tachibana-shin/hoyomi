@@ -4,9 +4,8 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:hoyomi/database/isar.dart';
+import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/router/index.dart';
-
-import 'globals.dart';
 
 import 'package:flutter/material.dart';
 // import 'package:go_transitions/go_transitions.dart';

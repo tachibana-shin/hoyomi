@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:hoyomi/globals.dart';
+import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class IconButtonOpenBrowser extends StatelessWidget {

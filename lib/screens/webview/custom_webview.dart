@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart'; // Add this import
-import 'package:hoyomi/globals.dart';
+import 'package:hoyomi/apis/show_snack_bar.dart';
 
 class CustomWebView extends StatefulWidget {
   final String sourceId;

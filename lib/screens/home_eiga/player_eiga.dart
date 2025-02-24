@@ -14,7 +14,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
-import 'package:hoyomi/globals.dart';
+import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/transition/slide_fade_transition.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
