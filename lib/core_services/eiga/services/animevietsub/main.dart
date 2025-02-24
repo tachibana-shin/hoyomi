@@ -601,12 +601,10 @@ class AnimeVietsubService extends EigaService
   }
 
   @override
-  get fetchSourceContent => ({required source}) async {
-        return SourceContent(
-            content: jsonDecode(_decryptM3u8(source.src)),
-            url: source.url,
-            headers: source.headers);
-      };
+  get fetchSourceContent => ({required source}) async => SourceContent(
+      content: jsonDecode(_decryptM3u8(source.src)),
+      url: source.url,
+      headers: source.headers);
 
   final Map<String, Future<String>> _callApiStore = {};
   Future<String> _callApi(String url) {
