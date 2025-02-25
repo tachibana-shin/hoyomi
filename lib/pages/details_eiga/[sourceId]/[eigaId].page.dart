@@ -91,12 +91,11 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       createComputed(() {
     if (_service.getSuggest == null) return null;
 
-    final meta = _metaEiga();
-    if (meta.fake) {
+    if (_metaEiga.value.fake) {
       return Future.value(List.generate(30, (_) => Eiga.createFakeData()));
     }
 
-    return _service.getSuggest!(metaEiga: meta, eigaId: widget.eigaId);
+    return _service.getSuggest!(metaEiga: _metaEiga.value, eigaId: widget.eigaId);
   });
 
   final _eventBus = EventBus();
@@ -209,14 +208,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           aspectRatio: _aspectRatio,
         ),
         Expanded(
-          child: PullRefreshPage<void>(
-              onLoadData: () async {
-                await _service.getDetails(_eigaId.value).then((data) {
+          child: PullRefreshPage(
+              onLoadData: () => _service.getDetails(_eigaId.value).then((data) {
                   if (!mounted) throw Exception('Page destroyed');
-                  _metaEiga.value = data;
-                });
-              },
-              onLoadFake: () => _metaEiga.value = MetaEiga.createFakeData(),
+                  return _metaEiga.value = data;
+                }),
+              onLoadFake: () =>_metaEiga.value = MetaEiga.createFakeData(),
               builder: (data, param) {
                 return Builder(builder: (context) {
                   final loading = _metaEiga
@@ -1078,8 +1075,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Widget _buildSuggest() {
-    return Builder(builder: (context) {
-      final suggest = _suggestNotifier.watch(context);
+    return Watch((context) {
+      final suggest = _suggestNotifier();
       if (suggest == null) return SizedBox.shrink();
 
       return VerticalEigaList(
