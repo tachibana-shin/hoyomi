@@ -95,7 +95,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       return Future.value(List.generate(30, (_) => Eiga.createFakeData()));
     }
 
-    return _service.getSuggest!(metaEiga: _metaEiga.value, eigaId: widget.eigaId);
+    return _service.getSuggest!(
+        metaEiga: _metaEiga.value, eigaId: widget.eigaId);
   });
 
   final _eventBus = EventBus();
@@ -210,10 +211,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         Expanded(
           child: PullRefreshPage(
               onLoadData: () => _service.getDetails(_eigaId.value).then((data) {
-                  if (!mounted) throw Exception('Page destroyed');
-                  return _metaEiga.value = data;
-                }),
-              onLoadFake: () =>_metaEiga.value = MetaEiga.createFakeData(),
+                    if (!mounted) throw Exception('Page destroyed');
+                    return _metaEiga.value = data;
+                  }),
+              onLoadFake: () => _metaEiga.value = MetaEiga.createFakeData(),
               builder: (data, param) {
                 return Builder(builder: (context) {
                   final loading = _metaEiga
