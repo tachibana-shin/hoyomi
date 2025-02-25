@@ -56,16 +56,18 @@ class DetailsEigaPage extends StatefulWidget {
 }
 
 class _DetailsEigaPageState extends State<DetailsEigaPage>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SignalsMixin {
   late final EigaService _service;
-  late ValueNotifier<MetaEiga> _metaEigaNotifier;
+  late final Signal<MetaEiga> _metaEiga =
+      createSignal(MetaEiga.createFakeData());
 
   double _aspectRatio = 16 / 9;
 
   final Map<String, EigaEpisodes> _cacheEpisodesStore = {};
   final Map<String, Map<String, WatchTime>> _cacheWatchTimeStore = {};
-  final ValueNotifier<String> _titleNotifier = ValueNotifier('');
-  final ValueNotifier<String> _subtitleNotifier = ValueNotifier('');
+  late final Computed<String> _title =
+      createComputed(() => _metaEiga.value.name);
+  final ValueNotifier<String> _subtitle = ValueNotifier('');
   final ValueNotifier<List<Subtitle>> _subtitlesNotifier = ValueNotifier([]);
   final ValueNotifier<SourceVideo?> _sourceNotifier = ValueNotifier(null);
   final ValueNotifier<OImage?> _posterNotifier = ValueNotifier(null);
@@ -85,8 +87,17 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final ValueNotifier<EigaEpisode?> _episode = ValueNotifier(null);
   final ValueNotifier<int?> _episodeIndex = ValueNotifier(null);
   final ValueNotifier<Season?> _currentSeason = ValueNotifier(null);
-  final ValueNotifier<Future<List<Eiga>>?> _suggestNotifier =
-      ValueNotifier(null);
+  late final Computed<Future<List<Eiga>>?> _suggestNotifier =
+      createComputed(() {
+    if (_service.getSuggest == null) return null;
+
+    final meta = _metaEiga();
+    if (meta.fake) {
+      return Future.value(List.generate(30, (_) => Eiga.createFakeData()));
+    }
+
+    return _service.getSuggest!(metaEiga: meta, eigaId: widget.eigaId);
+  });
 
   final _eventBus = EventBus();
 
@@ -106,7 +117,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     assert(_episode.value != null);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _subtitleNotifier.value = 'Episode ${episode.name}';
+      _subtitle.value = 'Episode ${episode.name}';
     });
 
     _subtitlesNotifier.value = [];
@@ -198,61 +209,44 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           aspectRatio: _aspectRatio,
         ),
         Expanded(
-          child: PullRefreshPage(
-              onLoadData: () {
-                final metaEigaFuture = _service.getDetails(_eigaId.value);
-
-                if (_service.getSuggest != null) {
-                  _suggestNotifier.value = metaEigaFuture.then((metaEiga) {
-                    return _service.getSuggest!(
-                        metaEiga: metaEiga, eigaId: widget.eigaId);
-                  });
-                }
-
-                return metaEigaFuture;
+          child: PullRefreshPage<void>(
+              onLoadData: () async {
+                await _service.getDetails(_eigaId.value).then((data) {
+                  if (!mounted) throw Exception('Page destroyed');
+                  _metaEiga.value = data;
+                });
               },
-              onLoadFake: () => MetaEiga.createFakeData(),
+              onLoadFake: () => _metaEiga.value = MetaEiga.createFakeData(),
               builder: (data, param) {
-                final loading = param.$1;
+                return Builder(builder: (context) {
+                  final loading = _metaEiga
+                      .select((meta) => meta.value.fake)
+                      .watch(context);
 
-                _metaEigaNotifier =
-                    ValueNotifier(!loading ? data : MetaEiga.createFakeData());
-                if (!loading) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _titleNotifier.value = _metaEigaNotifier.value.name;
-                  });
-
-                  _metaEigaNotifier.addListener(() {
-                    _titleNotifier.value = _metaEigaNotifier.value.name;
-
-                    _suggestNotifier.value = _service.getSuggest!(
-                        metaEiga: _metaEigaNotifier.value,
-                        eigaId: _eigaId.value);
-                  });
-                }
-
-                return SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildInfo(_metaEigaNotifier),
-                      SizedBox(height: 10.0),
-                      // button group
-                      _buildButtonGroup(_metaEigaNotifier),
-                      SizedBox(height: 5.0),
-                      if (!loading) _buildSchedule(),
-                      if (!loading) _buildSeasonHeader(_metaEigaNotifier),
-                      SizedBox(height: 5.0),
-                      if (loading)
-                        ListEpisodesSkeleton()
-                      else
-                        _buildSeasonArea(_metaEigaNotifier),
-                      SizedBox(height: 12.0),
-                      _buildSuggest()
-                    ],
-                  ),
-                );
+                  return SingleChildScrollView(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildInfo(_metaEiga),
+                        SizedBox(height: 10.0),
+                        // button group
+                        _buildButtonGroup(_metaEiga),
+                        SizedBox(height: 5.0),
+                        if (!loading) _buildSchedule(),
+                        if (!loading) _buildSeasonHeader(_metaEiga),
+                        SizedBox(height: 5.0),
+                        if (loading)
+                          ListEpisodesSkeleton()
+                        else
+                          _buildSeasonArea(_metaEiga),
+                        SizedBox(height: 12.0),
+                        _buildSuggest()
+                      ],
+                    ),
+                  );
+                });
               }),
         )
       ]),
@@ -265,18 +259,18 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       sourceId: widget.sourceId,
       eigaId: _eigaId,
       episodeId: _episodeId,
-      titleNotifier: _titleNotifier,
-      subtitleNotifier: _subtitleNotifier,
+      title: _title,
+      subtitleNotifier: _subtitle,
       watchTimeDataNotifier: _watchTimeDataNotifier,
       onBack: () {
         context.pop();
       },
       onTapPlaylist: (isFullscreen) {
         if (isFullscreen) {
-          _showModalEpisodesFullscreen(_metaEigaNotifier);
+          _showModalEpisodesFullscreen(_metaEiga);
           return;
         }
-        _showModalEpisodes(_metaEigaNotifier);
+        _showModalEpisodes(_metaEiga);
       },
       onWatchTimeUpdate: ({required position, required duration}) {
         if (_service is EigaWatchTimeMixin) {
@@ -294,7 +288,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               eigaId: eigaId,
               episode: _episode.value!,
               episodeIndex: _episodeIndex.value!,
-              metaEiga: _metaEigaNotifier.value,
+              metaEiga: _metaEiga.value,
               season: _currentSeason.value!,
               watchTime: watchTime);
         }
@@ -312,183 +306,136 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     );
   }
 
-  Widget _buildInfo(ValueNotifier<MetaEiga> metaEiga) {
-    return ValueListenableBuilder(
-        valueListenable: metaEiga,
-        builder: (context, metaEiga$, child) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                    onTap: () => _showModalMetadata(metaEiga),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // name
-                          Text(metaEiga$.name,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 18.0),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis),
-                          if (metaEiga$.views != null)
-                            Text('${formatNumber(metaEiga$.views!)} views',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        fontSize: 14.0)),
+  Widget _buildInfo(Signal<MetaEiga> metaEiga) {
+    return Watch((_) {
+      final metaEiga$ = metaEiga();
 
-                          SizedBox(height: 2.0),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+              onTap: () => _showModalMetadata(metaEiga),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // name
+                    Text(metaEiga$.name,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 18.0),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis),
+                    if (metaEiga$.views != null)
+                      Text('${formatNumber(metaEiga$.views!)} views',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  fontSize: 14.0)),
 
-                          // author
-                          Wrap(
-                            children: [
-                              Text(
-                                'Author ',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      fontSize: 14.0,
-                                    ),
+                    SizedBox(height: 2.0),
+
+                    // author
+                    Wrap(
+                      children: [
+                        Text(
+                          'Author ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontSize: 14.0,
                               ),
-                              Text(
-                                metaEiga$.author ?? 'Unknown',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(fontSize: 14.0),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              if (metaEiga$.studio != null) VerticalSeparator(),
-                              if (metaEiga$.studio != null) ...[
-                                Text(
-                                  'Studio ',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        fontSize: 14.0,
-                                      ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    context.push(
-                                        '/section_eiga/${widget.sourceId}/${metaEiga$.studio!.genreId}');
-                                  },
-                                  child: Text(
-                                    metaEiga$.studio!.name,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface,
-                                          fontSize: 14.0,
-                                        ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          )
-                        ])),
-                SizedBox(height: 2.0),
-
-                /////
-                Row(children: [
-                  if (metaEiga$.quality != null)
-                    Container(
-                        padding: EdgeInsets.symmetric(horizontal: 4.0),
-                        decoration: BoxDecoration(
-                            color: Colors.greenAccent.shade400,
-                            borderRadius: BorderRadius.circular(4.0)),
-                        child: Center(
-                            child: Text(metaEiga$.quality!,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(fontSize: 14.0)))),
-                  if (metaEiga$.quality != null) VerticalSeparator(),
-                  if (metaEiga$.yearOf != null)
-                    Text(metaEiga$.yearOf.toString(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontSize: 14.0)),
-                  if (metaEiga$.duration != null) VerticalSeparator(),
-                  if (metaEiga$.duration != null)
-                    Text('Updated to ${metaEiga$.duration}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontSize: 14.0)),
-                  if (metaEiga$.countries?.isNotEmpty == true)
-                    VerticalSeparator(),
-                  if (metaEiga$.countries?.isNotEmpty == true)
-                    Row(
-                        children: metaEiga$.countries!.map((country) {
-                      return Padding(
-                          padding: EdgeInsets.only(right: 4.0),
-                          child: GestureDetector(
-                              onTap: () {
-                                context.push(
-                                    '/section_eiga/${widget.sourceId}/${country.genreId}');
-                              },
-                              child: Text(country.name,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                          fontSize: 14.0,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .tertiaryFixedDim))));
-                    }).toList())
-                ]),
-
-                SizedBox(height: 2.0),
-
-                Row(children: [
-                  if (metaEiga$.rate != null)
-                    Row(children: [
-                      Icon(
-                        MaterialCommunityIcons.star,
-                        color: Colors.blue.shade200,
-                        size: 14.0,
-                      ),
-                      Text(
-                        ' ${metaEiga$.rate}',
-                        style: const TextStyle(
-                          fontSize: 14.0,
                         ),
-                      )
-                    ]),
-                  if (metaEiga$.countRate != null) VerticalSeparator(),
-                  if (metaEiga$.countRate != null)
-                    Text('${metaEiga$.countRate} people rated',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontSize: 14.0)),
-                  if (metaEiga$.countRate != null) VerticalSeparator(),
-                  if (metaEiga$.movieSeason != null)
-                    GestureDetector(
+                        Text(
+                          metaEiga$.author ?? 'Unknown',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(fontSize: 14.0),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (metaEiga$.studio != null) VerticalSeparator(),
+                        if (metaEiga$.studio != null) ...[
+                          Text(
+                            'Studio ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  fontSize: 14.0,
+                                ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              context.push(
+                                  '/section_eiga/${widget.sourceId}/${metaEiga$.studio!.genreId}');
+                            },
+                            child: Text(
+                              metaEiga$.studio!.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                    fontSize: 14.0,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    )
+                  ])),
+          SizedBox(height: 2.0),
+
+          /////
+          Row(children: [
+            if (metaEiga$.quality != null)
+              Container(
+                  padding: EdgeInsets.symmetric(horizontal: 4.0),
+                  decoration: BoxDecoration(
+                      color: Colors.greenAccent.shade400,
+                      borderRadius: BorderRadius.circular(4.0)),
+                  child: Center(
+                      child: Text(metaEiga$.quality!,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(fontSize: 14.0)))),
+            if (metaEiga$.quality != null) VerticalSeparator(),
+            if (metaEiga$.yearOf != null)
+              Text(metaEiga$.yearOf.toString(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(fontSize: 14.0)),
+            if (metaEiga$.duration != null) VerticalSeparator(),
+            if (metaEiga$.duration != null)
+              Text('Updated to ${metaEiga$.duration}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(fontSize: 14.0)),
+            if (metaEiga$.countries?.isNotEmpty == true) VerticalSeparator(),
+            if (metaEiga$.countries?.isNotEmpty == true)
+              Row(
+                  children: metaEiga$.countries!.map((country) {
+                return Padding(
+                    padding: EdgeInsets.only(right: 4.0),
+                    child: GestureDetector(
                         onTap: () {
                           context.push(
-                              '/section_eiga/${widget.sourceId}/${metaEiga$.movieSeason!.genreId}');
+                              '/section_eiga/${widget.sourceId}/${country.genreId}');
                         },
-                        child: Text(metaEiga$.movieSeason!.name,
+                        child: Text(country.name,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -496,60 +443,93 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                     fontSize: 14.0,
                                     color: Theme.of(context)
                                         .colorScheme
-                                        .tertiaryFixedDim)))
-                ]),
+                                        .tertiaryFixedDim))));
+              }).toList())
+          ]),
 
-                SizedBox(height: 2.0),
+          SizedBox(height: 2.0),
 
-                Wrap(
-                  spacing: 7.0, // Space between the genre tags
-                  children: metaEiga$.genres.map((genre) {
-                    return GestureDetector(
-                      onTap: () {
-                        context.push(
-                            '/section_eiga/${widget.sourceId}/${genre.genreId}');
-                      },
-                      child: Text(
-                        '#${genre.name}',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 14.0,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .tertiaryFixedDim,
-                            ),
-                      ),
-                    );
-                  }).toList(),
+          Row(children: [
+            if (metaEiga$.rate != null)
+              Row(children: [
+                Icon(
+                  MaterialCommunityIcons.star,
+                  color: Colors.blue.shade200,
+                  size: 14.0,
                 ),
+                Text(
+                  ' ${metaEiga$.rate}',
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                  ),
+                )
+              ]),
+            if (metaEiga$.countRate != null) VerticalSeparator(),
+            if (metaEiga$.countRate != null)
+              Text('${metaEiga$.countRate} people rated',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 14.0)),
+            if (metaEiga$.countRate != null) VerticalSeparator(),
+            if (metaEiga$.movieSeason != null)
+              GestureDetector(
+                  onTap: () {
+                    context.push(
+                        '/section_eiga/${widget.sourceId}/${metaEiga$.movieSeason!.genreId}');
+                  },
+                  child: Text(metaEiga$.movieSeason!.name,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontSize: 14.0,
+                          color:
+                              Theme.of(context).colorScheme.tertiaryFixedDim)))
+          ]),
 
-                if (metaEiga$.originalName != null) SizedBox(height: 5.0),
+          SizedBox(height: 2.0),
 
-                if (metaEiga$.originalName != null)
-                  RichText(
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      text: TextSpan(children: [
-                        TextSpan(
-                            text: 'Other name: ',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: 14.0)),
-                        TextSpan(
-                            text: metaEiga$.originalName!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(fontSize: 14.0))
-                      ]))
-              ],
-            ));
+          Wrap(
+            spacing: 7.0, // Space between the genre tags
+            children: metaEiga$.genres.map((genre) {
+              return GestureDetector(
+                onTap: () {
+                  context.push(
+                      '/section_eiga/${widget.sourceId}/${genre.genreId}');
+                },
+                child: Text(
+                  '#${genre.name}',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14.0,
+                        color: Theme.of(context).colorScheme.tertiaryFixedDim,
+                      ),
+                ),
+              );
+            }).toList(),
+          ),
+
+          if (metaEiga$.originalName != null) SizedBox(height: 5.0),
+
+          if (metaEiga$.originalName != null)
+            RichText(
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                text: TextSpan(children: [
+                  TextSpan(
+                      text: 'Other name: ',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 14.0)),
+                  TextSpan(
+                      text: metaEiga$.originalName!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontSize: 14.0))
+                ]))
+        ],
+      );
+    });
   }
 
-  Widget _buildButtonGroup(ValueNotifier<MetaEiga> metaEiga) {
+  Widget _buildButtonGroup(Signal<MetaEiga> metaEiga) {
     return Row(
       children: [
         ButtonFollowEiga(
@@ -557,7 +537,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         SizedBox(width: 10.0),
         ButtonShareEiga(
             eigaId: _eigaId,
-            episodeName: _subtitleNotifier,
+            episodeName: _subtitle,
             metaEiga: metaEiga,
             service: _service),
       ],
@@ -597,7 +577,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         });
   }
 
-  Widget _buildSeasonHeader(ValueNotifier<MetaEiga> metaEiga) {
+  Widget _buildSeasonHeader(Signal<MetaEiga> metaEiga) {
     return GestureDetector(
         onTap: () => _showModalEpisodes(metaEiga),
         child: Padding(
@@ -627,7 +607,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             )));
   }
 
-  void _showModalMetadata(ValueNotifier<MetaEiga> metaEiga) {
+  void _showModalMetadata(Signal<MetaEiga> metaEiga) {
     final query = MediaQuery.of(context);
     final size = query.size;
     final heightPlayer =
@@ -797,7 +777,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             ));
   }
 
-  void _showModalEpisodesFullscreen(ValueNotifier<MetaEiga> metaEiga) {
+  void _showModalEpisodesFullscreen(Signal<MetaEiga> metaEiga) {
     if (_overlayNotifier.value == null) {
       _overlayNotifier.value = (context) {
         final size = MediaQuery.of(context).size;
@@ -828,7 +808,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     }
   }
 
-  void _showModalEpisodes(ValueNotifier<MetaEiga> metaEiga) {
+  void _showModalEpisodes(Signal<MetaEiga> metaEiga) {
     final query = MediaQuery.of(context);
     final size = query.size;
     final heightPlayer =
@@ -879,17 +859,13 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             ));
   }
 
-  void _updateData(
-      {required ValueNotifier<MetaEiga> metaEiga,
-      required EigaEpisodes episodes}) {
-    var eigaChanged = false;
+  void _updateImageAndSchedule(
+      {required Signal<MetaEiga> metaEiga, required EigaEpisodes episodes}) {
     if (episodes.image != metaEiga.value.image && episodes.image != null) {
       metaEiga.value.image = episodes.image!;
-      eigaChanged = true;
     }
     if (episodes.poster != metaEiga.value.poster) {
       metaEiga.value.poster = episodes.poster;
-      eigaChanged = true;
     }
     if (_schedule.value != episodes.schedule) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -902,19 +878,16 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         _posterNotifier.value = metaEiga.value.poster;
       });
     }
-
-    if (eigaChanged) metaEiga.value = metaEiga.value;
   }
 
   void _onChangeEpisode({
-    required ValueNotifier<MetaEiga> metaEiga,
+    required Signal<MetaEiga> metaEiga,
     required int indexEpisode,
     required int indexSeason,
     required EigaEpisodes episodesEiga,
     required List<Season> seasons,
   }) {
-    final oldEiga = _eigaId.value;
-    final seasonChanged = oldEiga != seasons[indexSeason].eigaId;
+    final seasonChanged = _eigaId.value != seasons[indexSeason].eigaId;
     final currentEpisode = episodesEiga.episodes[indexEpisode];
 
     if (seasonChanged) {
@@ -963,43 +936,106 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     if (episodeChanged) {
       _updatePlayer(metaEiga.value, currentEpisode, indexEpisode);
     }
-    _updateData(metaEiga: metaEiga, episodes: episodesEiga);
+    _updateImageAndSchedule(metaEiga: metaEiga, episodes: episodesEiga);
 
     if (seasonChanged) {
       _service.getDetails(_eigaId.value).then((value) {
+        if (!mounted) return;
         metaEiga.value = value;
         _posterNotifier.value = value.poster;
       });
     }
   }
 
-  Widget _buildSeasonArea(ValueNotifier<MetaEiga> metaEiga,
+  Widget _buildSeasonArea(Signal<MetaEiga> metaEiga,
       {scrollDirection = Axis.horizontal,
       ScrollController? controller,
       double? height}) {
-    return ValueListenableBuilder(
-        valueListenable: metaEiga,
-        builder: (context, metaEiga$, child) {
-          if (metaEiga$.seasons.isEmpty) {
-            return ValueListenableBuilder(
-                valueListenable: _eigaId,
-                builder: (context, eigaId, child) {
-                  final season = Season(eigaId: eigaId, name: 'Episodes');
-                  return ListEpisodes(
+    return Watch((context) {
+      final metaEiga$ = metaEiga();
+
+      if (metaEiga$.seasons.isEmpty) {
+        return ValueListenableBuilder(
+            valueListenable: _eigaId,
+            builder: (context, eigaId, child) {
+              final season = Season(eigaId: eigaId, name: 'Episodes');
+              return ListEpisodes(
+                  season: season,
+                  thumbnail: metaEiga$.poster ?? metaEiga$.image,
+                  sourceId: widget.sourceId,
+                  eigaIdNotifier: _eigaId,
+                  episodeIdNotifier: _episodeId,
+                  eventBus: _eventBus,
+                  getData: () async => _cacheEpisodesStore[eigaId] ??=
+                      await _service.getEpisodes(eigaId),
+                  getWatchTimeEpisodes: (episodesEiga) async =>
+                      _cacheWatchTimeStore[eigaId] ??=
+                          _service is EigaWatchTimeMixin
+                              ? await (_service as EigaWatchTimeMixin)
+                                  .getWatchTimeEpisodes(
+                                      eigaId: _eigaId.value,
+                                      episodes: episodesEiga.episodes)
+                              : {},
+                  eager: true,
+                  scrollDirection: scrollDirection,
+                  controller: controller,
+                  onTapEpisode: (
+                      {required episodesEiga, required indexEpisode}) {
+                    _onChangeEpisode(
+                        metaEiga: metaEiga,
+                        indexEpisode: indexEpisode,
+                        indexSeason: 0,
+                        episodesEiga: episodesEiga,
+                        seasons: [season]);
+                  });
+            });
+      }
+
+      // tab view
+      return DefaultTabController(
+        length: metaEiga$.seasons.length,
+        initialIndex: max(
+            0,
+            metaEiga$.seasons
+                .indexWhere((season) => season.eigaId == _eigaId.value)),
+        child: Builder(builder: (context) {
+          final tabController = DefaultTabController.of(context);
+
+          _eigaId.addListener(() {
+            final index = metaEiga$.seasons
+                .indexWhere((season) => season.eigaId == _eigaId.value);
+            if (index != tabController.index) {
+              tabController.animateTo(index);
+            }
+          });
+
+          final tabBarHeight = 35.0;
+
+          final children = [
+            ContentSizeTabBarView(
+                children: metaEiga$.seasons.asMap().entries.map((entry) {
+              final season = entry.value;
+              final index = entry.key;
+
+              return Container(
+                  height: height == null ? null : height - tabBarHeight,
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: ListEpisodes(
                       season: season,
-                      thumbnail: metaEiga$.poster ?? metaEiga$.image,
                       sourceId: widget.sourceId,
+                      thumbnail: metaEiga$.poster ?? metaEiga$.image,
                       eigaIdNotifier: _eigaId,
                       episodeIdNotifier: _episodeId,
                       eventBus: _eventBus,
-                      getData: () async => _cacheEpisodesStore[eigaId] ??=
-                          await _service.getEpisodes(eigaId),
+                      getData: () async =>
+                          _cacheEpisodesStore[season.eigaId] ??=
+                              await _service.getEpisodes(season.eigaId),
                       getWatchTimeEpisodes: (episodesEiga) async =>
-                          _cacheWatchTimeStore[eigaId] ??=
+                          _cacheWatchTimeStore[season.eigaId] ??=
                               _service is EigaWatchTimeMixin
                                   ? await (_service as EigaWatchTimeMixin)
                                       .getWatchTimeEpisodes(
-                                          eigaId: _eigaId.value,
+                                          eigaId: season.eigaId,
                                           episodes: episodesEiga.episodes)
                                   : {},
                       eager: true,
@@ -1010,114 +1046,50 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         _onChangeEpisode(
                             metaEiga: metaEiga,
                             indexEpisode: indexEpisode,
-                            indexSeason: 0,
+                            indexSeason: index,
                             episodesEiga: episodesEiga,
-                            seasons: [season]);
-                      });
-                });
-          }
+                            seasons: metaEiga$.seasons);
+                      }));
+            }).toList()),
+            TabBar(
+              isScrollable: true,
+              padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 0),
+              labelPadding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 0),
+              splashBorderRadius: BorderRadius.circular(10.0),
+              labelStyle: TextStyle(fontSize: 13.0),
+              indicatorColor: Theme.of(context).colorScheme.secondary,
+              tabAlignment: TabAlignment.start,
+              dividerHeight: 0,
+              tabs: metaEiga$.seasons.map((season) {
+                return Tab(text: season.name, height: tabBarHeight);
+              }).toList(),
+            ),
+          ];
 
-          // tab view
-          return DefaultTabController(
-            length: metaEiga$.seasons.length,
-            initialIndex: max(
-                0,
-                metaEiga$.seasons
-                    .indexWhere((season) => season.eigaId == _eigaId.value)),
-            child: Builder(builder: (context) {
-              final tabController = DefaultTabController.of(context);
-
-              _eigaId.addListener(() {
-                final index = metaEiga$.seasons
-                    .indexWhere((season) => season.eigaId == _eigaId.value);
-                if (index != tabController.index) {
-                  tabController.animateTo(index);
-                }
-              });
-
-              final tabBarHeight = 35.0;
-
-              final children = [
-                ContentSizeTabBarView(
-                    children: metaEiga$.seasons.asMap().entries.map((entry) {
-                  final season = entry.value;
-                  final index = entry.key;
-
-                  return Container(
-                      height: height == null ? null : height - tabBarHeight,
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: ListEpisodes(
-                          season: season,
-                          sourceId: widget.sourceId,
-                          thumbnail: metaEiga$.poster ?? metaEiga$.image,
-                          eigaIdNotifier: _eigaId,
-                          episodeIdNotifier: _episodeId,
-                          eventBus: _eventBus,
-                          getData: () async =>
-                              _cacheEpisodesStore[season.eigaId] ??=
-                                  await _service.getEpisodes(season.eigaId),
-                          getWatchTimeEpisodes: (episodesEiga) async =>
-                              _cacheWatchTimeStore[season.eigaId] ??=
-                                  _service is EigaWatchTimeMixin
-                                      ? await (_service as EigaWatchTimeMixin)
-                                          .getWatchTimeEpisodes(
-                                              eigaId: season.eigaId,
-                                              episodes: episodesEiga.episodes)
-                                      : {},
-                          eager: true,
-                          scrollDirection: scrollDirection,
-                          controller: controller,
-                          onTapEpisode: (
-                              {required episodesEiga, required indexEpisode}) {
-                            _onChangeEpisode(
-                                metaEiga: metaEiga,
-                                indexEpisode: indexEpisode,
-                                indexSeason: index,
-                                episodesEiga: episodesEiga,
-                                seasons: metaEiga$.seasons);
-                          }));
-                }).toList()),
-                TabBar(
-                  isScrollable: true,
-                  padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 0),
-                  labelPadding:
-                      EdgeInsets.symmetric(horizontal: 8.0, vertical: 0),
-                  splashBorderRadius: BorderRadius.circular(10.0),
-                  labelStyle: TextStyle(fontSize: 13.0),
-                  indicatorColor: Theme.of(context).colorScheme.secondary,
-                  tabAlignment: TabAlignment.start,
-                  dividerHeight: 0,
-                  tabs: metaEiga$.seasons.map((season) {
-                    return Tab(text: season.name, height: tabBarHeight);
-                  }).toList(),
-                ),
-              ];
-
-              return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  verticalDirection: scrollDirection == Axis.vertical
-                      ? VerticalDirection.up
-                      : VerticalDirection.down,
-                  children: children);
-            }),
-          );
-        });
+          return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              verticalDirection: scrollDirection == Axis.vertical
+                  ? VerticalDirection.up
+                  : VerticalDirection.down,
+              children: children);
+        }),
+      );
+    });
   }
 
   Widget _buildSuggest() {
-    return ValueListenableBuilder(
-        valueListenable: _suggestNotifier,
-        builder: (context, suggest, child) {
-          if (suggest == null) return SizedBox.shrink();
+    return Builder(builder: (context) {
+      final suggest = _suggestNotifier.watch(context);
+      if (suggest == null) return SizedBox.shrink();
 
-          return VerticalEigaList(
-            itemsFuture: suggest.then((data) => data
-                .map((item) => EigaExtend(eiga: item, sourceId: _service.uid))
-                .toList()),
-            title: 'Suggest',
-            disableScroll: true,
-            more: null,
-          );
-        });
+      return VerticalEigaList(
+        itemsFuture: suggest.then((data) => data
+            .map((item) => EigaExtend(eiga: item, sourceId: _service.uid))
+            .toList()),
+        title: 'Suggest',
+        disableScroll: true,
+        more: null,
+      );
+    });
   }
 }

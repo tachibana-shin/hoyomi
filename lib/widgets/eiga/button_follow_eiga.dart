@@ -13,7 +13,7 @@ import 'package:signals/signals_flutter.dart';
 
 class ButtonFollowEiga extends StatefulWidget {
   final ValueNotifier<String> eigaId;
-  final ValueNotifier<MetaEiga> metaEiga;
+  final Signal<MetaEiga> metaEiga;
   final Service service;
 
   const ButtonFollowEiga(

@@ -41,7 +41,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 class PlayerEiga extends StatefulWidget {
   final ValueNotifier<String> eigaId;
   final ValueNotifier<String?> episodeId;
-  final ValueNotifier<String> titleNotifier;
+  final Computed<String> title;
   final ValueNotifier<String> subtitleNotifier;
   final ValueNotifier<WatchTimeData?> watchTimeDataNotifier;
   final String sourceId;
@@ -69,7 +69,7 @@ class PlayerEiga extends StatefulWidget {
       {super.key,
       required this.eigaId,
       required this.episodeId,
-      required this.titleNotifier,
+      required this.title,
       required this.subtitleNotifier,
       required this.watchTimeDataNotifier,
       required this.sourceId,
@@ -606,15 +606,13 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ValueListenableBuilder(
-                        valueListenable: widget.titleNotifier,
-                        builder: (context, value, child) => Text(value,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500))),
+                    Watch((context) => Text(widget.title(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500))),
                     ValueListenableBuilder(
                         valueListenable: widget.subtitleNotifier,
                         builder: (context, value, child) => Text(value,
