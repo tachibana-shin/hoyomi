@@ -38,13 +38,14 @@ class Comic {
 
   factory Comic.createFakeData() {
     return Comic(
-        name: 'Dragon Ball Daima',
-        comicId: 'eiga-fake-id',
-        originalName: null,
-        image: OImage.createFakeData(),
-        lastChap: null,
-        timeAgo: null,
-        notice: 'Notice Fake',
-        rate: 8.5);
+      name: 'Dragon Ball Daima',
+      comicId: 'eiga-fake-id',
+      originalName: null,
+      image: OImage.createFakeData(),
+      lastChap: null,
+      timeAgo: null,
+      notice: 'Notice Fake',
+      rate: 8.5,
+    );
   }
 }

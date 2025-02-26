@@ -6,16 +6,22 @@ class SearchEigaPage extends StatelessWidget {
   final String sourceId;
   final String keyword;
 
-  const SearchEigaPage(
-      {super.key, required this.sourceId, required this.keyword});
+  const SearchEigaPage({
+    super.key,
+    required this.sourceId,
+    required this.keyword,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SectionEigaPage(
-        sourceId: sourceId,
-        sectionId: keyword,
-        getSection: ({required filters, required page, required sectionId}) =>
-            getEigaService(sourceId)
-                .search(filters: filters, page: page, keyword: sectionId));
+      sourceId: sourceId,
+      sectionId: keyword,
+      getSection:
+          ({required filters, required page, required sectionId}) =>
+              getEigaService(
+                sourceId,
+              ).search(filters: filters, page: page, keyword: sectionId),
+    );
   }
 }

@@ -8,25 +8,25 @@ String formatWatchUpdatedAt(DateTime date, String? locale) {
       'today': 'Hôm nay',
       'yesterday': 'Hôm qua',
       'twoDaysAgo': 'Hôm kia',
-      'format': "dd 'thg' M"
+      'format': "dd 'thg' M",
     },
     'en': {
       'today': 'Today',
       'yesterday': 'Yesterday',
       'twoDaysAgo': 'The day before yesterday',
-      'format': "MMM dd"
+      'format': "MMM dd",
     },
     'ja': {
       'today': '今日',
       'yesterday': '昨日',
       'twoDaysAgo': '一昨日',
-      'format': "M月dd日"
+      'format': "M月dd日",
     },
     'zn': {
       'today': '今天',
       'yesterday': '昨天',
       'twoDaysAgo': '前天',
-      'format': "M月dd日"
+      'format': "M月dd日",
     },
   };
 

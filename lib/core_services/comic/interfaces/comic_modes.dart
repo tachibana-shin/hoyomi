@@ -1,9 +1,4 @@
-enum ComicModes {
-  leftToRight,
-  rightToLeft,
-  topToBottom,
-  webToon,
-}
+enum ComicModes { leftToRight, rightToLeft, topToBottom, webToon }
 
 bool modeUsingPageView(ComicModes mode) {
   if (mode == ComicModes.leftToRight ||

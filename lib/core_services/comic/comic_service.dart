@@ -12,23 +12,22 @@ abstract class ComicService extends Service {
 
   Future<List<HomeComicSection>> home();
 
-  Future<ComicSection> getSection(
-      {required String sectionId,
-      required int page,
-      required Map<String, List<String>?> filters});
+  Future<ComicSection> getSection({
+    required String sectionId,
+    required int page,
+    required Map<String, List<String>?> filters,
+  });
 
   Future<MetaComic> getDetails(String comicId);
   Future<List<OImage>> getPages(String manga, String chap);
 
-  Future<ComicSection> Function(
-    MetaComic comic, {
-    int? page,
-  })? getSuggest;
+  Future<ComicSection> Function(MetaComic comic, {int? page})? getSuggest;
 
-  Future<ComicSection> search(
-      {required String keyword,
-      required int page,
-      required Map<String, List<String>?> filters});
+  Future<ComicSection> search({
+    required String keyword,
+    required int page,
+    required Map<String, List<String>?> filters,
+  });
 
   // Utils
   ComicModes? getComicModes(MetaComic comic);

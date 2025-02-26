@@ -10,8 +10,12 @@ class SimilarPage extends StatefulWidget {
   final String comicId;
   final MetaComic? comic;
 
-  const SimilarPage(
-      {super.key, required this.sourceId, required this.comicId, this.comic});
+  const SimilarPage({
+    super.key,
+    required this.sourceId,
+    required this.comicId,
+    this.comic,
+  });
 
   @override
   State<SimilarPage> createState() => _SimilarPageState();
@@ -23,18 +27,22 @@ class _SimilarPageState extends State<SimilarPage> {
       return Future.value(widget.comic!.name);
     }
 
-    return getComicService(widget.sourceId)
-        .getDetails(widget.comicId)
-        .then((value) => value.name);
+    return getComicService(
+      widget.sourceId,
+    ).getDetails(widget.comicId).then((value) => value.name);
   }
 
   @override
   Widget build(BuildContext context) {
     return PullRefreshPage<String>(
-        onLoadData: () => _getKeyword(),
-        onLoadFake: () => 'Keyword search',
-        builder: (keyword, param) =>
-            Scaffold(appBar: _buildAppBar(keyword), body: _buildBody(keyword)));
+      onLoadData: () => _getKeyword(),
+      onLoadFake: () => 'Keyword search',
+      builder:
+          (keyword, param) => Scaffold(
+            appBar: _buildAppBar(keyword),
+            body: _buildBody(keyword),
+          ),
+    );
   }
 
   AppBar _buildAppBar(String keyword) {

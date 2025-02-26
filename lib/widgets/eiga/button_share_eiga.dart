@@ -10,12 +10,13 @@ class ButtonShareEiga extends StatefulWidget {
   final ValueNotifier<MetaEiga> metaEiga;
   final Service service;
 
-  const ButtonShareEiga(
-      {super.key,
-      required this.eigaId,
-      required this.episodeName,
-      required this.metaEiga,
-      required this.service});
+  const ButtonShareEiga({
+    super.key,
+    required this.eigaId,
+    required this.episodeName,
+    required this.metaEiga,
+    required this.service,
+  });
 
   @override
   State<ButtonShareEiga> createState() => _ButtonShareEigaState();
@@ -25,23 +26,31 @@ class _ButtonShareEigaState extends State<ButtonShareEiga> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: widget.eigaId,
-        builder: (context, eigaId, _) => ElevatedButton.icon(
+      valueListenable: widget.eigaId,
+      builder:
+          (context, eigaId, _) => ElevatedButton.icon(
             onPressed: () {
               final title =
                   '${widget.episodeName.value} ${widget.metaEiga.value.name}, ${widget.metaEiga.value.originalName}';
               Share.share('Watch $title on Hoyomi: ', subject: title);
             },
-            icon: Icon(MaterialCommunityIcons.share_outline,
-                color: Theme.of(context).textTheme.labelLarge?.color),
-            label: Text('Share',
-                style: Theme.of(context)
-                    .textTheme
-                    .labelLarge
-                    ?.copyWith(fontWeight: FontWeight.normal, fontSize: 12.0)),
+            icon: Icon(
+              MaterialCommunityIcons.share_outline,
+              color: Theme.of(context).textTheme.labelLarge?.color,
+            ),
+            label: Text(
+              'Share',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.normal,
+                fontSize: 12.0,
+              ),
+            ),
             style: ButtonStyle(
-                padding: WidgetStateProperty.all(
-              EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
-            ))));
+              padding: WidgetStateProperty.all(
+                EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
+              ),
+            ),
+          ),
+    );
   }
 }

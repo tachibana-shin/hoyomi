@@ -11,15 +11,22 @@ class Comment extends StatefulWidget {
   final ComicComment comment;
   final ComicComment? parent;
 
-  final Future<ComicComments> Function(
-      {required ComicComment? parent, int? page})? getComments;
-  final Future<void> Function(
-      {required ComicComment? parent,
-      required ComicComment comment}) deleteComment;
-  final Future<bool> Function(
-      {required ComicComment? parent,
-      required ComicComment comment,
-      required bool value}) setLikeComment;
+  final Future<ComicComments> Function({
+    required ComicComment? parent,
+    int? page,
+  })?
+  getComments;
+  final Future<void> Function({
+    required ComicComment? parent,
+    required ComicComment comment,
+  })
+  deleteComment;
+  final Future<bool> Function({
+    required ComicComment? parent,
+    required ComicComment comment,
+    required bool value,
+  })
+  setLikeComment;
   final void Function() onPop;
 
   const Comment({
@@ -73,20 +80,17 @@ class _CommentState extends State<Comment> {
                         child: Text(
                           widget.comment.name,
                           overflow: TextOverflow.ellipsis,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
                       Row(
                         children: [
                           Text(
                             formatTimeAgo(widget.comment.timeAgo),
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Colors.grey,
-                                    ),
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                           ),
                         ],
                       ),
@@ -101,9 +105,11 @@ class _CommentState extends State<Comment> {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(widget.comment.like == true
-                            ? MaterialCommunityIcons.thumb_up
-                            : MaterialCommunityIcons.thumb_up_outline),
+                        icon: Icon(
+                          widget.comment.like == true
+                              ? MaterialCommunityIcons.thumb_up
+                              : MaterialCommunityIcons.thumb_up_outline,
+                        ),
                         iconSize: 20,
                         padding: EdgeInsets.zero,
                         onPressed: () {
@@ -117,9 +123,11 @@ class _CommentState extends State<Comment> {
                       ),
                       const SizedBox(width: 4),
                       IconButton(
-                        icon: Icon(widget.comment.like == false
-                            ? MaterialCommunityIcons.thumb_down
-                            : MaterialCommunityIcons.thumb_down_outline),
+                        icon: Icon(
+                          widget.comment.like == false
+                              ? MaterialCommunityIcons.thumb_down
+                              : MaterialCommunityIcons.thumb_down_outline,
+                        ),
                         iconSize: 20,
                         padding: EdgeInsets.zero,
                         onPressed: () {
@@ -134,8 +142,10 @@ class _CommentState extends State<Comment> {
                       const SizedBox(width: 16),
                       TextButton.icon(
                         onPressed: _showRepliesList,
-                        icon:
-                            const Icon(MaterialCommunityIcons.reply, size: 18),
+                        icon: const Icon(
+                          MaterialCommunityIcons.reply,
+                          size: 18,
+                        ),
                         label: Text(
                           'Reply',
                           style: Theme.of(context).textTheme.bodySmall,
@@ -157,40 +167,41 @@ class _CommentState extends State<Comment> {
                   ),
                   if (widget.comment.countReply > 0 && _showReplies == false)
                     Transform.translate(
-                        offset: Offset(-28.0, -8.0),
-                        child: TextButton(
-                          onPressed: _showRepliesList,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text:
-                                        'View more replies (${widget.comment.countReply})',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondaryFixedDim,
-                                        ),
+                      offset: Offset(-28.0, -8.0),
+                      child: TextButton(
+                        onPressed: _showRepliesList,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text:
+                                      'View more replies (${widget.comment.countReply})',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.copyWith(
+                                    color:
+                                        Theme.of(
+                                          context,
+                                        ).colorScheme.secondaryFixedDim,
                                   ),
-                                  WidgetSpan(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 4.0),
-                                      child: Icon(
-                                        MaterialCommunityIcons.chevron_down,
-                                        size: 18,
-                                      ),
+                                ),
+                                WidgetSpan(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 4.0),
+                                    child: Icon(
+                                      MaterialCommunityIcons.chevron_down,
+                                      size: 18,
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
-                        )),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -199,11 +210,12 @@ class _CommentState extends State<Comment> {
         // Replies section
         if (_showReplies)
           Comments(
-              getComments: widget.getComments,
-              parent: widget.comment,
-              controller: null,
-              deleteComment: widget.deleteComment,
-              setLikeComment: widget.setLikeComment),
+            getComments: widget.getComments,
+            parent: widget.comment,
+            controller: null,
+            deleteComment: widget.deleteComment,
+            setLikeComment: widget.setLikeComment,
+          ),
       ],
     );
   }
@@ -225,7 +237,10 @@ class _CommentState extends State<Comment> {
         }
       });
       await widget.setLikeComment(
-          comment: widget.comment, parent: widget.parent, value: value);
+        comment: widget.comment,
+        parent: widget.parent,
+        value: value,
+      );
     } catch (err) {
       setState(() {
         widget.comment.like = old;
@@ -245,48 +260,51 @@ class _CommentState extends State<Comment> {
           builder: (context, setState) {
             return AlertDialog(
               title: const Text('Confirm Delete'),
-              content:
-                  const Text('Are you sure you want to delete this comment?'),
+              content: const Text(
+                'Are you sure you want to delete this comment?',
+              ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: const Text('Cancel'),
                 ),
                 TextButton(
-                  onPressed: isDeleting
-                      ? null
-                      : () async {
-                          setState(() {
-                            isDeleting = true;
-                          });
-
-                          try {
-                            await widget.deleteComment(
-                                comment: widget.comment, parent: widget.parent);
-                            if (mounted) {
-                              // pop me
-                              widget.onPop();
-                              // ignore: use_build_context_synchronously
-                              Navigator.pop(context);
-                            }
-                          } catch (e) {
+                  onPressed:
+                      isDeleting
+                          ? null
+                          : () async {
                             setState(() {
-                              isDeleting = false;
+                              isDeleting = true;
                             });
 
-                            showSnackBar(Text('Error: $e'));
-                            debugPrint('Error: $e');
-                          }
-                        },
-                  child: isDeleting
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Text('Delete'),
+                            try {
+                              await widget.deleteComment(
+                                comment: widget.comment,
+                                parent: widget.parent,
+                              );
+                              if (mounted) {
+                                // pop me
+                                widget.onPop();
+                                // ignore: use_build_context_synchronously
+                                Navigator.pop(context);
+                              }
+                            } catch (e) {
+                              setState(() {
+                                isDeleting = false;
+                              });
+
+                              showSnackBar(Text('Error: $e'));
+                              debugPrint('Error: $e');
+                            }
+                          },
+                  child:
+                      isDeleting
+                          ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : const Text('Delete'),
                 ),
               ],
             );

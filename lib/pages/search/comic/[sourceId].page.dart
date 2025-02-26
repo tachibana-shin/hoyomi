@@ -6,16 +6,22 @@ class SearchComicPage extends StatelessWidget {
   final String sourceId;
   final String keyword;
 
-  const SearchComicPage(
-      {super.key, required this.sourceId, required this.keyword});
+  const SearchComicPage({
+    super.key,
+    required this.sourceId,
+    required this.keyword,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SectionComicPage(
-        sourceId: sourceId,
-        sectionId: keyword,
-        getSection: ({required filters, required page, required sectionId}) =>
-            getComicService(sourceId)
-                .search(filters: filters, page: page, keyword: sectionId));
+      sourceId: sourceId,
+      sectionId: keyword,
+      getSection:
+          ({required filters, required page, required sectionId}) =>
+              getComicService(
+                sourceId,
+              ).search(filters: filters, page: page, keyword: sectionId),
+    );
   }
 }

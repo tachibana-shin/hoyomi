@@ -22,10 +22,7 @@ class SlideFadeTransition extends StatelessWidget {
 
     return FadeTransition(
       opacity: fadeAnimation,
-      child: SlideTransition(
-        position: slideAnimation,
-        child: child,
-      ),
+      child: SlideTransition(position: slideAnimation, child: child),
     );
   }
 }

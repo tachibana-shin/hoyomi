@@ -35,14 +35,15 @@ class ComicChanges {
             false, // Can set this to true if you need foreground service
       ),
       iosConfiguration: IosConfiguration(
-          autoStart: true,
-          onForeground: onStart,
-          onBackground: (ServiceInstance service) {
-            WidgetsFlutterBinding.ensureInitialized();
-            DartPluginRegistrant.ensureInitialized();
+        autoStart: true,
+        onForeground: onStart,
+        onBackground: (ServiceInstance service) {
+          WidgetsFlutterBinding.ensureInitialized();
+          DartPluginRegistrant.ensureInitialized();
 
-            return true;
-          }),
+          return true;
+        },
+      ),
     );
   }
 
@@ -57,8 +58,9 @@ class ComicChanges {
     _timer?.cancel();
 
     // Timer to call checkUpdateAll at regular intervals
-    _timer = Timer.periodic(Duration(minutes: _settings.pollingIntervalComic),
-        (timer) async {
+    _timer = Timer.periodic(Duration(minutes: _settings.pollingIntervalComic), (
+      timer,
+    ) async {
       if (instance is AndroidServiceInstance
           ? await instance.isForegroundService()
           : true) {
@@ -80,24 +82,32 @@ class ComicChanges {
       final chunkedComics = _chunkList(itemsWithSameSourceId, 5);
 
       for (final comicBatch in chunkedComics) {
-        tasks.add(Future.wait(comicBatch.map((comic) async {
-          final changes = await updateComic(
-              sourceId: sourceId, comic: comic, saveDatabase: false);
-          if (changes.isNotEmpty) {
-            // Debug print if there are changes
-            debugPrint("[changes]: $changes");
-          }
-        })));
+        tasks.add(
+          Future.wait(
+            comicBatch.map((comic) async {
+              final changes = await updateComic(
+                sourceId: sourceId,
+                comic: comic,
+                saveDatabase: false,
+              );
+              if (changes.isNotEmpty) {
+                // Debug print if there are changes
+                debugPrint("[changes]: $changes");
+              }
+            }),
+          ),
+        );
       }
     }
 
     await Future.wait(tasks);
   }
 
-  Future<Iterable<ComicChapter>> updateComic(
-      {required String sourceId,
-      required Comic comic,
-      bool? saveDatabase}) async {
+  Future<Iterable<ComicChapter>> updateComic({
+    required String sourceId,
+    required Comic comic,
+    bool? saveDatabase,
+  }) async {
     final service = getComicService(sourceId);
     final newData = await service.getDetails(comic.comicId);
     final oldData = MetaComic.fromJson(jsonDecode(comic.meta));
@@ -113,8 +123,9 @@ class ComicChanges {
     final oldChaptersSet =
         oldData.chapters.map((chapter) => chapter.chapterId).toSet();
 
-    return newData.chapters
-        .where((chapter) => !oldChaptersSet.contains(chapter.chapterId));
+    return newData.chapters.where(
+      (chapter) => !oldChaptersSet.contains(chapter.chapterId),
+    );
   }
 
   Map<String, List<Comic>> groupComicsBySourceId(List<Comic> allComics) {
@@ -128,15 +139,17 @@ class ComicChanges {
   }
 
   Future<List<Comic>> fetchAndSortComicsForUpdate() {
-    DateTime thirtyMinutesAgo = DateTime.now()
-        .subtract(Duration(minutes: _settings.pollingIntervalComic));
+    DateTime thirtyMinutesAgo = DateTime.now().subtract(
+      Duration(minutes: _settings.pollingIntervalComic),
+    );
 
-    final itemsToUpdate = _comicBox
-        .filter()
-        .updatedAtLessThan(thirtyMinutesAgo)
-        .statusEqualTo(StatusEnum.ongoing.name)
-        .sortByUpdatedAtDesc()
-        .findAll();
+    final itemsToUpdate =
+        _comicBox
+            .filter()
+            .updatedAtLessThan(thirtyMinutesAgo)
+            .statusEqualTo(StatusEnum.ongoing.name)
+            .sortByUpdatedAtDesc()
+            .findAll();
 
     return itemsToUpdate;
   }
@@ -144,8 +157,12 @@ class ComicChanges {
   List<List<T>> _chunkList<T>(List<T> list, int chunkSize) {
     List<List<T>> chunks = [];
     for (int i = 0; i < list.length; i += chunkSize) {
-      chunks.add(list.sublist(
-          i, i + chunkSize > list.length ? list.length : i + chunkSize));
+      chunks.add(
+        list.sublist(
+          i,
+          i + chunkSize > list.length ? list.length : i + chunkSize,
+        ),
+      );
     }
     return chunks;
   }

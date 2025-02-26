@@ -25,13 +25,15 @@ class SectionEigaPage extends StatefulWidget {
     required String sectionId,
     required int page,
     required Map<String, List<String>?> filters,
-  })? getSection;
+  })?
+  getSection;
 
-  const SectionEigaPage(
-      {super.key,
-      required this.sourceId,
-      required this.sectionId,
-      this.getSection});
+  const SectionEigaPage({
+    super.key,
+    required this.sourceId,
+    required this.sectionId,
+    this.getSection,
+  });
 
   @override
   createState() => _SectionEigaPageState();
@@ -58,7 +60,10 @@ class _SectionEigaPageState extends State<SectionEigaPage> {
 
   Future<(bool, List<Eiga>)> _fetchComics(int pageKey) async {
     final newComics = await (widget.getSection ?? _service.getSection)(
-        sectionId: widget.sectionId, page: pageKey, filters: _selectFilters);
+      sectionId: widget.sectionId,
+      page: pageKey,
+      filters: _selectFilters,
+    );
     final isLastPage = newComics.page >= newComics.totalPages;
 
     setState(() {
@@ -79,64 +84,72 @@ class _SectionEigaPageState extends State<SectionEigaPage> {
   @override
   Widget build(BuildContext context) {
     return PullRefreshPage<List<Eiga>>(
-        onLoadData: () => _fetchComics(1).then((param) => param.$2),
-        onLoadFake: () => List.generate(30, (_) => Eiga.createFakeData()),
-        builder: (data, param) =>
-            Scaffold(appBar: _buildAppBar(param.$2), body: _buildBody(data)));
+      onLoadData: () => _fetchComics(1).then((param) => param.$2),
+      onLoadFake: () => List.generate(30, (_) => Eiga.createFakeData()),
+      builder:
+          (data, param) =>
+              Scaffold(appBar: _buildAppBar(param.$2), body: _buildBody(data)),
+    );
   }
 
   AppBar _buildAppBar(Future<void> Function() refresh) {
     return AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        scrolledUnderElevation: 0.0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            context.pop();
-          },
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      scrolledUnderElevation: 0.0,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          context.pop();
+        },
+      ),
+      title: Skeletonizer(
+        enabled: _title == null || _title!.isEmpty,
+        enableSwitchAnimation: true,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _title ?? "Fake title",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 2),
+            Text(
+              "${_service.name} (${(_currentPage ?? '?')}/${_totalPages ?? '??'}) page",
+              style: TextStyle(
+                fontSize: 12,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+          ],
         ),
-        title: Skeletonizer(
-            enabled: _title == null || _title!.isEmpty,
-            enableSwitchAnimation: true,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _title ?? "Fake title",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  "${_service.name} (${(_currentPage ?? '?')}/${_totalPages ?? '??'}) page",
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-              ],
-            )),
-        actions: [if (_url != null) IconButtonOpenBrowser(url: _url!)],
-        // actions: [
-        //   IconButton(
-        //       onPressed: () {},
-        //       icon: Icon(MaterialCommunityIcons.earth,
-        //           color: Theme.of(context).colorScheme.onSurface)),
-        // ],
-        bottom: _filters == null
-            ? null
-            : PreferredSize(
+      ),
+      actions: [if (_url != null) IconButtonOpenBrowser(url: _url!)],
+      // actions: [
+      //   IconButton(
+      //       onPressed: () {},
+      //       icon: Icon(MaterialCommunityIcons.earth,
+      //           color: Theme.of(context).colorScheme.onSurface)),
+      // ],
+      bottom:
+          _filters == null
+              ? null
+              : PreferredSize(
                 preferredSize: Size.fromHeight(48.0),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 8.0),
+                    vertical: 10.0,
+                    horizontal: 8.0,
+                  ),
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children: _filters!.map((filter) {
-                        final options = filter.options;
+                      children:
+                          _filters!.map((filter) {
+                            final options = filter.options;
 
-                        return Padding(
-                            padding: EdgeInsets.only(right: 8.0),
-                            child: InkWell(
+                            return Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: InkWell(
                                 onTap: () {
                                   DropDownState(
                                     DropDown(
@@ -155,16 +168,21 @@ class _SectionEigaPageState extends State<SectionEigaPage> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      data: options
-                                          .map((option) => SelectedListItem(
-                                              name: option.name,
-                                              value: option.value,
-                                              isSelected:
-                                                  _selectFilters[filter.key]
+                                      data:
+                                          options
+                                              .map(
+                                                (option) => SelectedListItem(
+                                                  name: option.name,
+                                                  value: option.value,
+                                                  isSelected:
+                                                      _selectFilters[filter.key]
                                                           ?.contains(
-                                                              option.value) ??
-                                                      option.selected))
-                                          .toList(),
+                                                            option.value,
+                                                          ) ??
+                                                      option.selected,
+                                                ),
+                                              )
+                                              .toList(),
                                       onSelected: (selectedList) {
                                         _selectFilters[filter.key] =
                                             selectedList
@@ -179,67 +197,86 @@ class _SectionEigaPageState extends State<SectionEigaPage> {
                                   ).showModal(context);
                                 },
                                 child: ClipRRect(
-                                    clipBehavior: Clip.antiAlias,
-                                    child: Chip(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 8.0, vertical: 4.0),
-                                        backgroundColor: Colors.transparent,
-                                        label: Row(children: [
-                                          Text(
-                                            _selectFilters
-                                                    .containsKey(filter.key)
-                                                ? _selectFilters[filter.key]!
-                                                    .map((value) => options
-                                                        .firstWhere((option) =>
-                                                            option.value ==
-                                                            value)
-                                                        .name)
-                                                    .join(', ')
-                                                : filter.name,
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onSurface
-                                                    .withValues(
-                                                        alpha: _selectFilters
-                                                                .containsKey(
-                                                                    filter.key)
-                                                            ? 1.0
-                                                            : 0.8)),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: Chip(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 8.0,
+                                      vertical: 4.0,
+                                    ),
+                                    backgroundColor: Colors.transparent,
+                                    label: Row(
+                                      children: [
+                                        Text(
+                                          _selectFilters.containsKey(filter.key)
+                                              ? _selectFilters[filter.key]!
+                                                  .map(
+                                                    (value) =>
+                                                        options
+                                                            .firstWhere(
+                                                              (option) =>
+                                                                  option
+                                                                      .value ==
+                                                                  value,
+                                                            )
+                                                            .name,
+                                                  )
+                                                  .join(', ')
+                                              : filter.name,
+                                          style: TextStyle(
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface.withValues(
+                                              alpha:
+                                                  _selectFilters.containsKey(
+                                                        filter.key,
+                                                      )
+                                                      ? 1.0
+                                                      : 0.8,
+                                            ),
                                           ),
-                                          Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 7.0, right: 0.0),
-                                              child: Icon(MaterialCommunityIcons
-                                                  .chevron_down))
-                                        ])))));
-                      }).toList(),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            left: 7.0,
+                                            right: 0.0,
+                                          ),
+                                          child: Icon(
+                                            MaterialCommunityIcons.chevron_down,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
                     ),
                   ),
                 ),
-              ));
+              ),
+    );
   }
 
   Widget _buildBody(List<Eiga> data) {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-        child: InfiniteGrid(
-            key: Key(jsonEncode(_selectFilters)),
-            data: data,
-            crossAxisCount: VerticalList.getCrossAxisCount(context),
-            crossAxisSpacing: 4.0,
-            mainAxisSpacing: 4.0,
-            fetchData: () async {
-              final result = await _fetchComics(_pageKey);
-              _pageKey++;
+      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      child: InfiniteGrid(
+        key: Key(jsonEncode(_selectFilters)),
+        data: data,
+        crossAxisCount: VerticalList.getCrossAxisCount(context),
+        crossAxisSpacing: 4.0,
+        mainAxisSpacing: 4.0,
+        fetchData: () async {
+          final result = await _fetchComics(_pageKey);
+          _pageKey++;
 
-              return result;
-            },
-            itemBuilder: (context, eiga, index) {
-              return VerticalEiga(
-                eiga: eiga,
-                sourceId: widget.sourceId,
-              );
-            }));
+          return result;
+        },
+        itemBuilder: (context, eiga, index) {
+          return VerticalEiga(eiga: eiga, sourceId: widget.sourceId);
+        },
+      ),
+    );
   }
 }

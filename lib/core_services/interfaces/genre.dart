@@ -6,18 +6,20 @@ class Genre {
   final String? description;
   final OImage? image;
 
-  const Genre(
-      {required this.name,
-      required this.genreId,
-      this.description,
-      this.image});
+  const Genre({
+    required this.name,
+    required this.genreId,
+    this.description,
+    this.image,
+  });
 
   factory Genre.createFakeData() {
     return Genre(
-        name: "Action",
-        genreId: "1",
-        description: "Action-packed genre with intense battles.",
-        image: OImage.createFakeData());
+      name: "Action",
+      genreId: "1",
+      description: "Action-packed genre with intense battles.",
+      image: OImage.createFakeData(),
+    );
   }
 
   // Convert from JSON

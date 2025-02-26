@@ -5,8 +5,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class IconButtonOpenBrowser extends StatelessWidget {
   static Future<void> open(String url) async {
-    if (!await launchUrl(Uri.parse(url),
-        mode: LaunchMode.externalApplication)) {
+    if (!await launchUrl(
+      Uri.parse(url),
+      mode: LaunchMode.externalApplication,
+    )) {
       showSnackBar(Text('Could not launch $url'));
     }
   }

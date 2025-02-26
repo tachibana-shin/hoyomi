@@ -140,46 +140,53 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     _service
         .getSubtitles(eigaId: _eigaId.value, episode: episode)
         .then((subtitles) {
-      _subtitlesNotifier.value = subtitles;
-    }).catchError((error) {
-      debugPrint('Error: $error');
-    });
+          _subtitlesNotifier.value = subtitles;
+        })
+        .catchError((error) {
+          debugPrint('Error: $error');
+        });
 
     _sourceNotifier.value = null;
-    _service.getSource(eigaId: _eigaId.value, episode: episode).then((source) {
-      _sourceNotifier.value = source;
-    }).catchError((error) {
-      debugPrint('Error: $error');
-    });
+    _service
+        .getSource(eigaId: _eigaId.value, episode: episode)
+        .then((source) {
+          _sourceNotifier.value = source;
+        })
+        .catchError((error) {
+          debugPrint('Error: $error');
+        });
 
     _thumbnailVtt.value = null;
     if (_service.getThumbnail != null) {
-      _service.getThumbnail!(
-        eigaId: _eigaId.value,
-        episode: episode,
-        episodeIndex: episodeIndex,
-        metaEiga: metaEiga,
-      )
+      _service
+          .getThumbnail!(
+            eigaId: _eigaId.value,
+            episode: episode,
+            episodeIndex: episodeIndex,
+            metaEiga: metaEiga,
+          )
           .then((thumbnail) {
-        _thumbnailVtt.value = thumbnail;
-      }).catchError((error) {
-        debugPrint('Error: $error');
-      });
+            _thumbnailVtt.value = thumbnail;
+          })
+          .catchError((error) {
+            debugPrint('Error: $error');
+          });
     }
 
     _openingEndingNotifier.value = null;
     _service
         .getOpeningEnding(
-      eigaId: _eigaId.value,
-      episode: episode,
-      episodeIndex: episodeIndex,
-      metaEiga: metaEiga,
-    )
+          eigaId: _eigaId.value,
+          episode: episode,
+          episodeIndex: episodeIndex,
+          metaEiga: metaEiga,
+        )
         .then((data) {
-      _openingEndingNotifier.value = data;
-    }).catchError((error) {
-      debugPrint('Error: $error');
-    });
+          _openingEndingNotifier.value = data;
+        })
+        .catchError((error) {
+          debugPrint('Error: $error');
+        });
 
     _watchTimeDataNotifier.value = null;
     if (_service is EigaWatchTimeMixin) {
@@ -188,26 +195,27 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
       (_service as EigaWatchTimeMixin)
           .getWatchTime(
-        eigaId: eigaId,
-        episode: episode,
-        episodeIndex: episodeIndex,
-        metaEiga: metaEiga,
-      )
+            eigaId: eigaId,
+            episode: episode,
+            episodeIndex: episodeIndex,
+            metaEiga: metaEiga,
+          )
           .then((data) {
-        _watchTimeDataNotifier.value = WatchTimeData(
-          eigaId: eigaId,
-          episodeId: episodeId,
-          watchTime: data,
-        );
-      }).catchError((error) {
-        _watchTimeDataNotifier.value = WatchTimeData(
-          eigaId: eigaId,
-          episodeId: episodeId,
-          watchTime: null,
-        );
+            _watchTimeDataNotifier.value = WatchTimeData(
+              eigaId: eigaId,
+              episodeId: episodeId,
+              watchTime: data,
+            );
+          })
+          .catchError((error) {
+            _watchTimeDataNotifier.value = WatchTimeData(
+              eigaId: eigaId,
+              episodeId: episodeId,
+              watchTime: null,
+            );
 
-        debugPrint('Error: $error');
-      });
+            debugPrint('Error: $error');
+          });
     }
   }
 
@@ -389,9 +397,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     Text(
                       '${formatNumber(metaEiga$.views!)} views',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontSize: 14.0,
-                          ),
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 14.0,
+                      ),
                     ),
 
                   SizedBox(height: 2.0),
@@ -402,9 +410,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       Text(
                         'Author ',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontSize: 14.0,
-                            ),
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 14.0,
+                        ),
                       ),
                       Text(
                         metaEiga$.author ?? 'Unknown',
@@ -421,9 +429,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           style: Theme.of(
                             context,
                           ).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontSize: 14.0,
-                              ),
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontSize: 14.0,
+                          ),
                         ),
                         GestureDetector(
                           onTap: () {
@@ -438,10 +446,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                             style: Theme.of(
                               context,
                             ).textTheme.bodyMedium?.copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                  fontSize: 14.0,
-                                ),
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontSize: 14.0,
+                            ),
                           ),
                         ),
                       ],
@@ -491,29 +498,31 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   VerticalSeparator(),
                 if (metaEiga$.countries?.isNotEmpty == true)
                   Row(
-                    children: metaEiga$.countries!.map((country) {
-                      return Padding(
-                        padding: EdgeInsets.only(right: 4.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            context.push(
-                              '/section_eiga/${widget.sourceId}/${country.genreId}',
-                            );
-                          },
-                          child: Text(
-                            country.name,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodyMedium?.copyWith(
+                    children:
+                        metaEiga$.countries!.map((country) {
+                          return Padding(
+                            padding: EdgeInsets.only(right: 4.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                context.push(
+                                  '/section_eiga/${widget.sourceId}/${country.genreId}',
+                                );
+                              },
+                              child: Text(
+                                country.name,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.copyWith(
                                   fontSize: 14.0,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.tertiaryFixedDim,
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.tertiaryFixedDim,
                                 ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                              ),
+                            ),
+                          );
+                        }).toList(),
                   ),
               ],
             ),
@@ -541,9 +550,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   Text(
                     '${metaEiga$.countRate} people rated',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontSize: 14.0,
-                        ),
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 14.0,
+                    ),
                   ),
                 if (metaEiga$.countRate != null) VerticalSeparator(),
                 if (metaEiga$.movieSeason != null)
@@ -556,10 +565,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     child: Text(
                       metaEiga$.movieSeason!.name,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 14.0,
-                            color:
-                                Theme.of(context).colorScheme.tertiaryFixedDim,
-                          ),
+                        fontSize: 14.0,
+                        color: Theme.of(context).colorScheme.tertiaryFixedDim,
+                      ),
                     ),
                   ),
               ],
@@ -569,22 +577,23 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
             Wrap(
               spacing: 7.0, // Space between the genre tags
-              children: metaEiga$.genres.map((genre) {
-                return GestureDetector(
-                  onTap: () {
-                    context.push(
-                      '/section_eiga/${widget.sourceId}/${genre.genreId}',
-                    );
-                  },
-                  child: Text(
-                    '#${genre.name}',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              children:
+                  metaEiga$.genres.map((genre) {
+                    return GestureDetector(
+                      onTap: () {
+                        context.push(
+                          '/section_eiga/${widget.sourceId}/${genre.genreId}',
+                        );
+                      },
+                      child: Text(
+                        '#${genre.name}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontSize: 14.0,
                           color: Theme.of(context).colorScheme.tertiaryFixedDim,
                         ),
-                  ),
-                );
-              }).toList(),
+                      ),
+                    );
+                  }).toList(),
             ),
 
             if (metaEiga$.originalName != null) SizedBox(height: 5.0),
@@ -598,9 +607,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     TextSpan(
                       text: 'Other name: ',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontSize: 14.0,
-                          ),
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 14.0,
+                      ),
                     ),
                     TextSpan(
                       text: metaEiga$.originalName!,
@@ -653,19 +662,11 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               ),
               SizedBox(width: 5.0),
               Text(
-                'Updated on day ${[
-                  'Sunday',
-                  'Monday',
-                  'Tuesday',
-                  'Wednesday',
-                  'Thursday',
-                  'Friday',
-                  'Saturday'
-                ][schedule.day]} of the week at ${schedule.hour}:${schedule.minute}',
+                'Updated on day ${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][schedule.day]} of the week at ${schedule.hour}:${schedule.minute}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.secondary,
-                      fontSize: 14.0,
-                    ),
+                  color: Theme.of(context).colorScheme.secondary,
+                  fontSize: 14.0,
+                ),
               ),
             ],
           ),
@@ -694,10 +695,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 Text(
                   'View all',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14.0,
-                      ),
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14.0,
+                  ),
                 ),
                 Center(
                   child: Icon(
@@ -726,162 +727,165 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       isScrollControlled: true,
       showDragHandle: true,
       useSafeArea: true,
-      builder: (context, pop) => DraggableScrollableSheet(
-        expand: false,
-        snap: true,
-        snapSizes: [_initialBottomSheet],
-        initialChildSize: _initialBottomSheet,
-        minChildSize: 0,
-        maxChildSize: 1,
-        builder: (context, scrollController) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            padding: EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      builder:
+          (context, pop) => DraggableScrollableSheet(
+            expand: false,
+            snap: true,
+            snapSizes: [_initialBottomSheet],
+            initialChildSize: _initialBottomSheet,
+            minChildSize: 0,
+            maxChildSize: 1,
+            builder: (context, scrollController) {
+              return SingleChildScrollView(
+                controller: scrollController,
+                padding: EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
+                child: Column(
                   children: [
-                    Container(
-                      width: min(110.0, 50.w(context)),
-                      decoration: BoxDecoration(
-                        color: Colors.blueGrey.shade200,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: AspectRatio(
-                        aspectRatio: 2 / 3,
-                        child: OImage.network(
-                          metaEiga.value.image.src,
-                          sourceId: widget.sourceId,
-                          headers: metaEiga.value.image.headers,
-                          fit: BoxFit.cover,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: min(110.0, 50.w(context)),
+                          decoration: BoxDecoration(
+                            color: Colors.blueGrey.shade200,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: AspectRatio(
+                            aspectRatio: 2 / 3,
+                            child: OImage.network(
+                              metaEiga.value.image.src,
+                              sourceId: widget.sourceId,
+                              headers: metaEiga.value.image.headers,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              metaEiga.value.name,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(fontSize: 16),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  metaEiga.value.name,
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(fontSize: 16),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  '${metaEiga.value.language ?? 'unknown'} | ${metaEiga.value.countries?.firstOrNull?.name ?? 'unknown'}',
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Release year: ${metaEiga.value.yearOf}',
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Episode: ${metaEiga.value.duration}',
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 8),
-                            Text(
-                              '${metaEiga.value.language ?? 'unknown'} | ${metaEiga.value.countries?.firstOrNull?.name ?? 'unknown'}',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'Release year: ${metaEiga.value.yearOf}',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'Episode: ${metaEiga.value.duration}',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
+                    SizedBox(height: 16),
+                    if (metaEiga.value.originalName != null)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8.0,
+                              bottom: 4.0,
+                            ),
+                            child: Text(
+                              'Other name',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Text(metaEiga.value.originalName!),
+                        ],
+                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                          child: Text(
+                            'Description',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Text(metaEiga.value.description),
+                        Wrap(
+                          spacing: 8.0,
+                          runSpacing: 4.0,
+                          children:
+                              metaEiga.value.genres
+                                  .map<Widget>(
+                                    (genre) => Chip(label: Text(genre.name)),
+                                  )
+                                  .toList(),
+                        ),
+                      ],
+                    ),
+                    if (metaEiga.value.trailer != null)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8.0,
+                              bottom: 4.0,
+                            ),
+                            child: Text(
+                              'Trailer',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: InAppWebView(
+                              initialUrlRequest: URLRequest(
+                                url: WebUri.uri(
+                                  Uri.parse(metaEiga.value.trailer!),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
-                SizedBox(height: 16),
-                if (metaEiga.value.originalName != null)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 8.0,
-                          bottom: 4.0,
-                        ),
-                        child: Text(
-                          'Other name',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Text(metaEiga.value.originalName!),
-                    ],
-                  ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                      child: Text(
-                        'Description',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Text(metaEiga.value.description),
-                    Wrap(
-                      spacing: 8.0,
-                      runSpacing: 4.0,
-                      children: metaEiga.value.genres
-                          .map<Widget>(
-                            (genre) => Chip(label: Text(genre.name)),
-                          )
-                          .toList(),
-                    ),
-                  ],
-                ),
-                if (metaEiga.value.trailer != null)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 8.0,
-                          bottom: 4.0,
-                        ),
-                        child: Text(
-                          'Trailer',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: InAppWebView(
-                          initialUrlRequest: URLRequest(
-                            url: WebUri.uri(
-                              Uri.parse(metaEiga.value.trailer!),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-              ],
-            ),
-          );
-        },
-      ),
+              );
+            },
+          ),
     );
   }
 
@@ -904,7 +908,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 _buildSeasonArea(
                   metaEiga,
                   scrollDirection: Axis.vertical,
-                  height: size.height -
+                  height:
+                      size.height -
                       padding.top -
                       padding.bottom -
                       7.0 -
@@ -934,54 +939,56 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       isScrollControlled: true,
       showDragHandle: true,
       useSafeArea: true,
-      builder: (context, pop) => DraggableScrollableSheet(
-        expand: false,
-        snap: true,
-        snapSizes: [_initialBottomSheet],
-        initialChildSize: _initialBottomSheet,
-        minChildSize: 0,
-        maxChildSize: 1,
-        builder: (context, scrollController) {
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              final padding = EdgeInsets.only(
-                left: 12.0,
-                right: 12.0,
-                bottom: 8.0,
-              );
+      builder:
+          (context, pop) => DraggableScrollableSheet(
+            expand: false,
+            snap: true,
+            snapSizes: [_initialBottomSheet],
+            initialChildSize: _initialBottomSheet,
+            minChildSize: 0,
+            maxChildSize: 1,
+            builder: (context, scrollController) {
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  final padding = EdgeInsets.only(
+                    left: 12.0,
+                    right: 12.0,
+                    bottom: 8.0,
+                  );
 
-              final heightChild = constraints.maxHeight -
-                  padding.top -
-                  padding.bottom -
-                  7.0 -
-                  2.0 -
-                  (_schedule.value == null ? 0 : 16.0 * 1.5);
+                  final heightChild =
+                      constraints.maxHeight -
+                      padding.top -
+                      padding.bottom -
+                      7.0 -
+                      2.0 -
+                      (_schedule.value == null ? 0 : 16.0 * 1.5);
 
-              if (heightChild <= 0 || constraints.maxHeight <= 0) {
-                pop();
-              }
-              return ClipRect(
-                child: Container(
-                  height: constraints.maxHeight,
-                  padding: padding,
-                  child: ListView(
-                    children: [
-                      _buildSchedule(),
-                      SizedBox(height: 7.0),
-                      _buildSeasonArea(
-                        metaEiga,
-                        scrollDirection: Axis.vertical,
-                        controller: scrollController,
-                        height: heightChild,
+                  if (heightChild <= 0 || constraints.maxHeight <= 0) {
+                    pop();
+                  }
+                  return ClipRect(
+                    child: Container(
+                      height: constraints.maxHeight,
+                      padding: padding,
+                      child: ListView(
+                        children: [
+                          _buildSchedule(),
+                          SizedBox(height: 7.0),
+                          _buildSeasonArea(
+                            metaEiga,
+                            scrollDirection: Axis.vertical,
+                            controller: scrollController,
+                            height: heightChild,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
-      ),
+          ),
     );
   }
 
@@ -1041,25 +1048,27 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       final currentIndex = episodesEiga.episodes.indexWhere(
         (e) => e.episodeId == _episodeId.value,
       );
-      _onPrevNotifier.value = currentIndex > 0
-          ? () => _onChangeEpisode(
+      _onPrevNotifier.value =
+          currentIndex > 0
+              ? () => _onChangeEpisode(
                 metaEiga: metaEiga,
                 indexEpisode: currentIndex - 1,
                 indexSeason: indexSeason,
                 episodesEiga: episodesEiga,
                 seasons: seasons,
               )
-          : null;
+              : null;
 
-      _onNextNotifier.value = currentIndex < episodesEiga.episodes.length - 1
-          ? () => _onChangeEpisode(
+      _onNextNotifier.value =
+          currentIndex < episodesEiga.episodes.length - 1
+              ? () => _onChangeEpisode(
                 metaEiga: metaEiga,
                 indexEpisode: currentIndex + 1,
                 indexSeason: indexSeason,
                 episodesEiga: episodesEiga,
                 seasons: seasons,
               )
-          : null;
+              : null;
     });
 
     if (episodeChanged) {
@@ -1097,20 +1106,22 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 eigaIdNotifier: _eigaId,
                 episodeIdNotifier: _episodeId,
                 eventBus: _eventBus,
-                getData: (update) async =>
-                    _cacheEpisodesStore[eigaId] ??= await _getEpisodes(
-                  eigaId,
-                  update,
-                ),
-                getWatchTimeEpisodes: (episodesEiga) async =>
-                    _cacheWatchTimeStore[eigaId] ??=
-                        _service is EigaWatchTimeMixin
-                            ? await (_service as EigaWatchTimeMixin)
-                                .getWatchTimeEpisodes(
-                                eigaId: _eigaId.value,
-                                episodes: episodesEiga.episodes,
-                              )
-                            : {},
+                getData:
+                    (update) async =>
+                        _cacheEpisodesStore[eigaId] ??= await _getEpisodes(
+                          eigaId,
+                          update,
+                        ),
+                getWatchTimeEpisodes:
+                    (episodesEiga) async =>
+                        _cacheWatchTimeStore[eigaId] ??=
+                            _service is EigaWatchTimeMixin
+                                ? await (_service as EigaWatchTimeMixin)
+                                    .getWatchTimeEpisodes(
+                                      eigaId: _eigaId.value,
+                                      episodes: episodesEiga.episodes,
+                                    )
+                                : {},
                 eager: true,
                 scrollDirection: scrollDirection,
                 controller: controller,
@@ -1154,53 +1165,58 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
               final children = [
                 ContentSizeTabBarView(
-                  children: metaEiga$.seasons.asMap().entries.map((entry) {
-                    final season = entry.value;
-                    final index = entry.key;
+                  children:
+                      metaEiga$.seasons.asMap().entries.map((entry) {
+                        final season = entry.value;
+                        final index = entry.key;
 
-                    return Container(
-                      height: height == null ? null : height - tabBarHeight,
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: ListEpisodes(
-                        season: season,
-                        sourceId: widget.sourceId,
-                        thumbnail: metaEiga$.poster ?? metaEiga$.image,
-                        eigaIdNotifier: _eigaId,
-                        episodeIdNotifier: _episodeId,
-                        eventBus: _eventBus,
-                        getData: (update) async =>
-                            _cacheEpisodesStore[season.eigaId] ??=
-                                await _getEpisodes(
-                          season.eigaId,
-                          update,
-                        ),
-                        getWatchTimeEpisodes: (episodesEiga) async =>
-                            _cacheWatchTimeStore[season.eigaId] ??=
-                                _service is EigaWatchTimeMixin
-                                    ? await (_service as EigaWatchTimeMixin)
-                                        .getWatchTimeEpisodes(
-                                        eigaId: season.eigaId,
-                                        episodes: episodesEiga.episodes,
-                                      )
-                                    : {},
-                        eager: true,
-                        scrollDirection: scrollDirection,
-                        controller: controller,
-                        onTapEpisode: ({
-                          required episodesEiga,
-                          required indexEpisode,
-                        }) {
-                          _onChangeEpisode(
-                            metaEiga: metaEiga,
-                            indexEpisode: indexEpisode,
-                            indexSeason: index,
-                            episodesEiga: episodesEiga,
-                            seasons: metaEiga$.seasons,
-                          );
-                        },
-                      ),
-                    );
-                  }).toList(),
+                        return Container(
+                          height: height == null ? null : height - tabBarHeight,
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: ListEpisodes(
+                            season: season,
+                            sourceId: widget.sourceId,
+                            thumbnail: metaEiga$.poster ?? metaEiga$.image,
+                            eigaIdNotifier: _eigaId,
+                            episodeIdNotifier: _episodeId,
+                            eventBus: _eventBus,
+                            getData:
+                                (update) async =>
+                                    _cacheEpisodesStore[season
+                                        .eigaId] ??= await _getEpisodes(
+                                      season.eigaId,
+                                      update,
+                                    ),
+                            getWatchTimeEpisodes:
+                                (episodesEiga) async =>
+                                    _cacheWatchTimeStore[season.eigaId] ??=
+                                        _service is EigaWatchTimeMixin
+                                            ? await (_service
+                                                    as EigaWatchTimeMixin)
+                                                .getWatchTimeEpisodes(
+                                                  eigaId: season.eigaId,
+                                                  episodes:
+                                                      episodesEiga.episodes,
+                                                )
+                                            : {},
+                            eager: true,
+                            scrollDirection: scrollDirection,
+                            controller: controller,
+                            onTapEpisode: ({
+                              required episodesEiga,
+                              required indexEpisode,
+                            }) {
+                              _onChangeEpisode(
+                                metaEiga: metaEiga,
+                                indexEpisode: indexEpisode,
+                                indexSeason: index,
+                                episodesEiga: episodesEiga,
+                                seasons: metaEiga$.seasons,
+                              );
+                            },
+                          ),
+                        );
+                      }).toList(),
                 ),
                 TabBar(
                   isScrollable: true,
@@ -1214,17 +1230,19 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   indicatorColor: Theme.of(context).colorScheme.secondary,
                   tabAlignment: TabAlignment.start,
                   dividerHeight: 0,
-                  tabs: metaEiga$.seasons.map((season) {
-                    return Tab(text: season.name, height: tabBarHeight);
-                  }).toList(),
+                  tabs:
+                      metaEiga$.seasons.map((season) {
+                        return Tab(text: season.name, height: tabBarHeight);
+                      }).toList(),
                 ),
               ];
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                verticalDirection: scrollDirection == Axis.vertical
-                    ? VerticalDirection.up
-                    : VerticalDirection.down,
+                verticalDirection:
+                    scrollDirection == Axis.vertical
+                        ? VerticalDirection.up
+                        : VerticalDirection.down,
                 children: children,
               );
             },
@@ -1242,11 +1260,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
         return VerticalEigaList(
           itemsFuture: suggest.then(
-            (data) => data
-                .map(
-                  (item) => EigaExtend(eiga: item, sourceId: _service.uid),
-                )
-                .toList(),
+            (data) =>
+                data
+                    .map(
+                      (item) => EigaExtend(eiga: item, sourceId: _service.uid),
+                    )
+                    .toList(),
           ),
           title: 'Suggest',
           disableScroll: true,

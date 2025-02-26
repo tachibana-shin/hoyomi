@@ -3,6 +3,9 @@ class SourceContent {
   final Uri url;
   final Map<String, String> headers;
 
-  const SourceContent(
-      {required this.content, required this.url, this.headers = const {}});
+  const SourceContent({
+    required this.content,
+    required this.url,
+    this.headers = const {},
+  });
 }

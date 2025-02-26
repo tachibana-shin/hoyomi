@@ -25,47 +25,64 @@ class _TabViewComicState extends State<TabViewComic>
     super.build(context);
 
     return PullRefreshPage<List<HomeComicSection>>(
-        onLoadData: widget.service.home,
-        onLoadFake: () =>
-            List.generate(4, (_) => HomeComicSection.createFakeData()),
-        builder: (data, _) => ListView.builder(
-              padding: const EdgeInsets.all(8.0),
-              itemCount: data.length,
-              itemBuilder: (context, sectionIndex) {
-                final section = data.elementAt(sectionIndex);
+      onLoadData: widget.service.home,
+      onLoadFake:
+          () => List.generate(4, (_) => HomeComicSection.createFakeData()),
+      builder:
+          (data, _) => ListView.builder(
+            padding: const EdgeInsets.all(8.0),
+            itemCount: data.length,
+            itemBuilder: (context, sectionIndex) {
+              final section = data.elementAt(sectionIndex);
 
-                return ValueListenableBuilder<bool>(
-                    valueListenable: isGridViewEnabled,
-                    builder: (context, value, _) {
-                      if (section.gridView != null) {
-                        value = section.gridView!;
-                      }
+              return ValueListenableBuilder<bool>(
+                valueListenable: isGridViewEnabled,
+                builder: (context, value, _) {
+                  if (section.gridView != null) {
+                    value = section.gridView!;
+                  }
 
-                      if (value == false) {
-                        return HorizontalComicList(
-                          itemsFuture: Future.value(section.items
-                              .map((item) => ComicExtend(
-                                  comic: item, sourceId: widget.service.uid))
-                              .toList()),
-                          title: section.name,
-                          more: section.sectionId != null
+                  if (value == false) {
+                    return HorizontalComicList(
+                      itemsFuture: Future.value(
+                        section.items
+                            .map(
+                              (item) => ComicExtend(
+                                comic: item,
+                                sourceId: widget.service.uid,
+                              ),
+                            )
+                            .toList(),
+                      ),
+                      title: section.name,
+                      more:
+                          section.sectionId != null
                               ? '/section_comic/${widget.service.uid}/${section.sectionId}'
                               : null,
-                        );
-                      }
+                    );
+                  }
 
-                      return VerticalComicList(
-                        itemsFuture: Future.value(section.items
-                            .map((item) => ComicExtend(
-                                comic: item, sourceId: widget.service.uid))
-                            .toList()),
-                        title: section.name,
-                        more: section.sectionId != null
+                  return VerticalComicList(
+                    itemsFuture: Future.value(
+                      section.items
+                          .map(
+                            (item) => ComicExtend(
+                              comic: item,
+                              sourceId: widget.service.uid,
+                            ),
+                          )
+                          .toList(),
+                    ),
+                    title: section.name,
+                    more:
+                        section.sectionId != null
                             ? '/section_comic/${widget.service.uid}/${section.sectionId}'
                             : null,
-                      );
-                    });
-              },
-            ));
+                  );
+                },
+              );
+            },
+          ),
+    );
   }
 }

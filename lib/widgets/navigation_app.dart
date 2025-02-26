@@ -17,45 +17,40 @@ class NavigationApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final destinations = const [
-      (
-        icon: Icon(HugeIcons.strokeRoundedBook04),
-        label: ('Comic'),
-      ),
-      (
-        icon: Icon(HugeIcons.strokeRoundedFlimSlate),
-        label: ('Eiga'),
-      ),
-      (
-        icon: Icon(MaterialCommunityIcons.magnify),
-        label: ('Search'),
-      ),
-      (
-        icon: Icon(MaterialCommunityIcons.apple_safari),
-        label: ('Library'),
-      ),
-      (
-        icon: Icon(MaterialCommunityIcons.account_circle),
-        label: ('Profile'),
-      )
+      (icon: Icon(HugeIcons.strokeRoundedBook04), label: ('Comic')),
+      (icon: Icon(HugeIcons.strokeRoundedFlimSlate), label: ('Eiga')),
+      (icon: Icon(MaterialCommunityIcons.magnify), label: ('Search')),
+      (icon: Icon(MaterialCommunityIcons.apple_safari), label: ('Library')),
+      (icon: Icon(MaterialCommunityIcons.account_circle), label: ('Profile')),
     ];
 
     if (rail) {
       return NavigationRail(
-          selectedIndex: selectedIndex,
-          onDestinationSelected: onDestinationSelected,
-          labelType: NavigationRailLabelType.all,
-          destinations: destinations
-              .map((dest) => NavigationRailDestination(
-                  label: Text(dest.label), icon: dest.icon))
-              .toList());
+        selectedIndex: selectedIndex,
+        onDestinationSelected: onDestinationSelected,
+        labelType: NavigationRailLabelType.all,
+        destinations:
+            destinations
+                .map(
+                  (dest) => NavigationRailDestination(
+                    label: Text(dest.label),
+                    icon: dest.icon,
+                  ),
+                )
+                .toList(),
+      );
     }
 
     return NavigationBar(
-        selectedIndex: selectedIndex,
-        onDestinationSelected: onDestinationSelected,
-        destinations: destinations
-            .map((dest) =>
-                NavigationDestination(label: dest.label, icon: dest.icon))
-            .toList());
+      selectedIndex: selectedIndex,
+      onDestinationSelected: onDestinationSelected,
+      destinations:
+          destinations
+              .map(
+                (dest) =>
+                    NavigationDestination(label: dest.label, icon: dest.icon),
+              )
+              .toList(),
+    );
   }
 }

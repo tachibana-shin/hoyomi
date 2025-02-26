@@ -13,17 +13,17 @@ class VerticalList<T> extends StatelessWidget {
   final Widget? child;
   final bool disableScroll;
 
-  const VerticalList(
-      {super.key,
-      required this.title,
-      this.subtitle,
-      required this.more,
-      this.controller,
-      this.items,
-      this.child,
-      this.disableScroll = false,
-      required this.builder})
-      : assert(items != null || child != null);
+  const VerticalList({
+    super.key,
+    required this.title,
+    this.subtitle,
+    required this.more,
+    this.controller,
+    this.items,
+    this.child,
+    this.disableScroll = false,
+    required this.builder,
+  }) : assert(items != null || child != null);
 
   static int getCrossAxisCount(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -49,23 +49,29 @@ class VerticalList<T> extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text(title,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w600,
-                  )),
-          if (more != null)
-            ElevatedButton(
+                fontSize: 18.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            if (more != null)
+              ElevatedButton(
                 onPressed: () {
                   context.push(more!);
                 },
-                child: Text('More'))
-          else
-            SizedBox.shrink()
-        ]),
+                child: Text('More'),
+              )
+            else
+              SizedBox.shrink(),
+          ],
+        ),
         const SizedBox(height: 8.0),
-        _buildGridView(context, items!)
+        _buildGridView(context, items!),
       ],
     );
   }

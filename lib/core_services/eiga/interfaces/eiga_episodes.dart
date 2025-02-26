@@ -22,18 +22,22 @@ class EigaEpisodes {
 
   factory EigaEpisodes.fromJson(Map<String, dynamic> json) {
     return EigaEpisodes(
-      episodes: (json['episodes'] as List)
-          .map((e) => EigaEpisode.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      image: json['image'] != null
-          ? OImage.fromJson(json['image'] as Map<String, dynamic>)
-          : null,
-      poster: json['poster'] != null
-          ? OImage.fromJson(json['poster'] as Map<String, dynamic>)
-          : null,
-      schedule: json['schedule'] != null
-          ? TimeAndDay.fromJson(json['schedule'] as Map<String, dynamic>)
-          : null,
+      episodes:
+          (json['episodes'] as List)
+              .map((e) => EigaEpisode.fromJson(e as Map<String, dynamic>))
+              .toList(),
+      image:
+          json['image'] != null
+              ? OImage.fromJson(json['image'] as Map<String, dynamic>)
+              : null,
+      poster:
+          json['poster'] != null
+              ? OImage.fromJson(json['poster'] as Map<String, dynamic>)
+              : null,
+      schedule:
+          json['schedule'] != null
+              ? TimeAndDay.fromJson(json['schedule'] as Map<String, dynamic>)
+              : null,
     );
   }
 
@@ -52,11 +56,7 @@ class TimeAndDay {
   final int hour;
   final int minute;
 
-  TimeAndDay({
-    required this.day,
-    required this.hour,
-    required this.minute,
-  });
+  TimeAndDay({required this.day, required this.hour, required this.minute});
 
   factory TimeAndDay.fromJson(Map<String, dynamic> json) {
     return TimeAndDay(
@@ -67,10 +67,6 @@ class TimeAndDay {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'day': day,
-      'hour': hour,
-      'minute': minute,
-    };
+    return {'day': day, 'hour': hour, 'minute': minute};
   }
 }

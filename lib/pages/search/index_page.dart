@@ -12,9 +12,7 @@ class SearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Search(keyword: keyword),
-    );
+    return Scaffold(body: Search(keyword: keyword));
   }
 }
 
@@ -53,47 +51,50 @@ class _SearchState extends State<Search>
     super.build(context);
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          scrolledUnderElevation: 0.0,
-          title: CustomSearchBar(
-              keyword: widget.keyword,
-              backMode: widget.keyword.isNotEmpty,
-              onOverlayChange: (overlay) {
-                setState(() {
-                  _overlayQuickSearch = overlay;
-                });
-              }),
-          titleSpacing: 0,
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          bottom: TabBar(
-            controller: _tabController,
-            isScrollable: true,
-            splashBorderRadius: BorderRadius.circular(35.0),
-            tabs: [Tab(text: 'Comic'), Tab(text: 'Eiga')],
-          ),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        scrolledUnderElevation: 0.0,
+        title: CustomSearchBar(
+          keyword: widget.keyword,
+          backMode: widget.keyword.isNotEmpty,
+          onOverlayChange: (overlay) {
+            setState(() {
+              _overlayQuickSearch = overlay;
+            });
+          },
         ),
-        body: Stack(children: [
+        titleSpacing: 0,
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        bottom: TabBar(
+          controller: _tabController,
+          isScrollable: true,
+          splashBorderRadius: BorderRadius.circular(35.0),
+          tabs: [Tab(text: 'Comic'), Tab(text: 'Eiga')],
+        ),
+      ),
+      body: Stack(
+        children: [
           widget.keyword.trim().isNotEmpty
               ? _buildBodySearch(context)
               : _buildBodyGetStarting(context),
-          ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : [])
-        ]));
+          ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : []),
+        ],
+      ),
+    );
   }
 
   Widget _buildBodySearch(BuildContext context) {
-    return TabBarView(controller: _tabController, children: [
-      ComicSearchResults(
-        keyword: widget.keyword,
-      ),
-      EigaSearchResults(keyword: widget.keyword)
-    ]);
+    return TabBarView(
+      controller: _tabController,
+      children: [
+        ComicSearchResults(keyword: widget.keyword),
+        EigaSearchResults(keyword: widget.keyword),
+      ],
+    );
   }
 
   Widget _buildBodyGetStarting(BuildContext context) {
-    return NewsFeedScreen(
-      services: comicServices,
-    );
+    return NewsFeedScreen(services: comicServices);
   }
 }

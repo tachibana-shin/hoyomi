@@ -52,10 +52,13 @@ class _LibraryPageState extends State<LibraryPage>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: eigaServices
-            .map((service) =>
-                _TabView(key: Key(service.uid), sourceId: service.uid))
-            .toList(),
+        children:
+            eigaServices
+                .map(
+                  (service) =>
+                      _TabView(key: Key(service.uid), sourceId: service.uid),
+                )
+                .toList(),
       ),
     );
   }
@@ -91,21 +94,22 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
     }
 
     return PullRefreshPage(
-        onLoadData: () async {
-          GoRouter.of(context).refresh();
-          return [0x0, 0x0];
-        },
-        onLoadFake: () => [0x0, 0x0],
-        builder: (data, _) {
-          return ListView(
-            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-            children: [
-              if (_service is EigaHistoryMixin)
-                HorizontalEigaHistoryList(sourceId: widget.sourceId),
-              if (_service is EigaFollowMixin)
-                HorizontalEigaFollowList(sourceId: widget.sourceId)
-            ],
-          );
-        });
+      onLoadData: () async {
+        GoRouter.of(context).refresh();
+        return [0x0, 0x0];
+      },
+      onLoadFake: () => [0x0, 0x0],
+      builder: (data, _) {
+        return ListView(
+          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          children: [
+            if (_service is EigaHistoryMixin)
+              HorizontalEigaHistoryList(sourceId: widget.sourceId),
+            if (_service is EigaFollowMixin)
+              HorizontalEigaFollowList(sourceId: widget.sourceId),
+          ],
+        );
+      },
+    );
   }
 }

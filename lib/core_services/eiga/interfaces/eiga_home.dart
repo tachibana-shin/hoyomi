@@ -9,7 +9,8 @@ class EigaHome {
 
   factory EigaHome.createFakeData() {
     return EigaHome(
-        carousel: Carousel.createFakeData(),
-        sections: List.generate(3, (i) => HomeEigaSection.createFakeData()));
+      carousel: Carousel.createFakeData(),
+      sections: List.generate(3, (i) => HomeEigaSection.createFakeData()),
+    );
   }
 }

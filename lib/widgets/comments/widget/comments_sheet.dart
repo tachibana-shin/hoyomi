@@ -32,26 +32,29 @@ class _CommentsSheetState extends State<CommentsSheet> {
         return Comments(
           getComments: ({page, parent}) {
             return widget.service.getComments!(
-                comicId: widget.comicId,
-                chapterId: widget.chapterId,
-                page: page,
-                parent: parent);
+              comicId: widget.comicId,
+              chapterId: widget.chapterId,
+              page: page,
+              parent: parent,
+            );
           },
           deleteComment: ({required comment, parent}) {
             return widget.service.deleteComment!(
-                comicId: widget.comicId,
-                chapterId: widget.chapterId,
-                parent: parent,
-                comment: comment);
+              comicId: widget.comicId,
+              chapterId: widget.chapterId,
+              parent: parent,
+              comment: comment,
+            );
           },
           controller: scrollController,
           setLikeComment: ({required comment, parent, required value}) {
             return widget.service.setLikeComment!(
-                comicId: widget.comicId,
-                chapterId: widget.chapterId,
-                parent: parent,
-                comment: comment,
-                value: value);
+              comicId: widget.comicId,
+              chapterId: widget.chapterId,
+              parent: parent,
+              comment: comment,
+              value: value,
+            );
           },
         );
       },

@@ -18,8 +18,10 @@ class HistoryItem<T> {
     return HistoryItem(
       item: item,
       watchUpdatedAt: DateTime.now(),
-      lastEpisode:
-          EigaEpisode(episodeId: 'fake_episode_id', name: 'Fake Episode'),
+      lastEpisode: EigaEpisode(
+        episodeId: 'fake_episode_id',
+        name: 'Fake Episode',
+      ),
       watchTime: WatchTime(
         position: Duration(minutes: 0),
         duration: Duration(minutes: 24),

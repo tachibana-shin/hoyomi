@@ -15,17 +15,18 @@ class CarouselItem {
   final List<Genre>? genres;
   final List<Genre>? actors;
 
-  CarouselItem(
-      {required this.image,
-      required this.eigaId,
-      required this.name,
-      required this.originalName,
-      required this.rate,
-      required this.notice,
-      required this.year,
-      required this.description,
-      required this.studio,
-      required this.duration,
-      required this.genres,
-      required this.actors});
+  CarouselItem({
+    required this.image,
+    required this.eigaId,
+    required this.name,
+    required this.originalName,
+    required this.rate,
+    required this.notice,
+    required this.year,
+    required this.description,
+    required this.studio,
+    required this.duration,
+    required this.genres,
+    required this.actors,
+  });
 }

@@ -52,10 +52,7 @@ class MetaComic {
       rate: RateValue.createFakeData(),
       genres: [Genre.createFakeData(), Genre.createFakeData()],
       description: "これはダミーの説明です。",
-      chapters: [
-        ComicChapter.createFakeData(),
-        ComicChapter.createFakeData(),
-      ],
+      chapters: [ComicChapter.createFakeData(), ComicChapter.createFakeData()],
       lastModified: DateTime.now(),
     );
   }
@@ -69,16 +66,18 @@ class MetaComic {
       author: json['author'],
       translator: json['translator'],
       status: StatusEnum.values.firstWhere(
-          (value) => value.name == json['status'] as String,
-          orElse: () => StatusEnum.unknown),
+        (value) => value.name == json['status'] as String,
+        orElse: () => StatusEnum.unknown,
+      ),
       views: json['views'],
       likes: json['likes'],
       rate: json['rate'] != null ? RateValue.fromJson(json['rate']) : null,
       genres: (json['genres'] as List).map((e) => Genre.fromJson(e)).toList(),
       description: json['description'],
-      chapters: (json['chapters'] as List)
-          .map((e) => ComicChapter.fromJson(e))
-          .toList(),
+      chapters:
+          (json['chapters'] as List)
+              .map((e) => ComicChapter.fromJson(e))
+              .toList(),
       lastModified: DateTime.parse(json['lastModified']),
     );
   }

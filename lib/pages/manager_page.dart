@@ -19,8 +19,9 @@ class _ServiceAccounts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Accounts manager")),
-        body: Column(children: [
+      appBar: AppBar(title: Text("Accounts manager")),
+      body: Column(
+        children: [
           Text('Comic services', style: Theme.of(context).textTheme.bodyMedium),
           DynamicHeightGridView(
             physics: const NeverScrollableScrollPhysics(),
@@ -54,11 +55,15 @@ class _ServiceAccounts extends StatelessWidget {
               return _buildCard(eigaServices[index]);
             },
           ),
-        ]));
+        ],
+      ),
+    );
   }
 
   Widget _buildCard(Service service) {
     return AccountService(
-        key: Key(DateTime.now().millisecond.toString()), service: service);
+      key: Key(DateTime.now().millisecond.toString()),
+      service: service,
+    );
   }
 }

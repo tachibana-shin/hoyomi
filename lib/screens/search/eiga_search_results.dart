@@ -25,8 +25,11 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
   Future<void> _fetchSearchResults() async {
     // Trigger search for each service
     for (var service in eigaServices) {
-      _searchFutures[service.uid] =
-          service.search(keyword: widget.keyword, page: 1, filters: {});
+      _searchFutures[service.uid] = service.search(
+        keyword: widget.keyword,
+        page: 1,
+        filters: {},
+      );
     }
 
     await Future.wait(_searchFutures.values);
@@ -47,33 +50,43 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
     return PullRefreshPage(
       onLoadData: _fetchSearchResults,
       onLoadFake: () => null,
-      builder: (_, __) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: eigaServices.map((service) {
-          final searchResult = _searchFutures[service.uid]!;
-          final itemsFuture = searchResult.then((data) => data.items
-              .map((item) => EigaExtend(eiga: item, sourceId: service.uid))
-              .toList());
-          String subtitle = '';
+      builder:
+          (_, __) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children:
+                eigaServices.map((service) {
+                  final searchResult = _searchFutures[service.uid]!;
+                  final itemsFuture = searchResult.then(
+                    (data) =>
+                        data.items
+                            .map(
+                              (item) =>
+                                  EigaExtend(eiga: item, sourceId: service.uid),
+                            )
+                            .toList(),
+                  );
+                  String subtitle = '';
 
-          return StatefulBuilder(builder: (context, setState) {
-            if (subtitle == '') {
-              searchResult.then((data) {
-                setState(() {
-                  subtitle = '${data.totalItems} results';
-                });
-              });
-            }
+                  return StatefulBuilder(
+                    builder: (context, setState) {
+                      if (subtitle == '') {
+                        searchResult.then((data) {
+                          setState(() {
+                            subtitle = '${data.totalItems} results';
+                          });
+                        });
+                      }
 
-            return HorizontalEigaList(
-              itemsFuture: itemsFuture,
-              title: service.name,
-              subtitle: subtitle,
-              more: '/search/eiga/${service.uid}?q=${widget.keyword}',
-            );
-          });
-        }).toList(),
-      ),
+                      return HorizontalEigaList(
+                        itemsFuture: itemsFuture,
+                        title: service.name,
+                        subtitle: subtitle,
+                        more: '/search/eiga/${service.uid}?q=${widget.keyword}',
+                      );
+                    },
+                  );
+                }).toList(),
+          ),
     );
   }
 }

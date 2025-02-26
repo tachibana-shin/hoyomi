@@ -9,8 +9,11 @@ class ComicSearchResults extends StatefulWidget {
   final String keyword;
   final Function()? onDismissed;
 
-  const ComicSearchResults(
-      {super.key, this.onDismissed, required this.keyword});
+  const ComicSearchResults({
+    super.key,
+    this.onDismissed,
+    required this.keyword,
+  });
 
   @override
   State<ComicSearchResults> createState() => _ComicSearchResultsState();
@@ -26,8 +29,11 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
   Future<void> _fetchSearchResults() async {
     // Trigger search for each service
     for (var service in comicServices) {
-      _searchFutures[service.uid] =
-          service.search(keyword: widget.keyword, page: 1, filters: {});
+      _searchFutures[service.uid] = service.search(
+        keyword: widget.keyword,
+        page: 1,
+        filters: {},
+      );
     }
     await Future.wait(_searchFutures.values);
   }
@@ -47,33 +53,46 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
     return PullRefreshPage(
       onLoadData: _fetchSearchResults,
       onLoadFake: () => [],
-      builder: (_, __) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: comicServices.map((service) {
-          final searchResult = _searchFutures[service.uid]!;
-          final itemsFuture = searchResult.then((data) => data.items
-              .map((item) => ComicExtend(comic: item, sourceId: service.uid))
-              .toList());
-          String subtitle = '';
+      builder:
+          (_, __) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children:
+                comicServices.map((service) {
+                  final searchResult = _searchFutures[service.uid]!;
+                  final itemsFuture = searchResult.then(
+                    (data) =>
+                        data.items
+                            .map(
+                              (item) => ComicExtend(
+                                comic: item,
+                                sourceId: service.uid,
+                              ),
+                            )
+                            .toList(),
+                  );
+                  String subtitle = '';
 
-          return StatefulBuilder(builder: (context, setState) {
-            if (subtitle == '') {
-              searchResult.then((data) {
-                setState(() {
-                  subtitle = '${data.totalItems} results';
-                });
-              });
-            }
+                  return StatefulBuilder(
+                    builder: (context, setState) {
+                      if (subtitle == '') {
+                        searchResult.then((data) {
+                          setState(() {
+                            subtitle = '${data.totalItems} results';
+                          });
+                        });
+                      }
 
-            return HorizontalComicList(
-              itemsFuture: itemsFuture,
-              title: service.name,
-              subtitle: subtitle,
-              more: '/search/comic/${service.uid}?q=${widget.keyword}',
-            );
-          });
-        }).toList(),
-      ),
+                      return HorizontalComicList(
+                        itemsFuture: itemsFuture,
+                        title: service.name,
+                        subtitle: subtitle,
+                        more:
+                            '/search/comic/${service.uid}?q=${widget.keyword}',
+                      );
+                    },
+                  );
+                }).toList(),
+          ),
     );
   }
 }

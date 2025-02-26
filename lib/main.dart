@@ -35,10 +35,12 @@ class _MyHttpOverrides extends HttpOverrides {
 }
 
 Future<void> _installCert() async {
-  ByteData data =
-      await PlatformAssetBundle().load('assets/ca/lets-encrypt-r3.pem');
-  SecurityContext.defaultContext
-      .setTrustedCertificatesBytes(data.buffer.asUint8List());
+  ByteData data = await PlatformAssetBundle().load(
+    'assets/ca/lets-encrypt-r3.pem',
+  );
+  SecurityContext.defaultContext.setTrustedCertificatesBytes(
+    data.buffer.asUint8List(),
+  );
 
   if (Platform.isAndroid) {
     final deviceInfo = DeviceInfoPlugin();
@@ -61,12 +63,8 @@ class MainApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Flutter App',
       scaffoldMessengerKey: snackbarKey,
-      theme: ThemeData(
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData.dark(
-        useMaterial3: true,
-      ),
+      theme: ThemeData(useMaterial3: true),
+      darkTheme: ThemeData.dark(useMaterial3: true),
       themeMode: ThemeMode.system,
       scrollBehavior: AppScrollBehavior(),
       routerConfig: router,

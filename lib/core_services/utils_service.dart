@@ -23,59 +23,78 @@ abstract class UtilsService {
   String get uid => name.toLowerCase().replaceAll(r"\s", "-");
   Future<User>? _userFuture;
 
-  static void showCaptchaResolve(BuildContext? context,
-      {String? url, required CaptchaRequiredException error}) {
-    showSnackBar(errorWidgetBuilder(context,
+  static void showCaptchaResolve(
+    BuildContext? context, {
+    String? url,
+    required CaptchaRequiredException error,
+  }) {
+    showSnackBar(
+      errorWidgetBuilder(
+        context,
         isSnackbar: true,
         url: url,
         error: error,
-        orElse: (error) => Text('An error occurred: $error')));
+        orElse: (error) => Text('An error occurred: $error'),
+      ),
+    );
   }
 
-  static Widget errorWidgetBuilder(BuildContext? context,
-      {bool isSnackbar = false,
-      String? url,
-      required Object? error,
-      required Widget Function(Object? error) orElse}) {
+  static Widget errorWidgetBuilder(
+    BuildContext? context, {
+    bool isSnackbar = false,
+    String? url,
+    required Object? error,
+    required Widget Function(Object? error) orElse,
+  }) {
     return error is! CaptchaRequiredException
         ? orElse(error)
         : Padding(
-            padding: isSnackbar
-                ? EdgeInsets.zero
-                : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
+          padding:
+              isSnackbar
+                  ? EdgeInsets.zero
+                  : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      Icon(MaterialCommunityIcons.earth,
-                          color: isSnackbar || context == null
-                              ? Colors.black
-                              : Theme.of(context).colorScheme.onSurface),
-                      SizedBox(width: 8),
-                      Expanded(
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                            Text('Please resolve Captcha to continue.'),
-                            if (url != null)
-                              Text(url,
-                                  style: TextStyle(fontSize: 14.0),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis)
-                          ]))
-                    ],
+                  Icon(
+                    MaterialCommunityIcons.earth,
+                    color:
+                        isSnackbar || context == null
+                            ? Colors.black
+                            : Theme.of(context).colorScheme.onSurface,
                   ),
-                  SizedBox(height: 8.0),
-                  ElevatedButton(
-                    child: Text('Go to Captcha'),
-                    onPressed: () async {
-                      await router.push('/webview/${error.service.uid}');
-                      router.refresh();
-                    },
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Please resolve Captcha to continue.'),
+                        if (url != null)
+                          Text(
+                            url,
+                            style: TextStyle(fontSize: 14.0),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                      ],
+                    ),
                   ),
-                ]));
+                ],
+              ),
+              SizedBox(height: 8.0),
+              ElevatedButton(
+                child: Text('Go to Captcha'),
+                onPressed: () async {
+                  await router.push('/webview/${error.service.uid}');
+                  router.refresh();
+                },
+              ),
+            ],
+          ),
+        );
   }
 
   /// Called before inserting the cookie to the insert request. Override this method to modify the cookie
@@ -95,10 +114,12 @@ abstract class UtilsService {
   /// [cookie] The cookie to include in the request. Defaults to null.
   ///
   /// Returns a string containing the fetched data, or throws an exception if the request fails.
-  Future<String> fetch(String url,
-      {String? cookie,
-      Map<String, dynamic>? body,
-      Map<String, String>? headers}) async {
+  Future<String> fetch(
+    String url, {
+    String? cookie,
+    Map<String, dynamic>? body,
+    Map<String, String>? headers,
+  }) async {
     String? cookiesText = cookie;
 
     final row = await CookieController.getAsync(sourceId: uid);
@@ -134,23 +155,27 @@ abstract class UtilsService {
       'sec-fetch-user': '?1',
       'upgrade-insecure-requests': '1',
       'user-agent': // row?.userAgent ??
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
     };
 
-    Response response = body == null
-        ? await get(uri, headers: $headers)
-        : await post(uri,
-            headers: $headers,
-            body: Map.fromEntries(body.entries
-                .where((entry) => entry.value != null)
-                .toList()
-                .map((entry) {
-              if (entry.value is String) {
-                return entry;
-              } else {
-                return MapEntry(entry.key, entry.value.toString());
-              }
-            })));
+    Response response =
+        body == null
+            ? await get(uri, headers: $headers)
+            : await post(
+              uri,
+              headers: $headers,
+              body: Map.fromEntries(
+                body.entries.where((entry) => entry.value != null).toList().map(
+                  (entry) {
+                    if (entry.value is String) {
+                      return entry;
+                    } else {
+                      return MapEntry(entry.key, entry.value.toString());
+                    }
+                  },
+                ),
+              ),
+            );
     // if (useCookie == true) {
     //   // update cookie
     //   await setCookie(
@@ -206,12 +231,15 @@ abstract class UtilsService {
   /// [cookie] The cookie to include in the request. Defaults to null.
   ///
   /// Returns a parsed [Document] object.
-  Future<d.Document> fetchDocument(String url,
-      {String? cookie,
-      Map<String, dynamic>? body,
-      Map<String, String>? headers}) async {
+  Future<d.Document> fetchDocument(
+    String url, {
+    String? cookie,
+    Map<String, dynamic>? body,
+    Map<String, String>? headers,
+  }) async {
     return parseDocument(
-        await fetch(url, cookie: cookie, body: body, headers: headers));
+      await fetch(url, cookie: cookie, body: body, headers: headers),
+    );
   }
 
   /// Builds a new URI with updated query parameters based on the provided filters.
@@ -224,8 +252,9 @@ abstract class UtilsService {
   Uri buildQueryUri(String baseUrl, {Map<String, List<String>?>? filters}) {
     final uri = Uri.parse(baseUrl);
 
-    final existingParameters =
-        Map<String, List<String>>.from(uri.queryParametersAll);
+    final existingParameters = Map<String, List<String>>.from(
+      uri.queryParametersAll,
+    );
 
     filters?.forEach((key, value) {
       if (value != null && value.isNotEmpty) {
@@ -234,8 +263,9 @@ abstract class UtilsService {
     });
 
     final newUri = uri.replace(
-      queryParameters:
-          existingParameters.map((k, v) => MapEntry(k, v.join(','))),
+      queryParameters: existingParameters.map(
+        (k, v) => MapEntry(k, v.join(',')),
+      ),
     );
 
     return newUri;
@@ -250,15 +280,18 @@ abstract class UtilsService {
   /// [userAgent] The user agent to save to the cache. Must not be null.
   ///
   /// Returns the [User] object of the user who has just signed in.
-  Future<User> onAfterSignIn(
-      {required String cookie, required String userAgent}) async {
+  Future<User> onAfterSignIn({
+    required String cookie,
+    required String userAgent,
+  }) async {
     if (this is! AuthMixin) {
       throw Exception('Service must be an instance of auth service');
     }
 
     final service = this as AuthMixin;
     // save to cache
-    final oldData = await CookieController.getAsync(sourceId: uid) ??
+    final oldData =
+        await CookieController.getAsync(sourceId: uid) ??
         CookieManager(
           sourceId: uid,
           cookie: cookie,
@@ -306,9 +339,10 @@ abstract class UtilsService {
     }
     final service = this as AuthMixin;
 
-    row = recordLoaded == true
-        ? row
-        : await CookieController.getAsync(sourceId: uid);
+    row =
+        recordLoaded == true
+            ? row
+            : await CookieController.getAsync(sourceId: uid);
     final cookie = row?.cookie;
     var user = row?.user;
 

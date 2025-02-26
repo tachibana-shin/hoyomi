@@ -128,8 +128,11 @@ class _MangaReaderState extends State<MangaReader>
   @override
   void initState() {
     _history = HistoryController();
-    _historyObjectFuture = _history.createComic(widget.service.uid,
-        comicId: widget.comicId, comic: widget.comic);
+    _historyObjectFuture = _history.createComic(
+      widget.service.uid,
+      comicId: widget.comicId,
+      comic: widget.comic,
+    );
 
     SettingsController().getSettings().then((object) {
       _settingsObject = object;
@@ -140,14 +143,18 @@ class _MangaReaderState extends State<MangaReader>
     pages = [
       if (_prevChapter != null)
         _buildSplashImage(
-            chapterId: _currentChapter.chapterId,
-            chapterNext: null,
-            chapterCurrent: _currentChapter.name,
-            chapterPrev: _prevChapter!.name),
+          chapterId: _currentChapter.chapterId,
+          chapterNext: null,
+          chapterCurrent: _currentChapter.name,
+          chapterPrev: _prevChapter!.name,
+        ),
       ...widget.pages.map((page) {
         return ImageWithGroup(
-            chapterId: _chapter, src: page.src, headers: page.headers);
-      })
+          chapterId: _chapter,
+          src: page.src,
+          headers: page.headers,
+        );
+      }),
     ];
 
     _restoreCurrentPage();
@@ -163,10 +170,13 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   Future<void> _restoreCurrentPage() async {
-    final historyChap = await _history
-        .getCurrentPage(await _historyObjectFuture, chapterId: _chapter);
+    final historyChap = await _history.getCurrentPage(
+      await _historyObjectFuture,
+      chapterId: _chapter,
+    );
 
-    _initialScrollIndex = (historyChap?.currentPage.floor() ?? 0) +
+    _initialScrollIndex =
+        (historyChap?.currentPage.floor() ?? 0) +
         (_prevChapter == null ? 0 : 1);
     _currentPage =
         (_usingPageView ? _pageController.initialPage : _initialScrollIndex)
@@ -176,19 +186,22 @@ class _MangaReaderState extends State<MangaReader>
     _restored = true;
   }
 
-// history api
+  // history api
   void _updateHistory() {
     _debouncerUpdateHistory.run(() async {
       if (!_restored) return;
       if (!mounted) return;
 
-      _history.saveHistory(await _historyObjectFuture,
-          chapterId: _chapter,
-          currentPage: _realCurrentPage,
-          maxPage: _realLength);
+      _history.saveHistory(
+        await _historyObjectFuture,
+        chapterId: _chapter,
+        currentPage: _realCurrentPage,
+        maxPage: _realLength,
+      );
 
-      eventBus
-          .fire(UpdatedHistory(comicId: widget.comicId, chapterId: _chapter));
+      eventBus.fire(
+        UpdatedHistory(comicId: widget.comicId, chapterId: _chapter),
+      );
     });
   }
 
@@ -237,8 +250,9 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   void _updateRoute() {
-    final currentGroup = pages[_currentPage.round()]
-        .chapterId; // Get the group id of the current page
+    final currentGroup =
+        pages[_currentPage.round()]
+            .chapterId; // Get the group id of the current page
     if (_chapter != currentGroup) {
       setState(() {
         _chapter = currentGroup;
@@ -298,8 +312,9 @@ class _MangaReaderState extends State<MangaReader>
     });
   }
 
-  ComicChapter get _currentChapter => widget.comic.chapters
-      .firstWhere((element) => element.chapterId == _chapter);
+  ComicChapter get _currentChapter => widget.comic.chapters.firstWhere(
+    (element) => element.chapterId == _chapter,
+  );
   ComicChapter? get _nextChapter {
     for (int i = 1; i < widget.comic.chapters.length; i++) {
       if (widget.comic.chapters.elementAt(i).chapterId == _chapter) {
@@ -337,14 +352,24 @@ class _MangaReaderState extends State<MangaReader>
           if (mounted) {
             setState(() {
               if (_nextChapter != null) {
-                pages.add(_buildSplashImage(
+                pages.add(
+                  _buildSplashImage(
                     chapterId: _nextChapter!.chapterId,
                     chapterNext: _nextChapter!.name,
                     chapterCurrent: _currentChapter.name,
-                    chapterPrev: null));
+                    chapterPrev: null,
+                  ),
+                );
               }
-              pages.addAll($pages.map((page) => ImageWithGroup(
-                  chapterId: chapterId, src: page.src, headers: page.headers)));
+              pages.addAll(
+                $pages.map(
+                  (page) => ImageWithGroup(
+                    chapterId: chapterId,
+                    src: page.src,
+                    headers: page.headers,
+                  ),
+                ),
+              );
               _refreshStoreImageLoaded();
               // NOTICE: No action `_pageController`
               // _pageController
@@ -365,18 +390,21 @@ class _MangaReaderState extends State<MangaReader>
           final chapterId = _prevChapter!.chapterId;
 
           final $pages = [
-            ...(await widget.getPages(_prevChapter!.chapterId)).map((page) =>
-                ImageWithGroup(
-                    chapterId: chapterId,
-                    src: page.src,
-                    headers: page.headers)),
+            ...(await widget.getPages(_prevChapter!.chapterId)).map(
+              (page) => ImageWithGroup(
+                chapterId: chapterId,
+                src: page.src,
+                headers: page.headers,
+              ),
+            ),
             if (pages.elementAtOrNull(0)?.src != OImage.fake &&
                 _prevChapter != null)
               _buildSplashImage(
-                  chapterId: _currentChapter.chapterId,
-                  chapterNext: null,
-                  chapterCurrent: _currentChapter.name,
-                  chapterPrev: _prevChapter!.name),
+                chapterId: _currentChapter.chapterId,
+                chapterNext: null,
+                chapterCurrent: _currentChapter.name,
+                chapterPrev: _prevChapter!.name,
+              ),
           ];
 
           _disablingObserveScroll = true;
@@ -410,16 +438,21 @@ class _MangaReaderState extends State<MangaReader>
     //
   }
 
-  ImageWithGroup _buildSplashImage(
-      {required String chapterId,
-      required String? chapterNext,
-      required String? chapterPrev,
-      required String chapterCurrent}) {
-    return ImageWithGroup(chapterId: chapterId, src: OImage.fake, headers: {
-      if (chapterPrev != null) 'prev': chapterPrev,
-      'current': chapterCurrent,
-      if (chapterNext != null) 'next': chapterNext
-    });
+  ImageWithGroup _buildSplashImage({
+    required String chapterId,
+    required String? chapterNext,
+    required String? chapterPrev,
+    required String chapterCurrent,
+  }) {
+    return ImageWithGroup(
+      chapterId: chapterId,
+      src: OImage.fake,
+      headers: {
+        if (chapterPrev != null) 'prev': chapterPrev,
+        'current': chapterCurrent,
+        if (chapterNext != null) 'next': chapterNext,
+      },
+    );
   }
 
   Widget _buildImage(int index) {
@@ -427,62 +460,58 @@ class _MangaReaderState extends State<MangaReader>
     if (item.src == OImage.fake) {
       return SizedBox(
         width: double.infinity,
-        height: _usingPageView
-            ? double.infinity
-            : MediaQuery.of(context).size.height / 2,
+        height:
+            _usingPageView
+                ? double.infinity
+                : MediaQuery.of(context).size.height / 2,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (item.headers!.containsKey("prev")) ...[
               Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
-                  child: Text(
-                    "Previous chapter:",
-                    style:
-                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
-                  )),
+                padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
+                child: Text(
+                  "Previous chapter:",
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                ),
+              ),
               Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
-                  child: Text(
-                    item.headers!['prev']!,
-                    style:
-                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),
-                  )),
+                padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
+                child: Text(
+                  item.headers!['prev']!,
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),
+                ),
+              ),
               SizedBox(height: 20.0),
             ],
             Padding(
-                padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
-                child: Text(
-                  "Current chapter:",
-                  style: TextStyle(fontSize: 16.0),
-                )),
+              padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
+              child: Text("Current chapter:", style: TextStyle(fontSize: 16.0)),
+            ),
             Padding(
-                padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
-                child: Text(
-                  item.headers!["current"]!,
-                  style: TextStyle(fontSize: 18.0),
-                )),
+              padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
+              child: Text(
+                item.headers!["current"]!,
+                style: TextStyle(fontSize: 18.0),
+              ),
+            ),
             if (item.headers!.containsKey("next")) ...[
               SizedBox(height: 20.0),
               Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
-                  child: Text(
-                    "Next chapter:",
-                    style:
-                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
-                  )),
+                padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
+                child: Text(
+                  "Next chapter:",
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                ),
+              ),
               Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
-                  child: Text(
-                    item.headers!['next']!,
-                    style:
-                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),
-                  )),
+                padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
+                child: Text(
+                  item.headers!['next']!,
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),
+                ),
+              ),
             ],
           ],
         ),
@@ -580,8 +609,9 @@ class _MangaReaderState extends State<MangaReader>
   @override
   void dispose() {
     _pageController.dispose();
-    eventBus.fire(UpdatedHistory(
-        comicId: widget.comicId, chapterId: _chapter, force: true));
+    eventBus.fire(
+      UpdatedHistory(comicId: widget.comicId, chapterId: _chapter, force: true),
+    );
     super.dispose();
   }
 
@@ -661,11 +691,18 @@ class _MangaReaderState extends State<MangaReader>
     //   app: pages.toList(),
     // );
     return Scaffold(
-        body: Stack(children: [
-      TapListener(
-          rows: 3, columns: 3, onTap: _onTapGrid, child: _buildReader()),
-      Positioned(left: 0, right: 0, bottom: 0, child: _buildBottomBar())
-    ]));
+      body: Stack(
+        children: [
+          TapListener(
+            rows: 3,
+            columns: 3,
+            onTap: _onTapGrid,
+            child: _buildReader(),
+          ),
+          Positioned(left: 0, right: 0, bottom: 0, child: _buildBottomBar()),
+        ],
+      ),
+    );
   }
 
   Widget _buildProgressControl() {
@@ -673,24 +710,26 @@ class _MangaReaderState extends State<MangaReader>
     final value = _realCurrentPage;
 
     return SliderTheme(
-        data: SliderThemeData(
-            thumbShape: SliderComponentShape.noThumb,
-            trackHeight: 15.0,
-            overlayShape: SliderComponentShape.noOverlay),
-        child: Slider(
-          min: 0.0,
-          max: max,
-          value: min(value, max),
-          onChanged: (value) {
-            setState(() {
-              _currentPage = value; //.toInt();
-              _updateHistory();
-              _updateRoute();
-              _updatePositionView();
-              _lazyLoadImages();
-            });
-          },
-        ));
+      data: SliderThemeData(
+        thumbShape: SliderComponentShape.noThumb,
+        trackHeight: 15.0,
+        overlayShape: SliderComponentShape.noOverlay,
+      ),
+      child: Slider(
+        min: 0.0,
+        max: max,
+        value: min(value, max),
+        onChanged: (value) {
+          setState(() {
+            _currentPage = value; //.toInt();
+            _updateHistory();
+            _updateRoute();
+            _updatePositionView();
+            _lazyLoadImages();
+          });
+        },
+      ),
+    );
   }
 
   void _showPanelSettings() {
@@ -714,7 +753,9 @@ class _MangaReaderState extends State<MangaReader>
                     onTap: () {},
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 12.0),
+                        vertical: 8.0,
+                        horizontal: 12.0,
+                      ),
                       child: Row(
                         children: const [
                           Icon(MaterialCommunityIcons.screen_rotation),
@@ -732,7 +773,9 @@ class _MangaReaderState extends State<MangaReader>
                     child: Text(
                       "Mode",
                       style: TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold),
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8.0),
@@ -760,14 +803,21 @@ class _MangaReaderState extends State<MangaReader>
                     ),
                     children: [
                       _buildIconWithLabel(
-                          MaterialCommunityIcons.cog, "Standard"),
+                        MaterialCommunityIcons.cog,
+                        "Standard",
+                      ),
                       _buildIconWithLabel(
-                          MaterialCommunityIcons.arrow_left, "RTL"),
+                        MaterialCommunityIcons.arrow_left,
+                        "RTL",
+                      ),
                       _buildIconWithLabel(
-                          MaterialCommunityIcons.format_vertical_align_center,
-                          "Vertical"),
+                        MaterialCommunityIcons.format_vertical_align_center,
+                        "Vertical",
+                      ),
                       _buildIconWithLabel(
-                          MaterialCommunityIcons.web, "Webtoon"),
+                        MaterialCommunityIcons.web,
+                        "Webtoon",
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16.0),
@@ -792,7 +842,9 @@ class _MangaReaderState extends State<MangaReader>
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 12.0),
+                        vertical: 8.0,
+                        horizontal: 12.0,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -804,15 +856,16 @@ class _MangaReaderState extends State<MangaReader>
                             ],
                           ),
                           Transform.scale(
-                              scale: 0.8,
-                              child: Switch(
-                                value: _useTwoPage,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _changeTwoPage(value);
-                                  });
-                                },
-                              )),
+                            scale: 0.8,
+                            child: Switch(
+                              value: _useTwoPage,
+                              onChanged: (value) {
+                                setState(() {
+                                  _changeTwoPage(value);
+                                });
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -828,7 +881,9 @@ class _MangaReaderState extends State<MangaReader>
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 12.0),
+                        vertical: 8.0,
+                        horizontal: 12.0,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -840,15 +895,16 @@ class _MangaReaderState extends State<MangaReader>
                             ],
                           ),
                           Transform.scale(
-                              scale: 0.8,
-                              child: Switch(
-                                value: autoScroll,
-                                onChanged: (value) {
-                                  setState(() {
-                                    autoScroll = value;
-                                  });
-                                },
-                              )),
+                            scale: 0.8,
+                            child: Switch(
+                              value: autoScroll,
+                              onChanged: (value) {
+                                setState(() {
+                                  autoScroll = value;
+                                });
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -864,10 +920,11 @@ class _MangaReaderState extends State<MangaReader>
 
   void _showPanelSkipPages() {
     showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        showDragHandle: true,
-        builder: (context) => ImagePicker(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder:
+          (context) => ImagePicker(
             images: pages,
             sourceId: widget.service.uid,
             onChange: (selected) {
@@ -875,34 +932,40 @@ class _MangaReaderState extends State<MangaReader>
                 _skipImages.clear();
                 _skipImages.addAll(selected);
               });
-            }));
+            },
+          ),
+    );
   }
 
   void _showPanelComments() {
     showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        showDragHandle: true,
-        builder: (context) => CommentsSheet(
-              comicId: widget.comicId,
-              chapterId: _chapter,
-              service: widget.service as ComicAuthMixin,
-            ));
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder:
+          (context) => CommentsSheet(
+            comicId: widget.comicId,
+            chapterId: _chapter,
+            service: widget.service as ComicAuthMixin,
+          ),
+    );
   }
 
   void _showPanelListChapters() {
     showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        showDragHandle: true,
-        builder: (context) => SheetChapters(
-              comic: widget.comic,
-              sourceId: widget.service.uid,
-              comicId: widget.comicId,
-              histories: _historyChapters,
-              currentChapterId: _chapter,
-              initialChildSize: 0.6,
-            ));
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder:
+          (context) => SheetChapters(
+            comic: widget.comic,
+            sourceId: widget.service.uid,
+            comicId: widget.comicId,
+            histories: _historyChapters,
+            currentChapterId: _chapter,
+            initialChildSize: 0.6,
+          ),
+    );
   }
 
   Widget _buildIconWithLabel(IconData icon, String label) {
@@ -951,20 +1014,23 @@ class _MangaReaderState extends State<MangaReader>
         itemCount: _useTwoPage ? (pages.length / 2).ceil() : pages.length,
         itemBuilder: (context, index) {
           if (_useTwoPage) {
-            final children = mapPageVertical[index]!.map((i) {
-              return Expanded(child: _buildPage(i));
-            }).toList();
+            final children =
+                mapPageVertical[index]!.map((i) {
+                  return Expanded(child: _buildPage(i));
+                }).toList();
 
             return InteractiveViewer(
-                panEnabled: true,
-                minScale: 1.0,
-                maxScale: 2.0,
-                trackpadScrollCausesScale: true,
-                child: Row(
-                  children: _mode == ComicModes.rightToLeft
-                      ? children.reversed.toList()
-                      : children,
-                ));
+              panEnabled: true,
+              minScale: 1.0,
+              maxScale: 2.0,
+              trackpadScrollCausesScale: true,
+              child: Row(
+                children:
+                    _mode == ComicModes.rightToLeft
+                        ? children.reversed.toList()
+                        : children,
+              ),
+            );
             // final firstPage = index * 2;
             // final children = [
             //   Expanded(child: _buildPage(firstPage)),
@@ -978,11 +1044,12 @@ class _MangaReaderState extends State<MangaReader>
           }
 
           return InteractiveViewer(
-              panEnabled: true,
-              minScale: 1.0,
-              maxScale: 2.0,
-              trackpadScrollCausesScale: true,
-              child: _buildPage(index));
+            panEnabled: true,
+            minScale: 1.0,
+            maxScale: 2.0,
+            trackpadScrollCausesScale: true,
+            child: _buildPage(index),
+          );
         },
       );
     }
@@ -997,10 +1064,11 @@ class _MangaReaderState extends State<MangaReader>
         height: screenSize.height,
         child: Center(
           child: CircularProgressIndicator(
-            value: loadingProgress?.expectedTotalBytes != null
-                ? loadingProgress!.cumulativeBytesLoaded /
-                    (loadingProgress.expectedTotalBytes!)
-                : null,
+            value:
+                loadingProgress?.expectedTotalBytes != null
+                    ? loadingProgress!.cumulativeBytesLoaded /
+                        (loadingProgress.expectedTotalBytes!)
+                    : null,
           ),
         ),
       ),
@@ -1009,159 +1077,191 @@ class _MangaReaderState extends State<MangaReader>
 
   Widget _buildBottomBar() {
     return AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        transitionBuilder: (child, animation) {
-          const begin = Offset(0.0, kToolbarHeight * 2.5);
-          const end = Offset.zero;
-          const curve = Curves.easeInOut;
+      duration: const Duration(milliseconds: 200),
+      transitionBuilder: (child, animation) {
+        const begin = Offset(0.0, kToolbarHeight * 2.5);
+        const end = Offset.zero;
+        const curve = Curves.easeInOut;
 
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          var offsetAnimation = animation.drive(tween);
+        var tween = Tween(
+          begin: begin,
+          end: end,
+        ).chain(CurveTween(curve: curve));
+        var offsetAnimation = animation.drive(tween);
 
-          return SlideTransition(position: offsetAnimation, child: child);
-        },
-        child: !_showToolbar
-            ? null
-            : Column(children: [
-                Padding(
+        return SlideTransition(position: offsetAnimation, child: child);
+      },
+      child:
+          !_showToolbar
+              ? null
+              : Column(
+                children: [
+                  Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12.0),
                     child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Material(
-                              color: Colors.transparent,
-                              child: AbsorbPointer(
-                                  absorbing: _prevChapter == null,
-                                  child: Ink(
-                                      decoration: ShapeDecoration(
-                                        color: Theme.of(context)
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Material(
+                          color: Colors.transparent,
+                          child: AbsorbPointer(
+                            absorbing: _prevChapter == null,
+                            child: Ink(
+                              decoration: ShapeDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surface.withValues(alpha: 0.9),
+                                shape: CircleBorder(),
+                              ),
+                              child: IconButton(
+                                iconSize: 30.0,
+                                icon: Icon(
+                                  MaterialCommunityIcons.skip_previous,
+                                ),
+                                color:
+                                    _prevChapter != null
+                                        ? Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface
+                                        : Theme.of(context)
                                             .colorScheme
-                                            .surface
-                                            .withValues(alpha: 0.9),
-                                        shape: CircleBorder(),
-                                      ),
-                                      child: IconButton(
-                                        iconSize: 30.0,
-                                        icon: Icon(
-                                          MaterialCommunityIcons.skip_previous,
-                                        ),
-                                        color: _prevChapter != null
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .onSurface
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .onSurface
-                                                .withValues(alpha: 0.5),
-                                        onPressed: () {
-                                          context.replace(
-                                              "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_prevChapter!.chapterId}",
-                                              extra: {'comic': widget.comic});
-                                        },
-                                      )))),
-                          Expanded(
-                              child: Container(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 6.0),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
-                                      child: Material(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .surface
-                                              .withValues(alpha: 0.9),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 16.0,
-                                                vertical: 15.0),
-                                            child: _buildProgressControl(),
-                                          ))))),
-                          Material(
-                              color: Colors.transparent,
-                              child: AbsorbPointer(
-                                  absorbing: _nextChapter == null,
-                                  child: Ink(
-                                      decoration: ShapeDecoration(
-                                        color: Theme.of(context)
+                                            .onSurface
+                                            .withValues(alpha: 0.5),
+                                onPressed: () {
+                                  context.replace(
+                                    "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_prevChapter!.chapterId}",
+                                    extra: {'comic': widget.comic},
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 6.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Material(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surface.withValues(alpha: 0.9),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0,
+                                    vertical: 15.0,
+                                  ),
+                                  child: _buildProgressControl(),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Material(
+                          color: Colors.transparent,
+                          child: AbsorbPointer(
+                            absorbing: _nextChapter == null,
+                            child: Ink(
+                              decoration: ShapeDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surface.withValues(alpha: 0.9),
+                                shape: CircleBorder(),
+                              ),
+                              child: IconButton(
+                                iconSize: 30.0,
+                                icon: Icon(MaterialCommunityIcons.skip_next),
+                                color:
+                                    _nextChapter != null
+                                        ? Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface
+                                        : Theme.of(context)
                                             .colorScheme
-                                            .surface
-                                            .withValues(alpha: 0.9),
-                                        shape: CircleBorder(),
-                                      ),
-                                      child: IconButton(
-                                          iconSize: 30.0,
-                                          icon: Icon(
-                                              MaterialCommunityIcons.skip_next),
-                                          color: _nextChapter != null
-                                              ? Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface
-                                              : Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface
-                                                  .withValues(alpha: 0.5),
-                                          onPressed: () {
-                                            context.replace(
-                                                "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_nextChapter!.chapterId}",
-                                                extra: {'comic': widget.comic});
-                                          }))))
-                        ])),
-                SizedBox(height: 8.0),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0)
-                      .add(EdgeInsets.only(bottom: 8.0)),
-                  child: ClipRRect(
+                                            .onSurface
+                                            .withValues(alpha: 0.5),
+                                onPressed: () {
+                                  context.replace(
+                                    "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_nextChapter!.chapterId}",
+                                    extra: {'comic': widget.comic},
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                    ).add(EdgeInsets.only(bottom: 8.0)),
+                    child: ClipRRect(
                       borderRadius: BorderRadius.circular(15),
                       child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                          child: Material(
-                              color: Theme.of(context)
-                                  .scaffoldBackgroundColor
-                                  .withValues(alpha: 0.8),
-                              child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 12.0, vertical: 8.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                          child: ButtonInset(
-                                        icon: Ionicons.heart_outline,
-                                        text: 'Like',
-                                        onPressed: () {},
-                                      )),
-                                      Expanded(
-                                          child: ButtonInset(
-                                        icon: Ionicons.chatbox_ellipses_outline,
-                                        text: 'Comments',
-                                        disabled: widget.service
-                                                is! ComicAuthMixin ||
-                                            (widget.service as ComicAuthMixin)
-                                                    .getComments ==
-                                                null,
-                                        onPressed: _showPanelComments,
-                                      )),
-                                      Expanded(
-                                          child: ButtonInset(
-                                        icon: Ionicons.list,
-                                        text: 'Chapters',
-                                        onPressed: _showPanelListChapters,
-                                      )),
-                                      Expanded(
-                                          child: ButtonInset(
-                                        icon: Ionicons.settings_outline,
-                                        text: 'Settings',
-                                        onPressed: _showPanelSettings,
-                                      )),
-                                      Expanded(
-                                          child: ButtonInset(
-                                              icon: Ionicons.arrow_forward,
-                                              text: 'Skip',
-                                              onPressed: _showPanelSkipPages)),
-                                    ],
-                                  ))))),
-                )
-              ]));
+                        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                        child: Material(
+                          color: Theme.of(
+                            context,
+                          ).scaffoldBackgroundColor.withValues(alpha: 0.8),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12.0,
+                              vertical: 8.0,
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: ButtonInset(
+                                    icon: Ionicons.heart_outline,
+                                    text: 'Like',
+                                    onPressed: () {},
+                                  ),
+                                ),
+                                Expanded(
+                                  child: ButtonInset(
+                                    icon: Ionicons.chatbox_ellipses_outline,
+                                    text: 'Comments',
+                                    disabled:
+                                        widget.service is! ComicAuthMixin ||
+                                        (widget.service as ComicAuthMixin)
+                                                .getComments ==
+                                            null,
+                                    onPressed: _showPanelComments,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: ButtonInset(
+                                    icon: Ionicons.list,
+                                    text: 'Chapters',
+                                    onPressed: _showPanelListChapters,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: ButtonInset(
+                                    icon: Ionicons.settings_outline,
+                                    text: 'Settings',
+                                    onPressed: _showPanelSettings,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: ButtonInset(
+                                    icon: Ionicons.arrow_forward,
+                                    text: 'Skip',
+                                    onPressed: _showPanelSkipPages,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+    );
   }
 
   Widget _buildPage(int index) {
@@ -1189,13 +1289,16 @@ class _MangaReaderState extends State<MangaReader>
         case ComicModes.topToBottom:
           // next page;
           _pageController.nextPage(
-              duration: Duration(milliseconds: 300), curve: Curves.linear);
+            duration: Duration(milliseconds: 300),
+            curve: Curves.linear,
+          );
           break;
         case ComicModes.webToon:
           // scroll 90% height screen
           _itemScrollController.scrollTo(
-              index: min(pages.length, _currentPage.round() + 1),
-              duration: Duration(milliseconds: 300));
+            index: min(pages.length, _currentPage.round() + 1),
+            duration: Duration(milliseconds: 300),
+          );
           break;
         default:
       }
@@ -1206,12 +1309,15 @@ class _MangaReaderState extends State<MangaReader>
         case ComicModes.topToBottom:
           // prev page
           _pageController.previousPage(
-              duration: Duration(milliseconds: 300), curve: Curves.linear);
+            duration: Duration(milliseconds: 300),
+            curve: Curves.linear,
+          );
           break;
         case ComicModes.webToon:
           _itemScrollController.scrollTo(
-              index: max(0, _currentPage.round() - 1),
-              duration: Duration(milliseconds: 300));
+            index: max(0, _currentPage.round() - 1),
+            duration: Duration(milliseconds: 300),
+          );
           break;
         default:
       }
@@ -1221,11 +1327,15 @@ class _MangaReaderState extends State<MangaReader>
       switch (_mode) {
         case ComicModes.leftToRight:
           _pageController.previousPage(
-              duration: Duration(milliseconds: 100), curve: Curves.linear);
+            duration: Duration(milliseconds: 100),
+            curve: Curves.linear,
+          );
           break;
         case ComicModes.rightToLeft:
           _pageController.nextPage(
-              duration: Duration(milliseconds: 100), curve: Curves.linear);
+            duration: Duration(milliseconds: 100),
+            curve: Curves.linear,
+          );
           break;
         default:
       }
@@ -1235,11 +1345,15 @@ class _MangaReaderState extends State<MangaReader>
       switch (_mode) {
         case ComicModes.leftToRight:
           _pageController.nextPage(
-              duration: Duration(milliseconds: 100), curve: Curves.linear);
+            duration: Duration(milliseconds: 100),
+            curve: Curves.linear,
+          );
           break;
         case ComicModes.rightToLeft:
           _pageController.previousPage(
-              duration: Duration(milliseconds: 100), curve: Curves.linear);
+            duration: Duration(milliseconds: 100),
+            curve: Curves.linear,
+          );
           break;
         default:
       }

@@ -6,8 +6,12 @@ class HomeComicSection {
   final bool? gridView;
   final List<Comic> items;
 
-  const HomeComicSection(
-      {required this.items, required this.name, this.sectionId, this.gridView});
+  const HomeComicSection({
+    required this.items,
+    required this.name,
+    this.sectionId,
+    this.gridView,
+  });
 
   factory HomeComicSection.createFakeData() {
     return HomeComicSection(

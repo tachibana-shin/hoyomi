@@ -28,15 +28,16 @@ class SliderEiga extends StatefulWidget {
   final ReadonlySignal<OpeningEnding?> openingEnding;
   final Function(double) onSeek; // Callback for seek
 
-  const SliderEiga(
-      {super.key,
-      required this.progress,
-      required this.duration,
-      required this.onSeek,
-      required this.vttThumbnail,
-      required this.showThumb,
-      required this.pauseAutoHideControls,
-      required this.openingEnding});
+  const SliderEiga({
+    super.key,
+    required this.progress,
+    required this.duration,
+    required this.onSeek,
+    required this.vttThumbnail,
+    required this.showThumb,
+    required this.pauseAutoHideControls,
+    required this.openingEnding,
+  });
 
   @override
   createState() => _SliderEigaState();
@@ -65,10 +66,10 @@ class _SliderEigaState extends State<SliderEiga>
       duration: const Duration(milliseconds: 50),
       vsync: this,
     );
-    _barHeightAnimation =
-        Tween<double>(begin: sliderHeightMin, end: sliderHeightMax).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _barHeightAnimation = Tween<double>(
+      begin: sliderHeightMin,
+      end: sliderHeightMax,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     createEffect(() {
       final vtt = widget.vttThumbnail();
@@ -113,11 +114,14 @@ class _SliderEigaState extends State<SliderEiga>
       debugPrint("spriteUrl: $spriteUrl, x: $x, y: $y, w: $w, h: $h");
 
       final imageProvider = CachedNetworkImageProvider(spriteUrl.toString());
-      final ImageStream imageStream =
-          imageProvider.resolve(ImageConfiguration.empty);
+      final ImageStream imageStream = imageProvider.resolve(
+        ImageConfiguration.empty,
+      );
       final Completer<ImageInfo> completer = Completer<ImageInfo>();
-      final ImageStreamListener listener =
-          ImageStreamListener((ImageInfo info, bool _) {
+      final ImageStreamListener listener = ImageStreamListener((
+        ImageInfo info,
+        bool _,
+      ) {
         completer.complete(info);
       });
       imageStream.addListener(listener);
@@ -128,36 +132,37 @@ class _SliderEigaState extends State<SliderEiga>
         final imageHeight = data.image.height;
 
         return _PreviewMeta(
-            width: w,
-            widget: ClipRRect(
-              borderRadius: BorderRadius.circular(3), // Add border-radius: 3px
-              child: Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      offset: Offset(0, 1),
-                      blurRadius: 3,
-                    ),
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      offset: Offset(0, 1),
-                      blurRadius: 2,
-                      spreadRadius: -1,
-                    ),
-                  ],
-                ),
-                child: CustomPaint(
-                  size: Size(w, h),
-                  painter: _ImagePainter(
-                    imageProvider: imageProvider,
-                    srcRect: Rect.fromLTWH(x, y, w, h),
-                    imageWidth: imageWidth,
-                    imageHeight: imageHeight,
+          width: w,
+          widget: ClipRRect(
+            borderRadius: BorderRadius.circular(3), // Add border-radius: 3px
+            child: Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    offset: Offset(0, 1),
+                    blurRadius: 3,
                   ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    offset: Offset(0, 1),
+                    blurRadius: 2,
+                    spreadRadius: -1,
+                  ),
+                ],
+              ),
+              child: CustomPaint(
+                size: Size(w, h),
+                painter: _ImagePainter(
+                  imageProvider: imageProvider,
+                  srcRect: Rect.fromLTWH(x, y, w, h),
+                  imageWidth: imageWidth,
+                  imageHeight: imageHeight,
                 ),
               ),
-            ));
+            ),
+          ),
+        );
       });
     } else {
       _previewBlank.value = null;
@@ -183,121 +188,123 @@ class _SliderEigaState extends State<SliderEiga>
     return LayoutBuilder(
       builder: (context, constraints) {
         final parentSize = constraints.biggest;
-        return Stack(children: [
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: GestureDetector(
-              onHorizontalDragUpdate: (details) {
-                _onSeek(details.localPosition);
-                _onHoverUpdate(details.localPosition);
-              },
+        return Stack(
+          children: [
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: GestureDetector(
+                onHorizontalDragUpdate: (details) {
+                  _onSeek(details.localPosition);
+                  _onHoverUpdate(details.localPosition);
+                },
 
-              /// hover event
-              onHorizontalDragStart: (details) {
-                _onSeek(details.localPosition);
-                _onHoverUpdate(details.localPosition);
-              },
-              onHorizontalDragEnd: (details) {
-                _onHoverEnd();
-              },
+                /// hover event
+                onHorizontalDragStart: (details) {
+                  _onSeek(details.localPosition);
+                  _onHoverUpdate(details.localPosition);
+                },
+                onHorizontalDragEnd: (details) {
+                  _onHoverEnd();
+                },
 
-              /// progress
-              onTapDown: (details) {
-                _onSeek(details.localPosition);
-                _onHoverUpdate(details.localPosition);
-              },
-              onTapUp: (details) {
-                _onHoverEnd();
-              },
+                /// progress
+                onTapDown: (details) {
+                  _onSeek(details.localPosition);
+                  _onHoverUpdate(details.localPosition);
+                },
+                onTapUp: (details) {
+                  _onHoverEnd();
+                },
 
-              /// long press
-              onLongPressDown: (details) {
-                _onSeek(details.localPosition);
-                _onHoverUpdate(details.localPosition);
-              },
-              onLongPressMoveUpdate: (details) {
-                _onSeek(details.localPosition);
-                _onHoverUpdate(details.localPosition);
-              },
-              onLongPressEnd: (details) {
-                _onHoverEnd();
-              },
+                /// long press
+                onLongPressDown: (details) {
+                  _onSeek(details.localPosition);
+                  _onHoverUpdate(details.localPosition);
+                },
+                onLongPressMoveUpdate: (details) {
+                  _onSeek(details.localPosition);
+                  _onHoverUpdate(details.localPosition);
+                },
+                onLongPressEnd: (details) {
+                  _onHoverEnd();
+                },
 
-              /// pan
-              onPanStart: (details) {
-                _onSeek(details.localPosition);
-                _onHoverUpdate(details.localPosition);
-              },
-              onPanUpdate: (details) {
-                _onSeek(details.localPosition);
-                _onHoverUpdate(details.localPosition);
-              },
-              onPanEnd: (details) {
-                _onHoverEnd();
-              },
-              // onTapCancel: _onHoverEnd,
-              child: Stack(
-                children: [
-                  Container(height: thumbSize * 2),
-                  _buildSliderBar(parentSize),
-                  _buildSliderThumb(parentSize),
-                ],
+                /// pan
+                onPanStart: (details) {
+                  _onSeek(details.localPosition);
+                  _onHoverUpdate(details.localPosition);
+                },
+                onPanUpdate: (details) {
+                  _onSeek(details.localPosition);
+                  _onHoverUpdate(details.localPosition);
+                },
+                onPanEnd: (details) {
+                  _onHoverEnd();
+                },
+                // onTapCancel: _onHoverEnd,
+                child: Stack(
+                  children: [
+                    Container(height: thumbSize * 2),
+                    _buildSliderBar(parentSize),
+                    _buildSliderThumb(parentSize),
+                  ],
+                ),
               ),
             ),
-          ),
 
-          Container(height: parentSize.height),
-          // hover popover
-          _buildHoverPreview(parentSize),
-        ]);
+            Container(height: parentSize.height),
+            // hover popover
+            _buildHoverPreview(parentSize),
+          ],
+        );
       },
     );
   }
 
   Widget _buildSliderBar(Size parentSize) {
     return Positioned(
-        bottom: thumbSize,
-        left: 0,
-        right: 0,
-        child: AnimatedBuilder(
-          animation: _barHeightAnimation,
-          builder: (context, child) {
-            return Watch((context) {
-              final opening = widget.openingEnding()?.opening;
-              final ending = widget.openingEnding()?.ending;
+      bottom: thumbSize,
+      left: 0,
+      right: 0,
+      child: AnimatedBuilder(
+        animation: _barHeightAnimation,
+        builder: (context, child) {
+          return Watch((context) {
+            final opening = widget.openingEnding()?.opening;
+            final ending = widget.openingEnding()?.ending;
 
-              final duration = widget.duration();
+            final duration = widget.duration();
 
-              return Transform.translate(
-                  offset: Offset(0, _barHeightAnimation.value / 2),
-                  child: CustomPaint(
-                    size: Size(parentSize.width, _barHeightAnimation.value),
-                    painter: _ProgressBarPainter(
-                      progress: widget.progress().inMilliseconds /
-                          duration.inMilliseconds,
-                      range: [
-                        if (opening != null && duration.inMilliseconds > 0)
-                          (
-                            opening.start.inMilliseconds /
-                                duration.inMilliseconds,
-                            opening.end.inMilliseconds / duration.inMilliseconds
-                          ),
-                        if (ending != null && duration.inMilliseconds > 0)
-                          (
-                            ending.start.inMilliseconds /
-                                duration.inMilliseconds,
-                            ending.end.inMilliseconds / duration.inMilliseconds
-                          )
-                      ],
-                      barHeight:
-                          _barHeightAnimation.value, // Animate bar height
-                    ),
-                  ));
-            }, dependencies: [widget.openingEnding]);
-          },
-        ));
+            return Transform.translate(
+              offset: Offset(0, _barHeightAnimation.value / 2),
+              child: CustomPaint(
+                size: Size(parentSize.width, _barHeightAnimation.value),
+                painter: _ProgressBarPainter(
+                  progress:
+                      widget.progress().inMilliseconds /
+                      duration.inMilliseconds,
+                  range: [
+                    if (opening != null && duration.inMilliseconds > 0)
+                      (
+                        opening.start.inMilliseconds / duration.inMilliseconds,
+                        opening.end.inMilliseconds / duration.inMilliseconds,
+                      ),
+                    if (ending != null && duration.inMilliseconds > 0)
+                      (
+                        ending.start.inMilliseconds / duration.inMilliseconds,
+                        ending.end.inMilliseconds / duration.inMilliseconds,
+                      ),
+                  ],
+                  barHeight: _barHeightAnimation.value, // Animate bar height
+                ),
+              ),
+            );
+          }, dependencies: [widget.openingEnding]);
+        },
+      ),
+    );
   }
 
   Widget _buildHoverPreview(Size parentSize) {
@@ -305,8 +312,9 @@ class _SliderEigaState extends State<SliderEiga>
       if (!_isHovering()) return SizedBox.shrink();
 
       Widget builder(BuildContext context, _PreviewMeta? preview, bool done) {
-        final String text =
-            formatDuration(widget.duration() * _hoverPosition());
+        final String text = formatDuration(
+          widget.duration() * _hoverPosition(),
+        );
         const double fontSize = 12;
         const double paddingX = 5;
 
@@ -319,54 +327,55 @@ class _SliderEigaState extends State<SliderEiga>
           width = (text.length * fontSize / 2) + paddingX * 2;
         }
 
-        final left = (_hoverPosition() * parentSize.width - (width / 2))
-            .clamp(3, parentSize.width - width - 3)
-            .toDouble();
+        final left =
+            (_hoverPosition() * parentSize.width - (width / 2))
+                .clamp(3, parentSize.width - width - 3)
+                .toDouble();
 
         final child = Center(
-            child: Container(
-          padding: EdgeInsets.symmetric(vertical: 3, horizontal: paddingX),
-          decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.7),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 3, horizontal: paddingX),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.7),
+              borderRadius: BorderRadius.circular(3),
+            ),
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
             ),
           ),
-        ));
+        );
         final previewWidget =
             preview?.widget ?? (done ? null : _previewBlank());
         return Positioned(
           left: left,
           bottom: sliderHeightMax + thumbSize / 2 + 7,
-          child: previewWidget != null
-              ? Stack(
-                  children: [
-                    previewWidget,
-                    Positioned(
-                      bottom: 10,
-                      left: 0,
-                      right: 0,
-                      child: child,
-                    ),
-                  ],
-                )
-              : child,
+          child:
+              previewWidget != null
+                  ? Stack(
+                    children: [
+                      previewWidget,
+                      Positioned(bottom: 10, left: 0, right: 0, child: child),
+                    ],
+                  )
+                  : child,
         );
       }
 
       return FutureBuilder(
-          future: _preview(),
-          builder: (context, snapshot) => builder(
+        future: _preview(),
+        builder:
+            (context, snapshot) => builder(
               context,
               snapshot.data,
               snapshot.connectionState != ConnectionState.waiting ||
-                  snapshot.connectionState == ConnectionState.done));
+                  snapshot.connectionState == ConnectionState.done,
+            ),
+      );
     }, dependencies: [_isHovering, _preview]);
   }
 
@@ -388,21 +397,23 @@ class _SliderEigaState extends State<SliderEiga>
       final double size = thumbSize;
 
       return Positioned(
-          left: left,
-          bottom: size,
-          child: AnimatedScale(
-            duration: const Duration(milliseconds: 111),
-            curve: Curves.easeInOut,
-            scale: widget.showThumb() || _isHovering() ? 1 : 0,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                _onSeek(details.localPosition);
-              },
-              child: CustomPaint(
-                  size: Size(size, size), // Adjust size based on showThumb
-                  painter: _ThumbPainter(size: size)),
+        left: left,
+        bottom: size,
+        child: AnimatedScale(
+          duration: const Duration(milliseconds: 111),
+          curve: Curves.easeInOut,
+          scale: widget.showThumb() || _isHovering() ? 1 : 0,
+          child: GestureDetector(
+            onPanUpdate: (details) {
+              _onSeek(details.localPosition);
+            },
+            child: CustomPaint(
+              size: Size(size, size), // Adjust size based on showThumb
+              painter: _ThumbPainter(size: size),
             ),
-          ));
+          ),
+        ),
+      );
     });
   }
 }
@@ -420,35 +431,49 @@ class _ProgressBarPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final backgroundPaint = Paint()
-      ..color = Colors.grey.withValues(alpha: 0.8)
-      ..style = PaintingStyle.fill;
+    final backgroundPaint =
+        Paint()
+          ..color = Colors.grey.withValues(alpha: 0.8)
+          ..style = PaintingStyle.fill;
 
-    final progressPaint = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.fill;
+    final progressPaint =
+        Paint()
+          ..color = Colors.red
+          ..style = PaintingStyle.fill;
 
-    final rangePaint = Paint()
-      ..color = Colors.blue
-      ..style = PaintingStyle.fill;
+    final rangePaint =
+        Paint()
+          ..color = Colors.blue
+          ..style = PaintingStyle.fill;
 
     // Draw background
     canvas.drawRect(
-        Rect.fromLTWH(0, size.height - barHeight, size.width, barHeight),
-        backgroundPaint);
+      Rect.fromLTWH(0, size.height - barHeight, size.width, barHeight),
+      backgroundPaint,
+    );
 
     // Draw progress
     canvas.drawRect(
-        Rect.fromLTWH(0, size.height - barHeight,
-            progress.isNaN ? 0 : progress * size.width, barHeight),
-        progressPaint);
+      Rect.fromLTWH(
+        0,
+        size.height - barHeight,
+        progress.isNaN ? 0 : progress * size.width,
+        barHeight,
+      ),
+      progressPaint,
+    );
 
     // ranges
     for (final (start, end) in range) {
       canvas.drawRect(
-          Rect.fromLTWH(start * size.width, size.height - barHeight,
-              (end - start) * size.width, barHeight),
-          rangePaint);
+        Rect.fromLTWH(
+          start * size.width,
+          size.height - barHeight,
+          (end - start) * size.width,
+          barHeight,
+        ),
+        rangePaint,
+      );
     }
   }
 
@@ -465,12 +490,16 @@ class _ThumbPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final thumbPaint = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.fill;
+    final thumbPaint =
+        Paint()
+          ..color = Colors.red
+          ..style = PaintingStyle.fill;
 
     canvas.drawCircle(
-        Offset(size.width / 2, size.height), this.size, thumbPaint);
+      Offset(size.width / 2, size.height),
+      this.size,
+      thumbPaint,
+    );
   }
 
   @override

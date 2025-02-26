@@ -12,10 +12,7 @@ import 'package:hoyomi/widgets/pull_refresh_page.dart';
 class HistoryEigaPage extends StatefulWidget {
   final String sourceId;
 
-  const HistoryEigaPage({
-    super.key,
-    required this.sourceId,
-  });
+  const HistoryEigaPage({super.key, required this.sourceId});
 
   @override
   State<HistoryEigaPage> createState() => _HistoryEigaPageState();
@@ -34,50 +31,62 @@ class _HistoryEigaPageState extends State<HistoryEigaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('History ${(_service as Service).name}'),
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          scrolledUnderElevation: 0.0,
-        ),
-        body: _buildBody());
+      appBar: AppBar(
+        title: Text('History ${(_service as Service).name}'),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        scrolledUnderElevation: 0.0,
+      ),
+      body: _buildBody(),
+    );
   }
 
   Widget _buildBody() {
     return PullRefreshPage(
-        onLoadData: () => _service.getWatchHistory(page: 1),
-        onLoadFake: () => List.generate(
-            30, (_) => HistoryItem.createFakeData(Eiga.createFakeData())),
-        builder: (data, _) => Padding(
+      onLoadData: () => _service.getWatchHistory(page: 1),
+      onLoadFake:
+          () => List.generate(
+            30,
+            (_) => HistoryItem.createFakeData(Eiga.createFakeData()),
+          ),
+      builder:
+          (data, _) => Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
             child: InfiniteList(
-                data: data,
-                fetchData: () async {
-                  final result = await _service.getWatchHistory(page: _pageKey);
-                  _pageKey++;
+              data: data,
+              fetchData: () async {
+                final result = await _service.getWatchHistory(page: _pageKey);
+                _pageKey++;
 
-                  final isLastPage = result.isEmpty;
+                final isLastPage = result.isEmpty;
 
-                  return (isLastPage, result);
-                },
-                itemBuilder: (context, history, index, historyPrev) {
-                  final main =
-                      EigaHistory(sourceId: widget.sourceId, history: history);
+                return (isLastPage, result);
+              },
+              itemBuilder: (context, history, index, historyPrev) {
+                final main = EigaHistory(
+                  sourceId: widget.sourceId,
+                  history: history,
+                );
 
-                  if (history.watchUpdatedAt.day !=
-                      historyPrev?.watchUpdatedAt.day) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 3.0),
-                        Text(formatWatchUpdatedAt(history.watchUpdatedAt, null),
-                            style: TextStyle(
-                                color:
-                                    Theme.of(context).colorScheme.secondary)),
-                        main
-                      ],
-                    );
-                  }
-                  return main;
-                })));
+                if (history.watchUpdatedAt.day !=
+                    historyPrev?.watchUpdatedAt.day) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 3.0),
+                      Text(
+                        formatWatchUpdatedAt(history.watchUpdatedAt, null),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      ),
+                      main,
+                    ],
+                  );
+                }
+                return main;
+              },
+            ),
+          ),
+    );
   }
 }

@@ -11,11 +11,12 @@ class CustomSearchBar extends StatefulWidget {
 
   final Function(Widget? overlay) onOverlayChange;
 
-  const CustomSearchBar(
-      {super.key,
-      required this.onOverlayChange,
-      required this.keyword,
-      this.backMode = false});
+  const CustomSearchBar({
+    super.key,
+    required this.onOverlayChange,
+    required this.keyword,
+    this.backMode = false,
+  });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -44,30 +45,31 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   PreferredSize build(BuildContext context) {
     return PreferredSize(
       preferredSize: const Size.fromHeight(50.0),
-      child: Stack(children: [
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 280),
-          curve: Curves.easeInOutCubic,
-          padding: EdgeInsets.symmetric(horizontal: _focusing ? 0.0 : 8.0),
-          margin: EdgeInsets.symmetric(horizontal: 18.0, vertical: 16.0),
-          decoration: BoxDecoration(
-            color: _focusing
-                ? Colors.transparent
-                : Theme.of(context).colorScheme.surfaceContainerHigh,
-            borderRadius:
-                _focusing ? BorderRadius.zero : BorderRadius.circular(30.0),
-          ),
-          child: Row(
-            children: [
-              if (_focusing ||
-                  (widget.backMode && _controller.text.trim().isNotEmpty))
-                IconButton(
+      child: Stack(
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 280),
+            curve: Curves.easeInOutCubic,
+            padding: EdgeInsets.symmetric(horizontal: _focusing ? 0.0 : 8.0),
+            margin: EdgeInsets.symmetric(horizontal: 18.0, vertical: 16.0),
+            decoration: BoxDecoration(
+              color:
+                  _focusing
+                      ? Colors.transparent
+                      : Theme.of(context).colorScheme.surfaceContainerHigh,
+              borderRadius:
+                  _focusing ? BorderRadius.zero : BorderRadius.circular(30.0),
+            ),
+            child: Row(
+              children: [
+                if (_focusing ||
+                    (widget.backMode && _controller.text.trim().isNotEmpty))
+                  IconButton(
                     icon: Icon(
                       MaterialCommunityIcons.arrow_left,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .secondaryFixedDim
-                          .withValues(alpha: 0.7),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondaryFixedDim.withValues(alpha: 0.7),
                     ),
                     onPressed: () {
                       if (widget.backMode) {
@@ -80,14 +82,16 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                         _focusing = false;
                         _removeOverlay();
                       });
-                    })
-              else
-                IconButton(
-                    icon: Icon(MaterialCommunityIcons.magnify,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .secondaryFixedDim
-                            .withValues(alpha: 0.7)),
+                    },
+                  )
+                else
+                  IconButton(
+                    icon: Icon(
+                      MaterialCommunityIcons.magnify,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondaryFixedDim.withValues(alpha: 0.7),
+                    ),
                     onPressed: () {
                       setState(() {
                         _focusing = false;
@@ -97,22 +101,23 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                       //   _focusing = true;
                       //   _showOverlay();
                       // });
-                    }),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Focus(
-                  onFocusChange: (focused) {
-                    setState(() {
-                      if (focused && !_focusing) {
-                        _focusing = focused;
-                        _showOverlay();
-                      } else {
-                        // _focusing = false;
-                        // _removeOverlay();
-                      }
-                    });
-                  },
-                  child: TextField(
+                    },
+                  ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Focus(
+                    onFocusChange: (focused) {
+                      setState(() {
+                        if (focused && !_focusing) {
+                          _focusing = focused;
+                          _showOverlay();
+                        } else {
+                          // _focusing = false;
+                          // _removeOverlay();
+                        }
+                      });
+                    },
+                    child: TextField(
                       autofocus: _focusing || _isOverlayVisible,
                       controller: _controller,
                       // readOnly: _readonly,
@@ -132,63 +137,66 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                       },
                       onSubmitted: (value) {
                         context.push("/search?q=$value");
-                      }),
+                      },
+                    ),
+                  ),
                 ),
-              ),
-              if (_focusing == false)
-                PopupMenuButton<String>(
-                  icon: Icon(MaterialCommunityIcons.dots_vertical,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .secondaryFixedDim
-                          .withValues(alpha: 0.7)),
-                  onSelected: (String value) {
-                    if (value == 'clear_history') {
-                      // Handle clear history
-                    }
-                    if (value == 'settings') {
-                      // Handle settings
-                    }
-                    if (value == 'grid_view') {
-                      isGridViewEnabled.value = !isGridViewEnabled.value;
-                    }
-                  },
-                  itemBuilder: (BuildContext context) =>
-                      <PopupMenuEntry<String>>[
-                    const PopupMenuItem<String>(
-                      value: 'clear_history',
-                      child: Text("Clear History"),
+                if (_focusing == false)
+                  PopupMenuButton<String>(
+                    icon: Icon(
+                      MaterialCommunityIcons.dots_vertical,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondaryFixedDim.withValues(alpha: 0.7),
                     ),
-                    const PopupMenuItem<String>(
-                      value: 'settings',
-                      child: Text("Settings"),
-                    ),
-                    PopupMenuItem<String>(
-                      value: 'grid_view',
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Grid View"),
-                          ValueListenableBuilder<bool>(
-                            valueListenable: isGridViewEnabled,
-                            builder: (context, value, _) {
-                              return Switch(
-                                value: value,
-                                onChanged: (newValue) {
-                                  isGridViewEnabled.value = newValue;
-                                },
-                              );
-                            },
+                    onSelected: (String value) {
+                      if (value == 'clear_history') {
+                        // Handle clear history
+                      }
+                      if (value == 'settings') {
+                        // Handle settings
+                      }
+                      if (value == 'grid_view') {
+                        isGridViewEnabled.value = !isGridViewEnabled.value;
+                      }
+                    },
+                    itemBuilder:
+                        (BuildContext context) => <PopupMenuEntry<String>>[
+                          const PopupMenuItem<String>(
+                            value: 'clear_history',
+                            child: Text("Clear History"),
+                          ),
+                          const PopupMenuItem<String>(
+                            value: 'settings',
+                            child: Text("Settings"),
+                          ),
+                          PopupMenuItem<String>(
+                            value: 'grid_view',
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text("Grid View"),
+                                ValueListenableBuilder<bool>(
+                                  valueListenable: isGridViewEnabled,
+                                  builder: (context, value, _) {
+                                    return Switch(
+                                      value: value,
+                                      onChanged: (newValue) {
+                                        isGridViewEnabled.value = newValue;
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ],
-                      ),
-                    ),
-                  ],
-                ),
-            ],
+                  ),
+              ],
+            ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 

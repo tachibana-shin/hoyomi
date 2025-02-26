@@ -6,11 +6,12 @@ class ImagePicker extends StatefulWidget {
   final String sourceId;
   final Function(Set<int>) onChange;
 
-  const ImagePicker(
-      {super.key,
-      required this.images,
-      required this.sourceId,
-      required this.onChange});
+  const ImagePicker({
+    super.key,
+    required this.images,
+    required this.sourceId,
+    required this.onChange,
+  });
 
   @override
   createState() => _ImagePickerState();
@@ -35,10 +36,7 @@ class _ImagePickerState extends State<ImagePicker> {
             children: [
               const Text(
                 'Select Images',
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16.0),
               Expanded(
@@ -76,19 +74,20 @@ class _ImagePickerState extends State<ImagePicker> {
                           ),
                           clipBehavior: Clip.antiAlias,
                           child: Transform.scale(
-                              scale: 0.9,
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  ),
-                                  clipBehavior: Clip.antiAlias,
-                                  child: OImage.network(
-                                    widget.images.elementAt(index).src,
-                                    sourceId: widget.sourceId,
-                                    headers:
-                                        widget.images.elementAt(index).headers,
-                                    fit: BoxFit.cover,
-                                  ))),
+                            scale: 0.9,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              clipBehavior: Clip.antiAlias,
+                              child: OImage.network(
+                                widget.images.elementAt(index).src,
+                                sourceId: widget.sourceId,
+                                headers: widget.images.elementAt(index).headers,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     );

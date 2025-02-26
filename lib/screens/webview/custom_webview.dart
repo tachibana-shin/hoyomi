@@ -42,24 +42,26 @@ class _CustomWebViewState extends State<CustomWebView> {
     try {
       // Retrieve cookies for the current URL
       final cookies = await CookieManager.instance().getCookies(
-          url: WebUri(_initialUrl), webViewController: _webViewController);
-      final cookiesText =
-          cookies.map((cookie) => '${cookie.name}=${cookie.value}').join("; ");
+        url: WebUri(_initialUrl),
+        webViewController: _webViewController,
+      );
+      final cookiesText = cookies
+          .map((cookie) => '${cookie.name}=${cookie.value}')
+          .join("; ");
       final userAgent = await _webViewController.evaluateJavascript(
-          source: "navigator.userAgent");
+        source: "navigator.userAgent",
+      );
 
       final user = await _service.onAfterSignIn(
-          cookie: cookiesText, userAgent: userAgent);
+        cookie: cookiesText,
+        userAgent: userAgent,
+      );
 
       showSnackBar(Text('Signed in to ${_service.name} as ${user.fullName}'));
     } on UserNotFoundException catch (_) {
-      showSnackBar(
-        Text('Sign in ${_service.name} failed.'),
-      );
+      showSnackBar(Text('Sign in ${_service.name} failed.'));
     } catch (e) {
-      showSnackBar(
-        Text('Error while collecting cookies: $e'),
-      );
+      showSnackBar(Text('Error while collecting cookies: $e'));
       debugPrint('Error: $e');
       rethrow;
     }
@@ -87,8 +89,10 @@ class _CustomWebViewState extends State<CustomWebView> {
           children: [
             Text(
               _currentTitle,
-              style:
-                  const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
               overflow: TextOverflow.ellipsis,
             ),
             Text(

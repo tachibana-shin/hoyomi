@@ -16,11 +16,12 @@ class ButtonFollowEiga extends StatefulWidget {
   final ValueNotifier<MetaEiga> metaEiga;
   final Service service;
 
-  const ButtonFollowEiga(
-      {super.key,
-      required this.eigaId,
-      required this.metaEiga,
-      required this.service});
+  const ButtonFollowEiga({
+    super.key,
+    required this.eigaId,
+    required this.metaEiga,
+    required this.service,
+  });
 
   @override
   createState() => _ButtonFollowEigaState();
@@ -67,7 +68,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
         }),
         service.getFollowCount(eigaId: widget.eigaId.value).then((value) {
           if (mounted) _followCount.value = value;
-        })
+        }),
       ]);
     } finally {
       if (mounted) _loading.value = false;
@@ -80,26 +81,34 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
     final followCount = _followCount();
 
     return Opacity(
-        opacity: (_supportAuth && !_loading()) ? 1.0 : 0.5,
-        child: IgnorePointer(
-            ignoring: !(_supportAuth && !_loading()),
-            child: ElevatedButton.icon(
-                onPressed: _onTap,
-                icon: Icon(
-                    isFollowed
-                        ? MaterialCommunityIcons.bookmark_check
-                        : MaterialCommunityIcons.bookmark_plus_outline,
-                    color: Theme.of(context).textTheme.labelLarge?.color),
-                label: Text(
-                    followCount == null || followCount == 0
-                        ? 'Follow'
-                        : formatNumber(followCount),
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.normal, fontSize: 12.0)),
-                style: ButtonStyle(
-                    padding: WidgetStateProperty.all(
-                  EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
-                )))));
+      opacity: (_supportAuth && !_loading()) ? 1.0 : 0.5,
+      child: IgnorePointer(
+        ignoring: !(_supportAuth && !_loading()),
+        child: ElevatedButton.icon(
+          onPressed: _onTap,
+          icon: Icon(
+            isFollowed
+                ? MaterialCommunityIcons.bookmark_check
+                : MaterialCommunityIcons.bookmark_plus_outline,
+            color: Theme.of(context).textTheme.labelLarge?.color,
+          ),
+          label: Text(
+            followCount == null || followCount == 0
+                ? 'Follow'
+                : formatNumber(followCount),
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.normal,
+              fontSize: 12.0,
+            ),
+          ),
+          style: ButtonStyle(
+            padding: WidgetStateProperty.all(
+              EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   void _onTap() async {
@@ -108,13 +117,16 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
 
     final isSigned = _user?.user() != null;
     if (!isSigned) {
-      showSnackBar(Text('Please sign in to follow eiga.'),
-          action: SnackBarAction(
-              label: 'Sign in',
-              onPressed: () async {
-                await context.push('/webview/${widget.service.uid}');
-                router.refresh();
-              }));
+      showSnackBar(
+        Text('Please sign in to follow eiga.'),
+        action: SnackBarAction(
+          label: 'Sign in',
+          onPressed: () async {
+            await context.push('/webview/${widget.service.uid}');
+            router.refresh();
+          },
+        ),
+      );
 
       return;
     }
@@ -124,11 +136,15 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
 
     try {
       _isFollowed.value = await service.setFollow(
-          eigaId: widget.eigaId.value, value: !oldFollowed);
+        eigaId: widget.eigaId.value,
+        value: !oldFollowed,
+      );
 
-      showSnackBar(Text(_isFollowed.value
-          ? 'Added to watch list'
-          : 'Removed from watch list'));
+      showSnackBar(
+        Text(
+          _isFollowed.value ? 'Added to watch list' : 'Removed from watch list',
+        ),
+      );
     } catch (err) {
       // restore value
       _isFollowed.value = oldFollowed;

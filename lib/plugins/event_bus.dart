@@ -7,6 +7,9 @@ class UpdatedHistory {
   final String chapterId;
   final bool force;
 
-  const UpdatedHistory(
-      {required this.comicId, required this.chapterId, this.force = false});
+  const UpdatedHistory({
+    required this.comicId,
+    required this.chapterId,
+    this.force = false,
+  });
 }

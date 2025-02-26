@@ -31,58 +31,67 @@ class HorizontalEigaList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: itemsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Skeletonizer(
-                enabled: true,
-                enableSwitchAnimation: true,
-                child: HorizontalList<EigaExtend>(
-                  title: title,
-                  subtitle: subtitle,
-                  more: more,
-                  items: List.generate(
-                      30,
-                      (index) => EigaExtend(
-                          eiga: Eiga.createFakeData(), sourceId: null)),
-                  needSubtitle: false,
-                  builder: (context, eiga, index) {
-                    return VerticalEiga(
-                      eiga: eiga.eiga,
-                      sourceId: eiga.sourceId,
-                      percentRead: eiga.percentRead,
-                    );
-                  },
-                ));
-          }
-
-          if (snapshot.hasError) {
-            return HorizontalList.buildContainer(
-              context,
-              builder: (viewFraction) => Center(
-                  child: UtilsService.errorWidgetBuilder(context,
-                      error: snapshot.error,
-                      orElse: (error) => Text('Error: $error'))),
+      future: itemsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Skeletonizer(
+            enabled: true,
+            enableSwitchAnimation: true,
+            child: HorizontalList<EigaExtend>(
+              title: title,
+              subtitle: subtitle,
+              more: more,
+              items: List.generate(
+                30,
+                (index) =>
+                    EigaExtend(eiga: Eiga.createFakeData(), sourceId: null),
+              ),
               needSubtitle: false,
-            );
-          }
-
-          return HorizontalList<EigaExtend>(
-            title: title,
-            subtitle: subtitle,
-            more: more,
-            items: snapshot.data!,
-            needSubtitle: snapshot.data!.firstWhereOrNull(
-                    (eiga) => VerticalEiga.checkNeedSubtitle(eiga.eiga)) !=
-                null,
-            builder: (context, eiga, index) {
-              return VerticalEiga(
-                eiga: eiga.eiga,
-                sourceId: eiga.sourceId,
-                percentRead: eiga.percentRead,
-              );
-            },
+              builder: (context, eiga, index) {
+                return VerticalEiga(
+                  eiga: eiga.eiga,
+                  sourceId: eiga.sourceId,
+                  percentRead: eiga.percentRead,
+                );
+              },
+            ),
           );
-        });
+        }
+
+        if (snapshot.hasError) {
+          return HorizontalList.buildContainer(
+            context,
+            builder:
+                (viewFraction) => Center(
+                  child: UtilsService.errorWidgetBuilder(
+                    context,
+                    error: snapshot.error,
+                    orElse: (error) => Text('Error: $error'),
+                  ),
+                ),
+            needSubtitle: false,
+          );
+        }
+
+        return HorizontalList<EigaExtend>(
+          title: title,
+          subtitle: subtitle,
+          more: more,
+          items: snapshot.data!,
+          needSubtitle:
+              snapshot.data!.firstWhereOrNull(
+                (eiga) => VerticalEiga.checkNeedSubtitle(eiga.eiga),
+              ) !=
+              null,
+          builder: (context, eiga, index) {
+            return VerticalEiga(
+              eiga: eiga.eiga,
+              sourceId: eiga.sourceId,
+              percentRead: eiga.percentRead,
+            );
+          },
+        );
+      },
+    );
   }
 }

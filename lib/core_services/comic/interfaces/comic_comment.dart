@@ -35,18 +35,19 @@ class ComicComment {
     );
   }
 
-  ComicComment(
-      {required this.id,
-      required this.comicId,
-      this.chapterId,
-      required this.userId,
-      required this.name,
-      required this.photoUrl,
-      required this.content,
-      required this.timeAgo,
-      this.countLike,
-      this.countDislike,
-      required this.countReply,
-      this.canDelete = false,
-      this.like});
+  ComicComment({
+    required this.id,
+    required this.comicId,
+    this.chapterId,
+    required this.userId,
+    required this.name,
+    required this.photoUrl,
+    required this.content,
+    required this.timeAgo,
+    this.countLike,
+    this.countDislike,
+    required this.countReply,
+    this.canDelete = false,
+    this.like,
+  });
 }

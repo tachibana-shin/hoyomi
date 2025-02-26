@@ -23,17 +23,23 @@ class UserData {
   });
 }
 
-UserData useUser(AuthMixin service,
-    {bool immediate = true, flutter_signals.SignalsMixin? context}) {
-  final user = context != null
-      ? context.createSignal<User?>(null)
-      : core_signals.signal<User?>(null);
-  final error = context != null
-      ? context.createSignal<String?>(null)
-      : core_signals.signal<String?>(null);
-  final fetching = context != null
-      ? context.createSignal<bool>(true)
-      : core_signals.signal<bool>(true);
+UserData useUser(
+  AuthMixin service, {
+  bool immediate = true,
+  flutter_signals.SignalsMixin? context,
+}) {
+  final user =
+      context != null
+          ? context.createSignal<User?>(null)
+          : core_signals.signal<User?>(null);
+  final error =
+      context != null
+          ? context.createSignal<String?>(null)
+          : core_signals.signal<String?>(null);
+  final fetching =
+      context != null
+          ? context.createSignal<bool>(true)
+          : core_signals.signal<bool>(true);
 
   Future<void> refresh() async {
     fetching.value = true;
@@ -42,8 +48,9 @@ UserData useUser(AuthMixin service,
     try {
       if (service is! Service) return;
 
-      final record =
-          await CookieController.getAsync(sourceId: (service as Service).uid);
+      final record = await CookieController.getAsync(
+        sourceId: (service as Service).uid,
+      );
 
       if (record != null) {
         final json = record.user;
@@ -56,23 +63,24 @@ UserData useUser(AuthMixin service,
       (service as Service)
           .fetchUser(row: record, recordLoaded: true)
           .then((value) {
-        if (context != null && (context as State).mounted) {
-          user.value = value;
-        }
-      }).catchError((err) {
-        debugPrint('Error: $err');
+            if (context != null && (context as State).mounted) {
+              user.value = value;
+            }
+          })
+          .catchError((err) {
+            debugPrint('Error: $err');
 
-        if (err is UserNotFoundException) {
-          if (context != null && (context as State).mounted) {
-            user.value = null;
-          }
+            if (err is UserNotFoundException) {
+              if (context != null && (context as State).mounted) {
+                user.value = null;
+              }
 
-          return;
-        }
-        if (context != null && (context as State).mounted) {
-          error.value = '$err';
-        }
-      });
+              return;
+            }
+            if (context != null && (context as State).mounted) {
+              error.value = '$err';
+            }
+          });
     } finally {
       fetching.value = false;
     }
@@ -81,5 +89,9 @@ UserData useUser(AuthMixin service,
   if (immediate) refresh();
 
   return UserData(
-      user: user, error: error, fetching: fetching, refresh: refresh);
+    user: user,
+    error: error,
+    fetching: fetching,
+    refresh: refresh,
+  );
 }

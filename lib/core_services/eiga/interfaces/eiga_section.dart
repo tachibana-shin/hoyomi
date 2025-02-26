@@ -8,13 +8,14 @@ class EigaSection extends Paginate<Eiga> {
   final String? description;
   final List<Filter>? filters;
 
-  const EigaSection(
-      {required this.name,
-      required this.url,
-      this.description,
-      required super.items,
-      required super.page,
-      required super.totalItems,
-      required super.totalPages,
-      this.filters});
+  const EigaSection({
+    required this.name,
+    required this.url,
+    this.description,
+    required super.items,
+    required super.page,
+    required super.totalItems,
+    required super.totalPages,
+    this.filters,
+  });
 }

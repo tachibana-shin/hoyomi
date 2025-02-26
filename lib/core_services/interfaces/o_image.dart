@@ -13,17 +13,15 @@ class OImage {
   factory OImage.fromJson(Map<String, dynamic> json) {
     return OImage(
       src: json['src'],
-      headers: (json['headers'] as Map<String, dynamic>?)
-          ?.map((key, value) => MapEntry(key, value as String)),
+      headers: (json['headers'] as Map<String, dynamic>?)?.map(
+        (key, value) => MapEntry(key, value as String),
+      ),
     );
   }
 
   // Convert to JSON
   Map<String, dynamic> toJson() {
-    return {
-      'src': src,
-      'headers': headers,
-    };
+    return {'src': src, 'headers': headers};
   }
 
   factory OImage.createFakeData() {
@@ -58,37 +56,11 @@ class OImage {
     int? cacheHeight,
   }) {
     if (src == fake) {
-      return Image.asset('assets/images/blank.png',
-          key: key,
-          scale: scale,
-          frameBuilder: frameBuilder,
-          errorBuilder: errorBuilder,
-          semanticLabel: semanticLabel,
-          excludeFromSemantics: excludeFromSemantics,
-          width: width,
-          height: height,
-          color: color,
-          opacity: opacity,
-          colorBlendMode: colorBlendMode,
-          fit: fit,
-          alignment: alignment,
-          repeat: repeat,
-          centerSlice: centerSlice,
-          matchTextDirection: matchTextDirection,
-          gaplessPlayback: gaplessPlayback,
-          filterQuality: filterQuality,
-          isAntiAlias: isAntiAlias,
-          cacheWidth: cacheWidth,
-          cacheHeight: cacheHeight);
-    }
-
-    final cookie = CookieController.get(sourceId: sourceId);
-
-    return Image.network(src,
+      return Image.asset(
+        'assets/images/blank.png',
         key: key,
         scale: scale,
         frameBuilder: frameBuilder,
-        loadingBuilder: loadingBuilder,
         errorBuilder: errorBuilder,
         semanticLabel: semanticLabel,
         excludeFromSemantics: excludeFromSemantics,
@@ -105,12 +77,42 @@ class OImage {
         gaplessPlayback: gaplessPlayback,
         filterQuality: filterQuality,
         isAntiAlias: isAntiAlias,
-        headers: {
-          'set-cookie': cookie?.cookie ?? '',
-          'user-agent': cookie?.userAgent ?? '',
-          ...headers ?? {}
-        },
         cacheWidth: cacheWidth,
-        cacheHeight: cacheHeight);
+        cacheHeight: cacheHeight,
+      );
+    }
+
+    final cookie = CookieController.get(sourceId: sourceId);
+
+    return Image.network(
+      src,
+      key: key,
+      scale: scale,
+      frameBuilder: frameBuilder,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: errorBuilder,
+      semanticLabel: semanticLabel,
+      excludeFromSemantics: excludeFromSemantics,
+      width: width,
+      height: height,
+      color: color,
+      opacity: opacity,
+      colorBlendMode: colorBlendMode,
+      fit: fit,
+      alignment: alignment,
+      repeat: repeat,
+      centerSlice: centerSlice,
+      matchTextDirection: matchTextDirection,
+      gaplessPlayback: gaplessPlayback,
+      filterQuality: filterQuality,
+      isAntiAlias: isAntiAlias,
+      headers: {
+        'set-cookie': cookie?.cookie ?? '',
+        'user-agent': cookie?.userAgent ?? '',
+        ...headers ?? {},
+      },
+      cacheWidth: cacheWidth,
+      cacheHeight: cacheHeight,
+    );
   }
 }

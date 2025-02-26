@@ -8,13 +8,14 @@ class ComicSection extends Paginate<Comic> {
   final String? description;
   final List<Filter>? filters;
 
-  const ComicSection(
-      {required this.name,
-      required this.url,
-      this.description,
-      required super.items,
-      required super.page,
-      required super.totalItems,
-      required super.totalPages,
-      this.filters});
+  const ComicSection({
+    required this.name,
+    required this.url,
+    this.description,
+    required super.items,
+    required super.page,
+    required super.totalItems,
+    required super.totalPages,
+    this.filters,
+  });
 }

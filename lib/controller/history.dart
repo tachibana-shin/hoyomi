@@ -11,12 +11,13 @@ class HistoryController {
   final _historyChapBox = isar.historyChaps;
 
   Future<List<HistoryChap>?> getHistory(String sourceId, String comicId) async {
-    final comic = await _comicBox
-        .where()
-        .comicIdEqualTo(comicId)
-        .filter()
-        .sourceIdEqualTo(sourceId)
-        .findFirst();
+    final comic =
+        await _comicBox
+            .where()
+            .comicIdEqualTo(comicId)
+            .filter()
+            .sourceIdEqualTo(sourceId)
+            .findFirst();
     if (comic == null) return null;
 
     return _historyChapBox.filter().comicEqualTo(comic.id!).findAll();
@@ -28,12 +29,13 @@ class HistoryController {
     required MetaComic comic,
     bool? followed,
   }) async {
-    Comic? comicObject = await _comicBox
-        .where()
-        .sourceIdEqualTo(sourceId)
-        .filter()
-        .comicIdEqualTo(comicId)
-        .findFirst();
+    Comic? comicObject =
+        await _comicBox
+            .where()
+            .sourceIdEqualTo(sourceId)
+            .filter()
+            .comicIdEqualTo(comicId)
+            .findFirst();
 
     comicObject ??= Comic(
       sourceId: sourceId,
@@ -65,10 +67,12 @@ class HistoryController {
     return comicObject;
   }
 
-  Future<void> saveHistory(Comic comic,
-      {required String chapterId,
-      required double currentPage,
-      required int maxPage}) async {
+  Future<void> saveHistory(
+    Comic comic, {
+    required String chapterId,
+    required double currentPage,
+    required int maxPage,
+  }) async {
     final existingHistory = await getCurrentPage(comic, chapterId: chapterId);
 
     if (existingHistory != null) {
@@ -82,11 +86,12 @@ class HistoryController {
       });
     } else {
       final newHistory = HistoryChap(
-          chapterId: chapterId,
-          currentPage: currentPage,
-          maxPage: maxPage,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now());
+        chapterId: chapterId,
+        currentPage: currentPage,
+        maxPage: maxPage,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
 
       newHistory.comic = comic.id!;
       comic.updatedAt = newHistory.updatedAt;
@@ -98,8 +103,10 @@ class HistoryController {
     }
   }
 
-  Future<HistoryChap?> getCurrentPage(Comic comic,
-      {required String chapterId}) async {
+  Future<HistoryChap?> getCurrentPage(
+    Comic comic, {
+    required String chapterId,
+  }) async {
     return _historyChapBox
         .where()
         .chapterIdEqualTo(chapterId)
@@ -115,8 +122,9 @@ class HistoryController {
     final dropOut = limit - items.length;
 
     if (dropOut > 0 && items.isNotEmpty) {
-      items
-          .addAll(await getListHistory(dropOut, offset: offset + items.length));
+      items.addAll(
+        await getListHistory(dropOut, offset: offset + items.length),
+      );
     }
 
     return items;

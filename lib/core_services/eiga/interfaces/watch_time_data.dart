@@ -5,6 +5,9 @@ class WatchTimeData {
   final String episodeId;
   final WatchTime? watchTime;
 
-  const WatchTimeData(
-      {required this.eigaId, required this.episodeId, required this.watchTime});
+  const WatchTimeData({
+    required this.eigaId,
+    required this.episodeId,
+    required this.watchTime,
+  });
 }

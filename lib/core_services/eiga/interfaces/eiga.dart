@@ -13,27 +13,29 @@ class Eiga {
   final bool pending;
   final DateTime? preRelease;
 
-  Eiga(
-      {required this.name,
-      required this.eigaId,
-      this.originalName,
-      required this.image,
-      this.lastEpisode,
-      this.timeAgo,
-      this.notice,
-      this.rate,
-      this.pending = false,
-      this.preRelease});
+  Eiga({
+    required this.name,
+    required this.eigaId,
+    this.originalName,
+    required this.image,
+    this.lastEpisode,
+    this.timeAgo,
+    this.notice,
+    this.rate,
+    this.pending = false,
+    this.preRelease,
+  });
 
   factory Eiga.createFakeData() {
     return Eiga(
-        name: 'Dragon Ball Daima',
-        eigaId: 'eiga-fake-id',
-        originalName: null,
-        image: OImage.createFakeData(),
-        lastEpisode: null,
-        timeAgo: null,
-        notice: 'Notice Fake',
-        rate: 8.5);
+      name: 'Dragon Ball Daima',
+      eigaId: 'eiga-fake-id',
+      originalName: null,
+      image: OImage.createFakeData(),
+      lastEpisode: null,
+      timeAgo: null,
+      notice: 'Notice Fake',
+      rate: 8.5,
+    );
   }
 }

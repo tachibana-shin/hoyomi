@@ -29,24 +29,22 @@ class CircularProgress extends StatelessWidget {
         width: size,
         color: backgroundColor,
         child: Padding(
-            padding: EdgeInsets.all(1.0),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                CircularProgressIndicator(
-                  strokeWidth: strokeWidth - 2,
-                  value: value,
-                  valueColor: borderColor,
-                  backgroundColor: backgroundBorder,
-                ),
-                Center(
-                  child: Text(
-                    (value * 100).round().toString(),
-                    style: textStyle,
-                  ),
-                ),
-              ],
-            )),
+          padding: EdgeInsets.all(1.0),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              CircularProgressIndicator(
+                strokeWidth: strokeWidth - 2,
+                value: value,
+                valueColor: borderColor,
+                backgroundColor: backgroundBorder,
+              ),
+              Center(
+                child: Text((value * 100).round().toString(), style: textStyle),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

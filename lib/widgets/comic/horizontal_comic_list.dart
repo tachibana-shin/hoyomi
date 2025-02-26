@@ -31,58 +31,67 @@ class HorizontalComicList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: itemsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Skeletonizer(
-                enabled: true,
-                enableSwitchAnimation: true,
-                child: HorizontalList<ComicExtend>(
-                  title: title,
-                  subtitle: subtitle,
-                  more: more,
-                  items: List.generate(
-                      30,
-                      (index) => ComicExtend(
-                          comic: Comic.createFakeData(), sourceId: null)),
-                  needSubtitle: false,
-                  builder: (context, comic, index) {
-                    return VerticalComic(
-                      comic: comic.comic,
-                      sourceId: comic.sourceId,
-                      percentRead: comic.percentRead,
-                    );
-                  },
-                ));
-          }
-
-          if (snapshot.hasError) {
-            return HorizontalList.buildContainer(
-              context,
-              builder: (viewFraction) => Center(
-                  child: UtilsService.errorWidgetBuilder(context,
-                      error: snapshot.error,
-                      orElse: (error) => Text('Error: $error'))),
+      future: itemsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Skeletonizer(
+            enabled: true,
+            enableSwitchAnimation: true,
+            child: HorizontalList<ComicExtend>(
+              title: title,
+              subtitle: subtitle,
+              more: more,
+              items: List.generate(
+                30,
+                (index) =>
+                    ComicExtend(comic: Comic.createFakeData(), sourceId: null),
+              ),
               needSubtitle: false,
-            );
-          }
-
-          return HorizontalList<ComicExtend>(
-            title: title,
-            subtitle: subtitle,
-            more: more,
-            items: snapshot.data!,
-            needSubtitle: snapshot.data!.firstWhereOrNull(
-                    (comic) => VerticalComic.checkNeedSubtitle(comic.comic)) !=
-                null,
-            builder: (context, comic, index) {
-              return VerticalComic(
-                comic: comic.comic,
-                sourceId: comic.sourceId,
-                percentRead: comic.percentRead,
-              );
-            },
+              builder: (context, comic, index) {
+                return VerticalComic(
+                  comic: comic.comic,
+                  sourceId: comic.sourceId,
+                  percentRead: comic.percentRead,
+                );
+              },
+            ),
           );
-        });
+        }
+
+        if (snapshot.hasError) {
+          return HorizontalList.buildContainer(
+            context,
+            builder:
+                (viewFraction) => Center(
+                  child: UtilsService.errorWidgetBuilder(
+                    context,
+                    error: snapshot.error,
+                    orElse: (error) => Text('Error: $error'),
+                  ),
+                ),
+            needSubtitle: false,
+          );
+        }
+
+        return HorizontalList<ComicExtend>(
+          title: title,
+          subtitle: subtitle,
+          more: more,
+          items: snapshot.data!,
+          needSubtitle:
+              snapshot.data!.firstWhereOrNull(
+                (comic) => VerticalComic.checkNeedSubtitle(comic.comic),
+              ) !=
+              null,
+          builder: (context, comic, index) {
+            return VerticalComic(
+              comic: comic.comic,
+              sourceId: comic.sourceId,
+              percentRead: comic.percentRead,
+            );
+          },
+        );
+      },
+    );
   }
 }

@@ -113,10 +113,11 @@ class AnimeVietsubService extends EigaService
 
   @override
   getUser({required cookie}) async {
-    final document =
-        await fetchDocument('$baseUrl/account/info/', cookie: cookie, headers: {
-      'Referer': baseUrl,
-    });
+    final document = await fetchDocument(
+      '$baseUrl/account/info/',
+      cookie: cookie,
+      headers: {'Referer': baseUrl},
+    );
 
     if (document.querySelector('.profile-userpic') == null) {
       throw UserNotFoundException();
@@ -126,24 +127,28 @@ class AnimeVietsubService extends EigaService
         .querySelector('.profile-userpic img')!
         .attributes['src']!
         .replaceFirst(
-            RegExp(r'animevietsub\.\w+\/'), '${baseUrl.split('://')[1]}/');
+          RegExp(r'animevietsub\.\w+\/'),
+          '${baseUrl.split('://')[1]}/',
+        );
 
     final name = document.querySelector('.profile-usertitle-name')!.text.trim();
     final email = document.querySelector('#email')!.attributes['value']!;
     final username = document.querySelector('#hoten')!.attributes['value']!;
 
-    final sex = document.querySelector('#male')?.attributes['checked'] != null
-        ? Sex.male
-        : document.querySelector('#female')?.attributes['checked'] != null
+    final sex =
+        document.querySelector('#male')?.attributes['checked'] != null
+            ? Sex.male
+            : document.querySelector('#female')?.attributes['checked'] != null
             ? Sex.female
             : Sex.other;
 
     return User(
-        user: username,
-        photoUrl: avatar,
-        fullName: name,
-        email: email,
-        sex: sex);
+      user: username,
+      photoUrl: avatar,
+      fullName: name,
+      email: email,
+      sex: sex,
+    );
   }
 
   @override
@@ -172,18 +177,22 @@ class AnimeVietsubService extends EigaService
 
   @override
   getFollowCount({required eigaId}) async {
-    final document = await (_docEigaStore[eigaId] ??=
-        fetchDocument('$baseUrl/phim/$eigaId'));
+    final document =
+        await (_docEigaStore[eigaId] ??= fetchDocument(
+          '$baseUrl/phim/$eigaId',
+        ));
 
-    final infoListLeft =
-        document.querySelectorAll(".mvici-left > .InfoList > .AAIco-adjust");
+    final infoListLeft = document.querySelectorAll(
+      ".mvici-left > .InfoList > .AAIco-adjust",
+    );
 
-    final followCount = int.parse(_findInfo(infoListLeft, "số người theo dõi")
-            ?.text
-            .split(":")[1]
-            .trim()
-            .replaceAll(',', '') ??
-        '0');
+    final followCount = int.parse(
+      _findInfo(
+            infoListLeft,
+            "số người theo dõi",
+          )?.text.split(":")[1].trim().replaceAll(',', '') ??
+          '0',
+    );
 
     return followCount;
   }
@@ -199,47 +208,56 @@ class AnimeVietsubService extends EigaService
     final episodeId = seg.length >= 4 ? seg[3] : null;
 
     return EigaParam(
-        eigaId: eigaId, episodeId: episodeId?.replaceFirst(".html", ""));
+      eigaId: eigaId,
+      episodeId: episodeId?.replaceFirst(".html", ""),
+    );
   }
 
   Eiga _parseItem(Element item) {
     final name = item.querySelector(".Title")!.text;
     final eigaId =
         parseURL(item.querySelector("a")!.attributes["href"]!).eigaId;
-    final originalName = item.querySelector(".Qlty")?.text ??
+    final originalName =
+        item.querySelector(".Qlty")?.text ??
         item.querySelector(".mli-quality")?.text;
 
     final image = OImage(
-        src: item.querySelector("img")!.attributes["data-cfsrc"] ??
-            item.querySelector("img")!.attributes["src"]!,
-        headers: {"Referer": baseUrl});
+      src:
+          item.querySelector("img")!.attributes["data-cfsrc"] ??
+          item.querySelector("img")!.attributes["src"]!,
+      headers: {"Referer": baseUrl},
+    );
     final notice =
         '${originalName?.isNotEmpty == true ? '${originalName!.trim()} ' : ''}${item.querySelector(".AAIco-access_time, .mli-eps")?.text ?? ''}';
 
     final rate = double.parse(
-        item.querySelector(".anime-avg-user-rating")?.text.trim() ??
-            item.querySelector(".AAIco-star")!.text.trim());
+      item.querySelector(".anime-avg-user-rating")?.text.trim() ??
+          item.querySelector(".AAIco-star")!.text.trim(),
+    );
 
     final timeSchedule = item.querySelector(".mli-timeschedule");
-    final countdownInSeconds = timeSchedule == null
-        ? null
-        : int.tryParse(timeSchedule.attributes["data-timer_second"] ?? '');
+    final countdownInSeconds =
+        timeSchedule == null
+            ? null
+            : int.tryParse(timeSchedule.attributes["data-timer_second"] ?? '');
     final currentTime = DateTime.now();
-    final countdown = countdownInSeconds == null
-        ? null
-        : currentTime.add(Duration(seconds: countdownInSeconds));
+    final countdown =
+        countdownInSeconds == null
+            ? null
+            : currentTime.add(Duration(seconds: countdownInSeconds));
 
     return Eiga(
-        name: name,
-        eigaId: eigaId,
-        originalName: null,
-        image: image,
-        notice: notice,
-        rate: rate,
-        preRelease: countdown,
-        pending: timeSchedule != null,
-        lastEpisode: null,
-        timeAgo: null);
+      name: name,
+      eigaId: eigaId,
+      originalName: null,
+      image: image,
+      notice: notice,
+      rate: rate,
+      preRelease: countdown,
+      pending: timeSchedule != null,
+      lastEpisode: null,
+      timeAgo: null,
+    );
   }
 
   CarouselItem _parseCarousel(Element item) {
@@ -248,38 +266,42 @@ class AnimeVietsubService extends EigaService
     final year = item.querySelector(".AAIco-date_range")?.text.trim();
     final description =
         item.querySelector(".Description > p")?.innerHtml.trim();
-    final studio = item
-        .querySelector(".AAIco-videocam")
-        ?.text
-        .replaceFirst('Studio:', '')
-        .trim();
+    final studio =
+        item
+            .querySelector(".AAIco-videocam")
+            ?.text
+            .replaceFirst('Studio:', '')
+            .trim();
     final genres =
         item.querySelectorAll(".AAIco-movie_creation a").map((anchor) {
-      final href = anchor.attributes['href']!.split('/');
-      return Genre(
-          name: anchor.text.trim(), genreId: href.elementAt(href.length - 2));
-    }).toList();
-//     final actors = item.querySelectorAll(".Cast a").map((anchor) {
-//       final href = anchor.attributes['href']!.split('/');
-//       return Genre(
-// name: anchor.text.trim(),
-// genreId: href.elementAt(href.length - 2)
-//       );
-//     });
+          final href = anchor.attributes['href']!.split('/');
+          return Genre(
+            name: anchor.text.trim(),
+            genreId: href.elementAt(href.length - 2),
+          );
+        }).toList();
+    //     final actors = item.querySelectorAll(".Cast a").map((anchor) {
+    //       final href = anchor.attributes['href']!.split('/');
+    //       return Genre(
+    // name: anchor.text.trim(),
+    // genreId: href.elementAt(href.length - 2)
+    //       );
+    //     });
 
     return CarouselItem(
-        image: data.image,
-        eigaId: data.eigaId,
-        name: data.name,
-        originalName: data.originalName,
-        rate: data.rate,
-        notice: data.notice,
-        year: year,
-        description: description,
-        studio: studio,
-        genres: genres,
-        actors: null,
-        duration: null);
+      image: data.image,
+      eigaId: data.eigaId,
+      name: data.name,
+      originalName: data.originalName,
+      rate: data.rate,
+      notice: data.notice,
+      year: year,
+      description: description,
+      studio: studio,
+      genres: genres,
+      actors: null,
+      duration: null,
+    );
   }
 
   @override
@@ -287,64 +309,79 @@ class AnimeVietsubService extends EigaService
     final document = await fetchDocument(baseUrl);
 
     return EigaHome(
-        carousel: Carousel(
-            items: document
+      carousel: Carousel(
+        items:
+            document
                 .querySelectorAll(".MovieListSldCn .TPostMv")
                 .map((item) => _parseCarousel(item))
                 .toList(),
-            aspectRatio: 404 / 720,
-            maxHeightBuilder: (context) => 30.h(context)),
-        sections: [
-          HomeEigaSection(
-              name: 'Top',
-              items: document
+        aspectRatio: 404 / 720,
+        maxHeightBuilder: (context) => 30.h(context),
+      ),
+      sections: [
+        HomeEigaSection(
+          name: 'Top',
+          items:
+              document
                   .querySelectorAll(".MovieListTopCn .TPostMv")
                   .map((item) => _parseItem(item))
-                  .toList()),
-          HomeEigaSection(
-              name: 'Latest',
-              items: document
+                  .toList(),
+        ),
+        HomeEigaSection(
+          name: 'Latest',
+          items:
+              document
                   .querySelectorAll("#single-home .TPostMv")
                   .map((item) => _parseItem(item))
-                  .toList()),
-          HomeEigaSection(
-              name: 'Pre Release',
-              items: document
+                  .toList(),
+        ),
+        HomeEigaSection(
+          name: 'Pre Release',
+          items:
+              document
                   .querySelectorAll("#new-home .TPostMv")
                   .map((item) => _parseItem(item))
-                  .toList()),
-          HomeEigaSection(
-              name: 'Hot',
-              items: document
+                  .toList(),
+        ),
+        HomeEigaSection(
+          name: 'Hot',
+          items:
+              document
                   .querySelectorAll("#hot-home .TPostMv")
                   .map((item) => _parseItem(item))
-                  .toList()),
-          HomeEigaSection(
-              name: 'Top',
-              items: document
+                  .toList(),
+        ),
+        HomeEigaSection(
+          name: 'Top',
+          items:
+              document
                   .querySelectorAll("#showTopPhim .TPost")
                   .map((item) => _parseItem(item))
-                  .toList()),
-        ]);
+                  .toList(),
+        ),
+      ],
+    );
   }
 
   @override
   getSection({required sectionId, required page, required filters}) async {
-    final params = (filters['type'] == null || filters['type']!.isEmpty) &&
-            (filters['genres[]'] == null || filters['genres[]']!.isEmpty) &&
-            (filters['season'] == null || filters['season']!.isEmpty) &&
-            (filters['year'] == null || filters['year']!.isEmpty)
-        ? null
-        : [
-            'danh-sach',
-            filters['type']?.first ?? 'all',
-            filters['genres[]']?.join('-') ?? 'all',
-            filters['season']?.first ?? 'all',
-            filters['year']?.first ?? 'all',
-            ''
-            //list-le/2-44-3-4/winter/2025/
-          ].join('/');
-    final url = (params == null
+    final params =
+        (filters['type'] == null || filters['type']!.isEmpty) &&
+                (filters['genres[]'] == null || filters['genres[]']!.isEmpty) &&
+                (filters['season'] == null || filters['season']!.isEmpty) &&
+                (filters['year'] == null || filters['year']!.isEmpty)
+            ? null
+            : [
+              'danh-sach',
+              filters['type']?.first ?? 'all',
+              filters['genres[]']?.join('-') ?? 'all',
+              filters['season']?.first ?? 'all',
+              filters['year']?.first ?? 'all',
+              '',
+              //list-le/2-44-3-4/winter/2025/
+            ].join('/');
+    final url =
+        (params == null
             ? baseUrl + sectionId.replaceAll('_', '/')
             : '$baseUrl/$params') +
         (page > 1 ? '/trang-$page' : '') +
@@ -352,51 +389,75 @@ class AnimeVietsubService extends EigaService
     final document = await fetchDocument(url);
 
     final name = document.querySelector('title')!.text;
-    final items = document
-        .querySelector(".MovieList")!
-        .querySelectorAll(".TPostMv")
-        .map((item) => _parseItem(item))
-        .toList();
-    final totalPages = int.parse(document
-            .querySelector(".larger:last-child, .wp-pagenavi > *:last-child")
-            ?.attributes["data"] ??
+    final items =
         document
-            .querySelector(".larger:last-child, .wp-pagenavi > *:last-child")
-            ?.attributes["title"] ??
-        "1");
+            .querySelector(".MovieList")!
+            .querySelectorAll(".TPostMv")
+            .map((item) => _parseItem(item))
+            .toList();
+    final totalPages = int.parse(
+      document
+              .querySelector(".larger:last-child, .wp-pagenavi > *:last-child")
+              ?.attributes["data"] ??
+          document
+              .querySelector(".larger:last-child, .wp-pagenavi > *:last-child")
+              ?.attributes["title"] ??
+          "1",
+    );
 
     final totalItems = items.length * totalPages;
 
     final List<Filter> iFilters =
         document.querySelectorAll("div[class^='fc-']").map((fc) {
-      final name =
-          fc.querySelector('.fc-title')!.text.replaceFirst(r'\n', '').trim();
-      final key = fc.querySelector('input')!.attributes['name']!;
-      final multiple =
-          fc.querySelector('input')!.attributes['type'] == 'checkbox';
-      final options = fc.querySelectorAll('input').map((input) => Option(
-          name: input.parentNode!.text!.trim(),
-          value: input.attributes['value']!));
+            final name =
+                fc
+                    .querySelector('.fc-title')!
+                    .text
+                    .replaceFirst(r'\n', '')
+                    .trim();
+            final key = fc.querySelector('input')!.attributes['name']!;
+            final multiple =
+                fc.querySelector('input')!.attributes['type'] == 'checkbox';
+            final options = fc
+                .querySelectorAll('input')
+                .map(
+                  (input) => Option(
+                    name: input.parentNode!.text!.trim(),
+                    value: input.attributes['value']!,
+                  ),
+                );
 
-      return Filter(
-          name: name, key: key, multiple: multiple, options: options.toList());
-    }).toList()
-          ..add(Filter(name: 'Sắp xếp', key: 'sort', multiple: true, options: [
-            Option(name: 'Mới nhất', value: 'latest'),
-            Option(name: 'Tên A-Z', value: 'nameaz'),
-            Option(name: 'Tên Z-A', value: 'nameza'),
-            Option(name: 'Xem nhiều nhất', value: 'view'),
-            Option(name: 'Nhiều lượt bình luận', value: 'rating')
-          ]));
+            return Filter(
+              name: name,
+              key: key,
+              multiple: multiple,
+              options: options.toList(),
+            );
+          }).toList()
+          ..add(
+            Filter(
+              name: 'Sắp xếp',
+              key: 'sort',
+              multiple: true,
+              options: [
+                Option(name: 'Mới nhất', value: 'latest'),
+                Option(name: 'Tên A-Z', value: 'nameaz'),
+                Option(name: 'Tên Z-A', value: 'nameza'),
+                Option(name: 'Xem nhiều nhất', value: 'view'),
+                Option(name: 'Nhiều lượt bình luận', value: 'rating'),
+              ],
+            ),
+          );
 
     return EigaSection(
-        name: name,
-        url: url,
-        items: items,
-        page: page,
-        totalItems: totalItems,
-        totalPages: totalPages,
-        filters: iFilters);
+      name: name,
+      url: url,
+      items: items,
+      page: page,
+      totalItems: totalItems,
+      totalPages: totalPages,
+      filters: iFilters,
+    );
   }
 
   Element? _findInfo(List<Element> elements, String label) {
@@ -420,168 +481,203 @@ class AnimeVietsubService extends EigaService
         Uri.parse('http://localhost').resolve(item.attributes['href']!).path;
 
     return Genre(
-        name: item.text.trim(),
-        genreId: href.replaceAll(r'^\/|\/$', '').replaceAll('/', '_'));
+      name: item.text.trim(),
+      genreId: href.replaceAll(r'^\/|\/$', '').replaceAll('/', '_'),
+    );
   }
 
   @override
   getDetails(String eigaId) async {
-    final document = await (_docEigaStore[eigaId] ??=
-        fetchDocument('$baseUrl/phim/$eigaId'));
+    final document =
+        await (_docEigaStore[eigaId] ??= fetchDocument(
+          '$baseUrl/phim/$eigaId',
+        ));
 
     final name = document.querySelector(".Title")!.text;
     final originalName = document.querySelector(".SubTitle")!.text;
     final image = OImage(
-        src: document.querySelector(".Image img")!.attributes['src']!,
-        headers: {'referer': baseUrl});
-    final poster = document.querySelector(".TPostBg img") == null
-        ? null
-        : OImage(
-            src: document.querySelector(".TPostBg img")!.attributes['src']!,
-            headers: {'referer': baseUrl});
+      src: document.querySelector(".Image img")!.attributes['src']!,
+      headers: {'referer': baseUrl},
+    );
+    final poster =
+        document.querySelector(".TPostBg img") == null
+            ? null
+            : OImage(
+              src: document.querySelector(".TPostBg img")!.attributes['src']!,
+              headers: {'referer': baseUrl},
+            );
     final description = document.querySelector(".Description")?.text;
 
-    final rate = double.parse(RegExp(r'[\d.]+')
-        .firstMatch(document.querySelector("#average_score")!.text.trim())!
-        .group(0)!);
-    final countRate = int.parse(RegExp(r'\d+')
-        .firstMatch(document.querySelector(".num-rating")!.text.trim())!
-        .group(0)!);
+    final rate = double.parse(
+      RegExp(r'[\d.]+')
+          .firstMatch(document.querySelector("#average_score")!.text.trim())!
+          .group(0)!,
+    );
+    final countRate = int.parse(
+      RegExp(r'\d+')
+          .firstMatch(document.querySelector(".num-rating")!.text.trim())!
+          .group(0)!,
+    );
     final duration = document.querySelector(".AAIco-access_time")!.text.trim();
-    final yearOf =
-        int.parse(document.querySelector(".AAIco-date_range > a")!.text.trim());
-    final views = int.parse(RegExp(r'\d+')
-        .firstMatch(document
-            .querySelector(".AAIco-remove_red_eye")!
-            .text
-            .trim()
-            .replaceAll(',', ''))!
-        .group(0)!);
-    final seasons = document.querySelectorAll(".season_item > a").map((item) {
-      return Season(
-          name: item.text.trim(),
-          eigaId:
-              Uri.parse(item.attributes['href']!).path.split('/').elementAt(2));
-    }).toList();
-    final genres = document
-        .querySelectorAll(".breadcrumb > li > a")
-        .skip(1)
-        .take(document.querySelectorAll(".breadcrumb > li > a").length - 2)
-        .map((item) => _getInfoAnchor(item))
-        .toList();
+    final yearOf = int.parse(
+      document.querySelector(".AAIco-date_range > a")!.text.trim(),
+    );
+    final views = int.parse(
+      RegExp(r'\d+')
+          .firstMatch(
+            document
+                .querySelector(".AAIco-remove_red_eye")!
+                .text
+                .trim()
+                .replaceAll(',', ''),
+          )!
+          .group(0)!,
+    );
+    final seasons =
+        document.querySelectorAll(".season_item > a").map((item) {
+          return Season(
+            name: item.text.trim(),
+            eigaId: Uri.parse(
+              item.attributes['href']!,
+            ).path.split('/').elementAt(2),
+          );
+        }).toList();
+    final genres =
+        document
+            .querySelectorAll(".breadcrumb > li > a")
+            .skip(1)
+            .take(document.querySelectorAll(".breadcrumb > li > a").length - 2)
+            .map((item) => _getInfoAnchor(item))
+            .toList();
     final quality = document.querySelector(".Qlty")!.text.trim();
 
     // ==== info ====
-    final infoListLeft =
-        document.querySelectorAll(".mvici-left > .InfoList > .AAIco-adjust");
-    final infoListRight =
-        document.querySelectorAll(".mvici-right > .InfoList > .AAIco-adjust");
+    final infoListLeft = document.querySelectorAll(
+      ".mvici-left > .InfoList > .AAIco-adjust",
+    );
+    final infoListRight = document.querySelectorAll(
+      ".mvici-right > .InfoList > .AAIco-adjust",
+    );
 
     // final status =
     //     _findInfo(infoListLeft, "trạng thái")?.text.split(":")[1].trim();
     final author =
         _findInfo(infoListLeft, "đạo diễn")?.text.split(":")[1].trim();
-    final countries = _findInfo(infoListLeft, "quốc gia")
-        ?.querySelectorAll("a")
-        .map((item) => _getInfoAnchor(item))
-        .toList();
+    final countries =
+        _findInfo(
+          infoListLeft,
+          "quốc gia",
+        )?.querySelectorAll("a").map((item) => _getInfoAnchor(item)).toList();
     final language =
         _findInfo(infoListRight, "ngôn ngữ")?.text.split(":")[1].trim();
-    final studio = _findInfo(infoListRight, "studio") == null
-        ? null
-        : _getInfoAnchor(
-            _findInfo(infoListRight, "studio")!.querySelector("a")!);
+    final studio =
+        _findInfo(infoListRight, "studio") == null
+            ? null
+            : _getInfoAnchor(
+              _findInfo(infoListRight, "studio")!.querySelector("a")!,
+            );
     final trailer = document.querySelector("#Opt1 iframe")?.attributes['src'];
-    final movieSeason =
-        _getInfoAnchor(_findInfo(infoListRight, "season")!.querySelector("a")!);
+    final movieSeason = _getInfoAnchor(
+      _findInfo(infoListRight, "season")!.querySelector("a")!,
+    );
 
     return MetaEiga(
-        name: name,
-        originalName: originalName,
-        image: image,
-        poster: poster,
-        description: description ?? '',
-        rate: rate,
-        countRate: countRate,
-        duration: duration,
-        yearOf: yearOf,
-        views: views,
-        seasons: seasons,
-        genres: genres,
-        quality: quality,
-        author: author,
-        countries: countries,
-        language: language,
-        studio: studio,
-        movieSeason: movieSeason,
-        trailer: trailer);
+      name: name,
+      originalName: originalName,
+      image: image,
+      poster: poster,
+      description: description ?? '',
+      rate: rate,
+      countRate: countRate,
+      duration: duration,
+      yearOf: yearOf,
+      views: views,
+      seasons: seasons,
+      genres: genres,
+      quality: quality,
+      author: author,
+      countries: countries,
+      language: language,
+      studio: studio,
+      movieSeason: movieSeason,
+      trailer: trailer,
+    );
   }
 
   @override
   getEpisodes(String eigaId) async {
     final document = await fetchDocument('$baseUrl/phim/$eigaId/xem-phim.html');
 
-    final episodes = document
-        .querySelectorAll("#list-server .list-episode .episode a")
-        .map((item) {
-      final episodeId = Uri.parse(item.attributes['href']!)
-          .path
-          .split('/')
-          .elementAt(3)
-          .replaceFirst(".html", "");
+    final episodes =
+        document.querySelectorAll("#list-server .list-episode .episode a").map((
+          item,
+        ) {
+          final episodeId = Uri.parse(
+            item.attributes['href']!,
+          ).path.split('/').elementAt(3).replaceFirst(".html", "");
 
-      final params = _ParamsEpisode(
-          id: item.attributes['data-id']!,
-          play: item.attributes['data-play']!,
-          hash: item.attributes['data-hash']!,
-          backuplinks: item.attributes['data-backuplinks'] ?? '1');
+          final params = _ParamsEpisode(
+            id: item.attributes['data-id']!,
+            play: item.attributes['data-play']!,
+            hash: item.attributes['data-hash']!,
+            backuplinks: item.attributes['data-backuplinks'] ?? '1',
+          );
 
-      _paramsEpisodeStore['$episodeId@$eigaId'] = params;
+          _paramsEpisodeStore['$episodeId@$eigaId'] = params;
 
-      return EigaEpisode(name: item.text.trim(), episodeId: episodeId);
-    }).toList();
+          return EigaEpisode(name: item.text.trim(), episodeId: episodeId);
+        }).toList();
 
-    final scheduleText = document
-        .querySelectorAll(".schedule-title-main > h4 > strong")
-        .lastOrNull
-        ?.text;
-    final match = RegExp(r'(Thứ [^\s]+|chủ nhật) vào lúc (\d+) giờ (\d+) phút',
-            caseSensitive: false)
-        .firstMatch(scheduleText ?? '');
+    final scheduleText =
+        document
+            .querySelectorAll(".schedule-title-main > h4 > strong")
+            .lastOrNull
+            ?.text;
+    final match = RegExp(
+      r'(Thứ [^\s]+|chủ nhật) vào lúc (\d+) giờ (\d+) phút',
+      caseSensitive: false,
+    ).firstMatch(scheduleText ?? '');
     final day$ = match?.group(1);
     final hour = match?.group(2);
     final minute = match?.group(3);
 
-    final day = day$ == null
-        ? null
-        : [
-            'chủ nhật',
-            'thứ hai',
-            'thứ ba',
-            'thứ tư',
-            'thứ năm',
-            'thứ sáu',
-            'thứ bảy'
-          ].indexOf(day$.toLowerCase());
+    final day =
+        day$ == null
+            ? null
+            : [
+              'chủ nhật',
+              'thứ hai',
+              'thứ ba',
+              'thứ tư',
+              'thứ năm',
+              'thứ sáu',
+              'thứ bảy',
+            ].indexOf(day$.toLowerCase());
 
     final image$ = document.querySelector(".Image img")?.attributes['src'];
-    final image = image$ == null
-        ? null
-        : OImage(src: image$, headers: {'referer': baseUrl});
+    final image =
+        image$ == null
+            ? null
+            : OImage(src: image$, headers: {'referer': baseUrl});
     final poster$ =
         document.querySelector(".TPostBg img")?.attributes['data-cfsrc'];
-    final poster = poster$ == null
-        ? null
-        : OImage(src: poster$, headers: {'referer': baseUrl});
+    final poster =
+        poster$ == null
+            ? null
+            : OImage(src: poster$, headers: {'referer': baseUrl});
 
     return EigaEpisodes(
       episodes: episodes,
       image: image,
       poster: poster,
-      schedule: day != null && hour != null && minute != null
-          ? TimeAndDay(
-              hour: int.parse(hour), minute: int.parse(minute), day: day)
-          : null,
+      schedule:
+          day != null && hour != null && minute != null
+              ? TimeAndDay(
+                hour: int.parse(hour),
+                minute: int.parse(minute),
+                day: day,
+              )
+              : null,
     );
   }
 
@@ -594,17 +690,20 @@ class AnimeVietsubService extends EigaService
 
     final json = jsonDecode(text);
     return SourceVideo(
-        src: json['link'][0]['file'],
-        url: Uri.parse(baseUrl),
-        type: json['playTech'] == 'api' ? 'hls' : 'embed',
-        headers: {'referer': baseUrl});
+      src: json['link'][0]['file'],
+      url: Uri.parse(baseUrl),
+      type: json['playTech'] == 'api' ? 'hls' : 'embed',
+      headers: {'referer': baseUrl},
+    );
   }
 
   @override
-  get fetchSourceContent => ({required source}) async => SourceContent(
-      content: jsonDecode(_decryptM3u8(source.src)),
-      url: source.url,
-      headers: source.headers);
+  get fetchSourceContent =>
+      ({required source}) async => SourceContent(
+        content: jsonDecode(_decryptM3u8(source.src)),
+        url: source.url,
+        headers: source.headers,
+      );
 
   final Map<String, Future<String>> _callApiStore = {};
   Future<String> _callApi(String url) {
@@ -612,15 +711,15 @@ class AnimeVietsubService extends EigaService
     return _callApiStore[url] = fetch(url);
   }
 
-  Future<String?> _getEpisodeIDApi(
-      {required String eigaId,
-      required EigaEpisode episode,
-      required int episodeIndex,
-      required MetaEiga metaEiga}) async {
-    final episodes = await _callApi('$_apiOpEnd/list-episodes?${[
-      metaEiga.name,
-      ...metaEiga.originalName?.split(",").map((name) => name.trim()) ?? []
-    ].map((name) => 'name=$name').join('&')}');
+  Future<String?> _getEpisodeIDApi({
+    required String eigaId,
+    required EigaEpisode episode,
+    required int episodeIndex,
+    required MetaEiga metaEiga,
+  }) async {
+    final episodes = await _callApi(
+      '$_apiOpEnd/list-episodes?${[metaEiga.name, ...metaEiga.originalName?.split(",").map((name) => name.trim()) ?? []].map((name) => 'name=$name').join('&')}',
+    );
 
     final rawName = episode.name.trim();
     final epName = rawName.replaceAll('^[^0-9.+_-]+', '');
@@ -628,7 +727,8 @@ class AnimeVietsubService extends EigaService
     final list = jsonDecode(episodes)['list'] as List<dynamic>;
 
     final epFloat = double.parse(epName);
-    final episodeD = list.firstWhereOrNull((item) {
+    final episodeD =
+        list.firstWhereOrNull((item) {
           if (item['name'] == epName || item['name'] == rawName) {
             return true;
           }
@@ -643,56 +743,66 @@ class AnimeVietsubService extends EigaService
   }
 
   @override
-  get getThumbnail => (
-          {required eigaId,
-          required episode,
-          required episodeIndex,
-          required metaEiga}) async {
-        final episodeId = await _getEpisodeIDApi(
-            eigaId: eigaId,
-            episode: episode,
-            episodeIndex: episodeIndex,
-            metaEiga: metaEiga);
-        final meta =
-            jsonDecode(await _callApi('$_apiThumb/episode-skip/$episodeId'));
+  get getThumbnail => ({
+    required eigaId,
+    required episode,
+    required episodeIndex,
+    required metaEiga,
+  }) async {
+    final episodeId = await _getEpisodeIDApi(
+      eigaId: eigaId,
+      episode: episode,
+      episodeIndex: episodeIndex,
+      metaEiga: metaEiga,
+    );
+    final meta = jsonDecode(
+      await _callApi('$_apiThumb/episode-skip/$episodeId'),
+    );
 
-        final file = (meta['tracks'] as List<dynamic>)
-            .firstWhereOrNull((item) => item['kind'] == "thumbnails");
+    final file = (meta['tracks'] as List<dynamic>).firstWhereOrNull(
+      (item) => item['kind'] == "thumbnails",
+    );
 
-        if (file != null) return Vtt(src: file['file']);
-        return null;
-      };
+    if (file != null) return Vtt(src: file['file']);
+    return null;
+  };
 
   @override
-  getOpeningEnding(
-      {required eigaId,
-      required episode,
-      required episodeIndex,
-      required metaEiga}) async {
+  getOpeningEnding({
+    required eigaId,
+    required episode,
+    required episodeIndex,
+    required metaEiga,
+  }) async {
     final episodeId = await _getEpisodeIDApi(
-        eigaId: eigaId,
-        episode: episode,
-        episodeIndex: episodeIndex,
-        metaEiga: metaEiga);
-    final meta =
-        jsonDecode(await _callApi('$_apiThumb/episode-skip/$episodeId'));
+      eigaId: eigaId,
+      episode: episode,
+      episodeIndex: episodeIndex,
+      metaEiga: metaEiga,
+    );
+    final meta = jsonDecode(
+      await _callApi('$_apiThumb/episode-skip/$episodeId'),
+    );
 
     final opening = (meta['intro'] as Map<String, dynamic>?);
     final ending = (meta['outro'] as Map<String, dynamic>?);
 
     return OpeningEnding(
-        opening: opening != null
-            ? DurationRange(
+      opening:
+          opening != null
+              ? DurationRange(
                 Duration(seconds: opening['start'] as int),
                 Duration(seconds: opening['end'] as int),
               )
-            : null,
-        ending: ending != null
-            ? DurationRange(
+              : null,
+      ending:
+          ending != null
+              ? DurationRange(
                 Duration(seconds: ending['start'] as int),
                 Duration(seconds: ending['end'] as int),
               )
-            : null);
+              : null,
+    );
   }
 
   @override
@@ -702,18 +812,22 @@ class AnimeVietsubService extends EigaService
 
   @override
   get getSuggest => ({required metaEiga, required eigaId, page}) async {
-        final items = (await _docEigaStore[eigaId]!)
+    final items =
+        (await _docEigaStore[eigaId]!)
             .querySelectorAll(".MovieListRelated .TPostMv")
             .map((item) => _parseItem(item))
             .toList();
 
-        return items;
-      };
+    return items;
+  };
 
   @override
   search({required keyword, required page, required filters}) {
     return getSection(
-        sectionId: '/tim-kiem/$keyword/', page: page, filters: filters);
+      sectionId: '/tim-kiem/$keyword/',
+      page: page,
+      filters: filters,
+    );
   }
 
   Future<String> _getUidUser() async {
@@ -724,22 +838,24 @@ class AnimeVietsubService extends EigaService
   }
 
   @override
-  getWatchTime(
-      {required String eigaId,
-      required EigaEpisode episode,
-      required int episodeIndex,
-      required MetaEiga metaEiga}) async {
+  getWatchTime({
+    required String eigaId,
+    required EigaEpisode episode,
+    required int episodeIndex,
+    required MetaEiga metaEiga,
+  }) async {
     final userUid = await _getUidUser();
 
     final json = await rpc('get_single_progress', {
       'user_uid': userUid,
       'season_id': eigaId,
-      'p_chap_id': RegExp(r'-(\d+)$').firstMatch(episode.episodeId)!.group(1)
+      'p_chap_id': RegExp(r'-(\d+)$').firstMatch(episode.episodeId)!.group(1),
     });
 
     return WatchTime(
-        position: Duration(seconds: (json['cur'] as num).round()),
-        duration: Duration(seconds: (json['dur'] as num).round()));
+      position: Duration(seconds: (json['cur'] as num).round()),
+      duration: Duration(seconds: (json['dur'] as num).round()),
+    );
   }
 
   @override
@@ -749,10 +865,12 @@ class AnimeVietsubService extends EigaService
   }) async {
     final userUid = await _getUidUser();
 
-    final json = await rpc('get_watch_progress', {
-      'user_uid': userUid,
-      'season_id': eigaId,
-    }) as List;
+    final json =
+        await rpc('get_watch_progress', {
+              'user_uid': userUid,
+              'season_id': eigaId,
+            })
+            as List;
 
     final Map<String, String> chapIdToEpisodeKey = {};
     for (final episode in episodes) {
@@ -773,27 +891,29 @@ class AnimeVietsubService extends EigaService
   }
 
   @override
-  Future<void> setWatchTime(
-      {required eigaId,
-      required episode,
-      required episodeIndex,
-      required MetaEiga metaEiga,
-      required season,
-      required WatchTime watchTime}) async {
+  Future<void> setWatchTime({
+    required eigaId,
+    required episode,
+    required episodeIndex,
+    required MetaEiga metaEiga,
+    required season,
+    required WatchTime watchTime,
+  }) async {
     final userUid = await _getUidUser();
 
     await rpc('set_single_progress', {
       'user_uid': userUid,
       'p_name': metaEiga.name,
-      'p_poster':
-          _removeHostUrlImage(metaEiga.poster?.src ?? metaEiga.image.src),
+      'p_poster': _removeHostUrlImage(
+        metaEiga.poster?.src ?? metaEiga.image.src,
+      ),
       'season_id': eigaId,
       'p_season_name': season.name,
       'e_cur': watchTime.position.inMilliseconds / 1e3,
       'e_dur': watchTime.duration.inMilliseconds / 1e3,
       'e_name': episode.name,
       'e_chap': RegExp(r'(\d+)$').firstMatch(episode.episodeId)!.group(1)!,
-      'gmt': "Asia/Saigon"
+      'gmt': "Asia/Saigon",
     });
   }
 
@@ -803,18 +923,24 @@ class AnimeVietsubService extends EigaService
 
   String _removeHostUrlImage(String url) {
     final pattern = RegExp(
-        r'https?:\/\/([^/]+.)?' + RegExp.escape(hostCUrl) + r'(?=(?:\:\d+)?\/)',
-        caseSensitive: false);
-    return _redirectOldDomainCDN(url)
-        .replaceAllMapped(pattern, (match) => '${match[1]}\$@');
+      r'https?:\/\/([^/]+.)?' + RegExp.escape(hostCUrl) + r'(?=(?:\:\d+)?\/)',
+      caseSensitive: false,
+    );
+    return _redirectOldDomainCDN(
+      url,
+    ).replaceAllMapped(pattern, (match) => '${match[1]}\$@');
   }
 
   @override
   Future<List<HistoryItem<Eiga>>> getWatchHistory({required int page}) async {
     final userUid = await _getUidUser();
 
-    final data = (await rpc('query_history',
-            {'user_uid': userUid, 'page': page, 'size': 30}) as List)
+    final data = (await rpc('query_history', {
+              'user_uid': userUid,
+              'page': page,
+              'size': 30,
+            })
+            as List)
         .map((item) => _WatchInfo.fromJson(item));
 
     return data.map((item) {
@@ -826,13 +952,11 @@ class AnimeVietsubService extends EigaService
           image: OImage(src: _addHostUrlImage(item.poster)),
         ),
         watchUpdatedAt: item.createdAt,
-        lastEpisode: EigaEpisode(
-          name: item.watchName,
-          episodeId: item.watchId,
-        ),
+        lastEpisode: EigaEpisode(name: item.watchName, episodeId: item.watchId),
         watchTime: WatchTime(
-            position: Duration(seconds: item.watchCur.round()),
-            duration: Duration(seconds: item.watchDur.round())),
+          position: Duration(seconds: item.watchCur.round()),
+          duration: Duration(seconds: item.watchDur.round()),
+        ),
       );
     }).toList();
   }
@@ -849,16 +973,20 @@ class AnimeVietsubService extends EigaService
 
   @override
   getFollows({required int page}) async {
-    final section =
-        await getSection(sectionId: '/tu-phim/', page: page, filters: {});
+    final section = await getSection(
+      sectionId: '/tu-phim/',
+      page: page,
+      filters: {},
+    );
     final items =
         section.items.map((item) => FollowItem<Eiga>(item: item)).toList();
 
     return Paginate(
-        items: items,
-        page: section.page,
-        totalItems: section.totalItems,
-        totalPages: section.totalPages);
+      items: items,
+      page: section.page,
+      totalItems: section.totalItems,
+      totalPages: section.totalPages,
+    );
   }
 }
 
@@ -868,19 +996,15 @@ class _ParamsEpisode {
   final String hash;
   final String backuplinks;
 
-  _ParamsEpisode(
-      {required this.id,
-      required this.play,
-      required this.hash,
-      required this.backuplinks});
+  _ParamsEpisode({
+    required this.id,
+    required this.play,
+    required this.hash,
+    required this.backuplinks,
+  });
 
   Map<String, String> toMap() {
-    return {
-      'id': id,
-      'play': play,
-      'link': hash,
-      'backuplinks': backuplinks,
-    };
+    return {'id': id, 'play': play, 'link': hash, 'backuplinks': backuplinks};
   }
 }
 
@@ -901,11 +1025,10 @@ String _decryptM3u8(
   final iv = buff.sublist(flag2 ? 9 : 0, flag3 ? 18 : 16);
   final body = buff.sublist(flag4 ? 25 : 16);
 
-  final cipher = CBCBlockCipher(AESEngine())
-    ..init(
-      false,
-      ParametersWithIV(KeyParameter(Uint8List.fromList(digest)), iv),
-    );
+  final cipher = CBCBlockCipher(AESEngine())..init(
+    false,
+    ParametersWithIV(KeyParameter(Uint8List.fromList(digest)), iv),
+  );
 
   final decrypted = _processBlocks(cipher, body);
   final decompressed = _Inflate.raw(decrypted); //.getBytes();

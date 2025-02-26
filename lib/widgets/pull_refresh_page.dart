@@ -4,15 +4,16 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 class PullRefreshPage<T> extends StatefulWidget {
   final Widget Function(T data, (bool loading, Future<void> Function() refresh))
-      builder;
+  builder;
   final Future<T> Function() onLoadData;
   final T Function() onLoadFake;
 
-  const PullRefreshPage(
-      {super.key,
-      required this.builder,
-      required this.onLoadData,
-      required this.onLoadFake});
+  const PullRefreshPage({
+    super.key,
+    required this.builder,
+    required this.onLoadData,
+    required this.onLoadFake,
+  });
 
   @override
   createState() => _PullRefreshPageState<T>();
@@ -45,8 +46,12 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
   Widget _buildBody(AsyncSnapshot<T> snapshot) {
     if (snapshot.hasError) {
       return Center(
-          child: UtilsService.errorWidgetBuilder(context,
-              error: snapshot.error, orElse: (err) => Text('Error: $err')));
+        child: UtilsService.errorWidgetBuilder(
+          context,
+          error: snapshot.error,
+          orElse: (err) => Text('Error: $err'),
+        ),
+      );
     }
     final loading = snapshot.connectionState == ConnectionState.waiting;
 
@@ -57,9 +62,10 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
     var data = loading ? widget.onLoadFake() : snapshot.data!;
 
     return Skeletonizer(
-        enabled: loading,
-        enableSwitchAnimation: true,
-        child: widget.builder(data, (loading, _pullRefresh)));
+      enabled: loading,
+      enableSwitchAnimation: true,
+      child: widget.builder(data, (loading, _pullRefresh)),
+    );
   }
 
   Future<void> _pullRefresh() async {

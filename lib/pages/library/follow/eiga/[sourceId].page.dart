@@ -13,10 +13,7 @@ import 'package:hoyomi/widgets/vertical_list.dart';
 class FollowsEigaPage extends StatefulWidget {
   final String sourceId;
 
-  const FollowsEigaPage({
-    super.key,
-    required this.sourceId,
-  });
+  const FollowsEigaPage({super.key, required this.sourceId});
 
   @override
   State<FollowsEigaPage> createState() => _FollowsEigaPageState();
@@ -35,38 +32,48 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Follows ${(_service as Service).name}'),
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          scrolledUnderElevation: 0.0,
-        ),
-        body: _buildBody());
+      appBar: AppBar(
+        title: Text('Follows ${(_service as Service).name}'),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        scrolledUnderElevation: 0.0,
+      ),
+      body: _buildBody(),
+    );
   }
 
   Widget _buildBody() {
     return PullRefreshPage<Paginate<FollowItem<Eiga>>>(
-        onLoadData: () => _service.getFollows(page: 1),
-        onLoadFake: () => Paginate.createFakeData(List.generate(
-            30, (_) => FollowItem.createFakeData(Eiga.createFakeData()))),
-        builder: (data, param) => Padding(
+      onLoadData: () => _service.getFollows(page: 1),
+      onLoadFake:
+          () => Paginate.createFakeData(
+            List.generate(
+              30,
+              (_) => FollowItem.createFakeData(Eiga.createFakeData()),
+            ),
+          ),
+      builder:
+          (data, param) => Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
             child: InfiniteGrid(
-                data: data.items,
-                crossAxisCount: VerticalList.getCrossAxisCount(context),
-                crossAxisSpacing: 4.0,
-                mainAxisSpacing: 4.0,
-                fetchData: () async {
-                  final result = await _service.getFollows(page: _pageKey);
-                  _pageKey++;
+              data: data.items,
+              crossAxisCount: VerticalList.getCrossAxisCount(context),
+              crossAxisSpacing: 4.0,
+              mainAxisSpacing: 4.0,
+              fetchData: () async {
+                final result = await _service.getFollows(page: _pageKey);
+                _pageKey++;
 
-                  final isLastPage = result.page >= result.totalPages;
-                  return (isLastPage, result.items);
-                },
-                itemBuilder: (context, follow, index) {
-                  return VerticalEiga(
-                    eiga: follow.item,
-                    sourceId: widget.sourceId,
-                  );
-                })));
+                final isLastPage = result.page >= result.totalPages;
+                return (isLastPage, result.items);
+              },
+              itemBuilder: (context, follow, index) {
+                return VerticalEiga(
+                  eiga: follow.item,
+                  sourceId: widget.sourceId,
+                );
+              },
+            ),
+          ),
+    );
   }
 }

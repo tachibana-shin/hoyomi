@@ -30,26 +30,31 @@ class TruyenQQService extends TruyenGGService {
         .last
         .replaceFirst(".html", "");
     final $image = itemComic.querySelector("img")!;
-    final OImage image =
-        OImage(src: $image.attributes["src"]!, headers: {"referer": referer});
-    final String name = (itemComic.querySelector(".comic_name a")?.text ??
-            itemComic.querySelector("img")!.attributes['alt']!)
-        .trim();
+    final OImage image = OImage(
+      src: $image.attributes["src"]!,
+      headers: {"referer": referer},
+    );
+    final String name =
+        (itemComic.querySelector(".comic_name a")?.text ??
+                itemComic.querySelector("img")!.attributes['alt']!)
+            .trim();
 
     final ComicChapter lastChap = ComicChapter(
-        name: itemComic.querySelector(".last_chapter > a")!.text.trim(),
-        chapterId: itemComic
-            .querySelector(".cl99, .last_chapter > a")!
-            .attributes["href"]!
-            .split("/")
-            .last
-            .replaceFirst("$comicId-", "")
-            .replaceFirst(".html", ""));
+      name: itemComic.querySelector(".last_chapter > a")!.text.trim(),
+      chapterId: itemComic
+          .querySelector(".cl99, .last_chapter > a")!
+          .attributes["href"]!
+          .split("/")
+          .last
+          .replaceFirst("$comicId-", "")
+          .replaceFirst(".html", ""),
+    );
 
     final timeAgoElement = itemComic.querySelector(".time-ago");
-    final timeAgo = timeAgoElement != null
-        ? convertTimeAgoToUtc(timeAgoElement.text)
-        : null;
+    final timeAgo =
+        timeAgoElement != null
+            ? convertTimeAgoToUtc(timeAgoElement.text)
+            : null;
     final String? notice = itemComic.querySelector(".type-label")?.text;
 
     final rateValueText = itemComic.querySelector(".rate-star")?.text.trim();
@@ -57,14 +62,15 @@ class TruyenQQService extends TruyenGGService {
         rateValueText != null ? double.tryParse(rateValueText) : null;
 
     return Comic(
-        image: image,
-        lastChap: lastChap,
-        timeAgo: timeAgo,
-        notice: notice,
-        name: name,
-        comicId: comicId,
-        rate: rate,
-        originalName: null);
+      image: image,
+      lastChap: lastChap,
+      timeAgo: timeAgo,
+      notice: notice,
+      name: name,
+      comicId: comicId,
+      rate: rate,
+      originalName: null,
+    );
   }
 
   @override
@@ -73,19 +79,22 @@ class TruyenQQService extends TruyenGGService {
 
     return [
       HomeComicSection(
-        items: document
-            .querySelectorAll("#list_suggest > li")
-            .map((element) => parseComic(element, baseUrl))
-            .toList(),
+        items:
+            document
+                .querySelectorAll("#list_suggest > li")
+                .map((element) => parseComic(element, baseUrl))
+                .toList(),
         name: 'Truyện Hay',
       ),
       HomeComicSection(
-          items: document
-              .querySelectorAll("#list_new > li")
-              .map((element) => parseComic(element, baseUrl))
-              .toList(),
-          name: 'Truyện Mới Cập Nhật',
-          sectionId: 'truyen-moi-cap-nhat'),
+        items:
+            document
+                .querySelectorAll("#list_new > li")
+                .map((element) => parseComic(element, baseUrl))
+                .toList(),
+        name: 'Truyện Mới Cập Nhật',
+        sectionId: 'truyen-moi-cap-nhat',
+      ),
     ];
   }
 
@@ -96,8 +105,9 @@ class TruyenQQService extends TruyenGGService {
     final String name =
         document.querySelector("h1[itemprop=name]")!.text.trim();
     final OImage image = OImage(
-        src: document.querySelector(".comic_avatar img")!.attributes["src"]!,
-        headers: {"referer": baseUrl});
+      src: document.querySelector(".comic_avatar img")!.attributes["src"]!,
+      headers: {"referer": baseUrl},
+    );
 
     final tales = document.querySelectorAll(".list-info > li");
 
@@ -106,74 +116,93 @@ class TruyenQQService extends TruyenGGService {
     final translator = _getInfoTale(tales, "Dịch giả")?.text.trim();
     final status$ =
         _getInfoTale(tales, "Tình trạng")?.text.trim().toLowerCase() ??
-            "unknown";
-    final status = status$ == 'đang cập nhật'
-        ? StatusEnum.ongoing
-        : status$ == 'unknown'
+        "unknown";
+    final status =
+        status$ == 'đang cập nhật'
+            ? StatusEnum.ongoing
+            : status$ == 'unknown'
             ? StatusEnum.unknown
             : StatusEnum.completed;
 
     final views = int.tryParse(
-        _getInfoTale(tales, "Lượt xem")?.text.trim().replaceAll(",", "") ?? '');
+      _getInfoTale(tales, "Lượt xem")?.text.trim().replaceAll(",", "") ?? '',
+    );
     final likes = int.tryParse(
-        _getInfoTale(tales, "Lượt theo dõi")?.text.trim().replaceAll(",", "") ??
-            "");
+      _getInfoTale(tales, "Lượt theo dõi")?.text.trim().replaceAll(",", "") ??
+          "",
+    );
 
-    final rate$ = JsonDecoder().convert(document
-            .querySelector("script[type='application/ld+json']")
-            ?.text
-            .trim() ??
-        "{}") as Map<String, dynamic>;
+    final rate$ =
+        JsonDecoder().convert(
+              document
+                      .querySelector("script[type='application/ld+json']")
+                      ?.text
+                      .trim() ??
+                  "{}",
+            )
+            as Map<String, dynamic>;
 
-    final rate = rate$.containsKey('aggregateRating')
-        ? RateValue(
-            best: int.parse("${rate$['aggregateRating']['bestRating']}"),
-            count: int.parse(rate$['aggregateRating']['ratingCount']),
-            value: double.parse(rate$['aggregateRating']['ratingValue']))
-        : null;
+    final rate =
+        rate$.containsKey('aggregateRating')
+            ? RateValue(
+              best: int.parse("${rate$['aggregateRating']['bestRating']}"),
+              count: int.parse(rate$['aggregateRating']['ratingCount']),
+              value: double.parse(rate$['aggregateRating']['ratingValue']),
+            )
+            : null;
 
-    final genres = document.querySelectorAll(".list01 a").map((anchor) => Genre(
-        name: anchor.text.trim(),
-        genreId:
-            "the-loai*${anchor.attributes["href"]!.split("/").last.replaceFirst(".html", "")}"));
+    final genres = document
+        .querySelectorAll(".list01 a")
+        .map(
+          (anchor) => Genre(
+            name: anchor.text.trim(),
+            genreId:
+                "the-loai*${anchor.attributes["href"]!.split("/").last.replaceFirst(".html", "")}",
+          ),
+        );
     final description =
         document.querySelector(".story-detail-info")!.text.trim();
-    final chapters =
-        document.querySelectorAll(".works-chapter-item").reversed.map((chap) {
-      final name = chap.querySelector("a")!.text;
-      final chapterId = chap
-          .querySelector("a")!
-          .attributes["href"]!
-          .split("/")
-          .last
-          .replaceFirst("$comicId-", "")
-          .replaceFirst(".html", "");
+    final chapters = document
+        .querySelectorAll(".works-chapter-item")
+        .reversed
+        .map((chap) {
+          final name = chap.querySelector("a")!.text;
+          final chapterId = chap
+              .querySelector("a")!
+              .attributes["href"]!
+              .split("/")
+              .last
+              .replaceFirst("$comicId-", "")
+              .replaceFirst(".html", "");
 
-      final time$ = chap.querySelector('.time-chap')?.text.trim();
-      final time =
-          time$ != null ? DateFormat("dd/MM/yyyy").tryParse(time$) : null;
+          final time$ = chap.querySelector('.time-chap')?.text.trim();
+          final time =
+              time$ != null ? DateFormat("dd/MM/yyyy").tryParse(time$) : null;
 
-      return ComicChapter(name: name, chapterId: chapterId, time: time);
-    });
-    final lastModified = rate$.containsKey("dateModified")
-        ? DateTime.parse(rate$["dateModified"])
-        : DateFormat("dd/MM/yyyy")
-            .parse(document.querySelector(".time-chap")!.text);
+          return ComicChapter(name: name, chapterId: chapterId, time: time);
+        });
+    final lastModified =
+        rate$.containsKey("dateModified")
+            ? DateTime.parse(rate$["dateModified"])
+            : DateFormat(
+              "dd/MM/yyyy",
+            ).parse(document.querySelector(".time-chap")!.text);
 
     return MetaComic(
-        name: name,
-        originalName: originalName,
-        image: image,
-        author: author,
-        translator: translator,
-        status: status,
-        views: views,
-        likes: likes,
-        rate: rate,
-        genres: genres.toList(),
-        description: description,
-        chapters: chapters.toList(),
-        lastModified: lastModified);
+      name: name,
+      originalName: originalName,
+      image: image,
+      author: author,
+      translator: translator,
+      status: status,
+      views: views,
+      likes: likes,
+      rate: rate,
+      genres: genres.toList(),
+      description: description,
+      chapters: chapters.toList(),
+      lastModified: lastModified,
+    );
   }
 
   @override
@@ -208,20 +237,25 @@ class TruyenQQService extends TruyenGGService {
         .querySelectorAll(".list_grid_out li")
         .map((element) => parseComic(element, baseUrl));
 
-    final lastPageLink = document
-        .querySelector(".page_redirect > a:last-child")
-        ?.attributes["href"];
-    final maxPage = lastPageLink != null
-        ? int.parse(RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!)
-        : 1;
+    final lastPageLink =
+        document
+            .querySelector(".page_redirect > a:last-child")
+            ?.attributes["href"];
+    final maxPage =
+        lastPageLink != null
+            ? int.parse(
+              RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
+            )
+            : 1;
 
     return ComicSection(
-        name: '',
-        url: url,
-        items: data.toList(),
-        page: page,
-        totalItems: data.length * maxPage,
-        totalPages: maxPage);
+      name: '',
+      url: url,
+      items: data.toList(),
+      page: page,
+      totalItems: data.length * maxPage,
+      totalPages: maxPage,
+    );
   }
 
   @override
@@ -229,32 +263,39 @@ class TruyenQQService extends TruyenGGService {
     final url =
         "$baseUrl/${sectionId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html";
 
-    final Document document =
-        await fetchDocument(buildQueryUri(url, filters: filters).toString());
+    final Document document = await fetchDocument(
+      buildQueryUri(url, filters: filters).toString(),
+    );
 
     final data = document
         .querySelectorAll(".list_grid_out li")
         .map((element) => parseComic(element, baseUrl));
 
-    final lastPageLink = document
-        .querySelector(".page_redirect > a:last-child")
-        ?.attributes["href"];
-    final maxPage = lastPageLink != null
-        ? int.parse(RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!)
-        : 1;
+    final lastPageLink =
+        document
+            .querySelector(".page_redirect > a:last-child")
+            ?.attributes["href"];
+    final maxPage =
+        lastPageLink != null
+            ? int.parse(
+              RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
+            )
+            : 1;
 
     return ComicSection(
-        name: document
-                .querySelector(".title_cate, .text_list_update")
-                ?.text
-                .trim() ??
-            '',
-        url: url,
-        description: document.querySelector("tags_detail")?.text,
-        items: data.toList(),
-        page: page,
-        totalItems: data.length * maxPage,
-        totalPages: maxPage,
-        filters: globalFilters);
+      name:
+          document
+              .querySelector(".title_cate, .text_list_update")
+              ?.text
+              .trim() ??
+          '',
+      url: url,
+      description: document.querySelector("tags_detail")?.text,
+      items: data.toList(),
+      page: page,
+      totalItems: data.length * maxPage,
+      totalPages: maxPage,
+      filters: globalFilters,
+    );
   }
 }

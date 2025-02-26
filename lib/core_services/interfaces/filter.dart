@@ -3,8 +3,11 @@ class Option {
   final String value;
   final bool selected;
 
-  const Option(
-      {required this.name, required this.value, this.selected = false});
+  const Option({
+    required this.name,
+    required this.value,
+    this.selected = false,
+  });
 }
 
 class Filter {
@@ -13,9 +16,10 @@ class Filter {
   final bool multiple;
   final List<Option> options;
 
-  const Filter(
-      {required this.name,
-      required this.key,
-      required this.multiple,
-      required this.options});
+  const Filter({
+    required this.name,
+    required this.key,
+    required this.multiple,
+    required this.options,
+  });
 }

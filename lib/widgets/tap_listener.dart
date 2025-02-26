@@ -7,13 +7,14 @@ class TapListener extends StatelessWidget {
   final bool showArea;
   final Function(int row, int column) onTap;
 
-  const TapListener(
-      {super.key,
-      required this.child,
-      required this.rows,
-      required this.columns,
-      required this.onTap,
-      this.showArea = false});
+  const TapListener({
+    super.key,
+    required this.child,
+    required this.rows,
+    required this.columns,
+    required this.onTap,
+    this.showArea = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,18 +54,25 @@ class _GridPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.grey
-      ..strokeWidth = 1;
+    final paint =
+        Paint()
+          ..color = Colors.grey
+          ..strokeWidth = 1;
 
     for (int i = 1; i < 3; i++) {
-      canvas.drawLine(Offset(size.width * i / rows, 0),
-          Offset(size.width * i / columns, size.height), paint);
+      canvas.drawLine(
+        Offset(size.width * i / rows, 0),
+        Offset(size.width * i / columns, size.height),
+        paint,
+      );
     }
 
     for (int i = 1; i < 3; i++) {
-      canvas.drawLine(Offset(0, size.height * i / rows),
-          Offset(size.width, size.height * i / columns), paint);
+      canvas.drawLine(
+        Offset(0, size.height * i / rows),
+        Offset(size.width, size.height * i / columns),
+        paint,
+      );
     }
   }
 

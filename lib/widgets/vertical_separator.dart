@@ -15,11 +15,6 @@ class VerticalSeparator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: 8.0,
-      color: color,
-      margin: margin,
-    );
+    return Container(width: width, height: 8.0, color: color, margin: margin);
   }
 }

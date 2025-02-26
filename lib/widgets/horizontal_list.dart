@@ -11,42 +11,46 @@ class HorizontalList<T> extends StatelessWidget {
 
   final bool needSubtitle;
 
-  const HorizontalList(
-      {super.key,
-      required this.title,
-      this.subtitle,
-      required this.more,
-      this.items,
-      this.child,
-      required this.builder,
-      required this.needSubtitle})
-      : assert(items != null || child != null);
+  const HorizontalList({
+    super.key,
+    required this.title,
+    this.subtitle,
+    required this.more,
+    this.items,
+    this.child,
+    required this.builder,
+    required this.needSubtitle,
+  }) : assert(items != null || child != null);
 
-  static Widget buildContainer(BuildContext context,
-      {required bool needSubtitle,
-      required Widget Function(double viewFraction) builder}) {
-    return LayoutBuilder(builder: (context, constraints) {
-      double screenWidth = constraints.biggest.width;
-      double crossAxisCount;
+  static Widget buildContainer(
+    BuildContext context, {
+    required bool needSubtitle,
+    required Widget Function(double viewFraction) builder,
+  }) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double screenWidth = constraints.biggest.width;
+        double crossAxisCount;
 
-      if (screenWidth <= 600) {
-        crossAxisCount = 3.5;
-      } else if (screenWidth <= 900) {
-        crossAxisCount = 4.5;
-      } else {
-        crossAxisCount = 6.5;
-      }
+        if (screenWidth <= 600) {
+          crossAxisCount = 3.5;
+        } else if (screenWidth <= 900) {
+          crossAxisCount = 4.5;
+        } else {
+          crossAxisCount = 6.5;
+        }
 
-      final childAspectRatio = 2 / 3;
-      final viewportFraction = 1 / crossAxisCount;
-      final height =
-          1 / childAspectRatio * (screenWidth * viewportFraction - 8.0) +
-              14.0 * 2 +
-              18.0 +
-              (needSubtitle ? 12.0 * 2 : 12.0 / 2);
+        final childAspectRatio = 2 / 3;
+        final viewportFraction = 1 / crossAxisCount;
+        final height =
+            1 / childAspectRatio * (screenWidth * viewportFraction - 8.0) +
+            14.0 * 2 +
+            18.0 +
+            (needSubtitle ? 12.0 * 2 : 12.0 / 2);
 
-      return SizedBox(height: height, child: builder(viewportFraction));
-    });
+        return SizedBox(height: height, child: builder(viewportFraction));
+      },
+    );
   }
 
   @override
@@ -54,49 +58,57 @@ class HorizontalList<T> extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                if (subtitle != null)
+                  Text(
+                    subtitle!,
+                    style: TextStyle(fontSize: 14, color: Colors.white70),
+                  ),
+              ],
             ),
-            if (subtitle != null)
-              Text(
-                subtitle!,
-                style: TextStyle(fontSize: 14, color: Colors.white70),
-              ),
-          ]),
-          if (more != null)
-            ElevatedButton(
+            if (more != null)
+              ElevatedButton(
                 onPressed: () {
                   context.push(more!);
                 },
-                child: Text('More'))
-          else
-            SizedBox.shrink()
-        ]),
+                child: Text('More'),
+              )
+            else
+              SizedBox.shrink(),
+          ],
+        ),
         buildContainer(
           context,
           needSubtitle: needSubtitle,
-          builder: (viewportFraction) =>
-              child ??
-              PageView.builder(
-                itemCount: items!.length,
-                allowImplicitScrolling: true,
-                padEnds: false,
-                controller: PageController(
-                  viewportFraction: viewportFraction,
-                  initialPage: 0,
-                ),
-                itemBuilder: (context, index) {
-                  return builder(context, items!.elementAt(index), index);
-                },
-              ),
-        )
+          builder:
+              (viewportFraction) =>
+                  child ??
+                  PageView.builder(
+                    itemCount: items!.length,
+                    allowImplicitScrolling: true,
+                    padEnds: false,
+                    controller: PageController(
+                      viewportFraction: viewportFraction,
+                      initialPage: 0,
+                    ),
+                    itemBuilder: (context, index) {
+                      return builder(context, items!.elementAt(index), index);
+                    },
+                  ),
+        ),
       ],
     );
   }

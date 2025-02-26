@@ -16,66 +16,73 @@ class VerticalEigaList extends StatelessWidget {
 
   final bool skeleton;
 
-  const VerticalEigaList(
-      {super.key,
-      required this.itemsFuture,
-      required this.title,
-      this.subtitle,
-      this.more,
-      this.controller,
-      this.disableScroll = false,
-      this.skeleton = true});
+  const VerticalEigaList({
+    super.key,
+    required this.itemsFuture,
+    required this.title,
+    this.subtitle,
+    this.more,
+    this.controller,
+    this.disableScroll = false,
+    this.skeleton = true,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: itemsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Skeletonizer(
-                enabled: skeleton,
-                enableSwitchAnimation: true,
-                child: VerticalList<EigaExtend>(
-                  title: title,
-                  subtitle: subtitle,
-                  more: more,
-                  disableScroll: disableScroll,
-                  items: List.generate(
-                      30,
-                      (index) => EigaExtend(
-                          eiga: Eiga.createFakeData(), sourceId: null)),
-                  builder: (context, eiga, index) {
-                    return VerticalEiga(
-                      eiga: eiga.eiga,
-                      sourceId: eiga.sourceId,
-                      percentRead: eiga.percentRead,
-                    );
-                  },
-                ));
-          }
-
-          if (snapshot.hasError) {
-            return Center(
-                child: UtilsService.errorWidgetBuilder(context,
-                    error: snapshot.error,
-                    orElse: (error) => Text('Error: $error')));
-          }
-
-          return VerticalList<EigaExtend>(
-            title: title,
-            subtitle: subtitle,
-            more: more,
-            controller: controller,
-            disableScroll: disableScroll,
-            items: snapshot.data!,
-            builder: (context, eiga, index) {
-              return VerticalEiga(
-                eiga: eiga.eiga,
-                sourceId: eiga.sourceId,
-                percentRead: eiga.percentRead,
-              );
-            },
+      future: itemsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Skeletonizer(
+            enabled: skeleton,
+            enableSwitchAnimation: true,
+            child: VerticalList<EigaExtend>(
+              title: title,
+              subtitle: subtitle,
+              more: more,
+              disableScroll: disableScroll,
+              items: List.generate(
+                30,
+                (index) =>
+                    EigaExtend(eiga: Eiga.createFakeData(), sourceId: null),
+              ),
+              builder: (context, eiga, index) {
+                return VerticalEiga(
+                  eiga: eiga.eiga,
+                  sourceId: eiga.sourceId,
+                  percentRead: eiga.percentRead,
+                );
+              },
+            ),
           );
-        });
+        }
+
+        if (snapshot.hasError) {
+          return Center(
+            child: UtilsService.errorWidgetBuilder(
+              context,
+              error: snapshot.error,
+              orElse: (error) => Text('Error: $error'),
+            ),
+          );
+        }
+
+        return VerticalList<EigaExtend>(
+          title: title,
+          subtitle: subtitle,
+          more: more,
+          controller: controller,
+          disableScroll: disableScroll,
+          items: snapshot.data!,
+          builder: (context, eiga, index) {
+            return VerticalEiga(
+              eiga: eiga.eiga,
+              sourceId: eiga.sourceId,
+              percentRead: eiga.percentRead,
+            );
+          },
+        );
+      },
+    );
   }
 }

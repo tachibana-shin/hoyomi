@@ -51,13 +51,14 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircleAvatar(
-                backgroundColor: Theme.of(context).colorScheme.onSecondary,
-                child: OImage.network(
-                  widget.service.faviconUrl,
-                  sourceId: widget.service.uid,
-                  headers: {"referer": widget.service.baseUrl},
-                  fit: BoxFit.cover,
-                )),
+              backgroundColor: Theme.of(context).colorScheme.onSecondary,
+              child: OImage.network(
+                widget.service.faviconUrl,
+                sourceId: widget.service.uid,
+                headers: {"referer": widget.service.baseUrl},
+                fit: BoxFit.cover,
+              ),
+            ),
             const SizedBox(width: 5.0),
             _buildUserAvatar(),
           ],
@@ -72,37 +73,42 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
     switch (_status()) {
       case "NOT_SUPPORT":
         return CircleAvatar(
-            backgroundColor: Theme.of(context).colorScheme.onSecondary,
-            child: const Icon(
-              MaterialCommunityIcons.block_helper,
-              // color: Colors.red,
-            ));
+          backgroundColor: Theme.of(context).colorScheme.onSecondary,
+          child: const Icon(
+            MaterialCommunityIcons.block_helper,
+            // color: Colors.red,
+          ),
+        );
       case "LOADING":
         return CircleAvatar(
-            backgroundColor: Theme.of(context).colorScheme.onSecondary,
-            child: SpinKitFadingCircle(
-                color: Theme.of(context).colorScheme.secondary, size: 25.0));
+          backgroundColor: Theme.of(context).colorScheme.onSecondary,
+          child: SpinKitFadingCircle(
+            color: Theme.of(context).colorScheme.secondary,
+            size: 25.0,
+          ),
+        );
       case "NOT_SIGN":
         return CircleAvatar(
-            backgroundColor: Theme.of(context).colorScheme.onSecondary,
-            child: const Icon(
-              MaterialCommunityIcons.help,
-            ));
+          backgroundColor: Theme.of(context).colorScheme.onSecondary,
+          child: const Icon(MaterialCommunityIcons.help),
+        );
       case "ERROR":
         return CircleAvatar(
-            backgroundColor: Theme.of(context).colorScheme.onSecondary,
-            child: const Icon(
-              MaterialCommunityIcons.alert_circle_outline,
-              color: Colors.orange,
-            ));
+          backgroundColor: Theme.of(context).colorScheme.onSecondary,
+          child: const Icon(
+            MaterialCommunityIcons.alert_circle_outline,
+            color: Colors.orange,
+          ),
+        );
       default:
         return CircleAvatar(
-            backgroundColor: Colors.grey.shade300,
-            child: OImage.network(
-              _user!.user.value!.photoUrl,
-              sourceId: widget.service.uid,
-              fit: BoxFit.cover,
-            ));
+          backgroundColor: Colors.grey.shade300,
+          child: OImage.network(
+            _user!.user.value!.photoUrl,
+            sourceId: widget.service.uid,
+            fit: BoxFit.cover,
+          ),
+        );
     }
   }
 
@@ -112,37 +118,29 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
       case "NOT_SUPPORT":
         oneLine = Text(
           'This service does not support accounts.',
-          style: TextStyle(
-            fontSize: 14.0,
-            color: Colors.red.shade400,
-          ),
+          style: TextStyle(fontSize: 14.0, color: Colors.red.shade400),
           textAlign: TextAlign.center,
         );
         break;
       case "LOADING":
         oneLine = Text(
           'Loading...',
-          style: TextStyle(
-            fontSize: 14.0,
-            color: Colors.grey.shade400,
-          ),
+          style: TextStyle(fontSize: 14.0, color: Colors.grey.shade400),
           textAlign: TextAlign.center,
         );
         break;
       case "NOT_SIGN":
         oneLine = InkWell(
-            onTap: () async {
-              await context.push("/webview/${widget.service.uid}");
-              _user?.refresh();
-            },
-            child: Text(
-              "(Tap to sign in)",
-              style: TextStyle(
-                fontSize: 14.0,
-                color: Colors.grey.shade400,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ));
+          onTap: () async {
+            await context.push("/webview/${widget.service.uid}");
+            _user?.refresh();
+          },
+          child: Text(
+            "(Tap to sign in)",
+            style: TextStyle(fontSize: 14.0, color: Colors.grey.shade400),
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
         break;
 
       case "ERROR":
@@ -150,10 +148,7 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
           children: [
             Text(
               'Failed to fetch user.',
-              style: TextStyle(
-                fontSize: 14.0,
-                color: Colors.grey.shade400,
-              ),
+              style: TextStyle(fontSize: 14.0, color: Colors.grey.shade400),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 5.0),
@@ -168,18 +163,16 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
         break;
       default:
         oneLine = InkWell(
-            onTap: () {
-              context.push("/webview/${widget.service.uid}");
-            },
-            child: Text(
-              _user!.user.value!.fullName,
-              style: TextStyle(
-                fontSize: 14.0,
-                color: Colors.grey.shade400,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ));
+          onTap: () {
+            context.push("/webview/${widget.service.uid}");
+          },
+          child: Text(
+            _user!.user.value!.fullName,
+            style: TextStyle(fontSize: 14.0, color: Colors.grey.shade400),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
     }
 
     return Column(
@@ -187,9 +180,7 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
       children: [
         Text(
           widget.service.name,
-          style: TextStyle(
-            fontSize: 16.0,
-          ),
+          style: TextStyle(fontSize: 16.0),
           overflow: TextOverflow.ellipsis,
         ),
         oneLine,

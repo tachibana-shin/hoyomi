@@ -34,8 +34,4 @@ class User {
   }
 }
 
-enum Sex {
-  male,
-  female,
-  other,
-}
+enum Sex { male, female, other }

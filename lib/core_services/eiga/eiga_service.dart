@@ -15,42 +15,52 @@ import 'package:hoyomi/core_services/interfaces/vtt.dart';
 abstract class EigaService extends Service {
   Future<EigaHome> home();
 
-  Future<EigaSection> getSection(
-      {required String sectionId,
-      required int page,
-      required Map<String, List<String>?> filters});
+  Future<EigaSection> getSection({
+    required String sectionId,
+    required int page,
+    required Map<String, List<String>?> filters,
+  });
 
   EigaParam parseURL(String url);
 
   Future<MetaEiga> getDetails(String eigaId);
   Future<EigaEpisodes> getEpisodes(String eigaId);
-  Future<SourceVideo> getSource(
-      {required String eigaId, required EigaEpisode episode});
+  Future<SourceVideo> getSource({
+    required String eigaId,
+    required EigaEpisode episode,
+  });
   Future<SourceContent> Function({required SourceVideo source})?
-      fetchSourceContent;
-  Future<Vtt?> Function(
-      {required String eigaId,
-      required EigaEpisode episode,
-      required int episodeIndex,
-      required MetaEiga metaEiga})? getThumbnail;
+  fetchSourceContent;
+  Future<Vtt?> Function({
+    required String eigaId,
+    required EigaEpisode episode,
+    required int episodeIndex,
+    required MetaEiga metaEiga,
+  })?
+  getThumbnail;
 
-  Future<List<Subtitle>> getSubtitles(
-      {required String eigaId, required EigaEpisode episode});
+  Future<List<Subtitle>> getSubtitles({
+    required String eigaId,
+    required EigaEpisode episode,
+  });
 
-  Future<OpeningEnding?> getOpeningEnding(
-      {required String eigaId,
-      required EigaEpisode episode,
-      required int episodeIndex,
-      required MetaEiga metaEiga});
+  Future<OpeningEnding?> getOpeningEnding({
+    required String eigaId,
+    required EigaEpisode episode,
+    required int episodeIndex,
+    required MetaEiga metaEiga,
+  });
 
   Future<List<Eiga>> Function({
     required MetaEiga metaEiga,
     required String eigaId,
     int? page,
-  })? getSuggest;
+  })?
+  getSuggest;
 
-  Future<EigaSection> search(
-      {required String keyword,
-      required int page,
-      required Map<String, List<String>?> filters});
+  Future<EigaSection> search({
+    required String keyword,
+    required int page,
+    required Map<String, List<String>?> filters,
+  });
 }

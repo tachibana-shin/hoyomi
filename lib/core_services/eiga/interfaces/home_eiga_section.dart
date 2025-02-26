@@ -6,8 +6,12 @@ class HomeEigaSection {
   final bool? gridView;
   final List<Eiga> items;
 
-  HomeEigaSection(
-      {required this.items, required this.name, this.sectionId, this.gridView});
+  HomeEigaSection({
+    required this.items,
+    required this.name,
+    this.sectionId,
+    this.gridView,
+  });
 
   factory HomeEigaSection.createFakeData() {
     return HomeEigaSection(

@@ -4,5 +4,5 @@ enum StatusEnum {
   canceled,
   unknown,
   onHiatus,
-  publishingFinished
+  publishingFinished,
 }

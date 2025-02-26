@@ -13,10 +13,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 class HorizontalEigaFollowList extends StatefulWidget {
   final String sourceId;
 
-  const HorizontalEigaFollowList({
-    super.key,
-    required this.sourceId,
-  });
+  const HorizontalEigaFollowList({super.key, required this.sourceId});
 
   @override
   createState() => _HorizontalEigaHistoryState();
@@ -37,43 +34,54 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _followsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return HorizontalList.buildContainer(
-              context,
-              builder: (viewFraction) => Center(
-                  child: UtilsService.errorWidgetBuilder(context,
-                      error: snapshot.error,
-                      orElse: (error) => Text('Error: $error'))),
-              needSubtitle: false,
-            );
-          }
+      future: _followsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return HorizontalList.buildContainer(
+            context,
+            builder:
+                (viewFraction) => Center(
+                  child: UtilsService.errorWidgetBuilder(
+                    context,
+                    error: snapshot.error,
+                    orElse: (error) => Text('Error: $error'),
+                  ),
+                ),
+            needSubtitle: false,
+          );
+        }
 
-          final loading = snapshot.connectionState == ConnectionState.waiting;
-          final data = loading
-              ? List.generate(
-                  30, (_) => FollowItem.createFakeData(Eiga.createFakeData()))
-              : snapshot.data!;
+        final loading = snapshot.connectionState == ConnectionState.waiting;
+        final data =
+            loading
+                ? List.generate(
+                  30,
+                  (_) => FollowItem.createFakeData(Eiga.createFakeData()),
+                )
+                : snapshot.data!;
 
-          return Skeletonizer(
-              enabled: loading,
-              enableSwitchAnimation: true,
-              child: HorizontalList<FollowItem<Eiga>>(
-                title: 'Follow',
-                subtitle: data.firstOrNull?.updatedAt == null
+        return Skeletonizer(
+          enabled: loading,
+          enableSwitchAnimation: true,
+          child: HorizontalList<FollowItem<Eiga>>(
+            title: 'Follow',
+            subtitle:
+                data.firstOrNull?.updatedAt == null
                     ? ''
                     : formatWatchUpdatedAt(data.first.updatedAt!, null),
-                more: '/library/follow/eiga/${widget.sourceId}',
-                items: data,
-                needSubtitle: data.firstWhereOrNull(
-                        (eiga) => VerticalEiga.checkNeedSubtitle(eiga.item)) !=
-                    null,
-                builder: (context, follow, index) {
-                  return VerticalEiga(
-                      sourceId: widget.sourceId, eiga: follow.item);
-                },
-              ));
-        });
+            more: '/library/follow/eiga/${widget.sourceId}',
+            items: data,
+            needSubtitle:
+                data.firstWhereOrNull(
+                  (eiga) => VerticalEiga.checkNeedSubtitle(eiga.item),
+                ) !=
+                null,
+            builder: (context, follow, index) {
+              return VerticalEiga(sourceId: widget.sourceId, eiga: follow.item);
+            },
+          ),
+        );
+      },
+    );
   }
 }

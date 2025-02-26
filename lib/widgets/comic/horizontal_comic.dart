@@ -8,8 +8,11 @@ class HorizontalComic extends StatelessWidget {
   final Comic comic;
   final String sourceId;
 
-  const HorizontalComic(
-      {super.key, required this.comic, required this.sourceId});
+  const HorizontalComic({
+    super.key,
+    required this.comic,
+    required this.sourceId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,9 @@ class HorizontalComic extends StatelessWidget {
                           label: Text(
                             comic.notice!,
                             style: const TextStyle(
-                                fontSize: 12.0, color: Colors.orange),
+                              fontSize: 12.0,
+                              color: Colors.orange,
+                            ),
                           ),
                           backgroundColor: Colors.black.withValues(alpha: 0.6),
                         ),
@@ -66,7 +71,9 @@ class HorizontalComic extends StatelessWidget {
                             Text(
                               comic.rate!.toString(),
                               style: const TextStyle(
-                                  fontSize: 14.0, color: Colors.white),
+                                fontSize: 14.0,
+                                color: Colors.white,
+                              ),
                             ),
                           ],
                         ),
@@ -79,9 +86,10 @@ class HorizontalComic extends StatelessWidget {
                 Text(
                   comic.name,
                   style: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.grey.shade300,
-                      fontWeight: FontWeight.w500),
+                    fontSize: 14.0,
+                    color: Colors.grey.shade300,
+                    fontWeight: FontWeight.w500,
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -89,9 +97,10 @@ class HorizontalComic extends StatelessWidget {
                   Text(
                     comic.originalName!,
                     style: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.grey.shade500,
-                        fontWeight: FontWeight.w400),
+                      fontSize: 12.0,
+                      color: Colors.grey.shade500,
+                      fontWeight: FontWeight.w400,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -102,8 +111,10 @@ class HorizontalComic extends StatelessWidget {
                 if (comic.lastChap != null)
                   Text(
                     comic.lastChap?.name ?? 'N/A',
-                    style:
-                        TextStyle(fontSize: 12.0, color: Colors.grey.shade500),
+                    style: TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.grey.shade500,
+                    ),
                   ),
 
                 // Bottom: Time Ago
@@ -112,7 +123,9 @@ class HorizontalComic extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0, vertical: 4.0),
+                        horizontal: 8.0,
+                        vertical: 4.0,
+                      ),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
@@ -127,7 +140,9 @@ class HorizontalComic extends StatelessWidget {
                       child: Text(
                         formatTimeAgo(comic.timeAgo!),
                         style: TextStyle(
-                            fontSize: 12.0, color: Colors.blueGrey.shade50),
+                          fontSize: 12.0,
+                          color: Colors.blueGrey.shade50,
+                        ),
                       ),
                     ),
                   ),

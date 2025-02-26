@@ -11,10 +11,7 @@ class _CarouselListState extends State<CarouselList> {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text(
-        'CarouselList is working',
-        style: TextStyle(fontSize: 20),
-      ),
+      child: Text('CarouselList is working', style: TextStyle(fontSize: 20)),
     );
   }
 }

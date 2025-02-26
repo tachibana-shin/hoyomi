@@ -21,8 +21,10 @@ Future<void> initializeIsar() async {
   // await Isar.initialize();
 
   final dir = await getApplicationDocumentsDirectory();
-  isar = await Isar.open(
-    [ComicSchema, CookieManagerSchema, HistoryChapSchema, SettingsSchema],
-    directory: dir.path,
-  );
+  isar = await Isar.open([
+    ComicSchema,
+    CookieManagerSchema,
+    HistoryChapSchema,
+    SettingsSchema,
+  ], directory: dir.path);
 }

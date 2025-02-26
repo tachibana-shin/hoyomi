@@ -8,9 +8,7 @@ class HomeComicPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: HomeComic(),
-    );
+    return const Scaffold(body: HomeComic());
   }
 }
 
@@ -54,35 +52,43 @@ class _HomeComicState extends State<HomeComic>
         // snap: _overlayQuickSearch == null,
         // pinned: _overlayQuickSearch == null,
         title: CustomSearchBar(
-            keyword: '',
-            onOverlayChange: (overlay) {
-              setState(() {
-                _setOverlay(overlay);
-              });
-            }),
+          keyword: '',
+          onOverlayChange: (overlay) {
+            setState(() {
+              _setOverlay(overlay);
+            });
+          },
+        ),
         centerTitle: true,
         titleSpacing: 0.0,
-        bottom: _overlayQuickSearch != null
-            ? null
-            : TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                splashBorderRadius: BorderRadius.circular(35.0),
-                tabs: comicServices
-                    .map((service) => Tab(text: service.name))
-                    .toList(),
-              ),
+        bottom:
+            _overlayQuickSearch != null
+                ? null
+                : TabBar(
+                  controller: _tabController,
+                  isScrollable: true,
+                  splashBorderRadius: BorderRadius.circular(35.0),
+                  tabs:
+                      comicServices
+                          .map((service) => Tab(text: service.name))
+                          .toList(),
+                ),
       ),
-      body: Stack(children: [
-        TabBarView(
-          controller: _tabController,
-          children: comicServices
-              .map((service) =>
-                  TabViewComic(key: Key(service.uid), service: service))
-              .toList(),
-        ),
-        ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : [])
-      ]),
+      body: Stack(
+        children: [
+          TabBarView(
+            controller: _tabController,
+            children:
+                comicServices
+                    .map(
+                      (service) =>
+                          TabViewComic(key: Key(service.uid), service: service),
+                    )
+                    .toList(),
+          ),
+          ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : []),
+        ],
+      ),
     );
   }
 }
