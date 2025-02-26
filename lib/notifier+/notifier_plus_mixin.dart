@@ -1,3 +1,1 @@
-mixin NotifierPlusMixin {
-
-}
+mixin NotifierPlusMixin {}
