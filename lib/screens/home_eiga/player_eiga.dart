@@ -732,10 +732,6 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
 
   Widget _buildMobileControls() {
     return Watch((context) {
-      if (_error() != null) {
-        return SizedBox.shrink();
-      }
-
       return Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
