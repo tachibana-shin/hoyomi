@@ -233,11 +233,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             AspectRatio(aspectRatio: _aspectRatio),
             Expanded(
               child: PullRefreshPage(
-                onLoadData: () =>
-                    _service.getDetails(_eigaId.value).then((data) {
-                  if (!mounted) throw Exception('Page destroyed');
-                  return _metaEiga.value = data;
-                }),
+                onLoadData: () async {
+                  _service.getDetails(_eigaId.value).then((data) {
+                    if (!mounted) throw Exception('Page destroyed');
+                    return _metaEiga.value = data;
+                  });
+                },
                 onLoadFake: () => _metaEiga.value = MetaEiga.createFakeData(),
                 builder: (data, param) {
                   return WatchComputed(
