@@ -22,14 +22,13 @@ class ListEpisodes extends StatefulWidget {
   final Axis scrollDirection;
   final ScrollController? controller;
   final Future<EigaEpisodes> Function(void Function(EigaEpisodes newValue))
-  getData;
+      getData;
   final void Function({
     required int indexEpisode,
     required EigaEpisodes episodesEiga,
-  })
-  onTapEpisode;
+  }) onTapEpisode;
   final Future<Map<String, WatchTime>> Function(EigaEpisodes episodesEiga)
-  getWatchTimeEpisodes;
+      getWatchTimeEpisodes;
   final EventBus eventBus;
   final bool eager;
 
@@ -116,10 +115,9 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
 
     final waiting = _episodesEiga.value.isLoading;
 
-    final episodesEiga =
-        waiting
-            ? EigaEpisodes.createFakeData()
-            : _episodesEiga.value.requireValue;
+    final episodesEiga = waiting
+        ? EigaEpisodes.createFakeData()
+        : _episodesEiga.value.requireValue;
 
     if (!waiting && widget.eager) {
       for (final episode in episodesEiga.episodes) {
@@ -150,15 +148,14 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
           itemCount: episodesEiga.episodes.length,
           shrinkWrap: true,
           controller: widget.controller,
-          itemBuilder:
-              (context, index) => itemBuilder(
-                context,
-                index: index,
-                episodesEiga: episodesEiga,
-                waiting: waiting,
-                isVertical: isVertical,
-                height: height,
-              ),
+          itemBuilder: (context, index) => itemBuilder(
+            context,
+            index: index,
+            episodesEiga: episodesEiga,
+            waiting: waiting,
+            isVertical: isVertical,
+            height: height,
+          ),
         );
 
         if (waiting) {
@@ -194,10 +191,9 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
 
     return StatefulBuilder(
       builder: (context, setState2) {
-        final watchTime =
-            _watchTimeEpisodes.value == null
-                ? null
-                : _watchTimeEpisodes.value![episode.episodeId];
+        final watchTime = _watchTimeEpisodes.value == null
+            ? null
+            : _watchTimeEpisodes.value![episode.episodeId];
 
         if (_disposes[index] != null) {
           _disposes[index]!();
@@ -221,17 +217,15 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
         if (isVertical) {
           return InkWell(
             borderRadius: BorderRadius.circular(7),
-            onTap:
-                () => widget.onTapEpisode(
-                  indexEpisode: index,
-                  episodesEiga: episodesEiga,
-                ),
+            onTap: () => widget.onTapEpisode(
+              indexEpisode: index,
+              episodesEiga: episodesEiga,
+            ),
             child: Container(
               decoration: BoxDecoration(
-                color:
-                    active
-                        ? Theme.of(context).colorScheme.tertiaryContainer
-                        : null,
+                color: active
+                    ? Theme.of(context).colorScheme.tertiaryContainer
+                    : null,
                 borderRadius: BorderRadius.circular(7.0),
               ),
               padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 7.0),
@@ -252,8 +246,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
                           child: OImage.network(
                             episode.image?.src ?? widget.thumbnail.src,
                             sourceId: widget.sourceId,
-                            headers:
-                                episodesEiga.image?.headers ??
+                            headers: episodesEiga.image?.headers ??
                                 widget.thumbnail.headers,
                             fit: BoxFit.cover,
                           ),
@@ -266,8 +259,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
                             child: Column(
                               children: [
                                 LinearProgressIndicator(
-                                  value:
-                                      watchTime.position.inMilliseconds /
+                                  value: watchTime.position.inMilliseconds /
                                       watchTime.duration.inMilliseconds,
                                   backgroundColor: Color.fromRGBO(
                                     255,
@@ -300,9 +292,9 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
                           style: Theme.of(
                             context,
                           ).textTheme.titleMedium?.copyWith(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w400,
-                          ),
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w400,
+                              ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -312,14 +304,14 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
                             style: Theme.of(
                               context,
                             ).textTheme.titleMedium?.copyWith(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.w400,
-                              color: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.color
-                                  ?.withValues(alpha: 0.8),
-                            ),
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.color
+                                      ?.withValues(alpha: 0.8),
+                                ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -345,23 +337,20 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
           padding: EdgeInsets.only(right: 8.0),
           child: InkWell(
             borderRadius: BorderRadius.circular(7),
-            onTap:
-                () => widget.onTapEpisode(
-                  indexEpisode: index,
-                  episodesEiga: episodesEiga,
-                ),
+            onTap: () => widget.onTapEpisode(
+              indexEpisode: index,
+              episodesEiga: episodesEiga,
+            ),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(
-                  color:
-                      active
-                          ? Theme.of(context).colorScheme.tertiaryContainer
-                          : Colors.grey.withAlpha(60),
+                  color: active
+                      ? Theme.of(context).colorScheme.tertiaryContainer
+                      : Colors.grey.withAlpha(60),
                 ),
-                color:
-                    active
-                        ? Theme.of(context).colorScheme.tertiaryContainer
-                        : Colors.transparent,
+                color: active
+                    ? Theme.of(context).colorScheme.tertiaryContainer
+                    : Colors.transparent,
                 borderRadius: BorderRadius.circular(7),
               ),
               clipBehavior: Clip.antiAlias,
@@ -380,8 +369,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
                       child: Transform.translate(
                         offset: Offset(0, 1),
                         child: LinearProgressIndicator(
-                          value:
-                              watchTime.position.inMilliseconds /
+                          value: watchTime.position.inMilliseconds /
                               watchTime.duration.inMilliseconds,
                           backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
                           valueColor: AlwaysStoppedAnimation<Color>(

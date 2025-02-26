@@ -1097,22 +1097,20 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 eigaIdNotifier: _eigaId,
                 episodeIdNotifier: _episodeId,
                 eventBus: _eventBus,
-                getData:
-                    (update) async =>
-                        _cacheEpisodesStore[eigaId] ??= await _getEpisodes(
-                          eigaId,
-                          update,
-                        ),
-                getWatchTimeEpisodes:
-                    (episodesEiga) async =>
-                        _cacheWatchTimeStore[eigaId] ??=
-                            _service is EigaWatchTimeMixin
-                                ? await (_service as EigaWatchTimeMixin)
-                                    .getWatchTimeEpisodes(
-                                      eigaId: _eigaId.value,
-                                      episodes: episodesEiga.episodes,
-                                    )
-                                : {},
+                getData: (update) async =>
+                    _cacheEpisodesStore[eigaId] ??= await _getEpisodes(
+                  eigaId,
+                  update,
+                ),
+                getWatchTimeEpisodes: (episodesEiga) async =>
+                    _cacheWatchTimeStore[eigaId] ??=
+                        _service is EigaWatchTimeMixin
+                            ? await (_service as EigaWatchTimeMixin)
+                                .getWatchTimeEpisodes(
+                                eigaId: _eigaId.value,
+                                episodes: episodesEiga.episodes,
+                              )
+                            : {},
                 eager: true,
                 scrollDirection: scrollDirection,
                 controller: controller,
@@ -1160,53 +1158,49 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     final season = entry.value;
                     final index = entry.key;
 
-                        return Container(
-                          height: height == null ? null : height - tabBarHeight,
-                          padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: ListEpisodes(
-                            season: season,
-                            sourceId: widget.sourceId,
-                            thumbnail: metaEiga$.poster ?? metaEiga$.image,
-                            eigaIdNotifier: _eigaId,
-                            episodeIdNotifier: _episodeId,
-                            eventBus: _eventBus,
-                            getData:
-                                (update) async =>
-                                    _cacheEpisodesStore[season
-                                        .eigaId] ??= await _getEpisodes(
-                                      season.eigaId,
-                                      update,
-                                    ),
-                            getWatchTimeEpisodes:
-                                (episodesEiga) async =>
-                                    _cacheWatchTimeStore[season.eigaId] ??=
-                                        _service is EigaWatchTimeMixin
-                                            ? await (_service
-                                                    as EigaWatchTimeMixin)
-                                                .getWatchTimeEpisodes(
-                                                  eigaId: season.eigaId,
-                                                  episodes:
-                                                      episodesEiga.episodes,
-                                                )
-                                            : {},
-                            eager: true,
-                            scrollDirection: scrollDirection,
-                            controller: controller,
-                            onTapEpisode: ({
-                              required episodesEiga,
-                              required indexEpisode,
-                            }) {
-                              _onChangeEpisode(
-                                metaEiga: metaEiga,
-                                indexEpisode: indexEpisode,
-                                indexSeason: index,
-                                episodesEiga: episodesEiga,
-                                seasons: metaEiga$.seasons,
-                              );
-                            },
-                          ),
-                        );
-                      }).toList(),
+                    return Container(
+                      height: height == null ? null : height - tabBarHeight,
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: ListEpisodes(
+                        season: season,
+                        sourceId: widget.sourceId,
+                        thumbnail: metaEiga$.poster ?? metaEiga$.image,
+                        eigaIdNotifier: _eigaId,
+                        episodeIdNotifier: _episodeId,
+                        eventBus: _eventBus,
+                        getData: (update) async =>
+                            _cacheEpisodesStore[season.eigaId] ??=
+                                await _getEpisodes(
+                          season.eigaId,
+                          update,
+                        ),
+                        getWatchTimeEpisodes: (episodesEiga) async =>
+                            _cacheWatchTimeStore[season.eigaId] ??=
+                                _service is EigaWatchTimeMixin
+                                    ? await (_service as EigaWatchTimeMixin)
+                                        .getWatchTimeEpisodes(
+                                        eigaId: season.eigaId,
+                                        episodes: episodesEiga.episodes,
+                                      )
+                                    : {},
+                        eager: true,
+                        scrollDirection: scrollDirection,
+                        controller: controller,
+                        onTapEpisode: ({
+                          required episodesEiga,
+                          required indexEpisode,
+                        }) {
+                          _onChangeEpisode(
+                            metaEiga: metaEiga,
+                            indexEpisode: indexEpisode,
+                            indexSeason: index,
+                            episodesEiga: episodesEiga,
+                            seasons: metaEiga$.seasons,
+                          );
+                        },
+                      ),
+                    );
+                  }).toList(),
                 ),
                 TabBar(
                   isScrollable: true,
