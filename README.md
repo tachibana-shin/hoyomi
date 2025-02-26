@@ -15,7 +15,6 @@ A new Flutter project.
 ![1000008171](https://github.com/user-attachments/assets/1f1f64da-d84c-4e1b-a0ee-cb973be30503)
 ![1000008173](https://github.com/user-attachments/assets/7f113ae6-99ed-47d7-8de3-a095eaeda119)
 ![1000008175](https://github.com/user-attachments/assets/715c5308-87db-4e0e-a24f-36618fdb46d6)
-![1000008176](https://github.com/user-attachments/assets/4145b57b-dd40-4a73-b6ce-ddc0b040d6c5)
 ![1000008186](https://github.com/user-attachments/assets/1370beb7-0885-4717-a4b0-7016235338f6)
 ![1000008179](https://github.com/user-attachments/assets/66003d32-a2eb-4347-8a2f-756153441ce3)
 ![1000008181](https://github.com/user-attachments/assets/c9c80348-e688-4dad-b46a-a2e15596e2ae)
@@ -72,7 +71,7 @@ A new Flutter project.
 - [ ] Bottom sheet show all options
 
 - [x] Cache for API: eiga info, eiga play, eiga follow...
-- [ ] Replace circular loading with skeleton
+- [x] Replace circular loading with skeleton
 - [x] Fix pull request, circular, future
 
 - [x] Fix infinite scroll
