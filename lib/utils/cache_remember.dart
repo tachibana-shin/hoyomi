@@ -31,19 +31,23 @@ Future<T> cacheRemember<T>(
   if (await file.exists()) {
     debugPrint('[cache_remember]: Cache hit for $key');
 
-    final content = await file.readAsString();
-    final cachedValue = fromCache(content);
+    try {
+      final content = await file.readAsString();
+      final cachedValue = fromCache(content);
 
-    // Update the cache in the background.
-    get().then((newValue) async {
-      final content = toCache(newValue);
-      onUpdate(newValue);
-      debugPrint('[cache_remember]: Cache updated for $key');
+      // Update the cache in the background.
+      get().then((newValue) async {
+        final content = toCache(newValue);
+        onUpdate(newValue);
+        debugPrint('[cache_remember]: Cache updated for $key');
 
-      await file.writeAsString(content);
-    });
+        await file.writeAsString(content);
+      });
 
-    return cachedValue;
+      return cachedValue;
+    } catch (err) {
+      debugPrint('[cache_remember]: Error reading cache for $key: $err');
+    }
   }
 
   final value = await get();

@@ -212,7 +212,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Future<MetaEiga> _getDetails(String eigaId) async {
-    return await cacheRemember(
+    return await cacheRemember<MetaEiga>(
       'details_eiga/${_service.uid}/$eigaId',
       get: () => _service.getDetails(eigaId),
       fromCache: (value) => MetaEiga.fromJson(jsonDecode(value)),
@@ -225,7 +225,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     String eigaId,
     void Function(EigaEpisodes newValue) update,
   ) async {
-    return await cacheRemember(
+    return await cacheRemember<EigaEpisodes>(
       'episodes_eiga/${_service.uid}/$eigaId',
       get: () => _service.getEpisodes(eigaId),
       fromCache: (value) => EigaEpisodes.fromJson(jsonDecode(value)),
