@@ -560,6 +560,7 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
             }),
           ),
         ),
+        _buildError(),
         ListenableBuilder(
           listenable: Listenable.merge([
             widget.posterNotifier,
@@ -608,7 +609,6 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
           );
         }, dependencies: [_showControls]),
         _buildIndicator(),
-        _buildError(),
         Watch(
           (context) =>
               _fullscreen() ? _buildMobileSliderProgress() : SizedBox.shrink(),
