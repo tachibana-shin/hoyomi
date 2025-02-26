@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 const double _defaultScrollControlDisabledMaxHeightRatio = 9.0 / 16.0;
 Future<T?> showModalBottomSheetNoScrim<T>({
   required BuildContext context,
-  required WidgetBuilder builder,
+  required Widget Function(BuildContext context, void Function() pop) builder,
   Color? backgroundColor,
   String? barrierLabel,
   double? elevation,
@@ -27,18 +27,24 @@ Future<T?> showModalBottomSheetNoScrim<T>({
   assert(debugCheckHasMediaQuery(context));
   assert(debugCheckHasMaterialLocalizations(context));
 
-  final NavigatorState navigator =
-      Navigator.of(context, rootNavigator: useRootNavigator);
+  final NavigatorState navigator = Navigator.of(
+    context,
+    rootNavigator: useRootNavigator,
+  );
   final MaterialLocalizations localizations = MaterialLocalizations.of(context);
-  return navigator.push(ModalBottomSheetRouteNoScrim<T>(
-    builder: builder,
-    capturedThemes:
-        InheritedTheme.capture(from: context, to: navigator.context),
+  late final ModalBottomSheetRouteNoScrim<T> route;
+  route = ModalBottomSheetRouteNoScrim<T>(
+    builder: (context) => builder(context, () => navigator.pop(route)),
+    capturedThemes: InheritedTheme.capture(
+      from: context,
+      to: navigator.context,
+    ),
     isScrollControlled: isScrollControlled,
     scrollControlDisabledMaxHeightRatio: scrollControlDisabledMaxHeightRatio,
     barrierLabel: barrierLabel ?? localizations.scrimLabel,
-    barrierOnTapHint:
-        localizations.scrimOnTapHint(localizations.bottomSheetLabel),
+    barrierOnTapHint: localizations.scrimOnTapHint(
+      localizations.bottomSheetLabel,
+    ),
     backgroundColor: backgroundColor,
     elevation: elevation,
     shape: shape,
@@ -54,7 +60,8 @@ Future<T?> showModalBottomSheetNoScrim<T>({
     anchorPoint: anchorPoint,
     useSafeArea: useSafeArea,
     sheetAnimationStyle: sheetAnimationStyle,
-  ));
+  );
+  return navigator.push(route);
 }
 
 class ModalBottomSheetRouteNoScrim<T> extends ModalBottomSheetRoute<T> {
