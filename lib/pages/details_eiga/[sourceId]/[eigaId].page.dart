@@ -259,7 +259,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             Expanded(
               child: PullRefreshPage(
                 onLoadData: () async {
-                  _getDetails(_eigaId.value).then((data) {
+                  return _getDetails(_eigaId.value).then((data) {
                     if (!mounted) throw Exception('Page destroyed');
                     return _metaEiga.value = data;
                   });
