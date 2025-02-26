@@ -71,7 +71,7 @@ A new Flutter project.
 - [ ] Search icon for all section
 - [ ] Bottom sheet show all options
 
-- [ ] Cache for API: eiga info, eiga play, eiga follow...
+- [x] Cache for API: eiga info, eiga play, eiga follow...
 - [ ] Replace circular loading with skeleton
 - [x] Fix pull request, circular, future
 
