@@ -21,26 +21,22 @@ Future<T> cacheRemember<T>(
   String key, {
   required Future<T> Function() get,
   required void Function(T newValue) onUpdate,
-  T Function(String)? fromCache,
-  String Function(T)? toCache,
+  required T Function(String) fromCache,
+  required String Function(T) toCache,
 }) async {
   final directory = await getTemporaryDirectory();
 
   final file = _getCacheFile(directory, key);
 
-  // Default conversion functions: if T is not a String, provide custom functions.
-  final T Function(String) fromCache0 = fromCache ?? ((s) => s as T);
-  final String Function(T) toCache0 = toCache ?? ((t) => t.toString());
-
   if (await file.exists()) {
     debugPrint('[cache_remember]: Cache hit for $key');
 
     final content = await file.readAsString();
-    final cachedValue = fromCache0(content);
+    final cachedValue = fromCache(content);
 
     // Update the cache in the background.
     get().then((newValue) async {
-      final content = toCache0(newValue);
+      final content = toCache(newValue);
       onUpdate(newValue);
       debugPrint('[cache_remember]: Cache updated for $key');
 
@@ -51,7 +47,7 @@ Future<T> cacheRemember<T>(
   }
 
   final value = await get();
-  final content = toCache0(value);
+  final content = toCache(value);
   await file.writeAsString(content);
 
   return value;
