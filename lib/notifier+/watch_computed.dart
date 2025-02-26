@@ -25,12 +25,6 @@ class _WatchComputedState<T> extends State<WatchComputed<T>> {
   }
 
   @override
-  void dispose() {
-    widget.computed.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return widget.builder(context, widget.computed.value);
   }
