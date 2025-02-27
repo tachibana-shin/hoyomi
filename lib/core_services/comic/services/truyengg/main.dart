@@ -80,7 +80,7 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
   // Hooks
   @override
   onBeforeInsertCookie(cookie) {
-    cookie = cookie ?? '';
+    cookie ??= '';
 
     return 'type_comic=1; $cookie';
   }
