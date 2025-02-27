@@ -250,10 +250,13 @@ bool shouldShowToolbar(String uriString) {
     '/library',
     '/manager',
   ];
+  const excludeRoutes = ['/search/'];
 
-  for (final route in mainRoutes) {
-    if (uriString == route || uriString.startsWith('$route/')) {
-      return true;
+  if (excludeRoutes.every((exclude) => !uriString.startsWith(exclude))) {
+    for (final route in mainRoutes) {
+      if (uriString == route || uriString.startsWith('$route/')) {
+        return true;
+      }
     }
   }
   return false;
