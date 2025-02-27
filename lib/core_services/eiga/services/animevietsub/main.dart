@@ -973,6 +973,8 @@ class AnimeVietsubService extends EigaService
 
   @override
   getFollows({required int page}) async {
+    await _getUidUser();
+
     final section = await getSection(
       sectionId: '/tu-phim/',
       page: page,
