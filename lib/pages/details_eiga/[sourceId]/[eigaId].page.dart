@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -119,7 +120,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       if (_service.getSuggest == null) return null;
 
       if (_metaEiga.value.fake) {
-        return Future.value(List.generate(30, (_) => Eiga.createFakeData()));
+        return Completer<List<Eiga>>().future;
       }
 
       return _service.getSuggest!(
