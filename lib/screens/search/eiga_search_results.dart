@@ -22,7 +22,7 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
 
   final Map<String, Future<Paginate<Eiga>>> _searchFutures = {};
 
-  Future<void> _fetchSearchResults() async {
+  Future<List<Paginate<Eiga>>> _fetchSearchResults() async {
     // Trigger search for each service
     for (var service in eigaServices) {
       _searchFutures[service.uid] = service.search(
@@ -32,7 +32,7 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
       );
     }
 
-    await Future.wait(_searchFutures.values);
+    return Future.wait(_searchFutures.values);
   }
 
   @override
@@ -49,7 +49,13 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
 
     return PullRefreshPage(
       onLoadData: _fetchSearchResults,
-      onLoadFake: () => null,
+      onLoadFake:
+          () => List.generate(
+            eigaServices.length,
+            (_) => Paginate.createFakeData(
+              List.generate(30, (_) => Eiga.createFakeData()),
+            ),
+          ),
       builder:
           (_, __) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,

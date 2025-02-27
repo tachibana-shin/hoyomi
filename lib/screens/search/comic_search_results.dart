@@ -26,7 +26,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
 
   final Map<String, Future<Paginate<Comic>>> _searchFutures = {};
 
-  Future<void> _fetchSearchResults() async {
+  Future<List<Paginate<Comic>>> _fetchSearchResults() async {
     // Trigger search for each service
     for (var service in comicServices) {
       _searchFutures[service.uid] = service.search(
@@ -35,7 +35,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
         filters: {},
       );
     }
-    await Future.wait(_searchFutures.values);
+    return Future.wait(_searchFutures.values);
   }
 
   @override
@@ -52,7 +52,13 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
 
     return PullRefreshPage(
       onLoadData: _fetchSearchResults,
-      onLoadFake: () => [],
+      onLoadFake:
+          () => List.generate(
+            comicServices.length,
+            (_) => Paginate.createFakeData(
+              List.generate(30, (_) => Comic.createFakeData()),
+            ),
+          ),
       builder:
           (_, __) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
