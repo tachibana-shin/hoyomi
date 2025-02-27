@@ -21,7 +21,7 @@ class VerticalEiga extends StatelessWidget {
     required this.eiga,
     required this.sourceId,
     this.percentRead,
-    required this.goMode,
+    this.goMode = false,
   });
 
   @override
