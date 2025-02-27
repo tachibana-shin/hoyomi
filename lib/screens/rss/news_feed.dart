@@ -6,7 +6,6 @@ import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:xml/xml.dart';
 
@@ -54,7 +53,7 @@ class NewsFeedScreen extends StatefulWidget {
   createState() => _NewsFeedScreenState();
 }
 
-class _NewsFeedScreenState extends State<NewsFeedScreen> 
+class _NewsFeedScreenState extends State<NewsFeedScreen>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -65,11 +64,10 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
     for (final service in services) {
       if (service.rss == null) continue;
       try {
-        final response = await http.get(Uri.parse(service.rss!));
-        if (response.statusCode == 200) {
-          final feed = parseRss(response.body, service: service);
-          items.addAll(feed);
-        }
+        final xml = await service.fetch(Uri.parse(service.rss!).toString());
+        final feed = parseRss(xml, service: service);
+
+        items.addAll(feed);
       } catch (e) {
         showSnackBar(Text('Error while parsing $service: $e'));
         debugPrint("Error: $e");
@@ -122,6 +120,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
         }
       }
 
+      final headers = {"referer": service.baseUrl};
       items.add(
         RssItem(
           title: title,
@@ -129,13 +128,8 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
           description: description,
           pubDate: pubDate,
           image:
-              imageUrl != null
-                  ? OImage(
-                    src: imageUrl,
-                    headers: {"referer": Uri.parse(link).host},
-                  )
-                  : null,
-          avatar: OImage(src: service.faviconUrl),
+              imageUrl != null ? OImage(src: imageUrl, headers: headers) : null,
+          avatar: OImage(src: service.faviconUrl, headers: headers),
           creator: creator,
           service: service,
         ),
@@ -240,15 +234,17 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
                         if (item.image != null)
                           Padding(
                             padding: const EdgeInsets.only(left: 16.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: OImage.network(
-                                item.image!.src,
-                                sourceId: item.service?.uid ?? '',
-                                headers: item.image!.headers,
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
+                            child: SizedBox(
+                              width: 100,
+                              height: 100,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: OImage.network(
+                                  item.image!.src,
+                                  sourceId: item.service?.uid ?? '',
+                                  headers: item.image!.headers,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
