@@ -14,12 +14,14 @@ class VerticalEiga extends StatelessWidget {
   final Eiga eiga;
   final String? sourceId;
   final double? percentRead;
+  final bool goMode;
 
   const VerticalEiga({
     super.key,
     required this.eiga,
     required this.sourceId,
     this.percentRead,
+    required this.goMode,
   });
 
   @override
@@ -51,7 +53,11 @@ class VerticalEiga extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        context.push("/details_eiga/$sourceId/${eiga.eigaId}");
+        if (goMode) {
+          context.go("/details_eiga/$sourceId/${eiga.eigaId}");
+        } else {
+          context.push("/details_eiga/$sourceId/${eiga.eigaId}");
+        }
       },
       splashColor: Colors.white70.withValues(alpha: 0.3),
       highlightColor: Colors.white70.withValues(alpha: 0.1),

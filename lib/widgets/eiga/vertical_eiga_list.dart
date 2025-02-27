@@ -13,6 +13,7 @@ class VerticalEigaList extends StatelessWidget {
   final String? more;
   final ScrollController? controller;
   final bool disableScroll;
+  final bool goMode;
 
   final bool skeleton;
 
@@ -25,6 +26,7 @@ class VerticalEigaList extends StatelessWidget {
     this.controller,
     this.disableScroll = false,
     this.skeleton = true,
+    this.goMode = false,
   });
 
   @override
@@ -51,6 +53,7 @@ class VerticalEigaList extends StatelessWidget {
                   eiga: eiga.eiga,
                   sourceId: eiga.sourceId,
                   percentRead: eiga.percentRead,
+                  goMode: goMode,
                 );
               },
             ),
@@ -79,6 +82,7 @@ class VerticalEigaList extends StatelessWidget {
               eiga: eiga.eiga,
               sourceId: eiga.sourceId,
               percentRead: eiga.percentRead,
+              goMode: goMode,
             );
           },
         );

@@ -1270,6 +1270,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           ),
           title: 'Suggest',
           disableScroll: true,
+          goMode: true,
           more: null,
         );
       },
