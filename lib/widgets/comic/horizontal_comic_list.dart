@@ -72,6 +72,13 @@ class HorizontalComicList extends StatelessWidget {
             needSubtitle: false,
           );
         }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return HorizontalList.buildContainer(
+            context,
+            builder: (viewFraction) => Center(child: Text('No data available')),
+            needSubtitle: false,
+          );
+        }
 
         return HorizontalList<ComicExtend>(
           title: title,
