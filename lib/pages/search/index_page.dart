@@ -74,12 +74,15 @@ class _SearchPageState extends State<SearchPage>
   }
 
   Widget _buildBodySearch(BuildContext context) {
-    return TabBarView(
-      controller: _tabController,
-      children: [
-        ComicSearchResults(keyword: widget.keyword),
-        EigaSearchResults(keyword: widget.keyword),
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      child: TabBarView(
+        controller: _tabController,
+        children: [
+          ComicSearchResults(keyword: widget.keyword),
+          EigaSearchResults(keyword: widget.keyword),
+        ],
+      ),
     );
   }
 
