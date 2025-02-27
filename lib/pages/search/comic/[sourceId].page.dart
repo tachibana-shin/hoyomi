@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic_section.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/pages/section_comic/[sourceId]/[sectionId].page.dart';
 
@@ -17,11 +18,26 @@ class SearchComicPage extends StatelessWidget {
     return SectionComicPage(
       sourceId: sourceId,
       sectionId: keyword,
-      getSection:
-          ({required filters, required page, required sectionId}) =>
-              getComicService(
-                sourceId,
-              ).search(filters: filters, page: page, keyword: sectionId),
+      getSection: ({
+        required filters,
+        required page,
+        required sectionId,
+      }) async {
+        final data = await getComicService(
+          sourceId,
+        ).search(filters: filters, page: page, keyword: sectionId);
+
+        return ComicSection(
+          name: 'Search "$sectionId"',
+          url: data.url,
+          items: data.items,
+          page: data.page,
+          totalItems: data.totalItems,
+          totalPages: data.totalPages,
+          description: data.description,
+          filters: data.filters,
+        );
+      },
     );
   }
 }
