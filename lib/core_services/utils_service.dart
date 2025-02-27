@@ -123,7 +123,6 @@ abstract class UtilsService {
       );
     }
 
-    
     return orElse(error);
   }
 
