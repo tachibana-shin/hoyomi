@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:hoyomi/core_services/comic/interfaces/comic_section.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
@@ -19,6 +20,23 @@ class TruyenQQService extends TruyenGGService {
   get name => "TruyenQQ";
   @override
   get baseUrl => "https://truyenqqto.com";
+
+  /// @Hooks
+  String _generateRandomHex(int length) {
+    const hexChars = '0123456789abcdef';
+    final random = Random();
+    return List.generate(
+      length,
+      (_) => hexChars[random.nextInt(hexChars.length)],
+    ).join();
+  }
+
+  @override
+  onBeforeInsertCookie(String? cookie) {
+    cookie ??= '';
+
+    return 'visit-read=${_generateRandomHex(13)}-${_generateRandomHex(13)}; $cookie';
+  }
 
   // Utils
   @override
@@ -230,7 +248,6 @@ class TruyenQQService extends TruyenGGService {
   search({required keyword, required page, required filters}) async {
     final url =
         "$baseUrl/tim-kiem${page > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}";
-
     final Document document = await fetchDocument(url);
 
     final data = document
