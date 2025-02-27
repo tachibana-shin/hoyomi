@@ -55,7 +55,7 @@ class TruyenQQService extends TruyenGGService {
       headers: {"referer": referer},
     );
     final String name =
-        (itemComic.querySelector(".comic_name a")?.text ??
+        (itemComic.querySelector(".book_name a")?.text ??
                 itemComic.querySelector("img")!.attributes['alt']!)
             .trim();
 
@@ -125,7 +125,7 @@ class TruyenQQService extends TruyenGGService {
     final String name =
         document.querySelector("h1[itemprop=name]")!.text.trim();
     final OImage image = OImage(
-      src: document.querySelector(".comic_avatar img")!.attributes["src"]!,
+      src: document.querySelector(".book_avatar img")!.attributes["src"]!,
       headers: {"referer": baseUrl},
     );
 
