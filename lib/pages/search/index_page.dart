@@ -5,27 +5,16 @@ import 'package:hoyomi/screens/search/comic_search_results.dart';
 import 'package:hoyomi/screens/search/eiga_search_results.dart';
 import 'package:hoyomi/widgets/search_bar.dart';
 
-class SearchPage extends StatelessWidget {
+class SearchPage extends StatefulWidget {
   final String keyword;
 
   const SearchPage({super.key, required this.keyword});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: Search(keyword: keyword));
-  }
+  State<SearchPage> createState() => _SearchPageState();
 }
 
-class Search extends StatefulWidget {
-  final String keyword;
-
-  const Search({super.key, required this.keyword});
-
-  @override
-  State<Search> createState() => _SearchState();
-}
-
-class _SearchState extends State<Search>
+class _SearchPageState extends State<SearchPage>
     with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
