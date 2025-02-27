@@ -136,6 +136,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                         });
                       },
                       onSubmitted: (value) {
+                        _focusNode.unfocus();
                         context.push("/search?q=$value");
                       },
                     ),
