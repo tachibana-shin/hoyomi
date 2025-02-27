@@ -102,7 +102,9 @@ class AnimeVietsubService extends EigaService
   );
   @override
   final authInit = AuthInit(
-    signInUrl: (service) => "${service.baseUrl}/account/login/?_fxRef=${service.baseUrl}/",
+    signInUrl:
+        (service) =>
+            "${service.baseUrl}/account/login/?_fxRef=${service.baseUrl}/",
   );
 
   final String _apiOpEnd = "https://opend-9animetv.animevsub.eu.org";

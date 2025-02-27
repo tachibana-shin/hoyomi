@@ -7,6 +7,7 @@ import 'package:hoyomi/core_services/comic/interfaces/comic_modes.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 
 export 'package:hoyomi/core_services/service.dart';
+
 abstract class ComicService extends Service {
   String getURL(String comicId, {String? chapterId});
   ComicParam parseURL(String url);

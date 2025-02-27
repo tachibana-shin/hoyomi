@@ -17,11 +17,7 @@ const CookieManagerSchema = CollectionSchema(
   name: r'CookieManager',
   id: 7786245726833838657,
   properties: {
-    r'cookie': PropertySchema(
-      id: 0,
-      name: r'cookie',
-      type: IsarType.string,
-    ),
+    r'cookie': PropertySchema(id: 0, name: r'cookie', type: IsarType.string),
     r'createdAt': PropertySchema(
       id: 1,
       name: r'createdAt',
@@ -37,11 +33,7 @@ const CookieManagerSchema = CollectionSchema(
       name: r'updatedAt',
       type: IsarType.dateTime,
     ),
-    r'user': PropertySchema(
-      id: 4,
-      name: r'user',
-      type: IsarType.string,
-    ),
+    r'user': PropertySchema(id: 4, name: r'user', type: IsarType.string),
     r'userAgent': PropertySchema(
       id: 5,
       name: r'userAgent',
@@ -51,7 +43,7 @@ const CookieManagerSchema = CollectionSchema(
       id: 6,
       name: r'userUpdatedAt',
       type: IsarType.dateTime,
-    )
+    ),
   },
   estimateSize: _cookieManagerEstimateSize,
   serialize: _cookieManagerSerialize,
@@ -69,7 +61,7 @@ const CookieManagerSchema = CollectionSchema(
           name: r'sourceId',
           type: IndexType.hash,
           caseSensitive: true,
-        )
+        ),
       ],
     ),
     r'createdAt': IndexSchema(
@@ -82,9 +74,9 @@ const CookieManagerSchema = CollectionSchema(
           name: r'createdAt',
           type: IndexType.value,
           caseSensitive: false,
-        )
+        ),
       ],
-    )
+    ),
   },
   links: {},
   embeddedSchemas: {},
@@ -191,7 +183,10 @@ List<IsarLinkBase<dynamic>> _cookieManagerGetLinks(CookieManager object) {
 }
 
 void _cookieManagerAttach(
-    IsarCollection<dynamic> col, Id id, CookieManager object) {
+  IsarCollection<dynamic> col,
+  Id id,
+  CookieManager object,
+) {
   object.id = id;
 }
 
@@ -244,8 +239,10 @@ extension CookieManagerByIndex on IsarCollection<CookieManager> {
     return putAllByIndex(r'sourceId', objects);
   }
 
-  List<Id> putAllBySourceIdSync(List<CookieManager> objects,
-      {bool saveLinks = true}) {
+  List<Id> putAllBySourceIdSync(
+    List<CookieManager> objects, {
+    bool saveLinks = true,
+  }) {
     return putAllByIndexSync(r'sourceId', objects, saveLinks: saveLinks);
   }
 }
@@ -270,17 +267,16 @@ extension CookieManagerQueryWhereSort
 extension CookieManagerQueryWhere
     on QueryBuilder<CookieManager, CookieManager, QWhereClause> {
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause> idEqualTo(
-      Id id) {
+    Id id,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(
-        lower: id,
-        upper: id,
-      ));
+      return query.addWhereClause(IdWhereClause.between(lower: id, upper: id));
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause> idNotEqualTo(
-      Id id) {
+    Id id,
+  ) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -303,8 +299,9 @@ extension CookieManagerQueryWhere
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause> idGreaterThan(
-      Id id,
-      {bool include = false}) {
+    Id id, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -313,8 +310,9 @@ extension CookieManagerQueryWhere
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause> idLessThan(
-      Id id,
-      {bool include = false}) {
+    Id id, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -329,150 +327,167 @@ extension CookieManagerQueryWhere
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(
-        lower: lowerId,
-        includeLower: includeLower,
-        upper: upperId,
-        includeUpper: includeUpper,
-      ));
+      return query.addWhereClause(
+        IdWhereClause.between(
+          lower: lowerId,
+          includeLower: includeLower,
+          upper: upperId,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause> sourceIdEqualTo(
-      String sourceId) {
+    String sourceId,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'sourceId',
-        value: [sourceId],
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.equalTo(indexName: r'sourceId', value: [sourceId]),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause>
-      sourceIdNotEqualTo(String sourceId) {
+  sourceIdNotEqualTo(String sourceId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'sourceId',
-              lower: [],
-              upper: [sourceId],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'sourceId',
-              lower: [sourceId],
-              includeLower: false,
-              upper: [],
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'sourceId',
+                lower: [],
+                upper: [sourceId],
+                includeUpper: false,
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'sourceId',
+                lower: [sourceId],
+                includeLower: false,
+                upper: [],
+              ),
+            );
       } else {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'sourceId',
-              lower: [sourceId],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'sourceId',
-              lower: [],
-              upper: [sourceId],
-              includeUpper: false,
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'sourceId',
+                lower: [sourceId],
+                includeLower: false,
+                upper: [],
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'sourceId',
+                lower: [],
+                upper: [sourceId],
+                includeUpper: false,
+              ),
+            );
       }
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause>
-      createdAtEqualTo(DateTime createdAt) {
+  createdAtEqualTo(DateTime createdAt) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'createdAt',
-        value: [createdAt],
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.equalTo(indexName: r'createdAt', value: [createdAt]),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause>
-      createdAtNotEqualTo(DateTime createdAt) {
+  createdAtNotEqualTo(DateTime createdAt) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'createdAt',
-              lower: [],
-              upper: [createdAt],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'createdAt',
-              lower: [createdAt],
-              includeLower: false,
-              upper: [],
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'createdAt',
+                lower: [],
+                upper: [createdAt],
+                includeUpper: false,
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'createdAt',
+                lower: [createdAt],
+                includeLower: false,
+                upper: [],
+              ),
+            );
       } else {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'createdAt',
-              lower: [createdAt],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'createdAt',
-              lower: [],
-              upper: [createdAt],
-              includeUpper: false,
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'createdAt',
+                lower: [createdAt],
+                includeLower: false,
+                upper: [],
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'createdAt',
+                lower: [],
+                upper: [createdAt],
+                includeUpper: false,
+              ),
+            );
       }
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause>
-      createdAtGreaterThan(
-    DateTime createdAt, {
-    bool include = false,
-  }) {
+  createdAtGreaterThan(DateTime createdAt, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'createdAt',
-        lower: [createdAt],
-        includeLower: include,
-        upper: [],
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'createdAt',
+          lower: [createdAt],
+          includeLower: include,
+          upper: [],
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause>
-      createdAtLessThan(
-    DateTime createdAt, {
-    bool include = false,
-  }) {
+  createdAtLessThan(DateTime createdAt, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'createdAt',
-        lower: [],
-        upper: [createdAt],
-        includeUpper: include,
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'createdAt',
+          lower: [],
+          upper: [createdAt],
+          includeUpper: include,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause>
-      createdAtBetween(
+  createdAtBetween(
     DateTime lowerCreatedAt,
     DateTime upperCreatedAt, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'createdAt',
-        lower: [lowerCreatedAt],
-        includeLower: includeLower,
-        upper: [upperCreatedAt],
-        includeUpper: includeUpper,
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'createdAt',
+          lower: [lowerCreatedAt],
+          includeLower: includeLower,
+          upper: [upperCreatedAt],
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 }
@@ -480,71 +495,74 @@ extension CookieManagerQueryWhere
 extension CookieManagerQueryFilter
     on QueryBuilder<CookieManager, CookieManager, QFilterCondition> {
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      cookieIsNull() {
+  cookieIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'cookie',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'cookie'),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      cookieIsNotNull() {
+  cookieIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'cookie',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'cookie'),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      cookieEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  cookieEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'cookie',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'cookie',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      cookieGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'cookie',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      cookieLessThan(
+  cookieGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'cookie',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'cookie',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      cookieBetween(
+  cookieLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'cookie',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+  cookieBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -552,181 +570,181 @@ extension CookieManagerQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'cookie',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'cookie',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      cookieStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  cookieStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'cookie',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'cookie',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      cookieEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  cookieEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'cookie',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'cookie',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      cookieContains(String value, {bool caseSensitive = true}) {
+  cookieContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'cookie',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'cookie',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      cookieMatches(String pattern, {bool caseSensitive = true}) {
+  cookieMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'cookie',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'cookie',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      cookieIsEmpty() {
+  cookieIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'cookie',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'cookie', value: ''),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      cookieIsNotEmpty() {
+  cookieIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'cookie',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'cookie', value: ''),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      createdAtEqualTo(DateTime value) {
+  createdAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'createdAt',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'createdAt', value: value),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      createdAtGreaterThan(
-    DateTime value, {
-    bool include = false,
-  }) {
+  createdAtGreaterThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'createdAt',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'createdAt',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      createdAtLessThan(
-    DateTime value, {
-    bool include = false,
-  }) {
+  createdAtLessThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'createdAt',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'createdAt',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      createdAtBetween(
+  createdAtBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'createdAt',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'createdAt',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition> idIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'id',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'id'),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      idIsNotNull() {
+  idIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'id',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'id'),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition> idEqualTo(
-      Id? value) {
+    Id? value,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'id',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'id', value: value),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      idGreaterThan(
-    Id? value, {
-    bool include = false,
-  }) {
+  idGreaterThan(Id? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'id',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'id',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -735,11 +753,13 @@ extension CookieManagerQueryFilter
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'id',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'id',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -750,64 +770,69 @@ extension CookieManagerQueryFilter
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'id',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'id',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      sourceIdEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  sourceIdEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'sourceId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'sourceId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      sourceIdGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'sourceId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      sourceIdLessThan(
+  sourceIdGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'sourceId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'sourceId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      sourceIdBetween(
+  sourceIdLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'sourceId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+  sourceIdBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -815,158 +840,159 @@ extension CookieManagerQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'sourceId',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'sourceId',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      sourceIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  sourceIdStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'sourceId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'sourceId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      sourceIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  sourceIdEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'sourceId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'sourceId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      sourceIdContains(String value, {bool caseSensitive = true}) {
+  sourceIdContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'sourceId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'sourceId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      sourceIdMatches(String pattern, {bool caseSensitive = true}) {
+  sourceIdMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'sourceId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'sourceId',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      sourceIdIsEmpty() {
+  sourceIdIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'sourceId',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'sourceId', value: ''),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      sourceIdIsNotEmpty() {
+  sourceIdIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'sourceId',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'sourceId', value: ''),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      updatedAtEqualTo(DateTime value) {
+  updatedAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'updatedAt',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'updatedAt', value: value),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      updatedAtGreaterThan(
-    DateTime value, {
-    bool include = false,
-  }) {
+  updatedAtGreaterThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'updatedAt',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'updatedAt',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      updatedAtLessThan(
-    DateTime value, {
-    bool include = false,
-  }) {
+  updatedAtLessThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'updatedAt',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'updatedAt',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      updatedAtBetween(
+  updatedAtBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'updatedAt',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'updatedAt',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userIsNull() {
+  userIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'user',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'user'),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userIsNotNull() {
+  userIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'user',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'user'),
+      );
     });
   }
 
@@ -975,43 +1001,49 @@ extension CookieManagerQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'user',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'user',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userGreaterThan(
+  userGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'user',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'user',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userLessThan(
+  userLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'user',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'user',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
@@ -1023,154 +1055,160 @@ extension CookieManagerQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'user',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'user',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  userStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'user',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'user',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  userEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'user',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'user',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userContains(String value, {bool caseSensitive = true}) {
+  userContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'user',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'user',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition> userMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'user',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'user',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'user',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userAgentIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'userAgent',
-      ));
-    });
-  }
-
-  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userAgentIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'userAgent',
-      ));
-    });
-  }
-
-  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userAgentEqualTo(
-    String? value, {
+    String pattern, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'userAgent',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'user',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userAgentGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  userIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'userAgent',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'user', value: ''),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userAgentLessThan(
+  userIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'user', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+  userAgentIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'userAgent'),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+  userAgentIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'userAgent'),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+  userAgentEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'userAgent',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+  userAgentGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'userAgent',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'userAgent',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userAgentBetween(
+  userAgentLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'userAgent',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
+  userAgentBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1178,140 +1216,141 @@ extension CookieManagerQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'userAgent',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'userAgent',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userAgentStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  userAgentStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'userAgent',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'userAgent',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userAgentEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  userAgentEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'userAgent',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'userAgent',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userAgentContains(String value, {bool caseSensitive = true}) {
+  userAgentContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'userAgent',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'userAgent',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userAgentMatches(String pattern, {bool caseSensitive = true}) {
+  userAgentMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'userAgent',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'userAgent',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userAgentIsEmpty() {
+  userAgentIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'userAgent',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'userAgent', value: ''),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userAgentIsNotEmpty() {
+  userAgentIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'userAgent',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'userAgent', value: ''),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userUpdatedAtEqualTo(DateTime value) {
+  userUpdatedAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'userUpdatedAt',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'userUpdatedAt', value: value),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userUpdatedAtGreaterThan(
-    DateTime value, {
-    bool include = false,
-  }) {
+  userUpdatedAtGreaterThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'userUpdatedAt',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'userUpdatedAt',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userUpdatedAtLessThan(
-    DateTime value, {
-    bool include = false,
-  }) {
+  userUpdatedAtLessThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'userUpdatedAt',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'userUpdatedAt',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-      userUpdatedAtBetween(
+  userUpdatedAtBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'userUpdatedAt',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'userUpdatedAt',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 }
@@ -1343,7 +1382,7 @@ extension CookieManagerQuerySortBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      sortByCreatedAtDesc() {
+  sortByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.desc);
     });
@@ -1356,7 +1395,7 @@ extension CookieManagerQuerySortBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      sortBySourceIdDesc() {
+  sortBySourceIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sourceId', Sort.desc);
     });
@@ -1369,7 +1408,7 @@ extension CookieManagerQuerySortBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      sortByUpdatedAtDesc() {
+  sortByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
     });
@@ -1394,21 +1433,21 @@ extension CookieManagerQuerySortBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      sortByUserAgentDesc() {
+  sortByUserAgentDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userAgent', Sort.desc);
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      sortByUserUpdatedAt() {
+  sortByUserUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userUpdatedAt', Sort.asc);
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      sortByUserUpdatedAtDesc() {
+  sortByUserUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userUpdatedAt', Sort.desc);
     });
@@ -1436,7 +1475,7 @@ extension CookieManagerQuerySortThenBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      thenByCreatedAtDesc() {
+  thenByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.desc);
     });
@@ -1461,7 +1500,7 @@ extension CookieManagerQuerySortThenBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      thenBySourceIdDesc() {
+  thenBySourceIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sourceId', Sort.desc);
     });
@@ -1474,7 +1513,7 @@ extension CookieManagerQuerySortThenBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      thenByUpdatedAtDesc() {
+  thenByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
     });
@@ -1499,21 +1538,21 @@ extension CookieManagerQuerySortThenBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      thenByUserAgentDesc() {
+  thenByUserAgentDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userAgent', Sort.desc);
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      thenByUserUpdatedAt() {
+  thenByUserUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userUpdatedAt', Sort.asc);
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-      thenByUserUpdatedAtDesc() {
+  thenByUserUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userUpdatedAt', Sort.desc);
     });
@@ -1522,8 +1561,9 @@ extension CookieManagerQuerySortThenBy
 
 extension CookieManagerQueryWhereDistinct
     on QueryBuilder<CookieManager, CookieManager, QDistinct> {
-  QueryBuilder<CookieManager, CookieManager, QDistinct> distinctByCookie(
-      {bool caseSensitive = true}) {
+  QueryBuilder<CookieManager, CookieManager, QDistinct> distinctByCookie({
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'cookie', caseSensitive: caseSensitive);
     });
@@ -1535,8 +1575,9 @@ extension CookieManagerQueryWhereDistinct
     });
   }
 
-  QueryBuilder<CookieManager, CookieManager, QDistinct> distinctBySourceId(
-      {bool caseSensitive = true}) {
+  QueryBuilder<CookieManager, CookieManager, QDistinct> distinctBySourceId({
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'sourceId', caseSensitive: caseSensitive);
     });
@@ -1548,22 +1589,24 @@ extension CookieManagerQueryWhereDistinct
     });
   }
 
-  QueryBuilder<CookieManager, CookieManager, QDistinct> distinctByUser(
-      {bool caseSensitive = true}) {
+  QueryBuilder<CookieManager, CookieManager, QDistinct> distinctByUser({
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'user', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CookieManager, CookieManager, QDistinct> distinctByUserAgent(
-      {bool caseSensitive = true}) {
+  QueryBuilder<CookieManager, CookieManager, QDistinct> distinctByUserAgent({
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'userAgent', caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QDistinct>
-      distinctByUserUpdatedAt() {
+  distinctByUserUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'userUpdatedAt');
     });
@@ -1615,7 +1658,7 @@ extension CookieManagerQueryProperty
   }
 
   QueryBuilder<CookieManager, DateTime, QQueryOperations>
-      userUpdatedAtProperty() {
+  userUpdatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'userUpdatedAt');
     });
