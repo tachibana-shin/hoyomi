@@ -86,6 +86,8 @@ class _SectionComicPageState extends State<SectionComicPage> {
     return PullRefreshPage<List<Comic>>(
       onLoadData: () => _fetchComics(1).then((param) => param.$2),
       onLoadFake: () => List.generate(30, (_) => Comic.createFakeData()),
+      builderError:
+          (body) => Scaffold(appBar: _buildAppBar(() async {}), body: body),
       builder:
           (data, param) =>
               Scaffold(appBar: _buildAppBar(param.$2), body: _buildBody(data)),

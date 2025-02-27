@@ -274,6 +274,21 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   });
                 },
                 onLoadFake: () => _metaEiga.value = MetaEiga.createFakeData(),
+                builderError:
+                    (body) => Scaffold(
+                      appBar: AppBar(
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                        scrolledUnderElevation: 0.0,
+                        leading: IconButton(
+                          icon: const Icon(MaterialCommunityIcons.arrow_left),
+                          onPressed: () {
+                            context.pop();
+                          },
+                        ),
+                      ),
+                      body: body,
+                    ),
                 builder: (data, param) {
                   return WatchComputed(
                     computed: _loading,

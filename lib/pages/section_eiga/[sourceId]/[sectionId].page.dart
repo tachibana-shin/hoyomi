@@ -86,6 +86,8 @@ class _SectionEigaPageState extends State<SectionEigaPage> {
     return PullRefreshPage<List<Eiga>>(
       onLoadData: () => _fetchComics(1).then((param) => param.$2),
       onLoadFake: () => List.generate(30, (_) => Eiga.createFakeData()),
+      builderError:
+          (body) => Scaffold(appBar: _buildAppBar(() async {}), body: body),
       builder:
           (data, param) =>
               Scaffold(appBar: _buildAppBar(param.$2), body: _buildBody(data)),

@@ -3,6 +3,7 @@ import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class PullRefreshPage<T> extends StatefulWidget {
+  final Widget Function(Widget body)? builderError;
   final Widget Function(T data, (bool loading, Future<void> Function() refresh))
   builder;
   final Future<T> Function() onLoadData;
@@ -10,6 +11,7 @@ class PullRefreshPage<T> extends StatefulWidget {
 
   const PullRefreshPage({
     super.key,
+    this.builderError,
     required this.builder,
     required this.onLoadData,
     required this.onLoadFake,
@@ -45,7 +47,7 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
 
   Widget _buildBody(AsyncSnapshot<T> snapshot) {
     if (snapshot.hasError) {
-      return Center(
+      final body = Center(
         child: UtilsService.errorWidgetBuilder(
           context,
           error: snapshot.error,
@@ -53,6 +55,8 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
           orElse: (err) => Text('Error: $err'),
         ),
       );
+
+      return widget.builderError?.call(body) ?? body;
     }
     final loading = snapshot.connectionState == ConnectionState.waiting;
 

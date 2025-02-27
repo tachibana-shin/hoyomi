@@ -133,6 +133,20 @@ class _DetailsComicState extends State<DetailsComic>
             });
           }),
       onLoadFake: () => MetaComic.createFakeData(),
+      builderError:
+          (body) => Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              scrolledUnderElevation: 0.0,
+              leading: IconButton(
+                icon: const Icon(MaterialCommunityIcons.arrow_left),
+                onPressed: () {
+                  context.pop();
+                },
+              ),
+            ),
+            body: body,
+          ),
       builder:
           (comic, _) => Scaffold(
             appBar: AppBar(
