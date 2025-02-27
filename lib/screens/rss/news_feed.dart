@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/comic_service.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:http/http.dart' as http;
@@ -17,7 +18,7 @@ class RssItem {
   final OImage? image;
   final OImage? avatar;
   final String? creator;
-  final ComicService? service;
+  final Service? service;
 
   factory RssItem.createFakeData() {
     return RssItem(
@@ -45,7 +46,7 @@ class RssItem {
 }
 
 class NewsFeedScreen extends StatefulWidget {
-  final List<ComicService> services;
+  final List<Service> services;
 
   const NewsFeedScreen({super.key, required this.services});
 
@@ -53,11 +54,16 @@ class NewsFeedScreen extends StatefulWidget {
   createState() => _NewsFeedScreenState();
 }
 
-class _NewsFeedScreenState extends State<NewsFeedScreen> {
-  Future<List<RssItem>> fetchAndParseFeeds(List<ComicService> services) async {
+class _NewsFeedScreenState extends State<NewsFeedScreen> 
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  Future<List<RssItem>> fetchAndParseFeeds(List<Service> services) async {
     final items = <RssItem>[];
 
     for (final service in services) {
+      if (service.rss == null) continue;
       try {
         final response = await http.get(Uri.parse(service.rss!));
         if (response.statusCode == 200) {
@@ -79,7 +85,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
     return items;
   }
 
-  List<RssItem> parseRss(String xmlData, {required ComicService service}) {
+  List<RssItem> parseRss(String xmlData, {required Service service}) {
     final document = XmlDocument.parse(xmlData);
     final items = <RssItem>[];
 
@@ -141,11 +147,9 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return PullRefreshPage(
-      onLoadData:
-          () => fetchAndParseFeeds(
-            widget.services.where((service) => service.rss != null).toList(),
-          ),
+      onLoadData: () => fetchAndParseFeeds(widget.services),
       onLoadFake: () => List.generate(30, (_) => RssItem.createFakeData()),
       builder:
           (items, _) => ListView.builder(
@@ -163,11 +167,16 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                 child: InkWell(
                   onTap: () {
                     if (item.service == null) return;
-                    final param = item.service!.parseURL(item.link);
+                    final param =
+                        item.service is ComicService
+                            ? (item.service as ComicService).parseURL(item.link)
+                            : null;
 
-                    context.push(
-                      "/details_comic/${item.service!.uid}/${param.comicId}${param.chapterId == null ? '' : '/view?chap=${param.chapterId}'}",
-                    );
+                    if (param != null) {
+                      context.push(
+                        "/details_comic/${item.service!.uid}/${param.comicId}${param.chapterId == null ? '' : '/view?chap=${param.chapterId}'}",
+                      );
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),

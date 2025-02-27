@@ -64,10 +64,11 @@ class _SearchPageState extends State<SearchPage>
       ),
       body: Stack(
         children: [
-          widget.keyword.trim().isNotEmpty
-              ? _buildBodySearch(context)
-              : _buildBodyGetStarting(context),
-          ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : []),
+          if (widget.keyword.trim().isNotEmpty)
+            _buildBodySearch(context)
+          else
+            _buildBodyGetStarting(context),
+          if (_overlayQuickSearch != null) _overlayQuickSearch!,
         ],
       ),
     );
@@ -87,6 +88,15 @@ class _SearchPageState extends State<SearchPage>
   }
 
   Widget _buildBodyGetStarting(BuildContext context) {
-    return NewsFeedScreen(services: comicServices);
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      child: TabBarView(
+        controller: _tabController,
+        children: [
+          NewsFeedScreen(services: comicServices),
+          NewsFeedScreen(services: eigaServices),
+        ],
+      ),
+    );
   }
 }
