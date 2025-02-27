@@ -88,12 +88,15 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
                         });
                       }
 
-                      return HorizontalComicList(
-                        itemsFuture: itemsFuture,
-                        title: service.name,
-                        subtitle: subtitle,
-                        more:
-                            '/search/comic/${service.uid}?q=${widget.keyword}',
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        child: HorizontalComicList(
+                          itemsFuture: itemsFuture,
+                          title: service.name,
+                          subtitle: subtitle,
+                          more:
+                              '/search/comic/${service.uid}?q=${widget.keyword}',
+                        ),
                       );
                     },
                   );

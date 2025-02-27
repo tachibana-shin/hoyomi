@@ -83,11 +83,15 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
                         });
                       }
 
-                      return HorizontalEigaList(
-                        itemsFuture: itemsFuture,
-                        title: service.name,
-                        subtitle: subtitle,
-                        more: '/search/eiga/${service.uid}?q=${widget.keyword}',
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        child: HorizontalEigaList(
+                          itemsFuture: itemsFuture,
+                          title: service.name,
+                          subtitle: subtitle,
+                          more:
+                              '/search/eiga/${service.uid}?q=${widget.keyword}',
+                        ),
                       );
                     },
                   );
