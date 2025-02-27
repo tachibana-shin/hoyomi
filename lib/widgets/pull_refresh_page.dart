@@ -56,7 +56,9 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
     }
     final loading = snapshot.connectionState == ConnectionState.waiting;
 
-    if (!loading && !snapshot.hasData) {
+    if (!loading &&
+        (!snapshot.hasData ||
+            (snapshot.data is List && (snapshot.data as List).isEmpty))) {
       return const Center(child: Text('No data available.'));
     }
 
