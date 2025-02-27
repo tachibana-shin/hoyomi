@@ -1,3 +1,4 @@
+import 'package:hoyomi/database/scheme/service_setting.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -26,5 +27,6 @@ Future<void> initializeIsar() async {
     CookieManagerSchema,
     HistoryChapSchema,
     SettingsSchema,
+    ServiceSettingSchema,
   ], directory: dir.path);
 }

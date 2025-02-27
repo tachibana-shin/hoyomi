@@ -94,15 +94,16 @@ class AnimeVietsubService extends EigaService
         EigaFollowMixin,
         _SupabaseRPC {
   final hostCUrl = "animevietsub.bio";
-
   @override
-  final String name = "AnimeVietsub";
+  final init = ServiceInit(
+    name: "AnimeVietsub",
+    faviconUrl: '/favicon.ico',
+    rootUrl: 'https://animevietsub.bio',
+  );
   @override
-  String get baseUrl => "https://$hostCUrl";
-  @override
-  String get faviconUrl => "$baseUrl/favicon.ico";
-  @override
-  String get signInUrl => "$baseUrl/account/login/?_fxRef=$baseUrl/";
+  final authInit = AuthInit(
+    signInUrl: (service) => "${service.baseUrl}/account/login/?_fxRef=${service.baseUrl}/",
+  );
 
   final String _apiOpEnd = "https://opend-9animetv.animevsub.eu.org";
   final String _apiThumb = "https://sk-hianime.animevsub.eu.org";

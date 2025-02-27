@@ -78,4 +78,6 @@ A new Flutter project.
 - [x] Fix section not update on change filters
 
 - [x] Fix manga layout
+
+- [ ] Page settings for services
 <!-- provider or mobx -->

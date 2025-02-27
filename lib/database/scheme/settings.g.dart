@@ -26,7 +26,7 @@ const SettingsSchema = CollectionSchema(
       id: 1,
       name: r'pollingIntervalComic',
       type: IsarType.long,
-    ),
+    )
   },
   estimateSize: _settingsEstimateSize,
   serialize: _settingsSerialize,
@@ -114,7 +114,10 @@ extension SettingsQueryWhereSort on QueryBuilder<Settings, Settings, QWhere> {
 extension SettingsQueryWhere on QueryBuilder<Settings, Settings, QWhereClause> {
   QueryBuilder<Settings, Settings, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(lower: id, upper: id));
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
     });
   }
 
@@ -140,10 +143,8 @@ extension SettingsQueryWhere on QueryBuilder<Settings, Settings, QWhereClause> {
     });
   }
 
-  QueryBuilder<Settings, Settings, QAfterWhereClause> idGreaterThan(
-    Id id, {
-    bool include = false,
-  }) {
+  QueryBuilder<Settings, Settings, QAfterWhereClause> idGreaterThan(Id id,
+      {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -151,10 +152,8 @@ extension SettingsQueryWhere on QueryBuilder<Settings, Settings, QWhereClause> {
     });
   }
 
-  QueryBuilder<Settings, Settings, QAfterWhereClause> idLessThan(
-    Id id, {
-    bool include = false,
-  }) {
+  QueryBuilder<Settings, Settings, QAfterWhereClause> idLessThan(Id id,
+      {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -169,14 +168,12 @@ extension SettingsQueryWhere on QueryBuilder<Settings, Settings, QWhereClause> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.between(
-          lower: lowerId,
-          includeLower: includeLower,
-          upper: upperId,
-          includeUpper: includeUpper,
-        ),
-      );
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
     });
   }
 }
@@ -185,25 +182,26 @@ extension SettingsQueryFilter
     on QueryBuilder<Settings, Settings, QFilterCondition> {
   QueryBuilder<Settings, Settings, QAfterFilterCondition> idIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'id'),
-      );
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
     });
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition> idIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'id'),
-      );
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
     });
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition> idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'id', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
     });
   }
 
@@ -212,13 +210,11 @@ extension SettingsQueryFilter
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'id',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
     });
   }
 
@@ -227,13 +223,11 @@ extension SettingsQueryFilter
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'id',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
     });
   }
 
@@ -244,82 +238,79 @@ extension SettingsQueryFilter
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'id',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-  mangaReadLazyPageEqualTo(bool value) {
+      mangaReadLazyPageEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'mangaReadLazyPage', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'mangaReadLazyPage',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-  pollingIntervalComicEqualTo(int value) {
+      pollingIntervalComicEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'pollingIntervalComic',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'pollingIntervalComic',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-  pollingIntervalComicGreaterThan(int value, {bool include = false}) {
+      pollingIntervalComicGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'pollingIntervalComic',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'pollingIntervalComic',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-  pollingIntervalComicLessThan(int value, {bool include = false}) {
+      pollingIntervalComicLessThan(
+    int value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'pollingIntervalComic',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'pollingIntervalComic',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-  pollingIntervalComicBetween(
+      pollingIntervalComicBetween(
     int lower,
     int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'pollingIntervalComic',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'pollingIntervalComic',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 }
@@ -350,7 +341,7 @@ extension SettingsQuerySortBy on QueryBuilder<Settings, Settings, QSortBy> {
   }
 
   QueryBuilder<Settings, Settings, QAfterSortBy>
-  sortByPollingIntervalComicDesc() {
+      sortByPollingIntervalComicDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pollingIntervalComic', Sort.desc);
     });
@@ -390,7 +381,7 @@ extension SettingsQuerySortThenBy
   }
 
   QueryBuilder<Settings, Settings, QAfterSortBy>
-  thenByPollingIntervalComicDesc() {
+      thenByPollingIntervalComicDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pollingIntervalComic', Sort.desc);
     });

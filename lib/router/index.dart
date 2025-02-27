@@ -9,15 +9,16 @@ import 'package:hoyomi/pages/details_comic/[sourceId]/[comicId].page.dart';
 import 'package:hoyomi/pages/details_comic/[sourceId]/[comicId]/[chapterId].page.dart';
 import 'package:hoyomi/pages/home_comic/home_comic_page.dart';
 import 'package:hoyomi/pages/home_eiga/home_eiga_page.dart';
-import 'package:hoyomi/pages/library/follow/eiga/%5BsourceId%5D.page.dart';
-import 'package:hoyomi/pages/library/history/eiga/%5BsourceId%5D.page.dart';
+import 'package:hoyomi/pages/library/follow/eiga/[sourceId].page.dart';
+import 'package:hoyomi/pages/library/history/eiga/[sourceId].page.dart';
 import 'package:hoyomi/pages/library/library_page.dart';
 import 'package:hoyomi/pages/manager_page.dart';
-import 'package:hoyomi/pages/search/comic/%5BsourceId%5D.page.dart';
-import 'package:hoyomi/pages/search/eiga/%5BsourceId%5D.page.dart';
+import 'package:hoyomi/pages/search/comic/[sourceId].page.dart';
+import 'package:hoyomi/pages/search/eiga/[sourceId].page.dart';
 import 'package:hoyomi/pages/search/index_page.dart';
 import 'package:hoyomi/pages/section_comic/[sourceId]/[sectionId].page.dart';
 import 'package:hoyomi/pages/section_eiga/[sourceId]/[sectionId].page.dart';
+import 'package:hoyomi/pages/service_settings/[sourceId].page.dart';
 import 'package:hoyomi/pages/webview_page.dart';
 
 import 'package:hoyomi/widgets/navigation_app.dart';
@@ -237,6 +238,15 @@ final router = GoRouter(
             sourceId: state.pathParameters['sourceId']!,
             sectionId: state.pathParameters['sectionId']!,
           ),
+    ),
+
+    // Section Service Setting Route
+    GoRoute(
+      path: '/service_settings/:sourceId',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder:
+          (context, state) =>
+              ServiceSettingsPage(sourceId: state.pathParameters['sourceId']!),
     ),
   ],
 );

@@ -12,6 +12,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
 
+export 'package:hoyomi/core_services/service.dart';
 abstract class EigaService extends Service {
   Future<EigaHome> home();
 

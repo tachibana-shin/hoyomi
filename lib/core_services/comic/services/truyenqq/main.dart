@@ -11,34 +11,42 @@ import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 import 'package:hoyomi/core_services/comic/interfaces/rate_value.dart';
 import 'package:hoyomi/core_services/comic/interfaces/status_enum.dart';
 import 'package:hoyomi/core_services/comic/services/truyengg/main.dart';
+import 'package:hoyomi/core_services/interfaces/setting/field_input.dart';
+import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/utils/time_utils.dart';
 import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 
+String _generateRandomHex(int length) {
+  const hexChars = '0123456789abcdef';
+  final random = Random();
+  return List.generate(
+    length,
+    (_) => hexChars[random.nextInt(hexChars.length)],
+  ).join();
+}
+
 class TruyenQQService extends TruyenGGService {
   @override
-  get name => "TruyenQQ";
-  @override
-  get baseUrl => "https://truyenqqto.com";
-  @override
-  get faviconUrl => "https://i.imgur.com/yX8CCPe.png";
+  // ignore: overridden_fields
+  final init = ServiceInit(
+    name: 'TruyenQQ',
+    faviconUrl: 'https://i.imgur.com/yX8CCPe.png"',
+    rootUrl: 'https://truyenqqto.com',
+    rss: '/rss.html',
+    settings: [
+      FieldInput(
+        name: 'Visit Read ID',
+        placeholder: '<13 char>-<13 char>',
+        defaultFn: (_) => '${_generateRandomHex(13)}-${_generateRandomHex(13)}',
+      ),
+    ],
+    onBeforeInsertCookie: (String? cookie) {
+      cookie ??= '';
 
-  /// @Hooks
-  String _generateRandomHex(int length) {
-    const hexChars = '0123456789abcdef';
-    final random = Random();
-    return List.generate(
-      length,
-      (_) => hexChars[random.nextInt(hexChars.length)],
-    ).join();
-  }
-
-  @override
-  onBeforeInsertCookie(String? cookie) {
-    cookie ??= '';
-
-    return 'visit-read=${_generateRandomHex(13)}-${_generateRandomHex(13)}; $cookie';
-  }
+      return 'visit-read=${_generateRandomHex(13)}-${_generateRandomHex(13)}; $cookie';
+    },
+  );
 
   // Utils
   @override

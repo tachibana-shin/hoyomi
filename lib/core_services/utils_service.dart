@@ -5,12 +5,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/controller/cookie.dart';
+import 'package:hoyomi/controller/service_setting.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
+import 'package:hoyomi/core_services/interfaces/setting/field_input.dart';
+import 'package:hoyomi/core_services/interfaces/setting/setting_field.dart';
 import 'package:hoyomi/core_services/interfaces/user.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/database/scheme/cookie_manager.dart';
+import 'package:hoyomi/database/scheme/service_setting.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:html/dom.dart' as d;
 import 'package:html/parser.dart';
@@ -19,9 +23,107 @@ import 'package:http/http.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/router/index.dart';
 
+class ServiceInit {
+  final String name;
+  final String? uid;
+  final String faviconUrl;
+  final String rootUrl;
+  final String? rss;
+  final List<SettingField>? settings;
+
+  /// Called before inserting the cookie to the insert request. Override this method to modify the cookie
+  /// before it is inserted. The default implementation simply returns the original cookie.
+  ///
+  /// [cookie] The cookie to be inserted.
+  ///
+  /// Returns the modified cookie.
+  final String? Function(String? oldCookie)? onBeforeInsertCookie;
+
+  const ServiceInit({
+    required this.name,
+    this.uid,
+    required this.rootUrl,
+    required this.faviconUrl,
+    this.rss,
+    this.settings,
+    this.onBeforeInsertCookie,
+  });
+}
+
 abstract class UtilsService {
-  String get name;
-  String get uid => name.toLowerCase().replaceAll(r"\s", "-");
+  ServiceInit get init;
+
+  final List<SettingField> _settingsDefault = [
+    FieldInput(
+      name: 'URL',
+      defaultFn: (service) => service.init.rootUrl,
+      placeholder: 'Example https://example.com',
+    ),
+    FieldInput(
+      name: 'RSS',
+      defaultFn: (service) => service.init.rss ?? '',
+      placeholder: 'Example https://example.com/rss',
+    ),
+    FieldInput(
+      name: 'User Agent',
+      defaultFn:
+          (service) =>
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      placeholder:
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    ),
+    FieldInput(
+      name: 'Cookie',
+      defaultFn: (service) => '',
+      placeholder: 'Example cookie',
+    ),
+  ];
+  String? getSetting(String name) {
+    final settings = ServiceSettingController.getSettings(sourceId: uid);
+    return settings?[name];
+  }
+
+  Future<void> setSetting(String name, String value) async {
+    final record =
+        ServiceSettingController.get(sourceId: uid) ??
+        ServiceSetting(
+          sourceId: uid,
+          settings: null,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
+    try {
+      record.settings = jsonEncode({
+        ...jsonDecode(record.settings ?? '{}'),
+        name: value,
+      });
+    } catch (err) {
+      record.settings = jsonEncode({name: value});
+    }
+
+    await ServiceSettingController.save(record);
+  }
+
+  String get baseUrl {
+    return getSetting('URL') ?? init.rootUrl;
+  }
+
+  String get name => init.name;
+  String get uid => init.uid ?? name.toLowerCase().replaceAll(r"\s", "-");
+  String? _faviconUrl;
+  String get faviconUrl =>
+      _faviconUrl ??= Uri.parse(baseUrl).resolve(init.faviconUrl).toString();
+  String? _rss;
+  String? get rss =>
+      _rss ??=
+          init.rss == null
+              ? null
+              : Uri.parse(baseUrl).resolve(init.rss!).toString();
+  List<SettingField> getAllFieldSettings() {
+    return [..._settingsDefault, if (init.settings != null) ...init.settings!];
+  }
+
   Future<User>? _userFuture;
 
   static void showCaptchaResolve(
@@ -126,16 +228,6 @@ abstract class UtilsService {
     return orElse(error);
   }
 
-  /// Called before inserting the cookie to the insert request. Override this method to modify the cookie
-  /// before it is inserted. The default implementation simply returns the original cookie.
-  ///
-  /// [cookie] The cookie to be inserted.
-  ///
-  /// Returns the modified cookie.
-  String? onBeforeInsertCookie(String? cookie) {
-    return cookie;
-  }
-
   /// Fetches data from the provided URL, handling cookies and retries.
   ///
   /// [url] The URL of the data to fetch.
@@ -149,14 +241,14 @@ abstract class UtilsService {
     Map<String, dynamic>? body,
     Map<String, String>? headers,
   }) async {
-    String? cookiesText = cookie;
+    String? cookiesText = cookie ?? getSetting('Cookie');
 
     final row = await CookieController.getAsync(sourceId: uid);
-    if (cookie == null) {
+    if (cookiesText == null || cookiesText.isEmpty) {
       cookiesText = row?.cookie;
     }
 
-    cookiesText = onBeforeInsertCookie(cookiesText);
+    cookiesText = init.onBeforeInsertCookie?.call(cookiesText) ?? cookiesText;
 
     final uri = Uri.parse(url);
     final $headers = {
@@ -183,7 +275,7 @@ abstract class UtilsService {
       'sec-fetch-site': 'same-origin',
       'sec-fetch-user': '?1',
       'upgrade-insecure-requests': '1',
-      'user-agent': // row?.userAgent ??
+      'user-agent': getSetting('User Agent') ??
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
     };
 

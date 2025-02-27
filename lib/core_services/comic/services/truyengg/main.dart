@@ -64,26 +64,22 @@ final List<Filter> globalFilters = [
 
 class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
   @override
-  final String name = "TruyenGGP";
+  final init = ServiceInit(
+    name: 'TruyenGGP',
+    faviconUrl: '/favicon.ico',
+    rootUrl: 'https://truyengg.com',
+    rss: '/rss.html',
+    onBeforeInsertCookie: (cookie) {
+      cookie ??= '';
+
+      return 'type_comic=1; $cookie';
+    },
+  );
   @override
-  final String baseUrl = "https://truyengg.com";
-  @override
-  get faviconUrl => "$baseUrl/favicon.ico";
-  @override
-  get signInUrl => "$baseUrl/";
-  @override
-  get rss => "$baseUrl/rss.html";
+  final authInit = AuthInit(signInUrl: (service) => '${service.baseUrl}/');
 
   final Map<String, String> _comicCachedStore = {};
   final Map<String, String> _episodeIdStore = {};
-
-  // Hooks
-  @override
-  onBeforeInsertCookie(cookie) {
-    cookie ??= '';
-
-    return 'type_comic=1; $cookie';
-  }
 
   // Utils
   Comic parseComic(Element itemComic, String referer) {
