@@ -36,9 +36,16 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
     return FutureBuilder(
       future: _followsFuture,
       builder: (context, snapshot) {
+        final title = 'Follow';
+        final subtitle = null;
+        final more = '/library/follow/eiga/${widget.sourceId}';
+
         if (snapshot.hasError) {
           return HorizontalList.buildContainer(
             context,
+            title: title,
+            subtitle: subtitle,
+            more: more,
             builder:
                 (viewFraction) => Center(
                   child: UtilsService.errorWidgetBuilder(
@@ -47,6 +54,16 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
                     orElse: (error) => Text('Error: $error'),
                   ),
                 ),
+            needSubtitle: false,
+          );
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return HorizontalList.buildContainer(
+            context,
+            title: title,
+            subtitle: subtitle,
+            more: more,
+            builder: (viewFraction) => Center(child: Text('No data available')),
             needSubtitle: false,
           );
         }
@@ -64,12 +81,12 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
           enabled: loading,
           enableSwitchAnimation: true,
           child: HorizontalList<FollowItem<Eiga>>(
-            title: 'Follow',
+            title: title,
             subtitle:
                 data.firstOrNull?.updatedAt == null
                     ? ''
                     : formatWatchUpdatedAt(data.first.updatedAt!, null),
-            more: '/library/follow/eiga/${widget.sourceId}',
+            more: more,
             items: data,
             needSubtitle:
                 data.firstWhereOrNull(

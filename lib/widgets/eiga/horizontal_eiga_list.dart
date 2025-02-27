@@ -61,6 +61,9 @@ class HorizontalEigaList extends StatelessWidget {
         if (snapshot.hasError) {
           return HorizontalList.buildContainer(
             context,
+            title: title,
+            subtitle: subtitle,
+            more: more,
             builder:
                 (viewFraction) => Center(
                   child: UtilsService.errorWidgetBuilder(
@@ -75,6 +78,9 @@ class HorizontalEigaList extends StatelessWidget {
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return HorizontalList.buildContainer(
             context,
+            title: title,
+            subtitle: subtitle,
+            more: more,
             builder: (viewFraction) => Center(child: Text('No data available')),
             needSubtitle: false,
           );

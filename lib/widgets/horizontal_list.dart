@@ -24,10 +24,43 @@ class HorizontalList<T> extends StatelessWidget {
 
   static Widget buildContainer(
     BuildContext context, {
+    required String title,
+    required String? subtitle,
+    required String? more,
     required bool needSubtitle,
     required Widget Function(double viewFraction) builder,
   }) {
-    return LayoutBuilder(
+    final header = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            if (subtitle != null)
+              Text(
+                subtitle,
+                style: TextStyle(fontSize: 14, color: Colors.white70),
+              ),
+          ],
+        ),
+        if (more != null)
+          ElevatedButton(
+            onPressed: () => context.push(more),
+            child: Text('More'),
+          )
+        else
+          SizedBox.shrink(),
+      ],
+    );
+    final main = LayoutBuilder(
       builder: (context, constraints) {
         double screenWidth = constraints.biggest.width;
         double crossAxisCount;
@@ -51,65 +84,36 @@ class HorizontalList<T> extends StatelessWidget {
         return SizedBox(height: height, child: builder(viewportFraction));
       },
     );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [header, main],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
+    return buildContainer(
+      context,
+      title: title,
+      subtitle: subtitle,
+      more: more,
+      needSubtitle: needSubtitle,
+      builder:
+          (viewportFraction) =>
+              child ??
+              PageView.builder(
+                itemCount: items!.length,
+                allowImplicitScrolling: true,
+                padEnds: false,
+                controller: PageController(
+                  viewportFraction: viewportFraction,
+                  initialPage: 0,
                 ),
-                if (subtitle != null)
-                  Text(
-                    subtitle!,
-                    style: TextStyle(fontSize: 14, color: Colors.white70),
-                  ),
-              ],
-            ),
-            if (more != null)
-              ElevatedButton(
-                onPressed: () {
-                  context.push(more!);
+                itemBuilder: (context, index) {
+                  return builder(context, items!.elementAt(index), index);
                 },
-                child: Text('More'),
-              )
-            else
-              SizedBox.shrink(),
-          ],
-        ),
-        buildContainer(
-          context,
-          needSubtitle: needSubtitle,
-          builder:
-              (viewportFraction) =>
-                  child ??
-                  PageView.builder(
-                    itemCount: items!.length,
-                    allowImplicitScrolling: true,
-                    padEnds: false,
-                    controller: PageController(
-                      viewportFraction: viewportFraction,
-                      initialPage: 0,
-                    ),
-                    itemBuilder: (context, index) {
-                      return builder(context, items!.elementAt(index), index);
-                    },
-                  ),
-        ),
-      ],
+              ),
     );
   }
 }
