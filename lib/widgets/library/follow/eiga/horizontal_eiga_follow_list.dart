@@ -4,6 +4,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_follow_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/follow_item.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/utils/format_watch_update_at.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga.dart';
@@ -51,13 +52,16 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
                   child: UtilsService.errorWidgetBuilder(
                     context,
                     error: snapshot.error,
+                    service: _service as Service,
                     orElse: (error) => Text('Error: $error'),
                   ),
                 ),
             needSubtitle: false,
           );
         }
-        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        final loading = snapshot.connectionState == ConnectionState.waiting;
+
+        if (!loading && (!snapshot.hasData || snapshot.data!.isEmpty)) {
           return HorizontalList.buildContainer(
             context,
             title: title,
@@ -68,7 +72,6 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
           );
         }
 
-        final loading = snapshot.connectionState == ConnectionState.waiting;
         final data =
             loading
                 ? List.generate(

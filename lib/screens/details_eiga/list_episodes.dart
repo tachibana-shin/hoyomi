@@ -123,6 +123,7 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
         child: UtilsService.errorWidgetBuilder(
           context,
           error: _episodesEiga.value.error,
+          service: null,
           orElse: (error) => Text('Error: $error'),
         ),
       );

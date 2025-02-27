@@ -91,6 +91,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
                   child: UtilsService.errorWidgetBuilder(
                     context,
                     error: snapshot.error,
+                    service: _service,
                     orElse: (error) => Text('Error: $error'),
                   ),
                 );

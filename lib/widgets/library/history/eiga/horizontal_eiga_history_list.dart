@@ -5,6 +5,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/history_item.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/utils/format_watch_update_at.dart';
 import 'package:hoyomi/widgets/library/history/eiga/eiga_history.dart';
@@ -34,10 +35,41 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
 
   Widget _buildContainer(
     BuildContext context, {
+    required String title,
+    required String subtitle,
+    required String more,
     required bool needSubtitle,
     required Widget Function(double viewFraction) builder,
   }) {
-    return LayoutBuilder(
+    final header = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            Text(
+              subtitle,
+              style: TextStyle(fontSize: 14, color: Colors.white70),
+            ),
+          ],
+        ),
+        ElevatedButton(
+          onPressed: () {
+            context.push(more);
+          },
+          child: Text('More'),
+        ),
+      ],
+    );
+    final main = LayoutBuilder(
       builder: (context, constraints) {
         double screenWidth = constraints.biggest.width;
         double crossAxisCount;
@@ -64,6 +96,11 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
         return SizedBox(height: height, child: builder(viewportFraction));
       },
     );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [header, main],
+    );
   }
 
   @override
@@ -71,14 +108,21 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
     return FutureBuilder(
       future: _historyFuture,
       builder: (context, snapshot) {
+        final title = 'History';
+        final more = '/library/history/eiga/${widget.sourceId}';
+
         if (snapshot.hasError) {
           return _buildContainer(
             context,
+            title: title,
+            subtitle: '',
+            more: more,
             builder:
                 (viewFraction) => Center(
                   child: UtilsService.errorWidgetBuilder(
                     context,
                     error: snapshot.error,
+                    service: _service as Service,
                     orElse: (error) => Text('Error: $error'),
                   ),
                 ),
@@ -95,12 +139,10 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
                 )
                 : snapshot.data!;
 
-        final title = 'History';
         final subtitle =
             data.isEmpty
                 ? ''
                 : formatWatchUpdatedAt(data.first.watchUpdatedAt, null);
-        final more = '/library/history/eiga/${widget.sourceId}';
         final items = data;
         final needSubtitle =
             data.firstWhereOrNull(
@@ -114,36 +156,11 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                      ),
-                      Text(
-                        subtitle,
-                        style: TextStyle(fontSize: 14, color: Colors.white70),
-                      ),
-                    ],
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.push(more);
-                    },
-                    child: Text('More'),
-                  ),
-                ],
-              ),
               _buildContainer(
                 context,
+                title: title,
+                subtitle: subtitle,
+                more: more,
                 needSubtitle: needSubtitle,
                 builder:
                     (viewportFraction) => PageView.builder(

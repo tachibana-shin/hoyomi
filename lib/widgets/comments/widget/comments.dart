@@ -60,6 +60,7 @@ class _CommentsState extends State<Comments> {
               child: UtilsService.errorWidgetBuilder(
                 context,
                 error: snapshot.error,
+                service: null,
                 orElse: (err) => Text('Error: $err'),
               ),
             );

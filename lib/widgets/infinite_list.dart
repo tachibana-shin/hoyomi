@@ -84,6 +84,7 @@ class _InfiniteListState<T> extends State<InfiniteList<T>> {
           (context) => UtilsService.errorWidgetBuilder(
             context,
             error: _error,
+            service: null,
             orElse: (error) => Text('Error: $error'),
           ),
     );

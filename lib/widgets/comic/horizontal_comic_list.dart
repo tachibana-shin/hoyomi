@@ -69,6 +69,7 @@ class HorizontalComicList extends StatelessWidget {
                   child: UtilsService.errorWidgetBuilder(
                     context,
                     error: snapshot.error,
+                    service: null,
                     orElse: (error) => Text('Error: $error'),
                   ),
                 ),

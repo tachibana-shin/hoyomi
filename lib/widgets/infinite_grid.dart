@@ -103,6 +103,7 @@ class _InfiniteGridState<T> extends State<InfiniteGrid<T>> {
           (context) => UtilsService.errorWidgetBuilder(
             context,
             error: _error,
+            service: null,
             orElse: (error) => Text('Error: $error'),
           ),
     );

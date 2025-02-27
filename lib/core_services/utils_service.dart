@@ -9,6 +9,7 @@ import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/user.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/database/scheme/cookie_manager.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:html/dom.dart' as d;
@@ -34,6 +35,7 @@ abstract class UtilsService {
         isSnackbar: true,
         url: url,
         error: error,
+        service: null,
         orElse: (error) => Text('An error occurred: $error'),
       ),
     );
@@ -44,57 +46,85 @@ abstract class UtilsService {
     bool isSnackbar = false,
     String? url,
     required Object? error,
+    required Service? service,
     required Widget Function(Object? error) orElse,
   }) {
-    return error is! CaptchaRequiredException
-        ? orElse(error)
-        : Padding(
-          padding:
-              isSnackbar
-                  ? EdgeInsets.zero
-                  : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    MaterialCommunityIcons.earth,
-                    color:
-                        isSnackbar || context == null
-                            ? Colors.black
-                            : Theme.of(context).colorScheme.onSurface,
+    if (error is CaptchaRequiredException) {
+      return Padding(
+        padding:
+            isSnackbar
+                ? EdgeInsets.zero
+                : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  MaterialCommunityIcons.earth,
+                  color:
+                      isSnackbar || context == null
+                          ? Colors.black
+                          : Theme.of(context).colorScheme.onSurface,
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Please resolve Captcha to continue.'),
+                      if (url != null)
+                        Text(
+                          url,
+                          style: TextStyle(fontSize: 14.0),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
                   ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Please resolve Captcha to continue.'),
-                        if (url != null)
-                          Text(
-                            url,
-                            style: TextStyle(fontSize: 14.0),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 8.0),
-              ElevatedButton(
-                child: Text('Go to Captcha'),
-                onPressed: () async {
-                  await router.push('/webview/${error.service.uid}');
-                  router.refresh();
-                },
-              ),
-            ],
-          ),
-        );
+                ),
+              ],
+            ),
+            SizedBox(height: 8.0),
+            ElevatedButton(
+              child: Text('Go to Captcha'),
+              onPressed: () async {
+                await router.push('/webview/${error.service.uid}');
+                router.refresh();
+              },
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (error is UserNotFoundException) {
+      return Padding(
+        padding:
+            isSnackbar
+                ? EdgeInsets.zero
+                : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('User not found'),
+            SizedBox(height: 8.0),
+            ElevatedButton(
+              child: Text('Sign in'),
+              onPressed: () async {
+                await router.push('/signin/${service!.uid}');
+                router.refresh();
+              },
+            ),
+          ],
+        ),
+      );
+    }
+
+    
+    return orElse(error);
   }
 
   /// Called before inserting the cookie to the insert request. Override this method to modify the cookie

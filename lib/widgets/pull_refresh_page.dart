@@ -49,6 +49,7 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
         child: UtilsService.errorWidgetBuilder(
           context,
           error: snapshot.error,
+          service: null,
           orElse: (err) => Text('Error: $err'),
         ),
       );
