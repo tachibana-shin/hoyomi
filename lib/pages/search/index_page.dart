@@ -76,7 +76,10 @@ class _SearchPageState extends State<SearchPage>
 
   Widget _buildBodySearch(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: 8.0,
+        vertical: 8.0,
+      ).copyWith(bottom: 0),
       child: TabBarView(
         controller: _tabController,
         children: [
@@ -89,7 +92,10 @@ class _SearchPageState extends State<SearchPage>
 
   Widget _buildBodyGetStarting(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: 8.0,
+        vertical: 8.0,
+      ).copyWith(bottom: 0),
       child: TabBarView(
         controller: _tabController,
         children: [
