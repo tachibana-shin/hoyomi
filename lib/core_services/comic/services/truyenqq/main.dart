@@ -20,6 +20,8 @@ class TruyenQQService extends TruyenGGService {
   get name => "TruyenQQ";
   @override
   get baseUrl => "https://truyenqqto.com";
+  @override
+  get faviconUrl => "https://i.imgur.com/yX8CCPe.png";
 
   /// @Hooks
   String _generateRandomHex(int length) {
