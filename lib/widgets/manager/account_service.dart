@@ -65,6 +65,7 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
         ),
         const SizedBox(height: 12.0),
         _buildUserDetails(context),
+        _buildActions(),
       ],
     );
   }
@@ -185,6 +186,15 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
         ),
         oneLine,
       ],
+    );
+  }
+
+  Widget _buildActions() {
+    return IconButton(
+      onPressed: () {
+        context.push("/service_settings/${widget.service.uid}");
+      },
+      icon: Icon(Icons.settings),
     );
   }
 }

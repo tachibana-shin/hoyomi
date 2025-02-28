@@ -53,16 +53,18 @@ class ServiceInit {
 abstract class UtilsService {
   ServiceInit get init;
 
-  final List<SettingField> _settingsDefault = [
+  static final List<SettingField> settingsDefault = [
     FieldInput(
       name: 'URL',
       defaultFn: (service) => service.init.rootUrl,
       placeholder: 'Example https://example.com',
+      description: 'The root URL of the service',
     ),
     FieldInput(
       name: 'RSS',
       defaultFn: (service) => service.init.rss ?? '',
       placeholder: 'Example https://example.com/rss',
+      description: 'The RSS feed of the service',
     ),
     FieldInput(
       name: 'User Agent',
@@ -71,11 +73,15 @@ abstract class UtilsService {
               'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       placeholder:
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      description: 'The user agent to use when fetching data',
+      maxLines: 3,
     ),
     FieldInput(
       name: 'Cookie',
       defaultFn: (service) => '',
       placeholder: 'Example cookie',
+      description: 'The cookie to use when fetching data',
+      maxLines: 5,
     ),
   ];
   String? getSetting(String name) {
@@ -120,9 +126,6 @@ abstract class UtilsService {
           init.rss == null
               ? null
               : Uri.parse(baseUrl).resolve(init.rss!).toString();
-  List<SettingField> getAllFieldSettings() {
-    return [..._settingsDefault, if (init.settings != null) ...init.settings!];
-  }
 
   Future<User>? _userFuture;
 
