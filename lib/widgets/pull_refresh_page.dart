@@ -5,7 +5,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 class PullRefreshPage<T> extends StatefulWidget {
   final Widget Function(Widget body)? builderError;
   final Widget Function(T data, (bool loading, Future<void> Function() refresh))
-      builder;
+  builder;
   final Future<T> Function() onLoadData;
   final T Function() onLoadFake;
 
@@ -46,25 +46,34 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
   }
 
   Widget _buildMessageBiggest(Widget child) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return ListView(padding: const EdgeInsets.all(8.0), children: [
-        SizedBox(
-            width: constraints.biggest.width,
-            height: constraints.biggest.height,
-            child: child)
-      ]);
-    });
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return ListView(
+          padding: const EdgeInsets.all(8.0),
+          children: [
+            SizedBox(
+              width: constraints.biggest.width,
+              height: constraints.biggest.height,
+              child: child,
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildBody(AsyncSnapshot<T> snapshot) {
     if (snapshot.hasError) {
-      final body = _buildMessageBiggest(Center(
+      final body = _buildMessageBiggest(
+        Center(
           child: UtilsService.errorWidgetBuilder(
-        context,
-        error: snapshot.error,
-        service: null,
-        orElse: (err) => Text('Error: $err'),
-      )));
+            context,
+            error: snapshot.error,
+            service: null,
+            orElse: (err) => Text('Error: $err'),
+          ),
+        ),
+      );
 
       return widget.builderError?.call(body) ?? body;
     }
@@ -74,7 +83,8 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
         (!snapshot.hasData ||
             (snapshot.data is List && (snapshot.data as List).isEmpty))) {
       return _buildMessageBiggest(
-          const Center(child: Text('No data available.')));
+        const Center(child: Text('No data available.')),
+      );
     }
 
     var data = loading ? widget.onLoadFake() : snapshot.data!;
