@@ -19,9 +19,26 @@ class _WatchComputedState<T> extends State<WatchComputed<T>> {
   @override
   void initState() {
     super.initState();
-    widget.computed.addListener(() {
-      setState(() {});
-    });
+    widget.computed.addListener(_refresh);
+  }
+
+  @override
+  void didUpdateWidget(oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.computed != widget.computed) {
+      oldWidget.computed.removeListener(_refresh);
+      widget.computed.addListener(_refresh);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.computed.removeListener(_refresh);
+    super.dispose();
+  }
+
+  void _refresh() {
+    setState(() {});
   }
 
   @override

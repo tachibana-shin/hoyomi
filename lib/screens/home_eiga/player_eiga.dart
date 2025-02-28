@@ -17,6 +17,7 @@ import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/notifier+/computed_notifier.dart';
 import 'package:hoyomi/notifier+/watch_computed.dart';
+import 'package:hoyomi/notifier+/watch_notifier.dart';
 import 'package:hoyomi/transition/slide_fade_transition.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
@@ -25,7 +26,6 @@ import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:http/http.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
-import 'package:signals/signals_flutter.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
 
@@ -50,8 +50,8 @@ class PlayerEiga extends StatefulWidget {
 
   final ValueNotifier<SourceVideo?> sourceNotifier;
   final ValueNotifier<OImage?> posterNotifier;
-  final Signal<Vtt?> thumbnailVtt;
-  final Signal<OpeningEnding?> openingEndingNotifier;
+  final ValueNotifier<Vtt?> thumbnailVtt;
+  final ValueNotifier<OpeningEnding?> openingEndingNotifier;
   final Future<SourceContent> Function({required SourceVideo source})?
   fetchSourceContent;
 
@@ -61,9 +61,9 @@ class PlayerEiga extends StatefulWidget {
   final void Function(bool isFullscreen) onTapPlaylist;
   final void Function({required Duration position, required Duration duration})
   onWatchTimeUpdate;
-  final Signal<List<type.Subtitle>> subtitlesNotifier;
-  final Signal<void Function()?> onNext;
-  final Signal<void Function()?> onPrev;
+  final ValueNotifier<List<type.Subtitle>> subtitlesNotifier;
+  final ValueNotifier<void Function()?> onNext;
+  final ValueNotifier<void Function()?> onPrev;
 
   final ValueNotifier<Widget Function(BuildContext context)?> overlayNotifier;
 
@@ -114,9 +114,9 @@ enum _StateOpeningEnding { opening, ending, none, skip }
 // video player widget
 // video player
 // djangoflow_video_player
-class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
+class _PlayerEigaState extends State<PlayerEiga> {
   ///  control player
-  //  late final ShararaVideoPlayerController controller;
+  //  final ShararaVideoPlayerController controller;
   //   @override
   //   void initState() {
   //     controller = ShararaVideoPlayerController.networkUrl(Uri.parse("https://sample-files-online.com/samples/countdownload/535"));
@@ -131,12 +131,12 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
   //   }
 
   /// Like <video>
-  late final _controller = createSignal<VideoPlayerController?>(null);
+  final _controller = ValueNotifier<VideoPlayerController?>(null);
   final SubtitleController subtitleController = SubtitleController();
 
   final _durationAnimate = const Duration(milliseconds: 300);
 
-  late final _availableResolutions = createListSignal<_VariantMeta>([]);
+  final _availableResolutions = ValueNotifier<List<_VariantMeta>>([]);
   final _playbackList = const [
     (value: 0.25, label: '0.25x'),
     (value: 0.5, label: '0.5x'),
@@ -148,29 +148,23 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
     (value: 2.0, label: '2x'),
   ];
 
-  late final _showControls = createSignal(false);
-  late final _pauseAutoHideControls = createSignal(false);
-  late final _autoPlay = createSignal(true);
-  late final _subtitleCode = createSignal<String?>(null);
-  late final _playbackSpeed = createSignal(1.0);
-  late final _qualityCode = createSignal<String?>(null);
-  late final _fullscreen = createSignal(false);
+  final _showControls = ValueNotifier(false);
+  final _pauseAutoHideControls = ValueNotifier(false);
+  final _autoPlay = ValueNotifier(true);
+  final _subtitleCode = ValueNotifier<String?>(null);
+  final _playbackSpeed = ValueNotifier(1.0);
+  final _qualityCode = ValueNotifier<String?>(null);
+  final _fullscreen = ValueNotifier(false);
 
-  late final _error = createSignal<String?>(null);
-  late final _position = createSignal(Duration());
-  late final _duration = createSignal(Duration());
-  late final _loading = createSignal(true);
-  late final _playing = createSignal(true);
-  late final _aspectRatio = createSignal<double>(1.0);
+  final _error = ValueNotifier<String?>(null);
+  final _position = ValueNotifier(Duration());
+  final _duration = ValueNotifier(Duration());
+  final _loading = ValueNotifier(true);
+  final _playing = ValueNotifier(true);
+  final _aspectRatio = ValueNotifier<double>(1.0);
 
-  late final _stateOpeningEnding = createSignal(_StateOpeningEnding.none);
-  late final _visibleTooltipSkipOE = createComputed(() {
-    final isOpening = _stateOpeningEnding() == _StateOpeningEnding.opening;
-    final visible =
-        isOpening || _stateOpeningEnding() == _StateOpeningEnding.ending;
-
-    return visible;
-  });
+  final _stateOpeningEnding = ValueNotifier(_StateOpeningEnding.none);
+  late final ComputedNotifier<bool> _visibleTooltipSkipOE;
 
   final ValueNotifier<bool> _firstLoadedSource = ValueNotifier(false);
 
@@ -185,13 +179,21 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
   void initState() {
     super.initState();
 
+    _visibleTooltipSkipOE = ComputedNotifier(() {
+      final isOpening =
+          _stateOpeningEnding.value == _StateOpeningEnding.opening;
+      final visible =
+          isOpening || _stateOpeningEnding.value == _StateOpeningEnding.ending;
+
+      return visible;
+    }, depends: [_stateOpeningEnding]);
     _initialDebouncer = Debouncer(milliseconds: 7500); // 7.5
     _subsequentThrottler = Throttler(milliseconds: 30000); // 30
 
     _onSourceChanged();
     widget.sourceNotifier.addListener(_onSourceChanged);
     _onPauseAutoHideControlsChanged();
-    createEffect(_onPauseAutoHideControlsChanged);
+    _pauseAutoHideControls.addListener(_onPauseAutoHideControlsChanged);
     _onWatchTimeChanged();
     widget.watchTimeDataNotifier.addListener(_onWatchTimeChanged);
   }
@@ -406,7 +408,7 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
   }
 
   void _updateDurationRangeOpeningEnding() {
-    final opEnd = widget.openingEndingNotifier();
+    final opEnd = widget.openingEndingNotifier.value;
     if (opEnd == null) return;
 
     final opening = opEnd.opening;
@@ -476,23 +478,24 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
   Widget build(BuildContext context) {
     // if (_controller?.value.isInitialized != true) return SizedBox.shrink();
 
-    return Watch(
-      (context2) =>
-          _fullscreen()
-              ? SizedBox.shrink()
-              : Stack(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: SliderEiga.thumbSize),
-                    child: AspectRatio(
-                      aspectRatio: widget.aspectRatio,
-                      child: _buildStack(),
-                    ),
+    return WatchNotifier(
+      depends: [_fullscreen],
+      builder:
+          (context2) =>
+              _fullscreen.value
+                  ? SizedBox.shrink()
+                  : Stack(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(bottom: SliderEiga.thumbSize),
+                        child: AspectRatio(
+                          aspectRatio: widget.aspectRatio,
+                          child: _buildStack(),
+                        ),
+                      ),
+                      _buildMobileSliderProgress(),
+                    ],
                   ),
-                  _buildMobileSliderProgress(),
-                ],
-              ),
-      dependencies: [_fullscreen],
     );
   }
 
@@ -523,55 +526,63 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
           onTap: _onTapToggleControls,
           child: LayoutBuilder(
             builder:
-                (context, constraints) => Watch((context) {
-                  final controller = _controller();
-                  if (controller == null) return SizedBox.shrink();
+                (context, constraints) => WatchNotifier(
+                  depends: [
+                    _controller,
+                    _qualityCode,
+                    _fullscreen,
+                    _aspectRatio,
+                  ],
+                  builder: (context) {
+                    final controller = _controller.value;
+                    if (controller == null) return SizedBox.shrink();
 
-                  final qualityCode = _qualityCode();
+                    final qualityCode = _qualityCode.value;
 
-                  final calcMaxWidth = 100.w(context);
-                  // aspect = width / height => height = width / aspect
-                  final calcMaxHeight =
-                      _fullscreen()
-                          ? 100.h(context)
-                          : calcMaxWidth / widget.aspectRatio;
+                    final calcMaxWidth = 100.w(context);
+                    // aspect = width / height => height = width / aspect
+                    final calcMaxHeight =
+                        _fullscreen.value
+                            ? 100.h(context)
+                            : calcMaxWidth / widget.aspectRatio;
 
-                  final maxWidth = calcMaxWidth;
-                  final maxHeight = calcMaxHeight;
+                    final maxWidth = calcMaxWidth;
+                    final maxHeight = calcMaxHeight;
 
-                  final aspectRatio = _aspectRatio();
+                    final aspectRatio = _aspectRatio.value;
 
-                  final aspectRatioView = maxWidth / maxHeight;
-                  // try maxHeight
-                  // aspect = w / h
-                  // width = height * aspectRatio
-                  // if with > maxWidth then width = maxWidth, height = maxWidth / aspectRatio
-                  double width, height;
-                  if (aspectRatioView < aspectRatio) {
-                    width = maxWidth;
-                    height = width / aspectRatio;
-                  } else {
-                    height = maxHeight;
-                    width = height * aspectRatio;
-                  }
+                    final aspectRatioView = maxWidth / maxHeight;
+                    // try maxHeight
+                    // aspect = w / h
+                    // width = height * aspectRatio
+                    // if with > maxWidth then width = maxWidth, height = maxWidth / aspectRatio
+                    double width, height;
+                    if (aspectRatioView < aspectRatio) {
+                      width = maxWidth;
+                      height = width / aspectRatio;
+                    } else {
+                      height = maxHeight;
+                      width = height * aspectRatio;
+                    }
 
-                  return SubtitleWrapper(
-                    enabled: qualityCode != null,
-                    videoPlayerController: controller,
-                    subtitleController: subtitleController,
-                    subtitleStyle: SubtitleStyle(
-                      textColor: Colors.white,
-                      hasBorder: true,
-                    ),
-                    videoChild: Center(
-                      child: SizedBox(
-                        width: width,
-                        height: height,
-                        child: VideoPlayer(controller),
+                    return SubtitleWrapper(
+                      enabled: qualityCode != null,
+                      videoPlayerController: controller,
+                      subtitleController: subtitleController,
+                      subtitleStyle: SubtitleStyle(
+                        textColor: Colors.white,
+                        hasBorder: true,
                       ),
-                    ),
-                  );
-                }),
+                      videoChild: Center(
+                        child: SizedBox(
+                          width: width,
+                          height: height,
+                          child: VideoPlayer(controller),
+                        ),
+                      ),
+                    );
+                  },
+                ),
           ),
         ),
         _buildError(),
@@ -600,35 +611,41 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
             );
           },
         ),
-        Watch((context) {
-          return AnimatedSwitcher(
-            duration: _durationAnimate,
-            transitionBuilder:
-                (child, animation) =>
-                    FadeTransition(opacity: animation, child: child),
-            child:
-                _showControls()
-                    ? GestureDetector(
-                      onTap: _onTapToggleControls,
-                      child: Container(
-                        color: Colors.black.withValues(alpha: 0.5),
-                        child: Stack(
-                          children: [
-                            _buildMobileTopControls(),
-                            _buildMobileControls(),
-                            _buildMobileBottomControls(),
-                          ],
+        WatchNotifier(
+          depends: [_showControls],
+          builder: (context) {
+            return AnimatedSwitcher(
+              duration: _durationAnimate,
+              transitionBuilder:
+                  (child, animation) =>
+                      FadeTransition(opacity: animation, child: child),
+              child:
+                  _showControls.value
+                      ? GestureDetector(
+                        onTap: _onTapToggleControls,
+                        child: Container(
+                          color: Colors.black.withValues(alpha: 0.5),
+                          child: Stack(
+                            children: [
+                              _buildMobileTopControls(),
+                              _buildMobileControls(),
+                              _buildMobileBottomControls(),
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                    : SizedBox.shrink(),
-          );
-        }, dependencies: [_showControls]),
+                      )
+                      : SizedBox.shrink(),
+            );
+          },
+        ),
         _buildIndicator(),
-        Watch(
-          (context) =>
-              _fullscreen() ? _buildMobileSliderProgress() : SizedBox.shrink(),
-          dependencies: [_fullscreen],
+        WatchNotifier(
+          depends: [_fullscreen],
+          builder:
+              (context) =>
+                  _fullscreen.value
+                      ? _buildMobileSliderProgress()
+                      : SizedBox.shrink(),
         ),
         _buildPopupOpeningEnding(),
         _buildOverlayInherit(),
@@ -651,12 +668,13 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
                 children: [
                   // button back
                   IconButton(
-                    icon: Watch(
-                      (context) => Transform.rotate(
-                        angle: _fullscreen() ? 1.5 * pi : 0.0,
-                        child: Icon(Icons.arrow_back_ios),
-                      ),
-                      dependencies: [_fullscreen],
+                    icon: WatchNotifier(
+                      depends: [_fullscreen],
+                      builder:
+                          (context) => Transform.rotate(
+                            angle: _fullscreen.value ? 1.5 * pi : 0.0,
+                            child: Icon(Icons.arrow_back_ios),
+                          ),
                     ),
                     color: Colors.white,
                     onPressed: () {
@@ -714,28 +732,31 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
                   onPressed: () => widget.onTapPlaylist(_fullscreen.value),
                 ),
                 // icon subtitle
-                Watch((context) {
-                  final isEnabled = _availableResolutions.isNotEmpty;
-                  return Opacity(
-                    opacity: isEnabled ? 1.0 : 0.5,
-                    child: IgnorePointer(
-                      ignoring: !isEnabled,
-                      child: IconButton(
-                        icon: Icon(
-                          _subtitleCode() == null
-                              ? MaterialCommunityIcons.subtitles_outline
-                              : MaterialCommunityIcons.subtitles,
+                WatchNotifier(
+                  depends: [_availableResolutions, _subtitleCode],
+                  builder: (context) {
+                    final isEnabled = _availableResolutions.value.isNotEmpty;
+                    return Opacity(
+                      opacity: isEnabled ? 1.0 : 0.5,
+                      child: IgnorePointer(
+                        ignoring: !isEnabled,
+                        child: IconButton(
+                          icon: Icon(
+                            _subtitleCode.value == null
+                                ? MaterialCommunityIcons.subtitles_outline
+                                : MaterialCommunityIcons.subtitles,
+                          ),
+                          color: Colors.white,
+                          onPressed:
+                              () =>
+                                  _subtitleCode.value == null
+                                      ? _showSubtitleOptions()
+                                      : _setSubtitleCode(null),
                         ),
-                        color: Colors.white,
-                        onPressed:
-                            () =>
-                                _subtitleCode() == null
-                                    ? _showSubtitleOptions()
-                                    : _setSubtitleCode(null),
                       ),
-                    ),
-                  );
-                }, dependencies: [_availableResolutions]),
+                    );
+                  },
+                ),
                 // icon settings
                 IconButton(
                   icon: Icon(Icons.settings_outlined),
@@ -751,14 +772,15 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
   }
 
   Widget _buildMobileControls() {
-    return Watch((context) {
-      return Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            SizedBox(width: 8.0),
-            Watch((context) {
-              final onPrev = widget.onPrev();
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          SizedBox(width: 8.0),
+          WatchNotifier(
+            depends: [widget.onPrev],
+            builder: (context) {
+              final onPrev = widget.onPrev.value;
 
               return Opacity(
                 opacity: onPrev == null ? 0.5 : 1.0,
@@ -780,35 +802,39 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
                   ),
                 ),
               );
-            }, dependencies: [widget.onPrev]),
-            Watch(
-              (context) => IgnorePointer(
-                ignoring: _loading(),
-                child: Opacity(
-                  opacity: _loading() ? 0 : 1,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _activeTime = DateTime.now();
-                      _setPlaying(!_playing());
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: CircleBorder(),
-                      padding: EdgeInsets.all(15),
-                      backgroundColor: Colors.grey.shade300.withAlpha(20),
-                      shadowColor: Colors.transparent,
-                    ),
-                    child: Icon(
-                      _playing() ? Icons.pause : Icons.play_arrow,
-                      color: Colors.white,
-                      size: 42.0,
+            },
+          ),
+          WatchNotifier(
+            depends: [_loading, _playing],
+            builder:
+                (context) => IgnorePointer(
+                  ignoring: _loading.value,
+                  child: Opacity(
+                    opacity: _loading.value ? 0 : 1,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _activeTime = DateTime.now();
+                        _setPlaying(!_playing.value);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(15),
+                        backgroundColor: Colors.grey.shade300.withAlpha(20),
+                        shadowColor: Colors.transparent,
+                      ),
+                      child: Icon(
+                        _playing.value ? Icons.pause : Icons.play_arrow,
+                        color: Colors.white,
+                        size: 42.0,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              dependencies: [_loading, _playing],
-            ),
-            Watch((context) {
-              final onNext = widget.onNext();
+          ),
+          WatchNotifier(
+            depends: [widget.onNext],
+            builder: (context) {
+              final onNext = widget.onNext.value;
 
               return Opacity(
                 opacity: onNext == null ? 0.5 : 1.0,
@@ -830,63 +856,69 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
                   ),
                 ),
               );
-            }, dependencies: [widget.onNext]),
-            SizedBox(width: 8.0),
-          ],
-        ),
-      );
-    });
+            },
+          ),
+          SizedBox(width: 8.0),
+        ],
+      ),
+    );
   }
 
   Widget _buildIndicator() {
-    return Watch((context) {
-      if (!_loading()) return SizedBox.shrink();
+    return WatchNotifier(
+      depends: [_loading],
+      builder: (context) {
+        if (!_loading.value) return SizedBox.shrink();
 
-      return Positioned(
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
-        child: Center(
-          child: GestureDetector(
-            onTap: () {
-              _setPlaying(!_playing.value);
-            },
-            child: CircularProgressIndicator(
-              strokeWidth: 5.0,
-              color: Colors.white,
+        return Positioned(
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          child: Center(
+            child: GestureDetector(
+              onTap: () {
+                _setPlaying(!_playing.value);
+              },
+              child: CircularProgressIndicator(
+                strokeWidth: 5.0,
+                color: Colors.white,
+              ),
             ),
           ),
-        ),
-      );
-    }, dependencies: [_loading]);
+        );
+      },
+    );
   }
 
   Widget _buildError() {
-    return Watch((context) {
-      final error = _error();
-      if (error == null) return SizedBox.shrink();
+    return WatchNotifier(
+      depends: [_error],
+      builder: (context) {
+        final error = _error.value;
+        if (error == null) return SizedBox.shrink();
 
-      return Positioned(
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-          child: Center(
-            child: Text(
-              error,
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: Colors.white),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+        return Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            child: Center(
+              child: Text(
+                error,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: Colors.white),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
-        ),
-      ); // error
-    }, dependencies: [_error]);
+        ); // error
+      },
+    );
   }
 
   Widget _buildMobileBottomControls() {
@@ -902,19 +934,21 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Watch(
-                  (context) => Text(
-                    formatDuration(_position()),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  dependencies: [_position],
+                WatchNotifier(
+                  depends: [_position],
+                  builder:
+                      (context) => Text(
+                        formatDuration(_position.value),
+                        style: TextStyle(color: Colors.white),
+                      ),
                 ),
-                Watch(
-                  (context) => Text(
-                    ' / ${formatDuration(_duration())}',
-                    style: TextStyle(color: Colors.grey.shade300),
-                  ),
-                  dependencies: [_duration],
+                WatchNotifier(
+                  depends: [_duration],
+                  builder:
+                      (context) => Text(
+                        ' / ${formatDuration(_duration.value)}',
+                        style: TextStyle(color: Colors.grey.shade300),
+                      ),
                 ),
               ],
             ),
@@ -922,15 +956,18 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
               mainAxisSize: MainAxisSize.min,
               children: [
                 // full screen
-                Watch(
-                  (context) => IconButton(
-                    icon: Icon(
-                      _fullscreen() ? Icons.fullscreen_exit : Icons.fullscreen,
-                    ),
-                    color: Colors.white,
-                    onPressed: () => _setFullscreen(!_fullscreen.value),
-                  ),
-                  dependencies: [_fullscreen],
+                WatchNotifier(
+                  depends: [_fullscreen],
+                  builder:
+                      (context) => IconButton(
+                        icon: Icon(
+                          _fullscreen.value
+                              ? Icons.fullscreen_exit
+                              : Icons.fullscreen,
+                        ),
+                        color: Colors.white,
+                        onPressed: () => _setFullscreen(!_fullscreen.value),
+                      ),
                 ),
               ],
             ),
@@ -941,171 +978,177 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
   }
 
   Widget _buildMobileSliderProgress() {
-    return Watch(
-      (context) => Positioned(
-        top: 0,
-        bottom: _fullscreen() ? kToolbarHeight : 0,
-        left: _fullscreen() ? 16.0 : 0,
-        right: _fullscreen() ? 16.0 : 0,
-        child: AnimatedOpacity(
-          duration: _durationAnimate,
-          opacity: (_fullscreen() ? _showControls() : true) ? 1.0 : 0.0,
-          child: IgnorePointer(
-            ignoring: !(_fullscreen() ? _showControls() : true),
-            child: SliderEiga(
-              progress: _position.readonly(),
-              duration: _duration.readonly(),
-              showThumb: _showControls.readonly(),
-              pauseAutoHideControls: _pauseAutoHideControls.readonly(),
-              vttThumbnail: widget.thumbnailVtt.readonly(),
-              openingEnding: widget.openingEndingNotifier.readonly(),
-              onSeek: (position) {
-                final duration = _duration.value;
-                final seek = duration * position;
-                _controller.value?.seekTo(seek);
-              },
+    return WatchNotifier(
+      depends: [_showControls, _fullscreen],
+      builder:
+          (context) => Positioned(
+            top: 0,
+            bottom: _fullscreen.value ? kToolbarHeight : 0,
+            left: _fullscreen.value ? 16.0 : 0,
+            right: _fullscreen.value ? 16.0 : 0,
+            child: AnimatedOpacity(
+              duration: _durationAnimate,
+              opacity:
+                  (_fullscreen.value ? _showControls.value : true) ? 1.0 : 0.0,
+              child: IgnorePointer(
+                ignoring: !(_fullscreen.value ? _showControls.value : true),
+                child: SliderEiga(
+                  progress: _position,
+                  duration: _duration,
+                  showThumb: _showControls,
+                  pauseAutoHideControls: _pauseAutoHideControls,
+                  vttThumbnail: widget.thumbnailVtt,
+                  openingEnding: widget.openingEndingNotifier,
+                  onSeek: (position) {
+                    final duration = _duration.value;
+                    final seek = duration * position;
+                    _controller.value?.seekTo(seek);
+                  },
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      dependencies: [_showControls, _fullscreen],
     );
   }
 
   Widget _buildPopupOpeningEnding() {
-    return Watch((context) {
-      if (widget.openingEndingNotifier() == null) return SizedBox.shrink();
+    return WatchNotifier(
+      depends: [_stateOpeningEnding, widget.openingEndingNotifier],
+      builder: (context) {
+        if (widget.openingEndingNotifier.value == null)
+          return SizedBox.shrink();
 
-      final visible = _visibleTooltipSkipOE();
+        final visible = _visibleTooltipSkipOE.value;
 
-      final opening = widget.openingEndingNotifier()!.opening;
-      final ending = widget.openingEndingNotifier()!.ending;
+        final opening = widget.openingEndingNotifier.value!.opening;
+        final ending = widget.openingEndingNotifier.value!.ending;
 
-      final widgetTextSeconds = Text(
-        visible
-            ? '${_stateOpeningEnding() == _StateOpeningEnding.opening ? (opening!.end.inSeconds - _position.value.inSeconds).round() : (ending!.end.inSeconds - _position.value.inSeconds).round()} seconds'
-            : '0 seconds',
-        style: TextStyle(
-          color: Color.fromRGBO(209, 213, 219, 1.0),
-          fontSize: 11.0,
-        ),
-      );
+        final widgetTextSeconds = Text(
+          visible
+              ? '${_stateOpeningEnding.value == _StateOpeningEnding.opening ? (opening!.end.inSeconds - _position.value.inSeconds).round() : (ending!.end.inSeconds - _position.value.inSeconds).round()} seconds'
+              : '0 seconds',
+          style: TextStyle(
+            color: Color.fromRGBO(209, 213, 219, 1.0),
+            fontSize: 11.0,
+          ),
+        );
 
-      return AnimatedSwitcher(
-        duration: Duration(milliseconds: 444),
-        transitionBuilder:
-            (child, animation) =>
-                FadeTransition(opacity: animation, child: child),
-        child:
-            visible
-                ? Positioned(
-                  right: 10,
-                  bottom: 30,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                      vertical: Platform.isWindows ? 8.0 : 2.0,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(28, 28, 28, 0.9),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Wrap(
-                          alignment: WrapAlignment.center,
-                          children: [
-                            Text(
-                              'Skip ',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12.0,
+        return AnimatedSwitcher(
+          duration: Duration(milliseconds: 444),
+          transitionBuilder:
+              (child, animation) =>
+                  FadeTransition(opacity: animation, child: child),
+          child:
+              visible
+                  ? Positioned(
+                    right: 10,
+                    bottom: 30,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.0,
+                        vertical: Platform.isWindows ? 8.0 : 2.0,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(28, 28, 28, 0.9),
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            children: [
+                              Text(
+                                'Skip ',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12.0,
+                                ),
                               ),
-                            ),
-                            Text(
-                              _stateOpeningEnding() ==
-                                      _StateOpeningEnding.opening
-                                  ? 'Opening'
-                                  : 'Ending',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.w500,
+                              Text(
+                                _stateOpeningEnding.value ==
+                                        _StateOpeningEnding.opening
+                                    ? 'Opening'
+                                    : 'Ending',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          margin: EdgeInsets.symmetric(
-                            horizontal: 8.0,
-                          ).copyWith(right: 0.0),
-                          width: 1.0,
-                          height: 30.0,
-                          color: Color.fromRGBO(255, 255, 255, 0.28),
-                        ),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                if (_stateOpeningEnding() ==
-                                    _StateOpeningEnding.opening) {
-                                  _controller.value?.seekTo(
-                                    widget
-                                        .openingEndingNotifier
-                                        .value!
-                                        .opening!
-                                        .end,
-                                  );
-                                } else {
-                                  _controller.value?.seekTo(
-                                    widget
-                                        .openingEndingNotifier
-                                        .value!
-                                        .ending!
-                                        .end,
-                                  );
-                                }
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'Skip (Enter)',
-                                    style: TextStyle(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.9,
+                            ],
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                            ).copyWith(right: 0.0),
+                            width: 1.0,
+                            height: 30.0,
+                            color: Color.fromRGBO(255, 255, 255, 0.28),
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  if (_stateOpeningEnding.value ==
+                                      _StateOpeningEnding.opening) {
+                                    _controller.value?.seekTo(
+                                      widget
+                                          .openingEndingNotifier
+                                          .value!
+                                          .opening!
+                                          .end,
+                                    );
+                                  } else {
+                                    _controller.value?.seekTo(
+                                      widget
+                                          .openingEndingNotifier
+                                          .value!
+                                          .ending!
+                                          .end,
+                                    );
+                                  }
+                                },
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      'Skip (Enter)',
+                                      style: TextStyle(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.9,
+                                        ),
+                                        fontSize: 12.0,
                                       ),
-                                      fontSize: 12.0,
                                     ),
-                                  ),
-                                  widgetTextSeconds,
-                                ],
+                                    widgetTextSeconds,
+                                  ],
+                                ),
                               ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                _stateOpeningEnding.value =
-                                    _StateOpeningEnding.skip;
-                              },
-                              borderRadius: BorderRadius.circular(5.0),
-                              highlightColor: Colors.black,
-                              child: Icon(
-                                Icons.close,
-                                size: 16.0,
-                                color: Colors.white,
+                              InkWell(
+                                onTap: () {
+                                  _stateOpeningEnding.value =
+                                      _StateOpeningEnding.skip;
+                                },
+                                borderRadius: BorderRadius.circular(5.0),
+                                highlightColor: Colors.black,
+                                child: Icon(
+                                  Icons.close,
+                                  size: 16.0,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                )
-                : null,
-      );
-    }, dependencies: [_stateOpeningEnding, widget.openingEndingNotifier]);
+                  )
+                  : null,
+        );
+      },
+    );
   }
 
   Widget _buildOverlayInherit() {
@@ -1189,25 +1232,28 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
       isScrollControlled: true,
       showDragHandle: true,
       builder: (context) {
-        return Watch(
-          (context) => ListView.builder(
-            shrinkWrap: true,
-            itemCount: widget.subtitlesNotifier.value.length,
-            itemBuilder: (context, index) {
-              final item = widget.subtitlesNotifier.value.elementAt(index);
+        return WatchNotifier(
+          depends: [widget.subtitlesNotifier, _subtitleCode],
+          builder:
+              (context) => ListView.builder(
+                shrinkWrap: true,
+                itemCount: widget.subtitlesNotifier.value.length,
+                itemBuilder: (context, index) {
+                  final item = widget.subtitlesNotifier.value.elementAt(index);
 
-              return ListTile(
-                leading:
-                    _subtitleCode() == item.code ? Icon(Icons.check) : Text(''),
-                title: Text(item.language),
-                onTap: () {
-                  Navigator.pop(context);
-                  _subtitleCode.value = item.code;
+                  return ListTile(
+                    leading:
+                        _subtitleCode.value == item.code
+                            ? Icon(Icons.check)
+                            : Text(''),
+                    title: Text(item.language),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _subtitleCode.value = item.code;
+                    },
+                  );
                 },
-              );
-            },
-          ),
-          dependencies: [widget.subtitlesNotifier],
+              ),
         );
       },
     );
@@ -1219,27 +1265,28 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
       isScrollControlled: true,
       showDragHandle: true,
       builder: (context) {
-        return Watch(
-          (context) => ListView.builder(
-            shrinkWrap: true,
-            itemCount: _playbackList.length,
-            itemBuilder: (context, index) {
-              final item = _playbackList.elementAt(index);
+        return WatchNotifier(
+          depends: [_playbackSpeed],
+          builder:
+              (context) => ListView.builder(
+                shrinkWrap: true,
+                itemCount: _playbackList.length,
+                itemBuilder: (context, index) {
+                  final item = _playbackList.elementAt(index);
 
-              return ListTile(
-                leading:
-                    _playbackSpeed() == item.value
-                        ? Icon(Icons.check)
-                        : Text(''),
-                title: Text(item.label),
-                onTap: () {
-                  Navigator.pop(context);
-                  _playbackSpeed.value = item.value;
+                  return ListTile(
+                    leading:
+                        _playbackSpeed.value == item.value
+                            ? Icon(Icons.check)
+                            : Text(''),
+                    title: Text(item.label),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _playbackSpeed.value = item.value;
+                    },
+                  );
                 },
-              );
-            },
-          ),
-          dependencies: [_playbackSpeed],
+              ),
         );
       },
     );
@@ -1270,27 +1317,28 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
       isScrollControlled: true,
       showDragHandle: true,
       builder: (context) {
-        return Watch(
-          (context) => ListView.builder(
-            shrinkWrap: true,
-            itemCount: _availableResolutions.length,
-            itemBuilder: (context, index) {
-              final item = _availableResolutions.elementAt(index);
+        return WatchNotifier(
+          depends: [_availableResolutions],
+          builder:
+              (context) => ListView.builder(
+                shrinkWrap: true,
+                itemCount: _availableResolutions.value.length,
+                itemBuilder: (context, index) {
+                  final item = _availableResolutions.value.elementAt(index);
 
-              return ListTile(
-                leading:
-                    _qualityCode.value == item.code
-                        ? Icon(Icons.check)
-                        : Text(''),
-                title: Text(item.label),
-                onTap: () {
-                  Navigator.pop(context);
-                  _qualityCode.value = item.code;
+                  return ListTile(
+                    leading:
+                        _qualityCode.value == item.code
+                            ? Icon(Icons.check)
+                            : Text(''),
+                    title: Text(item.label),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _qualityCode.value = item.code;
+                    },
+                  );
                 },
-              );
-            },
-          ),
-          dependencies: [_availableResolutions],
+              ),
         );
       },
     );
@@ -1314,92 +1362,108 @@ class _PlayerEigaState extends State<PlayerEiga> with SignalsMixin {
       isScrollControlled: true,
       showDragHandle: true,
       builder: (context) {
-        return Watch(
-          (context) => ListView(
-            shrinkWrap: true,
-            children: [
-              if (_availableResolutions.isNotEmpty)
-                ListTile(
-                  leading: Icon(Icons.tune),
-                  title: Text('Quality', style: TextStyle(fontSize: 14.0)),
-                  trailing: Text(
-                    _availableResolutions.firstWhere((item) {
-                      return item.code == _qualityCode.value;
-                    }, orElse: () => _availableResolutions.first).label,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
+        return WatchNotifier(
+          depends: [_availableResolutions, _subtitleCode],
+          builder:
+              (context) => ListView(
+                shrinkWrap: true,
+                children: [
+                  if (_availableResolutions.value.isNotEmpty)
+                    ListTile(
+                      leading: Icon(Icons.tune),
+                      title: Text('Quality', style: TextStyle(fontSize: 14.0)),
+                      trailing: Text(
+                        _availableResolutions.value.firstWhere(
+                          (item) {
+                            return item.code == _qualityCode.value;
+                          },
+                          orElse: () => _availableResolutions.value.first,
+                        ).label,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _showQualityOptions();
+                      },
                     ),
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _showQualityOptions();
-                  },
-                ),
-              ListTile(
-                leading: Icon(Icons.speed_outlined),
-                title: Text('Playback Speed', style: TextStyle(fontSize: 14.0)),
-                trailing: Text(
-                  _playbackList.firstWhere((item) {
-                    return item.value == _playbackSpeed.value;
-                  }).label,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  _showPlaybackOptions();
-                },
-              ),
-              Opacity(
-                opacity: _availableResolutions.isNotEmpty ? 1.0 : 0.5,
-                child: IgnorePointer(
-                  ignoring: !_availableResolutions.isNotEmpty,
-                  child: ListTile(
-                    leading: Icon(Icons.subtitles_outlined),
-                    title: Text('Subtitle', style: TextStyle(fontSize: 14.0)),
-                    trailing:
-                        _subtitleCode() == null
-                            ? null
-                            : Text(
-                              widget.subtitlesNotifier.value.firstWhere((item) {
-                                return item.code == _subtitleCode.value;
-                              }).language,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
+                  ListTile(
+                    leading: Icon(Icons.speed_outlined),
+                    title: Text(
+                      'Playback Speed',
+                      style: TextStyle(fontSize: 14.0),
+                    ),
+                    trailing: Text(
+                      _playbackList.firstWhere((item) {
+                        return item.value == _playbackSpeed.value;
+                      }).label,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
                     onTap: () {
                       Navigator.pop(context);
-                      _showSubtitleOptions();
+                      _showPlaybackOptions();
                     },
                   ),
-                ),
+                  Opacity(
+                    opacity: _availableResolutions.value.isNotEmpty ? 1.0 : 0.5,
+                    child: IgnorePointer(
+                      ignoring: !_availableResolutions.value.isNotEmpty,
+                      child: ListTile(
+                        leading: Icon(Icons.subtitles_outlined),
+                        title: Text(
+                          'Subtitle',
+                          style: TextStyle(fontSize: 14.0),
+                        ),
+                        trailing:
+                            _subtitleCode.value == null
+                                ? null
+                                : Text(
+                                  widget.subtitlesNotifier.value.firstWhere((
+                                    item,
+                                  ) {
+                                    return item.code == _subtitleCode.value;
+                                  }).language,
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          _showSubtitleOptions();
+                        },
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.lock_outline),
+                    title: Text(
+                      'Screen Lock',
+                      style: TextStyle(fontSize: 14.0),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      // Add additional functionality here
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.autorenew_outlined),
+                    title: Text('Auto Play', style: TextStyle(fontSize: 14.0)),
+                    trailing: Switch(
+                      value: _autoPlay.value,
+                      onChanged: (value) {
+                        _autoPlay.value = value;
+                      },
+                    ),
+                    onTap: () {
+                      _autoPlay.value = !_autoPlay.value;
+                    },
+                  ),
+                ],
               ),
-              ListTile(
-                leading: Icon(Icons.lock_outline),
-                title: Text('Screen Lock', style: TextStyle(fontSize: 14.0)),
-                onTap: () {
-                  Navigator.pop(context);
-                  // Add additional functionality here
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.autorenew_outlined),
-                title: Text('Auto Play', style: TextStyle(fontSize: 14.0)),
-                trailing: Switch(
-                  value: _autoPlay(),
-                  onChanged: (value) {
-                    _autoPlay.value = value;
-                  },
-                ),
-                onTap: () {
-                  _autoPlay.value = !_autoPlay();
-                },
-              ),
-            ],
-          ),
-          dependencies: [_availableResolutions],
         );
       },
     );

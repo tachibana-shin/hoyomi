@@ -25,7 +25,6 @@ import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
-import 'package:signals/signals_flutter.dart';
 
 import 'package:hoyomi/core_services/eiga/eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
@@ -62,7 +61,7 @@ class DetailsEigaPage extends StatefulWidget {
 }
 
 class _DetailsEigaPageState extends State<DetailsEigaPage>
-    with TickerProviderStateMixin, SignalsMixin {
+    with TickerProviderStateMixin {
   late final EigaService _service;
   final ValueNotifier<MetaEiga> _metaEiga = ValueNotifier(
     MetaEiga.createFakeData(),
@@ -374,15 +373,15 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           );
         }
       },
-      subtitlesNotifier: _subtitlesNotifier.toSignal(),
+      subtitlesNotifier: _subtitlesNotifier,
       sourceNotifier: _sourceNotifier,
       posterNotifier: _posterNotifier,
-      thumbnailVtt: _thumbnailVtt.toSignal(),
-      openingEndingNotifier: _openingEndingNotifier.toSignal(),
+      thumbnailVtt: _thumbnailVtt,
+      openingEndingNotifier: _openingEndingNotifier,
       aspectRatio: _aspectRatio,
       fetchSourceContent: _service.fetchSourceContent,
-      onPrev: _onPrevNotifier.toSignal(),
-      onNext: _onNextNotifier.toSignal(),
+      onPrev: _onPrevNotifier,
+      onNext: _onNextNotifier,
       overlayNotifier: _overlayNotifier,
     );
   }
