@@ -39,6 +39,9 @@ class TruyenQQService extends TruyenGGService {
         name: 'Visit Read ID',
         placeholder: '<13 char>-<13 char>',
         defaultFn: (_) => '${_generateRandomHex(13)}-${_generateRandomHex(13)}',
+        maxLines: 1,
+        appear: true,
+        description: 'The cookie value to use when reading comics.',
       ),
     ],
     onBeforeInsertCookie: (String? cookie) {

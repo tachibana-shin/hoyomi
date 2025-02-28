@@ -79,5 +79,5 @@ A new Flutter project.
 
 - [x] Fix manga layout
 
-- [ ] Page settings for services
+- [x] Page settings for services
 <!-- provider or mobx -->
