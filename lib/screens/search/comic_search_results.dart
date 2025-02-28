@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
-import 'package:hoyomi/core_services/interfaces/paginate.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
@@ -24,20 +22,6 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
   @override
   bool get wantKeepAlive => true;
 
-  final Map<String, Future<Paginate<Comic>>> _searchFutures = {};
-
-  Future<List<Paginate<Comic>>> _fetchSearchResults() async {
-    // Trigger search for each service
-    for (var service in comicServices) {
-      _searchFutures[service.uid] = service.search(
-        keyword: widget.keyword,
-        page: 1,
-        filters: {},
-      );
-    }
-    return Future.wait(_searchFutures.values);
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -51,57 +35,60 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
     }
 
     return PullRefreshPage(
-      onLoadData: _fetchSearchResults,
-      onLoadFake:
-          () => List.generate(
-            comicServices.length,
-            (_) => Paginate.createFakeData(
-              List.generate(30, (_) => Comic.createFakeData()),
-            ),
-          ),
+      onLoadData: () async => false,
+      onLoadFake: () => true,
       builder:
-          (_, __) => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:
-                comicServices.map((service) {
-                  final searchResult = _searchFutures[service.uid]!;
-                  final itemsFuture = searchResult.then(
-                    (data) =>
-                        data.items
-                            .map(
-                              (item) => ComicExtend(
-                                comic: item,
-                                sourceId: service.uid,
-                              ),
-                            )
-                            .toList(),
-                  );
-                  String subtitle = '';
+          (loading, __) =>
+              loading
+                  ? SizedBox.shrink()
+                  : ListView.builder(
+                    itemCount: comicServices.length,
+                    itemBuilder: (context, index) {
+                      final service = comicServices.elementAt(index);
 
-                  return StatefulBuilder(
-                    builder: (context, setState) {
-                      if (subtitle == '') {
-                        searchResult.then((data) {
-                          setState(() {
-                            subtitle = '${data.totalItems} results';
-                          });
-                        });
-                      }
+                      final searchResult = service.search(
+                        keyword: widget.keyword,
+                        page: 1,
+                        filters: {},
+                      );
+                      final itemsFuture = searchResult.then(
+                        (data) =>
+                            data.items
+                                .map(
+                                  (item) => ComicExtend(
+                                    comic: item,
+                                    sourceId: service.uid,
+                                  ),
+                                )
+                                .toList(),
+                      );
 
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8.0),
-                        child: HorizontalComicList(
-                          itemsFuture: itemsFuture,
-                          title: service.name,
-                          subtitle: subtitle,
-                          more:
-                              '/search/comic/${service.uid}?q=${widget.keyword}',
-                        ),
+                      String subtitle = '';
+
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          if (subtitle == '') {
+                            searchResult.then((data) {
+                              setState(() {
+                                subtitle = '${data.totalItems} results';
+                              });
+                            });
+                          }
+
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: HorizontalComicList(
+                              itemsFuture: itemsFuture,
+                              title: service.name,
+                              subtitle: subtitle,
+                              more:
+                                  '/search/comic/${service.uid}?q=${widget.keyword}',
+                            ),
+                          );
+                        },
                       );
                     },
-                  );
-                }).toList(),
-          ),
+                  ),
     );
   }
 }

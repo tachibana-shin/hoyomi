@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
-import 'package:hoyomi/core_services/interfaces/paginate.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
@@ -20,21 +18,6 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
   @override
   bool get wantKeepAlive => true;
 
-  final Map<String, Future<Paginate<Eiga>>> _searchFutures = {};
-
-  Future<List<Paginate<Eiga>>> _fetchSearchResults() async {
-    // Trigger search for each service
-    for (var service in eigaServices) {
-      _searchFutures[service.uid] = service.search(
-        keyword: widget.keyword,
-        page: 1,
-        filters: {},
-      );
-    }
-
-    return Future.wait(_searchFutures.values);
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -48,55 +31,60 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
     }
 
     return PullRefreshPage(
-      onLoadData: _fetchSearchResults,
-      onLoadFake:
-          () => List.generate(
-            eigaServices.length,
-            (_) => Paginate.createFakeData(
-              List.generate(30, (_) => Eiga.createFakeData()),
-            ),
-          ),
+      onLoadData: () async => false,
+      onLoadFake: () => true,
       builder:
-          (_, __) => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:
-                eigaServices.map((service) {
-                  final searchResult = _searchFutures[service.uid]!;
-                  final itemsFuture = searchResult.then(
-                    (data) =>
-                        data.items
-                            .map(
-                              (item) =>
-                                  EigaExtend(eiga: item, sourceId: service.uid),
-                            )
-                            .toList(),
-                  );
-                  String subtitle = '';
+          (loading, __) =>
+              loading
+                  ? SizedBox.shrink()
+                  : ListView.builder(
+                    itemCount: eigaServices.length,
+                    itemBuilder: (context, index) {
+                      final service = eigaServices.elementAt(index);
 
-                  return StatefulBuilder(
-                    builder: (context, setState) {
-                      if (subtitle == '') {
-                        searchResult.then((data) {
-                          setState(() {
-                            subtitle = '${data.totalItems} results';
-                          });
-                        });
-                      }
+                      final searchResult = service.search(
+                        keyword: widget.keyword,
+                        page: 1,
+                        filters: {},
+                      );
+                      final itemsFuture = searchResult.then(
+                        (data) =>
+                            data.items
+                                .map(
+                                  (item) => EigaExtend(
+                                    eiga: item,
+                                    sourceId: service.uid,
+                                  ),
+                                )
+                                .toList(),
+                      );
 
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8.0),
-                        child: HorizontalEigaList(
-                          itemsFuture: itemsFuture,
-                          title: service.name,
-                          subtitle: subtitle,
-                          more:
-                              '/search/eiga/${service.uid}?q=${widget.keyword}',
-                        ),
+                      String subtitle = '';
+
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          if (subtitle == '') {
+                            searchResult.then((data) {
+                              setState(() {
+                                subtitle = '${data.totalItems} results';
+                              });
+                            });
+                          }
+
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: HorizontalEigaList(
+                              itemsFuture: itemsFuture,
+                              title: service.name,
+                              subtitle: subtitle,
+                              more:
+                                  '/search/eiga/${service.uid}?q=${widget.keyword}',
+                            ),
+                          );
+                        },
                       );
                     },
-                  );
-                }).toList(),
-          ),
+                  ),
     );
   }
 }
