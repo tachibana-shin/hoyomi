@@ -8,7 +8,6 @@ import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/screens/home_comic/manga_reader.dart';
 
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';

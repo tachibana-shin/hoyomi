@@ -1,4 +1,3 @@
-import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/comic/comic_service.dart';
 import 'package:hoyomi/core_services/eiga/eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/services/animevietsub/main.dart';
