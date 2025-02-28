@@ -6,7 +6,6 @@ import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/history_item.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
-import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/utils/format_watch_update_at.dart';
 import 'package:hoyomi/widgets/library/history/eiga/eiga_history.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';

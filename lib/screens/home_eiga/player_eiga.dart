@@ -1015,8 +1015,9 @@ class _PlayerEigaState extends State<PlayerEiga> {
     return WatchNotifier(
       depends: [_stateOpeningEnding, widget.openingEndingNotifier],
       builder: (context) {
-        if (widget.openingEndingNotifier.value == null)
+        if (widget.openingEndingNotifier.value == null) {
           return SizedBox.shrink();
+        }
 
         final visible = _visibleTooltipSkipOE.value;
 
