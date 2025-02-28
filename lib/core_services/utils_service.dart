@@ -84,6 +84,18 @@ abstract class UtilsService {
       maxLines: 5,
     ),
   ];
+  UtilsService() {
+    // init settings appear
+    if (init.settings != null) {
+      for (final field in init.settings!) {
+        if (field is FieldInput && field.appear) {
+          if (getSetting(field.name) == null) {
+            setSetting(field.name, field.defaultFn(this as Service));
+          }
+        }
+      }
+    }
+  }
   String? getSetting(String name) {
     final settings = ServiceSettingController.getSettings(sourceId: uid);
     return settings?[name];
