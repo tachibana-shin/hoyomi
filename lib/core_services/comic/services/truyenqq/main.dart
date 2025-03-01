@@ -37,6 +37,7 @@ class TruyenQQService extends TruyenGGService {
     settings: [
       FieldInput(
         name: 'Visit Read ID',
+        key: 'visit_read',
         placeholder: '<13 char>-<13 char>',
         defaultFn: (_) => '${_generateRandomHex(13)}-${_generateRandomHex(13)}',
         maxLines: 1,

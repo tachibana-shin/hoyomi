@@ -11,6 +11,7 @@ class FieldInput extends SettingField {
 
   const FieldInput({
     required super.name,
+    required super.key,
     super.description,
     required this.placeholder,
     required this.defaultFn,

@@ -4,7 +4,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:hoyomi/controller/cookie.dart';
 import 'package:hoyomi/controller/service_setting.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/setting/field_input.dart';
@@ -13,7 +12,6 @@ import 'package:hoyomi/core_services/interfaces/user.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/core_services/service.dart';
-import 'package:hoyomi/database/scheme/cookie_manager.dart';
 import 'package:hoyomi/database/scheme/service_setting.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:html/dom.dart' as d;
@@ -50,24 +48,76 @@ class ServiceInit {
   });
 }
 
-abstract class UtilsService {
+mixin _SettingsMixin {
+  String get uid;
   ServiceInit get init;
 
+  void _initSettings() {
+    // init settings appear
+    if (init.settings != null) {
+      for (final field in init.settings!) {
+        if (field is FieldInput && field.appear) {
+          if (getSetting(key: field.key) == null) {
+            setSetting(field.key, field.defaultFn(this as Service));
+          }
+        }
+      }
+    }
+  }
+
+  String? getSetting({required String key}) {
+    final settings = ServiceSettingController.getSettings(sourceId: uid);
+    return settings?[key];
+  }
+
+  Future<String?> getSettingAsync({required String key}) async {
+    final settings =
+        await ServiceSettingController.getSettingsAsync(sourceId: uid);
+    return settings?[key];
+  }
+
+  Future<void> setSetting(String name, String value) async {
+    final record = ServiceSettingController.get(sourceId: uid) ??
+        ServiceSetting(
+          sourceId: uid,
+          settings: null,
+          userDataCache: null,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
+    try {
+      record.settings = jsonEncode({
+        if (record.settings != null) ...jsonDecode(record.settings!),
+        name: value,
+      });
+    } catch (err) {
+      record.settings = jsonEncode({name: value});
+    }
+
+    await ServiceSettingController.save(record);
+  }
+}
+
+abstract class UtilsService with _SettingsMixin {
   static final List<SettingField> settingsDefault = [
     FieldInput(
       name: 'URL',
+      key: 'url',
       defaultFn: (service) => service.init.rootUrl,
       placeholder: 'Example https://example.com',
       description: 'The root URL of the service',
     ),
     FieldInput(
       name: 'RSS',
+      key: 'rss',
       defaultFn: (service) => service.init.rss ?? '',
       placeholder: 'Example https://example.com/rss',
       description: 'The RSS feed of the service',
     ),
     FieldInput(
       name: 'User Agent',
+      key: 'user_agent',
       defaultFn: (service) =>
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       placeholder:
@@ -77,55 +127,24 @@ abstract class UtilsService {
     ),
     FieldInput(
       name: 'Cookie',
+      key: 'cookie',
       defaultFn: (service) => '',
       placeholder: 'Example cookie',
-      description: 'The cookie to use when fetching data',
+      description: 'The cookie to use when fetching data. This field sync if service auth. It can change on after login with WebView',
       maxLines: 5,
     ),
   ];
   UtilsService() {
     // init settings appear
-    if (init.settings != null) {
-      for (final field in init.settings!) {
-        if (field is FieldInput && field.appear) {
-          if (getSetting(field.name) == null) {
-            setSetting(field.name, field.defaultFn(this as Service));
-          }
-        }
-      }
-    }
-  }
-  String? getSetting(String name) {
-    final settings = ServiceSettingController.getSettings(sourceId: uid);
-    return settings?[name];
-  }
-
-  Future<void> setSetting(String name, String value) async {
-    final record = ServiceSettingController.get(sourceId: uid) ??
-        ServiceSetting(
-          sourceId: uid,
-          settings: null,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
-
-    try {
-      record.settings = jsonEncode({
-        ...jsonDecode(record.settings ?? '{}'),
-        name: value,
-      });
-    } catch (err) {
-      record.settings = jsonEncode({name: value});
-    }
-
-    await ServiceSettingController.save(record);
+    _initSettings();
   }
 
   String get baseUrl {
-    return getSetting('URL') ?? init.rootUrl;
+    return getSetting(key: 'url') ?? init.rootUrl;
   }
 
   String get name => init.name;
+  @override
   String get uid => init.uid ?? name.toLowerCase().replaceAll(r"\s", "-");
   String? _faviconUrl;
   String get faviconUrl =>
@@ -249,12 +268,9 @@ abstract class UtilsService {
     Map<String, dynamic>? body,
     Map<String, String>? headers,
   }) async {
-    String? cookiesText = cookie ?? getSetting('Cookie');
-
-    final row = await CookieController.getAsync(sourceId: uid);
-    if (cookiesText == null || cookiesText.isEmpty) {
-      cookiesText = row?.cookie;
-    }
+    final record =
+        await ServiceSettingController.getSettingsAsync(sourceId: uid);
+    String? cookiesText = cookie ?? record?['cookie'] as String?;
 
     cookiesText = init.onBeforeInsertCookie?.call(cookiesText) ?? cookiesText;
 
@@ -283,7 +299,7 @@ abstract class UtilsService {
       'sec-fetch-site': 'same-origin',
       'sec-fetch-user': '?1',
       'upgrade-insecure-requests': '1',
-      'user-agent': getSetting('User Agent') ??
+      'user-agent': record?['user_agent'] as String? ??
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
     };
 
@@ -418,87 +434,102 @@ abstract class UtilsService {
 
     final service = this as AuthMixin;
     // save to cache
-    final oldData = await CookieController.getAsync(sourceId: uid) ??
-        CookieManager(
-          sourceId: uid,
-          cookie: cookie,
-          userAgent: userAgent,
-          user: null, // jsonEncode(user.toJson()),
-          createdAt: DateTime.now(),
-          userUpdatedAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
+    final ServiceSetting oldData =
+        await ServiceSettingController.getAsync(sourceId: uid) ??
+            ServiceSetting(
+              sourceId: uid,
+              settings: null,
+              userDataCache: null,
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+            );
     try {
       final user = await service.getUser(cookie: cookie);
+      final jsonNewUserData = jsonEncode(user.toJson());
 
-      if (oldData.user != jsonEncode(user.toJson())) {
-        oldData.userUpdatedAt = DateTime.now();
+      if (oldData.userDataCache != jsonNewUserData) {
+        oldData.userDataCache = jsonNewUserData;
       }
 
-      oldData
-        ..cookie = cookie
-        ..userAgent = userAgent
-        ..user = jsonEncode(user.toJson())
-        ..updatedAt = DateTime.now();
+      final currentSettings =
+          await ServiceSettingController.getSettingsAsync(sourceId: uid) ?? {};
+
+      currentSettings['cookie'] = cookie;
+      currentSettings['user_agent'] = userAgent;
+
+      oldData.settings = jsonEncode(currentSettings);
+      oldData.updatedAt = DateTime.now();
 
       _userFuture = Future.value(user);
 
-      await CookieController.save(oldData);
+      await ServiceSettingController.save(oldData);
 
       return user;
     } on UserNotFoundException catch (_) {
-      oldData.cookie = cookie;
-      oldData.user = null;
+      final currentSettings =
+          await ServiceSettingController.getSettingsAsync(sourceId: uid) ?? {};
 
-      await CookieController.save(oldData);
+      currentSettings['cookie'] = cookie;
+      oldData.userDataCache = null;
+      oldData.settings = jsonEncode(currentSettings);
+      oldData.updatedAt = DateTime.now();
+
+      await ServiceSettingController.save(oldData);
 
       rethrow;
     }
   }
 
-  Future<User> fetchUser({CookieManager? row, bool? recordLoaded}) async {
-    return _userFuture ??= _fetchUser(row: row, recordLoaded: recordLoaded);
+  Future<User> fetchUser({ServiceSetting? row, bool? recordLoaded}) async {
+    return _userFuture ??= _fetchUser(record: row, recordLoaded: recordLoaded);
   }
 
-  Future<User> _fetchUser({CookieManager? row, bool? recordLoaded}) async {
+  Future<User> _fetchUser({ServiceSetting? record, bool? recordLoaded}) async {
     if (this is! AuthMixin) {
       throw Exception('Service must be an instance of AuthMixin');
     }
     final service = this as AuthMixin;
 
-    row = recordLoaded == true
-        ? row
-        : await CookieController.getAsync(sourceId: uid);
-    final cookie = row?.cookie;
-    var user = row?.user;
+    record = recordLoaded == true
+        ? record
+        : await ServiceSettingController.getAsync(sourceId: uid);
+    final settings = jsonDecode(record?.settings ?? '{}');
+    final cookie = settings is Map ? settings['cookie'] : null;
+    var user = record?.userDataCache;
 
     try {
       if (cookie == null) throw UserNotFoundException();
       // if (user == null) {
       user = jsonEncode((await service.getUser(cookie: cookie)).toJson());
 
-      row ??= CookieManager(
+      record ??= ServiceSetting(
         sourceId: uid,
-        cookie: cookie,
-        userAgent: null,
-        user: user,
+        settings: null,
+        userDataCache: null,
         createdAt: DateTime.now(),
-        userUpdatedAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
 
-      row.user = user;
+      record.userDataCache = user;
 
-      await CookieController.save(row);
+      await ServiceSettingController.save(record);
       // }
 
       return User.fromJson(jsonDecode(user));
     } on UserNotFoundException catch (_) {
-      if (row != null) {
-        row.cookie = cookie;
-        row.user = null;
+      if (record != null) {
+        Map settings;
+        try {
+          settings = jsonDecode(record.settings ?? '{}');
+        } catch (err) {
+          settings = {};
+        }
 
-        await CookieController.save(row);
+        settings['cookie'] = cookie;
+
+        record.userDataCache = null;
+
+        await ServiceSettingController.save(record);
       }
 
       rethrow;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/controller/cookie.dart';
+import 'package:hoyomi/controller/service_setting.dart';
 
 class OImage {
   final String src;
@@ -82,7 +82,7 @@ class OImage {
       );
     }
 
-    final cookie = CookieController.get(sourceId: sourceId);
+    final setting = ServiceSettingController.getSettings(sourceId: sourceId);
 
     return Image.network(
       src,
@@ -107,8 +107,8 @@ class OImage {
       filterQuality: filterQuality,
       isAntiAlias: isAntiAlias,
       headers: {
-        'set-cookie': cookie?.cookie ?? '',
-        'user-agent': cookie?.userAgent ?? '',
+        'set-cookie': setting?['cookie'] ?? '',
+        'user-agent': setting?['user_agent'] ?? '',
         ...headers ?? {},
       },
       cacheWidth: cacheWidth,

@@ -1,11 +1,10 @@
-import 'package:hoyomi/database/scheme/service_setting.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'scheme/comic.dart';
-import 'scheme/cookie_manager.dart';
 import 'scheme/history_chap.dart';
 import 'scheme/settings.dart';
+import 'scheme/service_setting.dart';
 
 late Isar isar;
 Future<void> initializeIsar() async {
@@ -24,7 +23,6 @@ Future<void> initializeIsar() async {
   final dir = await getApplicationDocumentsDirectory();
   isar = await Isar.open([
     ComicSchema,
-    CookieManagerSchema,
     HistoryChapSchema,
     SettingsSchema,
     ServiceSettingSchema,

@@ -9,7 +9,11 @@ class ServiceSetting {
   @Index(unique: true)
   late String sourceId;
 
+  /// This field save all field: cookie, user agent...
   late String? settings;
+
+  /// Cache user data
+  late String? userDataCache;
 
   @Index()
   final DateTime createdAt;
@@ -20,6 +24,7 @@ class ServiceSetting {
   ServiceSetting({
     required this.sourceId,
     required this.settings,
+    required this.userDataCache,
     required this.createdAt,
     required this.updatedAt,
   });

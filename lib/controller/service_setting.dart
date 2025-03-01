@@ -22,6 +22,18 @@ class ServiceSettingController {
     }
   }
 
+  static Future<Map?> getSettingsAsync({required String sourceId}) async {
+    final data = await getAsync(sourceId: sourceId);
+
+    try {
+      return _dataStoreSettings[sourceId] ??= jsonDecode(
+        data?.settings ?? '{}',
+      );
+    } catch (err) {
+      return null;
+    }
+  }
+
   static ServiceSetting? get({required String sourceId}) {
     return _dataStoreSync[sourceId] ??=
         _serviceSettingBox.where().sourceIdEqualTo(sourceId).findFirstSync();

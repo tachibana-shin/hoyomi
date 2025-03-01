@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:hoyomi/controller/cookie.dart';
+import 'package:hoyomi/controller/service_setting.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/core_services/service.dart';
@@ -45,12 +45,12 @@ UserData useUser(
     try {
       if (service is! Service) return;
 
-      final record = await CookieController.getAsync(
+      final record = await ServiceSettingController.getAsync(
         sourceId: (service as Service).uid,
       );
 
       if (record != null) {
-        final json = record.user;
+        final json = record.userDataCache;
 
         if (context != null && (context as State).mounted) {
           user.value = json == null ? null : User.fromJson(jsonDecode(json));
