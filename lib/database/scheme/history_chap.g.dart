@@ -361,7 +361,7 @@ extension HistoryChapQueryWhere
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterWhereClause>
-  createdAtGreaterThan(DateTime createdAt, {bool include = false}) {
+      createdAtGreaterThan(DateTime createdAt, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IndexWhereClause.between(
@@ -413,7 +413,7 @@ extension HistoryChapQueryWhere
 extension HistoryChapQueryFilter
     on QueryBuilder<HistoryChap, HistoryChap, QFilterCondition> {
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  chapterIdEqualTo(String value, {bool caseSensitive = true}) {
+      chapterIdEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(
@@ -426,7 +426,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  chapterIdGreaterThan(
+      chapterIdGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -444,7 +444,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  chapterIdLessThan(
+      chapterIdLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -462,7 +462,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  chapterIdBetween(
+      chapterIdBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -484,7 +484,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  chapterIdStartsWith(String value, {bool caseSensitive = true}) {
+      chapterIdStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.startsWith(
@@ -497,7 +497,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  chapterIdEndsWith(String value, {bool caseSensitive = true}) {
+      chapterIdEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.endsWith(
@@ -510,7 +510,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  chapterIdContains(String value, {bool caseSensitive = true}) {
+      chapterIdContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.contains(
@@ -523,7 +523,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  chapterIdMatches(String pattern, {bool caseSensitive = true}) {
+      chapterIdMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.matches(
@@ -536,7 +536,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  chapterIdIsEmpty() {
+      chapterIdIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'chapterId', value: ''),
@@ -545,7 +545,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  chapterIdIsNotEmpty() {
+      chapterIdIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(property: r'chapterId', value: ''),
@@ -564,7 +564,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  comicGreaterThan(int value, {bool include = false}) {
+      comicGreaterThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(
@@ -611,7 +611,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  createdAtEqualTo(DateTime value) {
+      createdAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'createdAt', value: value),
@@ -620,7 +620,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  createdAtGreaterThan(DateTime value, {bool include = false}) {
+      createdAtGreaterThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(
@@ -633,7 +633,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  createdAtLessThan(DateTime value, {bool include = false}) {
+      createdAtLessThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.lessThan(
@@ -646,7 +646,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  createdAtBetween(
+      createdAtBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
@@ -666,7 +666,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  currentPageEqualTo(double value, {double epsilon = Query.epsilon}) {
+      currentPageEqualTo(double value, {double epsilon = Query.epsilon}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(
@@ -679,7 +679,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  currentPageGreaterThan(
+      currentPageGreaterThan(
     double value, {
     bool include = false,
     double epsilon = Query.epsilon,
@@ -697,7 +697,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  currentPageLessThan(
+      currentPageLessThan(
     double value, {
     bool include = false,
     double epsilon = Query.epsilon,
@@ -715,7 +715,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  currentPageBetween(
+      currentPageBetween(
     double lower,
     double upper, {
     bool includeLower = true,
@@ -822,7 +822,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  maxPageGreaterThan(int value, {bool include = false}) {
+      maxPageGreaterThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(
@@ -869,7 +869,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  updatedAtEqualTo(DateTime value) {
+      updatedAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'updatedAt', value: value),
@@ -878,7 +878,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  updatedAtGreaterThan(DateTime value, {bool include = false}) {
+      updatedAtGreaterThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(
@@ -891,7 +891,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  updatedAtLessThan(DateTime value, {bool include = false}) {
+      updatedAtLessThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.lessThan(
@@ -904,7 +904,7 @@ extension HistoryChapQueryFilter
   }
 
   QueryBuilder<HistoryChap, HistoryChap, QAfterFilterCondition>
-  updatedAtBetween(
+      updatedAtBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,

@@ -65,10 +65,9 @@ class _TabViewEigaState extends State<TabViewEiga>
                           .toList(),
                     ),
                     title: section.name,
-                    more:
-                        section.sectionId != null
-                            ? '/section_eiga/${widget.service.uid}/${section.sectionId}'
-                            : null,
+                    more: section.sectionId != null
+                        ? '/section_eiga/${widget.service.uid}/${section.sectionId}'
+                        : null,
                   );
                 }
 
@@ -84,10 +83,9 @@ class _TabViewEigaState extends State<TabViewEiga>
                         .toList(),
                   ),
                   title: section.name,
-                  more:
-                      section.sectionId != null
-                          ? '/section_eiga/${widget.service.uid}/${section.sectionId}'
-                          : null,
+                  more: section.sectionId != null
+                      ? '/section_eiga/${widget.service.uid}/${section.sectionId}'
+                      : null,
                 );
               },
             );

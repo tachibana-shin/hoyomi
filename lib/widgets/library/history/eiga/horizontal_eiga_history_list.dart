@@ -85,12 +85,12 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
         final viewportFraction = 1 / crossAxisCount;
         final height =
             1 / childAspectRatio * (screenWidth * viewportFraction - 8.0) +
-            3.0 +
-            14.0 * 2 +
-            12.0 * 2 +
-            2.0 +
-            5.0 +
-            (needSubtitle ? 11.0 * 2 : 0);
+                3.0 +
+                14.0 * 2 +
+                12.0 * 2 +
+                2.0 +
+                5.0 +
+                (needSubtitle ? 11.0 * 2 : 0);
 
         return SizedBox(height: height, child: builder(viewportFraction));
       },
@@ -116,35 +116,31 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
             title: title,
             subtitle: '',
             more: more,
-            builder:
-                (viewFraction) => Center(
-                  child: UtilsService.errorWidgetBuilder(
-                    context,
-                    error: snapshot.error,
-                    service: _service as Service,
-                    orElse: (error) => Text('Error: $error'),
-                  ),
-                ),
+            builder: (viewFraction) => Center(
+              child: UtilsService.errorWidgetBuilder(
+                context,
+                error: snapshot.error,
+                service: _service as Service,
+                orElse: (error) => Text('Error: $error'),
+              ),
+            ),
             needSubtitle: false,
           );
         }
 
         final loading = snapshot.connectionState == ConnectionState.waiting;
-        final data =
-            loading
-                ? List.generate(
-                  30,
-                  (_) => HistoryItem.createFakeData(Eiga.createFakeData()),
-                )
-                : snapshot.data!;
+        final data = loading
+            ? List.generate(
+                30,
+                (_) => HistoryItem.createFakeData(Eiga.createFakeData()),
+              )
+            : snapshot.data!;
 
-        final subtitle =
-            data.isEmpty
-                ? ''
-                : formatWatchUpdatedAt(data.first.watchUpdatedAt, null);
+        final subtitle = data.isEmpty
+            ? ''
+            : formatWatchUpdatedAt(data.first.watchUpdatedAt, null);
         final items = data;
-        final needSubtitle =
-            data.firstWhereOrNull(
+        final needSubtitle = data.firstWhereOrNull(
               (eiga) => eiga.lastEpisode.description?.isNotEmpty == true,
             ) !=
             null;
@@ -161,23 +157,21 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
                 subtitle: subtitle,
                 more: more,
                 needSubtitle: needSubtitle,
-                builder:
-                    (viewportFraction) => PageView.builder(
-                      itemCount: items.length,
-                      allowImplicitScrolling: true,
-                      padEnds: false,
-                      controller: PageController(
-                        viewportFraction: viewportFraction,
-                        initialPage: 0,
-                      ),
-                      itemBuilder:
-                          (context, index) => EigaHistory(
-                            sourceId: widget.sourceId,
-                            history: items.elementAt(index),
-                            width: 100.w(context) / 1 / viewportFraction,
-                            direction: Axis.vertical,
-                          ),
-                    ),
+                builder: (viewportFraction) => PageView.builder(
+                  itemCount: items.length,
+                  allowImplicitScrolling: true,
+                  padEnds: false,
+                  controller: PageController(
+                    viewportFraction: viewportFraction,
+                    initialPage: 0,
+                  ),
+                  itemBuilder: (context, index) => EigaHistory(
+                    sourceId: widget.sourceId,
+                    history: items.elementAt(index),
+                    width: 100.w(context) / 1 / viewportFraction,
+                    direction: Axis.vertical,
+                  ),
+                ),
               ),
             ],
           ),

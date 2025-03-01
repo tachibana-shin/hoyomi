@@ -101,8 +101,7 @@ class _ServiceSettingsPageState extends State<ServiceSettingsPage> {
                 hintText: field.placeholder,
                 border: OutlineInputBorder(),
               ),
-              initialValue:
-                  _settingsChanged[field.name] ??
+              initialValue: _settingsChanged[field.name] ??
                   _service.getSetting(field.name) ??
                   field.defaultFn(_service),
               maxLines: field.maxLines,
@@ -119,8 +118,7 @@ class _ServiceSettingsPageState extends State<ServiceSettingsPage> {
   }
 
   void _onChangedValue(SettingField field, String value) {
-    final oldValue =
-        _service.getSetting(field.name) ??
+    final oldValue = _service.getSetting(field.name) ??
         (field is FieldInput ? field.defaultFn(_service) : null);
 
     if (oldValue != value && _settingsChanged[field.name] != value) {

@@ -142,10 +142,10 @@ class _CarouselEigaState extends State<CarouselEiga> {
                               style: Theme.of(
                                 context,
                               ).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20.0,
-                              ),
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 20.0,
+                                  ),
                             ),
                             if (item.originalName?.isNotEmpty == true)
                               Text(
@@ -155,10 +155,10 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                 style: Theme.of(
                                   context,
                                 ).textTheme.headlineSmall?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16.0,
-                                ),
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16.0,
+                                    ),
                               ),
                             SizedBox(height: 5.0),
                             // rate
@@ -166,67 +166,67 @@ class _CarouselEigaState extends State<CarouselEiga> {
                               children: [
                                 ...(item.rate != null)
                                     ? [
-                                      Icon(
-                                        MaterialCommunityIcons.star,
-                                        color: Colors.blue.shade200,
-                                        size: 12.0,
-                                      ),
-                                      Text(
-                                        ' ${item.rate}',
-                                        style: const TextStyle(
-                                          fontSize: 12.0,
-                                          color: Colors.white,
+                                        Icon(
+                                          MaterialCommunityIcons.star,
+                                          color: Colors.blue.shade200,
+                                          size: 12.0,
                                         ),
-                                      ),
-                                    ]
+                                        Text(
+                                          ' ${item.rate}',
+                                          style: const TextStyle(
+                                            fontSize: 12.0,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ]
                                     : [],
                                 ...(item.year != null)
                                     ? [
-                                      VerticalSeparator(),
-                                      Text(
-                                        item.year!,
-                                        style: const TextStyle(
-                                          fontSize: 12.0,
-                                          color: Colors.white,
+                                        VerticalSeparator(),
+                                        Text(
+                                          item.year!,
+                                          style: const TextStyle(
+                                            fontSize: 12.0,
+                                            color: Colors.white,
+                                          ),
                                         ),
-                                      ),
-                                    ]
+                                      ]
                                     : [],
                                 ...(item.notice != null)
                                     ? [
-                                      VerticalSeparator(),
-                                      Text(
-                                        item.notice!,
-                                        style: const TextStyle(
-                                          fontSize: 12.0,
-                                          color: Colors.white,
+                                        VerticalSeparator(),
+                                        Text(
+                                          item.notice!,
+                                          style: const TextStyle(
+                                            fontSize: 12.0,
+                                            color: Colors.white,
+                                          ),
                                         ),
-                                      ),
-                                    ]
+                                      ]
                                     : [],
                                 ...(item.studio != null)
                                     ? [
-                                      VerticalSeparator(),
-                                      Text(
-                                        item.studio!,
-                                        style: const TextStyle(
-                                          fontSize: 12.0,
-                                          color: Colors.white,
+                                        VerticalSeparator(),
+                                        Text(
+                                          item.studio!,
+                                          style: const TextStyle(
+                                            fontSize: 12.0,
+                                            color: Colors.white,
+                                          ),
                                         ),
-                                      ),
-                                    ]
+                                      ]
                                     : [],
                                 ...(item.duration != null)
                                     ? [
-                                      VerticalSeparator(),
-                                      Text(
-                                        item.duration!,
-                                        style: const TextStyle(
-                                          fontSize: 12.0,
-                                          color: Colors.white,
+                                        VerticalSeparator(),
+                                        Text(
+                                          item.duration!,
+                                          style: const TextStyle(
+                                            fontSize: 12.0,
+                                            color: Colors.white,
+                                          ),
                                         ),
-                                      ),
-                                    ]
+                                      ]
                                     : [],
                               ],
                             ),

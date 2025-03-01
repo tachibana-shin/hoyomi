@@ -32,14 +32,13 @@ abstract class EigaService extends Service {
     required EigaEpisode episode,
   });
   Future<SourceContent> Function({required SourceVideo source})?
-  fetchSourceContent;
+      fetchSourceContent;
   Future<Vtt?> Function({
     required String eigaId,
     required EigaEpisode episode,
     required int episodeIndex,
     required MetaEiga metaEiga,
-  })?
-  getThumbnail;
+  })? getThumbnail;
 
   Future<List<Subtitle>> getSubtitles({
     required String eigaId,
@@ -57,8 +56,7 @@ abstract class EigaService extends Service {
     required MetaEiga metaEiga,
     required String eigaId,
     int? page,
-  })?
-  getSuggest;
+  })? getSuggest;
 
   Future<EigaSection> search({
     required String keyword,

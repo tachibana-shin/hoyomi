@@ -287,8 +287,7 @@ class _SliderEigaState extends State<SliderEiga>
                 child: CustomPaint(
                   size: Size(parentSize.width, _barHeightAnimation.value),
                   painter: _ProgressBarPainter(
-                    progress:
-                        widget.progress.value.inMilliseconds /
+                    progress: widget.progress.value.inMilliseconds /
                         duration.inMilliseconds,
                     range: [
                       if (opening != null && duration.inMilliseconds > 0)
@@ -336,10 +335,9 @@ class _SliderEigaState extends State<SliderEiga>
             width = (text.length * fontSize / 2) + paddingX * 2;
           }
 
-          final left =
-              (_hoverPosition.value * parentSize.width - (width / 2))
-                  .clamp(3, parentSize.width - width - 3)
-                  .toDouble();
+          final left = (_hoverPosition.value * parentSize.width - (width / 2))
+              .clamp(3, parentSize.width - width - 3)
+              .toDouble();
 
           final child = Center(
             child: Container(
@@ -363,27 +361,25 @@ class _SliderEigaState extends State<SliderEiga>
           return Positioned(
             left: left,
             bottom: sliderHeightMax + thumbSize / 2 + 7,
-            child:
-                previewWidget != null
-                    ? Stack(
-                      children: [
-                        previewWidget,
-                        Positioned(bottom: 10, left: 0, right: 0, child: child),
-                      ],
-                    )
-                    : child,
+            child: previewWidget != null
+                ? Stack(
+                    children: [
+                      previewWidget,
+                      Positioned(bottom: 10, left: 0, right: 0, child: child),
+                    ],
+                  )
+                : child,
           );
         }
 
         return FutureBuilder(
           future: _preview.value,
-          builder:
-              (context, snapshot) => builder(
-                context,
-                snapshot.data,
-                snapshot.connectionState != ConnectionState.waiting ||
-                    snapshot.connectionState == ConnectionState.done,
-              ),
+          builder: (context, snapshot) => builder(
+            context,
+            snapshot.data,
+            snapshot.connectionState != ConnectionState.waiting ||
+                snapshot.connectionState == ConnectionState.done,
+          ),
         );
       },
     );
@@ -444,20 +440,17 @@ class _ProgressBarPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final backgroundPaint =
-        Paint()
-          ..color = Colors.grey.withValues(alpha: 0.8)
-          ..style = PaintingStyle.fill;
+    final backgroundPaint = Paint()
+      ..color = Colors.grey.withValues(alpha: 0.8)
+      ..style = PaintingStyle.fill;
 
-    final progressPaint =
-        Paint()
-          ..color = Colors.red
-          ..style = PaintingStyle.fill;
+    final progressPaint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.fill;
 
-    final rangePaint =
-        Paint()
-          ..color = Colors.blue
-          ..style = PaintingStyle.fill;
+    final rangePaint = Paint()
+      ..color = Colors.blue
+      ..style = PaintingStyle.fill;
 
     // Draw background
     canvas.drawRect(
@@ -503,10 +496,9 @@ class _ThumbPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final thumbPaint =
-        Paint()
-          ..color = Colors.red
-          ..style = PaintingStyle.fill;
+    final thumbPaint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.fill;
 
     canvas.drawCircle(
       Offset(size.width / 2, size.height),

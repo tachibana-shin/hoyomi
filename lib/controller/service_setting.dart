@@ -28,10 +28,9 @@ class ServiceSettingController {
   }
 
   static Future<ServiceSetting?> getAsync({required String sourceId}) {
-    return _dataStore[sourceId] ??=
-        _dataStoreSync[sourceId] != null
-            ? Future.value(_dataStoreSync[sourceId])
-            : _serviceSettingBox.where().sourceIdEqualTo(sourceId).findFirst();
+    return _dataStore[sourceId] ??= _dataStoreSync[sourceId] != null
+        ? Future.value(_dataStoreSync[sourceId])
+        : _serviceSettingBox.where().sourceIdEqualTo(sourceId).findFirst();
   }
 
   static Future<void> save(ServiceSetting data) async {

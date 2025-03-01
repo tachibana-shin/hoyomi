@@ -77,9 +77,8 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/search',
-              builder:
-                  (context, state) =>
-                      SearchPage(keyword: state.uri.queryParameters['q'] ?? ''),
+              builder: (context, state) =>
+                  SearchPage(keyword: state.uri.queryParameters['q'] ?? ''),
               routes: [
                 GoRoute(
                   path: 'comic/:sourceId',
@@ -120,17 +119,15 @@ final router = GoRouter(
               routes: [
                 GoRoute(
                   path: 'history/eiga/:sourceId',
-                  builder:
-                      (context, state) => HistoryEigaPage(
-                        sourceId: state.pathParameters['sourceId']!,
-                      ),
+                  builder: (context, state) => HistoryEigaPage(
+                    sourceId: state.pathParameters['sourceId']!,
+                  ),
                 ),
                 GoRoute(
                   path: 'follow/eiga/:sourceId',
-                  builder:
-                      (context, state) => FollowsEigaPage(
-                        sourceId: state.pathParameters['sourceId']!,
-                      ),
+                  builder: (context, state) => FollowsEigaPage(
+                    sourceId: state.pathParameters['sourceId']!,
+                  ),
                 ),
               ],
             ),
@@ -154,11 +151,10 @@ final router = GoRouter(
       path: '/details_comic/:sourceId/:comicId',
       name: 'details_comic',
       parentNavigatorKey: _rootNavigatorKey,
-      builder:
-          (context, state) => DetailsComic(
-            sourceId: state.pathParameters['sourceId']!,
-            comicId: state.pathParameters['comicId']!,
-          ),
+      builder: (context, state) => DetailsComic(
+        sourceId: state.pathParameters['sourceId']!,
+        comicId: state.pathParameters['comicId']!,
+      ),
       routes: [
         GoRoute(
           path: 'view',
@@ -171,26 +167,23 @@ final router = GoRouter(
               sourceId: state.pathParameters['sourceId']!,
               comicId: state.pathParameters['comicId']!,
               chapterId: chapterId,
-              comic:
-                  state.extra != null
-                      ? (state.extra as Map)['comic'] as MetaComic
-                      : null,
+              comic: state.extra != null
+                  ? (state.extra as Map)['comic'] as MetaComic
+                  : null,
             );
           },
         ),
         GoRoute(
           path: 'similar',
           parentNavigatorKey: _rootNavigatorKey,
-          builder:
-              (context, state) => SimilarPage(
-                sourceId: state.pathParameters['sourceId']!,
-                comicId: state.pathParameters['comicId']!,
-                comic:
-                    (state.extra is Map &&
-                            (state.extra as Map).containsKey('comic'))
-                        ? (state.extra as Map)['comic']
-                        : null,
-              ),
+          builder: (context, state) => SimilarPage(
+            sourceId: state.pathParameters['sourceId']!,
+            comicId: state.pathParameters['comicId']!,
+            comic: (state.extra is Map &&
+                    (state.extra as Map).containsKey('comic'))
+                ? (state.extra as Map)['comic']
+                : null,
+          ),
         ),
       ],
     ),
@@ -201,52 +194,47 @@ final router = GoRouter(
       name: 'details_eiga',
       parentNavigatorKey: _rootNavigatorKey, // Sử dụng root navigator
 
-      builder:
-          (context, state) => DetailsEigaPage(
-            sourceId: state.pathParameters['sourceId']!,
-            eigaId: state.pathParameters['eigaId']!,
-            episodeId: state.uri.queryParameters['episodeId'],
-          ),
+      builder: (context, state) => DetailsEigaPage(
+        sourceId: state.pathParameters['sourceId']!,
+        eigaId: state.pathParameters['eigaId']!,
+        episodeId: state.uri.queryParameters['episodeId'],
+      ),
     ),
 
     // Webview Route
     GoRoute(
       path: '/webview/:sourceId',
       parentNavigatorKey: _rootNavigatorKey,
-      builder:
-          (context, state) =>
-              WebviewPage(sourceId: state.pathParameters['sourceId']!),
+      builder: (context, state) =>
+          WebviewPage(sourceId: state.pathParameters['sourceId']!),
     ),
 
     // Section Comic Route
     GoRoute(
       path: '/section_comic/:sourceId/:sectionId',
       parentNavigatorKey: _rootNavigatorKey,
-      builder:
-          (context, state) => SectionComicPage(
-            sourceId: state.pathParameters['sourceId']!,
-            sectionId: state.pathParameters['sectionId']!,
-          ),
+      builder: (context, state) => SectionComicPage(
+        sourceId: state.pathParameters['sourceId']!,
+        sectionId: state.pathParameters['sectionId']!,
+      ),
     ),
 
     // Section Eiga Route
     GoRoute(
       path: '/section_eiga/:sourceId/:sectionId',
       parentNavigatorKey: _rootNavigatorKey,
-      builder:
-          (context, state) => SectionEigaPage(
-            sourceId: state.pathParameters['sourceId']!,
-            sectionId: state.pathParameters['sectionId']!,
-          ),
+      builder: (context, state) => SectionEigaPage(
+        sourceId: state.pathParameters['sourceId']!,
+        sectionId: state.pathParameters['sectionId']!,
+      ),
     ),
 
     // Section Service Setting Route
     GoRoute(
       path: '/service_settings/:sourceId',
       parentNavigatorKey: _rootNavigatorKey,
-      builder:
-          (context, state) =>
-              ServiceSettingsPage(sourceId: state.pathParameters['sourceId']!),
+      builder: (context, state) =>
+          ServiceSettingsPage(sourceId: state.pathParameters['sourceId']!),
     ),
   ],
 );
@@ -317,19 +305,18 @@ class PersistentScaffold extends StatelessWidget {
   Widget _buildBottomNavigationBar() {
     return Scaffold(
       body: navigationShell, // This area will have transition animations.
-      bottomNavigationBar:
-          showToolbar
-              ? NavigationApp(
-                selectedIndex: navigationShell.currentIndex,
-                rail: false,
-                onDestinationSelected: (index) {
-                  navigationShell.goBranch(
-                    index,
-                    initialLocation: index == navigationShell.currentIndex,
-                  );
-                },
-              )
-              : null,
+      bottomNavigationBar: showToolbar
+          ? NavigationApp(
+              selectedIndex: navigationShell.currentIndex,
+              rail: false,
+              onDestinationSelected: (index) {
+                navigationShell.goBranch(
+                  index,
+                  initialLocation: index == navigationShell.currentIndex,
+                );
+              },
+            )
+          : null,
     );
   }
 }
@@ -337,8 +324,8 @@ class PersistentScaffold extends StatelessWidget {
 class AppScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-    PointerDeviceKind.trackpad,
-  };
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+      };
 }

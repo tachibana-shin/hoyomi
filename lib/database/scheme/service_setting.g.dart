@@ -308,7 +308,7 @@ extension ServiceSettingQueryWhere
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterWhereClause>
-  sourceIdEqualTo(String sourceId) {
+      sourceIdEqualTo(String sourceId) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IndexWhereClause.equalTo(indexName: r'sourceId', value: [sourceId]),
@@ -317,7 +317,7 @@ extension ServiceSettingQueryWhere
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterWhereClause>
-  sourceIdNotEqualTo(String sourceId) {
+      sourceIdNotEqualTo(String sourceId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -360,7 +360,7 @@ extension ServiceSettingQueryWhere
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterWhereClause>
-  createdAtEqualTo(DateTime createdAt) {
+      createdAtEqualTo(DateTime createdAt) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IndexWhereClause.equalTo(indexName: r'createdAt', value: [createdAt]),
@@ -369,7 +369,7 @@ extension ServiceSettingQueryWhere
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterWhereClause>
-  createdAtNotEqualTo(DateTime createdAt) {
+      createdAtNotEqualTo(DateTime createdAt) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -412,7 +412,7 @@ extension ServiceSettingQueryWhere
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterWhereClause>
-  createdAtGreaterThan(DateTime createdAt, {bool include = false}) {
+      createdAtGreaterThan(DateTime createdAt, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IndexWhereClause.between(
@@ -426,7 +426,7 @@ extension ServiceSettingQueryWhere
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterWhereClause>
-  createdAtLessThan(DateTime createdAt, {bool include = false}) {
+      createdAtLessThan(DateTime createdAt, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IndexWhereClause.between(
@@ -440,7 +440,7 @@ extension ServiceSettingQueryWhere
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterWhereClause>
-  createdAtBetween(
+      createdAtBetween(
     DateTime lowerCreatedAt,
     DateTime upperCreatedAt, {
     bool includeLower = true,
@@ -463,7 +463,7 @@ extension ServiceSettingQueryWhere
 extension ServiceSettingQueryFilter
     on QueryBuilder<ServiceSetting, ServiceSetting, QFilterCondition> {
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  createdAtEqualTo(DateTime value) {
+      createdAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'createdAt', value: value),
@@ -472,7 +472,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  createdAtGreaterThan(DateTime value, {bool include = false}) {
+      createdAtGreaterThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(
@@ -485,7 +485,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  createdAtLessThan(DateTime value, {bool include = false}) {
+      createdAtLessThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.lessThan(
@@ -498,7 +498,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  createdAtBetween(
+      createdAtBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
@@ -518,7 +518,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  idIsNull() {
+      idIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const FilterCondition.isNull(property: r'id'),
@@ -527,7 +527,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  idIsNotNull() {
+      idIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const FilterCondition.isNotNull(property: r'id'),
@@ -546,7 +546,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  idGreaterThan(Id? value, {bool include = false}) {
+      idGreaterThan(Id? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(
@@ -559,7 +559,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  idLessThan(Id? value, {bool include = false}) {
+      idLessThan(Id? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.lessThan(
@@ -591,7 +591,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  settingsIsNull() {
+      settingsIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const FilterCondition.isNull(property: r'settings'),
@@ -600,7 +600,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  settingsIsNotNull() {
+      settingsIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const FilterCondition.isNotNull(property: r'settings'),
@@ -609,7 +609,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  settingsEqualTo(String? value, {bool caseSensitive = true}) {
+      settingsEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(
@@ -622,7 +622,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  settingsGreaterThan(
+      settingsGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -640,7 +640,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  settingsLessThan(
+      settingsLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -658,7 +658,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  settingsBetween(
+      settingsBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -680,7 +680,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  settingsStartsWith(String value, {bool caseSensitive = true}) {
+      settingsStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.startsWith(
@@ -693,7 +693,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  settingsEndsWith(String value, {bool caseSensitive = true}) {
+      settingsEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.endsWith(
@@ -706,7 +706,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  settingsContains(String value, {bool caseSensitive = true}) {
+      settingsContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.contains(
@@ -719,7 +719,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  settingsMatches(String pattern, {bool caseSensitive = true}) {
+      settingsMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.matches(
@@ -732,7 +732,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  settingsIsEmpty() {
+      settingsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'settings', value: ''),
@@ -741,7 +741,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  settingsIsNotEmpty() {
+      settingsIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(property: r'settings', value: ''),
@@ -750,7 +750,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  sourceIdEqualTo(String value, {bool caseSensitive = true}) {
+      sourceIdEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(
@@ -763,7 +763,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  sourceIdGreaterThan(
+      sourceIdGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -781,7 +781,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  sourceIdLessThan(
+      sourceIdLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -799,7 +799,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  sourceIdBetween(
+      sourceIdBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -821,7 +821,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  sourceIdStartsWith(String value, {bool caseSensitive = true}) {
+      sourceIdStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.startsWith(
@@ -834,7 +834,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  sourceIdEndsWith(String value, {bool caseSensitive = true}) {
+      sourceIdEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.endsWith(
@@ -847,7 +847,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  sourceIdContains(String value, {bool caseSensitive = true}) {
+      sourceIdContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.contains(
@@ -860,7 +860,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  sourceIdMatches(String pattern, {bool caseSensitive = true}) {
+      sourceIdMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.matches(
@@ -873,7 +873,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  sourceIdIsEmpty() {
+      sourceIdIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'sourceId', value: ''),
@@ -882,7 +882,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  sourceIdIsNotEmpty() {
+      sourceIdIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(property: r'sourceId', value: ''),
@@ -891,7 +891,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  updatedAtEqualTo(DateTime value) {
+      updatedAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'updatedAt', value: value),
@@ -900,7 +900,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  updatedAtGreaterThan(DateTime value, {bool include = false}) {
+      updatedAtGreaterThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(
@@ -913,7 +913,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  updatedAtLessThan(DateTime value, {bool include = false}) {
+      updatedAtLessThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.lessThan(
@@ -926,7 +926,7 @@ extension ServiceSettingQueryFilter
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterFilterCondition>
-  updatedAtBetween(
+      updatedAtBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
@@ -961,7 +961,7 @@ extension ServiceSettingQuerySortBy
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterSortBy>
-  sortByCreatedAtDesc() {
+      sortByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.desc);
     });
@@ -974,7 +974,7 @@ extension ServiceSettingQuerySortBy
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterSortBy>
-  sortBySettingsDesc() {
+      sortBySettingsDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'settings', Sort.desc);
     });
@@ -987,7 +987,7 @@ extension ServiceSettingQuerySortBy
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterSortBy>
-  sortBySourceIdDesc() {
+      sortBySourceIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sourceId', Sort.desc);
     });
@@ -1000,7 +1000,7 @@ extension ServiceSettingQuerySortBy
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterSortBy>
-  sortByUpdatedAtDesc() {
+      sortByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
     });
@@ -1016,7 +1016,7 @@ extension ServiceSettingQuerySortThenBy
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterSortBy>
-  thenByCreatedAtDesc() {
+      thenByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.desc);
     });
@@ -1041,7 +1041,7 @@ extension ServiceSettingQuerySortThenBy
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterSortBy>
-  thenBySettingsDesc() {
+      thenBySettingsDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'settings', Sort.desc);
     });
@@ -1054,7 +1054,7 @@ extension ServiceSettingQuerySortThenBy
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterSortBy>
-  thenBySourceIdDesc() {
+      thenBySourceIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sourceId', Sort.desc);
     });
@@ -1067,7 +1067,7 @@ extension ServiceSettingQuerySortThenBy
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QAfterSortBy>
-  thenByUpdatedAtDesc() {
+      thenByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
     });
@@ -1077,7 +1077,7 @@ extension ServiceSettingQuerySortThenBy
 extension ServiceSettingQueryWhereDistinct
     on QueryBuilder<ServiceSetting, ServiceSetting, QDistinct> {
   QueryBuilder<ServiceSetting, ServiceSetting, QDistinct>
-  distinctByCreatedAt() {
+      distinctByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createdAt');
     });
@@ -1100,7 +1100,7 @@ extension ServiceSettingQueryWhereDistinct
   }
 
   QueryBuilder<ServiceSetting, ServiceSetting, QDistinct>
-  distinctByUpdatedAt() {
+      distinctByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'updatedAt');
     });

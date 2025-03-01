@@ -257,7 +257,7 @@ extension SettingsQueryFilter
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-  mangaReadLazyPageEqualTo(bool value) {
+      mangaReadLazyPageEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'mangaReadLazyPage', value: value),
@@ -266,7 +266,7 @@ extension SettingsQueryFilter
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-  pollingIntervalComicEqualTo(int value) {
+      pollingIntervalComicEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(
@@ -278,7 +278,7 @@ extension SettingsQueryFilter
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-  pollingIntervalComicGreaterThan(int value, {bool include = false}) {
+      pollingIntervalComicGreaterThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(
@@ -291,7 +291,7 @@ extension SettingsQueryFilter
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-  pollingIntervalComicLessThan(int value, {bool include = false}) {
+      pollingIntervalComicLessThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.lessThan(
@@ -304,7 +304,7 @@ extension SettingsQueryFilter
   }
 
   QueryBuilder<Settings, Settings, QAfterFilterCondition>
-  pollingIntervalComicBetween(
+      pollingIntervalComicBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -350,7 +350,7 @@ extension SettingsQuerySortBy on QueryBuilder<Settings, Settings, QSortBy> {
   }
 
   QueryBuilder<Settings, Settings, QAfterSortBy>
-  sortByPollingIntervalComicDesc() {
+      sortByPollingIntervalComicDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pollingIntervalComic', Sort.desc);
     });
@@ -390,7 +390,7 @@ extension SettingsQuerySortThenBy
   }
 
   QueryBuilder<Settings, Settings, QAfterSortBy>
-  thenByPollingIntervalComicDesc() {
+      thenByPollingIntervalComicDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pollingIntervalComic', Sort.desc);
     });

@@ -25,8 +25,7 @@ class SectionComicPage extends StatefulWidget {
     required String sectionId,
     required int page,
     required Map<String, List<String>?> filters,
-  })?
-  getSection;
+  })? getSection;
 
   const SectionComicPage({
     super.key,
@@ -86,11 +85,10 @@ class _SectionComicPageState extends State<SectionComicPage> {
     return PullRefreshPage<List<Comic>>(
       onLoadData: () => _fetchComics(1).then((param) => param.$2),
       onLoadFake: () => List.generate(30, (_) => Comic.createFakeData()),
-      builderError:
-          (body) => Scaffold(appBar: _buildAppBar(() async {}), body: body),
-      builder:
-          (data, param) =>
-              Scaffold(appBar: _buildAppBar(param.$2), body: _buildBody(data)),
+      builderError: (body) =>
+          Scaffold(appBar: _buildAppBar(() async {}), body: body),
+      builder: (data, param) =>
+          Scaffold(appBar: _buildAppBar(param.$2), body: _buildBody(data)),
     );
   }
 
@@ -132,131 +130,122 @@ class _SectionComicPageState extends State<SectionComicPage> {
       //       icon: Icon(MaterialCommunityIcons.earth,
       //           color: Theme.of(context).colorScheme.onSurface)),
       // ],
-      bottom:
-          _filters == null
-              ? null
-              : PreferredSize(
-                preferredSize: Size.fromHeight(48.0),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10.0,
-                    horizontal: 8.0,
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children:
-                          _filters!.map((filter) {
-                            final options = filter.options;
+      bottom: _filters == null
+          ? null
+          : PreferredSize(
+              preferredSize: Size.fromHeight(48.0),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10.0,
+                  horizontal: 8.0,
+                ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: _filters!.map((filter) {
+                      final options = filter.options;
 
-                            return Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: InkWell(
-                                onTap: () {
-                                  DropDownState(
-                                    DropDown(
-                                      bottomSheetTitle: Text(
-                                        filter.name,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20.0,
-                                        ),
-                                      ),
-                                      searchHintText: filter.name,
-                                      submitButtonChild: const Text(
-                                        'Done',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      data:
-                                          options
-                                              .map(
-                                                (option) => SelectedListItem(
-                                                  name: option.name,
-                                                  value: option.value,
-                                                  isSelected:
-                                                      _selectFilters[filter.key]
-                                                          ?.contains(
-                                                            option.value,
-                                                          ) ??
-                                                      option.selected,
-                                                ),
-                                              )
-                                              .toList(),
-                                      onSelected: (selectedList) {
-                                        _selectFilters[filter.key] =
-                                            selectedList
-                                                .map((option) => option.value!)
-                                                .toList();
-                                        _pageKey = 1;
-
-                                        refresh();
-                                      },
-                                      enableMultipleSelection: filter.multiple,
-                                    ),
-                                  ).showModal(context);
-                                },
-                                child: ClipRRect(
-                                  clipBehavior: Clip.antiAlias,
-                                  child: Chip(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 8.0,
-                                      vertical: 4.0,
-                                    ),
-                                    backgroundColor: Colors.transparent,
-                                    label: Row(
-                                      children: [
-                                        Text(
-                                          _selectFilters.containsKey(filter.key)
-                                              ? _selectFilters[filter.key]!
-                                                  .map(
-                                                    (value) =>
-                                                        options
-                                                            .firstWhere(
-                                                              (option) =>
-                                                                  option
-                                                                      .value ==
-                                                                  value,
-                                                            )
-                                                            .name,
-                                                  )
-                                                  .join(', ')
-                                              : filter.name,
-                                          style: TextStyle(
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.onSurface.withValues(
-                                              alpha:
-                                                  _selectFilters.containsKey(
-                                                        filter.key,
-                                                      )
-                                                      ? 1.0
-                                                      : 0.8,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            left: 7.0,
-                                            right: 0.0,
-                                          ),
-                                          child: Icon(
-                                            MaterialCommunityIcons.chevron_down,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                      return Padding(
+                        padding: EdgeInsets.only(right: 8.0),
+                        child: InkWell(
+                          onTap: () {
+                            DropDownState(
+                              DropDown(
+                                bottomSheetTitle: Text(
+                                  filter.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0,
                                   ),
                                 ),
+                                searchHintText: filter.name,
+                                submitButtonChild: const Text(
+                                  'Done',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                data: options
+                                    .map(
+                                      (option) => SelectedListItem(
+                                        name: option.name,
+                                        value: option.value,
+                                        isSelected: _selectFilters[filter.key]
+                                                ?.contains(
+                                              option.value,
+                                            ) ??
+                                            option.selected,
+                                      ),
+                                    )
+                                    .toList(),
+                                onSelected: (selectedList) {
+                                  _selectFilters[filter.key] = selectedList
+                                      .map((option) => option.value!)
+                                      .toList();
+                                  _pageKey = 1;
+
+                                  refresh();
+                                },
+                                enableMultipleSelection: filter.multiple,
                               ),
-                            );
-                          }).toList(),
-                    ),
+                            ).showModal(context);
+                          },
+                          child: ClipRRect(
+                            clipBehavior: Clip.antiAlias,
+                            child: Chip(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                                vertical: 4.0,
+                              ),
+                              backgroundColor: Colors.transparent,
+                              label: Row(
+                                children: [
+                                  Text(
+                                    _selectFilters.containsKey(filter.key)
+                                        ? _selectFilters[filter.key]!
+                                            .map(
+                                              (value) => options
+                                                  .firstWhere(
+                                                    (option) =>
+                                                        option.value == value,
+                                                  )
+                                                  .name,
+                                            )
+                                            .join(', ')
+                                        : filter.name,
+                                    style: TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface.withValues(
+                                            alpha: _selectFilters.containsKey(
+                                              filter.key,
+                                            )
+                                                ? 1.0
+                                                : 0.8,
+                                          ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 7.0,
+                                      right: 0.0,
+                                    ),
+                                    child: Icon(
+                                      MaterialCommunityIcons.chevron_down,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
               ),
+            ),
     );
   }
 

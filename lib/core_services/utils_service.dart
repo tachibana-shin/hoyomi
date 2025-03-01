@@ -68,9 +68,8 @@ abstract class UtilsService {
     ),
     FieldInput(
       name: 'User Agent',
-      defaultFn:
-          (service) =>
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      defaultFn: (service) =>
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       placeholder:
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       description: 'The user agent to use when fetching data',
@@ -102,8 +101,7 @@ abstract class UtilsService {
   }
 
   Future<void> setSetting(String name, String value) async {
-    final record =
-        ServiceSettingController.get(sourceId: uid) ??
+    final record = ServiceSettingController.get(sourceId: uid) ??
         ServiceSetting(
           sourceId: uid,
           settings: null,
@@ -133,11 +131,9 @@ abstract class UtilsService {
   String get faviconUrl =>
       _faviconUrl ??= Uri.parse(baseUrl).resolve(init.faviconUrl).toString();
   String? _rss;
-  String? get rss =>
-      _rss ??=
-          init.rss == null
-              ? null
-              : Uri.parse(baseUrl).resolve(init.rss!).toString();
+  String? get rss => _rss ??= init.rss == null
+      ? null
+      : Uri.parse(baseUrl).resolve(init.rss!).toString();
 
   Future<User>? _userFuture;
 
@@ -168,10 +164,9 @@ abstract class UtilsService {
   }) {
     if (error is CaptchaRequiredException) {
       return Padding(
-        padding:
-            isSnackbar
-                ? EdgeInsets.zero
-                : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        padding: isSnackbar
+            ? EdgeInsets.zero
+            : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -180,10 +175,9 @@ abstract class UtilsService {
               children: [
                 Icon(
                   MaterialCommunityIcons.earth,
-                  color:
-                      isSnackbar || context == null
-                          ? Colors.black
-                          : Theme.of(context).colorScheme.onSurface,
+                  color: isSnackbar || context == null
+                      ? Colors.black
+                      : Theme.of(context).colorScheme.onSurface,
                 ),
                 SizedBox(width: 8),
                 Expanded(
@@ -218,10 +212,9 @@ abstract class UtilsService {
 
     if (error is UserNotFoundException) {
       return Padding(
-        padding:
-            isSnackbar
-                ? EdgeInsets.zero
-                : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        padding: isSnackbar
+            ? EdgeInsets.zero
+            : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -290,29 +283,27 @@ abstract class UtilsService {
       'sec-fetch-site': 'same-origin',
       'sec-fetch-user': '?1',
       'upgrade-insecure-requests': '1',
-      'user-agent':
-          getSetting('User Agent') ??
+      'user-agent': getSetting('User Agent') ??
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
     };
 
-    Response response =
-        body == null
-            ? await get(uri, headers: $headers)
-            : await post(
-              uri,
-              headers: $headers,
-              body: Map.fromEntries(
-                body.entries.where((entry) => entry.value != null).toList().map(
-                  (entry) {
-                    if (entry.value is String) {
-                      return entry;
-                    } else {
-                      return MapEntry(entry.key, entry.value.toString());
-                    }
-                  },
-                ),
+    Response response = body == null
+        ? await get(uri, headers: $headers)
+        : await post(
+            uri,
+            headers: $headers,
+            body: Map.fromEntries(
+              body.entries.where((entry) => entry.value != null).toList().map(
+                (entry) {
+                  if (entry.value is String) {
+                    return entry;
+                  } else {
+                    return MapEntry(entry.key, entry.value.toString());
+                  }
+                },
               ),
-            );
+            ),
+          );
     // if (useCookie == true) {
     //   // update cookie
     //   await setCookie(
@@ -427,8 +418,7 @@ abstract class UtilsService {
 
     final service = this as AuthMixin;
     // save to cache
-    final oldData =
-        await CookieController.getAsync(sourceId: uid) ??
+    final oldData = await CookieController.getAsync(sourceId: uid) ??
         CookieManager(
           sourceId: uid,
           cookie: cookie,
@@ -476,10 +466,9 @@ abstract class UtilsService {
     }
     final service = this as AuthMixin;
 
-    row =
-        recordLoaded == true
-            ? row
-            : await CookieController.getAsync(sourceId: uid);
+    row = recordLoaded == true
+        ? row
+        : await CookieController.getAsync(sourceId: uid);
     final cookie = row?.cookie;
     var user = row?.user;
 

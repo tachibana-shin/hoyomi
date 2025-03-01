@@ -175,8 +175,7 @@ class _MangaReaderState extends State<MangaReader>
       chapterId: _chapter,
     );
 
-    _initialScrollIndex =
-        (historyChap?.currentPage.floor() ?? 0) +
+    _initialScrollIndex = (historyChap?.currentPage.floor() ?? 0) +
         (_prevChapter == null ? 0 : 1);
     _currentPage =
         (_usingPageView ? _pageController.initialPage : _initialScrollIndex)
@@ -250,9 +249,8 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   void _updateRoute() {
-    final currentGroup =
-        pages[_currentPage.round()]
-            .chapterId; // Get the group id of the current page
+    final currentGroup = pages[_currentPage.round()]
+        .chapterId; // Get the group id of the current page
     if (_chapter != currentGroup) {
       setState(() {
         _chapter = currentGroup;
@@ -313,8 +311,8 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   ComicChapter get _currentChapter => widget.comic.chapters.firstWhere(
-    (element) => element.chapterId == _chapter,
-  );
+        (element) => element.chapterId == _chapter,
+      );
   ComicChapter? get _nextChapter {
     for (int i = 1; i < widget.comic.chapters.length; i++) {
       if (widget.comic.chapters.elementAt(i).chapterId == _chapter) {
@@ -460,10 +458,9 @@ class _MangaReaderState extends State<MangaReader>
     if (item.src == OImage.fake) {
       return SizedBox(
         width: double.infinity,
-        height:
-            _usingPageView
-                ? double.infinity
-                : MediaQuery.of(context).size.height / 2,
+        height: _usingPageView
+            ? double.infinity
+            : MediaQuery.of(context).size.height / 2,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -923,17 +920,16 @@ class _MangaReaderState extends State<MangaReader>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder:
-          (context) => ImagePicker(
-            images: pages,
-            sourceId: widget.service.uid,
-            onChange: (selected) {
-              setState(() {
-                _skipImages.clear();
-                _skipImages.addAll(selected);
-              });
-            },
-          ),
+      builder: (context) => ImagePicker(
+        images: pages,
+        sourceId: widget.service.uid,
+        onChange: (selected) {
+          setState(() {
+            _skipImages.clear();
+            _skipImages.addAll(selected);
+          });
+        },
+      ),
     );
   }
 
@@ -942,12 +938,11 @@ class _MangaReaderState extends State<MangaReader>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder:
-          (context) => CommentsSheet(
-            comicId: widget.comicId,
-            chapterId: _chapter,
-            service: widget.service as ComicAuthMixin,
-          ),
+      builder: (context) => CommentsSheet(
+        comicId: widget.comicId,
+        chapterId: _chapter,
+        service: widget.service as ComicAuthMixin,
+      ),
     );
   }
 
@@ -956,15 +951,14 @@ class _MangaReaderState extends State<MangaReader>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder:
-          (context) => SheetChapters(
-            comic: widget.comic,
-            sourceId: widget.service.uid,
-            comicId: widget.comicId,
-            histories: _historyChapters,
-            currentChapterId: _chapter,
-            initialChildSize: 0.6,
-          ),
+      builder: (context) => SheetChapters(
+        comic: widget.comic,
+        sourceId: widget.service.uid,
+        comicId: widget.comicId,
+        histories: _historyChapters,
+        currentChapterId: _chapter,
+        initialChildSize: 0.6,
+      ),
     );
   }
 
@@ -1014,10 +1008,9 @@ class _MangaReaderState extends State<MangaReader>
         itemCount: _useTwoPage ? (pages.length / 2).ceil() : pages.length,
         itemBuilder: (context, index) {
           if (_useTwoPage) {
-            final children =
-                mapPageVertical[index]!.map((i) {
-                  return Expanded(child: _buildPage(i));
-                }).toList();
+            final children = mapPageVertical[index]!.map((i) {
+              return Expanded(child: _buildPage(i));
+            }).toList();
 
             return InteractiveViewer(
               panEnabled: true,
@@ -1025,10 +1018,9 @@ class _MangaReaderState extends State<MangaReader>
               maxScale: 2.0,
               trackpadScrollCausesScale: true,
               child: Row(
-                children:
-                    _mode == ComicModes.rightToLeft
-                        ? children.reversed.toList()
-                        : children,
+                children: _mode == ComicModes.rightToLeft
+                    ? children.reversed.toList()
+                    : children,
               ),
             );
             // final firstPage = index * 2;
@@ -1064,11 +1056,10 @@ class _MangaReaderState extends State<MangaReader>
         height: screenSize.height,
         child: Center(
           child: CircularProgressIndicator(
-            value:
-                loadingProgress?.expectedTotalBytes != null
-                    ? loadingProgress!.cumulativeBytesLoaded /
-                        (loadingProgress.expectedTotalBytes!)
-                    : null,
+            value: loadingProgress?.expectedTotalBytes != null
+                ? loadingProgress!.cumulativeBytesLoaded /
+                    (loadingProgress.expectedTotalBytes!)
+                : null,
           ),
         ),
       ),
@@ -1091,176 +1082,172 @@ class _MangaReaderState extends State<MangaReader>
 
         return SlideTransition(position: offsetAnimation, child: child);
       },
-      child:
-          !_showToolbar
-              ? null
-              : Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Material(
-                          color: Colors.transparent,
-                          child: AbsorbPointer(
-                            absorbing: _prevChapter == null,
-                            child: Ink(
-                              decoration: ShapeDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surface.withValues(alpha: 0.9),
-                                shape: CircleBorder(),
+      child: !_showToolbar
+          ? null
+          : Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Material(
+                        color: Colors.transparent,
+                        child: AbsorbPointer(
+                          absorbing: _prevChapter == null,
+                          child: Ink(
+                            decoration: ShapeDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.surface.withValues(alpha: 0.9),
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              iconSize: 30.0,
+                              icon: Icon(
+                                MaterialCommunityIcons.skip_previous,
                               ),
-                              child: IconButton(
-                                iconSize: 30.0,
-                                icon: Icon(
-                                  MaterialCommunityIcons.skip_previous,
+                              color: _prevChapter != null
+                                  ? Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withValues(alpha: 0.5),
+                              onPressed: () {
+                                context.replace(
+                                  "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_prevChapter!.chapterId}",
+                                  extra: {'comic': widget.comic},
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 6.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Material(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.surface.withValues(alpha: 0.9),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                  vertical: 15.0,
                                 ),
-                                color:
-                                    _prevChapter != null
-                                        ? Theme.of(
-                                          context,
-                                        ).colorScheme.onSurface
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withValues(alpha: 0.5),
-                                onPressed: () {
-                                  context.replace(
-                                    "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_prevChapter!.chapterId}",
-                                    extra: {'comic': widget.comic},
-                                  );
-                                },
+                                child: _buildProgressControl(),
                               ),
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 6.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: Material(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surface.withValues(alpha: 0.9),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0,
-                                    vertical: 15.0,
-                                  ),
-                                  child: _buildProgressControl(),
-                                ),
-                              ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: AbsorbPointer(
+                          absorbing: _nextChapter == null,
+                          child: Ink(
+                            decoration: ShapeDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.surface.withValues(alpha: 0.9),
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              iconSize: 30.0,
+                              icon: Icon(MaterialCommunityIcons.skip_next),
+                              color: _nextChapter != null
+                                  ? Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withValues(alpha: 0.5),
+                              onPressed: () {
+                                context.replace(
+                                  "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_nextChapter!.chapterId}",
+                                  extra: {'comic': widget.comic},
+                                );
+                              },
                             ),
                           ),
                         ),
-                        Material(
-                          color: Colors.transparent,
-                          child: AbsorbPointer(
-                            absorbing: _nextChapter == null,
-                            child: Ink(
-                              decoration: ShapeDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surface.withValues(alpha: 0.9),
-                                shape: CircleBorder(),
-                              ),
-                              child: IconButton(
-                                iconSize: 30.0,
-                                icon: Icon(MaterialCommunityIcons.skip_next),
-                                color:
-                                    _nextChapter != null
-                                        ? Theme.of(
-                                          context,
-                                        ).colorScheme.onSurface
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withValues(alpha: 0.5),
-                                onPressed: () {
-                                  context.replace(
-                                    "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_nextChapter!.chapterId}",
-                                    extra: {'comic': widget.comic},
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 8.0),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                    ).add(EdgeInsets.only(bottom: 8.0)),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                        child: Material(
-                          color: Theme.of(
-                            context,
-                          ).scaffoldBackgroundColor.withValues(alpha: 0.8),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12.0,
-                              vertical: 8.0,
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: ButtonInset(
-                                    icon: Ionicons.heart_outline,
-                                    text: 'Like',
-                                    onPressed: () {},
-                                  ),
+                ),
+                SizedBox(height: 8.0),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                  ).add(EdgeInsets.only(bottom: 8.0)),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                      child: Material(
+                        color: Theme.of(
+                          context,
+                        ).scaffoldBackgroundColor.withValues(alpha: 0.8),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.0,
+                            vertical: 8.0,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ButtonInset(
+                                  icon: Ionicons.heart_outline,
+                                  text: 'Like',
+                                  onPressed: () {},
                                 ),
-                                Expanded(
-                                  child: ButtonInset(
-                                    icon: Ionicons.chatbox_ellipses_outline,
-                                    text: 'Comments',
-                                    disabled:
-                                        widget.service is! ComicAuthMixin ||
-                                        (widget.service as ComicAuthMixin)
-                                                .getComments ==
-                                            null,
-                                    onPressed: _showPanelComments,
-                                  ),
+                              ),
+                              Expanded(
+                                child: ButtonInset(
+                                  icon: Ionicons.chatbox_ellipses_outline,
+                                  text: 'Comments',
+                                  disabled: widget.service is! ComicAuthMixin ||
+                                      (widget.service as ComicAuthMixin)
+                                              .getComments ==
+                                          null,
+                                  onPressed: _showPanelComments,
                                 ),
-                                Expanded(
-                                  child: ButtonInset(
-                                    icon: Ionicons.list,
-                                    text: 'Chapters',
-                                    onPressed: _showPanelListChapters,
-                                  ),
+                              ),
+                              Expanded(
+                                child: ButtonInset(
+                                  icon: Ionicons.list,
+                                  text: 'Chapters',
+                                  onPressed: _showPanelListChapters,
                                 ),
-                                Expanded(
-                                  child: ButtonInset(
-                                    icon: Ionicons.settings_outline,
-                                    text: 'Settings',
-                                    onPressed: _showPanelSettings,
-                                  ),
+                              ),
+                              Expanded(
+                                child: ButtonInset(
+                                  icon: Ionicons.settings_outline,
+                                  text: 'Settings',
+                                  onPressed: _showPanelSettings,
                                 ),
-                                Expanded(
-                                  child: ButtonInset(
-                                    icon: Ionicons.arrow_forward,
-                                    text: 'Skip',
-                                    onPressed: _showPanelSkipPages,
-                                  ),
+                              ),
+                              Expanded(
+                                child: ButtonInset(
+                                  icon: Ionicons.arrow_forward,
+                                  text: 'Skip',
+                                  onPressed: _showPanelSkipPages,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
     );
   }
 

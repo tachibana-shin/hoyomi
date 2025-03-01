@@ -55,9 +55,9 @@ class VerticalList<T> extends StatelessWidget {
             Text(
               title,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w600,
-              ),
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
             if (more != null)
               ElevatedButton(

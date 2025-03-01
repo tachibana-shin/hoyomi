@@ -37,58 +37,55 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
     return PullRefreshPage(
       onLoadData: () async => false,
       onLoadFake: () => true,
-      builder:
-          (loading, __) =>
-              loading
-                  ? SizedBox.shrink()
-                  : ListView.builder(
-                    itemCount: comicServices.length,
-                    itemBuilder: (context, index) {
-                      final service = comicServices.elementAt(index);
+      builder: (loading, __) => loading
+          ? SizedBox.shrink()
+          : ListView.builder(
+              itemCount: comicServices.length,
+              itemBuilder: (context, index) {
+                final service = comicServices.elementAt(index);
 
-                      final searchResult = service.search(
-                        keyword: widget.keyword,
-                        page: 1,
-                        filters: {},
-                      );
-                      final itemsFuture = searchResult.then(
-                        (data) =>
-                            data.items
-                                .map(
-                                  (item) => ComicExtend(
-                                    comic: item,
-                                    sourceId: service.uid,
-                                  ),
-                                )
-                                .toList(),
-                      );
+                final searchResult = service.search(
+                  keyword: widget.keyword,
+                  page: 1,
+                  filters: {},
+                );
+                final itemsFuture = searchResult.then(
+                  (data) => data.items
+                      .map(
+                        (item) => ComicExtend(
+                          comic: item,
+                          sourceId: service.uid,
+                        ),
+                      )
+                      .toList(),
+                );
 
-                      String subtitle = '';
+                String subtitle = '';
 
-                      return StatefulBuilder(
-                        builder: (context, setState) {
-                          if (subtitle == '') {
-                            searchResult.then((data) {
-                              setState(() {
-                                subtitle = '${data.totalItems} results';
-                              });
-                            });
-                          }
+                return StatefulBuilder(
+                  builder: (context, setState) {
+                    if (subtitle == '') {
+                      searchResult.then((data) {
+                        setState(() {
+                          subtitle = '${data.totalItems} results';
+                        });
+                      });
+                    }
 
-                          return Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                            child: HorizontalComicList(
-                              itemsFuture: itemsFuture,
-                              title: service.name,
-                              subtitle: subtitle,
-                              more:
-                                  '/search/comic/${service.uid}?q=${widget.keyword}',
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: HorizontalComicList(
+                        itemsFuture: itemsFuture,
+                        title: service.name,
+                        subtitle: subtitle,
+                        more:
+                            '/search/comic/${service.uid}?q=${widget.keyword}',
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
     );
   }
 }

@@ -143,13 +143,12 @@ class ComicChanges {
       Duration(minutes: _settings.pollingIntervalComic),
     );
 
-    final itemsToUpdate =
-        _comicBox
-            .filter()
-            .updatedAtLessThan(thirtyMinutesAgo)
-            .statusEqualTo(StatusEnum.ongoing.name)
-            .sortByUpdatedAtDesc()
-            .findAll();
+    final itemsToUpdate = _comicBox
+        .filter()
+        .updatedAtLessThan(thirtyMinutesAgo)
+        .statusEqualTo(StatusEnum.ongoing.name)
+        .sortByUpdatedAtDesc()
+        .findAll();
 
     return itemsToUpdate;
   }

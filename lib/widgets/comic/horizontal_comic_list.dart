@@ -64,15 +64,14 @@ class HorizontalComicList extends StatelessWidget {
             title: title,
             subtitle: subtitle,
             more: more,
-            builder:
-                (viewFraction) => Center(
-                  child: UtilsService.errorWidgetBuilder(
-                    context,
-                    error: snapshot.error,
-                    service: null,
-                    orElse: (error) => Text('Error: $error'),
-                  ),
-                ),
+            builder: (viewFraction) => Center(
+              child: UtilsService.errorWidgetBuilder(
+                context,
+                error: snapshot.error,
+                service: null,
+                orElse: (error) => Text('Error: $error'),
+              ),
+            ),
             needSubtitle: false,
           );
         }
@@ -92,8 +91,7 @@ class HorizontalComicList extends StatelessWidget {
           subtitle: subtitle,
           more: more,
           items: snapshot.data!,
-          needSubtitle:
-              snapshot.data!.firstWhereOrNull(
+          needSubtitle: snapshot.data!.firstWhereOrNull(
                 (comic) => VerticalComic.checkNeedSubtitle(comic.comic),
               ) !=
               null,

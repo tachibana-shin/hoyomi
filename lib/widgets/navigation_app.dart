@@ -29,28 +29,25 @@ class NavigationApp extends StatelessWidget {
         selectedIndex: selectedIndex,
         onDestinationSelected: onDestinationSelected,
         labelType: NavigationRailLabelType.all,
-        destinations:
-            destinations
-                .map(
-                  (dest) => NavigationRailDestination(
-                    label: Text(dest.label),
-                    icon: dest.icon,
-                  ),
-                )
-                .toList(),
+        destinations: destinations
+            .map(
+              (dest) => NavigationRailDestination(
+                label: Text(dest.label),
+                icon: dest.icon,
+              ),
+            )
+            .toList(),
       );
     }
 
     return NavigationBar(
       selectedIndex: selectedIndex,
       onDestinationSelected: onDestinationSelected,
-      destinations:
-          destinations
-              .map(
-                (dest) =>
-                    NavigationDestination(label: dest.label, icon: dest.icon),
-              )
-              .toList(),
+      destinations: destinations
+          .map(
+            (dest) => NavigationDestination(label: dest.label, icon: dest.icon),
+          )
+          .toList(),
     );
   }
 }

@@ -77,9 +77,9 @@ class HorizontalList<T> extends StatelessWidget {
         final viewportFraction = 1 / crossAxisCount;
         final height =
             1 / childAspectRatio * (screenWidth * viewportFraction - 8.0) +
-            14.0 * 2 +
-            18.0 +
-            (needSubtitle ? 12.0 * 2 : 12.0 / 2);
+                14.0 * 2 +
+                18.0 +
+                (needSubtitle ? 12.0 * 2 : 12.0 / 2);
 
         return SizedBox(height: height, child: builder(viewportFraction));
       },
@@ -99,21 +99,20 @@ class HorizontalList<T> extends StatelessWidget {
       subtitle: subtitle,
       more: more,
       needSubtitle: needSubtitle,
-      builder:
-          (viewportFraction) =>
-              child ??
-              PageView.builder(
-                itemCount: items!.length,
-                allowImplicitScrolling: true,
-                padEnds: false,
-                controller: PageController(
-                  viewportFraction: viewportFraction,
-                  initialPage: 0,
-                ),
-                itemBuilder: (context, index) {
-                  return builder(context, items!.elementAt(index), index);
-                },
-              ),
+      builder: (viewportFraction) =>
+          child ??
+          PageView.builder(
+            itemCount: items!.length,
+            allowImplicitScrolling: true,
+            padEnds: false,
+            controller: PageController(
+              viewportFraction: viewportFraction,
+              initialPage: 0,
+            ),
+            itemBuilder: (context, index) {
+              return builder(context, items!.elementAt(index), index);
+            },
+          ),
     );
   }
 }

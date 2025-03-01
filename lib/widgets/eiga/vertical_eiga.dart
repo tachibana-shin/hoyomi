@@ -26,30 +26,29 @@ class VerticalEiga extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final widgetStar =
-        eiga.rate != null
-            ? Text.rich(
-              TextSpan(
-                children: [
-                  WidgetSpan(
-                    alignment: PlaceholderAlignment.middle,
-                    child: Icon(
-                      MaterialCommunityIcons.star,
-                      color: Colors.blue.shade200,
-                      size: 12.0,
-                    ),
+    final widgetStar = eiga.rate != null
+        ? Text.rich(
+            TextSpan(
+              children: [
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: Icon(
+                    MaterialCommunityIcons.star,
+                    color: Colors.blue.shade200,
+                    size: 12.0,
                   ),
-                  TextSpan(
-                    text: ' ${eiga.rate}',
-                    style: TextStyle(
-                      fontSize: 10.0,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
+                ),
+                TextSpan(
+                  text: ' ${eiga.rate}',
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
-                ],
-              ),
-            )
-            : null;
+                ),
+              ],
+            ),
+          )
+        : null;
 
     return InkWell(
       onTap: () {

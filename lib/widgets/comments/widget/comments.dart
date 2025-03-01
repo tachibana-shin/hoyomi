@@ -10,19 +10,16 @@ class Comments extends StatefulWidget {
   final Future<ComicComments> Function({
     required ComicComment? parent,
     int? page,
-  })?
-  getComments;
+  })? getComments;
   final Future<void> Function({
     required ComicComment? parent,
     required ComicComment comment,
-  })
-  deleteComment;
+  }) deleteComment;
   final Future<bool> Function({
     required ComicComment? parent,
     required ComicComment comment,
     required bool value,
-  })
-  setLikeComment;
+  }) setLikeComment;
   final ScrollController? controller;
   final ComicComment? parent;
   final bool activatorMode;
@@ -147,8 +144,8 @@ class _CommentsState extends State<Comments> {
                   TextSpan(
                     text: ' ${comments.totalItems}',
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                   ),
                 ],
               ),
@@ -170,8 +167,8 @@ class _CommentsState extends State<Comments> {
                   child: HtmlWidget(
                     comment.content,
                     textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                 ),
               ],
@@ -187,20 +184,19 @@ class _CommentsState extends State<Comments> {
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder:
-          (context) => DraggableScrollableSheet(
-            expand: false,
-            snap: true,
-            initialChildSize: 0.5,
-            minChildSize: 0.3,
-            maxChildSize: 0.9,
-            builder: (context, scrollController) {
-              return SingleChildScrollView(
-                controller: scrollController,
-                child: _buildFullComments(comments),
-              );
-            },
-          ),
+      builder: (context) => DraggableScrollableSheet(
+        expand: false,
+        snap: true,
+        initialChildSize: 0.5,
+        minChildSize: 0.3,
+        maxChildSize: 0.9,
+        builder: (context, scrollController) {
+          return SingleChildScrollView(
+            controller: scrollController,
+            child: _buildFullComments(comments),
+          );
+        },
+      ),
     );
   }
 }

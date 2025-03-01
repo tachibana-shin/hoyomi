@@ -46,15 +46,14 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
             title: title,
             subtitle: subtitle,
             more: more,
-            builder:
-                (viewFraction) => Center(
-                  child: UtilsService.errorWidgetBuilder(
-                    context,
-                    error: snapshot.error,
-                    service: _service as Service,
-                    orElse: (error) => Text('Error: $error'),
-                  ),
-                ),
+            builder: (viewFraction) => Center(
+              child: UtilsService.errorWidgetBuilder(
+                context,
+                error: snapshot.error,
+                service: _service as Service,
+                orElse: (error) => Text('Error: $error'),
+              ),
+            ),
             needSubtitle: false,
           );
         }
@@ -71,27 +70,24 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
           );
         }
 
-        final data =
-            loading
-                ? List.generate(
-                  30,
-                  (_) => FollowItem.createFakeData(Eiga.createFakeData()),
-                )
-                : snapshot.data!;
+        final data = loading
+            ? List.generate(
+                30,
+                (_) => FollowItem.createFakeData(Eiga.createFakeData()),
+              )
+            : snapshot.data!;
 
         return Skeletonizer(
           enabled: loading,
           enableSwitchAnimation: true,
           child: HorizontalList<FollowItem<Eiga>>(
             title: title,
-            subtitle:
-                data.firstOrNull?.updatedAt == null
-                    ? ''
-                    : formatWatchUpdatedAt(data.first.updatedAt!, null),
+            subtitle: data.firstOrNull?.updatedAt == null
+                ? ''
+                : formatWatchUpdatedAt(data.first.updatedAt!, null),
             more: more,
             items: data,
-            needSubtitle:
-                data.firstWhereOrNull(
+            needSubtitle: data.firstWhereOrNull(
                   (eiga) => VerticalEiga.checkNeedSubtitle(eiga.item),
                 ) !=
                 null,

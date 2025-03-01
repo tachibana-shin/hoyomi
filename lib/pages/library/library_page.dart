@@ -52,13 +52,12 @@ class _LibraryPageState extends State<LibraryPage>
       ),
       body: TabBarView(
         controller: _tabController,
-        children:
-            eigaServices
-                .map(
-                  (service) =>
-                      _TabView(key: Key(service.uid), sourceId: service.uid),
-                )
-                .toList(),
+        children: eigaServices
+            .map(
+              (service) =>
+                  _TabView(key: Key(service.uid), sourceId: service.uid),
+            )
+            .toList(),
       ),
     );
   }

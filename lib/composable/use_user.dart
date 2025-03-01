@@ -28,18 +28,15 @@ UserData useUser(
   bool immediate = true,
   flutter_signals.SignalsMixin? context,
 }) {
-  final user =
-      context != null
-          ? context.createSignal<User?>(null)
-          : core_signals.signal<User?>(null);
-  final error =
-      context != null
-          ? context.createSignal<String?>(null)
-          : core_signals.signal<String?>(null);
-  final fetching =
-      context != null
-          ? context.createSignal<bool>(true)
-          : core_signals.signal<bool>(true);
+  final user = context != null
+      ? context.createSignal<User?>(null)
+      : core_signals.signal<User?>(null);
+  final error = context != null
+      ? context.createSignal<String?>(null)
+      : core_signals.signal<String?>(null);
+  final fetching = context != null
+      ? context.createSignal<bool>(true)
+      : core_signals.signal<bool>(true);
 
   Future<void> refresh() async {
     fetching.value = true;
@@ -63,24 +60,23 @@ UserData useUser(
       (service as Service)
           .fetchUser(row: record, recordLoaded: true)
           .then((value) {
-            if (context != null && (context as State).mounted) {
-              user.value = value;
-            }
-          })
-          .catchError((err) {
-            debugPrint('Error: $err');
+        if (context != null && (context as State).mounted) {
+          user.value = value;
+        }
+      }).catchError((err) {
+        debugPrint('Error: $err');
 
-            if (err is UserNotFoundException) {
-              if (context != null && (context as State).mounted) {
-                user.value = null;
-              }
+        if (err is UserNotFoundException) {
+          if (context != null && (context as State).mounted) {
+            user.value = null;
+          }
 
-              return;
-            }
-            if (context != null && (context as State).mounted) {
-              error.value = '$err';
-            }
-          });
+          return;
+        }
+        if (context != null && (context as State).mounted) {
+          error.value = '$err';
+        }
+      });
     } finally {
       fetching.value = false;
     }

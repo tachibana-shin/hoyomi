@@ -94,8 +94,7 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
       src: $image.attributes["data-src"]!,
       headers: {"referer": referer},
     );
-    final String name =
-        itemComic.querySelector(".comic_name")?.text ??
+    final String name = itemComic.querySelector(".comic_name")?.text ??
         itemComic.querySelector("img")!.attributes['alt']!;
 
     final ComicChapter lastChap = ComicChapter(
@@ -110,10 +109,9 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
     );
 
     final timeAgoElement = itemComic.querySelector(".time-ago");
-    final timeAgo =
-        timeAgoElement != null
-            ? convertTimeAgoToUtc(timeAgoElement.text)
-            : null;
+    final timeAgo = timeAgoElement != null
+        ? convertTimeAgoToUtc(timeAgoElement.text)
+        : null;
     final String notice = itemComic.querySelector(".type-label")?.text ?? '';
 
     final rateValueText = itemComic.querySelector(".rate-star")?.text.trim();
@@ -141,29 +139,26 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
 
     return [
       HomeComicSection(
-        items:
-            sections[0]
-                .querySelectorAll(".item_home")
-                .map((element) => parseComic(element, baseUrl))
-                .toList(),
+        items: sections[0]
+            .querySelectorAll(".item_home")
+            .map((element) => parseComic(element, baseUrl))
+            .toList(),
         name: 'Mới Cập Nhật',
         sectionId: 'truyen-moi-cap-nhat',
       ),
       HomeComicSection(
-        items:
-            sections[1]
-                .querySelectorAll(".item_home")
-                .map((element) => parseComic(element, baseUrl))
-                .toList(),
+        items: sections[1]
+            .querySelectorAll(".item_home")
+            .map((element) => parseComic(element, baseUrl))
+            .toList(),
         name: "Bình Chọn",
         sectionId: "top-binh-chon",
       ),
       HomeComicSection(
-        items:
-            sections[2]
-                .querySelectorAll(".item_home")
-                .map((element) => parseComic(element, baseUrl))
-                .toList(),
+        items: sections[2]
+            .querySelectorAll(".item_home")
+            .map((element) => parseComic(element, baseUrl))
+            .toList(),
         name: "Xem Nhiều",
         sectionId: "top-thang",
       ),
@@ -189,11 +184,10 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
     final translator = _getInfoTale(tales, "Dịch Giả:")?.text.trim();
     final status$ =
         _getInfoTale(tales, "Trạng Thái:")?.text.trim().toLowerCase() ??
-        "Unknown";
-    final status =
-        status$ == 'đang cập nhật'
-            ? StatusEnum.ongoing
-            : status$ == 'unknown'
+            "Unknown";
+    final status = status$ == 'đang cập nhật'
+        ? StatusEnum.ongoing
+        : status$ == 'unknown'
             ? StatusEnum.unknown
             : StatusEnum.completed;
     final views = int.tryParse(
@@ -203,28 +197,23 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
       _getInfoTale(tales, "Theo Dõi:")?.text.trim().replaceAll(",", "") ?? "",
     );
 
-    final rate$ =
-        JsonDecoder().convert(
-              document
-                      .querySelector("script[type='application/ld+json']")
-                      ?.text
-                      .trim() ??
-                  "{}",
-            )
-            as Map<String, dynamic>;
+    final rate$ = JsonDecoder().convert(
+      document
+              .querySelector("script[type='application/ld+json']")
+              ?.text
+              .trim() ??
+          "{}",
+    ) as Map<String, dynamic>;
 
-    final rate =
-        rate$.containsKey('aggregateRating')
-            ? RateValue(
-              best: int.parse("${rate$['aggregateRating']['bestRating']}"),
-              count: int.parse(rate$['aggregateRating']['ratingCount']),
-              value: double.parse(rate$['aggregateRating']['ratingValue']),
-            )
-            : null;
+    final rate = rate$.containsKey('aggregateRating')
+        ? RateValue(
+            best: int.parse("${rate$['aggregateRating']['bestRating']}"),
+            count: int.parse(rate$['aggregateRating']['ratingCount']),
+            value: double.parse(rate$['aggregateRating']['ratingValue']),
+          )
+        : null;
 
-    final genres = document
-        .querySelectorAll(".clblue")
-        .map(
+    final genres = document.querySelectorAll(".clblue").map(
           (anchor) => Genre(
             name: anchor.text.trim(),
             genreId:
@@ -248,12 +237,11 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
 
       return ComicChapter(name: name, chapterId: chapterId, time: time);
     });
-    final lastModified =
-        rate$.containsKey("dateModified")
-            ? DateTime.parse(rate$["dateModified"])
-            : DateFormat("dd/MM/yyyy").parse(
-              document.querySelector("div.w110.text-right > span > em")!.text,
-            );
+    final lastModified = rate$.containsKey("dateModified")
+        ? DateTime.parse(rate$["dateModified"])
+        : DateFormat("dd/MM/yyyy").parse(
+            document.querySelector("div.w110.text-right > span > em")!.text,
+          );
 
     return MetaComic(
       name: name,
@@ -324,170 +312,170 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
 
   @override
   get getComments => ({required comicId, chapterId, parent, page = 1}) async {
-    final parentId = parent?.id ?? 0;
+        final parentId = parent?.id ?? 0;
 
-    if (chapterId != null) {
-      // pre-fetch
-      chapterId =
-          _episodeIdStore[chapterId] ??=
-              (await fetchDocument(
-                getURL(comicId, chapterId: chapterId),
-              )).querySelector("#episode_id")!.attributes["value"]!;
-    }
+        if (chapterId != null) {
+          // pre-fetch
+          chapterId = _episodeIdStore[chapterId] ??= (await fetchDocument(
+            getURL(comicId, chapterId: chapterId),
+          ))
+              .querySelector("#episode_id")!
+              .attributes["value"]!;
+        }
 
-    final docB = parseDocument(
-      _comicCachedStore[comicId] ?? await fetch(getURL(comicId)),
-    );
-    final document =
-        page == 1
+        final docB = parseDocument(
+          _comicCachedStore[comicId] ?? await fetch(getURL(comicId)),
+        );
+        final document = page == 1
             ? docB
             : await fetchDocument(
-              "$baseUrl/frontend/comment/list",
-              body: {
-                'comic_id': RegExp(r'(\d+)$').firstMatch(comicId)!.group(1)!,
-                'parent_id': parentId,
-                'team_id': docB.querySelector('#team_id')?.attributes['value'],
-                'token':
-                    docB.querySelector('#csrf-token')?.attributes['va5lue'],
-                'page': page,
-                'episode_id': chapterId,
-              },
-            );
+                "$baseUrl/frontend/comment/list",
+                body: {
+                  'comic_id': RegExp(r'(\d+)$').firstMatch(comicId)!.group(1)!,
+                  'parent_id': parentId,
+                  'team_id':
+                      docB.querySelector('#team_id')?.attributes['value'],
+                  'token':
+                      docB.querySelector('#csrf-token')?.attributes['va5lue'],
+                  'page': page,
+                  'episode_id': chapterId,
+                },
+              );
 
-    final items = document.querySelectorAll(".info-comment").map((element) {
-      final id =
-          RegExp(r'child_(\d+)').firstMatch(element.className)!.group(1)!;
+        final items = document.querySelectorAll(".info-comment").map((element) {
+          final id =
+              RegExp(r'child_(\d+)').firstMatch(element.className)!.group(1)!;
 
-      final photoUrl =
-          element.querySelector(".avartar-comment img")!.attributes['src']!;
-      final name = element.querySelector(".info-user-comment strong")!.text;
-      final time = convertTimeAgoToUtc(
-        element.querySelector(".time")!.text.trim(),
-      );
+          final photoUrl =
+              element.querySelector(".avartar-comment img")!.attributes['src']!;
+          final name = element.querySelector(".info-user-comment strong")!.text;
+          final time = convertTimeAgoToUtc(
+            element.querySelector(".time")!.text.trim(),
+          );
 
-      final content = element.querySelector(".content-comment")!.innerHtml;
+          final content = element.querySelector(".content-comment")!.innerHtml;
 
-      final like = int.parse(
-        element.querySelector(".total-like-comment")!.text,
-      );
-      final dislike = int.parse(
-        element.querySelector(".total-dislike-comment")!.text,
-      );
+          final like = int.parse(
+            element.querySelector(".total-like-comment")!.text,
+          );
+          final dislike = int.parse(
+            element.querySelector(".total-dislike-comment")!.text,
+          );
 
-      final countReply$ =
-          element.querySelector(".text-list-reply")?.text.trim();
-      final countReply =
-          countReply$ != null
+          final countReply$ =
+              element.querySelector(".text-list-reply")?.text.trim();
+          final countReply = countReply$ != null
               ? int.parse(
-                RegExp(r'(\d+)').firstMatch(countReply$)?.group(0) ?? '0',
-              )
+                  RegExp(r'(\d+)').firstMatch(countReply$)?.group(0) ?? '0',
+                )
               : 0;
 
-      final canDelete = element.querySelector(".remove_comnent") != null;
+          final canDelete = element.querySelector(".remove_comnent") != null;
 
-      return ComicComment(
-        id: id,
-        comicId: comicId,
-        chapterId: chapterId,
-        userId: name,
-        name: name,
-        photoUrl: OImage(src: photoUrl, headers: {"referer": baseUrl}),
-        content: content,
-        countLike: like,
-        countDislike: dislike,
-        countReply: countReply,
-        timeAgo: time,
-        canDelete: canDelete,
-      );
-    });
+          return ComicComment(
+            id: id,
+            comicId: comicId,
+            chapterId: chapterId,
+            userId: name,
+            name: name,
+            photoUrl: OImage(src: photoUrl, headers: {"referer": baseUrl}),
+            content: content,
+            countLike: like,
+            countDislike: dislike,
+            countReply: countReply,
+            timeAgo: time,
+            canDelete: canDelete,
+          );
+        });
 
-    final totalItems = int.parse(docB.querySelector(".comment-count")!.text);
-    final totalPages = int.parse(
-      RegExp(r'loadComment\((\d+)\);')
-              .firstMatch(
-                document
-                        .querySelectorAll(".page-item")
-                        .lastOrNull
-                        ?.attributes['onclick'] ??
-                    '',
-              )
-              ?.group(1) ??
-          '1',
-    );
+        final totalItems =
+            int.parse(docB.querySelector(".comment-count")!.text);
+        final totalPages = int.parse(
+          RegExp(r'loadComment\((\d+)\);')
+                  .firstMatch(
+                    document
+                            .querySelectorAll(".page-item")
+                            .lastOrNull
+                            ?.attributes['onclick'] ??
+                        '',
+                  )
+                  ?.group(1) ??
+              '1',
+        );
 
-    return ComicComments(
-      items: items.toList(),
-      page: page!,
-      totalItems: totalItems,
-      totalPages: totalPages,
-    );
-  };
+        return ComicComments(
+          items: items.toList(),
+          page: page!,
+          totalItems: totalItems,
+          totalPages: totalPages,
+        );
+      };
 
   @override
   get deleteComment => ({
-    required comicId,
-    chapterId,
-    parent,
-    required comment,
-  }) async {
-    final docB = parseDocument(
-      _comicCachedStore[comicId] ?? await fetch(getURL(comicId)),
-    );
+        required comicId,
+        chapterId,
+        parent,
+        required comment,
+      }) async {
+        final docB = parseDocument(
+          _comicCachedStore[comicId] ?? await fetch(getURL(comicId)),
+        );
 
-    await fetch(
-      "$baseUrl/frontend/comment/remove",
-      body: {
-        'id': comment.id,
-        'comic_id': comicId,
-        'token': docB.querySelector('#csrf-token')?.attributes['value'],
-        'episode_id': chapterId,
-      },
-    );
-  };
+        await fetch(
+          "$baseUrl/frontend/comment/remove",
+          body: {
+            'id': comment.id,
+            'comic_id': comicId,
+            'token': docB.querySelector('#csrf-token')?.attributes['value'],
+            'episode_id': chapterId,
+          },
+        );
+      };
 
   @override
   get setLikeComment => ({
-    required comicId,
-    chapterId,
-    parent,
-    required comment,
-    required value,
-  }) async {
-    if (value) {
-      final json = jsonDecode(
-        await fetch("$baseUrl/frontend/comment/like", body: {'id': comment.id}),
-      );
+        required comicId,
+        chapterId,
+        parent,
+        required comment,
+        required value,
+      }) async {
+        if (value) {
+          final json = jsonDecode(
+            await fetch("$baseUrl/frontend/comment/like",
+                body: {'id': comment.id}),
+          );
 
-      if (json["success"] == 0) throw Exception(json["error"]);
-    } else {
-      final json = jsonDecode(
-        await fetch(
-          "$baseUrl/frontend/comment/dislike",
-          body: {'id': comment.id},
-        ),
-      );
+          if (json["success"] == 0) throw Exception(json["error"]);
+        } else {
+          final json = jsonDecode(
+            await fetch(
+              "$baseUrl/frontend/comment/dislike",
+              body: {'id': comment.id},
+            ),
+          );
 
-      if (json["success"] == 0) throw Exception(json["error"]);
-    }
+          if (json["success"] == 0) throw Exception(json["error"]);
+        }
 
-    return value;
-  };
+        return value;
+      };
 
   @override
   get getSuggest => (comic, {page = 1}) async {
-    return getSection(
-      sectionId: "tim-kiem-nang-cao",
-      page: page!,
-      filters: {
-        'category':
-            comic.genres
+        return getSection(
+          sectionId: "tim-kiem-nang-cao",
+          page: page!,
+          filters: {
+            'category': comic.genres
                 .toList()
                 .sublist(0, min(3, comic.genres.length))
                 .map((e) => RegExp(r'\d+').allMatches(e.genreId).last.group(0)!)
                 .toList(),
-      },
-    );
-  };
+          },
+        );
+      };
 
   @override
   search({required keyword, required page, required filters}) async {
@@ -502,16 +490,14 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
         .querySelectorAll(".item_home")
         .map((element) => parseComic(element, baseUrl));
 
-    final lastPageLink =
-        document
-            .querySelector(".pagination > a:last-child")
-            ?.attributes["href"];
-    final maxPage =
-        lastPageLink != null
-            ? int.parse(
-              RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
-            )
-            : 1;
+    final lastPageLink = document
+        .querySelector(".pagination > a:last-child")
+        ?.attributes["href"];
+    final maxPage = lastPageLink != null
+        ? int.parse(
+            RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
+          )
+        : 1;
 
     return ComicSection(
       name: '',
@@ -537,16 +523,14 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
         .querySelectorAll(".item_home")
         .map((element) => parseComic(element, baseUrl));
 
-    final lastPageLink =
-        document
-            .querySelector(".pagination > a:last-child")
-            ?.attributes["href"];
-    final maxPage =
-        lastPageLink != null
-            ? int.parse(
-              RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
-            )
-            : 1;
+    final lastPageLink = document
+        .querySelector(".pagination > a:last-child")
+        ?.attributes["href"];
+    final maxPage = lastPageLink != null
+        ? int.parse(
+            RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
+          )
+        : 1;
 
     return ComicSection(
       name: document.querySelector(".title_cate")!.text,

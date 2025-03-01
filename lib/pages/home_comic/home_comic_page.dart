@@ -61,30 +61,27 @@ class _HomeComicState extends State<HomeComic>
         ),
         centerTitle: true,
         titleSpacing: 0.0,
-        bottom:
-            _overlayQuickSearch != null
-                ? null
-                : TabBar(
-                  controller: _tabController,
-                  isScrollable: true,
-                  splashBorderRadius: BorderRadius.circular(35.0),
-                  tabs:
-                      comicServices
-                          .map((service) => Tab(text: service.name))
-                          .toList(),
-                ),
+        bottom: _overlayQuickSearch != null
+            ? null
+            : TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                splashBorderRadius: BorderRadius.circular(35.0),
+                tabs: comicServices
+                    .map((service) => Tab(text: service.name))
+                    .toList(),
+              ),
       ),
       body: Stack(
         children: [
           TabBarView(
             controller: _tabController,
-            children:
-                comicServices
-                    .map(
-                      (service) =>
-                          TabViewComic(key: Key(service.uid), service: service),
-                    )
-                    .toList(),
+            children: comicServices
+                .map(
+                  (service) =>
+                      TabViewComic(key: Key(service.uid), service: service),
+                )
+                .toList(),
           ),
           ...(_overlayQuickSearch != null ? [_overlayQuickSearch!] : []),
         ],

@@ -97,9 +97,9 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
                 ? 'Follow'
                 : formatNumber(followCount),
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              fontWeight: FontWeight.normal,
-              fontSize: 12.0,
-            ),
+                  fontWeight: FontWeight.normal,
+                  fontSize: 12.0,
+                ),
           ),
           style: ButtonStyle(
             padding: WidgetStateProperty.all(

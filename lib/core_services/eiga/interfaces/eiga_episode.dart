@@ -21,10 +21,9 @@ class EigaEpisode {
     return EigaEpisode(
       name: json['name'] as String,
       episodeId: json['episodeId'] as String,
-      image:
-          json['image'] != null
-              ? OImage.fromJson(json['image'] as Map<String, dynamic>)
-              : null,
+      image: json['image'] != null
+          ? OImage.fromJson(json['image'] as Map<String, dynamic>)
+          : null,
       description: json['description'] as String?,
     );
   }

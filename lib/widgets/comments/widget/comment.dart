@@ -14,19 +14,16 @@ class Comment extends StatefulWidget {
   final Future<ComicComments> Function({
     required ComicComment? parent,
     int? page,
-  })?
-  getComments;
+  })? getComments;
   final Future<void> Function({
     required ComicComment? parent,
     required ComicComment comment,
-  })
-  deleteComment;
+  }) deleteComment;
   final Future<bool> Function({
     required ComicComment? parent,
     required ComicComment comment,
     required bool value,
-  })
-  setLikeComment;
+  }) setLikeComment;
   final void Function() onPop;
 
   const Comment({
@@ -80,7 +77,9 @@ class _CommentState extends State<Comment> {
                         child: Text(
                           widget.comment.name,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodyMedium
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -181,11 +180,10 @@ class _CommentState extends State<Comment> {
                                   style: Theme.of(
                                     context,
                                   ).textTheme.bodyMedium?.copyWith(
-                                    color:
-                                        Theme.of(
+                                        color: Theme.of(
                                           context,
                                         ).colorScheme.secondaryFixedDim,
-                                  ),
+                                      ),
                                 ),
                                 WidgetSpan(
                                   child: Padding(
@@ -269,42 +267,40 @@ class _CommentState extends State<Comment> {
                   child: const Text('Cancel'),
                 ),
                 TextButton(
-                  onPressed:
-                      isDeleting
-                          ? null
-                          : () async {
+                  onPressed: isDeleting
+                      ? null
+                      : () async {
+                          setState(() {
+                            isDeleting = true;
+                          });
+
+                          try {
+                            await widget.deleteComment(
+                              comment: widget.comment,
+                              parent: widget.parent,
+                            );
+                            if (mounted) {
+                              // pop me
+                              widget.onPop();
+                              // ignore: use_build_context_synchronously
+                              Navigator.pop(context);
+                            }
+                          } catch (e) {
                             setState(() {
-                              isDeleting = true;
+                              isDeleting = false;
                             });
 
-                            try {
-                              await widget.deleteComment(
-                                comment: widget.comment,
-                                parent: widget.parent,
-                              );
-                              if (mounted) {
-                                // pop me
-                                widget.onPop();
-                                // ignore: use_build_context_synchronously
-                                Navigator.pop(context);
-                              }
-                            } catch (e) {
-                              setState(() {
-                                isDeleting = false;
-                              });
-
-                              showSnackBar(Text('Error: $e'));
-                              debugPrint('Error: $e');
-                            }
-                          },
-                  child:
-                      isDeleting
-                          ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                          : const Text('Delete'),
+                            showSnackBar(Text('Error: $e'));
+                            debugPrint('Error: $e');
+                          }
+                        },
+                  child: isDeleting
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Delete'),
                 ),
               ],
             );

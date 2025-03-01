@@ -44,36 +44,34 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
   Widget _buildBody() {
     return PullRefreshPage<Paginate<FollowItem<Eiga>>>(
       onLoadData: () => _service.getFollows(page: 1),
-      onLoadFake:
-          () => Paginate.createFakeData(
-            List.generate(
-              30,
-              (_) => FollowItem.createFakeData(Eiga.createFakeData()),
-            ),
-          ),
-      builder:
-          (data, param) => Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-            child: InfiniteGrid(
-              data: data.items,
-              crossAxisCount: VerticalList.getCrossAxisCount(context),
-              crossAxisSpacing: 4.0,
-              mainAxisSpacing: 4.0,
-              fetchData: () async {
-                final result = await _service.getFollows(page: _pageKey);
-                _pageKey++;
+      onLoadFake: () => Paginate.createFakeData(
+        List.generate(
+          30,
+          (_) => FollowItem.createFakeData(Eiga.createFakeData()),
+        ),
+      ),
+      builder: (data, param) => Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+        child: InfiniteGrid(
+          data: data.items,
+          crossAxisCount: VerticalList.getCrossAxisCount(context),
+          crossAxisSpacing: 4.0,
+          mainAxisSpacing: 4.0,
+          fetchData: () async {
+            final result = await _service.getFollows(page: _pageKey);
+            _pageKey++;
 
-                final isLastPage = result.page >= result.totalPages;
-                return (isLastPage, result.items);
-              },
-              itemBuilder: (context, follow, index) {
-                return VerticalEiga(
-                  eiga: follow.item,
-                  sourceId: widget.sourceId,
-                );
-              },
-            ),
-          ),
+            final isLastPage = result.page >= result.totalPages;
+            return (isLastPage, result.items);
+          },
+          itemBuilder: (context, follow, index) {
+            return VerticalEiga(
+              eiga: follow.item,
+              sourceId: widget.sourceId,
+            );
+          },
+        ),
+      ),
     );
   }
 }

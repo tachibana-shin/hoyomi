@@ -104,106 +104,102 @@ class _DetailsComicState extends State<DetailsComic>
   @override
   Widget build(BuildContext context2) {
     return PullRefreshPage(
-      onLoadData:
-          () => _service.getDetails(widget.comicId)..then((comic) {
-            _title = comic.name;
-            _comic = comic;
-            _suggestFuture =
-                _service.getSuggest == null
-                    ? null
-                    : _service.getSuggest!(_comic!);
+      onLoadData: () => _service.getDetails(widget.comicId)
+        ..then((comic) {
+          _title = comic.name;
+          _comic = comic;
+          _suggestFuture = _service.getSuggest == null
+              ? null
+              : _service.getSuggest!(_comic!);
 
-            HistoryController().createComic(
-              _service.uid,
-              comicId: widget.comicId,
-              comic: comic,
-            );
+          HistoryController().createComic(
+            _service.uid,
+            comicId: widget.comicId,
+            comic: comic,
+          );
 
-            _updateGetHistory();
-            eventBus.on<UpdatedHistory>().listen((event) {
-              if (!mounted) return;
-              // ignore: use_build_context_synchronously
-              final name = GoRouter.of(context).state.name;
+          _updateGetHistory();
+          eventBus.on<UpdatedHistory>().listen((event) {
+            if (!mounted) return;
+            // ignore: use_build_context_synchronously
+            final name = GoRouter.of(context).state.name;
 
-              // lazy call history
-              if (event.comicId == widget.comicId &&
-                  (name == "details_comic" || event.force)) {
-                _updateGetHistory();
-              }
-            });
-          }),
+            // lazy call history
+            if (event.comicId == widget.comicId &&
+                (name == "details_comic" || event.force)) {
+              _updateGetHistory();
+            }
+          });
+        }),
       onLoadFake: () => MetaComic.createFakeData(),
-      builderError:
-          (body) => Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              scrolledUnderElevation: 0.0,
-              leading: IconButton(
-                icon: const Icon(MaterialCommunityIcons.arrow_left),
-                onPressed: () {
-                  context.pop();
-                },
-              ),
-            ),
-            body: body,
+      builderError: (body) => Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          scrolledUnderElevation: 0.0,
+          leading: IconButton(
+            icon: const Icon(MaterialCommunityIcons.arrow_left),
+            onPressed: () {
+              context.pop();
+            },
           ),
-      builder:
-          (comic, _) => Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              scrolledUnderElevation: 0.0,
-              leading: IconButton(
-                icon: const Icon(MaterialCommunityIcons.arrow_left),
-                onPressed: () {
-                  context.pop();
-                },
-              ),
-              title: AnimatedOpacity(
-                duration: const Duration(milliseconds: 200),
-                opacity: _isTitleVisible ? 1.0 : 0.0,
-                child: Text(_title),
-              ),
-              actions: [
-                if (_service is ComicAuthMixin && _service is AuthMixin)
-                  _AvatarUser(service: _service),
-                IconButtonShare(),
-                IconButtonFollow(
-                  sourceId: widget.sourceId,
-                  comicId: widget.comicId,
-                  comic: _comic,
-                ),
-                PopupMenuButton<String>(
-                  onSelected: (value) {
-                    _handleMenuSelection(context, value);
-                  },
-                  itemBuilder: (BuildContext context) {
-                    return [
-                      _buildMenuItem('download', 'Download'),
-                      _buildMenuItem('find_similar', 'Find similar'),
-                      _buildMenuItem('open_browser', 'Open with browser'),
-                      _buildMenuItem('create_shortcut', 'Create shortcut'),
-                    ];
-                  },
-                ),
-              ],
-            ),
-            body: SingleChildScrollView(
-              padding: EdgeInsets.all(
-                16.0,
-              ).add(EdgeInsets.only(bottom: 15.h(context))),
-              controller: _scrollController,
-              child: _buildContainer(comic),
-            ),
-            bottomSheet:
-                _comic == null
-                    ? null
-                    : BottomSheet(
-                      animationController: _bottomSheetAnimationController,
-                      showDragHandle: true,
-                      builder: (context) => _buildSheetChapters()!,
-                      onClosing: () {},
-                    ),
+        ),
+        body: body,
+      ),
+      builder: (comic, _) => Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          scrolledUnderElevation: 0.0,
+          leading: IconButton(
+            icon: const Icon(MaterialCommunityIcons.arrow_left),
+            onPressed: () {
+              context.pop();
+            },
           ),
+          title: AnimatedOpacity(
+            duration: const Duration(milliseconds: 200),
+            opacity: _isTitleVisible ? 1.0 : 0.0,
+            child: Text(_title),
+          ),
+          actions: [
+            if (_service is ComicAuthMixin && _service is AuthMixin)
+              _AvatarUser(service: _service),
+            IconButtonShare(),
+            IconButtonFollow(
+              sourceId: widget.sourceId,
+              comicId: widget.comicId,
+              comic: _comic,
+            ),
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                _handleMenuSelection(context, value);
+              },
+              itemBuilder: (BuildContext context) {
+                return [
+                  _buildMenuItem('download', 'Download'),
+                  _buildMenuItem('find_similar', 'Find similar'),
+                  _buildMenuItem('open_browser', 'Open with browser'),
+                  _buildMenuItem('create_shortcut', 'Create shortcut'),
+                ];
+              },
+            ),
+          ],
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(
+            16.0,
+          ).add(EdgeInsets.only(bottom: 15.h(context))),
+          controller: _scrollController,
+          child: _buildContainer(comic),
+        ),
+        bottomSheet: _comic == null
+            ? null
+            : BottomSheet(
+                animationController: _bottomSheetAnimationController,
+                showDragHandle: true,
+                builder: (context) => _buildSheetChapters()!,
+                onClosing: () {},
+              ),
+      ),
     );
   }
 
@@ -330,9 +326,11 @@ class _DetailsComicState extends State<DetailsComic>
                           (index) => Icon(
                             Icons.star,
                             size: 16.0,
-                            color: Colors.blue.shade200 /* Theme.of(context)
+                            color: Colors.blue
+                                .shade200 /* Theme.of(context)
                                             .colorScheme
-                                            .onPrimaryContainer,*/,
+                                            .onPrimaryContainer,*/
+                            ,
                           ),
                         ),
                         if (comic.rate!.value % 1 != 0)
@@ -512,18 +510,17 @@ class _DetailsComicState extends State<DetailsComic>
         Wrap(
           spacing: 8.0,
           runSpacing: 4.0,
-          children:
-              comic.genres.map((genre) {
-                return InkWell(
-                  onTap: () {
-                    ///
-                    context.push(
-                      "/section_comic/${_service.uid}/${genre.genreId}",
-                    );
-                  },
-                  child: Chip(label: Text(genre.name)),
+          children: comic.genres.map((genre) {
+            return InkWell(
+              onTap: () {
+                ///
+                context.push(
+                  "/section_comic/${_service.uid}/${genre.genreId}",
                 );
-              }).toList(),
+              },
+              child: Chip(label: Text(genre.name)),
+            );
+          }).toList(),
         ),
         SizedBox(height: 24.0),
         _buildSuggest(comic),
@@ -534,18 +531,16 @@ class _DetailsComicState extends State<DetailsComic>
   Widget _buildButtonRead(MetaComic comic) {
     //    _historyChapters
 
-    final current =
-        _historyChapters?.entries.isNotEmpty == true
-            ? _historyChapters?.entries.reduce(
-              (a, b) => a.value.updatedAt.isAfter(b.value.updatedAt) ? a : b,
-            )
-            : null;
-    final currentEpisodeIndex =
-        current == null
-            ? null
-            : comic.chapters.toList().lastIndexWhere((chapter) {
-              return current.key == chapter.chapterId;
-            });
+    final current = _historyChapters?.entries.isNotEmpty == true
+        ? _historyChapters?.entries.reduce(
+            (a, b) => a.value.updatedAt.isAfter(b.value.updatedAt) ? a : b,
+          )
+        : null;
+    final currentEpisodeIndex = current == null
+        ? null
+        : comic.chapters.toList().lastIndexWhere((chapter) {
+            return current.key == chapter.chapterId;
+          });
     final totalEpisodes = comic.chapters.length;
 
     return ClipRRect(
@@ -591,10 +586,9 @@ class _DetailsComicState extends State<DetailsComic>
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
                 alignment: Alignment.centerLeft,
-                widthFactor:
-                    currentEpisodeIndex == null
-                        ? 0
-                        : (totalEpisodes - currentEpisodeIndex) / totalEpisodes,
+                widthFactor: currentEpisodeIndex == null
+                    ? 0
+                    : (totalEpisodes - currentEpisodeIndex) / totalEpisodes,
                 child: Container(
                   decoration: BoxDecoration(
                     color: Theme.of(
@@ -620,10 +614,9 @@ class _DetailsComicState extends State<DetailsComic>
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color:
-                          Theme.of(
-                            context,
-                          ).colorScheme.onSurface, //.withValues(alpha: 0.6),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface, //.withValues(alpha: 0.6),
                     ),
                   ),
                   Text(
@@ -671,12 +664,11 @@ class _DetailsComicState extends State<DetailsComic>
 
     return HorizontalComicList(
       itemsFuture: _suggestFuture!.then(
-        (value) =>
-            value.items
-                .map(
-                  (comic) => ComicExtend(comic: comic, sourceId: _service.uid),
-                )
-                .toList(),
+        (value) => value.items
+            .map(
+              (comic) => ComicExtend(comic: comic, sourceId: _service.uid),
+            )
+            .toList(),
       ),
       // totalItems: _suggestFuture!.then((value) => value.totalItems),
       title: 'Suggest',
@@ -793,17 +785,16 @@ class _ButtonLikeState extends State<_ButtonLike> {
       (widget.service as ComicAuthMixin)
           .isLiked(comicId: widget.comicId)
           .then((liked) {
-            if (mounted) {
-              setState(() {
-                _liked = liked;
-              });
-            }
-          })
-          .catchError((error) {
-            if (error is! CaptchaRequiredException) {
-              showSnackBar(Text('Error: $error')); // 显示錯誤訊息
-            }
+        if (mounted) {
+          setState(() {
+            _liked = liked;
           });
+        }
+      }).catchError((error) {
+        if (error is! CaptchaRequiredException) {
+          showSnackBar(Text('Error: $error')); // 显示錯誤訊息
+        }
+      });
     }
   }
 
@@ -811,21 +802,18 @@ class _ButtonLikeState extends State<_ButtonLike> {
     (widget.service as ComicAuthMixin)
         .setLike(comicId: widget.comicId, value: !(_liked ?? false))
         .then((value) {
-          if (mounted) {
-            setState(() {
-              _liked = value;
-              _likes =
-                  value
-                      ? (widget.comic.likes ?? 0) + 1
-                      : widget.comic.likes! - 1;
-            });
-          }
-        })
-        .catchError((error) {
-          if (error is! CaptchaRequiredException) {
-            showSnackBar(Text('Error: $error')); // 显示錯誤訊息
-          }
+      if (mounted) {
+        setState(() {
+          _liked = value;
+          _likes =
+              value ? (widget.comic.likes ?? 0) + 1 : widget.comic.likes! - 1;
         });
+      }
+    }).catchError((error) {
+      if (error is! CaptchaRequiredException) {
+        showSnackBar(Text('Error: $error')); // 显示錯誤訊息
+      }
+    });
   }
 
   @override

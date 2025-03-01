@@ -45,9 +45,8 @@ class _CustomWebViewState extends State<CustomWebView> {
         url: WebUri(_initialUrl),
         webViewController: _webViewController,
       );
-      final cookiesText = cookies
-          .map((cookie) => '${cookie.name}=${cookie.value}')
-          .join("; ");
+      final cookiesText =
+          cookies.map((cookie) => '${cookie.name}=${cookie.value}').join("; ");
       final userAgent = await _webViewController.evaluateJavascript(
         source: "navigator.userAgent",
       );

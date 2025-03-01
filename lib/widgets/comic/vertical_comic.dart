@@ -24,30 +24,29 @@ class VerticalComic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final widgetStar =
-        comic.rate != null
-            ? Text.rich(
-              TextSpan(
-                children: [
-                  WidgetSpan(
-                    alignment: PlaceholderAlignment.middle,
-                    child: Icon(
-                      MaterialCommunityIcons.star,
-                      color: Colors.blue.shade200,
-                      size: 12.0,
-                    ),
+    final widgetStar = comic.rate != null
+        ? Text.rich(
+            TextSpan(
+              children: [
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: Icon(
+                    MaterialCommunityIcons.star,
+                    color: Colors.blue.shade200,
+                    size: 12.0,
                   ),
-                  TextSpan(
-                    text: ' ${comic.rate}',
-                    style: TextStyle(
-                      fontSize: 10.0,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
+                ),
+                TextSpan(
+                  text: ' ${comic.rate}',
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
-                ],
-              ),
-            )
-            : null;
+                ),
+              ],
+            ),
+          )
+        : null;
 
     return InkWell(
       onTap: () {

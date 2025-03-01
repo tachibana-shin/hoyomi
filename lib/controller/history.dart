@@ -11,13 +11,12 @@ class HistoryController {
   final _historyChapBox = isar.historyChaps;
 
   Future<List<HistoryChap>?> getHistory(String sourceId, String comicId) async {
-    final comic =
-        await _comicBox
-            .where()
-            .comicIdEqualTo(comicId)
-            .filter()
-            .sourceIdEqualTo(sourceId)
-            .findFirst();
+    final comic = await _comicBox
+        .where()
+        .comicIdEqualTo(comicId)
+        .filter()
+        .sourceIdEqualTo(sourceId)
+        .findFirst();
     if (comic == null) return null;
 
     return _historyChapBox.filter().comicEqualTo(comic.id!).findAll();
@@ -29,13 +28,12 @@ class HistoryController {
     required MetaComic comic,
     bool? followed,
   }) async {
-    Comic? comicObject =
-        await _comicBox
-            .where()
-            .sourceIdEqualTo(sourceId)
-            .filter()
-            .comicIdEqualTo(comicId)
-            .findFirst();
+    Comic? comicObject = await _comicBox
+        .where()
+        .sourceIdEqualTo(sourceId)
+        .filter()
+        .comicIdEqualTo(comicId)
+        .findFirst();
 
     comicObject ??= Comic(
       sourceId: sourceId,

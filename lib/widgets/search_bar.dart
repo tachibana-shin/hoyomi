@@ -53,10 +53,9 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
             padding: EdgeInsets.symmetric(horizontal: _focusing ? 0.0 : 8.0),
             margin: EdgeInsets.symmetric(horizontal: 18.0, vertical: 16.0),
             decoration: BoxDecoration(
-              color:
-                  _focusing
-                      ? Colors.transparent
-                      : Theme.of(context).colorScheme.surfaceContainerHigh,
+              color: _focusing
+                  ? Colors.transparent
+                  : Theme.of(context).colorScheme.surfaceContainerHigh,
               borderRadius:
                   _focusing ? BorderRadius.zero : BorderRadius.circular(30.0),
             ),
@@ -161,37 +160,37 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                         isGridViewEnabled.value = !isGridViewEnabled.value;
                       }
                     },
-                    itemBuilder:
-                        (BuildContext context) => <PopupMenuEntry<String>>[
-                          const PopupMenuItem<String>(
-                            value: 'clear_history',
-                            child: Text("Clear History"),
-                          ),
-                          const PopupMenuItem<String>(
-                            value: 'settings',
-                            child: Text("Settings"),
-                          ),
-                          PopupMenuItem<String>(
-                            value: 'grid_view',
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("Grid View"),
-                                ValueListenableBuilder<bool>(
-                                  valueListenable: isGridViewEnabled,
-                                  builder: (context, value, _) {
-                                    return Switch(
-                                      value: value,
-                                      onChanged: (newValue) {
-                                        isGridViewEnabled.value = newValue;
-                                      },
-                                    );
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<String>>[
+                      const PopupMenuItem<String>(
+                        value: 'clear_history',
+                        child: Text("Clear History"),
+                      ),
+                      const PopupMenuItem<String>(
+                        value: 'settings',
+                        child: Text("Settings"),
+                      ),
+                      PopupMenuItem<String>(
+                        value: 'grid_view',
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Grid View"),
+                            ValueListenableBuilder<bool>(
+                              valueListenable: isGridViewEnabled,
+                              builder: (context, value, _) {
+                                return Switch(
+                                  value: value,
+                                  onChanged: (newValue) {
+                                    isGridViewEnabled.value = newValue;
                                   },
-                                ),
-                              ],
+                                );
+                              },
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
               ],
             ),

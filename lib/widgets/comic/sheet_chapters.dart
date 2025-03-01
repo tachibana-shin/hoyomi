@@ -37,14 +37,12 @@ class SheetChapters extends StatefulWidget {
 class _SheetChaptersState extends State<SheetChapters> {
   @override
   Widget build(BuildContext context) {
-    final lastHistoryChapObject =
-        widget.histories?.values.isNotEmpty == true
-            ? widget.histories!.values.reduce(
-              (a, b) => a.updatedAt.isAfter(b.updatedAt) ? a : b,
-            )
-            : null;
-    final currentChapterId =
-        widget.currentChapterId ??
+    final lastHistoryChapObject = widget.histories?.values.isNotEmpty == true
+        ? widget.histories!.values.reduce(
+            (a, b) => a.updatedAt.isAfter(b.updatedAt) ? a : b,
+          )
+        : null;
+    final currentChapterId = widget.currentChapterId ??
         lastHistoryChapObject?.chapterId ??
         widget.comic.chapters.first.chapterId;
 
@@ -106,11 +104,12 @@ class _SheetChaptersState extends State<SheetChapters> {
                           style: TextStyle(
                             fontSize: 14.0,
                             fontWeight: selected ? FontWeight.w500 : null,
-                            color:
-                                selected
-                                    ? Theme.of(context).colorScheme.onSurface
-                                    : Theme.of(context).colorScheme.onSurface
-                                        .withValues(alpha: 0.85),
+                            color: selected
+                                ? Theme.of(context).colorScheme.onSurface
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withValues(alpha: 0.85),
                           ),
                         ),
                       ],
@@ -118,35 +117,33 @@ class _SheetChaptersState extends State<SheetChapters> {
                     subtitle: Text(
                       chapter.time != null ? formatTimeAgo(chapter.time!) : "",
                       style: TextStyle(
-                        color:
-                            selected
-                                ? Theme.of(context).colorScheme.secondary
-                                : Theme.of(
-                                  context,
-                                ).colorScheme.secondary.withValues(alpha: 0.85),
+                        color: selected
+                            ? Theme.of(context).colorScheme.secondary
+                            : Theme.of(
+                                context,
+                              ).colorScheme.secondary.withValues(alpha: 0.85),
                         fontSize: 12.0,
                       ),
                     ),
-                    trailing:
-                        history == null
-                            ? null
-                            : CircularProgress(
-                              value: min(
-                                1,
-                                (history.currentPage + 1) / history.maxPage,
-                              ),
-                              strokeWidth: 3.0,
-                              textStyle: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
-                              borderColor: AlwaysStoppedAnimation<Color>(
-                                Colors.green,
-                              ),
-                              backgroundBorder: Colors.grey[300],
-                              size: 25,
+                    trailing: history == null
+                        ? null
+                        : CircularProgress(
+                            value: min(
+                              1,
+                              (history.currentPage + 1) / history.maxPage,
                             ),
+                            strokeWidth: 3.0,
+                            textStyle: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                            borderColor: AlwaysStoppedAnimation<Color>(
+                              Colors.green,
+                            ),
+                            backgroundBorder: Colors.grey[300],
+                            size: 25,
+                          ),
                     onTap: () {
                       final url =
                           "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${chapter.chapterId}";

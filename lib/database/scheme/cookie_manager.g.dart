@@ -349,7 +349,7 @@ extension CookieManagerQueryWhere
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause>
-  sourceIdNotEqualTo(String sourceId) {
+      sourceIdNotEqualTo(String sourceId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -392,7 +392,7 @@ extension CookieManagerQueryWhere
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause>
-  createdAtEqualTo(DateTime createdAt) {
+      createdAtEqualTo(DateTime createdAt) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IndexWhereClause.equalTo(indexName: r'createdAt', value: [createdAt]),
@@ -401,7 +401,7 @@ extension CookieManagerQueryWhere
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause>
-  createdAtNotEqualTo(DateTime createdAt) {
+      createdAtNotEqualTo(DateTime createdAt) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -444,7 +444,7 @@ extension CookieManagerQueryWhere
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause>
-  createdAtGreaterThan(DateTime createdAt, {bool include = false}) {
+      createdAtGreaterThan(DateTime createdAt, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IndexWhereClause.between(
@@ -458,7 +458,7 @@ extension CookieManagerQueryWhere
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause>
-  createdAtLessThan(DateTime createdAt, {bool include = false}) {
+      createdAtLessThan(DateTime createdAt, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IndexWhereClause.between(
@@ -472,7 +472,7 @@ extension CookieManagerQueryWhere
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterWhereClause>
-  createdAtBetween(
+      createdAtBetween(
     DateTime lowerCreatedAt,
     DateTime upperCreatedAt, {
     bool includeLower = true,
@@ -495,7 +495,7 @@ extension CookieManagerQueryWhere
 extension CookieManagerQueryFilter
     on QueryBuilder<CookieManager, CookieManager, QFilterCondition> {
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  cookieIsNull() {
+      cookieIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const FilterCondition.isNull(property: r'cookie'),
@@ -504,7 +504,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  cookieIsNotNull() {
+      cookieIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const FilterCondition.isNotNull(property: r'cookie'),
@@ -513,7 +513,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  cookieEqualTo(String? value, {bool caseSensitive = true}) {
+      cookieEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(
@@ -526,7 +526,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  cookieGreaterThan(
+      cookieGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -544,7 +544,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  cookieLessThan(
+      cookieLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -562,7 +562,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  cookieBetween(
+      cookieBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -584,7 +584,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  cookieStartsWith(String value, {bool caseSensitive = true}) {
+      cookieStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.startsWith(
@@ -597,7 +597,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  cookieEndsWith(String value, {bool caseSensitive = true}) {
+      cookieEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.endsWith(
@@ -610,7 +610,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  cookieContains(String value, {bool caseSensitive = true}) {
+      cookieContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.contains(
@@ -623,7 +623,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  cookieMatches(String pattern, {bool caseSensitive = true}) {
+      cookieMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.matches(
@@ -636,7 +636,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  cookieIsEmpty() {
+      cookieIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'cookie', value: ''),
@@ -645,7 +645,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  cookieIsNotEmpty() {
+      cookieIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(property: r'cookie', value: ''),
@@ -654,7 +654,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  createdAtEqualTo(DateTime value) {
+      createdAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'createdAt', value: value),
@@ -663,7 +663,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  createdAtGreaterThan(DateTime value, {bool include = false}) {
+      createdAtGreaterThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(
@@ -676,7 +676,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  createdAtLessThan(DateTime value, {bool include = false}) {
+      createdAtLessThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.lessThan(
@@ -689,7 +689,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  createdAtBetween(
+      createdAtBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
@@ -717,7 +717,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  idIsNotNull() {
+      idIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const FilterCondition.isNotNull(property: r'id'),
@@ -736,7 +736,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  idGreaterThan(Id? value, {bool include = false}) {
+      idGreaterThan(Id? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(
@@ -783,7 +783,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  sourceIdEqualTo(String value, {bool caseSensitive = true}) {
+      sourceIdEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(
@@ -796,7 +796,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  sourceIdGreaterThan(
+      sourceIdGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -814,7 +814,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  sourceIdLessThan(
+      sourceIdLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -832,7 +832,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  sourceIdBetween(
+      sourceIdBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -854,7 +854,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  sourceIdStartsWith(String value, {bool caseSensitive = true}) {
+      sourceIdStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.startsWith(
@@ -867,7 +867,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  sourceIdEndsWith(String value, {bool caseSensitive = true}) {
+      sourceIdEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.endsWith(
@@ -880,7 +880,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  sourceIdContains(String value, {bool caseSensitive = true}) {
+      sourceIdContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.contains(
@@ -893,7 +893,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  sourceIdMatches(String pattern, {bool caseSensitive = true}) {
+      sourceIdMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.matches(
@@ -906,7 +906,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  sourceIdIsEmpty() {
+      sourceIdIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'sourceId', value: ''),
@@ -915,7 +915,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  sourceIdIsNotEmpty() {
+      sourceIdIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(property: r'sourceId', value: ''),
@@ -924,7 +924,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  updatedAtEqualTo(DateTime value) {
+      updatedAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'updatedAt', value: value),
@@ -933,7 +933,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  updatedAtGreaterThan(DateTime value, {bool include = false}) {
+      updatedAtGreaterThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(
@@ -946,7 +946,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  updatedAtLessThan(DateTime value, {bool include = false}) {
+      updatedAtLessThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.lessThan(
@@ -959,7 +959,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  updatedAtBetween(
+      updatedAtBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
@@ -979,7 +979,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userIsNull() {
+      userIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const FilterCondition.isNull(property: r'user'),
@@ -988,7 +988,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userIsNotNull() {
+      userIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const FilterCondition.isNotNull(property: r'user'),
@@ -1012,7 +1012,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userGreaterThan(
+      userGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1030,7 +1030,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userLessThan(
+      userLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1069,7 +1069,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userStartsWith(String value, {bool caseSensitive = true}) {
+      userStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.startsWith(
@@ -1082,7 +1082,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userEndsWith(String value, {bool caseSensitive = true}) {
+      userEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.endsWith(
@@ -1095,7 +1095,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userContains(String value, {bool caseSensitive = true}) {
+      userContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.contains(
@@ -1123,7 +1123,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userIsEmpty() {
+      userIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'user', value: ''),
@@ -1132,7 +1132,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userIsNotEmpty() {
+      userIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(property: r'user', value: ''),
@@ -1141,7 +1141,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userAgentIsNull() {
+      userAgentIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const FilterCondition.isNull(property: r'userAgent'),
@@ -1150,7 +1150,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userAgentIsNotNull() {
+      userAgentIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const FilterCondition.isNotNull(property: r'userAgent'),
@@ -1159,7 +1159,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userAgentEqualTo(String? value, {bool caseSensitive = true}) {
+      userAgentEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(
@@ -1172,7 +1172,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userAgentGreaterThan(
+      userAgentGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1190,7 +1190,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userAgentLessThan(
+      userAgentLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1208,7 +1208,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userAgentBetween(
+      userAgentBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1230,7 +1230,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userAgentStartsWith(String value, {bool caseSensitive = true}) {
+      userAgentStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.startsWith(
@@ -1243,7 +1243,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userAgentEndsWith(String value, {bool caseSensitive = true}) {
+      userAgentEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.endsWith(
@@ -1256,7 +1256,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userAgentContains(String value, {bool caseSensitive = true}) {
+      userAgentContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.contains(
@@ -1269,7 +1269,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userAgentMatches(String pattern, {bool caseSensitive = true}) {
+      userAgentMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.matches(
@@ -1282,7 +1282,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userAgentIsEmpty() {
+      userAgentIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'userAgent', value: ''),
@@ -1291,7 +1291,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userAgentIsNotEmpty() {
+      userAgentIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(property: r'userAgent', value: ''),
@@ -1300,7 +1300,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userUpdatedAtEqualTo(DateTime value) {
+      userUpdatedAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'userUpdatedAt', value: value),
@@ -1309,7 +1309,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userUpdatedAtGreaterThan(DateTime value, {bool include = false}) {
+      userUpdatedAtGreaterThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(
@@ -1322,7 +1322,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userUpdatedAtLessThan(DateTime value, {bool include = false}) {
+      userUpdatedAtLessThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.lessThan(
@@ -1335,7 +1335,7 @@ extension CookieManagerQueryFilter
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterFilterCondition>
-  userUpdatedAtBetween(
+      userUpdatedAtBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
@@ -1382,7 +1382,7 @@ extension CookieManagerQuerySortBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-  sortByCreatedAtDesc() {
+      sortByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.desc);
     });
@@ -1395,7 +1395,7 @@ extension CookieManagerQuerySortBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-  sortBySourceIdDesc() {
+      sortBySourceIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sourceId', Sort.desc);
     });
@@ -1408,7 +1408,7 @@ extension CookieManagerQuerySortBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-  sortByUpdatedAtDesc() {
+      sortByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
     });
@@ -1433,21 +1433,21 @@ extension CookieManagerQuerySortBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-  sortByUserAgentDesc() {
+      sortByUserAgentDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userAgent', Sort.desc);
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-  sortByUserUpdatedAt() {
+      sortByUserUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userUpdatedAt', Sort.asc);
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-  sortByUserUpdatedAtDesc() {
+      sortByUserUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userUpdatedAt', Sort.desc);
     });
@@ -1475,7 +1475,7 @@ extension CookieManagerQuerySortThenBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-  thenByCreatedAtDesc() {
+      thenByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.desc);
     });
@@ -1500,7 +1500,7 @@ extension CookieManagerQuerySortThenBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-  thenBySourceIdDesc() {
+      thenBySourceIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sourceId', Sort.desc);
     });
@@ -1513,7 +1513,7 @@ extension CookieManagerQuerySortThenBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-  thenByUpdatedAtDesc() {
+      thenByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
     });
@@ -1538,21 +1538,21 @@ extension CookieManagerQuerySortThenBy
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-  thenByUserAgentDesc() {
+      thenByUserAgentDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userAgent', Sort.desc);
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-  thenByUserUpdatedAt() {
+      thenByUserUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userUpdatedAt', Sort.asc);
     });
   }
 
   QueryBuilder<CookieManager, CookieManager, QAfterSortBy>
-  thenByUserUpdatedAtDesc() {
+      thenByUserUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'userUpdatedAt', Sort.desc);
     });
@@ -1606,7 +1606,7 @@ extension CookieManagerQueryWhereDistinct
   }
 
   QueryBuilder<CookieManager, CookieManager, QDistinct>
-  distinctByUserUpdatedAt() {
+      distinctByUserUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'userUpdatedAt');
     });
@@ -1658,7 +1658,7 @@ extension CookieManagerQueryProperty
   }
 
   QueryBuilder<CookieManager, DateTime, QQueryOperations>
-  userUpdatedAtProperty() {
+      userUpdatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'userUpdatedAt');
     });

@@ -63,8 +63,7 @@ class _EigaHistoryState extends State<EigaHistory> {
             child: Column(
               children: [
                 LinearProgressIndicator(
-                  value:
-                      watchTime.position.inMilliseconds /
+                  value: watchTime.position.inMilliseconds /
                       watchTime.duration.inMilliseconds,
                   backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
                   valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00C234)),
@@ -82,10 +81,10 @@ class _EigaHistoryState extends State<EigaHistory> {
             child: Text(
               '${formatDuration(watchTime.position)} / ${formatDuration(watchTime.duration)}',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: 12.0,
-                fontWeight: FontWeight.w400,
-                color: Theme.of(context).textTheme.titleMedium?.color,
-              ),
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.w400,
+                    color: Theme.of(context).textTheme.titleMedium?.color,
+                  ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -100,9 +99,9 @@ class _EigaHistoryState extends State<EigaHistory> {
         Text(
           eiga.name,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontSize: isVertical ? 14.0 : 16.0,
-            fontWeight: FontWeight.w400,
-          ),
+                fontSize: isVertical ? 14.0 : 16.0,
+                fontWeight: FontWeight.w400,
+              ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -110,12 +109,12 @@ class _EigaHistoryState extends State<EigaHistory> {
         Text(
           'Episode ${episode.name}',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontSize: isVertical ? 12.0 : 14.0,
-            fontWeight: FontWeight.w400,
-            color: Theme.of(
-              context,
-            ).textTheme.titleMedium?.color?.withValues(alpha: 0.8),
-          ),
+                fontSize: isVertical ? 12.0 : 14.0,
+                fontWeight: FontWeight.w400,
+                color: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.color?.withValues(alpha: 0.8),
+              ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -142,24 +141,22 @@ class _EigaHistoryState extends State<EigaHistory> {
           color: null,
           borderRadius: BorderRadius.circular(7.0),
         ),
-        padding:
-            isVertical
-                ? EdgeInsets.symmetric(horizontal: 5.0)
-                : EdgeInsets.symmetric(vertical: 7.0),
-        child:
-            widget.direction == Axis.horizontal
-                ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    poster,
-                    SizedBox(width: 7.0),
-                    Expanded(child: titleAndSubtitle),
-                  ],
-                )
-                : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [poster, titleAndSubtitle],
-                ),
+        padding: isVertical
+            ? EdgeInsets.symmetric(horizontal: 5.0)
+            : EdgeInsets.symmetric(vertical: 7.0),
+        child: widget.direction == Axis.horizontal
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  poster,
+                  SizedBox(width: 7.0),
+                  Expanded(child: titleAndSubtitle),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [poster, titleAndSubtitle],
+              ),
       ),
     );
   }

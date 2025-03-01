@@ -46,10 +46,9 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
     _service = getComicService(widget.sourceId);
     _pagesFuture = _service.getPages(widget.comicId, widget.chapterId);
     _metaComic = null;
-    _metaComicFuture =
-        widget.comic != null
-            ? Future.value(widget.comic)
-            : _service.getDetails(widget.comicId);
+    _metaComicFuture = widget.comic != null
+        ? Future.value(widget.comic)
+        : _service.getDetails(widget.comicId);
     _metaComicFuture.then((comic) {
       _chapter.value = comic.chapters.firstWhere(
         (element) => element.chapterId == widget.chapterId,
@@ -109,8 +108,8 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
                 comicId: widget.comicId,
                 comic: metaComic,
                 chapterId: widget.chapterId,
-                getPages:
-                    (String chap) => _service.getPages(widget.comicId, chap),
+                getPages: (String chap) =>
+                    _service.getPages(widget.comicId, chap),
                 onChangeChap: _updateChapter,
                 onChangeEnabled: _updateEnabled,
               );
@@ -169,72 +168,70 @@ class _AppBarState extends State<_AppBar> {
 
             return SlideTransition(position: offsetAnimation, child: child);
           },
-          child:
-              value
-                  ? ClipRRect(
-                    child: SizedBox(
-                      height: 53.0,
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                        child: AppBar(
-                          backgroundColor: Theme.of(
-                            context,
-                          ).scaffoldBackgroundColor.withValues(alpha: 0.8),
-                          elevation: 0,
-                          leading: IconButton(
-                            icon: const Icon(MaterialCommunityIcons.arrow_left),
-                            onPressed: () {
-                              context.pop();
-                            },
-                          ),
-                          title: ValueListenableBuilder(
-                            valueListenable: widget.chapter,
-                            builder: (context, value, child) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children:
-                                    (widget.comic != null)
-                                        ? [
-                                          Text(
-                                            widget.comic!.name,
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 2),
-                                          if (value != null)
-                                            Text(
-                                              value.name,
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.white70,
-                                              ),
-                                            ),
-                                        ]
-                                        : [],
-                              );
-                            },
-                          ),
-                          actions: [
-                            IconButtonFollow(
-                              sourceId: widget.service.uid,
-                              comicId: widget.comicId,
-                              comic: widget.comic,
-                            ),
-                            IconButtonOpenBrowser(
-                              url: widget.service.getURL(
-                                widget.comicId,
-                                chapterId: widget.chapter.value?.chapterId,
-                              ),
-                            ),
-                            IconButtonShare(),
-                          ],
+          child: value
+              ? ClipRRect(
+                  child: SizedBox(
+                    height: 53.0,
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                      child: AppBar(
+                        backgroundColor: Theme.of(
+                          context,
+                        ).scaffoldBackgroundColor.withValues(alpha: 0.8),
+                        elevation: 0,
+                        leading: IconButton(
+                          icon: const Icon(MaterialCommunityIcons.arrow_left),
+                          onPressed: () {
+                            context.pop();
+                          },
                         ),
+                        title: ValueListenableBuilder(
+                          valueListenable: widget.chapter,
+                          builder: (context, value, child) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: (widget.comic != null)
+                                  ? [
+                                      Text(
+                                        widget.comic!.name,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 2),
+                                      if (value != null)
+                                        Text(
+                                          value.name,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white70,
+                                          ),
+                                        ),
+                                    ]
+                                  : [],
+                            );
+                          },
+                        ),
+                        actions: [
+                          IconButtonFollow(
+                            sourceId: widget.service.uid,
+                            comicId: widget.comicId,
+                            comic: widget.comic,
+                          ),
+                          IconButtonOpenBrowser(
+                            url: widget.service.getURL(
+                              widget.comicId,
+                              chapterId: widget.chapter.value?.chapterId,
+                            ),
+                          ),
+                          IconButtonShare(),
+                        ],
                       ),
                     ),
-                  )
-                  : null,
+                  ),
+                )
+              : null,
         );
       },
     );

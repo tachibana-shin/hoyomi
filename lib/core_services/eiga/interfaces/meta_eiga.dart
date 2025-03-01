@@ -69,41 +69,35 @@ class MetaEiga {
       name: json['name'] as String,
       originalName: json['originalName'] as String?,
       image: OImage.fromJson(json['image'] as Map<String, dynamic>),
-      poster:
-          json['poster'] != null
-              ? OImage.fromJson(json['poster'] as Map<String, dynamic>)
-              : null,
+      poster: json['poster'] != null
+          ? OImage.fromJson(json['poster'] as Map<String, dynamic>)
+          : null,
       description: json['description'] as String,
       rate: json['rate'] != null ? (json['rate'] as num).toDouble() : null,
       countRate: json['countRate'] as int?,
       duration: json['duration'] as String?,
       yearOf: json['yearOf'] as int?,
       views: json['views'] as int?,
-      seasons:
-          (json['seasons'] as List)
-              .map((e) => Season.fromJson(e as Map<String, dynamic>))
-              .toList(),
-      genres:
-          (json['genres'] as List)
-              .map((e) => Genre.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      seasons: (json['seasons'] as List)
+          .map((e) => Season.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      genres: (json['genres'] as List)
+          .map((e) => Genre.fromJson(e as Map<String, dynamic>))
+          .toList(),
       quality: json['quality'] as String?,
       author: json['author'] as String?,
-      countries:
-          json['countries'] != null
-              ? (json['countries'] as List)
-                  .map((e) => Genre.fromJson(e as Map<String, dynamic>))
-                  .toList()
-              : null,
+      countries: json['countries'] != null
+          ? (json['countries'] as List)
+              .map((e) => Genre.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : null,
       language: json['language'] as String?,
-      studio:
-          json['studio'] != null
-              ? Genre.fromJson(json['studio'] as Map<String, dynamic>)
-              : null,
-      movieSeason:
-          json['movieSeason'] != null
-              ? Genre.fromJson(json['movieSeason'] as Map<String, dynamic>)
-              : null,
+      studio: json['studio'] != null
+          ? Genre.fromJson(json['studio'] as Map<String, dynamic>)
+          : null,
+      movieSeason: json['movieSeason'] != null
+          ? Genre.fromJson(json['movieSeason'] as Map<String, dynamic>)
+          : null,
       trailer: json['trailer'] as String?,
       fake: json['fake'] as bool? ?? false,
     );
