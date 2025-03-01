@@ -130,7 +130,8 @@ abstract class UtilsService with _SettingsMixin {
       key: 'cookie',
       defaultFn: (service) => '',
       placeholder: 'Example cookie',
-      description: 'The cookie to use when fetching data. This field sync if service auth. It can change on after login with WebView',
+      description:
+          'The cookie to use when fetching data. This field sync if service auth. It can change on after login with WebView',
       maxLines: 5,
     ),
   ];
