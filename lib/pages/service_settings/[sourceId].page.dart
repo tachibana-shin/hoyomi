@@ -31,6 +31,11 @@ class _ServiceSettingsPageState extends State<ServiceSettingsPage> {
       await _service.setSetting(key, _settingsChanged[key]!);
     }
 
+    if (_settingsChanged.containsKey('cookie')) {
+      /// Update user cache
+      await _service.onAfterSignIn(cookie: _settingsChanged['cookie'] ?? '');
+    }
+
     _settingsChanged.clear();
     showSnackBar(Text('Settings saved'));
     setState(() {});

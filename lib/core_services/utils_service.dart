@@ -422,13 +422,8 @@ abstract class UtilsService with _SettingsMixin {
   ///
   /// [cookie] The cookie to save to the cache. Must not be null.
   ///
-  /// [userAgent] The user agent to save to the cache. Must not be null.
-  ///
   /// Returns the [User] object of the user who has just signed in.
-  Future<User> onAfterSignIn({
-    required String cookie,
-    required String userAgent,
-  }) async {
+  Future<User> onAfterSignIn({required String cookie}) async {
     if (this is! AuthMixin) {
       throw Exception('Service must be an instance of auth service');
     }
@@ -456,7 +451,6 @@ abstract class UtilsService with _SettingsMixin {
           await ServiceSettingController.getSettingsAsync(sourceId: uid) ?? {};
 
       currentSettings['cookie'] = cookie;
-      currentSettings['user_agent'] = userAgent;
 
       oldData.settings = jsonEncode(currentSettings);
       oldData.updatedAt = DateTime.now();
