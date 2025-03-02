@@ -47,13 +47,9 @@ class _CustomWebViewState extends State<CustomWebView> {
       );
       final cookiesText =
           cookies.map((cookie) => '${cookie.name}=${cookie.value}').join("; ");
-      final userAgent = await _webViewController.evaluateJavascript(
-        source: "navigator.userAgent",
-      );
 
       final user = await _service.onAfterSignIn(
         cookie: cookiesText,
-        userAgent: userAgent,
       );
 
       showSnackBar(Text('Signed in to ${_service.name} as ${user.fullName}'));
