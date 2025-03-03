@@ -82,9 +82,11 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
     if (!loading &&
         (!snapshot.hasData ||
             (snapshot.data is List && (snapshot.data as List).isEmpty))) {
-      return _buildMessageBiggest(
+      final body = _buildMessageBiggest(
         const Center(child: Text('No data available.')),
       );
+
+      return widget.builderError?.call(body) ?? body;
     }
 
     var data = loading ? widget.onLoadFake() : snapshot.data!;
