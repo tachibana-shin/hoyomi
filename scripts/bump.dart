@@ -65,7 +65,7 @@ Future<void> bumpFlutter() async {
 
   Process.runSync("git", ["add", pubspecPath]);
   Process.runSync("git", ["commit", "-m", "chore: release $newVersionString"]);
-  Process.runSync("git", ["tag", "v${versionParts.join('.')}"]);
+  Process.runSync("git", ["tag", "v$newVersionString"]);
   Process.runSync("git", ["push"]);
   Process.runSync("git", ["push", "--tags"]);
 
