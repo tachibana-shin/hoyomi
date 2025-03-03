@@ -169,6 +169,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  charcode:
+    dependency: transitive
+    description:
+      name: charcode
+      sha256: fb0f1107cac15a5ea6ef0a6ef71a807b9e4267c713bb93e00e92d737cc8dbd8a
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
   checked_yaml:
     dependency: transitive
     description:
@@ -538,6 +546,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_package_installer:
+    dependency: "direct main"
+    description:
+      name: flutter_package_installer
+      sha256: "6fbaad3dc8b7096017fbf2d9323f684938e82c8882939847312da3cfc2c7817c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -868,6 +884,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  markdown:
+    dependency: "direct main"
+    description:
+      name: markdown
+      sha256: "935e23e1ff3bc02d390bad4d4be001208ee92cc217cb5b5a6c19bc14aaa318c1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.3.0"
   marquee:
     dependency: "direct main"
     description:
@@ -941,21 +965,21 @@ packages:
     source: hosted
     version: "2.1.1"
   package_info_plus:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: package_info_plus
-      sha256: "67eae327b1b0faf761964a1d2e5d323c797f3799db0e85aa232db8d9e922bc35"
+      sha256: "7976bfe4c583170d6cdc7077e3237560b364149fcd268b5f53d95a991963b191"
       url: "https://pub.dev"
     source: hosted
-    version: "8.2.1"
+    version: "8.3.0"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
       name: package_info_plus_platform_interface
-      sha256: "205ec83335c2ab9107bbba3f8997f9356d72ca3c715d2f038fc773d0366b4c76"
+      sha256: "6c935fb612dff8e3cc9632c2b301720c77450a126114126ffaafe28d2e87956c"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.0"
+    version: "3.2.0"
   path:
     dependency: "direct main"
     description:
@@ -1076,6 +1100,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.3"
+  prompts:
+    dependency: "direct dev"
+    description:
+      name: prompts
+      sha256: "3773b845e85a849f01e793c4fc18a45d52d7783b4cb6c0569fad19f9d0a774a1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   provider:
     dependency: transitive
     description:
