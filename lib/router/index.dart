@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
+import 'package:hoyomi/controller/update_available.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 
 import 'package:hoyomi/pages/details_comic/[sourceId]/[comicId].page.dart';
@@ -274,6 +275,14 @@ class PersistentScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     // 日本語のコメント:
     // ボトムナビゲーションバーはアニメーションするコンテンツの外側に構築される。
+
+    if (!UpdateAvailableController.instance.initialized) {
+      Future.delayed(Duration(seconds: 1), () {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          UpdateAvailableController.instance.init(context);
+        });
+      });
+    }
 
     final railMode = MediaQuery.of(context).size.width > 600;
     return railMode ? _buildRailMode() : _buildBottomNavigationBar();
