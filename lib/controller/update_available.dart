@@ -260,7 +260,7 @@ class UpdateAvailableController {
     final time = await asyncPref.getString('pause_update');
     if (time == null) return false;
 
-    return DateTime.parse(time).add(expiresCheckUpdate).second <
+    return DateTime.parse(time).add(expiresCheckUpdate).second >
         DateTime.now().second;
   }
 
