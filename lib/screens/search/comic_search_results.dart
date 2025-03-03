@@ -22,6 +22,57 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
   @override
   bool get wantKeepAlive => true;
 
+  Widget? _widgetMain;
+
+  void _buildWidgetMain() {
+    _widgetMain = ListView.builder(
+      itemCount: comicServices.length,
+      itemBuilder: (context, index) {
+        final service = comicServices.elementAt(index);
+
+        final searchResult = service.search(
+          keyword: widget.keyword,
+          page: 1,
+          filters: {},
+        );
+        final itemsFuture = searchResult.then(
+          (data) => data.items
+              .map(
+                (item) => ComicExtend(
+                  comic: item,
+                  sourceId: service.uid,
+                ),
+              )
+              .toList(),
+        );
+
+        String subtitle = '';
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            if (subtitle == '') {
+              searchResult.then((data) {
+                setState(() {
+                  subtitle = '${data.totalItems} results';
+                });
+              });
+            }
+
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: HorizontalComicList(
+                itemsFuture: itemsFuture,
+                title: service.name,
+                subtitle: subtitle,
+                more: '/search/comic/${service.uid}?q=${widget.keyword}',
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -35,57 +86,12 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
     }
 
     return PullRefreshPage(
-      onLoadData: () async => false,
+      onLoadData: () async {
+        _buildWidgetMain();
+        return false;
+      },
       onLoadFake: () => true,
-      builder: (loading, __) => loading
-          ? SizedBox.shrink()
-          : ListView.builder(
-              itemCount: comicServices.length,
-              itemBuilder: (context, index) {
-                final service = comicServices.elementAt(index);
-
-                final searchResult = service.search(
-                  keyword: widget.keyword,
-                  page: 1,
-                  filters: {},
-                );
-                final itemsFuture = searchResult.then(
-                  (data) => data.items
-                      .map(
-                        (item) => ComicExtend(
-                          comic: item,
-                          sourceId: service.uid,
-                        ),
-                      )
-                      .toList(),
-                );
-
-                String subtitle = '';
-
-                return StatefulBuilder(
-                  builder: (context, setState) {
-                    if (subtitle == '') {
-                      searchResult.then((data) {
-                        setState(() {
-                          subtitle = '${data.totalItems} results';
-                        });
-                      });
-                    }
-
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: HorizontalComicList(
-                        itemsFuture: itemsFuture,
-                        title: service.name,
-                        subtitle: subtitle,
-                        more:
-                            '/search/comic/${service.uid}?q=${widget.keyword}',
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+      builder: (loading, __) => _widgetMain!,
     );
   }
 }

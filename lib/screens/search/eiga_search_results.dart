@@ -18,6 +18,57 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
   @override
   bool get wantKeepAlive => true;
 
+  Widget? _widgetMain;
+
+  void _buildWidgetMain() {
+    _widgetMain = ListView.builder(
+      itemCount: eigaServices.length,
+      itemBuilder: (context, index) {
+        final service = eigaServices.elementAt(index);
+
+        final searchResult = service.search(
+          keyword: widget.keyword,
+          page: 1,
+          filters: {},
+        );
+        final itemsFuture = searchResult.then(
+          (data) => data.items
+              .map(
+                (item) => EigaExtend(
+                  eiga: item,
+                  sourceId: service.uid,
+                ),
+              )
+              .toList(),
+        );
+
+        String subtitle = '';
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            if (subtitle == '') {
+              searchResult.then((data) {
+                setState(() {
+                  subtitle = '${data.totalItems} results';
+                });
+              });
+            }
+
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: HorizontalEigaList(
+                itemsFuture: itemsFuture,
+                title: service.name,
+                subtitle: subtitle,
+                more: '/search/eiga/${service.uid}?q=${widget.keyword}',
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -31,56 +82,11 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
     }
 
     return PullRefreshPage(
-      onLoadData: () async => false,
-      onLoadFake: () => true,
-      builder: (loading, __) => loading
-          ? SizedBox.shrink()
-          : ListView.builder(
-              itemCount: eigaServices.length,
-              itemBuilder: (context, index) {
-                final service = eigaServices.elementAt(index);
-
-                final searchResult = service.search(
-                  keyword: widget.keyword,
-                  page: 1,
-                  filters: {},
-                );
-                final itemsFuture = searchResult.then(
-                  (data) => data.items
-                      .map(
-                        (item) => EigaExtend(
-                          eiga: item,
-                          sourceId: service.uid,
-                        ),
-                      )
-                      .toList(),
-                );
-
-                String subtitle = '';
-
-                return StatefulBuilder(
-                  builder: (context, setState) {
-                    if (subtitle == '') {
-                      searchResult.then((data) {
-                        setState(() {
-                          subtitle = '${data.totalItems} results';
-                        });
-                      });
-                    }
-
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: HorizontalEigaList(
-                        itemsFuture: itemsFuture,
-                        title: service.name,
-                        subtitle: subtitle,
-                        more: '/search/eiga/${service.uid}?q=${widget.keyword}',
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-    );
+        onLoadData: () async {
+          _buildWidgetMain();
+          return false;
+        },
+        onLoadFake: () => true,
+        builder: (loading, __) => _widgetMain!);
   }
 }
