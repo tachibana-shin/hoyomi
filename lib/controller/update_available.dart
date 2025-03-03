@@ -10,6 +10,7 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:markdown/markdown.dart' as markdown;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Class representing the release object.
@@ -175,6 +176,10 @@ List<Release> parseReleases(String jsonString) {
 }
 
 class UpdateAvailableController {
+  static final String apiUrl =
+      'https://api.github.com/repos/tachibana-shin/hoyomi/releases';
+  static final Duration expiresCheckUpdate = Duration(hours: 3);
+
   static final UpdateAvailableController _instance =
       UpdateAvailableController._internal();
   static UpdateAvailableController get instance => _instance;
@@ -187,8 +192,10 @@ class UpdateAvailableController {
     initialized = true;
     if (!context.mounted) return;
 
+    if (await _checkPauseUpdate()) return;
+
     try {
-      final releases = await getReleases();
+      final releases = await _getReleases();
       if (!context.mounted) return;
 
       final packageInfo = await PackageInfo.fromPlatform();
@@ -212,22 +219,26 @@ class UpdateAvailableController {
           arch = 'x86_64';
         }
 
-        final release = findReleaseLatest(releases,
+        final release = _findReleaseLatest(releases,
             contentType: 'application/vnd.android.package-archive', arch: arch);
         if (release != null &&
             context.mounted &&
             release.tagName !=
                 'v${packageInfo.version}+${packageInfo.buildNumber}') {
           showUpdateDialog(context, release);
+        } else {
+          _pauseUpdate();
         }
       } else if (Platform.isIOS) {
-        final release = findReleaseLatest(releases,
+        final release = _findReleaseLatest(releases,
             contentType: 'application/octet-stream');
         if (release != null &&
             context.mounted &&
             release.tagName !=
                 'v${packageInfo.version}+${packageInfo.buildNumber}') {
           showUpdateDialog(context, release);
+        } else {
+          _pauseUpdate();
         }
       } else {
         debugPrint('[update_available]: Not support this platform');
@@ -237,9 +248,24 @@ class UpdateAvailableController {
     }
   }
 
-  Future<List<Release>> getReleases() async {
-    final response = await get(Uri.parse(
-        'https://api.github.com/repos/tachibana-shin/hoyomi/releases'));
+  void _pauseUpdate() async {
+    final asyncPref = SharedPreferencesAsync();
+
+    await asyncPref.setString('pause_update', DateTime.now().toString());
+  }
+
+  Future<bool> _checkPauseUpdate() async {
+    final asyncPref = SharedPreferencesAsync();
+
+    final time = await asyncPref.getString('pause_update');
+    if (time == null) return false;
+
+    return DateTime.parse(time).add(expiresCheckUpdate).second <
+        DateTime.now().second;
+  }
+
+  Future<List<Release>> _getReleases() async {
+    final response = await get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
       final releases = parseReleases(response.body);
@@ -249,9 +275,11 @@ class UpdateAvailableController {
     }
   }
 
-  Release? findReleaseLatest(List<Release> releases,
+  Release? _findReleaseLatest(List<Release> releases,
       {required String contentType, String? arch}) {
     return releases.firstWhereOrNull((release) {
+      if (release.prerelease) return false;
+
       for (final asset in release.assets) {
         if (asset.contentType == contentType &&
             (arch == null ? true : asset.name.contains(arch))) {
@@ -263,7 +291,7 @@ class UpdateAvailableController {
     });
   }
 
-  Future<File> downloadRelease(
+  Future<File> _downloadRelease(
       Release release, void Function(double progress) onProgress) async {
     if (!Platform.isAndroid) {
       throw Exception('Platform not supported');
@@ -330,7 +358,7 @@ class UpdateAvailableController {
     }
   }
 
-  Future<void> installApk(File file) async {
+  Future<void> _installApk(File file) async {
     await PackageInstaller().installFromFile(file);
     await file.delete();
   }
@@ -393,7 +421,7 @@ class UpdateAvailableController {
                             setState(() {});
 
                             final file =
-                                await downloadRelease(release, (progress) {
+                                await _downloadRelease(release, (progress) {
                               downloadingProgress = progress;
                               setState(() {});
                             });
@@ -403,7 +431,7 @@ class UpdateAvailableController {
                             installing = true;
                             setState(() {});
 
-                            await installApk(file);
+                            await _installApk(file);
 
                             installing = false;
                             setState(() {});
