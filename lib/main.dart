@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:go_transitions/go_transitions.dart';
 import 'package:hoyomi/database/isar.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/router/index.dart';
@@ -13,10 +14,20 @@ import 'package:flutter/material.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (!kIsWeb) await _installCert();
+  int? androidSdkInt;
+  if (Platform.isAndroid) {
+    final deviceInfo = DeviceInfoPlugin();
+    final androidInfo = await deviceInfo.androidInfo;
+
+    androidSdkInt = androidInfo.version.sdkInt;
+  }
+
+  if (!kIsWeb && androidSdkInt != null && androidSdkInt < 25) {
+    await _installCert();
+  }
   await initializeIsar();
 
-  runApp(const MainApp());
+  runApp(MainApp(androidSdkInt: androidSdkInt));
 
   // register background service
   // if (Platform.isAndroid || Platform.isIOS) {
@@ -42,29 +53,47 @@ Future<void> _installCert() async {
     data.buffer.asUint8List(),
   );
 
-  if (Platform.isAndroid) {
-    final deviceInfo = DeviceInfoPlugin();
-    final androidInfo = await deviceInfo.androidInfo;
-
-    if (androidInfo.version.sdkInt < 25) {
-      HttpOverrides.global = _MyHttpOverrides();
-    }
-  }
+  HttpOverrides.global = _MyHttpOverrides();
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final int? androidSdkInt;
+
+  const MainApp({super.key, required this.androidSdkInt});
+
   @override
   Widget build(BuildContext context) {
     /// Set default transition values for the entire app.
     // GoTransition.defaultCurve = Curves.easeInOut;
     // GoTransition.defaultDuration = const Duration(milliseconds: 600);
+    late final ThemeData theme;
+    late final ThemeData darkTheme;
+    if (androidSdkInt != null && androidSdkInt! < 29) {
+      GoTransition.defaultCurve = Curves.easeInOut;
+      GoTransition.defaultDuration = const Duration(milliseconds: 600);
+
+      theme = ThemeData(useMaterial3: true).copyWith(
+          pageTransitionsTheme: const PageTransitionsTheme(builders: {
+        TargetPlatform.android: GoTransitions.zoom,
+        TargetPlatform.iOS: GoTransitions.cupertino,
+        TargetPlatform.macOS: GoTransitions.cupertino,
+      }));
+      darkTheme = ThemeData.dark(useMaterial3: true).copyWith(
+          pageTransitionsTheme: const PageTransitionsTheme(builders: {
+        TargetPlatform.android: GoTransitions.zoom,
+        TargetPlatform.iOS: GoTransitions.cupertino,
+        TargetPlatform.macOS: GoTransitions.cupertino,
+      }));
+    } else {
+      theme = ThemeData(useMaterial3: true);
+      darkTheme = ThemeData.dark(useMaterial3: true);
+    }
 
     return MaterialApp.router(
       title: 'Flutter App',
       scaffoldMessengerKey: snackbarKey,
-      theme: ThemeData(useMaterial3: true),
-      darkTheme: ThemeData.dark(useMaterial3: true),
+      theme: theme,
+      darkTheme: darkTheme,
       themeMode: ThemeMode.system,
       scrollBehavior: AppScrollBehavior(),
       routerConfig: router,
