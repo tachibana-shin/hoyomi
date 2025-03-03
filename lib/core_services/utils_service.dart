@@ -244,7 +244,7 @@ abstract class UtilsService with _SettingsMixin {
             ElevatedButton(
               child: Text('Sign in'),
               onPressed: () async {
-                await router.push('/signin/${service!.uid}');
+                await router.push('/webview/${service!.uid}');
                 router.refresh();
               },
             ),
