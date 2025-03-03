@@ -224,7 +224,7 @@ class UpdateAvailableController {
         if (release != null &&
             context.mounted &&
             release.tagName !=
-                'v${packageInfo.version}+${packageInfo.buildNumber}') {
+                'v${packageInfo.version}_${packageInfo.buildNumber}') {
           showUpdateDialog(context, release);
         } else {
           _pauseUpdate();
@@ -235,7 +235,7 @@ class UpdateAvailableController {
         if (release != null &&
             context.mounted &&
             release.tagName !=
-                'v${packageInfo.version}+${packageInfo.buildNumber}') {
+                'v${packageInfo.version}_${packageInfo.buildNumber}') {
           showUpdateDialog(context, release);
         } else {
           _pauseUpdate();
