@@ -1,0 +1,1 @@
+dart run scripts/bump.dart
