@@ -23,7 +23,9 @@ class _ServiceAccounts extends StatelessWidget {
   void _buildWidgetMain(BuildContext context) {
     _widgetMain = ListView(
       children: [
-        Text('Comic services', style: Theme.of(context).textTheme.bodyMedium),
+        Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text('Comic services')),
         DynamicHeightGridView(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -40,7 +42,9 @@ class _ServiceAccounts extends StatelessWidget {
           },
         ),
         SizedBox(height: 15.0),
-        Text('Eiga services', style: Theme.of(context).textTheme.bodyMedium),
+        Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text('Eiga services')),
         DynamicHeightGridView(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
