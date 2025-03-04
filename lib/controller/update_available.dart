@@ -223,7 +223,7 @@ class UpdateAvailableController {
             contentType: 'application/vnd.android.package-archive', arch: arch);
         if (release != null &&
             context.mounted &&
-            release.tagName.substring(1, release.tagName.indexOf('_')) ==
+            release.tagName.substring(1, release.tagName.indexOf('_')) !=
                 packageInfo.version) {
           showUpdateDialog(context, release);
         } else {
@@ -234,7 +234,7 @@ class UpdateAvailableController {
             contentType: 'application/octet-stream');
         if (release != null &&
             context.mounted &&
-            release.tagName.substring(1, release.tagName.indexOf('_')) ==
+            release.tagName.substring(1, release.tagName.indexOf('_')) !=
                 packageInfo.version) {
           showUpdateDialog(context, release);
         } else {
