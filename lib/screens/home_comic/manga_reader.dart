@@ -15,7 +15,6 @@ import 'package:hoyomi/core_services/comic/interfaces/comic_modes.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 import 'package:hoyomi/database/scheme/comic.dart';
 import 'package:hoyomi/database/scheme/history_chap.dart';
-import 'package:hoyomi/database/scheme/settings.dart';
 import 'package:hoyomi/plugins/event_bus.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/widgets/button_inset.dart';
@@ -90,7 +89,6 @@ class _MangaReaderState extends State<MangaReader>
   ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
 
   Map<String, HistoryChap>? _historyChapters;
-  Settings? _settingsObject;
 
   double get _realCurrentPage {
     for (int i = 0; i <= _currentPage; i++) {
@@ -135,7 +133,6 @@ class _MangaReaderState extends State<MangaReader>
     );
 
     SettingsController().getSettings().then((object) {
-      _settingsObject = object;
     });
 
     _mode = widget.service.getComicModes(widget.comic) ?? ComicModes.webToon;
@@ -1252,13 +1249,7 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   Widget _buildPage(int index) {
-    if (_settingsObject == null ||
-        !_settingsObject!.mangaReadLazyPage ||
-        _isImageLoaded[index]) {
       return _buildImage(index);
-    } else {
-      return _buildPageLoading(null);
-    }
   }
 
   void _onTapGrid(int row, int column) {
