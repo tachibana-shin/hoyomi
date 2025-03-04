@@ -28,7 +28,7 @@ class OImage {
     return OImage(src: fake);
   }
 
-  static Widget network(
+  static Image network(
     String src, {
     required String sourceId,
     Key? key,
