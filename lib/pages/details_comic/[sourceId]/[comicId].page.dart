@@ -16,6 +16,7 @@ import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/database/scheme/history_chap.dart';
+import 'package:hoyomi/notifier+/watch_notifier.dart';
 import 'package:hoyomi/plugins/event_bus.dart';
 import 'package:hoyomi/utils/format_number.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
@@ -52,12 +53,12 @@ class _DetailsComicState extends State<DetailsComic>
 
   final ScrollController _scrollController = ScrollController();
 
-  bool _isTitleVisible = false;
+  final _isTitleVisible = ValueNotifier(false);
   String _title = "";
   MetaComic? _comic;
 
   // History data
-  Map<String, HistoryChap>? _historyChapters;
+  final _historyChapters = ValueNotifier<Map<String, HistoryChap>?>(null);
 
   @override
   void initState() {
@@ -74,12 +75,8 @@ class _DetailsComicState extends State<DetailsComic>
     final history = HistoryController();
     final map = await history.getHistory(_service.uid, widget.comicId);
 
-    if (mounted) {
-      setState(() {
-        if (map != null) {
-          _historyChapters = {for (var item in map) item.chapterId: item};
-        }
-      });
+    if (mounted && map != null) {
+      _historyChapters.value = {for (var item in map) item.chapterId: item};
     }
   }
 
@@ -94,9 +91,9 @@ class _DetailsComicState extends State<DetailsComic>
   void _onScroll() {
     final isTitleVisible = _scrollController.offset > 50;
 
-    if (_isTitleVisible != isTitleVisible) {
-      setState(() {
-        _isTitleVisible = isTitleVisible;
+    if (_isTitleVisible.value != isTitleVisible && mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _isTitleVisible.value = isTitleVisible;
       });
     }
   }
@@ -155,11 +152,13 @@ class _DetailsComicState extends State<DetailsComic>
               context.pop();
             },
           ),
-          title: AnimatedOpacity(
-            duration: const Duration(milliseconds: 200),
-            opacity: _isTitleVisible ? 1.0 : 0.0,
-            child: Text(_title),
-          ),
+          title: WatchNotifier(
+              depends: [_isTitleVisible],
+              builder: (context) => AnimatedOpacity(
+                    duration: const Duration(milliseconds: 200),
+                    opacity: _isTitleVisible.value ? 1.0 : 0.0,
+                    child: Text(_title),
+                  )),
           actions: [
             if (_service is ComicAuthMixin && _service is AuthMixin)
               _AvatarUser(service: _service),
@@ -457,7 +456,9 @@ class _DetailsComicState extends State<DetailsComic>
         const SizedBox(height: 16.0),
         Row(
           children: [
-            Expanded(child: _buildButtonRead(comic)),
+            WatchNotifier(
+                depends: [_historyChapters],
+                builder: (context) => Expanded(child: _buildButtonRead(comic))),
             const SizedBox(width: 8.0),
             _buildButtonDownload(),
           ],
@@ -531,8 +532,8 @@ class _DetailsComicState extends State<DetailsComic>
   Widget _buildButtonRead(MetaComic comic) {
     //    _historyChapters
 
-    final current = _historyChapters?.entries.isNotEmpty == true
-        ? _historyChapters?.entries.reduce(
+    final current = _historyChapters.value?.entries.isNotEmpty == true
+        ? _historyChapters.value?.entries.reduce(
             (a, b) => a.value.updatedAt.isAfter(b.value.updatedAt) ? a : b,
           )
         : null;
@@ -702,13 +703,15 @@ class _DetailsComicState extends State<DetailsComic>
 
   Widget? _buildSheetChapters() {
     if (_comic == null) return null;
-    return SheetChapters(
-      comic: _comic!,
-      sourceId: widget.sourceId,
-      comicId: widget.comicId,
-      histories: _historyChapters,
-      initialChildSize: 0.15,
-    );
+    return WatchNotifier(
+        depends: [_historyChapters],
+        builder: (context) => SheetChapters(
+              comic: _comic!,
+              sourceId: widget.sourceId,
+              comicId: widget.comicId,
+              histories: _historyChapters.value,
+              initialChildSize: 0.15,
+            ));
   }
 }
 
