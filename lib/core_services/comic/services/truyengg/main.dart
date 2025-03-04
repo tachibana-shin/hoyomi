@@ -254,7 +254,7 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
       rate: rate,
       genres: genres.toList(),
       description: description,
-      chapters: chaps.toList(),
+      chapters: chaps.toList().reversed.toList(),
       lastModified: lastModified,
       originalName: null,
     );

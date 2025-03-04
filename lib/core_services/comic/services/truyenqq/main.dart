@@ -219,7 +219,7 @@ class TruyenQQService extends TruyenGGService {
       rate: rate,
       genres: genres.toList(),
       description: description,
-      chapters: chapters.toList(),
+      chapters: chapters.toList().reversed.toList(),
       lastModified: lastModified,
     );
   }
