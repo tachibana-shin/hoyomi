@@ -132,8 +132,7 @@ class _MangaReaderState extends State<MangaReader>
       comic: widget.comic,
     );
 
-    SettingsController().getSettings().then((object) {
-    });
+    SettingsController().getSettings().then((object) {});
 
     _mode = widget.service.getComicModes(widget.comic) ?? ComicModes.webToon;
     _chapter = widget.chapterId;
@@ -1249,7 +1248,7 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   Widget _buildPage(int index) {
-      return _buildImage(index);
+    return _buildImage(index);
   }
 
   void _onTapGrid(int row, int column) {
