@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:hoyomi/notifier+/notifier_plus_mixin.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
