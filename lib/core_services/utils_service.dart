@@ -253,7 +253,14 @@ abstract class UtilsService with _SettingsMixin {
       );
     }
 
-    return orElse(error);
+    return Column(children: [
+      orElse(error),
+      // button refresh page
+      ElevatedButton(
+        child: Text('Refresh'),
+        onPressed: () => router.refresh(),
+      ),
+    ]);
   }
 
   /// Fetches data from the provided URL, handling cookies and retries.
