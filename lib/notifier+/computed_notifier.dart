@@ -4,7 +4,7 @@ class ComputedNotifier<T> extends ChangeNotifier {
   late T _value;
 
   final T Function() compute;
-  final List<ValueNotifier> depends;
+  final List<ChangeNotifier> depends;
 
   bool _initialized = false;
 
