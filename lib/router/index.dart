@@ -60,6 +60,7 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/home_comic',
+              name: 'home_comic',
               builder: (context, state) => HomeComicPage(),
             ),
           ],
@@ -69,6 +70,7 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/home_eiga',
+              name: 'home_eiga',
               builder: (context, state) => HomeEigaPage(),
             ),
           ],
@@ -78,11 +80,13 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/search',
+              name: 'search',
               builder: (context, state) =>
                   SearchPage(keyword: state.uri.queryParameters['q'] ?? ''),
               routes: [
                 GoRoute(
                   path: 'comic/:sourceId',
+                  name: 'search_comic',
                   builder: (context, state) {
                     if (state.uri.queryParameters['q'] == null) {
                       context.replace("/search");
@@ -96,6 +100,7 @@ final router = GoRouter(
                 ),
                 GoRoute(
                   path: 'eiga/:sourceId',
+                  name: 'search_eiga',
                   builder: (context, state) {
                     if (state.uri.queryParameters['q'] == null) {
                       context.replace("/search");
@@ -116,16 +121,19 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/library',
+              name: 'library',
               builder: (context, state) => LibraryPage(),
               routes: [
                 GoRoute(
                   path: 'history/eiga/:sourceId',
+                  name: 'history_eiga',
                   builder: (context, state) => HistoryEigaPage(
                     sourceId: state.pathParameters['sourceId']!,
                   ),
                 ),
                 GoRoute(
                   path: 'follow/eiga/:sourceId',
+                  name: 'follow_eiga',
                   builder: (context, state) => FollowsEigaPage(
                     sourceId: state.pathParameters['sourceId']!,
                   ),
@@ -139,6 +147,7 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/manager',
+              name: 'manager',
               builder: (context, state) => ManagerPage(),
             ),
           ],
@@ -176,6 +185,7 @@ final router = GoRouter(
         ),
         GoRoute(
           path: 'similar',
+          name: 'similar_comic',
           parentNavigatorKey: _rootNavigatorKey,
           builder: (context, state) => SimilarPage(
             sourceId: state.pathParameters['sourceId']!,
@@ -193,8 +203,7 @@ final router = GoRouter(
     GoRoute(
       path: '/details_eiga/:sourceId/:eigaId',
       name: 'details_eiga',
-      parentNavigatorKey: _rootNavigatorKey, // Sử dụng root navigator
-
+      parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => DetailsEigaPage(
         sourceId: state.pathParameters['sourceId']!,
         eigaId: state.pathParameters['eigaId']!,
@@ -205,6 +214,7 @@ final router = GoRouter(
     // Webview Route
     GoRoute(
       path: '/webview/:sourceId',
+      name: 'webview',
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) =>
           WebviewPage(sourceId: state.pathParameters['sourceId']!),
@@ -213,6 +223,7 @@ final router = GoRouter(
     // Section Comic Route
     GoRoute(
       path: '/section_comic/:sourceId/:sectionId',
+      name: 'section_comic',
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => SectionComicPage(
         sourceId: state.pathParameters['sourceId']!,
@@ -223,6 +234,7 @@ final router = GoRouter(
     // Section Eiga Route
     GoRoute(
       path: '/section_eiga/:sourceId/:sectionId',
+      name: 'section_eiga',
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => SectionEigaPage(
         sourceId: state.pathParameters['sourceId']!,
@@ -233,6 +245,7 @@ final router = GoRouter(
     // Section Service Setting Route
     GoRoute(
       path: '/service_settings/:sourceId',
+      name: 'service_settings',
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) =>
           ServiceSettingsPage(sourceId: state.pathParameters['sourceId']!),
