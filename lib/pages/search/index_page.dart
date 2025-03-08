@@ -3,7 +3,7 @@ import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/screens/rss/news_feed.dart';
 import 'package:hoyomi/screens/search/comic_search_results.dart';
 import 'package:hoyomi/screens/search/eiga_search_results.dart';
-import 'package:hoyomi/widgets/search_bar.dart';
+import 'package:hoyomi/widgets/global_search_bar.dart';
 
 class SearchPage extends StatefulWidget {
   final String keyword;
@@ -20,8 +20,6 @@ class _SearchPageState extends State<SearchPage>
   bool get wantKeepAlive => true;
 
   late TabController _tabController;
-
-  Widget? _overlayQuickSearch;
 
   @override
   void initState() {
@@ -43,15 +41,7 @@ class _SearchPageState extends State<SearchPage>
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         scrolledUnderElevation: 0.0,
-        title: CustomSearchBar(
-          keyword: widget.keyword,
-          backMode: widget.keyword.isNotEmpty,
-          onOverlayChange: (overlay) {
-            setState(() {
-              _overlayQuickSearch = overlay;
-            });
-          },
-        ),
+        title: GlobalSearchBar(keyword: widget.keyword, pageIsSearch: true),
         titleSpacing: 0,
         automaticallyImplyLeading: false,
         centerTitle: true,
@@ -67,8 +57,7 @@ class _SearchPageState extends State<SearchPage>
           if (widget.keyword.trim().isNotEmpty)
             _buildBodySearch(context)
           else
-            _buildBodyGetStarting(context),
-          if (_overlayQuickSearch != null) _overlayQuickSearch!,
+            _buildBodyGetStarting(context)
         ],
       ),
     );
