@@ -7,8 +7,9 @@ import 'package:hoyomi/widgets/global_search_bar.dart';
 
 class SearchPage extends StatefulWidget {
   final String keyword;
+  final String? from;
 
-  const SearchPage({super.key, required this.keyword});
+  const SearchPage({super.key, required this.keyword, required this.from});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -24,7 +25,11 @@ class _SearchPageState extends State<SearchPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(
+      initialIndex: widget.from == 'eiga' ? 1 : 0,
+      length: 2,
+      vsync: this,
+    );
   }
 
   @override

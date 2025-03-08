@@ -161,7 +161,22 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                     },
                     onSubmitted: (value) {
                       _closeSearchLayer();
-                      context.push("/search?q=$value");
+                      switch (GoRouter.of(context).state.name) {
+                        case 'search':
+                        case 'search_comic':
+                        case 'search_eiga':
+                          context.replace("/search?q=$value");
+                          break;
+                        case 'home_comic':
+                          context.push("/search?q=$value&from=comic");
+                          break;
+                        case 'home_eiga':
+                          context.push("/search?q=$value&from=eiga");
+                          break;
+                        default:
+                          context.push("/search?q=$value");
+                          break;
+                      }
                     },
                   )),
             ),

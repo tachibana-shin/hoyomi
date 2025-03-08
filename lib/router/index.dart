@@ -82,7 +82,7 @@ final router = GoRouter(
               path: '/search',
               name: 'search',
               builder: (context, state) =>
-                  SearchPage(keyword: state.uri.queryParameters['q'] ?? ''),
+                  SearchPage(keyword: state.uri.queryParameters['q'] ?? '', from: state.uri.queryParameters['from']),
               routes: [
                 GoRoute(
                   path: 'comic/:sourceId',
