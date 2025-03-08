@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hoyomi/notifier+/notifier_plus_mixin.dart';
 import 'package:hoyomi/notifier+/watch_notifier.dart';
 import 'package:hoyomi/stores.dart';
+
+final ValueNotifier<String> _keyword = ValueNotifier('');
 
 class _AppBarExtended extends AppBar {
   final Widget child;
@@ -33,18 +36,19 @@ class GlobalSearchBar extends StatefulWidget {
   final String keyword;
   final bool pageIsSearch;
 
-  const GlobalSearchBar({super.key, required this.keyword, required this.pageIsSearch});
+  const GlobalSearchBar(
+      {super.key, required this.keyword, required this.pageIsSearch});
 
   @override
   // ignore: library_private_types_in_public_api
   _GlobalSearchBarState createState() => _GlobalSearchBarState();
 }
 
-class _GlobalSearchBarState extends State<GlobalSearchBar> {
+class _GlobalSearchBarState extends State<GlobalSearchBar>
+    with NotifierPlusMixin {
   final _focusNode = FocusNode();
 
   late final TextEditingController _controller;
-  late final ValueNotifier<String> _keyword;
 
   DialogRoute? _route;
 
@@ -52,8 +56,10 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> {
   void initState() {
     super.initState();
 
-    _controller = TextEditingController(text: widget.keyword);
-    _keyword = ValueNotifier(widget.keyword);
+    if (widget.keyword.isNotEmpty) {
+      _keyword.value = widget.keyword;
+    }
+    _controller = TextEditingController(text: _keyword.value);
 
     Timer.periodic(const Duration(milliseconds: 100), (timer) {
       _focusNode.requestFocus();
@@ -118,7 +124,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> {
         ),
         child: Row(
           children: [
-            if (focusing || widget.pageIsSearch)
+            if (focusing || widget.pageIsSearch && widget.keyword.isNotEmpty)
               IconButton(
                 icon: Icon(
                   MaterialCommunityIcons.arrow_left,
