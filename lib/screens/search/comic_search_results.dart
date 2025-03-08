@@ -22,56 +22,63 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
   @override
   bool get wantKeepAlive => true;
 
+  final Map<int, Widget> _itemsStore = {};
+
   Widget? _widgetMain;
 
-  void _buildWidgetMain() {
-    _widgetMain = ListView.builder(
-      itemCount: comicServices.length,
-      itemBuilder: (context, index) {
-        final service = comicServices.elementAt(index);
+  Widget _itemBuilderCache(int index) {
+    if (_itemsStore[index] != null) return _itemsStore[index]!;
 
-        final searchResult = service.search(
-          keyword: widget.keyword,
-          page: 1,
-          filters: {},
-        );
-        final itemsFuture = searchResult.then(
-          (data) => data.items
-              .map(
-                (item) => ComicExtend(
-                  comic: item,
-                  sourceId: service.uid,
-                ),
-              )
-              .toList(),
-        );
+    final service = comicServices.elementAt(index);
 
-        String subtitle = '';
+    final searchResult = service.search(
+      keyword: widget.keyword,
+      page: 1,
+      filters: {},
+    );
+    final itemsFuture = searchResult.then(
+      (data) => data.items
+          .map(
+            (item) => ComicExtend(
+              comic: item,
+              sourceId: service.uid,
+            ),
+          )
+          .toList(),
+    );
 
-        return StatefulBuilder(
-          builder: (context, setState) {
-            if (subtitle == '') {
-              searchResult.then((data) {
-                if (!mounted || !context.mounted) return;
-                setState(() {
-                  subtitle = '${data.totalItems} results';
-                });
-              });
-            }
+    String subtitle = '';
 
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
-              child: HorizontalComicList(
-                itemsFuture: itemsFuture,
-                title: service.name,
-                subtitle: subtitle,
-                more: '/search/comic/${service.uid}?q=${widget.keyword}',
-              ),
-            );
-          },
+    return _itemsStore[index] = StatefulBuilder(
+      builder: (context, setState) {
+        if (subtitle == '') {
+          searchResult.then((data) {
+            if (!mounted || !context.mounted) return;
+            setState(() {
+              subtitle = '${data.totalItems} results';
+            });
+          });
+        }
+
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.0),
+          child: HorizontalComicList(
+            itemsFuture: itemsFuture,
+            title: service.name,
+            subtitle: subtitle,
+            more: '/search/comic/${service.uid}?q=${widget.keyword}',
+          ),
         );
       },
     );
+  }
+
+  void _buildWidgetMain() {
+    _widgetMain = ListView.builder(
+        itemCount: comicServices.length,
+        itemBuilder: (context, index) {
+          return _itemBuilderCache(index);
+        });
   }
 
   @override
@@ -88,6 +95,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
 
     return PullRefreshPage(
       onLoadData: () async {
+        _itemsStore.clear();
         _buildWidgetMain();
         return false;
       },
