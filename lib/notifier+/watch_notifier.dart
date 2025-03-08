@@ -15,13 +15,33 @@ class WatchNotifier<T> extends StatefulWidget {
 }
 
 class _WatchNotifierState<T> extends State<WatchNotifier<T>> {
+  late Listenable _listenable;
+
   @override
   void initState() {
     super.initState();
 
-    Listenable.merge(widget.depends).addListener(() {
-      setState(() {});
-    });
+    _listenable = Listenable.merge(widget.depends)..addListener(_refresh);
+  }
+
+  @override
+  void didUpdateWidget(oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.depends != widget.depends) {
+      _listenable.removeListener(_refresh);
+      _listenable = Listenable.merge(widget.depends)..addListener(_refresh);
+    }
+  }
+
+  @override
+  void dispose() {
+    _listenable.removeListener(_refresh);
+
+    super.dispose();
+  }
+
+  void _refresh() {
+    setState(() {});
   }
 
   @override
