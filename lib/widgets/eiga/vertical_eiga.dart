@@ -53,7 +53,7 @@ class VerticalEiga extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (goMode) {
-          context.pushReplacement("/details_eiga/$sourceId/${eiga.eigaId}");
+          context.replace("/details_eiga/$sourceId/${eiga.eigaId}");
         } else {
           context.push("/details_eiga/$sourceId/${eiga.eigaId}");
         }
