@@ -52,6 +52,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
           builder: (context, setState) {
             if (subtitle == '') {
               searchResult.then((data) {
+                if (!mounted || !context.mounted) return;
                 setState(() {
                   subtitle = '${data.totalItems} results';
                 });
