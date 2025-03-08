@@ -204,11 +204,18 @@ final router = GoRouter(
       path: '/details_eiga/:sourceId/:eigaId',
       name: 'details_eiga',
       parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => DetailsEigaPage(
-        sourceId: state.pathParameters['sourceId']!,
-        eigaId: state.pathParameters['eigaId']!,
-        episodeId: state.uri.queryParameters['episodeId'],
-      ),
+      builder: (context, state) {
+        final sourceId = state.pathParameters['sourceId']!;
+        final eigaId = state.pathParameters['eigaId']!;
+        final episodeId = state.uri.queryParameters['episodeId'];
+
+        return DetailsEigaPage(
+          key: ValueKey('$sourceId/$eigaId'),
+          sourceId: sourceId,
+          eigaId: eigaId,
+          episodeId: episodeId,
+        );
+      },
     ),
 
     // Webview Route

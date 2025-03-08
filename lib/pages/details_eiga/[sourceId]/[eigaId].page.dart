@@ -100,6 +100,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final _eventBus = EventBus();
 
   double _initialBottomSheet = 0.5;
+  Widget? _widgetAll;
 
   @override
   void initState() {
@@ -236,6 +237,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   @override
   Widget build(BuildContext context) {
+    return (_widgetAll ??= _buildAll());
+  }
+
+  Widget _buildAll() {
     final size = MediaQuery.of(context).size;
 
     var aspectRatio = 16 / 9;
@@ -1087,6 +1092,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         _posterNotifier.value = value.poster;
       });
     }
+
+    context.replace('/details_eiga/${widget.sourceId}/${_eigaId.value}?episodeId=${_episodeId.value}');
   }
 
   Widget _buildSeasonArea(
