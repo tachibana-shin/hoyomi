@@ -503,7 +503,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
               child: GestureDetector(
                   onTap: () => _showSearchLayer(),
                   child: TextField(
-                    autofocus: focusing,
+                    // autofocus: focusing,
                     enabled: focusing,
                     controller: _controller,
                     // readOnly: _readonly,
