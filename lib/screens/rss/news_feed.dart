@@ -126,7 +126,9 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
           pubDate: pubDate,
           image:
               imageUrl != null ? OImage(src: imageUrl, headers: headers) : null,
-          avatar: OImage(src: service.faviconUrl, headers: headers),
+          avatar: OImage(
+              src: service.faviconUrl.src,
+              headers: service.faviconUrl.headers ?? headers),
           creator: creator,
           service: service,
         ),

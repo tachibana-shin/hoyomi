@@ -31,7 +31,7 @@ class TruyenQQService extends TruyenGGService {
   // ignore: overridden_fields
   final init = ServiceInit(
     name: 'TruyenQQ',
-    faviconUrl: 'https://i.imgur.com/yX8CCPe.png"',
+    faviconUrl: OImage(src: 'https://i.imgur.com/yX8CCPe.png'),
     rootUrl: 'https://truyenqqto.com',
     rss: '/rss.html',
     settings: [

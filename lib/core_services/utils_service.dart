@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/controller/service_setting.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/interfaces/setting/field_input.dart';
 import 'package:hoyomi/core_services/interfaces/setting/setting_field.dart';
 import 'package:hoyomi/core_services/interfaces/user.dart';
@@ -24,7 +25,7 @@ import 'package:hoyomi/router/index.dart';
 class ServiceInit {
   final String name;
   final String? uid;
-  final String faviconUrl;
+  final OImage faviconUrl;
   final String rootUrl;
   final String? rss;
   final List<SettingField>? settings;
@@ -147,9 +148,10 @@ abstract class UtilsService with _SettingsMixin {
   String get name => init.name;
   @override
   String get uid => init.uid ?? name.toLowerCase().replaceAll(r"\s", "-");
-  String? _faviconUrl;
-  String get faviconUrl =>
-      _faviconUrl ??= Uri.parse(baseUrl).resolve(init.faviconUrl).toString();
+  OImage? _faviconUrl;
+  OImage get faviconUrl => _faviconUrl ??= OImage(
+      src: Uri.parse(baseUrl).resolve(init.faviconUrl.src).toString(),
+      headers: init.faviconUrl.headers);
   String? _rss;
   String? get rss => _rss ??= init.rss == null
       ? null

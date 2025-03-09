@@ -66,7 +66,7 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
   @override
   final init = ServiceInit(
     name: 'TruyenGGP',
-    faviconUrl: '/favicon.ico',
+    faviconUrl: OImage(src: '/favicon.ico'),
     rootUrl: 'https://truyengg.com',
     rss: '/rss.html',
     onBeforeInsertCookie: (cookie) {
