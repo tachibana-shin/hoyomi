@@ -536,7 +536,15 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                     },
                   )),
             ),
-            if (focusing == false) _buildButtonMore()
+            if (focusing == false)
+              _buildButtonMore()
+            else
+              IconButton(
+                  icon: Icon(Icons.clear),
+                  onPressed: () {
+                    _controller.clear();
+                    _keyword.value = '';
+                  })
           ],
         ),
       ),
