@@ -45,6 +45,7 @@ class _AppBarExtendedState extends State<_AppBarExtended> {
 }
 
 class _QuickSearchItem extends StatefulWidget {
+  final String to;
   final String title;
   final OImage image;
   final String? subtitle;
@@ -52,6 +53,7 @@ class _QuickSearchItem extends StatefulWidget {
   final String sourceId;
 
   const _QuickSearchItem({
+    required this.to,
     required this.title,
     required this.image,
     required this.subtitle,
@@ -129,6 +131,10 @@ class _QuickSearchItemState extends State<_QuickSearchItem> {
 
     return InkWell(
       borderRadius: BorderRadius.circular(7),
+      onTap: () {
+        context.pop();
+        context.push(widget.to);
+      },
       child: Container(
           decoration: BoxDecoration(
             color: null,
@@ -268,7 +274,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                       children: data
                           .map((text) => GestureDetector(
                               onTap: () {
-                                _controller.text = text;
+                                _controller.text = _keyword.value = text;
                               },
                               child: Chip(
                                 label: Text(text),
@@ -302,7 +308,16 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                 future: service.search(
                     keyword: keyword, page: 1, filters: {}, quick: true),
                 builder: (context, snapshot) {
-                  if (snapshot.data == null) return SizedBox.shrink();
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: UtilsService.errorWidgetBuilder(
+                        context,
+                        error: snapshot.error,
+                        service: null,
+                        orElse: (err) => Text('Error: $err'),
+                      ),
+                    );
+                  }
 
                   final loading =
                       snapshot.connectionState == ConnectionState.waiting;
@@ -321,6 +336,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                             final comic = data.elementAt(index);
 
                             return _QuickSearchItem(
+                                to: '/details_comic/${service.uid}/${comic.comicId}',
                                 title: comic.name,
                                 image: comic.image,
                                 subtitle: comic.lastChap?.name,
@@ -334,7 +350,16 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                 future: service.search(
                     keyword: keyword, page: 1, filters: {}, quick: true),
                 builder: (context, snapshot) {
-                  if (snapshot.data == null) return SizedBox.shrink();
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: UtilsService.errorWidgetBuilder(
+                        context,
+                        error: snapshot.error,
+                        service: null,
+                        orElse: (err) => Text('Error: $err'),
+                      ),
+                    );
+                  }
 
                   final loading =
                       snapshot.connectionState == ConnectionState.waiting;
@@ -353,6 +378,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                             final eiga = data.elementAt(index);
 
                             return _QuickSearchItem(
+                                to: '/details_eiga/${service.uid}/${eiga.eigaId}',
                                 title: eiga.name,
                                 image: eiga.image,
                                 subtitle: eiga.lastEpisode?.name,
