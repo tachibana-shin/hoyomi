@@ -200,46 +200,47 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
               },
               child: Material(
                   color: Colors.transparent,
-                  child: Scaffold(
-                      appBar: _buildGlobalSearchBar(true),
-                      body: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          child: WatchNotifier(
-                              depends: [_keyword],
-                              throttle: const Duration(seconds: 1),
-                              builder: (context) {
-                                if (_keyword.value.isEmpty) {
-                                  return Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 16.0),
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(Icons.search,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary),
-                                            SizedBox(width: 4.0),
-                                            Text('Enter keyword to search',
-                                                style: TextStyle(
+                  child: SafeArea(
+                      child: Scaffold(
+                          appBar: _buildGlobalSearchBar(true),
+                          body: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.0),
+                              child: WatchNotifier(
+                                  depends: [_keyword],
+                                  throttle: const Duration(seconds: 1),
+                                  builder: (context) {
+                                    if (_keyword.value.isEmpty) {
+                                      return Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 16.0),
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.search,
                                                     color: Theme.of(context)
                                                         .colorScheme
-                                                        .secondary))
-                                          ]));
-                                }
-                                return Flex(
-                                    direction: Axis.vertical,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      // Text(_keyword.value),
-                                      _buildKeywordSuggest(_keyword.value),
-                                      Expanded(
-                                          child: _buildSearchResults(
-                                              _keyword.value))
-                                    ]);
-                              })))));
+                                                        .secondary),
+                                                SizedBox(width: 4.0),
+                                                Text('Enter keyword to search',
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary))
+                                              ]));
+                                    }
+                                    return Flex(
+                                        direction: Axis.vertical,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          // Text(_keyword.value),
+                                          _buildKeywordSuggest(_keyword.value),
+                                          Expanded(
+                                              child: _buildSearchResults(
+                                                  _keyword.value))
+                                        ]);
+                                  }))))));
         });
   }
 
