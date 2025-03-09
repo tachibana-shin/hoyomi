@@ -40,7 +40,9 @@ final List<String> routeIgnoreLayoutDefault = [
 
 /// 日本語のコメント: ルートナビゲーターのためのグローバルキー。
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
-final pageBuilder =  (androidSdkInt != null && androidSdkInt! < 29) ? GoTransitions.zoom.call :  null;
+final pageBuilder = (androidSdkInt != null && androidSdkInt! < 29)
+    ? GoTransitions.zoom.call
+    : null;
 final router = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/home_eiga',
