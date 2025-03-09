@@ -1093,7 +1093,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       });
     }
 
-    context.replace('/details_eiga/${widget.sourceId}/${_eigaId.value}?episodeId=${_episodeId.value}');
+    context.replace(
+        '/details_eiga/${widget.sourceId}/${_eigaId.value}?episodeId=${_episodeId.value}');
   }
 
   Widget _buildSeasonArea(

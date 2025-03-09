@@ -11,7 +11,7 @@ class Comic {
   final DateTime? timeAgo;
   final String? notice;
   final double? rate;
-final String? description;
+  final String? description;
 
   Comic({
     required this.name,

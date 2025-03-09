@@ -25,7 +25,8 @@ class SearchEigaPage extends StatelessWidget {
       }) async {
         final data = await getEigaService(
           sourceId,
-        ).search(filters: filters, page: page, keyword: sectionId, quick: false);
+        ).search(
+            filters: filters, page: page, keyword: sectionId, quick: false);
 
         return EigaSection(
           name: 'Search "$sectionId"',

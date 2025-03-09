@@ -28,7 +28,8 @@ class _WatchNotifierState<T> extends State<WatchNotifier<T>> {
     if (widget.throttle == null) {
       _refresh = () => setState(() {});
     } else {
-      final debouncer = Debouncer(milliseconds: widget.throttle!.inMilliseconds);
+      final debouncer =
+          Debouncer(milliseconds: widget.throttle!.inMilliseconds);
       _refresh = () => debouncer.run(() => setState(() {}));
     }
 

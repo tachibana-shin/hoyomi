@@ -14,19 +14,18 @@ class Eiga {
   final DateTime? preRelease;
   final String? description;
 
-  Eiga({
-    required this.name,
-    required this.eigaId,
-    this.originalName,
-    required this.image,
-    this.lastEpisode,
-    this.timeAgo,
-    this.notice,
-    this.rate,
-    this.pending = false,
-    this.preRelease,
-    this.description
-  });
+  Eiga(
+      {required this.name,
+      required this.eigaId,
+      this.originalName,
+      required this.image,
+      this.lastEpisode,
+      this.timeAgo,
+      this.notice,
+      this.rate,
+      this.pending = false,
+      this.preRelease,
+      this.description});
 
   factory Eiga.createFakeData() {
     return Eiga(
