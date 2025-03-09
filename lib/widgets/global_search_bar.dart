@@ -287,7 +287,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                 enabled: loading,
                 enableSwitchAnimation: true,
                 child: SizedBox(
-                  height: (30.0 * maxLines) + (4.0 * maxLines),
+                  height: (50.0 * maxLines) + (4.0 * maxLines),
                   child: ClipRect(
                     child: Wrap(
                       spacing: 8.0,
