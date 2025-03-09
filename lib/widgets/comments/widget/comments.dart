@@ -5,6 +5,7 @@ import 'package:hoyomi/core_services/comic/interfaces/comic_comment.dart';
 import 'package:hoyomi/core_services/utils_service.dart';
 import 'package:hoyomi/widgets/comments/widget/comment.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class Comments extends StatefulWidget {
   final Future<ComicComments> Function({
@@ -62,13 +63,15 @@ class _CommentsState extends State<Comments> {
               ),
             );
           }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.connectionState == ConnectionState.done) {
-            return _buildLastComment(snapshot.data!);
-          }
-          return Center(child: Text('Error: ${snapshot.error}'));
+          final loading = snapshot.connectionState == ConnectionState.waiting;
+
+          final data =
+              loading ? ComicComments.createFakeData() : snapshot.data!;
+
+          return Skeletonizer(
+              enabled: loading,
+              enableSwitchAnimation: true,
+              child: _buildLastComment(data));
         },
       );
     }
