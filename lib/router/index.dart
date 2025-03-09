@@ -21,6 +21,7 @@ import 'package:hoyomi/pages/section_comic/[sourceId]/[sectionId].page.dart';
 import 'package:hoyomi/pages/section_eiga/[sourceId]/[sectionId].page.dart';
 import 'package:hoyomi/pages/service_settings/[sourceId].page.dart';
 import 'package:hoyomi/pages/webview_page.dart';
+import 'package:hoyomi/plugins/android_sdk_int.dart';
 
 import 'package:hoyomi/widgets/navigation_app.dart';
 
@@ -39,6 +40,7 @@ final List<String> routeIgnoreLayoutDefault = [
 
 /// 日本語のコメント: ルートナビゲーターのためのグローバルキー。
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
+final pageBuilder =  (androidSdkInt != null && androidSdkInt! < 29) ? GoTransitions.zoom.call :  null;
 final router = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/home_eiga',
@@ -61,6 +63,7 @@ final router = GoRouter(
             GoRoute(
               path: '/home_comic',
               name: 'home_comic',
+              pageBuilder: pageBuilder,
               builder: (context, state) => HomeComicPage(),
             ),
           ],
@@ -71,6 +74,7 @@ final router = GoRouter(
             GoRoute(
               path: '/home_eiga',
               name: 'home_eiga',
+              pageBuilder: pageBuilder,
               builder: (context, state) => HomeEigaPage(),
             ),
           ],
@@ -81,6 +85,7 @@ final router = GoRouter(
             GoRoute(
               path: '/search',
               name: 'search',
+              pageBuilder: pageBuilder,
               builder: (context, state) => SearchPage(
                   keyword: state.uri.queryParameters['q'] ?? '',
                   from: state.uri.queryParameters['from']),
@@ -88,6 +93,7 @@ final router = GoRouter(
                 GoRoute(
                   path: 'comic/:sourceId',
                   name: 'search_comic',
+                  pageBuilder: pageBuilder,
                   builder: (context, state) {
                     if (state.uri.queryParameters['q'] == null) {
                       context.replace("/search");
@@ -102,6 +108,7 @@ final router = GoRouter(
                 GoRoute(
                   path: 'eiga/:sourceId',
                   name: 'search_eiga',
+                  pageBuilder: pageBuilder,
                   builder: (context, state) {
                     if (state.uri.queryParameters['q'] == null) {
                       context.replace("/search");
@@ -123,11 +130,13 @@ final router = GoRouter(
             GoRoute(
               path: '/library',
               name: 'library',
+              pageBuilder: pageBuilder,
               builder: (context, state) => LibraryPage(),
               routes: [
                 GoRoute(
                   path: 'history/eiga/:sourceId',
                   name: 'history_eiga',
+                  pageBuilder: pageBuilder,
                   builder: (context, state) => HistoryEigaPage(
                     sourceId: state.pathParameters['sourceId']!,
                   ),
@@ -135,6 +144,7 @@ final router = GoRouter(
                 GoRoute(
                   path: 'follow/eiga/:sourceId',
                   name: 'follow_eiga',
+                  pageBuilder: pageBuilder,
                   builder: (context, state) => FollowsEigaPage(
                     sourceId: state.pathParameters['sourceId']!,
                   ),
@@ -149,6 +159,7 @@ final router = GoRouter(
             GoRoute(
               path: '/manager',
               name: 'manager',
+              pageBuilder: pageBuilder,
               builder: (context, state) => ManagerPage(),
             ),
           ],
@@ -161,6 +172,7 @@ final router = GoRouter(
     GoRoute(
       path: '/details_comic/:sourceId/:comicId',
       name: 'details_comic',
+      pageBuilder: pageBuilder,
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => DetailsComic(
         sourceId: state.pathParameters['sourceId']!,
@@ -170,6 +182,7 @@ final router = GoRouter(
         GoRoute(
           path: 'view',
           name: 'details_comic_reader',
+          pageBuilder: pageBuilder,
           parentNavigatorKey: _rootNavigatorKey,
           builder: (context, state) {
             final chapterId = state.uri.queryParameters['chap']!;
@@ -187,6 +200,7 @@ final router = GoRouter(
         GoRoute(
           path: 'similar',
           name: 'similar_comic',
+          pageBuilder: pageBuilder,
           parentNavigatorKey: _rootNavigatorKey,
           builder: (context, state) => SimilarPage(
             sourceId: state.pathParameters['sourceId']!,
@@ -204,6 +218,7 @@ final router = GoRouter(
     GoRoute(
       path: '/details_eiga/:sourceId/:eigaId',
       name: 'details_eiga',
+      pageBuilder: pageBuilder,
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) {
         final sourceId = state.pathParameters['sourceId']!;
@@ -223,6 +238,7 @@ final router = GoRouter(
     GoRoute(
       path: '/webview/:sourceId',
       name: 'webview',
+      pageBuilder: pageBuilder,
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) =>
           WebviewPage(sourceId: state.pathParameters['sourceId']!),
@@ -232,6 +248,7 @@ final router = GoRouter(
     GoRoute(
       path: '/section_comic/:sourceId/:sectionId',
       name: 'section_comic',
+      pageBuilder: pageBuilder,
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => SectionComicPage(
         sourceId: state.pathParameters['sourceId']!,
@@ -243,6 +260,7 @@ final router = GoRouter(
     GoRoute(
       path: '/section_eiga/:sourceId/:sectionId',
       name: 'section_eiga',
+      pageBuilder: pageBuilder,
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => SectionEigaPage(
         sourceId: state.pathParameters['sourceId']!,
@@ -254,6 +272,7 @@ final router = GoRouter(
     GoRoute(
       path: '/service_settings/:sourceId',
       name: 'service_settings',
+      pageBuilder: pageBuilder,
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) =>
           ServiceSettingsPage(sourceId: state.pathParameters['sourceId']!),
