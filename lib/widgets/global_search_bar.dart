@@ -208,6 +208,26 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                               depends: [_keyword],
                               throttle: const Duration(seconds: 1),
                               builder: (context) {
+                                if (_keyword.value.isEmpty) {
+                                  return Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 16.0),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.search,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary),
+                                            SizedBox(width: 4.0),
+                                            Text('Enter keyword to search',
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary))
+                                          ]));
+                                }
                                 return Flex(
                                     direction: Axis.vertical,
                                     crossAxisAlignment:
