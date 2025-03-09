@@ -25,7 +25,7 @@ class SearchComicPage extends StatelessWidget {
       }) async {
         final data = await getComicService(
           sourceId,
-        ).search(filters: filters, page: page, keyword: sectionId);
+        ).search(filters: filters, page: page, keyword: sectionId, quick: false);
 
         return ComicSection(
           name: 'Search "$sectionId"',

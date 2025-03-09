@@ -35,6 +35,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
       keyword: widget.keyword,
       page: 1,
       filters: {},
+      quick: false
     );
     final itemsFuture = searchResult.then(
       (data) => data.items

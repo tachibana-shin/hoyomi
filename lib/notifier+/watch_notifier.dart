@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hoyomi/utils/debouncer.dart';
 
 class WatchNotifier<T> extends StatefulWidget {
   final List<ValueNotifier> depends;
+  final Duration? throttle;
   final Widget Function(BuildContext context) builder;
 
   const WatchNotifier({
     super.key,
     required this.depends,
+    this.throttle,
     required this.builder,
   });
 
@@ -16,10 +19,18 @@ class WatchNotifier<T> extends StatefulWidget {
 
 class _WatchNotifierState<T> extends State<WatchNotifier<T>> {
   late Listenable _listenable;
+  late final VoidCallback _refresh;
 
   @override
   void initState() {
     super.initState();
+
+    if (widget.throttle == null) {
+      _refresh = () => setState(() {});
+    } else {
+      final debouncer = Debouncer(milliseconds: widget.throttle!.inMilliseconds);
+      _refresh = () => debouncer.run(() => setState(() {}));
+    }
 
     _listenable = Listenable.merge(widget.depends)..addListener(_refresh);
   }
@@ -38,10 +49,6 @@ class _WatchNotifierState<T> extends State<WatchNotifier<T>> {
     _listenable.removeListener(_refresh);
 
     super.dispose();
-  }
-
-  void _refresh() {
-    setState(() {});
   }
 
   @override

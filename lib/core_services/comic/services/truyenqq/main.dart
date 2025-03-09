@@ -246,7 +246,7 @@ class TruyenQQService extends TruyenGGService {
   }
 
   @override
-  search({required keyword, required page, required filters}) async {
+  search({required keyword, required page, required filters, required quick}) async {
     final url =
         "$baseUrl/tim-kiem${page > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}";
     final Document document = await fetchDocument(url);

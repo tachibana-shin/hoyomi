@@ -62,5 +62,6 @@ abstract class EigaService extends Service {
     required String keyword,
     required int page,
     required Map<String, List<String>?> filters,
+    required bool quick,
   });
 }

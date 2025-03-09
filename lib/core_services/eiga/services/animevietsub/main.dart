@@ -789,7 +789,7 @@ class AnimeVietsubService extends EigaService
       };
 
   @override
-  search({required keyword, required page, required filters}) {
+  search({required keyword, required page, required filters, required quick}) {
     return getSection(
       sectionId: '/tim-kiem/$keyword/',
       page: page,

@@ -29,6 +29,7 @@ abstract class ComicService extends Service {
     required String keyword,
     required int page,
     required Map<String, List<String>?> filters,
+    required bool quick,
   });
 
   // Utils

@@ -12,6 +12,7 @@ class Eiga {
   final double? rate;
   final bool pending;
   final DateTime? preRelease;
+  final String? description;
 
   Eiga({
     required this.name,
@@ -24,6 +25,7 @@ class Eiga {
     this.rate,
     this.pending = false,
     this.preRelease,
+    this.description
   });
 
   factory Eiga.createFakeData() {

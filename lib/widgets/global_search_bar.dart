@@ -1,13 +1,25 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hoyomi/core_services/comic/comic_service.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
+import 'package:hoyomi/core_services/eiga/eiga_service.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/notifier+/notifier_plus_mixin.dart';
 import 'package:hoyomi/notifier+/watch_notifier.dart';
 import 'package:hoyomi/stores.dart';
+import 'package:hoyomi/widgets/blurred_part_background.dart';
+import 'package:http/http.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 final ValueNotifier<String> _keyword = ValueNotifier('');
+final ValueNotifier<String?> _serviceSelect = ValueNotifier(null);
 
 class _AppBarExtended extends AppBar {
   final Widget child;
@@ -32,6 +44,109 @@ class _AppBarExtendedState extends State<_AppBarExtended> {
   }
 }
 
+class _QuickSearchItem extends StatefulWidget {
+  final String title;
+  final OImage image;
+  final String? subtitle;
+  final String? description;
+  final String sourceId;
+
+  const _QuickSearchItem({
+    required this.title,
+    required this.image,
+    required this.subtitle,
+    required this.description,
+    required this.sourceId,
+  });
+
+  @override
+  State<_QuickSearchItem> createState() => _QuickSearchItemState();
+}
+
+class _QuickSearchItemState extends State<_QuickSearchItem> {
+  @override
+  Widget build(context) {
+    final poster = Container(
+      width: 70,
+      decoration: BoxDecoration(
+        color: Colors.blueGrey.shade200,
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          OImage.oNetwork(
+            widget.image,
+            sourceId: widget.sourceId,
+            fit: BoxFit.cover,
+          ),
+          BlurredPartBackground(),
+        ],
+      ),
+    );
+    final titleAndSubtitle = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 3.0),
+        Text(
+          widget.title,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w400,
+              ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+
+        if (widget.subtitle != null)
+          Text(
+            widget.subtitle!,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w400,
+                  color: Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.color?.withValues(alpha: 0.8),
+                ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+
+        SizedBox(height: 2.0),
+
+        ///
+        SizedBox(height: 5.0),
+        if (widget.description?.isNotEmpty == true)
+          Text(
+            widget.description!,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(fontSize: 12.0),
+            maxLines: 2,
+          ),
+      ],
+    );
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(7),
+      child: Container(
+          decoration: BoxDecoration(
+            color: null,
+            borderRadius: BorderRadius.circular(7.0),
+          ),
+          padding: EdgeInsets.symmetric(vertical: 7.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              poster,
+              SizedBox(width: 7.0),
+              Expanded(child: titleAndSubtitle),
+            ],
+          )),
+    );
+  }
+}
+
 class GlobalSearchBar extends StatefulWidget {
   final String keyword;
   final bool pageIsSearch;
@@ -50,7 +165,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
 
   late final TextEditingController _controller;
 
-  DialogRoute? _route;
+  bool _showingSearchLayer = false;
 
   @override
   void initState() {
@@ -67,41 +182,255 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
     _focusNode.requestFocus();
   }
 
-  DialogRoute _showSearchLayer() {
-    _route ??= DialogRoute(
-      context: context,
-      builder: (context) {
-        return GestureDetector(
-            onTap: () {
-              Navigator.of(context, rootNavigator: true).pop(_route);
-            },
-            child: Material(
-                color: Colors.transparent,
-                child: Scaffold(
-                    appBar: _buildGlobalSearchBar(true),
-                    body: WatchNotifier(
-                        depends: [_keyword],
-                        builder: (context) {
-                          return ListView(children: [Text(_keyword.value)]);
-                        }))));
-      },
-    );
-
-    Navigator.of(context, rootNavigator: true).push(_route!);
-
-    return _route!;
+  void _showSearchLayer() {
+    _showingSearchLayer = true;
+    showGeneralDialog(
+        context: context,
+        useRootNavigator: true,
+        pageBuilder: (context, anim, anim2) {
+          return GestureDetector(
+              onTap: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+              child: Material(
+                  color: Colors.transparent,
+                  child: Scaffold(
+                      appBar: _buildGlobalSearchBar(true),
+                      body: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          child: WatchNotifier(
+                              depends: [_keyword],
+                              throttle: const Duration(seconds: 1),
+                              builder: (context) {
+                                return Flex(
+                                    direction: Axis.vertical,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Text(_keyword.value),
+                                      _buildKeywordSuggest(_keyword.value),
+                                      Expanded(
+                                          child: _buildSearchResults(
+                                              _keyword.value))
+                                    ]);
+                              })))));
+        });
   }
 
   void _closeSearchLayer({bool changeMode = false}) {
     _focusNode.unfocus();
 
-    if (_route != null) {
-      Navigator.of(context, rootNavigator: true).pop(_route!);
-      _route = null;
+    if (_showingSearchLayer) {
+      Navigator.of(context, rootNavigator: true).pop();
+      _showingSearchLayer = false;
     }
     if (changeMode && widget.pageIsSearch) {
       context.pop();
     }
+  }
+
+  Widget _buildKeywordSuggest(String keyword) {
+    final response = get(Uri.parse(
+        'https://suggestqueries.google.com/complete/search?client=chrome&q=$keyword'));
+    return FutureBuilder(
+        future: response.then((response) => response.statusCode == 200
+            ? jsonDecode(response.body)[1]
+            : throw Exception('Failed to get response')),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) return SizedBox.shrink();
+
+          final loading = snapshot.connectionState == ConnectionState.waiting;
+          const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+          final random = Random();
+
+          final data = loading
+              ? List.generate(10, (_) {
+                  int length = random.nextInt(7) + 4;
+                  return String.fromCharCodes(
+                    List.generate(length,
+                        (_) => chars.codeUnitAt(random.nextInt(chars.length))),
+                  );
+                })
+              : snapshot.data! as List;
+          if (!snapshot.hasData || data.isEmpty) return SizedBox.shrink();
+
+          final maxLines = 2;
+          return Column(children: [
+            Skeletonizer(
+                enabled: loading,
+                enableSwitchAnimation: true,
+                child: SizedBox(
+                  height: (30.0 * maxLines) + (4.0 * maxLines),
+                  child: ClipRect(
+                    child: Wrap(
+                      spacing: 8.0,
+                      runSpacing: 4.0,
+                      children: data
+                          .map((text) => GestureDetector(
+                              onTap: () {
+                                _controller.text = text;
+                              },
+                              child: Chip(
+                                label: Text(text),
+                                padding: EdgeInsets.zero,
+                              )))
+                          .toList(),
+                    ),
+                  ),
+                )),
+            Divider(
+              color: Colors.grey.withValues(alpha: 0.5),
+              thickness: 1,
+              height: 1,
+            ),
+          ]);
+        });
+  }
+
+  Widget _buildSearchResults(String keyword) {
+    if (keyword.isEmpty) {
+      return SizedBox.shrink();
+    }
+
+    return WatchNotifier(
+        depends: [_serviceSelect],
+        builder: (context) {
+          final service = _getCurrentService(context);
+
+          if (service is ComicService) {
+            return FutureBuilder(
+                future: service.search(
+                    keyword: keyword, page: 1, filters: {}, quick: true),
+                builder: (context, snapshot) {
+                  if (snapshot.data == null) return SizedBox.shrink();
+
+                  final loading =
+                      snapshot.connectionState == ConnectionState.waiting;
+                  final data = loading
+                      ? List.generate(10, (_) => Comic.createFakeData())
+                      : snapshot.data!.items;
+
+                  if (data.isEmpty) return SizedBox.shrink();
+
+                  return Skeletonizer(
+                      enabled: loading,
+                      enableSwitchAnimation: true,
+                      child: ListView.builder(
+                          itemCount: data.length,
+                          itemBuilder: (context, index) {
+                            final comic = data.elementAt(index);
+
+                            return _QuickSearchItem(
+                                title: comic.name,
+                                image: comic.image,
+                                subtitle: comic.lastChap?.name,
+                                description: comic.description ?? comic.notice,
+                                sourceId: service.uid);
+                          }));
+                });
+          }
+          if (service is EigaService) {
+            return FutureBuilder(
+                future: service.search(
+                    keyword: keyword, page: 1, filters: {}, quick: true),
+                builder: (context, snapshot) {
+                  if (snapshot.data == null) return SizedBox.shrink();
+
+                  final loading =
+                      snapshot.connectionState == ConnectionState.waiting;
+                  final data = loading
+                      ? List.generate(10, (_) => Eiga.createFakeData())
+                      : snapshot.data!.items;
+
+                  if (data.isEmpty) return SizedBox.shrink();
+
+                  return Skeletonizer(
+                      enabled: loading,
+                      enableSwitchAnimation: true,
+                      child: ListView.builder(
+                          itemCount: data.length,
+                          itemBuilder: (context, index) {
+                            final eiga = data.elementAt(index);
+
+                            return _QuickSearchItem(
+                                title: eiga.name,
+                                image: eiga.image,
+                                subtitle: eiga.lastEpisode?.name,
+                                description: eiga.description ?? eiga.notice,
+                                sourceId: service.uid);
+                          }));
+                });
+          }
+
+          throw Exception('Unknown service: ${service.runtimeType}');
+        });
+  }
+
+  Service _getCurrentService(BuildContext context) {
+    final routeName = GoRouter.of(context).state.name;
+
+    late final Service service;
+    if (_serviceSelect.value == null) {
+      switch (routeName) {
+        case 'home_comic':
+          service = comicServices.first;
+          break;
+        case 'home_eiga':
+          service = eigaServices.first;
+          break;
+        default:
+          service = allServices.first;
+      }
+    } else {
+      service = getService(_serviceSelect.value!);
+    }
+
+    return service;
+  }
+
+  Widget _buildServiceSelector() {
+    return PopupMenuButton<String>(
+      padding: EdgeInsets.all(3.0),
+      menuPadding: EdgeInsets.all(5.0),
+      offset: Offset(0, 18.0 * 2),
+      icon: WatchNotifier(
+        depends: [_serviceSelect],
+        builder: (context) {
+          final service = _getCurrentService(context);
+
+          return SizedBox(
+            width: 2 * 12.0,
+            height: 2 * 12.0,
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: OImage.oNetwork(service.faviconUrl,
+                    sourceId: service.uid, fit: BoxFit.cover)),
+          );
+        },
+      ),
+      onSelected: (value) {
+        _serviceSelect.value = value;
+      },
+      itemBuilder: (BuildContext context) => allServices.map((service) {
+        return PopupMenuItem<String>(
+          value: service.uid,
+          height: 40.0,
+          child: Row(children: [
+            SizedBox(
+              width: 2 * 12.0,
+              height: 2 * 12.0,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: OImage.oNetwork(service.faviconUrl,
+                      sourceId: service.uid, fit: BoxFit.cover)),
+            ),
+            SizedBox(width: 12.0),
+            Text(service.name,
+                style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400)),
+          ]),
+        );
+      }).toList(),
+    );
   }
 
   _AppBarExtended _buildGlobalSearchBar(bool focusing) {
@@ -125,14 +454,15 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
         child: Row(
           children: [
             if (focusing || widget.pageIsSearch && widget.keyword.isNotEmpty)
-              IconButton(
-                icon: Icon(
-                  MaterialCommunityIcons.arrow_left,
-                  color: theme.colorScheme.secondaryFixedDim
-                      .withValues(alpha: 0.7),
-                ),
-                onPressed: () => _closeSearchLayer(changeMode: true),
-              )
+              _buildServiceSelector()
+            // IconButton(
+            //   icon: Icon(
+            //     MaterialCommunityIcons.arrow_left,
+            //     color: theme.colorScheme.seconda ryFixedDim
+            //         .withValues(alpha: 0.7),
+            //   ),
+            //   onPressed: () => _closeSearchLayer(changeMode: true),
+            // )
             else
               IconButton(
                 icon: Icon(

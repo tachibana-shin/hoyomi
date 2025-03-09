@@ -36,3 +36,5 @@ Service getService(String uid) {
     return getEigaService(uid);
   }
 }
+
+List<Service> allServices = [...comicServices, ...eigaServices];

@@ -11,6 +11,7 @@ class Comic {
   final DateTime? timeAgo;
   final String? notice;
   final double? rate;
+final String? description;
 
   Comic({
     required this.name,
@@ -21,6 +22,7 @@ class Comic {
     required this.timeAgo,
     required this.notice,
     required this.rate,
+    this.description,
   });
 
   factory Comic.fromMeta(String comicId, {required MetaComic comic}) {
