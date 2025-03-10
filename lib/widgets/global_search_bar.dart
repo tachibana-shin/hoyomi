@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/core_services/comic/comic_service.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 import 'package:hoyomi/core_services/eiga/eiga_service.dart';
@@ -15,8 +17,10 @@ import 'package:hoyomi/notifier+/notifier_plus_mixin.dart';
 import 'package:hoyomi/notifier+/watch_notifier.dart';
 import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/widgets/blurred_part_background.dart';
+import 'package:hoyomi/widgets/speech_to_text.dart';
 import 'package:http/http.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:speech_to_text_google_dialog/speech_to_text_google_dialog.dart';
 
 final ValueNotifier<String> _keyword = ValueNotifier('');
 final ValueNotifier<String?> _serviceSelect = ValueNotifier(null);
@@ -167,10 +171,9 @@ class GlobalSearchBar extends StatefulWidget {
 
 class _GlobalSearchBarState extends State<GlobalSearchBar>
     with NotifierPlusMixin {
-  final _focusNode = FocusNode();
-
   late final TextEditingController _controller;
 
+  FocusNode? _focusNode;
   bool _showingSearchLayer = false;
 
   @override
@@ -181,14 +184,10 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
       _keyword.value = widget.keyword;
     }
     _controller = TextEditingController(text: _keyword.value);
-
-    Timer.periodic(const Duration(milliseconds: 100), (timer) {
-      _focusNode.requestFocus();
-    });
-    _focusNode.requestFocus();
   }
 
   void _showSearchLayer() {
+    if (_showingSearchLayer) return;
     _showingSearchLayer = true;
     showGeneralDialog(
         context: context,
@@ -245,7 +244,8 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
   }
 
   void _closeSearchLayer({bool changeMode = false}) {
-    _focusNode.unfocus();
+    _focusNode?.unfocus();
+    _focusNode = null;
 
     if (_showingSearchLayer) {
       Navigator.of(context, rootNavigator: true).pop();
@@ -482,6 +482,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
 
   _AppBarExtended _buildGlobalSearchBar(bool focusing) {
     final theme = Theme.of(context);
+    _focusNode = FocusNode();
 
     return _AppBarExtended(
       // key: _keySearch,
@@ -557,15 +558,63 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                     },
                   )),
             ),
-            if (focusing == false)
-              _buildButtonMore()
-            else
-              IconButton(
-                  icon: Icon(Icons.clear),
-                  onPressed: () {
-                    _controller.clear();
-                    _keyword.value = '';
-                  })
+            WatchNotifier(
+                depends: [_keyword],
+                builder: (context) => AnimatedSwitcher(
+                    duration: Duration(milliseconds: 300),
+                    transitionBuilder: (child, animation) =>
+                        ScaleTransition(scale: animation, child: child),
+                    child: (_keyword.value.isEmpty || !focusing)
+                        ? (!Platform.isLinux && !Platform.isWindows)
+                            ? IconButton(
+                                icon: Icon(MaterialCommunityIcons.microphone,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary
+                                        .withValues(alpha: 0.8)),
+                                onPressed: () async {
+                                  final completer = Completer();
+
+                                  if (Platform.isAndroid) {
+                                    final isServiceAvailable =
+                                        await SpeechToTextGoogleDialog
+                                                .getInstance()
+                                            .showGoogleDialog(
+                                                onTextReceived: (data) {
+                                      completer.complete(data);
+                                    });
+                                    if (!isServiceAvailable) {
+                                      completer.completeError(Exception(
+                                          'Platform not support API'));
+                                    }
+                                  } else {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (context) => SpeechToText(
+                                          onChanged: (text) =>
+                                              completer.complete(text),
+                                          onError: (error) =>
+                                              completer.completeError(error)),
+                                    );
+                                  }
+
+                                  try {
+                                    final text = await completer.future;
+                                    _keyword.value = _controller.text = text;
+
+                                    _showSearchLayer();
+                                  } catch (error) {
+                                    showSnackBar(Text('Error: $error'));
+                                  }
+                                })
+                            : null
+                        : IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              _controller.clear();
+                              _keyword.value = '';
+                            }))),
+            if (!focusing) _buildButtonMore(),
           ],
         ),
       ),

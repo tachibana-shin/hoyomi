@@ -65,6 +65,10 @@
 				<string>TLSv1.0</string>
 			</dict>
 		</dict>
+		<key>NSSpeechRecognitionUsageDescription</key>
+		<true/>
+		<key>NSMicrophoneUsageDescription</key>
+		<true/>
 	</dict>
 </dict>
 </plist>

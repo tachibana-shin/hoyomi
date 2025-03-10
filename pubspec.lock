@@ -225,6 +225,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.5"
+  combined_animation:
+    dependency: transitive
+    description:
+      name: combined_animation
+      sha256: "8d4bc2e6db00aa747e008317b3dcb435cfda03730efdaa89e5e73847f9a4746c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.1"
   contentsize_tabbarview:
     dependency: "direct main"
     description:
@@ -1044,6 +1052,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  pedantic:
+    dependency: transitive
+    description:
+      name: pedantic
+      sha256: "67fc27ed9639506c856c840ccce7594d0bdcd91bc8d53d6e52359449a1d50602"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.11.1"
   petitparser:
     dependency: transitive
     description:
@@ -1268,6 +1284,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  shirne_dialog:
+    dependency: "direct main"
+    description:
+      name: shirne_dialog
+      sha256: "31d7a94b908b499760183cfcfc0d2e5ad058c5863ebd0ce34da70b2da0e6def7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.8.3"
   signals:
     dependency: "direct main"
     description:
@@ -1321,6 +1345,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
+  speech_to_text:
+    dependency: "direct main"
+    description:
+      name: speech_to_text
+      sha256: "6cf8f284997490ebef1d68f8707bef57dcf083f43c0f915cc285428520bfe6be"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.0"
+  speech_to_text_google_dialog:
+    dependency: "direct main"
+    description:
+      name: speech_to_text_google_dialog
+      sha256: f156aaf3b39416161310fb27a33a4e4da1b4bfeecd643635f28d5cac405a00da
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
+  speech_to_text_platform_interface:
+    dependency: transitive
+    description:
+      name: speech_to_text_platform_interface
+      sha256: a1935847704e41ee468aad83181ddd2423d0833abe55d769c59afca07adb5114
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   sprintf:
     dependency: transitive
     description:
