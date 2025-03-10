@@ -348,7 +348,7 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
 
           final photoUrl =
               element.querySelector(".avartar-comment img")!.attributes['src']!;
-          final name = element.querySelector(".info-user-comment strong")!.text;
+          final name = element.querySelector(".avartar-comment img")!.attributes['alt']!;
           final time = convertTimeAgoToUtc(
             element.querySelector(".time")!.text.trim(),
           );
@@ -359,7 +359,7 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
             element.querySelector(".total-like-comment")!.text,
           );
           final dislike = int.parse(
-            element.querySelector(".total-dislike-comment")!.text,
+            element.querySelector(".total-dislike-comment")?.text ?? '0',
           );
 
           final countReply$ =
