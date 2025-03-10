@@ -99,9 +99,10 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
   }
 
   Future<void> _pullRefresh() async {
-    final data = await widget.onLoadData();
-    setState(() {
-      _dataFuture = Future.value(data);
-    });
+    _dataFuture = widget.onLoadData();
+
+    setState(() {});
+
+    await _dataFuture;
   }
 }
