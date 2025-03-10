@@ -348,7 +348,8 @@ class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
 
           final photoUrl =
               element.querySelector(".avartar-comment img")!.attributes['src']!;
-          final name = element.querySelector(".avartar-comment img")!.attributes['alt']!;
+          final name =
+              element.querySelector(".avartar-comment img")!.attributes['alt']!;
           final time = convertTimeAgoToUtc(
             element.querySelector(".time")!.text.trim(),
           );
