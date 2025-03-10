@@ -20,17 +20,18 @@ class WatchNotifier<T> extends StatefulWidget {
 class _WatchNotifierState<T> extends State<WatchNotifier<T>> {
   late Listenable _listenable;
   late final VoidCallback _refresh;
+  late final Debouncer? _debouncer;
 
   @override
   void initState() {
     super.initState();
 
     if (widget.throttle == null) {
+      _debouncer = null;
       _refresh = () => setState(() {});
     } else {
-      final debouncer =
-          Debouncer(milliseconds: widget.throttle!.inMilliseconds);
-      _refresh = () => debouncer.run(() => setState(() {}));
+      _debouncer = Debouncer(milliseconds: widget.throttle!.inMilliseconds);
+      _refresh = () => _debouncer!.run(() => setState(() {}));
     }
 
     _listenable = Listenable.merge(widget.depends)..addListener(_refresh);
@@ -48,6 +49,7 @@ class _WatchNotifierState<T> extends State<WatchNotifier<T>> {
   @override
   void dispose() {
     _listenable.removeListener(_refresh);
+    _debouncer?.dispose();
 
     super.dispose();
   }
