@@ -361,7 +361,17 @@ abstract class Service with _SettingsMixin {
           print('✅ [HTTP] Response Received');
           print('📜 Status Code: ${response.statusCode}');
           print('⏳ Duration: ${duration.inMilliseconds} ms');
-          print('📥 Response Body: ${response.body}');
+
+          const int maxLength = 200;
+          final String body = response.body;
+
+          if (body.length > maxLength) {
+            print(
+                '📥 Response Body: ${body.substring(0, maxLength)}... (truncated)');
+            print('🔍 Full body can be logged if needed.');
+          } else {
+            print('📥 Response Body: $body');
+          }
         }
       }
     } catch (error) {
