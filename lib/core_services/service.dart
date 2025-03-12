@@ -316,7 +316,7 @@ abstract class Service with _SettingsMixin {
     if (kDebugMode) {
       print('🔵 [HTTP] Request Started');
       print('➡️ URL: $uri');
-      print('📩 Headers: $headers');
+      print('📩 Headers: ${$headers}');
 
       if (body != null) {
         final filteredBody = Map.fromEntries(
