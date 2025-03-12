@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/controller/service_setting.dart';
@@ -288,7 +289,7 @@ abstract class Service with _SettingsMixin {
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
       'accept-language': 'vi',
       'cache-control': 'no-cache',
-      'cookie': cookiesText ?? '',
+      if (cookiesText != null) 'cookie': cookiesText,
       'pragma': 'no-cache',
       'priority': 'u=0, i',
       'sec-ch-ua':
@@ -311,23 +312,66 @@ abstract class Service with _SettingsMixin {
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
     };
 
-    Response response = body == null
-        ? await get(uri, headers: $headers)
-        : await post(
-            uri,
-            headers: $headers,
-            body: Map.fromEntries(
-              body.entries.where((entry) => entry.value != null).toList().map(
-                (entry) {
-                  if (entry.value is String) {
-                    return entry;
-                  } else {
-                    return MapEntry(entry.key, entry.value.toString());
-                  }
-                },
+    final DateTime? startTime = kDebugMode ? DateTime.now() : null;
+    if (kDebugMode) {
+      print('🔵 [HTTP] Request Started');
+      print('➡️ URL: $uri');
+      print('📩 Headers: $headers');
+
+      if (body != null) {
+        final filteredBody = Map.fromEntries(
+          body.entries.where((entry) => entry.value != null).map(
+                (entry) => MapEntry(
+                    entry.key,
+                    entry.value is String
+                        ? entry.value
+                        : entry.value.toString()),
               ),
-            ),
-          );
+        );
+
+        print('📦 Body: $filteredBody');
+      }
+    }
+
+    late final Response response;
+    try {
+      response = body == null
+          ? await get(uri, headers: $headers)
+          : await post(
+              uri,
+              headers: $headers,
+              body: Map.fromEntries(
+                body.entries.where((entry) => entry.value != null).toList().map(
+                  (entry) {
+                    if (entry.value is String) {
+                      return entry;
+                    } else {
+                      return MapEntry(entry.key, entry.value.toString());
+                    }
+                  },
+                ),
+              ),
+            );
+
+      if (kDebugMode) {
+        if (startTime != null) {
+          final DateTime endTime = DateTime.now();
+          final Duration duration = endTime.difference(startTime);
+
+          print('✅ [HTTP] Response Received');
+          print('📜 Status Code: ${response.statusCode}');
+          print('⏳ Duration: ${duration.inMilliseconds} ms');
+          print('📥 Response Body: ${response.body}');
+        }
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print('❌ [HTTP] Request Failed');
+        print('⚠️ Error: $error');
+      }
+
+      rethrow;
+    }
     // if (useCookie == true) {
     //   // update cookie
     //   await setCookie(
