@@ -15,6 +15,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/notifier+/computed_notifier.dart';
 import 'package:hoyomi/notifier+/watch_computed.dart';
 import 'package:hoyomi/notifier+/watch_notifier.dart';
@@ -23,7 +24,6 @@ import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
 import 'package:hoyomi/utils/throttler.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
-import 'package:http/http.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
@@ -256,12 +256,12 @@ class _PlayerEigaState extends State<PlayerEiga> {
           _error.value = err + '';
         });
 
-      final response = await get(url, headers: source.headers);
-      if (response.statusCode > 299) throw response;
+      final response = await getService(widget.sourceId)
+          .fetch(url.toString(), headers: source.headers);
 
       if (source.type == 'hls') {
         _initializeHls(
-          content: response.body,
+          content: response,
           url: url,
           headers: source.headers,
         );
