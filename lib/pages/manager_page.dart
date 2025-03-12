@@ -185,7 +185,7 @@ class _ServiceAccounts extends StatelessWidget {
 
   Widget _buildCard(Service service) {
     return AccountService(
-      key: Key(DateTime.now().millisecond.toString()),
+      key: ValueKey(DateTime.now().millisecond.toString()),
       service: service,
     );
   }
