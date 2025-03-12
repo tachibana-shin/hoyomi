@@ -74,8 +74,7 @@ class _ServiceSettingsPageState extends State<ServiceSettingsPage> {
             ),
           ),
         ),
-        for (final field in Service.settingsDefault)
-          _buildSettingField(field),
+        for (final field in Service.settingsDefault) _buildSettingField(field),
         if (_service.init.settings != null) Divider(),
         if (_service.init.settings != null)
           Padding(
