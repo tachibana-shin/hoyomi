@@ -117,7 +117,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
             subtitle: '',
             more: more,
             builder: (viewFraction) => Center(
-              child: UtilsService.errorWidgetBuilder(
+              child: Service.errorWidgetBuilder(
                 context,
                 error: snapshot.error,
                 service: _service as Service,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comments.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comment.dart';
-import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/widgets/comments/widget/comment.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -55,7 +55,7 @@ class _CommentsState extends State<Comments> {
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
-              child: UtilsService.errorWidgetBuilder(
+              child: Service.errorWidgetBuilder(
                 context,
                 error: snapshot.error,
                 service: null,

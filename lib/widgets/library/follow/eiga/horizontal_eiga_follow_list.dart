@@ -47,7 +47,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
             subtitle: subtitle,
             more: more,
             builder: (viewFraction) => Center(
-              child: UtilsService.errorWidgetBuilder(
+              child: Service.errorWidgetBuilder(
                 context,
                 error: snapshot.error,
                 service: _service as Service,

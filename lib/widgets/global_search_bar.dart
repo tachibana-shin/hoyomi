@@ -331,7 +331,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Center(
-                      child: UtilsService.errorWidgetBuilder(
+                      child: Service.errorWidgetBuilder(
                         context,
                         error: snapshot.error,
                         service: null,
@@ -373,7 +373,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Center(
-                      child: UtilsService.errorWidgetBuilder(
+                      child: Service.errorWidgetBuilder(
                         context,
                         error: snapshot.error,
                         service: null,

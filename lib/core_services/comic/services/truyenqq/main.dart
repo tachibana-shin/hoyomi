@@ -12,7 +12,7 @@ import 'package:hoyomi/core_services/comic/interfaces/rate_value.dart';
 import 'package:hoyomi/core_services/comic/interfaces/status_enum.dart';
 import 'package:hoyomi/core_services/comic/services/truyengg/main.dart';
 import 'package:hoyomi/core_services/interfaces/setting/field_input.dart';
-import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/time_utils.dart';
 import 'package:html/dom.dart';
 import 'package:intl/intl.dart';

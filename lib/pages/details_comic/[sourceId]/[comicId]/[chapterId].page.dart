@@ -86,7 +86,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
 
               if (snapshot.hasError) {
                 return Center(
-                  child: UtilsService.errorWidgetBuilder(
+                  child: Service.errorWidgetBuilder(
                     context,
                     error: snapshot.error,
                     service: _service,

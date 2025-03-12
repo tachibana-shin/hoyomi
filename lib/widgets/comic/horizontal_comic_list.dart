@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
-import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/widgets/horizontal_list.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'vertical_comic.dart';
@@ -65,7 +65,7 @@ class HorizontalComicList extends StatelessWidget {
             subtitle: subtitle,
             more: more,
             builder: (viewFraction) => Center(
-              child: UtilsService.errorWidgetBuilder(
+              child: Service.errorWidgetBuilder(
                 context,
                 error: snapshot.error,
                 service: null,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
 class InfiniteGrid<T> extends StatefulWidget {
@@ -96,7 +96,7 @@ class _InfiniteGridState<T> extends State<InfiniteGrid<T>> {
           size: 50.0,
         ),
       ),
-      errorBuilder: (context) => UtilsService.errorWidgetBuilder(
+      errorBuilder: (context) => Service.errorWidgetBuilder(
         context,
         error: _error,
         service: null,

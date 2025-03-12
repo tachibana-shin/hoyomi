@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class PullRefreshPage<T> extends StatefulWidget {
@@ -66,7 +66,7 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
     if (snapshot.hasError) {
       final body = _buildMessageBiggest(
         Center(
-          child: UtilsService.errorWidgetBuilder(
+          child: Service.errorWidgetBuilder(
             context,
             error: snapshot.error,
             service: null,

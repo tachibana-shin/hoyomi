@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
-import 'package:hoyomi/core_services/utils_service.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/vertical_list.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -62,7 +62,7 @@ class VerticalEigaList extends StatelessWidget {
 
         if (snapshot.hasError) {
           return Center(
-            child: UtilsService.errorWidgetBuilder(
+            child: Service.errorWidgetBuilder(
               context,
               error: snapshot.error,
               service: null,
