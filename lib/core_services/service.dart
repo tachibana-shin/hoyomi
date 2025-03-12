@@ -254,7 +254,7 @@ abstract class Service with _SettingsMixin {
       );
     }
 
-    return Column(children: [
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       orElse(error),
       // button refresh page
       ElevatedButton(

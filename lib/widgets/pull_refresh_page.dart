@@ -49,7 +49,7 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return ListView(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
           children: [
             SizedBox(
               width: constraints.biggest.width,
@@ -70,7 +70,7 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
             context,
             error: snapshot.error,
             service: null,
-            orElse: (err) => Text('Error: $err'),
+            orElse: (err) => Text('Error: $err', textAlign: TextAlign.center),
           ),
         ),
       );
