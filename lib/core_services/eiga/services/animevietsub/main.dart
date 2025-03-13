@@ -81,7 +81,7 @@ mixin _SupabaseRPC {
       throw Exception('[${response.reasonPhrase}]: ${response.body}');
     }
 
-    return jsonDecode(response.body);
+    return jsonDecode(response.body) as List;
   }
 }
 
@@ -111,7 +111,7 @@ class AnimeVietsubService extends EigaService
 
   final Map<String, _ParamsEpisode> _paramsEpisodeStore = {};
   final Map<String, Future<Document>> _docEigaStore = {};
-  final Expando<String> _uidUserStore = Expando<String>();
+  final Map<String, String> _uidUserStore = {};
 
   @override
   getUser({required cookie}) async {
@@ -228,10 +228,10 @@ class AnimeVietsubService extends EigaService
     final notice =
         '${originalName?.isNotEmpty == true ? '${originalName!.trim()} ' : ''}${item.querySelector(".AAIco-access_time, .mli-eps")?.text ?? ''}';
 
-    final rate = double.parse(
+    final rate = num.parse(
       item.querySelector(".anime-avg-user-rating")?.text.trim() ??
           item.querySelector(".AAIco-star")!.text.trim(),
-    );
+    ).toDouble();
 
     final timeSchedule = item.querySelector(".mli-timeschedule");
     final countdownInSeconds = timeSchedule == null
@@ -486,11 +486,11 @@ class AnimeVietsubService extends EigaService
           );
     final description = document.querySelector(".Description")?.text;
 
-    final rate = double.parse(
+    final rate = num.parse(
       RegExp(r'[\d.]+')
           .firstMatch(document.querySelector("#average_score")!.text.trim())!
           .group(0)!,
-    );
+    ).toDouble();
     final countRate = int.parse(
       RegExp(r'\d+')
           .firstMatch(document.querySelector(".num-rating")!.text.trim())!
@@ -674,9 +674,12 @@ class AnimeVietsubService extends EigaService
       );
 
   final Map<String, Future<String>> _callApiStore = {};
-  Future<String> _callApi(String url) {
+  Future<String> _callApiAnimeVsub(String url) {
     if (_callApiStore[url] != null) return _callApiStore[url]!;
-    return _callApiStore[url] = fetch(url);
+    return _callApiStore[url] = get(Uri.parse(url)).then<String>((response) {
+      if (response.statusCode == 200) return response.body;
+      throw response;
+    });
   }
 
   Future<String?> _getEpisodeIDApi({
@@ -685,7 +688,7 @@ class AnimeVietsubService extends EigaService
     required int episodeIndex,
     required MetaEiga metaEiga,
   }) async {
-    final episodes = await _callApi(
+    final episodes = await _callApiAnimeVsub(
       '$_apiOpEnd/list-episodes?${[
         metaEiga.name,
         ...metaEiga.originalName?.split(",").map((name) => name.trim()) ?? []
@@ -697,13 +700,13 @@ class AnimeVietsubService extends EigaService
 
     final list = jsonDecode(episodes)['list'] as List<dynamic>;
 
-    final epFloat = double.parse(epName);
+    final epFloat = num.parse(epName).toDouble();
     final episodeD = list.firstWhereOrNull((item) {
           if (item['name'] == epName || item['name'] == rawName) {
             return true;
           }
 
-          return double.parse(item['name']) == epFloat;
+          return num.parse(item['name']).toDouble() == epFloat;
         }) ??
         (episodeIndex < list.length - 1 ? list[episodeIndex] : null);
 
@@ -726,7 +729,7 @@ class AnimeVietsubService extends EigaService
           metaEiga: metaEiga,
         );
         final meta = jsonDecode(
-          await _callApi('$_apiThumb/episode-skip/$episodeId'),
+          await _callApiAnimeVsub('$_apiThumb/episode-skip/$episodeId'),
         );
 
         final file = (meta['tracks'] as List<dynamic>).firstWhereOrNull(
@@ -751,7 +754,7 @@ class AnimeVietsubService extends EigaService
       metaEiga: metaEiga,
     );
     final meta = jsonDecode(
-      await _callApi('$_apiThumb/episode-skip/$episodeId'),
+      await _callApiAnimeVsub('$_apiThumb/episode-skip/$episodeId'),
     );
 
     final opening = (meta['intro'] as Map<String, dynamic>?);
@@ -800,7 +803,7 @@ class AnimeVietsubService extends EigaService
   Future<String> _getUidUser() async {
     final user = await fetchUser();
 
-    return _uidUserStore[user] ??=
+    return _uidUserStore[user.user] ??=
         sha256.convert(utf8.encode('${user.email}${user.fullName}')).toString();
   }
 
@@ -818,10 +821,11 @@ class AnimeVietsubService extends EigaService
       'season_id': eigaId,
       'p_chap_id': RegExp(r'-(\d+)$').firstMatch(episode.episodeId)!.group(1),
     });
+    if (json.isEmpty) throw Exception('No watch time found');
 
     return WatchTime(
-      position: Duration(seconds: (json['cur'] as num).round()),
-      duration: Duration(seconds: (json['dur'] as num).round()),
+      position: Duration(seconds: (json.first['cur'] as num).round()),
+      duration: Duration(seconds: (json.first['dur'] as num).round()),
     );
   }
 
@@ -904,7 +908,7 @@ class AnimeVietsubService extends EigaService
       'user_uid': userUid,
       'page': page,
       'size': 30,
-    }) as List)
+    }))
         .map((item) => _WatchInfo.fromJson(item));
 
     return data.map((item) {
@@ -1066,8 +1070,8 @@ class _WatchInfo {
       watchUpdatedAt: DateTime.parse(json['watch_updated_at']),
       watchName: json['watch_name'],
       watchId: json['watch_id'],
-      watchCur: json['watch_cur'].toDouble(),
-      watchDur: json['watch_dur'].toDouble(),
+      watchCur: num.parse(json['watch_cur']).toDouble(),
+      watchDur: num.parse(json['watch_dur']).toDouble(),
     );
   }
 
