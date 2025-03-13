@@ -264,12 +264,16 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
                                 LinearProgressIndicator(
                                   value: watchTime.position.inMilliseconds /
                                       watchTime.duration.inMilliseconds,
-                                  backgroundColor: Color.fromRGBO(
-                                    255,
-                                    255,
-                                    255,
-                                    0.6,
-                                  ),
+                                  backgroundColor:
+                                      Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Color.fromRGBO(0, 0, 0, 0.6)
+                                          : Color.fromRGBO(
+                                              255,
+                                              255,
+                                              255,
+                                              0.6,
+                                            ),
                                   valueColor: AlwaysStoppedAnimation<Color>(
                                     active
                                         ? Color(0xFF2196F3)
