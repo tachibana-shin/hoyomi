@@ -8,9 +8,9 @@ import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/notifier+/computed_async_notifier.dart';
 import 'package:hoyomi/pages/details_eiga/[sourceId]/[eigaId].page.dart';
 import 'package:hoyomi/utils/format_duration.dart';
-import 'package:signals/signals_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ListEpisodes extends StatefulWidget {
@@ -52,57 +52,48 @@ class ListEpisodes extends StatefulWidget {
   State<ListEpisodes> createState() => _ListEpisodesState();
 }
 
-class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
-  late final _episodesEiga = createAsyncSignal<EigaEpisodes>(
-    AsyncState.loading(),
-  );
-  late final _watchTimeEpisodes = createSignal<Map<String, WatchTime>?>(null);
+class _ListEpisodesState extends State<ListEpisodes> {
+  late final ComputedAsyncNotifier<EigaEpisodes> _episodesEiga;
+  final _watchTimeEpisodes = ValueNotifier<Map<String, WatchTime>?>(null);
 
   final Map<int, void Function()> _disposes = {};
 
   @override
   void initState() {
     super.initState();
-    _fetchData();
 
-    if (widget.eager) {
-      createEffect(() {
-        final waiting = _episodesEiga.value.isLoading;
-        if (waiting) return;
+    _episodesEiga = ComputedAsyncNotifier(() async {
+      try {
+        final episodes = await widget.getData(_updateEpisodesEiga);
+        if (!mounted) throw Exception('Page destroyed');
 
-        final episodesEiga = _episodesEiga.value.requireValue;
-        final indexActive = episodesEiga.episodes.indexWhere(
-          (episode) => checkEpisodeActive(episode, episodesEiga),
-        );
-        if (indexActive == -1) return;
+        widget.getWatchTimeEpisodes(episodes).then((watchTimes) {
+          if (mounted) _watchTimeEpisodes.value = watchTimes;
+        });
 
-        widget.onTapEpisode(
-          indexEpisode: indexActive,
-          episodesEiga: episodesEiga,
-        );
-      });
-    }
+        if (widget.eager) {
+          final indexActive = episodes.episodes.indexWhere(
+            (episode) => checkEpisodeActive(episode, episodes),
+          );
+          if (indexActive != -1) {
+            widget.onTapEpisode(
+              indexEpisode: indexActive,
+              episodesEiga: episodes,
+            );
+          }
+        }
+
+        return episodes;
+      } catch (error) {
+        if (mounted) _watchTimeEpisodes.value = null;
+
+        rethrow;
+      }
+    }, depends: []);
   }
 
   void _updateEpisodesEiga(EigaEpisodes newValue) {
-    _episodesEiga.value = AsyncState.data(newValue);
-  }
-
-  void _fetchData() async {
-    try {
-      final episodes = await widget.getData(_updateEpisodesEiga);
-      if (!mounted) return;
-
-      _episodesEiga.value = AsyncState.data(episodes);
-      widget.getWatchTimeEpisodes(episodes).then((watchTimes) {
-        if (mounted) _watchTimeEpisodes.value = watchTimes;
-      });
-    } catch (error) {
-      if (!mounted) return;
-
-      _episodesEiga.value = AsyncState.error(error);
-      _watchTimeEpisodes.value = null;
-    }
+    _episodesEiga.forceValue(newValue);
   }
 
   @override
@@ -117,26 +108,25 @@ class _ListEpisodesState extends State<ListEpisodes> with SignalsMixin {
   Widget build(BuildContext context) {
     final height = 35.0;
 
-    if (_episodesEiga.value.hasError) {
+    if (_episodesEiga.error != null) {
       return Center(
         child: Service.errorWidgetBuilder(
           context,
-          error: _episodesEiga.value.error,
+          error: _episodesEiga.error,
           service: null,
           orElse: (error) => Text('Error: $error'),
         ),
       );
     }
 
-    if (!_episodesEiga.value.isLoading && !_episodesEiga.value.hasValue) {
+    final waiting = _episodesEiga.loading;
+    if (_episodesEiga.value == null && !waiting) {
       return const Center(child: Text('No data available'));
     }
 
-    final waiting = _episodesEiga.value.isLoading;
 
-    final episodesEiga = waiting
-        ? EigaEpisodes.createFakeData()
-        : _episodesEiga.value.requireValue;
+    final episodesEiga =
+        waiting ? EigaEpisodes.createFakeData() : _episodesEiga.value!;
 
     final isVertical = widget.scrollDirection == Axis.vertical;
 
