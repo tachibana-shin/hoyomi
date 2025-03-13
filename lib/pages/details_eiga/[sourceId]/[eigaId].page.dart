@@ -10,12 +10,10 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/bottom_sheet_no_scrim.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
-import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:hoyomi/notifier+/computed_notifier.dart';
 import 'package:hoyomi/notifier+/watch_computed.dart';
 import 'package:hoyomi/utils/cache_remember.dart';
@@ -30,7 +28,6 @@ import 'package:hoyomi/core_services/eiga/eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/screens/details_eiga/list_episodes.dart';
@@ -73,17 +70,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final Map<String, EigaEpisodes> _cacheEpisodesStore = {};
   final Map<String, Map<String, WatchTime>> _cacheWatchTimeStore = {};
   late final ComputedNotifier<String> _title;
-  final ValueNotifier<String> _subtitle = ValueNotifier('');
+  late final ComputedNotifier<String> _subtitle;
   final ValueNotifier<List<Subtitle>> _subtitlesNotifier = ValueNotifier([]);
-  final ValueNotifier<SourceVideo?> _sourceNotifier = ValueNotifier(null);
-  final ValueNotifier<OImage?> _posterNotifier = ValueNotifier(null);
-  final ValueNotifier<Vtt?> _thumbnailVtt = ValueNotifier(null);
-  final ValueNotifier<OpeningEnding?> _openingEndingNotifier = ValueNotifier(
-    null,
-  );
-  final ValueNotifier<WatchTimeData?> _watchTimeDataNotifier = ValueNotifier(
-    null,
-  );
   final ValueNotifier<void Function()?> _onPrevNotifier = ValueNotifier(null);
   final ValueNotifier<void Function()?> _onNextNotifier = ValueNotifier(null);
   final ValueNotifier<Widget Function(BuildContext context)?> _overlayNotifier =
@@ -116,6 +104,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       depends: [_metaEiga],
     );
     _title = ComputedNotifier(() => _metaEiga.value.name, depends: [_metaEiga]);
+    _subtitle = ComputedNotifier(() => 'Episode ${_episode.value?.name}',
+        depends: [_episode]);
     _suggestNotifier = ComputedNotifier<Future<List<Eiga>>?>(() {
       if (_service.getSuggest == null) return null;
 
@@ -132,10 +122,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   void _updatePlayer(MetaEiga metaEiga, EigaEpisode episode, int episodeIndex) {
     assert(_episode.value != null);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _subtitle.value = 'Episode ${episode.name}';
-    });
+    if (metaEiga.fake) return;
 
     _subtitlesNotifier.value = [];
     _service
@@ -143,73 +130,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         .then((subtitles) {
       _subtitlesNotifier.value = subtitles;
     }).catchError((error) {
-      debugPrint('Error: $error');
+      debugPrint('Error: $error (${StackTrace.current})');
     });
-
-    _sourceNotifier.value = null;
-    _service.getSource(eigaId: _eigaId.value, episode: episode).then((source) {
-      _sourceNotifier.value = source;
-    }).catchError((error) {
-      debugPrint('Error: $error');
-    });
-
-    _thumbnailVtt.value = null;
-    if (_service.getThumbnail != null) {
-      _service.getThumbnail!(
-        eigaId: _eigaId.value,
-        episode: episode,
-        episodeIndex: episodeIndex,
-        metaEiga: metaEiga,
-      )
-          .then((thumbnail) {
-        _thumbnailVtt.value = thumbnail;
-      }).catchError((error) {
-        debugPrint('Error: $error');
-      });
-    }
-
-    _openingEndingNotifier.value = null;
-    _service
-        .getOpeningEnding(
-      eigaId: _eigaId.value,
-      episode: episode,
-      episodeIndex: episodeIndex,
-      metaEiga: metaEiga,
-    )
-        .then((data) {
-      _openingEndingNotifier.value = data;
-    }).catchError((error) {
-      debugPrint('Error: $error');
-    });
-
-    _watchTimeDataNotifier.value = null;
-    if (_service is EigaWatchTimeMixin) {
-      final eigaId = _eigaId.value;
-      final episodeId = episode.episodeId;
-
-      (_service as EigaWatchTimeMixin)
-          .getWatchTime(
-        eigaId: eigaId,
-        episode: episode,
-        episodeIndex: episodeIndex,
-        metaEiga: metaEiga,
-      )
-          .then((data) {
-        _watchTimeDataNotifier.value = WatchTimeData(
-          eigaId: eigaId,
-          episodeId: episodeId,
-          watchTime: data,
-        );
-      }).catchError((error) {
-        _watchTimeDataNotifier.value = WatchTimeData(
-          eigaId: eigaId,
-          episodeId: episodeId,
-          watchTime: null,
-        );
-
-        debugPrint('Error: $error');
-      });
-    }
   }
 
   Future<MetaEiga> _getDetails(String eigaId) async {
@@ -326,12 +248,15 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   Widget _buildPlayer() {
     return PlayerEiga(
-      sourceId: widget.sourceId,
+      service: _service,
+      episode: _episode,
+      episodeIndex: _episodeIndex,
+      metaEiga: _metaEiga,
+
       eigaId: _eigaId,
       episodeId: _episodeId,
       title: _title,
-      subtitleNotifier: _subtitle,
-      watchTimeDataNotifier: _watchTimeDataNotifier,
+      subtitle: _subtitle,
       onBack: () {
         context.pop();
       },
@@ -342,7 +267,11 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         }
         _showModalEpisodes(_metaEiga);
       },
-      onWatchTimeUpdate: ({required position, required duration}) {
+      onWatchTimeUpdate: (
+          {required String eigaId,
+          required String episodeId,
+          required position,
+          required duration}) {
         if (_service is EigaWatchTimeMixin) {
           final eigaId = _eigaId.value;
           final watchTime = WatchTime(position: position, duration: duration);
@@ -358,6 +287,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               ),
             ),
           );
+          return;
           (_service as EigaWatchTimeMixin).setWatchTime(
             eigaId: eigaId,
             episode: _episode.value!,
@@ -368,11 +298,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           );
         }
       },
-      subtitlesNotifier: _subtitlesNotifier,
-      sourceNotifier: _sourceNotifier,
-      posterNotifier: _posterNotifier,
-      thumbnailVtt: _thumbnailVtt,
-      openingEndingNotifier: _openingEndingNotifier,
       aspectRatio: _aspectRatio,
       fetchSourceContent: _service.fetchSourceContent,
       onPrev: _onPrevNotifier,
@@ -1018,12 +943,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         _schedule.value = episodes.schedule;
       });
     }
-
-    if (_posterNotifier.value != metaEiga.value.poster) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _posterNotifier.value = metaEiga.value.poster;
-      });
-    }
   }
 
   void _onChangeEpisode({
@@ -1089,7 +1008,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       _getDetails(_eigaId.value).then((value) {
         if (!mounted) return;
         metaEiga.value = value;
-        _posterNotifier.value = value.poster;
       });
     }
 

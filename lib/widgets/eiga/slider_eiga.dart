@@ -5,7 +5,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
+import 'package:hoyomi/notifier+/computed_async_notifier.dart';
 import 'package:hoyomi/notifier+/notifier_plus_mixin.dart';
+import 'package:hoyomi/notifier+/watch_async_computed.dart';
 import 'package:hoyomi/notifier+/watch_notifier.dart';
 import 'package:subtitle/subtitle.dart';
 
@@ -25,8 +27,8 @@ class SliderEiga extends StatefulWidget {
   final ValueNotifier<Duration> duration;
   final ValueNotifier<bool> showThumb;
   final ValueNotifier<bool> pauseAutoHideControls;
-  final ValueNotifier<Vtt?> vttThumbnail;
-  final ValueNotifier<OpeningEnding?> openingEnding;
+  final ComputedAsyncNotifier<Vtt?> vttThumbnail;
+  final ComputedAsyncNotifier<OpeningEnding?> openingEnding;
   final Function(double) onSeek; // Callback for seek
 
   const SliderEiga({
@@ -274,11 +276,11 @@ class _SliderEigaState extends State<SliderEiga>
       child: AnimatedBuilder(
         animation: _barHeightAnimation,
         builder: (context, child) {
-          return WatchNotifier(
-            depends: [widget.openingEnding],
-            builder: (context) {
-              final opening = widget.openingEnding.value?.opening;
-              final ending = widget.openingEnding.value?.ending;
+          return WatchAsyncComputed(
+            computed: widget.openingEnding,
+            builder: (context, openingEnding) {
+              final opening = openingEnding?.opening;
+              final ending = openingEnding?.ending;
 
               final duration = widget.duration.value;
 

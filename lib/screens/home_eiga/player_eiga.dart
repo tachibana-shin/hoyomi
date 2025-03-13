@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
@@ -9,20 +10,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:hoyomi/core_services/eiga/eiga_service.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
-import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/notifier+/computed_async_notifier.dart';
 import 'package:hoyomi/notifier+/computed_notifier.dart';
+import 'package:hoyomi/notifier+/notifier_plus_mixin.dart';
 import 'package:hoyomi/notifier+/watch_computed.dart';
 import 'package:hoyomi/notifier+/watch_notifier.dart';
 import 'package:hoyomi/transition/slide_fade_transition.dart';
-import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
-import 'package:hoyomi/utils/throttler.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
@@ -41,17 +45,16 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 // import 'package:video_player_oneplusdream_example/cache.dart';
 
 class PlayerEiga extends StatefulWidget {
+  final EigaService service;
+  final ValueNotifier<EigaEpisode?> episode;
+  final ValueNotifier<int?> episodeIndex;
+  final ValueNotifier<MetaEiga> metaEiga;
+
   final ValueNotifier<String> eigaId;
   final ValueNotifier<String?> episodeId;
   final ComputedNotifier<String> title;
-  final ValueNotifier<String> subtitleNotifier;
-  final ValueNotifier<WatchTimeData?> watchTimeDataNotifier;
-  final String sourceId;
+  final ComputedNotifier<String> subtitle;
 
-  final ValueNotifier<SourceVideo?> sourceNotifier;
-  final ValueNotifier<OImage?> posterNotifier;
-  final ValueNotifier<Vtt?> thumbnailVtt;
-  final ValueNotifier<OpeningEnding?> openingEndingNotifier;
   final Future<SourceContent> Function({required SourceVideo source})?
       fetchSourceContent;
 
@@ -59,9 +62,11 @@ class PlayerEiga extends StatefulWidget {
 
   final void Function() onBack;
   final void Function(bool isFullscreen) onTapPlaylist;
-  final void Function({required Duration position, required Duration duration})
-      onWatchTimeUpdate;
-  final ValueNotifier<List<type.Subtitle>> subtitlesNotifier;
+  final void Function(
+      {required String eigaId,
+      required String episodeId,
+      required Duration position,
+      required Duration duration}) onWatchTimeUpdate;
   final ValueNotifier<void Function()?> onNext;
   final ValueNotifier<void Function()?> onPrev;
 
@@ -69,22 +74,19 @@ class PlayerEiga extends StatefulWidget {
 
   const PlayerEiga({
     super.key,
+    required this.service,
+    required this.episode,
+    required this.episodeIndex,
+    required this.metaEiga,
     required this.eigaId,
     required this.episodeId,
     required this.title,
-    required this.subtitleNotifier,
-    required this.watchTimeDataNotifier,
-    required this.sourceId,
-    required this.sourceNotifier,
-    required this.posterNotifier,
-    required this.thumbnailVtt,
-    required this.openingEndingNotifier,
+    required this.subtitle,
     required this.fetchSourceContent,
     required this.aspectRatio,
     required this.onBack,
     required this.onTapPlaylist,
     required this.onWatchTimeUpdate,
-    required this.subtitlesNotifier,
     required this.onNext,
     required this.onPrev,
     required this.overlayNotifier,
@@ -114,7 +116,7 @@ enum _StateOpeningEnding { opening, ending, none, skip }
 // video player widget
 // video player
 // djangoflow_video_player
-class _PlayerEigaState extends State<PlayerEiga> {
+class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
   ///  control player
   //  final ShararaVideoPlayerController controller;
   //   @override
@@ -163,17 +165,15 @@ class _PlayerEigaState extends State<PlayerEiga> {
   final _playing = ValueNotifier(true);
   final _aspectRatio = ValueNotifier<double>(1.0);
 
-  final _stateOpeningEnding = ValueNotifier(_StateOpeningEnding.none);
+  late final ComputedAsyncNotifier<SourceVideo?> _source;
+  late final ComputedAsyncNotifier<List<type.Subtitle>> _subtitles;
+  late final ComputedAsyncNotifier<WatchTimeData?> _watchTimeData;
+  late final ComputedAsyncNotifier<Vtt?> _thumbnailVtt;
+  late final ComputedAsyncNotifier<OpeningEnding?> _openingEnding;
+  late final ComputedNotifier<_StateOpeningEnding> _stateOpeningEnding;
   late final ComputedNotifier<bool> _visibleTooltipSkipOE;
 
   final ValueNotifier<bool> _firstLoadedSource = ValueNotifier(false);
-
-  bool _needRestoreWatchTime = false;
-  bool _restoredWatchTime = false;
-
-  late Debouncer _initialDebouncer;
-  late Throttler _subsequentThrottler;
-  bool _firstUpdateWatchTime = true;
 
   @override
   void initState() {
@@ -187,50 +187,176 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
       return visible;
     }, depends: [_stateOpeningEnding]);
-    _initialDebouncer = Debouncer(milliseconds: 7500); // 7.5
-    _subsequentThrottler = Throttler(milliseconds: 30000); // 30
 
-    _onSourceChanged();
-    widget.sourceNotifier.addListener(_onSourceChanged);
-    _onPauseAutoHideControlsChanged();
-    _pauseAutoHideControls.addListener(_onPauseAutoHideControlsChanged);
-    _onWatchTimeChanged();
-    widget.watchTimeDataNotifier.addListener(_onWatchTimeChanged);
+    /// =================== Core data ====================
+    _source = ComputedAsyncNotifier(
+        () async => widget.episode.value == null
+            ? null
+            : widget.service.getSource(
+                eigaId: widget.eigaId.value, episode: widget.episode.value!),
+        depends: [widget.eigaId, widget.episode],
+        onError: (error) =>
+            debugPrint('Error: $error (${StackTrace.current})'));
+
+    /// Subtitles language
+    _subtitles = ComputedAsyncNotifier(
+        () async => widget.episode.value == null
+            ? []
+            : widget.service.getSubtitles(
+                eigaId: widget.eigaId.value, episode: widget.episode.value!),
+        depends: [widget.eigaId, widget.episode],
+        onError: (error) =>
+            debugPrint('Error: $error (${StackTrace.current})'));
+
+    /// Watch data position
+    _watchTimeData = ComputedAsyncNotifier<WatchTimeData?>(() async {
+      if (widget.service is EigaWatchTimeMixin) {
+        final eigaId = widget.eigaId.value;
+        final episode = widget.episode.value;
+        final episodeIndex = widget.episodeIndex.value;
+        if (episode == null || episodeIndex == null) return null;
+
+        final episodeId = episode.episodeId;
+
+        return (widget.service as EigaWatchTimeMixin)
+            .getWatchTime(
+              eigaId: eigaId,
+              episode: episode,
+              episodeIndex: episodeIndex,
+              metaEiga: widget.metaEiga.value,
+            )
+            .then((data) => WatchTimeData(
+                  eigaId: eigaId,
+                  episodeId: episodeId,
+                  watchTime: data,
+                ))
+            .catchError((error) {
+          debugPrint('Error: $error (${StackTrace.current})');
+
+          return WatchTimeData(
+            eigaId: eigaId,
+            episodeId: episodeId,
+            watchTime: null,
+          );
+        });
+      }
+      return null;
+    }, depends: [
+      widget.eigaId,
+      widget.episode,
+      widget.episodeIndex,
+      widget.metaEiga
+    ], onError: (error) => debugPrint('Error: $error (${StackTrace.current})'));
+
+    /// Preview images
+    _thumbnailVtt = ComputedAsyncNotifier(() async {
+      if (widget.service.getThumbnail != null &&
+          widget.episode.value != null &&
+          widget.episodeIndex.value != null) {
+        return widget.service.getThumbnail!(
+          eigaId: widget.eigaId.value,
+          episode: widget.episode.value!,
+          episodeIndex: widget.episodeIndex.value!,
+          metaEiga: widget.metaEiga.value,
+        );
+      }
+      return null;
+    }, depends: [
+      widget.eigaId,
+      widget.episode,
+      widget.episodeIndex,
+      widget.metaEiga
+    ], onError: (error) => debugPrint('Error: $error (${StackTrace.current})'));
+
+    /// Position opening / ending
+    _openingEnding = ComputedAsyncNotifier(() async {
+      if (widget.episode.value != null && widget.episodeIndex.value != null) {
+        return widget.service.getOpeningEnding(
+          eigaId: widget.eigaId.value,
+          episode: widget.episode.value!,
+          episodeIndex: widget.episodeIndex.value!,
+          metaEiga: widget.metaEiga.value,
+        );
+      }
+      return null;
+    }, depends: [
+      widget.eigaId,
+      widget.episode,
+      widget.episodeIndex,
+      widget.metaEiga
+    ], onError: (error) => debugPrint('Error: $error (${StackTrace.current})'));
+
+    _stateOpeningEnding = ComputedNotifier(() {
+      final opEnd = _openingEnding.value;
+      if (opEnd == null) return _StateOpeningEnding.none;
+
+      final opening = opEnd.opening;
+      final ending = opEnd.ending;
+
+      final inOpening = opening == null
+          ? false
+          : opening.start <= _position.value && opening.end >= _position.value;
+      if (inOpening) {
+        if (_stateOpeningEnding.value == _StateOpeningEnding.opening ||
+            _stateOpeningEnding.value == _StateOpeningEnding.skip) {
+          return _stateOpeningEnding.value;
+        }
+        return _StateOpeningEnding.opening;
+      } else if (ending == null
+          ? false
+          : ending.start <= _position.value && ending.end >= _position.value) {
+        if (_stateOpeningEnding.value == _StateOpeningEnding.ending ||
+            _stateOpeningEnding.value == _StateOpeningEnding.skip) {
+          return _stateOpeningEnding.value;
+        }
+        return _StateOpeningEnding.ending;
+      } else {
+        return _StateOpeningEnding.none;
+      }
+    }, depends: [_openingEnding, _position]);
+
+    listenerNotifier(_source, () {
+      if (_source.value != null) {
+        _setupPlayer(_source.value!);
+      }
+      _firstLoadedSource.value = false;
+    }, immediate: true);
+    listenerNotifier(_watchTimeData, () {
+      final watchTime = _watchTimeData.value?.watchTime;
+      if (watchTime == null) return;
+
+      if (kDebugMode) {
+        print(watchTime);
+      }
+
+      showSnackBar(
+        Text('Watching time restored ${formatDuration(watchTime.position)}'),
+      );
+    }, immediate: true);
+
+    /// =================== /Core data ====================
+
+    listenerNotifier(_pauseAutoHideControls, () {
+      if (!_pauseAutoHideControls.value) {
+        _activeTime = DateTime.now();
+      }
+    }, immediate: true);
   }
 
-  void _onPauseAutoHideControlsChanged() {
-    if (!_pauseAutoHideControls.value) {
-      _activeTime = DateTime.now();
-    }
-  }
-
-  void _onWatchTimeChanged() {
-    final watchTime = widget.watchTimeDataNotifier.value?.watchTime;
-    _firstUpdateWatchTime = false;
-    if (watchTime == null) {
-      _needRestoreWatchTime = false;
-      _restoredWatchTime = true;
-      return;
-    }
-
-    if (kDebugMode) {
-      print(watchTime);
-    }
-
-    _needRestoreWatchTime = true;
-    _restoredWatchTime = false;
-    _controller.value?.seekTo(watchTime.position);
-
-    showSnackBar(
-      Text('Watching time restored ${formatDuration(watchTime.position)}'),
-    );
-  }
-
-  void _onSourceChanged() {
-    if (widget.sourceNotifier.value != null) {
-      _setupPlayer(widget.sourceNotifier.value!);
-    }
-    _firstLoadedSource.value = false;
+  Timer? _timer;
+  void _emitWatchTimeUpdate(
+      {required String eigaId,
+      required String episodeId,
+      required Duration position,
+      required Duration duration}) {
+    _timer ??= Timer(Duration(seconds: 30), () {
+      widget.onWatchTimeUpdate(
+          eigaId: eigaId,
+          episodeId: episodeId,
+          position: position,
+          duration: duration);
+      _timer = null;
+    });
   }
 
   void _setupPlayer(SourceVideo source) async {
@@ -252,12 +378,12 @@ class _PlayerEigaState extends State<PlayerEiga> {
           // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
           if (!_playing.value) _controller.value?.play();
         }).catchError((err) {
-          debugPrint('Error: $err');
+          debugPrint('Error: $err (${StackTrace.current})');
           _error.value = err + '';
         });
 
-      final response = await getService(widget.sourceId)
-          .fetch(url.toString(), headers: source.headers);
+      final response =
+          await widget.service.fetch(url.toString(), headers: source.headers);
 
       if (source.type == 'hls') {
         _initializeHls(
@@ -293,7 +419,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         if (!_playing.value) _controller.value?.play();
       }).catchError((err) {
-        debugPrint('Error: $err');
+        debugPrint('Error: $err (${StackTrace.current})');
         _error.value = '$err';
       });
 
@@ -337,40 +463,16 @@ class _PlayerEigaState extends State<PlayerEiga> {
     }
     _firstLoadedSource.value = true;
 
-    if (_needRestoreWatchTime) {
-      final watchTime = widget.watchTimeDataNotifier.value?.watchTime;
-      if (watchTime != null &&
-          _controller.value != null &&
-          _controller.value!.value.isInitialized &&
-          _controller.value!.value.position > Duration.zero) {
-        _controller.value!.seekTo(watchTime.position);
-        _needRestoreWatchTime = false;
-        _restoredWatchTime = true;
-      }
-    }
-
-    if (!_needRestoreWatchTime &&
-        _restoredWatchTime &&
-        widget.watchTimeDataNotifier.value?.eigaId == widget.eigaId.value &&
-        widget.watchTimeDataNotifier.value?.episodeId ==
-            widget.episodeId.value &&
+    if (_watchTimeData.value?.eigaId == widget.eigaId.value &&
+        _watchTimeData.value?.episodeId == widget.episodeId.value &&
         _duration.value > Duration.zero &&
         _controller.value!.value.position > Duration.zero) {
-      if (_firstUpdateWatchTime) {
-        _initialDebouncer.run(() {
-          widget.onWatchTimeUpdate(
-            position: _position.value,
-            duration: _duration.value,
-          );
-        });
-      } else {
-        _subsequentThrottler.run(() {
-          widget.onWatchTimeUpdate(
-            position: _position.value,
-            duration: _duration.value,
-          );
-        });
-      }
+      _emitWatchTimeUpdate(
+        eigaId: widget.eigaId.value,
+        episodeId: widget.episodeId.value!,
+        position: _position.value,
+        duration: _duration.value,
+      );
     }
 
     // if (_controller.value?.isBlank == true ||
@@ -387,8 +489,6 @@ class _PlayerEigaState extends State<PlayerEiga> {
     if (_activeTime.difference(DateTime.now()).inSeconds.abs() > 3) {
       _showControls.value = false;
     }
-
-    _updateDurationRangeOpeningEnding();
   }
 
   void _onTapToggleControls() {
@@ -397,35 +497,6 @@ class _PlayerEigaState extends State<PlayerEiga> {
     _showControls.value = !_showControls.value;
     if (_showControls.value) {
       _activeTime = DateTime.now();
-    }
-  }
-
-  void _updateDurationRangeOpeningEnding() {
-    final opEnd = widget.openingEndingNotifier.value;
-    if (opEnd == null) return;
-
-    final opening = opEnd.opening;
-    final ending = opEnd.ending;
-
-    final inOpening = opening == null
-        ? false
-        : opening.start <= _position.value && opening.end >= _position.value;
-    if (inOpening) {
-      if (_stateOpeningEnding.value == _StateOpeningEnding.opening ||
-          _stateOpeningEnding.value == _StateOpeningEnding.skip) {
-        return;
-      }
-      _stateOpeningEnding.value = _StateOpeningEnding.opening;
-    } else if (ending == null
-        ? false
-        : ending.start <= _position.value && ending.end >= _position.value) {
-      if (_stateOpeningEnding.value == _StateOpeningEnding.ending ||
-          _stateOpeningEnding.value == _StateOpeningEnding.skip) {
-        return;
-      }
-      _stateOpeningEnding.value = _StateOpeningEnding.ending;
-    } else {
-      _stateOpeningEnding.value = _StateOpeningEnding.none;
     }
   }
 
@@ -573,11 +644,11 @@ class _PlayerEigaState extends State<PlayerEiga> {
         _buildError(),
         ListenableBuilder(
           listenable: Listenable.merge([
-            widget.posterNotifier,
+            widget.metaEiga,
             _firstLoadedSource,
           ]),
           builder: (context, child) {
-            if (widget.posterNotifier.value == null ||
+            if (widget.metaEiga.value.poster == null ||
                 _firstLoadedSource.value) {
               return SizedBox.shrink();
             }
@@ -587,10 +658,9 @@ class _PlayerEigaState extends State<PlayerEiga> {
               left: 0,
               right: 0,
               bottom: 0,
-              child: OImage.network(
-                widget.posterNotifier.value!.src,
-                sourceId: widget.sourceId,
-                headers: widget.posterNotifier.value!.headers,
+              child: OImage.oNetwork(
+                widget.metaEiga.value.poster!,
+                sourceId: widget.service.uid,
                 fit: BoxFit.cover,
               ),
             );
@@ -684,10 +754,10 @@ class _PlayerEigaState extends State<PlayerEiga> {
                             ),
                           ),
                         ),
-                        ValueListenableBuilder(
-                          valueListenable: widget.subtitleNotifier,
-                          builder: (context, value, child) => Text(
-                            value,
+                        WatchComputed(
+                          computed: widget.subtitle,
+                          builder: (context, subtitle) => Text(
+                            subtitle,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -967,8 +1037,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
               duration: _duration,
               showThumb: _showControls,
               pauseAutoHideControls: _pauseAutoHideControls,
-              vttThumbnail: widget.thumbnailVtt,
-              openingEnding: widget.openingEndingNotifier,
+              vttThumbnail: _thumbnailVtt,
+              openingEnding: _openingEnding,
               onSeek: (position) {
                 final duration = _duration.value;
                 final seek = duration * position;
@@ -983,16 +1053,16 @@ class _PlayerEigaState extends State<PlayerEiga> {
 
   Widget _buildPopupOpeningEnding() {
     return WatchNotifier(
-      depends: [_stateOpeningEnding, widget.openingEndingNotifier],
+      depends: [_stateOpeningEnding, _openingEnding],
       builder: (context) {
-        if (widget.openingEndingNotifier.value == null) {
+        if (_openingEnding.value == null) {
           return SizedBox.shrink();
         }
 
         final visible = _visibleTooltipSkipOE.value;
 
-        final opening = widget.openingEndingNotifier.value!.opening;
-        final ending = widget.openingEndingNotifier.value!.ending;
+        final opening = _openingEnding.value!.opening;
+        final ending = _openingEnding.value!.ending;
 
         final widgetTextSeconds = Text(
           visible
@@ -1063,13 +1133,11 @@ class _PlayerEigaState extends State<PlayerEiga> {
                                 if (_stateOpeningEnding.value ==
                                     _StateOpeningEnding.opening) {
                                   _controller.value?.seekTo(
-                                    widget.openingEndingNotifier.value!.opening!
-                                        .end,
+                                    _openingEnding.value!.opening!.end,
                                   );
                                 } else {
                                   _controller.value?.seekTo(
-                                    widget.openingEndingNotifier.value!.ending!
-                                        .end,
+                                    _openingEnding.value!.ending!.end,
                                   );
                                 }
                               },
@@ -1091,8 +1159,8 @@ class _PlayerEigaState extends State<PlayerEiga> {
                             ),
                             InkWell(
                               onTap: () {
-                                _stateOpeningEnding.value =
-                                    _StateOpeningEnding.skip;
+                                _stateOpeningEnding
+                                    .forceValue(_StateOpeningEnding.skip);
                               },
                               borderRadius: BorderRadius.circular(5.0),
                               highlightColor: Colors.black,
@@ -1195,12 +1263,12 @@ class _PlayerEigaState extends State<PlayerEiga> {
       showDragHandle: true,
       builder: (context) {
         return WatchNotifier(
-          depends: [widget.subtitlesNotifier, _subtitleCode],
+          depends: [_subtitles, _subtitleCode],
           builder: (context) => ListView.builder(
             shrinkWrap: true,
-            itemCount: widget.subtitlesNotifier.value.length,
+            itemCount: _subtitles.value.length,
             itemBuilder: (context, index) {
-              final item = widget.subtitlesNotifier.value.elementAt(index);
+              final item = _subtitles.value.elementAt(index);
 
               return ListTile(
                 leading: _subtitleCode.value == item.code
@@ -1304,7 +1372,7 @@ class _PlayerEigaState extends State<PlayerEiga> {
     _subtitleCode.value = value;
     if (value != null) {
       subtitleController.updateSubtitleUrl(
-        url: widget.subtitlesNotifier.value.firstWhere((item) {
+        url: _subtitles.value.firstWhere((item) {
           return item.code == value;
         }).url,
       );
@@ -1374,11 +1442,10 @@ class _PlayerEigaState extends State<PlayerEiga> {
                     trailing: _subtitleCode.value == null
                         ? null
                         : Text(
-                            widget.subtitlesNotifier.value.firstWhere((
-                              item,
-                            ) {
-                              return item.code == _subtitleCode.value;
-                            }).language,
+                            _subtitles.value
+                                .firstWhere(
+                                    (item) => item.code == _subtitleCode.value)
+                                .language,
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.secondary,
                             ),
@@ -1424,9 +1491,6 @@ class _PlayerEigaState extends State<PlayerEiga> {
   @override
   void dispose() {
     _controller.value?.dispose();
-
-    widget.sourceNotifier.removeListener(_onSourceChanged);
-    widget.watchTimeDataNotifier.removeListener(_onWatchTimeChanged);
 
     super.dispose();
   }

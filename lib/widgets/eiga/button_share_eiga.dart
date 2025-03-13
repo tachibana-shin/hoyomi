@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
+import 'package:hoyomi/notifier+/computed_notifier.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ButtonShareEiga extends StatefulWidget {
   final ValueNotifier<String> eigaId;
-  final ValueNotifier<String> episodeName;
+  final ComputedNotifier<String> episodeName;
   final ValueNotifier<MetaEiga> metaEiga;
   final Service service;
 
