@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 
 class WatchNotifier<T> extends StatefulWidget {
-  final List<ValueNotifier> depends;
+  final List<ChangeNotifier> depends;
   final Duration? throttle;
   final Widget Function(BuildContext context) builder;
 

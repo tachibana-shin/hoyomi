@@ -23,6 +23,11 @@ class ComputedNotifier<T> extends ChangeNotifier {
     return _value;
   }
 
+  void forceValue(T value) {
+    _value = value;
+    notifyListeners();
+  }
+
   @override
   String toString() => '${describeIdentity(this)}($value)';
 }
