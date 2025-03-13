@@ -315,13 +315,13 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
       }
     }, depends: [_openingEnding, _position]);
 
-    listenerNotifier(_source, () {
+    listenNotifier(_source, () {
       if (_source.value != null) {
         _setupPlayer(_source.value!);
       }
       _firstLoadedSource.value = false;
     }, immediate: true);
-    listenerNotifier(_watchTimeData, () {
+    listenNotifier(_watchTimeData, () {
       final watchTime = _watchTimeData.value?.watchTime;
       if (watchTime == null) return;
 
@@ -336,7 +336,7 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
 
     /// =================== /Core data ====================
 
-    listenerNotifier(_pauseAutoHideControls, () {
+    listenNotifier(_pauseAutoHideControls, () {
       if (!_pauseAutoHideControls.value) {
         _activeTime = DateTime.now();
       }

@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 mixin NotifierPlusMixin<T extends StatefulWidget> on State<T> {
   final _listenersStore = HashMap<ChangeNotifier, void Function()>();
 
-  void listenerNotifier(ChangeNotifier notifier, void Function() listener,
+  void listenNotifier(ChangeNotifier notifier, void Function() listener,
       {bool immediate = false}) {
     if (immediate) listener();
     notifier.addListener(listener);

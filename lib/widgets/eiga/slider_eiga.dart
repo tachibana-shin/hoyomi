@@ -74,7 +74,7 @@ class _SliderEigaState extends State<SliderEiga>
       end: sliderHeightMax,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    listenerNotifier(widget.vttThumbnail, () {
+    listenNotifier(widget.vttThumbnail, () {
       final vtt = widget.vttThumbnail.value;
       if (vtt != null) {
         // TODO: Controls this

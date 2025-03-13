@@ -164,7 +164,7 @@ class _MangaReaderState extends State<MangaReader>
     // bool prefetchingPrev = false;
     bool prefetchingNext = false;
     final Map<String, bool> chaptersLoadedStore = {};
-    listenerNotifier(_currentPage, () async {
+    listenNotifier(_currentPage, () async {
       _updateRoute();
 
       // if (_currentPage.value <= 0 && _usingPageView) {

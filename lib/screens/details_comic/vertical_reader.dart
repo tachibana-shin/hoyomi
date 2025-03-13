@@ -30,7 +30,7 @@ class _VerticalReaderState extends State<VerticalReader>
 
     _controller = PageController(initialPage: widget.currentPage.value.toInt());
 
-    listenerNotifier(widget.currentPage, () {
+    listenNotifier(widget.currentPage, () {
       if (_controller.position.isScrollingNotifier.value) return;
       _jumping = true;
 
