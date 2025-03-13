@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -109,7 +110,8 @@ class AnimeVietsubService extends EigaService
   final String _apiOpEnd = "https://opend-9animetv.animevsub.eu.org";
   final String _apiThumb = "https://sk-hianime.animevsub.eu.org";
 
-  final Map<String, _ParamsEpisode> _paramsEpisodeStore = {};
+  final Map<String, Completer<Map<String, _ParamsEpisode>>>
+      _paramsEpisodeStore = {};
   final Map<String, Future<Document>> _docEigaStore = {};
   final Map<String, String> _uidUserStore = {};
 
@@ -578,29 +580,58 @@ class AnimeVietsubService extends EigaService
     );
   }
 
+  Future<(List<EigaEpisode>, Document)> __fetchHtmlEpisodes(String eigaId) {
+    late final List<EigaEpisode> episodes;
+    _paramsEpisodeStore[eigaId] ??= Completer<Map<String, _ParamsEpisode>>();
+
+    return fetchDocument('$baseUrl/phim/$eigaId/xem-phim.html')
+        .then((document) {
+      final Map<String, _ParamsEpisode> map = {};
+
+      episodes = document
+          .querySelectorAll("#list-server .list-episode .episode a")
+          .map((
+        item,
+      ) {
+        final episodeId = Uri.parse(
+          item.attributes['href']!,
+        ).path.split('/').elementAt(3).replaceFirst(".html", "");
+
+        final params = _ParamsEpisode(
+          id: item.attributes['data-id']!,
+          play: item.attributes['data-play']!,
+          hash: item.attributes['data-hash']!,
+          backuplinks: item.attributes['data-backuplinks'] ?? '1',
+        );
+
+        map[episodeId] = params;
+
+        return EigaEpisode(name: item.text.trim(), episodeId: episodeId);
+      }).toList();
+
+      _paramsEpisodeStore[eigaId]?.complete(map);
+
+      return (episodes, document);
+    }).catchError((error) {
+      _paramsEpisodeStore[eigaId]?.completeError(error);
+      throw error;
+    });
+  }
+
+  final Map<String, Future<(List<EigaEpisode>, Document)>>
+      _fetchHtmlEpisodesStore = {};
+  Future<(List<EigaEpisode>, Document)> _fetchHtmlEpisodes(String eigaId) {
+    return _fetchHtmlEpisodesStore[eigaId] ??=
+        __fetchHtmlEpisodes(eigaId).catchError((error) {
+      _fetchHtmlEpisodesStore.remove(eigaId);
+
+      throw error;
+    });
+  }
+
   @override
   getEpisodes(String eigaId) async {
-    final document = await fetchDocument('$baseUrl/phim/$eigaId/xem-phim.html');
-
-    final episodes =
-        document.querySelectorAll("#list-server .list-episode .episode a").map((
-      item,
-    ) {
-      final episodeId = Uri.parse(
-        item.attributes['href']!,
-      ).path.split('/').elementAt(3).replaceFirst(".html", "");
-
-      final params = _ParamsEpisode(
-        id: item.attributes['data-id']!,
-        play: item.attributes['data-play']!,
-        hash: item.attributes['data-hash']!,
-        backuplinks: item.attributes['data-backuplinks'] ?? '1',
-      );
-
-      _paramsEpisodeStore['$episodeId@$eigaId'] = params;
-
-      return EigaEpisode(name: item.text.trim(), episodeId: episodeId);
-    }).toList();
+    final (episodes, document) = await _fetchHtmlEpisodes(eigaId);
 
     final scheduleText = document
         .querySelectorAll(".schedule-title-main > h4 > strong")
@@ -652,9 +683,12 @@ class AnimeVietsubService extends EigaService
 
   @override
   getSource({required eigaId, required EigaEpisode episode}) async {
+    await _fetchHtmlEpisodes(eigaId);
+
     final text = (await fetch(
       '$baseUrl/ajax/player?v=2019a',
-      body: _paramsEpisodeStore['${episode.episodeId}@$eigaId']!.toMap(),
+      body: (await _paramsEpisodeStore[eigaId]!.future)[episode.episodeId]!
+          .toMap(),
     ));
 
     final json = jsonDecode(text);
