@@ -98,7 +98,7 @@ class AnimeVietsubService extends EigaService
   final init = ServiceInit(
     name: "AnimeVietsub",
     faviconUrl: OImage(src: '/favicon.ico'),
-    rootUrl: 'https://animevietsub.lol',
+    rootUrl: 'https://animevietsub.red',
   );
   @override
   final authInit = AuthInit(
