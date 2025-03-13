@@ -1266,9 +1266,9 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
           depends: [_subtitles, _subtitleCode],
           builder: (context) => ListView.builder(
             shrinkWrap: true,
-            itemCount: _subtitles.value.length,
+            itemCount: _subtitles.value?.length,
             itemBuilder: (context, index) {
-              final item = _subtitles.value.elementAt(index);
+              final item = _subtitles.value!.elementAt(index);
 
               return ListTile(
                 leading: _subtitleCode.value == item.code
@@ -1372,7 +1372,7 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
     _subtitleCode.value = value;
     if (value != null) {
       subtitleController.updateSubtitleUrl(
-        url: _subtitles.value.firstWhere((item) {
+        url: _subtitles.value!.firstWhere((item) {
           return item.code == value;
         }).url,
       );
@@ -1439,10 +1439,11 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
                       'Subtitle',
                       style: TextStyle(fontSize: 14.0),
                     ),
-                    trailing: _subtitleCode.value == null
+                    trailing: _subtitleCode.value == null ||
+                            _subtitles.value == null
                         ? null
                         : Text(
-                            _subtitles.value
+                            _subtitles.value!
                                 .firstWhere(
                                     (item) => item.code == _subtitleCode.value)
                                 .language,

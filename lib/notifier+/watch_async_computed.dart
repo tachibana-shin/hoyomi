@@ -3,7 +3,7 @@ import 'package:hoyomi/notifier+/computed_async_notifier.dart';
 
 class WatchAsyncComputed<T> extends StatefulWidget {
   final ComputedAsyncNotifier<T> computed;
-  final Widget Function(BuildContext context, T value) builder;
+  final Widget Function(BuildContext context, T? value) builder;
 
   const WatchAsyncComputed({
     super.key,
