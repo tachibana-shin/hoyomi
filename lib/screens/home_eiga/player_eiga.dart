@@ -179,15 +179,6 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
   void initState() {
     super.initState();
 
-    _visibleTooltipSkipOE = ComputedNotifier(() {
-      final isOpening =
-          _stateOpeningEnding.value == _StateOpeningEnding.opening;
-      final visible =
-          isOpening || _stateOpeningEnding.value == _StateOpeningEnding.ending;
-
-      return visible;
-    }, depends: [_stateOpeningEnding]);
-
     /// =================== Core data ====================
     _source = ComputedAsyncNotifier(
         () async => widget.episode.value == null
@@ -335,6 +326,15 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
     }, immediate: true);
 
     /// =================== /Core data ====================
+
+    _visibleTooltipSkipOE = ComputedNotifier(() {
+      final isOpening =
+          _stateOpeningEnding.value == _StateOpeningEnding.opening;
+      final visible =
+          isOpening || _stateOpeningEnding.value == _StateOpeningEnding.ending;
+
+      return visible;
+    }, depends: [_stateOpeningEnding]);
 
     listenNotifier(_pauseAutoHideControls, () {
       if (!_pauseAutoHideControls.value) {
