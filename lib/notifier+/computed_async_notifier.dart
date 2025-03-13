@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 
 class ComputedAsyncNotifier<T> extends ChangeNotifier {
   T? _value;
+  dynamic _error;
+  bool _loading = false;
 
   final Future<T> Function() compute;
   final List<ChangeNotifier> depends;
@@ -14,19 +16,31 @@ class ComputedAsyncNotifier<T> extends ChangeNotifier {
   T? get value {
     if (!_initialized) {
       _initialized = true;
-      _updateValue();
+      _loading = true;
+      _updateValue()
+          .catchError((error) => onError?.call(_error = error))
+          .whenComplete(() => _loading = false);
       Listenable.merge(depends).addListener(() {
         _updateValue()
             .then((_) => notifyListeners())
-            .catchError((error) => onError?.call(error));
+            .catchError((error) => onError?.call(_error = error))
+            .whenComplete(() => _loading = false);
       });
     }
 
     return _value;
   }
 
+  dynamic get error => _error;
+  bool get loading => _loading;
+
   Future<void> _updateValue() async {
     _value = await compute();
+  }
+
+  void forceValue(T value) {
+    _value = value;
+    notifyListeners();
   }
 
   @override
