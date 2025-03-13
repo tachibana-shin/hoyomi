@@ -124,7 +124,6 @@ class _ListEpisodesState extends State<ListEpisodes> {
       return const Center(child: Text('No data available'));
     }
 
-
     final episodesEiga =
         waiting ? EigaEpisodes.createFakeData() : _episodesEiga.value!;
 
