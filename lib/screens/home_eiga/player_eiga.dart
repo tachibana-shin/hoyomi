@@ -201,7 +201,7 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
 
     /// Watch data position
     _watchTimeData = ComputedAsyncNotifier<WatchTimeData?>(() async {
-      if (widget.service is EigaWatchTimeMixin) {
+      if (widget.service is EigaWatchTimeMixin && !widget.metaEiga.value.fake) {
         final eigaId = widget.eigaId.value;
         final episode = widget.episode.value;
         final episodeIndex = widget.episodeIndex.value;
@@ -243,7 +243,8 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
     _thumbnailVtt = ComputedAsyncNotifier(() async {
       if (widget.service.getThumbnail != null &&
           widget.episode.value != null &&
-          widget.episodeIndex.value != null) {
+          widget.episodeIndex.value != null &&
+          !widget.metaEiga.value.fake) {
         return widget.service.getThumbnail!(
           eigaId: widget.eigaId.value,
           episode: widget.episode.value!,
@@ -261,7 +262,9 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
 
     /// Position opening / ending
     _openingEnding = ComputedAsyncNotifier(() async {
-      if (widget.episode.value != null && widget.episodeIndex.value != null) {
+      if (widget.episode.value != null &&
+          widget.episodeIndex.value != null &&
+          !widget.metaEiga.value.fake) {
         return widget.service.getOpeningEnding(
           eigaId: widget.eigaId.value,
           episode: widget.episode.value!,
@@ -649,6 +652,7 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
           ]),
           builder: (context, child) {
             if (widget.metaEiga.value.poster == null ||
+                widget.metaEiga.value.fake ||
                 _firstLoadedSource.value) {
               return SizedBox.shrink();
             }
