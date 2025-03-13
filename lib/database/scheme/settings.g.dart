@@ -80,10 +80,10 @@ Settings _settingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Settings(
+    lastCheckUpdateApp: reader.readStringOrNull(offsets[0]),
     mangaReadLazyPage: reader.readBoolOrNull(offsets[1]) ?? true,
   );
   object.id = id;
-  object.lastCheckUpdateApp = reader.readStringOrNull(offsets[0]);
   object.pollingIntervalComic = reader.readLong(offsets[2]);
   return object;
 }
