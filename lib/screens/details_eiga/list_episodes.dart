@@ -8,7 +8,8 @@ import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/service.dart';
-import 'package:hoyomi/notifier+/computed_async_notifier.dart';
+import 'package:hoyomi/notifier+/computed_notifier.dart';
+import 'package:hoyomi/notifier+/watch_computed.dart';
 import 'package:hoyomi/pages/details_eiga/[sourceId]/[eigaId].page.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -53,7 +54,7 @@ class ListEpisodes extends StatefulWidget {
 }
 
 class _ListEpisodesState extends State<ListEpisodes> {
-  late final ComputedAsyncNotifier<EigaEpisodes> _episodesEiga;
+  late final ComputedNotifier<Future<EigaEpisodes>> _episodesEiga;
   final _watchTimeEpisodes = ValueNotifier<Map<String, WatchTime>?>(null);
 
   final Map<int, void Function()> _disposes = {};
@@ -62,7 +63,7 @@ class _ListEpisodesState extends State<ListEpisodes> {
   void initState() {
     super.initState();
 
-    _episodesEiga = ComputedAsyncNotifier(() async {
+    _episodesEiga = ComputedNotifier(() async {
       try {
         final episodes = await widget.getData(_updateEpisodesEiga);
         if (!mounted) throw Exception('Page destroyed');
@@ -93,7 +94,7 @@ class _ListEpisodesState extends State<ListEpisodes> {
   }
 
   void _updateEpisodesEiga(EigaEpisodes newValue) {
-    _episodesEiga.forceValue(newValue);
+    _episodesEiga.forceValue(Future.value(newValue));
   }
 
   @override
@@ -108,60 +109,70 @@ class _ListEpisodesState extends State<ListEpisodes> {
   Widget build(BuildContext context) {
     final height = 35.0;
 
-    if (_episodesEiga.error != null) {
-      return Center(
-        child: Service.errorWidgetBuilder(
-          context,
-          error: _episodesEiga.error,
-          service: null,
-          orElse: (error) => Text('Error: $error'),
-        ),
-      );
-    }
+    return WatchComputed(
+        computed: _episodesEiga,
+        builder: (context, episodesEiga) {
+          return FutureBuilder(
+              future: episodesEiga,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Service.errorWidgetBuilder(
+                      context,
+                      error: snapshot.error,
+                      service: null,
+                      orElse: (error) => Text('Error: $error'),
+                    ),
+                  );
+                }
 
-    final waiting = _episodesEiga.loading;
-    if (_episodesEiga.value == null && !waiting) {
-      return const Center(child: Text('No data available'));
-    }
+                final waiting =
+                    snapshot.connectionState == ConnectionState.waiting;
+                if (!snapshot.hasData && waiting) {
+                  return const Center(child: Text('No data available'));
+                }
 
+                final episodesEiga =
+                    waiting ? EigaEpisodes.createFakeData() : snapshot.data!;
 
-    final episodesEiga =
-        waiting ? EigaEpisodes.createFakeData() : _episodesEiga.value!;
+                final isVertical = widget.scrollDirection == Axis.vertical;
 
-    final isVertical = widget.scrollDirection == Axis.vertical;
+                final child = AnimatedBuilder(
+                  animation: Listenable.merge([
+                    widget.eigaIdNotifier,
+                    widget.episodeIdNotifier,
+                  ]),
+                  builder: (context, child) {
+                    final child = ListView.builder(
+                      scrollDirection: widget.scrollDirection,
+                      itemCount: episodesEiga.episodes.length,
+                      shrinkWrap: true,
+                      controller: widget.controller,
+                      itemBuilder: (context, index) => itemBuilder(
+                        context,
+                        index: index,
+                        episodesEiga: episodesEiga,
+                        waiting: waiting,
+                        isVertical: isVertical,
+                        height: height,
+                      ),
+                    );
 
-    final child = AnimatedBuilder(
-      animation: Listenable.merge([
-        widget.eigaIdNotifier,
-        widget.episodeIdNotifier,
-      ]),
-      builder: (context, child) {
-        final child = ListView.builder(
-          scrollDirection: widget.scrollDirection,
-          itemCount: episodesEiga.episodes.length,
-          shrinkWrap: true,
-          controller: widget.controller,
-          itemBuilder: (context, index) => itemBuilder(
-            context,
-            index: index,
-            episodesEiga: episodesEiga,
-            waiting: waiting,
-            isVertical: isVertical,
-            height: height,
-          ),
-        );
-
-        if (waiting) {
-          return Skeletonizer(
-            enabled: true,
-            enableSwitchAnimation: true,
-            child: child,
-          );
-        }
-        return child;
-      },
-    );
-    return isVertical ? child : SizedBox(height: height, child: child);
+                    if (waiting) {
+                      return Skeletonizer(
+                        enabled: true,
+                        enableSwitchAnimation: true,
+                        child: child,
+                      );
+                    }
+                    return child;
+                  },
+                );
+                return isVertical
+                    ? child
+                    : SizedBox(height: height, child: child);
+              });
+        });
   }
 
   bool checkEpisodeActive(EigaEpisode episode, EigaEpisodes episodesEiga) {
