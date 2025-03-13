@@ -252,7 +252,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       episode: _episode,
       episodeIndex: _episodeIndex,
       metaEiga: _metaEiga,
-
       eigaId: _eigaId,
       episodeId: _episodeId,
       title: _title,
