@@ -150,7 +150,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
       _isFollowed.value = oldFollowed;
       showSnackBar(Text('Follow error: $err'));
 
-      debugPrint('Error: $err');
+      debugPrint('Error: $err (${StackTrace.current})');
     }
   }
 }

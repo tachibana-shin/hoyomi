@@ -244,7 +244,7 @@ class _CommentState extends State<Comment> {
         widget.comment.like = old;
       });
       showSnackBar(Text('Error: $err'));
-      debugPrint('Error: $err');
+      debugPrint('Error: $err (${StackTrace.current})');
     }
   }
 
