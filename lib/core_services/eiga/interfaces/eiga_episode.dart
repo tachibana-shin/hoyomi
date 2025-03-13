@@ -13,6 +13,23 @@ class EigaEpisode {
     this.description,
   });
 
+  /// Override equality operator to compare instances
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+
+    return other is EigaEpisode &&
+        other.name == name &&
+        other.episodeId == episodeId &&
+        other.image == image &&
+        other.description == description;
+  }
+
+  /// Override hashCode to ensure consistency
+  @override
+  int get hashCode => Object.hash(name, episodeId, image, description);
+
   factory EigaEpisode.createFakeData() {
     return EigaEpisode(name: "Episode 1", episodeId: "1");
   }
