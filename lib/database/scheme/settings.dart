@@ -7,6 +7,7 @@ class Settings {
   Id? id;
 
   late bool mangaReadLazyPage;
+  late String? lastCheckUpdateApp;
 
   /// Time to seconds
   /// Default to 3 hours

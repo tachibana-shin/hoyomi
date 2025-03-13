@@ -4,13 +4,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/controller/settings.dart';
 import 'package:http/http.dart';
 import 'package:flutter_package_installer/flutter_package_installer.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:markdown/markdown.dart' as markdown;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Class representing the release object.
@@ -249,15 +249,18 @@ class UpdateAvailableController {
   }
 
   void _pauseUpdate() async {
-    final asyncPref = SharedPreferencesAsync();
+    final controller = SettingsController();
+    final settings = await controller.getSettings();
 
-    await asyncPref.setString('pause_update', DateTime.now().toString());
+    settings.lastCheckUpdateApp = DateTime.now().toString();
+
+    await controller.setSettings(settings);
   }
 
   Future<bool> _checkPauseUpdate() async {
-    final asyncPref = SharedPreferencesAsync();
+    final settings = await SettingsController().getSettings();
 
-    final time = await asyncPref.getString('pause_update');
+    final time = settings.lastCheckUpdateApp;
     if (time == null) return false;
 
     return DateTime.parse(time).add(expiresCheckUpdate).second >
