@@ -46,7 +46,7 @@ mixin _SupabaseRPC {
   final String _supabaseKey =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0d3dsdGJrd2tzZ25pc3Bjam1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAxNjM5ODksImV4cCI6MjAzNTczOTk4OX0.Dva9EPqy4P0KFYLAGpFqFoMBH4I_yz0VWnGny0uA-8U";
 
-  rpc(String name, Object requestData) async {
+  Future<List<dynamic>> rpc(String name, Object requestData) async {
     final response = await post(
       Uri.parse('$_supabaseUrl/rest/v1/rpc/$name'),
       headers: {
@@ -876,7 +876,7 @@ class AnimeVietsubService extends EigaService
     final json = await rpc('get_watch_progress', {
       'user_uid': userUid,
       'season_id': eigaId,
-    }) as List;
+    });
 
     final Map<String, String> chapIdToEpisodeKey = {};
     for (final episode in episodes) {
@@ -1107,8 +1107,12 @@ class _WatchInfo {
       watchUpdatedAt: DateTime.parse(json['watch_updated_at']),
       watchName: json['watch_name'],
       watchId: json['watch_id'],
-      watchCur: num.parse(json['watch_cur']).toDouble(),
-      watchDur: num.parse(json['watch_dur']).toDouble(),
+      watchCur: json['watch_cur'].runtimeType == double
+          ? json['watch_cur']
+          : json['watch_cur'].toDouble(),
+      watchDur: json['watch_dur'].runtimeType == double
+          ? json['watch_dur']
+          : json['watch_dur'].toDouble(),
     );
   }
 
