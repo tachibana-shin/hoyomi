@@ -81,10 +81,9 @@ class _EigaHistoryState extends State<EigaHistory> {
             child: Text(
               '${formatDuration(watchTime.position)} / ${formatDuration(watchTime.duration)}',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white
-                  ),
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
