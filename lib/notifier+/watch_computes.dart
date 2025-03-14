@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/notifier+/computed_notifier.dart';
 
+import 'utils/one_call_task.dart';
+
 class WatchComputes<T> extends StatefulWidget {
   final List<ComputedNotifier<T>> computes;
   final Widget Function(BuildContext context) builder;
@@ -16,10 +18,13 @@ class WatchComputes<T> extends StatefulWidget {
 }
 
 class _WatchComputesState<T> extends State<WatchComputes<T>> {
+  late final Noop _refresh;
+
   @override
   void initState() {
     super.initState();
 
+    _refresh = oneCallTask(() => setState(() {}));
     for (final computed in widget.computes) {
       computed.addListener(_refresh);
     }
@@ -45,10 +50,6 @@ class _WatchComputesState<T> extends State<WatchComputes<T>> {
     }
 
     super.dispose();
-  }
-
-  void _refresh() {
-    setState(() {});
   }
 
   @override

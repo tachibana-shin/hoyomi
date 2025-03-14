@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 
+import 'utils/one_call_task.dart';
+
 class WatchNotifier<T> extends StatefulWidget {
   final List<ChangeNotifier> depends;
   final Duration? throttle;
@@ -26,14 +28,16 @@ class _WatchNotifierState<T> extends State<WatchNotifier<T>> {
   void initState() {
     super.initState();
 
+    late final Noop refreshRoot;
     if (widget.throttle == null) {
       _debouncer = null;
-      _refresh = () => setState(() {});
+      refreshRoot = () => setState(() {});
     } else {
       _debouncer = Debouncer(milliseconds: widget.throttle!.inMilliseconds);
-      _refresh = () => _debouncer!.run(() => setState(() {}));
+      refreshRoot = () => _debouncer!.run(() => setState(() {}));
     }
 
+    _refresh = oneCallTask(refreshRoot);
     _listenable = Listenable.merge(widget.depends)..addListener(_refresh);
   }
 
