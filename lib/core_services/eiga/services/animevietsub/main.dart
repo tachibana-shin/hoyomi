@@ -582,7 +582,10 @@ class AnimeVietsubService extends EigaService
 
   Future<(List<EigaEpisode>, Document)> __fetchHtmlEpisodes(String eigaId) {
     late final List<EigaEpisode> episodes;
-    _paramsEpisodeStore[eigaId] ??= Completer<Map<String, _ParamsEpisode>>();
+    if (_paramsEpisodeStore[eigaId] == null ||
+        _paramsEpisodeStore[eigaId]!.isCompleted) {
+      _paramsEpisodeStore[eigaId] = Completer<Map<String, _ParamsEpisode>>();
+    }
 
     return fetchDocument('$baseUrl/phim/$eigaId/xem-phim.html')
         .then((document) {
