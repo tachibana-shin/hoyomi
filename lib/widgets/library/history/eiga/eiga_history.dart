@@ -83,7 +83,7 @@ class _EigaHistoryState extends State<EigaHistory> {
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontSize: 12.0,
                     fontWeight: FontWeight.w400,
-                    color: Theme.of(context).textTheme.titleMedium?.color,
+                    color: Colors.white
                   ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
