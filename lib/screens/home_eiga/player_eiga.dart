@@ -133,6 +133,7 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
   //   }
 
   /// Like <video>
+  final _controllerId = ValueNotifier<String?>(null);
   final _controller = ValueNotifier<VideoPlayerController?>(null);
   final SubtitleController subtitleController = SubtitleController();
 
@@ -175,6 +176,8 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
 
   final ValueNotifier<bool> _firstLoadedSource = ValueNotifier(false);
 
+  String get uid => '${widget.episodeId.value}@${widget.eigaId.value}';
+
   @override
   void initState() {
     super.initState();
@@ -186,8 +189,8 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
             : widget.service.getSource(
                 eigaId: widget.eigaId.value, episode: widget.episode.value!),
         depends: [widget.eigaId, widget.episode],
-        onError: (error) =>
-            debugPrint('Error: $error (${StackTrace.current})'));
+        onError: (error) => debugPrint('Error: $error (${StackTrace.current})'),
+        onBeforeUpdate: () => null);
 
     /// Subtitles language
     _subtitles = ComputedAsyncNotifier(
@@ -232,12 +235,15 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
         });
       }
       return null;
-    }, depends: [
-      widget.eigaId,
-      widget.episode,
-      widget.episodeIndex,
-      widget.metaEiga
-    ], onError: (error) => debugPrint('Error: $error (${StackTrace.current})'));
+    },
+        depends: [
+          widget.eigaId,
+          widget.episode,
+          widget.episodeIndex,
+          widget.metaEiga
+        ],
+        onError: (error) => debugPrint('Error: $error (${StackTrace.current})'),
+        onBeforeUpdate: () => null);
 
     /// Preview images
     _thumbnailVtt = ComputedAsyncNotifier(() async {
@@ -311,17 +317,38 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
 
     listenNotifier(_source, () {
       if (_source.value != null) {
-        _setupPlayer(_source.value!);
+        _setupPlayer(_source.value!, uid);
       }
       _firstLoadedSource.value = false;
     }, immediate: true);
-    listenNotifier(_watchTimeData, () {
+
+    int loopIdAutoIncrement = -1;
+    onBeforeUnload(() => loopIdAutoIncrement = -1);
+    listenNotifiers([_watchTimeData, _controller, _controllerId], () async {
       final watchTime = _watchTimeData.value?.watchTime;
-      if (watchTime == null) return;
+      final controller = _controller.value;
+      if (watchTime == null ||
+          controller == null ||
+          _controllerId.value != uid) {
+        return;
+      }
 
       if (kDebugMode) {
         print(watchTime);
       }
+
+      final loopId = ++loopIdAutoIncrement;
+      while (!controller.value.isInitialized && loopIdAutoIncrement == loopId) {
+        await Future.delayed(Duration(milliseconds: 300));
+      }
+
+      /// Free memory
+      if (loopIdAutoIncrement != loopId) return;
+
+      await controller.pause();
+      _position.value = watchTime.position;
+      await controller.seekTo(watchTime.position);
+      if (!controller.value.isPlaying) controller.play();
 
       showSnackBar(
         Text('Watching time restored ${formatDuration(watchTime.position)}'),
@@ -353,6 +380,7 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
       required Duration position,
       required Duration duration}) {
     _timer ??= Timer(Duration(seconds: 30), () {
+      if (kDebugMode) return;
       widget.onWatchTimeUpdate(
           eigaId: eigaId,
           episodeId: episodeId,
@@ -362,13 +390,14 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
     });
   }
 
-  void _setupPlayer(SourceVideo source) async {
+  void _setupPlayer(SourceVideo source, String id) async {
     _availableResolutions.value = [];
 
     // not function get source
     if (widget.fetchSourceContent == null) {
       final url = Uri.parse(source.src);
       _controller.value?.dispose();
+      _controllerId.value = id;
       _controller.value = VideoPlayerController.networkUrl(
         url,
         httpHeaders: source.headers,
@@ -410,6 +439,7 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
     if (!mounted) return;
 
     _controller.value?.dispose();
+    _controllerId.value = id;
     _controller.value = VideoPlayerController.networkUrl(
       ProxyCache.instance.getUrlHttp(fileCache),
       httpHeaders: source.headers,
@@ -1046,7 +1076,7 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
               openingEnding: _openingEnding,
               onSeek: (position) {
                 final duration = _duration.value;
-                final seek = duration * position;
+                final seek = _position.value = duration * position;
                 _controller.value?.seekTo(seek);
               },
             ),
@@ -1333,13 +1363,13 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
     }, orElse: () => _availableResolutions.value.first);
 
     _setupPlayer(
-      SourceVideo(
-        src: resolution.variant.url.toString(),
-        type: 'hls',
-        headers: resolution.headers,
-        url: resolution.variant.url,
-      ),
-    );
+        SourceVideo(
+          src: resolution.variant.url.toString(),
+          type: 'hls',
+          headers: resolution.headers,
+          url: resolution.variant.url,
+        ),
+        _controllerId.value ?? uid);
   }
 
   void _showQualityOptions() {
