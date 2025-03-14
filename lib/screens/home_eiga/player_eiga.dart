@@ -437,45 +437,46 @@ class _PlayerEigaState extends State<PlayerEiga> with NotifierPlusMixin {
 
   DateTime _activeTime = DateTime.now();
   void _onPlayerValueChanged() {
-    if (_controller.value?.value.hasError == true) {
+    final controller = _controller.value;
+
+    if (controller?.value.hasError == true) {
       WakelockPlus.disable();
       debugPrint(
-        "[video_player]: ${_error.value = _controller.value!.value.errorDescription}",
+        "[video_player]: ${_error.value = controller!.value.errorDescription}",
       );
     } else {
       _error.value = null;
     }
 
-    _position.value = _controller.value?.value.position ?? _position.value;
-    _duration.value = _controller.value?.value.duration ?? Duration.zero;
-    _loading.value = _controller.value?.value.isInitialized != true ||
-        _controller.value!.value.isBuffering;
-    final playing = _controller.value?.value.isPlaying ?? _playing.value;
-    if (_playing.value != playing) {
-      _playing.value = playing;
+    if (controller != null) {
+      _position.value = controller.value.position;
+      _duration.value = controller.value.duration;
+      _loading.value = controller.value.isInitialized != true ||
+          controller.value.isBuffering;
+      final playing = controller.value.isPlaying;
+      if (_playing.value != playing) {
+        _playing.value = playing;
 
-      if (_playing.value) {
-        WakelockPlus.enable();
-      } else {
-        WakelockPlus.disable();
+        if (_playing.value) {
+          WakelockPlus.enable();
+        } else {
+          WakelockPlus.disable();
+        }
       }
-    }
-    if (_aspectRatio.value != _controller.value?.value.aspectRatio) {
-      _aspectRatio.value =
-          _controller.value?.value.aspectRatio ?? _aspectRatio.value;
-    }
-    _firstLoadedSource.value = true;
+      _aspectRatio.value = controller.value.aspectRatio;
+      _firstLoadedSource.value = true;
 
-    if (_watchTimeData.value?.eigaId == widget.eigaId.value &&
-        _watchTimeData.value?.episodeId == widget.episodeId.value &&
-        _duration.value > Duration.zero &&
-        _controller.value!.value.position > Duration.zero) {
-      _emitWatchTimeUpdate(
-        eigaId: widget.eigaId.value,
-        episodeId: widget.episodeId.value!,
-        position: _position.value,
-        duration: _duration.value,
-      );
+      if (_watchTimeData.value?.eigaId == widget.eigaId.value &&
+          _watchTimeData.value?.episodeId == widget.episodeId.value &&
+          _duration.value > Duration.zero &&
+          controller.value.position > Duration.zero) {
+        _emitWatchTimeUpdate(
+          eigaId: widget.eigaId.value,
+          episodeId: widget.episodeId.value!,
+          position: _position.value,
+          duration: _duration.value,
+        );
+      }
     }
 
     // if (_controller.value?.isBlank == true ||
