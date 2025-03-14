@@ -286,7 +286,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               ),
             ),
           );
-          return;
           (_service as EigaWatchTimeMixin).setWatchTime(
             eigaId: eigaId,
             episode: _episode.value!,
