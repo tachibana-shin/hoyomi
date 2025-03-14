@@ -128,7 +128,7 @@ class _ListEpisodesState extends State<ListEpisodes> {
 
                 final waiting =
                     snapshot.connectionState == ConnectionState.waiting;
-                if (!snapshot.hasData && waiting) {
+                if (!snapshot.hasData && !waiting) {
                   return const Center(child: Text('No data available'));
                 }
 
