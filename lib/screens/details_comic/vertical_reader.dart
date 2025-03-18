@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:hoyomi/notifier+/notifier_plus_mixin.dart';
+import 'package:kaeru/kaeru.dart';
 
 class VerticalReader extends StatefulWidget {
   final int itemCount;
   final Widget Function(BuildContext context, int index) itemBuilder;
-  final ValueNotifier<double> currentPage;
+  final Ref<double> currentPage;
 
   const VerticalReader(
       {super.key,
@@ -19,7 +19,7 @@ class VerticalReader extends StatefulWidget {
 }
 
 class _VerticalReaderState extends State<VerticalReader>
-    with NotifierPlusMixin {
+    with KaeruListenMixin {
   late final PageController _controller;
 
   bool _jumping = false;
@@ -30,7 +30,7 @@ class _VerticalReaderState extends State<VerticalReader>
 
     _controller = PageController(initialPage: widget.currentPage.value.toInt());
 
-    listenNotifier(widget.currentPage, () {
+    listen(widget.currentPage, () {
       if (_controller.position.isScrollingNotifier.value) return;
       _jumping = true;
 

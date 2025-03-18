@@ -852,6 +852,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.14"
+  kaeru:
+    dependency: "direct main"
+    description:
+      name: kaeru
+      sha256: "1231aa42736a931dae69b4dc3b2d10c383334be5419cdf4ee220371cdbef415f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.6"
   leak_tracker:
     dependency: transitive
     description:
@@ -956,6 +964,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  notifier_plus:
+    dependency: transitive
+    description:
+      name: notifier_plus
+      sha256: "2837b09971b22fa49258cda613c48ec55a34b64f4eae6b36a716853a6bf01ce0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   octo_image:
     dependency: transitive
     description:

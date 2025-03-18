@@ -14,14 +14,13 @@ import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
-import 'package:hoyomi/notifier+/computed_notifier.dart';
-import 'package:hoyomi/notifier+/watch_computed.dart';
 import 'package:hoyomi/utils/cache_remember.dart';
 import 'package:hoyomi/widgets/eiga/button_follow_eiga.dart';
 import 'package:hoyomi/widgets/eiga/button_share_eiga.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
 import 'package:hoyomi/core_services/eiga/eiga_service.dart';
@@ -58,32 +57,41 @@ class DetailsEigaPage extends StatefulWidget {
 }
 
 class _DetailsEigaPageState extends State<DetailsEigaPage>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, KaeruMixin {
   late final EigaService _service;
-  final ValueNotifier<MetaEiga> _metaEiga = ValueNotifier(
-    MetaEiga.createFakeData(),
-  );
-  late final ComputedNotifier<bool> _loading;
+  late final _metaEiga = ref(MetaEiga.createFakeData());
+  late final _loading = computed(() => _metaEiga.value.fake);
 
   double _aspectRatio = 16 / 9;
 
   final Map<String, EigaEpisodes> _cacheEpisodesStore = {};
   final Map<String, Map<String, WatchTime>> _cacheWatchTimeStore = {};
-  late final ComputedNotifier<String> _title;
-  late final ComputedNotifier<String> _subtitle;
-  final ValueNotifier<List<Subtitle>> _subtitlesNotifier = ValueNotifier([]);
-  final ValueNotifier<void Function()?> _onPrevNotifier = ValueNotifier(null);
-  final ValueNotifier<void Function()?> _onNextNotifier = ValueNotifier(null);
-  final ValueNotifier<Widget Function(BuildContext context)?> _overlayNotifier =
-      ValueNotifier(null);
+  late final _title = computed(() => _metaEiga.value.name);
+  late final _subtitle = computed(() => 'Episode ${_episode.value?.name}');
+  late final _subtitlesNotifier = ref<List<Subtitle>>([]);
+  late final _onPrevNotifier = ref<VoidCallback?>(null);
+  late final _onNextNotifier = ref<VoidCallback?>(null);
+  late final _overlayNotifier =
+      ref<Widget Function(BuildContext context)?>(null);
 
-  late final ValueNotifier<String> _eigaId;
-  final ValueNotifier<String?> _episodeId = ValueNotifier(null);
-  final ValueNotifier<TimeAndDay?> _schedule = ValueNotifier(null);
-  final ValueNotifier<EigaEpisode?> _episode = ValueNotifier(null);
-  final ValueNotifier<int?> _episodeIndex = ValueNotifier(null);
-  final ValueNotifier<Season?> _currentSeason = ValueNotifier(null);
-  late final ComputedNotifier<Future<List<Eiga>>?> _suggestNotifier;
+  late final Ref<String> _eigaId;
+  late final _episodeId = ref<String?>(null);
+  late final _schedule = ref<TimeAndDay?>(null);
+  late final _episode = ref<EigaEpisode?>(null);
+  late final _episodeIndex = ref<int?>(null);
+  late final _currentSeason = ref<Season?>(null);
+  late final _suggestNotifier = computed<Future<List<Eiga>>?>(() {
+    if (_service.getSuggest == null) return null;
+
+    if (_metaEiga.value.fake) {
+      return Completer<List<Eiga>>().future;
+    }
+
+    return _service.getSuggest!(
+      metaEiga: _metaEiga.value,
+      eigaId: widget.eigaId,
+    );
+  });
 
   final _eventBus = EventBus();
 
@@ -96,28 +104,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     _service = getEigaService(widget.sourceId);
 
-    _eigaId = ValueNotifier(widget.eigaId);
+    _eigaId = ref(widget.eigaId);
     _episodeId.value = widget.episodeId;
-
-    _loading = ComputedNotifier(
-      () => _metaEiga.value.fake,
-      depends: [_metaEiga],
-    );
-    _title = ComputedNotifier(() => _metaEiga.value.name, depends: [_metaEiga]);
-    _subtitle = ComputedNotifier(() => 'Episode ${_episode.value?.name}',
-        depends: [_episode]);
-    _suggestNotifier = ComputedNotifier<Future<List<Eiga>>?>(() {
-      if (_service.getSuggest == null) return null;
-
-      if (_metaEiga.value.fake) {
-        return Completer<List<Eiga>>().future;
-      }
-
-      return _service.getSuggest!(
-        metaEiga: _metaEiga.value,
-        eigaId: widget.eigaId,
-      );
-    }, depends: [_metaEiga]);
   }
 
   void _updatePlayer(MetaEiga metaEiga, EigaEpisode episode, int episodeIndex) {
@@ -206,9 +194,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   body: body,
                 ),
                 builder: (data, param) {
-                  return WatchComputed(
-                    computed: _loading,
-                    builder: (context, loading) {
+                  return Watch(
+                    (context) {
+                      final loading = _loading.value;
+
                       return SingleChildScrollView(
                         padding: EdgeInsets.symmetric(
                           horizontal: 8.0,
@@ -304,7 +293,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     );
   }
 
-  Widget _buildInfo(ValueNotifier<MetaEiga> metaEiga) {
+  Widget _buildInfo(Ref<MetaEiga> metaEiga) {
     return ValueListenableBuilder(
       valueListenable: metaEiga,
       builder: (_, metaEiga$, child) {
@@ -558,7 +547,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     );
   }
 
-  Widget _buildButtonGroup(ValueNotifier<MetaEiga> metaEiga) {
+  Widget _buildButtonGroup(Ref<MetaEiga> metaEiga) {
     return Row(
       children: [
         ButtonFollowEiga(
@@ -615,7 +604,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     );
   }
 
-  Widget _buildSeasonHeader(ValueNotifier<MetaEiga> metaEiga) {
+  Widget _buildSeasonHeader(Ref<MetaEiga> metaEiga) {
     return GestureDetector(
       onTap: () => _showModalEpisodes(metaEiga),
       child: Padding(
@@ -655,7 +644,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     );
   }
 
-  void _showModalMetadata(ValueNotifier<MetaEiga> metaEiga) {
+  void _showModalMetadata(Ref<MetaEiga> metaEiga) {
     final query = MediaQuery.of(context);
     final size = query.size;
     final heightPlayer =
@@ -826,7 +815,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     );
   }
 
-  void _showModalEpisodesFullscreen(ValueNotifier<MetaEiga> metaEiga) {
+  void _showModalEpisodesFullscreen(Ref<MetaEiga> metaEiga) {
     if (_overlayNotifier.value == null) {
       _overlayNotifier.value = (context) {
         final size = MediaQuery.of(context).size;
@@ -863,7 +852,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     }
   }
 
-  void _showModalEpisodes(ValueNotifier<MetaEiga> metaEiga) {
+  void _showModalEpisodes(Ref<MetaEiga> metaEiga) {
     final query = MediaQuery.of(context);
     final size = query.size;
     final heightPlayer =
@@ -927,7 +916,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   void _updateImageAndSchedule({
-    required ValueNotifier<MetaEiga> metaEiga,
+    required Ref<MetaEiga> metaEiga,
     required EigaEpisodes episodes,
   }) {
     if (episodes.image != metaEiga.value.image && episodes.image != null) {
@@ -944,7 +933,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   void _onChangeEpisode({
-    required ValueNotifier<MetaEiga> metaEiga,
+    required Ref<MetaEiga> metaEiga,
     required int indexEpisode,
     required int indexSeason,
     required EigaEpisodes episodesEiga,
@@ -1014,7 +1003,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Widget _buildSeasonArea(
-    ValueNotifier<MetaEiga> metaEiga, {
+    Ref<MetaEiga> metaEiga, {
     scrollDirection = Axis.horizontal,
     ScrollController? controller,
     double? height,
@@ -1172,25 +1161,23 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Widget _buildSuggest() {
-    return WatchComputed(
-      computed: _suggestNotifier,
-      builder: (_, suggest) {
-        if (suggest == null) return SizedBox.shrink();
+    return Watch((_) {
+      final suggest = _suggestNotifier.value;
+      if (suggest == null) return SizedBox.shrink();
 
-        return VerticalEigaList(
-          itemsFuture: suggest.then(
-            (data) => data
-                .map(
-                  (item) => EigaExtend(eiga: item, sourceId: _service.uid),
-                )
-                .toList(),
-          ),
-          title: 'Suggest',
-          disableScroll: true,
-          goMode: true,
-          more: null,
-        );
-      },
-    );
+      return VerticalEigaList(
+        itemsFuture: suggest.then(
+          (data) => data
+              .map(
+                (item) => EigaExtend(eiga: item, sourceId: _service.uid),
+              )
+              .toList(),
+        ),
+        title: 'Suggest',
+        disableScroll: true,
+        goMode: true,
+        more: null,
+      );
+    });
   }
 }

@@ -13,17 +13,21 @@ import 'package:hoyomi/core_services/eiga/eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/notifier+/notifier_plus_mixin.dart';
-import 'package:hoyomi/notifier+/watch_notifier.dart';
 import 'package:hoyomi/stores.dart';
+import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/widgets/blurred_part_background.dart';
 import 'package:hoyomi/widgets/speech_to_text.dart';
 import 'package:http/http.dart';
+import 'package:kaeru/kaeru.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:speech_to_text_google_dialog/speech_to_text_google_dialog.dart';
 
-final ValueNotifier<String> _keyword = ValueNotifier('');
-final ValueNotifier<String?> _serviceSelect = ValueNotifier(null);
+final Ref<String> _keyword = Ref('');
+final Ref<String?> _serviceSelect = Ref(null);
+
+final _setKeyword = Debouncer(Duration(seconds: 1), (String keyword) {
+  _keyword.value = keyword;
+}).run;
 
 class _AppBarExtended extends AppBar {
   final Widget child;
@@ -169,8 +173,7 @@ class GlobalSearchBar extends StatefulWidget {
   _GlobalSearchBarState createState() => _GlobalSearchBarState();
 }
 
-class _GlobalSearchBarState extends State<GlobalSearchBar>
-    with NotifierPlusMixin {
+class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
   late final TextEditingController _controller;
 
   FocusNode? _focusNode;
@@ -181,7 +184,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
     super.initState();
 
     if (widget.keyword.isNotEmpty) {
-      _keyword.value = widget.keyword;
+      _setKeyword(widget.keyword);
     }
     _controller = TextEditingController(text: _keyword.value);
   }
@@ -204,42 +207,39 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                           appBar: _buildGlobalSearchBar(true),
                           body: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16.0),
-                              child: WatchNotifier(
-                                  depends: [_keyword],
-                                  throttle: const Duration(seconds: 1),
-                                  builder: (context) {
-                                    if (_keyword.value.isEmpty) {
-                                      return Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 16.0),
-                                          child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(Icons.search,
+                              child: Watch((context2) {
+                                if (_keyword.value.isEmpty) {
+                                  return Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 16.0),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.search,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary),
+                                            SizedBox(width: 4.0),
+                                            Text('Enter keyword to search',
+                                                style: TextStyle(
                                                     color: Theme.of(context)
                                                         .colorScheme
-                                                        .secondary),
-                                                SizedBox(width: 4.0),
-                                                Text('Enter keyword to search',
-                                                    style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary))
-                                              ]));
-                                    }
-                                    return Flex(
-                                        direction: Axis.vertical,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          // Text(_keyword.value),
-                                          _buildKeywordSuggest(_keyword.value),
-                                          Expanded(
-                                              child: _buildSearchResults(
-                                                  _keyword.value))
-                                        ]);
-                                  }))))));
+                                                        .secondary))
+                                          ]));
+                                }
+                                return Flex(
+                                    direction: Axis.vertical,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Text(_keyword.value),
+                                      _buildKeywordSuggest(_keyword.value),
+                                      Expanded(
+                                          child: _buildSearchResults(
+                                              _keyword.value))
+                                    ]);
+                              }))))));
         });
   }
 
@@ -319,98 +319,96 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
       return SizedBox.shrink();
     }
 
-    return WatchNotifier(
-        depends: [_serviceSelect],
-        builder: (context) {
-          final service = _getCurrentService(context);
+    return Watch((context) {
+      final service = _getCurrentService(context);
 
-          if (service is ComicService) {
-            return FutureBuilder(
-                future: service.search(
-                    keyword: keyword, page: 1, filters: {}, quick: true),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Service.errorWidgetBuilder(
-                        context,
-                        error: snapshot.error,
-                        service: null,
-                        orElse: (err) => Text('Error: $err'),
-                      ),
-                    );
-                  }
+      if (service is ComicService) {
+        return FutureBuilder(
+            future: service.search(
+                keyword: keyword, page: 1, filters: {}, quick: true),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Service.errorWidgetBuilder(
+                    context,
+                    error: snapshot.error,
+                    service: null,
+                    orElse: (err) => Text('Error: $err'),
+                  ),
+                );
+              }
 
-                  final loading =
-                      snapshot.connectionState == ConnectionState.waiting;
-                  final data = loading
-                      ? List.generate(10, (_) => Comic.createFakeData())
-                      : snapshot.data!.items;
+              final loading =
+                  snapshot.connectionState == ConnectionState.waiting;
+              final data = loading
+                  ? List.generate(10, (_) => Comic.createFakeData())
+                  : snapshot.data!.items;
 
-                  if (data.isEmpty) return SizedBox.shrink();
+              if (data.isEmpty) return SizedBox.shrink();
 
-                  return Skeletonizer(
-                      enabled: loading,
-                      enableSwitchAnimation: true,
-                      child: ListView.builder(
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                            final comic = data.elementAt(index);
+              return Skeletonizer(
+                  enabled: loading,
+                  enableSwitchAnimation: true,
+                  child: ListView.builder(
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        final comic = data.elementAt(index);
 
-                            return _QuickSearchItem(
-                                to: '/details_comic/${service.uid}/${comic.comicId}',
-                                title: comic.name,
-                                image: comic.image,
-                                subtitle: comic.lastChap?.name,
-                                description: comic.description ?? comic.notice,
-                                sourceId: service.uid);
-                          }));
-                });
-          }
-          if (service is EigaService) {
-            return FutureBuilder(
-                future: service.search(
-                    keyword: keyword, page: 1, filters: {}, quick: true),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Service.errorWidgetBuilder(
-                        context,
-                        error: snapshot.error,
-                        service: null,
-                        orElse: (err) => Text('Error: $err'),
-                      ),
-                    );
-                  }
+                        return _QuickSearchItem(
+                            to: '/details_comic/${service.uid}/${comic.comicId}',
+                            title: comic.name,
+                            image: comic.image,
+                            subtitle: comic.lastChap?.name,
+                            description: comic.description ?? comic.notice,
+                            sourceId: service.uid);
+                      }));
+            });
+      }
+      if (service is EigaService) {
+        return FutureBuilder(
+            future: service.search(
+                keyword: keyword, page: 1, filters: {}, quick: true),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Service.errorWidgetBuilder(
+                    context,
+                    error: snapshot.error,
+                    service: null,
+                    orElse: (err) => Text('Error: $err'),
+                  ),
+                );
+              }
 
-                  final loading =
-                      snapshot.connectionState == ConnectionState.waiting;
-                  final data = loading
-                      ? List.generate(10, (_) => Eiga.createFakeData())
-                      : snapshot.data!.items;
+              final loading =
+                  snapshot.connectionState == ConnectionState.waiting;
+              final data = loading
+                  ? List.generate(10, (_) => Eiga.createFakeData())
+                  : snapshot.data!.items;
 
-                  if (data.isEmpty) return SizedBox.shrink();
+              if (data.isEmpty) return SizedBox.shrink();
 
-                  return Skeletonizer(
-                      enabled: loading,
-                      enableSwitchAnimation: true,
-                      child: ListView.builder(
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                            final eiga = data.elementAt(index);
+              return Skeletonizer(
+                  enabled: loading,
+                  enableSwitchAnimation: true,
+                  child: ListView.builder(
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        final eiga = data.elementAt(index);
 
-                            return _QuickSearchItem(
-                                to: '/details_eiga/${service.uid}/${eiga.eigaId}',
-                                title: eiga.name,
-                                image: eiga.image,
-                                subtitle: eiga.lastEpisode?.name,
-                                description: eiga.description ?? eiga.notice,
-                                sourceId: service.uid);
-                          }));
-                });
-          }
+                        return _QuickSearchItem(
+                            to: '/details_eiga/${service.uid}/${eiga.eigaId}',
+                            title: eiga.name,
+                            image: eiga.image,
+                            subtitle: eiga.lastEpisode?.name,
+                            description: eiga.description ?? eiga.notice,
+                            sourceId: service.uid);
+                      }));
+            });
+      }
 
-          throw Exception('Unknown service: ${service.runtimeType}');
-        });
+      throw Exception('Unknown service: ${service.runtimeType}');
+    });
   }
 
   Service _getCurrentService(BuildContext context) {
@@ -440,21 +438,18 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
       padding: EdgeInsets.all(3.0),
       menuPadding: EdgeInsets.all(5.0),
       offset: Offset(0, 18.0 * 2),
-      icon: WatchNotifier(
-        depends: [_serviceSelect],
-        builder: (context) {
-          final service = _getCurrentService(context);
+      icon: Watch((context) {
+        final service = _getCurrentService(context);
 
-          return SizedBox(
-            width: 2 * 12.0,
-            height: 2 * 12.0,
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: OImage.oNetwork(service.faviconUrl,
-                    sourceId: service.uid, fit: BoxFit.cover)),
-          );
-        },
-      ),
+        return SizedBox(
+          width: 2 * 12.0,
+          height: 2 * 12.0,
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: OImage.oNetwork(service.faviconUrl,
+                  sourceId: service.uid, fit: BoxFit.cover)),
+        );
+      }),
       onSelected: (value) {
         _serviceSelect.value = value;
       },
@@ -535,7 +530,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                       border: InputBorder.none,
                     ),
                     onChanged: (value) {
-                      _keyword.value = value;
+                      _setKeyword(value);
                     },
                     onSubmitted: (value) {
                       _closeSearchLayer();
@@ -558,62 +553,59 @@ class _GlobalSearchBarState extends State<GlobalSearchBar>
                     },
                   )),
             ),
-            WatchNotifier(
-                depends: [_keyword],
-                builder: (context) => AnimatedSwitcher(
-                    duration: Duration(milliseconds: 300),
-                    transitionBuilder: (child, animation) =>
-                        ScaleTransition(scale: animation, child: child),
-                    child: (_keyword.value.isEmpty || !focusing)
-                        ? (!Platform.isLinux && !Platform.isWindows)
-                            ? IconButton(
-                                icon: Icon(MaterialCommunityIcons.microphone,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary
-                                        .withValues(alpha: 0.8)),
-                                onPressed: () async {
-                                  final completer = Completer();
+            Watch((context) => AnimatedSwitcher(
+                duration: Duration(milliseconds: 300),
+                transitionBuilder: (child, animation) =>
+                    ScaleTransition(scale: animation, child: child),
+                child: (_keyword.value.isEmpty || !focusing)
+                    ? (!Platform.isLinux && !Platform.isWindows)
+                        ? IconButton(
+                            icon: Icon(MaterialCommunityIcons.microphone,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .secondary
+                                    .withValues(alpha: 0.8)),
+                            onPressed: () async {
+                              final completer = Completer();
 
-                                  if (Platform.isAndroid) {
-                                    final isServiceAvailable =
-                                        await SpeechToTextGoogleDialog
-                                                .getInstance()
-                                            .showGoogleDialog(
-                                                onTextReceived: (data) {
-                                      completer.complete(data);
-                                    });
-                                    if (!isServiceAvailable) {
-                                      completer.completeError(Exception(
-                                          'Platform not support API'));
-                                    }
-                                  } else {
-                                    await showDialog(
-                                      context: context,
-                                      builder: (context) => SpeechToText(
-                                          onChanged: (text) =>
-                                              completer.complete(text),
-                                          onError: (error) =>
-                                              completer.completeError(error)),
-                                    );
-                                  }
+                              if (Platform.isAndroid) {
+                                final isServiceAvailable =
+                                    await SpeechToTextGoogleDialog.getInstance()
+                                        .showGoogleDialog(
+                                            onTextReceived: (data) {
+                                  completer.complete(data);
+                                });
+                                if (!isServiceAvailable) {
+                                  completer.completeError(
+                                      Exception('Platform not support API'));
+                                }
+                              } else {
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) => SpeechToText(
+                                      onChanged: (text) =>
+                                          completer.complete(text),
+                                      onError: (error) =>
+                                          completer.completeError(error)),
+                                );
+                              }
 
-                                  try {
-                                    final text = await completer.future;
-                                    _keyword.value = _controller.text = text;
+                              try {
+                                final text = await completer.future;
+                                _keyword.value = _controller.text = text;
 
-                                    _showSearchLayer();
-                                  } catch (error) {
-                                    showSnackBar(Text('Error: $error'));
-                                  }
-                                })
-                            : null
-                        : IconButton(
-                            icon: Icon(Icons.clear),
-                            onPressed: () {
-                              _controller.clear();
-                              _keyword.value = '';
-                            }))),
+                                _showSearchLayer();
+                              } catch (error) {
+                                showSnackBar(Text('Error: $error'));
+                              }
+                            })
+                        : null
+                    : IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () {
+                          _controller.clear();
+                          _keyword.value = '';
+                        }))),
             if (!focusing) _buildButtonMore(),
           ],
         ),

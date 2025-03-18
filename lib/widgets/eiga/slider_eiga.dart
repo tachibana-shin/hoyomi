@@ -5,10 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
-import 'package:hoyomi/notifier+/computed_async_notifier.dart';
-import 'package:hoyomi/notifier+/notifier_plus_mixin.dart';
-import 'package:hoyomi/notifier+/watch_async_computed.dart';
-import 'package:hoyomi/notifier+/watch_notifier.dart';
+import 'package:kaeru/kaeru.dart';
 import 'package:subtitle/subtitle.dart';
 
 import 'package:hoyomi/utils/format_duration.dart';
@@ -23,12 +20,12 @@ class _PreviewMeta {
 class SliderEiga extends StatefulWidget {
   static final double thumbSize = 5;
 
-  final ValueNotifier<Duration> progress; // Current progress (0.0 to 1.0)
-  final ValueNotifier<Duration> duration;
-  final ValueNotifier<bool> showThumb;
-  final ValueNotifier<bool> pauseAutoHideControls;
-  final ComputedAsyncNotifier<Vtt?> vttThumbnail;
-  final ComputedAsyncNotifier<OpeningEnding?> openingEnding;
+  final Ref<Duration> progress; // Current progress (0.0 to 1.0)
+  final Ref<Duration> duration;
+  final Ref<bool> showThumb;
+  final Ref<bool> pauseAutoHideControls;
+  final AsyncComputed<Vtt?> vttThumbnail;
+  final AsyncComputed<OpeningEnding?> openingEnding;
   final Function(double) onSeek; // Callback for seek
 
   const SliderEiga({
@@ -47,7 +44,7 @@ class SliderEiga extends StatefulWidget {
 }
 
 class _SliderEigaState extends State<SliderEiga>
-    with SingleTickerProviderStateMixin, NotifierPlusMixin {
+    with SingleTickerProviderStateMixin, KaeruMixin, KaeruListenMixin {
   late AnimationController _controller;
   late Animation<double> _barHeightAnimation;
 
@@ -55,10 +52,10 @@ class _SliderEigaState extends State<SliderEiga>
   final double sliderHeightMin = 2;
   final double sliderHeightMax = Platform.isAndroid || Platform.isIOS ? 4 : 3;
 
-  final _hoverPosition = ValueNotifier(0.0); // Hover position
-  final _isHovering = ValueNotifier(false);
-  final _preview = ValueNotifier<Future<_PreviewMeta>?>(null);
-  final _previewBlank = ValueNotifier<Widget?>(null);
+  late final _hoverPosition = ref(0.0); // Hover position
+  late final _isHovering = ref(false);
+  late final _preview = ref<Future<_PreviewMeta>?>(null);
+  late final _previewBlank = ref<Widget?>(null);
 
   SubtitleController? _subtitleController;
 
@@ -74,7 +71,7 @@ class _SliderEigaState extends State<SliderEiga>
       end: sliderHeightMax,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    listenNotifier(widget.vttThumbnail, () {
+    listen(widget.vttThumbnail, () {
       final vtt = widget.vttThumbnail.value;
       if (vtt != null) {
         // TODO: Controls this
@@ -276,9 +273,10 @@ class _SliderEigaState extends State<SliderEiga>
       child: AnimatedBuilder(
         animation: _barHeightAnimation,
         builder: (context, child) {
-          return WatchAsyncComputed(
-            computed: widget.openingEnding,
-            builder: (context, openingEnding) {
+          return Watch(
+            (context) {
+              final openingEnding = widget.openingEnding.value;
+
               final opening = openingEnding?.opening;
               final ending = openingEnding?.ending;
 
@@ -316,9 +314,8 @@ class _SliderEigaState extends State<SliderEiga>
   }
 
   Widget _buildHoverPreview(Size parentSize) {
-    return WatchNotifier(
-      depends: [_isHovering, _preview],
-      builder: (context) {
+    return Watch(
+      (context) {
         if (!_isHovering.value) return SizedBox.shrink();
 
         Widget builder(BuildContext context, _PreviewMeta? preview, bool done) {
@@ -390,42 +387,39 @@ class _SliderEigaState extends State<SliderEiga>
   Widget _buildSliderThumb(Size parentSize) {
     final width = parentSize.width;
 
-    return WatchNotifier(
-      depends: [widget.showThumb, _isHovering],
-      builder: (context) {
-        // NOTE: animate?
-        if (!widget.showThumb.value) return SizedBox.shrink();
+    return Watch((context) {
+      // NOTE: animate?
+      if (!widget.showThumb.value) return SizedBox.shrink();
 
-        final double left = ((widget.duration.value.inMilliseconds == 0
-                        ? 0
-                        : (widget.progress.value.inMilliseconds /
-                            widget.duration.value.inMilliseconds)) *
-                    width -
-                thumbSize / 2)
-            .clamp(thumbSize / 2, width - thumbSize);
+      final double left = ((widget.duration.value.inMilliseconds == 0
+                      ? 0
+                      : (widget.progress.value.inMilliseconds /
+                          widget.duration.value.inMilliseconds)) *
+                  width -
+              thumbSize / 2)
+          .clamp(thumbSize / 2, width - thumbSize);
 
-        final double size = thumbSize;
+      final double size = thumbSize;
 
-        return Positioned(
-          left: left,
-          bottom: size,
-          child: AnimatedScale(
-            duration: const Duration(milliseconds: 111),
-            curve: Curves.easeInOut,
-            scale: widget.showThumb.value || _isHovering.value ? 1 : 0,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                _onSeek(details.localPosition);
-              },
-              child: CustomPaint(
-                size: Size(size, size), // Adjust size based on showThumb
-                painter: _ThumbPainter(size: size),
-              ),
+      return Positioned(
+        left: left,
+        bottom: size,
+        child: AnimatedScale(
+          duration: const Duration(milliseconds: 111),
+          curve: Curves.easeInOut,
+          scale: widget.showThumb.value || _isHovering.value ? 1 : 0,
+          child: GestureDetector(
+            onPanUpdate: (details) {
+              _onSeek(details.localPosition);
+            },
+            child: CustomPaint(
+              size: Size(size, size), // Adjust size based on showThumb
+              painter: _ThumbPainter(size: size),
             ),
           ),
-        );
-      },
-    );
+        ),
+      );
+    });
   }
 }
 

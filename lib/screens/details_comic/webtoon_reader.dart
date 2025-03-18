@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/notifier+/notifier_plus_mixin.dart';
+import 'package:kaeru/kaeru.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class WebToonReader extends StatefulWidget {
   final int itemCount;
   final Widget Function(BuildContext context, int index) itemBuilder;
-  final ValueNotifier<double> currentPage;
+  final Ref<double> currentPage;
 
   const WebToonReader(
       {super.key,
@@ -17,7 +17,7 @@ class WebToonReader extends StatefulWidget {
   State<WebToonReader> createState() => _WebToonReaderState();
 }
 
-class _WebToonReaderState extends State<WebToonReader> with NotifierPlusMixin {
+class _WebToonReaderState extends State<WebToonReader> {
   final _itemScrollController = ItemScrollController();
   // final _scrollOffsetController = ScrollOffsetController();
   final _itemPositionsListener = ItemPositionsListener.create();

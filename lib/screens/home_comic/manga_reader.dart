@@ -14,11 +14,6 @@ import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_modes.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 import 'package:hoyomi/database/scheme/history_chap.dart';
-import 'package:hoyomi/notifier+/computed_notifier.dart';
-import 'package:hoyomi/notifier+/notifier_plus_mixin.dart';
-import 'package:hoyomi/notifier+/watch_computed.dart';
-import 'package:hoyomi/notifier+/watch_computes.dart';
-import 'package:hoyomi/notifier+/watch_notifier.dart';
 import 'package:hoyomi/screens/details_comic/horizon_reader.dart';
 import 'package:hoyomi/screens/details_comic/vertical_reader.dart';
 import 'package:hoyomi/screens/details_comic/webtoon_reader.dart';
@@ -27,6 +22,7 @@ import 'package:hoyomi/widgets/comments/widget/comments_sheet.dart';
 import 'package:hoyomi/widgets/image_picker.dart';
 import 'package:hoyomi/widgets/comic/sheet_chapters.dart';
 import 'package:hoyomi/widgets/tap_listener.dart';
+import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
 class ImageWithGroup extends OImage {
@@ -69,34 +65,32 @@ class MangaReader extends StatefulWidget {
 }
 
 class _MangaReaderState extends State<MangaReader>
-    with AutomaticKeepAliveClientMixin, NotifierPlusMixin {
+    with AutomaticKeepAliveClientMixin, KaeruMixin, KaeruListenMixin {
   @override
   bool get wantKeepAlive => true;
 
-  late final ComputedNotifier<ComicChapter?> _nextChapter;
-  late final ComputedNotifier<ComicChapter?> _prevChapter;
+  late final Computed<ComicChapter?> _nextChapter;
+  late final Computed<ComicChapter?> _prevChapter;
 
   final Set<int> _skipImages = {};
 
-  late final ValueNotifier<List<ImageWithGroup>> _pages;
-  late final ValueNotifier<String> _chapterId;
-  late final ValueNotifier<ComicModes> _mode;
+  late final Ref<String> _chapterId = ref(widget.chapterId);
+  late final Ref<List<ImageWithGroup>> _pages;
+  late final Ref<ComicModes> _mode;
 
-  final _showToolbar = ValueNotifier(true);
-  final _useTwoPage = ValueNotifier(false);
+  late final _showToolbar = ref(true);
+  late final _useTwoPage = ref(false);
 
   Map<String, HistoryChap>? _historyChapters;
 
-  final _currentPage = ValueNotifier(0.0);
-  late final ComputedNotifier<double> _realCurrentPage;
-  late final ComputedNotifier<int> _realLength;
+  late final _currentPage = ref(0.0);
+  late final Computed<double> _realCurrentPage;
+  late final Computed<int> _realLength;
 
   @override
   void initState() {
-    _chapterId = ValueNotifier(widget.chapterId);
-
     final chapter = _getChapterObject(chapterId: _chapterId.value)!;
-    _pages = ValueNotifier(widget.pages.indexed.map((params) {
+    _pages = ref(widget.pages.indexed.map((params) {
       final (index, page) = params;
 
       return ImageWithGroup(
@@ -107,20 +101,20 @@ class _MangaReaderState extends State<MangaReader>
       );
     }).toList());
 
-    final startPage = ComputedNotifier(() {
+    final startPage = computed(() {
       return _pages.value.indexWhere((page) =>
           page.chapter.chapterId == _chapterId.value &&
           page.src != OImage.fake);
-    }, depends: [_chapterId, _pages]);
-    final stopPage = ComputedNotifier(() {
+    });
+    final stopPage = computed(() {
       return _pages.value.lastIndexWhere((page) =>
           page.chapter.chapterId == _chapterId.value &&
           page.src != OImage.fake);
-    }, depends: [_chapterId, _pages]);
+    });
 
-    _mode = ValueNotifier(
-        widget.service.getComicModes(widget.comic) ?? ComicModes.webToon);
-    _realCurrentPage = ComputedNotifier(() {
+    _mode =
+        ref(widget.service.getComicModes(widget.comic) ?? ComicModes.webToon);
+    _realCurrentPage = computed(() {
       final pages = _pages.value;
       final currentPage = _currentPage.value.round();
       final index = pages[currentPage].index;
@@ -133,38 +127,32 @@ class _MangaReaderState extends State<MangaReader>
       }
 
       return index.toDouble();
-    }, depends: [_currentPage, _chapterId, _pages]);
-    _realLength = ComputedNotifier(() {
+    });
+    _realLength = computed(() {
       final start = startPage.value;
       final stop = stopPage.value;
 
       return stop - start + 1;
-    }, depends: [startPage, stopPage]);
+    });
 
-    _prevChapter = ComputedNotifier(
-      () {
-        final index = widget.comic.chapters
-            .indexWhere((chapter) => chapter.chapterId == _chapterId.value);
-        if (index < 1) return null;
+    _prevChapter = computed(() {
+      final index = widget.comic.chapters
+          .indexWhere((chapter) => chapter.chapterId == _chapterId.value);
+      if (index < 1) return null;
 
-        return widget.comic.chapters.elementAtOrNull(index - 1);
-      },
-      depends: [_chapterId],
-    );
-    _nextChapter = ComputedNotifier(
-      () {
-        final index = widget.comic.chapters
-            .indexWhere((chapter) => chapter.chapterId == _chapterId.value);
+      return widget.comic.chapters.elementAtOrNull(index - 1);
+    });
+    _nextChapter = computed(() {
+      final index = widget.comic.chapters
+          .indexWhere((chapter) => chapter.chapterId == _chapterId.value);
 
-        return widget.comic.chapters.elementAtOrNull(index + 1);
-      },
-      depends: [_chapterId],
-    );
+      return widget.comic.chapters.elementAtOrNull(index + 1);
+    });
 
     // bool prefetchingPrev = false;
     bool prefetchingNext = false;
     final Map<String, bool> chaptersLoadedStore = {};
-    listenNotifier(_currentPage, () async {
+    listen(_currentPage, () async {
       _updateRoute();
 
       // if (_currentPage.value <= 0 && _usingPageView) {
@@ -413,9 +401,7 @@ class _MangaReaderState extends State<MangaReader>
             rows: 3,
             columns: 3,
             onTap: _onTapGrid,
-            child: WatchNotifier(
-                depends: [_pages, _mode],
-                builder: (context) => _buildReader(_pages.value, _mode.value)),
+            child: Watch((context) => _buildReader(_pages.value, _mode.value)),
           ),
           Positioned(left: 0, right: 0, bottom: 0, child: _buildBottomBar()),
         ],
@@ -430,16 +416,14 @@ class _MangaReaderState extends State<MangaReader>
         trackHeight: 15.0,
         overlayShape: SliderComponentShape.noOverlay,
       ),
-      child: WatchComputes(
-          computes: [_realCurrentPage, _realLength],
-          builder: (context) => Slider(
-                min: 0.0,
-                max: _realLength.value - 1,
-                value: min(_realCurrentPage.value, _realLength.value - 1),
-                onChanged: (value) {
-                  _currentPage.value = value; //.toInt();
-                },
-              )),
+      child: Watch((context) => Slider(
+            min: 0.0,
+            max: _realLength.value - 1,
+            value: min(_realCurrentPage.value, _realLength.value - 1),
+            onChanged: (value) {
+              _currentPage.value = value; //.toInt();
+            },
+          )),
     );
   }
 
@@ -492,46 +476,43 @@ class _MangaReaderState extends State<MangaReader>
                   const SizedBox(height: 8.0),
 
                   // Button Group
-                  WatchNotifier(
-                      depends: [_mode],
-                      builder: (context) => ToggleButtons(
-                            isSelected: [
-                              _mode.value == ComicModes.leftToRight,
-                              _mode.value == ComicModes.rightToLeft,
-                              _mode.value == ComicModes.topToBottom,
-                              _mode.value == ComicModes.webToon,
-                            ],
-                            onPressed: (index) {
-                              _mode.value = ComicModes.values.elementAt(index);
-                            },
-                            borderRadius: BorderRadius.circular(15.0),
-                            selectedColor: Colors.black,
-                            fillColor: Theme.of(context).colorScheme.primary,
-                            color: Theme.of(context).colorScheme.onSurface,
-                            constraints: const BoxConstraints(
-                              minHeight: 50.0,
-                              minWidth: 70.0,
-                            ),
-                            children: [
-                              _buildIconWithLabel(
-                                MaterialCommunityIcons.cog,
-                                "Standard",
-                              ),
-                              _buildIconWithLabel(
-                                MaterialCommunityIcons.arrow_left,
-                                "RTL",
-                              ),
-                              _buildIconWithLabel(
-                                MaterialCommunityIcons
-                                    .format_vertical_align_center,
-                                "Vertical",
-                              ),
-                              _buildIconWithLabel(
-                                MaterialCommunityIcons.web,
-                                "Webtoon",
-                              ),
-                            ],
-                          )),
+                  Watch((context) => ToggleButtons(
+                        isSelected: [
+                          _mode.value == ComicModes.leftToRight,
+                          _mode.value == ComicModes.rightToLeft,
+                          _mode.value == ComicModes.topToBottom,
+                          _mode.value == ComicModes.webToon,
+                        ],
+                        onPressed: (index) {
+                          _mode.value = ComicModes.values.elementAt(index);
+                        },
+                        borderRadius: BorderRadius.circular(15.0),
+                        selectedColor: Colors.black,
+                        fillColor: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.onSurface,
+                        constraints: const BoxConstraints(
+                          minHeight: 50.0,
+                          minWidth: 70.0,
+                        ),
+                        children: [
+                          _buildIconWithLabel(
+                            MaterialCommunityIcons.cog,
+                            "Standard",
+                          ),
+                          _buildIconWithLabel(
+                            MaterialCommunityIcons.arrow_left,
+                            "RTL",
+                          ),
+                          _buildIconWithLabel(
+                            MaterialCommunityIcons.format_vertical_align_center,
+                            "Vertical",
+                          ),
+                          _buildIconWithLabel(
+                            MaterialCommunityIcons.web,
+                            "Webtoon",
+                          ),
+                        ],
+                      )),
                   const SizedBox(height: 16.0),
 
                   // Description Text
@@ -567,14 +548,12 @@ class _MangaReaderState extends State<MangaReader>
                           ),
                           Transform.scale(
                             scale: 0.8,
-                            child: WatchNotifier(
-                                depends: [_useTwoPage],
-                                builder: (context) => Switch(
-                                      value: _useTwoPage.value,
-                                      onChanged: (value) {
-                                        _useTwoPage.value = value;
-                                      },
-                                    )),
+                            child: Watch((context) => Switch(
+                                  value: _useTwoPage.value,
+                                  onChanged: (value) {
+                                    _useTwoPage.value = value;
+                                  },
+                                )),
                           ),
                         ],
                       ),
@@ -738,27 +717,25 @@ class _MangaReaderState extends State<MangaReader>
       );
     }
 
-    return WatchNotifier(
-        depends: [_useTwoPage],
-        builder: (context) => HorizonReader(
-              itemCount: pages.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _buildPage(index);
-              },
-              currentPage: _currentPage,
-              builderImage: (int index) {
-                final item = pages.elementAt(index);
+    return Watch((context) => HorizonReader(
+          itemCount: pages.length,
+          itemBuilder: (BuildContext context, int index) {
+            return _buildPage(index);
+          },
+          currentPage: _currentPage,
+          builderImage: (int index) {
+            final item = pages.elementAt(index);
 
-                return OImage.network(
-                  item.src,
-                  sourceId: widget.service.uid,
-                  headers: item.headers,
-                  fit: BoxFit.contain,
-                );
-              },
-              rtl: mode == ComicModes.rightToLeft,
-              twoPage: _useTwoPage.value,
-            ));
+            return OImage.network(
+              item.src,
+              sourceId: widget.service.uid,
+              headers: item.headers,
+              fit: BoxFit.contain,
+            );
+          },
+          rtl: mode == ComicModes.rightToLeft,
+          twoPage: _useTwoPage.value,
+        ));
   }
 
   Widget _buildPageLoading(ImageChunkEvent? loadingProgress) {
@@ -773,223 +750,199 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   Widget _buildBottomBar() {
-    return WatchNotifier(
-        depends: [_showToolbar],
-        builder: (context) => AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              transitionBuilder: (child, animation) {
-                const begin = Offset(0.0, kToolbarHeight * 2.5);
-                const end = Offset.zero;
-                const curve = Curves.easeInOut;
+    return Watch((context) => AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          transitionBuilder: (child, animation) {
+            const begin = Offset(0.0, kToolbarHeight * 2.5);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
 
-                var tween = Tween(
-                  begin: begin,
-                  end: end,
-                ).chain(CurveTween(curve: curve));
-                var offsetAnimation = animation.drive(tween);
+            var tween = Tween(
+              begin: begin,
+              end: end,
+            ).chain(CurveTween(curve: curve));
+            var offsetAnimation = animation.drive(tween);
 
-                return SlideTransition(position: offsetAnimation, child: child);
-              },
-              child: !_showToolbar.value
-                  ? null
-                  : Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Material(
-                                color: Colors.transparent,
-                                child: WatchComputed(
-                                    computed: _prevChapter,
-                                    builder: (context, prevChapter) =>
-                                        AbsorbPointer(
-                                          absorbing: prevChapter == null,
-                                          child: Ink(
-                                            decoration: ShapeDecoration(
-                                              color: Theme.of(
-                                                context,
-                                              )
-                                                  .colorScheme
-                                                  .surface
-                                                  .withValues(alpha: 0.9),
-                                              shape: CircleBorder(),
-                                            ),
-                                            child: IconButton(
-                                              iconSize: 30.0,
-                                              icon: Icon(
-                                                MaterialCommunityIcons
-                                                    .skip_previous,
-                                              ),
-                                              color: prevChapter != null
-                                                  ? Theme.of(
-                                                      context,
-                                                    ).colorScheme.onSurface
-                                                  : Theme.of(context)
-                                                      .colorScheme
-                                                      .onSurface
-                                                      .withValues(alpha: 0.5),
-                                              onPressed: () {
-                                                context.replace(
-                                                  "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_prevChapter.value!.chapterId}",
-                                                  extra: {
-                                                    'comic': widget.comic
-                                                  },
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                        )),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 6.0),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Material(
+            return SlideTransition(position: offsetAnimation, child: child);
+          },
+          child: !_showToolbar.value
+              ? null
+              : Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Material(
+                            color: Colors.transparent,
+                            child: Watch((context) => AbsorbPointer(
+                                  absorbing: _prevChapter.value == null,
+                                  child: Ink(
+                                    decoration: ShapeDecoration(
                                       color: Theme.of(
                                         context,
                                       )
                                           .colorScheme
                                           .surface
                                           .withValues(alpha: 0.9),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0,
-                                          vertical: 15.0,
-                                        ),
-                                        child: _buildProgressControl(),
+                                      shape: CircleBorder(),
+                                    ),
+                                    child: IconButton(
+                                      iconSize: 30.0,
+                                      icon: Icon(
+                                        MaterialCommunityIcons.skip_previous,
                                       ),
+                                      color: _prevChapter.value != null
+                                          ? Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withValues(alpha: 0.5),
+                                      onPressed: () {
+                                        context.replace(
+                                          "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_prevChapter.value!.chapterId}",
+                                          extra: {'comic': widget.comic},
+                                        );
+                                      },
                                     ),
                                   ),
-                                ),
-                              ),
-                              Material(
-                                color: Colors.transparent,
-                                child: WatchComputed(
-                                  computed: _nextChapter,
-                                  builder: (context, nextChapter) =>
-                                      AbsorbPointer(
-                                          absorbing: nextChapter == null,
-                                          child: Ink(
-                                            decoration: ShapeDecoration(
-                                              color: Theme.of(
-                                                context,
-                                              )
-                                                  .colorScheme
-                                                  .surface
-                                                  .withValues(alpha: 0.9),
-                                              shape: CircleBorder(),
-                                            ),
-                                            child: IconButton(
-                                              iconSize: 30.0,
-                                              icon: Icon(MaterialCommunityIcons
-                                                  .skip_next),
-                                              color: nextChapter != null
-                                                  ? Theme.of(
-                                                      context,
-                                                    ).colorScheme.onSurface
-                                                  : Theme.of(context)
-                                                      .colorScheme
-                                                      .onSurface
-                                                      .withValues(alpha: 0.5),
-                                              onPressed: () {
-                                                context.replace(
-                                                  "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_nextChapter.value!.chapterId}",
-                                                  extra: {
-                                                    'comic': widget.comic
-                                                  },
-                                                );
-                                              },
-                                            ),
-                                          )),
-                                ),
-                              ),
-                            ],
+                                )),
                           ),
-                        ),
-                        SizedBox(height: 8.0),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                          ).add(EdgeInsets.only(bottom: 8.0)),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: BackdropFilter(
-                              filter:
-                                  ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                              child: Material(
-                                color: Theme.of(
-                                  context,
-                                )
-                                    .scaffoldBackgroundColor
-                                    .withValues(alpha: 0.8),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 12.0,
-                                    vertical: 8.0,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: ButtonInset(
-                                          icon: Ionicons.heart_outline,
-                                          text: 'Like',
-                                          onPressed: () {},
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: ButtonInset(
-                                          icon:
-                                              Ionicons.chatbox_ellipses_outline,
-                                          text: 'Comments',
-                                          disabled: widget.service
-                                                  is! ComicAuthMixin ||
-                                              (widget.service as ComicAuthMixin)
-                                                      .getComments ==
-                                                  null,
-                                          onPressed: _showPanelComments,
-                                        ),
-                                      ),
-                                      Expanded(
-                                          child: WatchComputes(
-                                        computes: [
-                                          _realCurrentPage,
-                                          _realLength
-                                        ],
-                                        builder: (context) => ButtonInset(
-                                          icon: Ionicons.list,
-                                          text:
-                                              '${_realCurrentPage.value.toInt() + 1} / ${_realLength.value}',
-                                          onPressed: _showPanelListChapters,
-                                        ),
-                                      )),
-                                      Expanded(
-                                        child: ButtonInset(
-                                          icon: Ionicons.settings_outline,
-                                          text: 'Settings',
-                                          onPressed: _showPanelSettings,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: ButtonInset(
-                                          icon: Ionicons.arrow_forward,
-                                          text: 'Skip',
-                                          onPressed: _showPanelSkipPages,
-                                        ),
-                                      ),
-                                    ],
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 6.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Material(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.surface.withValues(alpha: 0.9),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0,
+                                      vertical: 15.0,
+                                    ),
+                                    child: _buildProgressControl(),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                          Material(
+                            color: Colors.transparent,
+                            child: Watch(
+                              (context) => AbsorbPointer(
+                                  absorbing: _nextChapter.value == null,
+                                  child: Ink(
+                                    decoration: ShapeDecoration(
+                                      color: Theme.of(
+                                        context,
+                                      )
+                                          .colorScheme
+                                          .surface
+                                          .withValues(alpha: 0.9),
+                                      shape: CircleBorder(),
+                                    ),
+                                    child: IconButton(
+                                      iconSize: 30.0,
+                                      icon: Icon(
+                                          MaterialCommunityIcons.skip_next),
+                                      color: _nextChapter.value != null
+                                          ? Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withValues(alpha: 0.5),
+                                      onPressed: () {
+                                        context.replace(
+                                          "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_nextChapter.value!.chapterId}",
+                                          extra: {'comic': widget.comic},
+                                        );
+                                      },
+                                    ),
+                                  )),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-            ));
+                    SizedBox(height: 8.0),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                      ).add(EdgeInsets.only(bottom: 8.0)),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                          child: Material(
+                            color: Theme.of(
+                              context,
+                            ).scaffoldBackgroundColor.withValues(alpha: 0.8),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                                vertical: 8.0,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: ButtonInset(
+                                      icon: Ionicons.heart_outline,
+                                      text: 'Like',
+                                      onPressed: () {},
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: ButtonInset(
+                                      icon: Ionicons.chatbox_ellipses_outline,
+                                      text: 'Comments',
+                                      disabled:
+                                          widget.service is! ComicAuthMixin ||
+                                              (widget.service as ComicAuthMixin)
+                                                      .getComments ==
+                                                  null,
+                                      onPressed: _showPanelComments,
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: Watch(
+                                    (context) => ButtonInset(
+                                      icon: Ionicons.list,
+                                      text:
+                                          '${_realCurrentPage.value.toInt() + 1} / ${_realLength.value}',
+                                      onPressed: _showPanelListChapters,
+                                    ),
+                                  )),
+                                  Expanded(
+                                    child: ButtonInset(
+                                      icon: Ionicons.settings_outline,
+                                      text: 'Settings',
+                                      onPressed: _showPanelSettings,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: ButtonInset(
+                                      icon: Ionicons.arrow_forward,
+                                      text: 'Skip',
+                                      onPressed: _showPanelSkipPages,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+        ));
   }
 
   void _prevPage() {

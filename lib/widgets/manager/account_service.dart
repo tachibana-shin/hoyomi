@@ -6,7 +6,7 @@ import 'package:hoyomi/composable/use_user.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
-import 'package:signals/signals_flutter.dart';
+import 'package:kaeru/kaeru.dart';
 
 class AccountService extends StatefulWidget {
   final Service service;
@@ -17,10 +17,10 @@ class AccountService extends StatefulWidget {
   createState() => _AccountServiceState();
 }
 
-class _AccountServiceState extends State<AccountService> with SignalsMixin {
+class _AccountServiceState extends State<AccountService> with KaeruMixin {
   late final UserData? _user;
 
-  late final _status = createComputed(() {
+  late final _status = computed(() {
     if (!_serviceAccountSupport) return "NOT_SUPPORT";
     if (_user?.fetching.value == true) return "LOADING";
     if (_user?.error.value != null) return 'ERROR';
@@ -60,18 +60,18 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
               ),
             ),
             const SizedBox(width: 5.0),
-            _buildUserAvatar(),
+            Watch((c) => _buildUserAvatar()),
           ],
         ),
         const SizedBox(height: 12.0),
-        _buildUserDetails(context),
-        _buildActions(),
+        Watch((c) => _buildUserDetails(context)),
+        Watch((c) => _buildActions()),
       ],
     );
   }
 
   Widget _buildUserAvatar() {
-    switch (_status()) {
+    switch (_status.value) {
       case "NOT_SUPPORT":
         return CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.onSecondary,
@@ -115,7 +115,7 @@ class _AccountServiceState extends State<AccountService> with SignalsMixin {
 
   Widget _buildUserDetails(BuildContext context) {
     Widget oneLine;
-    switch (_status()) {
+    switch (_status.value) {
       case "NOT_SUPPORT":
         oneLine = Text(
           'This service does not support accounts.',

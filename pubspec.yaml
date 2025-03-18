@@ -46,6 +46,7 @@ dependencies:
   intl: any
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
+  kaeru: ^0.1.6
   markdown: ^7.3.0
   marquee: ^2.3.0
   mediaquery_sizer: ^1.1.1

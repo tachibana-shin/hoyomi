@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:hoyomi/notifier+/notifier_plus_mixin.dart';
+import 'package:kaeru/kaeru.dart';
 
 class HorizonReader extends StatefulWidget {
   final int itemCount;
   final Widget Function(BuildContext context, int index) itemBuilder;
-  final ValueNotifier<double> currentPage;
+  final Ref<double> currentPage;
 
   final Image Function(int page) builderImage;
   final bool rtl;
@@ -25,7 +25,7 @@ class HorizonReader extends StatefulWidget {
   State<HorizonReader> createState() => _HorizonReaderState();
 }
 
-class _HorizonReaderState extends State<HorizonReader> with NotifierPlusMixin {
+class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
   late final PageController _controller;
   final Map<int, double> _aspectRatios = {};
   final Map<int, double> _imagesLoaded = {};
@@ -66,7 +66,7 @@ class _HorizonReaderState extends State<HorizonReader> with NotifierPlusMixin {
 
     _controller = PageController(initialPage: widget.currentPage.value.toInt());
 
-    listenNotifier(widget.currentPage, () {
+    listen(widget.currentPage, () {
       if (_controller.position.isScrollingNotifier.value) return;
       _jumping = true;
 

@@ -6,13 +6,12 @@ import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/interfaces/user.dart';
-import 'package:signals/signals.dart' as core_signals;
-import 'package:signals/signals_flutter.dart' as flutter_signals;
+import 'package:kaeru/kaeru.dart';
 
 class UserData {
-  final core_signals.Signal<User?> user;
-  final core_signals.Signal<String?> error;
-  final core_signals.Signal<bool> fetching;
+  final Ref<User?> user;
+  final Ref<String?> error;
+  final Ref<bool> fetching;
   final Future<void> Function() refresh;
 
   const UserData({
@@ -26,17 +25,12 @@ class UserData {
 UserData useUser(
   AuthMixin service, {
   bool immediate = true,
-  flutter_signals.SignalsMixin? context,
+  KaeruMixin? context,
 }) {
-  final user = context != null
-      ? context.createSignal<User?>(null)
-      : core_signals.signal<User?>(null);
-  final error = context != null
-      ? context.createSignal<String?>(null)
-      : core_signals.signal<String?>(null);
-  final fetching = context != null
-      ? context.createSignal<bool>(true)
-      : core_signals.signal<bool>(true);
+  final user = context != null ? context.ref<User?>(null) : Ref<User?>(null);
+  final error =
+      context != null ? context.ref<String?>(null) : Ref<String?>(null);
+  final fetching = context != null ? context.ref<bool>(true) : Ref<bool>(true);
 
   Future<void> refresh() async {
     fetching.value = true;

@@ -16,7 +16,6 @@ import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/database/scheme/history_chap.dart';
-import 'package:hoyomi/notifier+/watch_notifier.dart';
 import 'package:hoyomi/plugins/event_bus.dart';
 import 'package:hoyomi/utils/format_number.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
@@ -27,8 +26,8 @@ import 'package:hoyomi/widgets/comments/widget/comments.dart';
 import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
 import 'package:hoyomi/widgets/comic/sheet_chapters.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
-import 'package:signals/signals_flutter.dart';
 
 class DetailsComic extends StatefulWidget {
   final String sourceId;
@@ -45,7 +44,7 @@ class DetailsComic extends StatefulWidget {
 }
 
 class _DetailsComicState extends State<DetailsComic>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, KaeruMixin {
   Future<ComicSection>? _suggestFuture;
   late final ComicService _service;
 
@@ -53,12 +52,12 @@ class _DetailsComicState extends State<DetailsComic>
 
   final ScrollController _scrollController = ScrollController();
 
-  final _isTitleVisible = ValueNotifier(false);
+  late final _isTitleVisible = ref(false);
   String _title = "";
   MetaComic? _comic;
 
   // History data
-  final _historyChapters = ValueNotifier<Map<String, HistoryChap>?>(null);
+  late final _historyChapters = ref<Map<String, HistoryChap>?>(null);
 
   @override
   void initState() {
@@ -152,13 +151,11 @@ class _DetailsComicState extends State<DetailsComic>
               context.pop();
             },
           ),
-          title: WatchNotifier(
-              depends: [_isTitleVisible],
-              builder: (context) => AnimatedOpacity(
-                    duration: const Duration(milliseconds: 200),
-                    opacity: _isTitleVisible.value ? 1.0 : 0.0,
-                    child: Text(_title),
-                  )),
+          title: Watch((context) => AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: _isTitleVisible.value ? 1.0 : 0.0,
+                child: Text(_title),
+              )),
           actions: [
             if (_service is ComicAuthMixin && _service is AuthMixin)
               _AvatarUser(service: _service),
@@ -456,9 +453,7 @@ class _DetailsComicState extends State<DetailsComic>
         const SizedBox(height: 16.0),
         Row(
           children: [
-            WatchNotifier(
-                depends: [_historyChapters],
-                builder: (context) => Expanded(child: _buildButtonRead(comic))),
+            Watch((context) => Expanded(child: _buildButtonRead(comic))),
             const SizedBox(width: 8.0),
             _buildButtonDownload(),
           ],
@@ -703,15 +698,13 @@ class _DetailsComicState extends State<DetailsComic>
 
   Widget? _buildSheetChapters() {
     if (_comic == null) return null;
-    return WatchNotifier(
-        depends: [_historyChapters],
-        builder: (context) => SheetChapters(
-              comic: _comic!,
-              sourceId: widget.sourceId,
-              comicId: widget.comicId,
-              histories: _historyChapters.value,
-              initialChildSize: 0.15,
-            ));
+    return Watch((context) => SheetChapters(
+          comic: _comic!,
+          sourceId: widget.sourceId,
+          comicId: widget.comicId,
+          histories: _historyChapters.value,
+          initialChildSize: 0.15,
+        ));
   }
 }
 
@@ -864,7 +857,7 @@ class _AvatarUser extends StatefulWidget {
 }
 
 class _AvatarUserState extends State<_AvatarUser> {
-  Signal<User?>? _user;
+  Ref<User?>? _user;
   Future<void> Function()? _refresh;
   Function()? _onDispose;
 
@@ -878,9 +871,9 @@ class _AvatarUserState extends State<_AvatarUser> {
           _user = value.user;
           _refresh = value.refresh;
 
-          _onDispose = value.error.subscribe((error) {
-            if (error != null) {
-              showSnackBar(Text('Sign in failed: $error'));
+          value.error.addListener(() {
+            if (value.error.value != null) {
+              showSnackBar(Text('Sign in failed: ${value.error.value}'));
               value.user.value = null;
             }
           });

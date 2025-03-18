@@ -9,11 +9,11 @@ import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/utils/format_number.dart';
-import 'package:signals/signals_flutter.dart';
+import 'package:kaeru/kaeru.dart';
 
 class ButtonFollowEiga extends StatefulWidget {
-  final ValueNotifier<String> eigaId;
-  final ValueNotifier<MetaEiga> metaEiga;
+  final Ref<String> eigaId;
+  final Ref<MetaEiga> metaEiga;
   final Service service;
 
   const ButtonFollowEiga({
@@ -27,10 +27,10 @@ class ButtonFollowEiga extends StatefulWidget {
   createState() => _ButtonFollowEigaState();
 }
 
-class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
-  late final _loading = createSignal(false);
-  late final _isFollowed = createSignal(false);
-  late final _followCount = createSignal<int?>(null);
+class _ButtonFollowEigaState extends State<ButtonFollowEiga> with KaeruMixin {
+  late final _loading = ref(false);
+  late final _isFollowed = ref(false);
+  late final _followCount = ref<int?>(null);
 
   late final UserData? _user;
 
@@ -77,13 +77,13 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
 
   @override
   Widget build(BuildContext context) {
-    final isFollowed = _isFollowed();
-    final followCount = _followCount();
+    final isFollowed = _isFollowed.value;
+    final followCount = _followCount.value;
 
     return Opacity(
-      opacity: (_supportAuth && !_loading()) ? 1.0 : 0.5,
+      opacity: (_supportAuth && !_loading.value) ? 1.0 : 0.5,
       child: IgnorePointer(
-        ignoring: !(_supportAuth && !_loading()),
+        ignoring: !(_supportAuth && !_loading.value),
         child: ElevatedButton.icon(
           onPressed: _onTap,
           icon: Icon(
@@ -115,7 +115,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with SignalsMixin {
     if (!_supportAuth) return;
     final service = widget.service as EigaAuthMixin;
 
-    final isSigned = _user?.user() != null;
+    final isSigned = _user?.user.value != null;
     if (!isSigned) {
       showSnackBar(
         Text('Please sign in to follow eiga.'),
