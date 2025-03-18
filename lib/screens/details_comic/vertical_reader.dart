@@ -18,8 +18,7 @@ class VerticalReader extends StatefulWidget {
   State<VerticalReader> createState() => _VerticalReaderState();
 }
 
-class _VerticalReaderState extends State<VerticalReader>
-    with KaeruListenMixin {
+class _VerticalReaderState extends State<VerticalReader> with KaeruListenMixin {
   late final PageController _controller;
 
   bool _jumping = false;
