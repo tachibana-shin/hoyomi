@@ -21,6 +21,7 @@ import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/transition/slide_fade_transition.dart';
+import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:hoyomi/utils/format_duration.dart';
@@ -33,6 +34,11 @@ import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart' as type;
 import 'package:hoyomi/utils/save_file_cache.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+
+import 'widget/animated_icon_forward.dart';
+import 'widget/animated_icon_rewind.dart';
+import 'widget/area_forward.dart';
+import 'widget/area_rewind.dart';
 
 // import 'package:bitmovin_player/bitmovin_player.dart';
 // import 'package:theoplayer/theoplayer.dart';
@@ -162,6 +168,9 @@ class _PlayerEigaState extends State<PlayerEiga>
   late final _loading = ref(true);
   late final _playing = ref(true);
   late final _aspectRatio = ref<double>(1.0);
+
+  late final _doubleTapToRewind = ref(0);
+  late final _doubleTapToForward = ref(0);
 
   late final AsyncComputed<SourceVideo?> _source;
   late final AsyncComputed<List<type.Subtitle>> _subtitles;
@@ -350,6 +359,28 @@ class _PlayerEigaState extends State<PlayerEiga>
         _activeTime = DateTime.now();
       }
     }, immediate: true);
+
+    /// ================== Control effect double tap to view =================
+    final resetDoubleTapToRewind = Debouncer<void>(
+        Duration(milliseconds: 1000), (_) => _doubleTapToRewind.value = 0);
+    final resetDoubleTapToForward = Debouncer<void>(
+        Duration(milliseconds: 1000), (_) => _doubleTapToForward.value = 0);
+
+    onBeforeUnmount(() {
+      resetDoubleTapToRewind.dispose();
+      resetDoubleTapToForward.dispose();
+    });
+
+    watch([_doubleTapToRewind], () {
+      if (_doubleTapToRewind.value != 0) resetDoubleTapToRewind.run(null);
+      _doubleTapToForward.value = 0;
+    });
+    watch([_doubleTapToForward], () {
+      if (_doubleTapToForward.value != 0) resetDoubleTapToForward.run(null);
+      _doubleTapToRewind.value = 0;
+    });
+
+    /// ================== /Control effect double tap to view =================
   }
 
   Timer? _timer;
@@ -513,6 +544,30 @@ class _PlayerEigaState extends State<PlayerEiga>
     }
   }
 
+  void _onDoubleTapPlayer(TapDownDetails details) {
+    final controller = _controller.value;
+    if (controller == null) return;
+
+    // Get the RenderBox of the widget to calculate the tap position relative to its width.
+    final box = context.findRenderObject() as RenderBox;
+    final localOffset = details.localPosition;
+    final width = box.size.width;
+    final dxRatio = localOffset.dx / width; // Normalize x coordinate
+
+    // Process only if tap is within left 1/3 or right 1/3 of the widget.
+    if (dxRatio <= 1 / 3) {
+      debugPrint('tap left');
+      _doubleTapToRewind.value++;
+      controller.seekTo(_position.value - Duration(seconds: 10));
+      return;
+    }
+    if (dxRatio >= 2 / 3) {
+      debugPrint('tap right');
+      _doubleTapToForward.value++;
+      controller.seekTo(_position.value + Duration(seconds: 10));
+    }
+  }
+
   Future<void> _initializeHls({
     required String content,
     required Uri url,
@@ -588,12 +643,14 @@ class _PlayerEigaState extends State<PlayerEiga>
             opacity: 0.0,
             child: GestureDetector(
               onTap: _onTapToggleControls,
+              onDoubleTapDown: _onDoubleTapPlayer,
               child: Container(color: Colors.black),
             ),
           ),
         ),
         GestureDetector(
           onTap: _onTapToggleControls,
+          onDoubleTapDown: _onDoubleTapPlayer,
           child: LayoutBuilder(
             builder: (context, constraints) => Watch((context) {
               final controller = _controller.value;
@@ -668,6 +725,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           final child = _showControls.value || _error.value != null
               ? GestureDetector(
                   onTap: _onTapToggleControls,
+                  onDoubleTapDown: _onDoubleTapPlayer,
                   child: Container(
                     color: Colors.black.withValues(alpha: 0.5),
                     child: Stack(
@@ -694,6 +752,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         Watch((context) => _fullscreen.value
             ? _buildMobileSliderProgress()
             : SizedBox.shrink()),
+        _buildUIDoubleTapView(),
         _buildPopupOpeningEnding(),
         _buildOverlayInherit(),
       ],
@@ -1015,6 +1074,123 @@ class _PlayerEigaState extends State<PlayerEiga>
             ),
           ),
         ));
+  }
+
+  Widget _buildUIDoubleTapView() {
+    return LayoutBuilder(
+        builder: (context, constrains) => Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Stack(children: [
+              // left
+              Watch(
+                (c) => AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (child, animation) =>
+                      FadeTransition(opacity: animation, child: child),
+                  child: _doubleTapToRewind.value > 0
+                      ? GestureDetector(
+                          onTap: () {
+                            _doubleTapToRewind.value++;
+                            _controller.value?.seekTo(
+                                _position.value + Duration(seconds: 10));
+                          },
+                          child: Stack(children: [
+                            Positioned(
+                              top: 0,
+                              bottom: 0,
+                              left: 0,
+                              child: Container(
+                                  width: constrains.biggest.width / 2,
+                                  height: constrains.biggest.height * 2,
+                                  clipBehavior: Clip.hardEdge,
+                                  decoration:
+                                      BoxDecoration(color: Colors.transparent),
+                                  child: CustomPaint(painter: AreaRewind())),
+                              // Center(child: AnimatedSkipIcon())
+                            ),
+                            Positioned(
+                                top: 0,
+                                bottom: 0,
+                                left: 0,
+                                child: Container(
+                                    width: constrains.biggest.width / 2,
+                                    height: constrains.biggest.height * 2,
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: BoxDecoration(
+                                        color: Colors.transparent),
+                                    child: Center(
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                          AnimatedIconRewind(),
+                                          Text(
+                                              '${_doubleTapToRewind.value}0 seconds',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12.0))
+                                        ]))))
+                          ]))
+                      : SizedBox.shrink(),
+                ),
+              ),
+              // right
+              Watch(
+                (c) => AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (child, animation) =>
+                      FadeTransition(opacity: animation, child: child),
+                  child: _doubleTapToForward.value > 0
+                      ? GestureDetector(
+                          onTap: () {
+                            _doubleTapToForward.value++;
+                            _controller.value?.seekTo(
+                                _position.value + Duration(seconds: 10));
+                          },
+                          child: Stack(children: [
+                            Positioned(
+                              top: 0,
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                  width: constrains.biggest.width / 2,
+                                  height: constrains.biggest.height * 2,
+                                  clipBehavior: Clip.hardEdge,
+                                  decoration:
+                                      BoxDecoration(color: Colors.transparent),
+                                  child: CustomPaint(painter: AreaForward())),
+                              // Center(child: AnimatedSkipIcon())
+                            ),
+                            Positioned(
+                                top: 0,
+                                bottom: 0,
+                                right: 0,
+                                child: Container(
+                                    width: constrains.biggest.width / 2,
+                                    height: constrains.biggest.height * 2,
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: BoxDecoration(
+                                        color: Colors.transparent),
+                                    child: Center(
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                          AnimatedIconForward(),
+                                          Text(
+                                              '${_doubleTapToForward.value}0 seconds',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12.0))
+                                        ]))))
+                          ]))
+                      : SizedBox.shrink(),
+                ),
+              ),
+            ])));
   }
 
   Widget _buildPopupOpeningEnding() {
