@@ -246,13 +246,15 @@ class _SliderEigaState extends State<SliderEiga>
                   _onHoverEnd();
                 },
                 // onTapCancel: _onHoverEnd,
-                child: Stack(
-                  children: [
-                    Container(height: thumbSize * 2),
-                    _buildSliderBar(parentSize),
-                    _buildSliderThumb(parentSize),
-                  ],
-                ),
+                child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4.0),
+                    child: Stack(
+                      children: [
+                        Container(height: thumbSize * 2),
+                        _buildSliderBar(parentSize),
+                        _buildSliderThumb(parentSize),
+                      ],
+                    )),
               ),
             ),
 
