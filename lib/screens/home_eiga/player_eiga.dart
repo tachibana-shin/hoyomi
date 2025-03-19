@@ -645,7 +645,6 @@ class _PlayerEigaState extends State<PlayerEiga>
             }),
           ),
         ),
-        _buildError(),
         Watch((context) {
           if (widget.metaEiga.value.poster == null ||
               widget.metaEiga.value.fake ||
@@ -666,27 +665,31 @@ class _PlayerEigaState extends State<PlayerEiga>
           );
         }),
         Watch((context) {
-          return AnimatedSwitcher(
-            duration: _durationAnimate,
-            transitionBuilder: (child, animation) =>
-                FadeTransition(opacity: animation, child: child),
-            child: _showControls.value
-                ? GestureDetector(
-                    onTap: _onTapToggleControls,
-                    child: Container(
-                      color: Colors.black.withValues(alpha: 0.5),
-                      child: Stack(
-                        children: [
-                          _buildMobileTopControls(),
-                          _buildMobileControls(),
-                          _buildMobileBottomControls(),
-                        ],
-                      ),
+          final child = _showControls.value || _error.value != null
+              ? GestureDetector(
+                  onTap: _onTapToggleControls,
+                  child: Container(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    child: Stack(
+                      children: [
+                        _buildMobileTopControls(),
+                        _buildMobileControls(),
+                        _buildMobileBottomControls(),
+                      ],
                     ),
-                  )
-                : SizedBox.shrink(),
-          );
+                  ),
+                )
+              : SizedBox.shrink();
+
+          if (_error.value != null) return child;
+
+          return AnimatedSwitcher(
+              duration: _durationAnimate,
+              transitionBuilder: (child, animation) =>
+                  FadeTransition(opacity: animation, child: child),
+              child: child);
         }),
+        _buildError(),
         _buildIndicator(),
         Watch((context) => _fullscreen.value
             ? _buildMobileSliderProgress()
