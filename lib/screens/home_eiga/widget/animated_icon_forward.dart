@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class AnimatedIconForward extends StatefulWidget {
@@ -79,7 +78,7 @@ class TrianglePainter extends CustomPainter {
 
     // path.moveTo(size.width, 0);
     // path.lineTo(0, size.height / 2);
-    // path.lineTo(size.width, size.height); 
+    // path.lineTo(size.width, size.height);
     // path.close();
 
     path.moveTo(0, 0);
