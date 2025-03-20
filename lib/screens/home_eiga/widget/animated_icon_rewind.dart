@@ -51,7 +51,7 @@ class _AnimatedIconRewindState extends State<AnimatedIconRewind>
       opacity: animation,
       child: CustomPaint(
         size: const Size(12, 12),
-        painter: TrianglePainter(),
+        painter: _TrianglePainter(),
       ),
     );
   }
@@ -70,7 +70,7 @@ class _AnimatedIconRewindState extends State<AnimatedIconRewind>
 }
 
 /// Custom painter to draw a right-facing triangle
-class TrianglePainter extends CustomPainter {
+class _TrianglePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..color = Colors.white;

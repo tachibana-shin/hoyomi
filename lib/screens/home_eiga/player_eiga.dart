@@ -141,6 +141,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   late final SubtitleController subtitleController = SubtitleController();
 
   final _durationAnimate = const Duration(milliseconds: 300);
+  final _teenSeconds = const Duration(seconds: 10);
 
   late final _availableResolutions = ref<List<_VariantMeta>>([]);
   final _playbackList = const [
@@ -558,14 +559,20 @@ class _PlayerEigaState extends State<PlayerEiga>
     if (dxRatio <= 1 / 3) {
       debugPrint('tap left');
       _doubleTapToRewind.value++;
-      controller.seekTo(_position.value - Duration(seconds: 10));
+      controller.seekTo(_position.value <= _teenSeconds
+          ? Duration.zero
+          : _position.value - _teenSeconds);
       return;
     }
     if (dxRatio >= 2 / 3) {
       debugPrint('tap right');
       _doubleTapToForward.value++;
-      controller.seekTo(_position.value + Duration(seconds: 10));
+      controller.seekTo(_position.value >= _duration.value - _teenSeconds
+          ? _duration.value
+          : _position.value + _teenSeconds);
     }
+  }
+
   }
 
   Future<void> _initializeHls({

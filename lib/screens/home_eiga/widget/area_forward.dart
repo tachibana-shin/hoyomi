@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class AreaForward extends CustomPainter {
@@ -8,7 +10,7 @@ class AreaForward extends CustomPainter {
       ..color = Colors.white.withValues(alpha: 0.2)
       ..style = PaintingStyle.fill;
     final center = Offset(size.width, size.height / 2);
-    canvas.drawCircle(center, size.width, paint);
+    canvas.drawCircle(center, max(size.width, size.height), paint);
   }
 
   @override
