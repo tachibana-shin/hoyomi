@@ -16,7 +16,7 @@ class VerticalVolumeSlider extends StatelessWidget {
                 Icon(
                   _getVolumeIcon(volume()),
                   color: Colors.white,
-                  size: 20,
+                  size: 25,
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
@@ -28,7 +28,7 @@ class VerticalVolumeSlider extends StatelessWidget {
                         thumbShape:
                             const RoundSliderThumbShape(enabledThumbRadius: 0),
                         overlayShape: SliderComponentShape.noOverlay,
-                        trackHeight: 2,
+                        trackHeight: 5,
                       ),
                       child: Slider(
                         value: volume(),

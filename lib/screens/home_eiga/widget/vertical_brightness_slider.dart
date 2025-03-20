@@ -16,7 +16,7 @@ class VerticalBrightnessSlider extends StatelessWidget {
                 Icon(
                   _getBrightnessIcon(brightness()),
                   color: Colors.white,
-                  size: 20,
+                  size: 25,
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
@@ -28,7 +28,7 @@ class VerticalBrightnessSlider extends StatelessWidget {
                         thumbShape:
                             const RoundSliderThumbShape(enabledThumbRadius: 0),
                         overlayShape: SliderComponentShape.noOverlay,
-                        trackHeight: 2,
+                        trackHeight: 5,
                       ),
                       child: Slider(
                         value: brightness(),

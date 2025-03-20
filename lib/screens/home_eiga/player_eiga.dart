@@ -426,6 +426,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       if (!mounted) return;
 
       _systemVolume.value = volume ?? 0;
+      FlutterVolumeController.updateShowSystemUI(false);
       watch([_systemVolume], () {
         FlutterVolumeController.setVolume(_systemVolume.value);
       });
@@ -1180,7 +1181,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                           Positioned(
                               top: 0,
                               bottom: 0,
-                              left: 20,
+                              left: 30,
                               child: VerticalVolumeSlider(
                                 volume: Prop(_systemVolume),
                               ))
@@ -1197,7 +1198,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                           Positioned(
                               top: 0,
                               bottom: 0,
-                              right: 20,
+                              right: 30,
                               child: VerticalBrightnessSlider(
                                 brightness: Prop(_appBrightness),
                               ))
