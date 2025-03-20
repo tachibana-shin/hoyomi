@@ -196,6 +196,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         context: context,
         useRootNavigator: true,
         pageBuilder: (context, anim, anim2) {
+          final theme = Theme.of(context);
           return GestureDetector(
               onTap: () {
                 Navigator.of(context, rootNavigator: true).pop();
@@ -217,13 +218,13 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                                               MainAxisAlignment.center,
                                           children: [
                                             Icon(Icons.search,
-                                                color: Theme.of(context)
+                                                color: theme
                                                     .colorScheme
                                                     .secondary),
                                             SizedBox(width: 4.0),
                                             Text('Enter keyword to search',
                                                 style: TextStyle(
-                                                    color: Theme.of(context)
+                                                    color: theme
                                                         .colorScheme
                                                         .secondary))
                                           ]));
@@ -561,7 +562,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                     ? (!Platform.isLinux && !Platform.isWindows)
                         ? IconButton(
                             icon: Icon(MaterialCommunityIcons.microphone,
-                                color: Theme.of(context)
+                                color: theme
                                     .colorScheme
                                     .secondary
                                     .withValues(alpha: 0.8)),
