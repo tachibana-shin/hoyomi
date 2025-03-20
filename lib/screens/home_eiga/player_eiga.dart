@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:flutter_volume_controller/flutter_volume_controller.dart';
+import 'package:hoyomi/controller/settings.dart';
 import 'package:hoyomi/core_services/eiga/eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
@@ -27,6 +29,7 @@ import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
 
@@ -39,6 +42,8 @@ import 'widget/animated_icon_forward.dart';
 import 'widget/animated_icon_rewind.dart';
 import 'widget/area_forward.dart';
 import 'widget/area_rewind.dart';
+import 'widget/vertical_brightness_slider.dart';
+import 'widget/vertical_volume_slider.dart';
 
 // import 'package:bitmovin_player/bitmovin_player.dart';
 // import 'package:theoplayer/theoplayer.dart';
@@ -172,6 +177,12 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   late final _doubleTapToRewind = ref(0);
   late final _doubleTapToForward = ref(0);
+
+  late final _appBrightness = ref(0.0);
+  late final _systemVolume = ref(0.0);
+
+  late final _showBrightness = ref(false);
+  late final _showVolume = ref(false);
 
   late final AsyncComputed<SourceVideo?> _source;
   late final AsyncComputed<List<type.Subtitle>> _subtitles;
@@ -372,6 +383,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       resetDoubleTapToForward.dispose();
     });
 
+    // watch auto hide controls
     watch([_doubleTapToRewind], () {
       if (_doubleTapToRewind.value != 0) resetDoubleTapToRewind.run(null);
       _doubleTapToForward.value = 0;
@@ -382,6 +394,45 @@ class _PlayerEigaState extends State<PlayerEiga>
     });
 
     /// ================== /Control effect double tap to view =================
+
+    /// ================== Brightness and volume system ===================
+    // ScreenBrightness.instance.application
+    //     .then((value) => _appBrightness.value = value);
+    // Brightness
+    SettingsController.instance.getSettings().then((settings) async {
+      if (!mounted) return;
+
+      var valueStore = settings.brightnessApp;
+      if (valueStore != null) {
+        await ScreenBrightness.instance
+            .setApplicationScreenBrightness(valueStore);
+      } else {
+        valueStore = await ScreenBrightness.instance.application;
+      }
+
+      if (!mounted) return;
+
+      _appBrightness.value = valueStore;
+
+      watch([_appBrightness], () {
+        ScreenBrightness.instance
+            .setApplicationScreenBrightness(_appBrightness.value);
+        settings.brightnessApp = _appBrightness.value;
+
+        SettingsController.instance.setSettings(settings);
+      });
+    });
+    // Volume
+    FlutterVolumeController.getVolume().then((volume) {
+      if (!mounted) return;
+
+      _systemVolume.value = volume ?? 0;
+      watch([_systemVolume], () {
+        FlutterVolumeController.setVolume(_systemVolume.value);
+      });
+    });
+
+    /// ================== /Brightness and volume system ===================
   }
 
   Timer? _timer;
@@ -390,6 +441,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       required String episodeId,
       required Duration position,
       required Duration duration}) {
+    _timer?.cancel();
     _timer ??= Timer(Duration(seconds: 30), () {
       if (kDebugMode) return;
       widget.onWatchTimeUpdate(
@@ -573,6 +625,29 @@ class _PlayerEigaState extends State<PlayerEiga>
     }
   }
 
+  void _onVerticalDragUpdatePlayer(DragUpdateDetails details) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isLeftSide = details.globalPosition.dx < screenWidth / 2;
+
+    if (details.primaryDelta != null) {
+      if (isLeftSide) {
+        _showBrightness.value = true;
+        _appBrightness.value =
+            (_appBrightness.value - details.primaryDelta! / 100)
+                .clamp(0.0, 1.0);
+        debugPrint('swipe to change brightness = ${_appBrightness.value}');
+      } else {
+        _showVolume.value = true;
+        _systemVolume.value =
+            (_systemVolume.value - details.primaryDelta! / 100).clamp(0.0, 1.0);
+        debugPrint('swipe to change volume = ${_systemVolume.value}');
+      }
+    }
+  }
+
+  void _hideAllSlider() {
+    _showBrightness.value = false;
+    _showVolume.value = false;
   }
 
   Future<void> _initializeHls({
@@ -651,6 +726,9 @@ class _PlayerEigaState extends State<PlayerEiga>
             child: GestureDetector(
               onTap: _onTapToggleControls,
               onDoubleTapDown: _onDoubleTapPlayer,
+              onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
+              onVerticalDragEnd: (_) => _hideAllSlider(),
+              onVerticalDragCancel: _hideAllSlider,
               child: Container(color: Colors.black),
             ),
           ),
@@ -658,6 +736,9 @@ class _PlayerEigaState extends State<PlayerEiga>
         GestureDetector(
           onTap: _onTapToggleControls,
           onDoubleTapDown: _onDoubleTapPlayer,
+          onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
+          onVerticalDragEnd: (_) => _hideAllSlider(),
+          onVerticalDragCancel: _hideAllSlider,
           child: LayoutBuilder(
             builder: (context, constraints) => Watch((context) {
               final controller = _controller.value;
@@ -733,6 +814,9 @@ class _PlayerEigaState extends State<PlayerEiga>
               ? GestureDetector(
                   onTap: _onTapToggleControls,
                   onDoubleTapDown: _onDoubleTapPlayer,
+                  onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
+                  onVerticalDragEnd: (_) => _hideAllSlider(),
+                  onVerticalDragCancel: _hideAllSlider,
                   child: Container(
                     color: Colors.black.withValues(alpha: 0.5),
                     child: Stack(
@@ -759,6 +843,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         Watch((context) => _fullscreen.value
             ? _buildMobileSliderProgress()
             : SizedBox.shrink()),
+        _buildUISwipeView(),
         _buildUIDoubleTapView(),
         _buildPopupOpeningEnding(),
         _buildOverlayInherit(),
@@ -1083,14 +1168,48 @@ class _PlayerEigaState extends State<PlayerEiga>
         ));
   }
 
+  Widget _buildUISwipeView() {
+    return LayoutBuilder(
+        builder: (context, constrains) => Stack(children: [
+              // left
+              Watch((c) => AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (child, animation) =>
+                      FadeTransition(opacity: animation, child: child),
+                  child: _showVolume.value
+                      ? Stack(children: [
+                          Positioned(
+                              top: 0,
+                              bottom: 0,
+                              left: 20,
+                              child: VerticalVolumeSlider(
+                                volume: Prop(_systemVolume),
+                              ))
+                        ])
+                      : SizedBox.shrink())),
+
+              // right
+              Watch((c) => AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (child, animation) =>
+                      FadeTransition(opacity: animation, child: child),
+                  child: _showBrightness.value
+                      ? Stack(children: [
+                          Positioned(
+                              top: 0,
+                              bottom: 0,
+                              right: 20,
+                              child: VerticalBrightnessSlider(
+                                brightness: Prop(_appBrightness),
+                              ))
+                        ])
+                      : SizedBox.shrink())),
+            ]));
+  }
+
   Widget _buildUIDoubleTapView() {
     return LayoutBuilder(
-        builder: (context, constrains) => Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Stack(children: [
+        builder: (context, constrains) => Stack(children: [
               // left
               Watch(
                 (c) => AnimatedSwitcher(
@@ -1197,7 +1316,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                       : SizedBox.shrink(),
                 ),
               ),
-            ])));
+            ]));
   }
 
   Widget _buildPopupOpeningEnding() {
@@ -1623,9 +1742,21 @@ class _PlayerEigaState extends State<PlayerEiga>
     );
   }
 
+  /// ============= system brightness and volume ===========
+  Future<void> _resetAppBrightness() async {
+    try {
+      await ScreenBrightness.instance.resetApplicationScreenBrightness();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  /// ============= /system brightness and volume ===========
+
   @override
   void dispose() {
     _controller.value?.dispose();
+    _resetAppBrightness();
 
     super.dispose();
   }
