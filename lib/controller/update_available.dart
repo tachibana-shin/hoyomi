@@ -249,7 +249,7 @@ class UpdateAvailableController {
   }
 
   void _pauseUpdate() async {
-    final controller = SettingsController();
+    final controller = SettingsController.instance;
     final settings = await controller.getSettings();
 
     settings.lastCheckUpdateApp = DateTime.now().toString();
@@ -258,7 +258,7 @@ class UpdateAvailableController {
   }
 
   Future<bool> _checkPauseUpdate() async {
-    final settings = await SettingsController().getSettings();
+    final settings = await SettingsController.instance.getSettings();
 
     final time = settings.lastCheckUpdateApp;
     if (time == null) return false;

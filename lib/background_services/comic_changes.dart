@@ -25,7 +25,7 @@ class ComicChanges {
 
   // Method to initialize background service
   void initializeBackgroundService() async {
-    _settings = await SettingsController().getSettings();
+    _settings = await SettingsController.instance.getSettings();
 
     FlutterBackgroundService().configure(
       androidConfiguration: AndroidConfiguration(

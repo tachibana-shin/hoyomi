@@ -17,18 +17,23 @@ const SettingsSchema = CollectionSchema(
   name: r'Settings',
   id: -8656046621518759136,
   properties: {
-    r'lastCheckUpdateApp': PropertySchema(
+    r'brightnessApp': PropertySchema(
       id: 0,
+      name: r'brightnessApp',
+      type: IsarType.double,
+    ),
+    r'lastCheckUpdateApp': PropertySchema(
+      id: 1,
       name: r'lastCheckUpdateApp',
       type: IsarType.string,
     ),
     r'mangaReadLazyPage': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'mangaReadLazyPage',
       type: IsarType.bool,
     ),
     r'pollingIntervalComic': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'pollingIntervalComic',
       type: IsarType.long,
     )
@@ -68,9 +73,10 @@ void _settingsSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.lastCheckUpdateApp);
-  writer.writeBool(offsets[1], object.mangaReadLazyPage);
-  writer.writeLong(offsets[2], object.pollingIntervalComic);
+  writer.writeDouble(offsets[0], object.brightnessApp);
+  writer.writeString(offsets[1], object.lastCheckUpdateApp);
+  writer.writeBool(offsets[2], object.mangaReadLazyPage);
+  writer.writeLong(offsets[3], object.pollingIntervalComic);
 }
 
 Settings _settingsDeserialize(
@@ -80,11 +86,12 @@ Settings _settingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Settings(
-    lastCheckUpdateApp: reader.readStringOrNull(offsets[0]),
-    mangaReadLazyPage: reader.readBoolOrNull(offsets[1]) ?? true,
+    brightnessApp: reader.readDoubleOrNull(offsets[0]),
+    lastCheckUpdateApp: reader.readStringOrNull(offsets[1]),
+    mangaReadLazyPage: reader.readBoolOrNull(offsets[2]) ?? true,
   );
   object.id = id;
-  object.pollingIntervalComic = reader.readLong(offsets[2]);
+  object.pollingIntervalComic = reader.readLong(offsets[3]);
   return object;
 }
 
@@ -96,10 +103,12 @@ P _settingsDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 1:
-      return (reader.readBoolOrNull(offset) ?? true) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
+      return (reader.readBoolOrNull(offset) ?? true) as P;
+    case 3:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -195,6 +204,87 @@ extension SettingsQueryWhere on QueryBuilder<Settings, Settings, QWhereClause> {
 
 extension SettingsQueryFilter
     on QueryBuilder<Settings, Settings, QFilterCondition> {
+  QueryBuilder<Settings, Settings, QAfterFilterCondition>
+      brightnessAppIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'brightnessApp',
+      ));
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterFilterCondition>
+      brightnessAppIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'brightnessApp',
+      ));
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterFilterCondition> brightnessAppEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'brightnessApp',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterFilterCondition>
+      brightnessAppGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'brightnessApp',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterFilterCondition> brightnessAppLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'brightnessApp',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterFilterCondition> brightnessAppBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'brightnessApp',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
   QueryBuilder<Settings, Settings, QAfterFilterCondition> idIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -491,6 +581,18 @@ extension SettingsQueryLinks
     on QueryBuilder<Settings, Settings, QFilterCondition> {}
 
 extension SettingsQuerySortBy on QueryBuilder<Settings, Settings, QSortBy> {
+  QueryBuilder<Settings, Settings, QAfterSortBy> sortByBrightnessApp() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'brightnessApp', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterSortBy> sortByBrightnessAppDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'brightnessApp', Sort.desc);
+    });
+  }
+
   QueryBuilder<Settings, Settings, QAfterSortBy> sortByLastCheckUpdateApp() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastCheckUpdateApp', Sort.asc);
@@ -532,6 +634,18 @@ extension SettingsQuerySortBy on QueryBuilder<Settings, Settings, QSortBy> {
 
 extension SettingsQuerySortThenBy
     on QueryBuilder<Settings, Settings, QSortThenBy> {
+  QueryBuilder<Settings, Settings, QAfterSortBy> thenByBrightnessApp() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'brightnessApp', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Settings, Settings, QAfterSortBy> thenByBrightnessAppDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'brightnessApp', Sort.desc);
+    });
+  }
+
   QueryBuilder<Settings, Settings, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -585,6 +699,12 @@ extension SettingsQuerySortThenBy
 
 extension SettingsQueryWhereDistinct
     on QueryBuilder<Settings, Settings, QDistinct> {
+  QueryBuilder<Settings, Settings, QDistinct> distinctByBrightnessApp() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'brightnessApp');
+    });
+  }
+
   QueryBuilder<Settings, Settings, QDistinct> distinctByLastCheckUpdateApp(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -611,6 +731,12 @@ extension SettingsQueryProperty
   QueryBuilder<Settings, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Settings, double?, QQueryOperations> brightnessAppProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'brightnessApp');
     });
   }
 

@@ -2,6 +2,13 @@ import 'package:hoyomi/database/isar.dart';
 import 'package:hoyomi/database/scheme/settings.dart';
 
 class SettingsController {
+  static final SettingsController _instance = SettingsController._internal();
+  static SettingsController get instance => _instance;
+
+  bool initialized = false;
+
+  SettingsController._internal();
+
   final _settingsBox = isar.settings;
 
   Settings? _settings;
