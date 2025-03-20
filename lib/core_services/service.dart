@@ -316,7 +316,7 @@ abstract class Service with _SettingsMixin {
     if (kDebugMode) {
       print('🔵 [HTTP] Request Started');
       print('➡️ URL: $uri');
-      print('📩 Headers: ${$headers}');
+      print('📩 Cookie: ${$headers['cookie']}');
 
       if (body != null) {
         final filteredBody = Map.fromEntries(
@@ -362,16 +362,7 @@ abstract class Service with _SettingsMixin {
           print('📜 Status Code: ${response.statusCode}');
           print('⏳ Duration: ${duration.inMilliseconds} ms');
 
-          const int maxLength = 200;
-          final String body = response.body;
-
-          if (body.length > maxLength) {
-            print(
-                '📥 Response Body: ${body.substring(0, maxLength)}... (truncated)');
-            print('🔍 Full body can be logged if needed.');
-          } else {
-            print('📥 Response Body: $body');
-          }
+          print('📥 Response Cookie: ${response.headers['set-cookie']}');
         }
       }
     } catch (error) {
