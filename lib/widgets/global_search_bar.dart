@@ -219,14 +219,12 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                                           children: [
                                             Icon(Icons.search,
                                                 color: theme
-                                                    .colorScheme
-                                                    .secondary),
+                                                    .colorScheme.secondary),
                                             SizedBox(width: 4.0),
                                             Text('Enter keyword to search',
                                                 style: TextStyle(
                                                     color: theme
-                                                        .colorScheme
-                                                        .secondary))
+                                                        .colorScheme.secondary))
                                           ]));
                                 }
                                 return Flex(
@@ -562,9 +560,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                     ? (!Platform.isLinux && !Platform.isWindows)
                         ? IconButton(
                             icon: Icon(MaterialCommunityIcons.microphone,
-                                color: theme
-                                    .colorScheme
-                                    .secondary
+                                color: theme.colorScheme.secondary
                                     .withValues(alpha: 0.8)),
                             onPressed: () async {
                               final completer = Completer();
