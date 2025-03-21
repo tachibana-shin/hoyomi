@@ -22,16 +22,18 @@ class SliderEiga extends StatefulWidget {
 
   final Ref<Duration> progress; // Current progress (0.0 to 1.0)
   final Ref<Duration> duration;
+  final Ref<Duration> buffered;
   final Ref<bool> showThumb;
   final Ref<bool> pauseAutoHideControls;
   final AsyncComputed<Vtt?> vttThumbnail;
   final AsyncComputed<OpeningEnding?> openingEnding;
-  final Function(double) onSeek; // Callback for seek
+  final ValueChanged<Duration> onSeek;
 
   const SliderEiga({
     super.key,
     required this.progress,
     required this.duration,
+    required this.buffered,
     required this.onSeek,
     required this.vttThumbnail,
     required this.showThumb,
@@ -44,9 +46,9 @@ class SliderEiga extends StatefulWidget {
 }
 
 class _SliderEigaState extends State<SliderEiga>
-    with SingleTickerProviderStateMixin, KaeruMixin, KaeruListenMixin {
-  late AnimationController _controller;
-  late Animation<double> _barHeightAnimation;
+    with TickerProviderStateMixin, KaeruMixin, KaeruListenMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _barHeightAnimation;
 
   double get thumbSize => SliderEiga.thumbSize;
   final double sliderHeightMin = 2;
@@ -182,7 +184,8 @@ class _SliderEigaState extends State<SliderEiga>
     final position = (localPosition.dx /
             (context.findRenderObject() as RenderBox).size.width)
         .clamp(0.0, 1.0);
-    widget.onSeek(position);
+    widget.onSeek(widget.duration.value * position);
+    debugPrint('[video_player]: seek changed $position');
   }
 
   @override
@@ -197,6 +200,7 @@ class _SliderEigaState extends State<SliderEiga>
               right: 0,
               bottom: 0,
               child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onHorizontalDragUpdate: (details) {
                   _onSeek(details.localPosition);
                   _onHoverUpdate(details.localPosition);
@@ -248,8 +252,13 @@ class _SliderEigaState extends State<SliderEiga>
                 // onTapCancel: _onHoverEnd,
                 child: Stack(
                   children: [
-                    Container(height: thumbSize * 2),
-                    _buildSliderBar(parentSize),
+                    Container(
+                      height: thumbSize * 2,
+                      color: Colors.transparent,
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [_buildSliderBar(parentSize)]),
+                    ),
                     _buildSliderThumb(parentSize),
                   ],
                 ),
@@ -266,53 +275,49 @@ class _SliderEigaState extends State<SliderEiga>
   }
 
   Widget _buildSliderBar(Size parentSize) {
-    return Positioned(
-      bottom: thumbSize,
-      left: 0,
-      right: 0,
-      child: AnimatedBuilder(
-        animation: _barHeightAnimation,
-        builder: (context, child) {
-          return Watch(() {
-            final openingEnding = widget.openingEnding.value;
+    return AnimatedBuilder(
+      animation: _barHeightAnimation,
+      builder: (context, child) {
+        return Watch(() {
+          final openingEnding = widget.openingEnding.value;
 
-            final opening = openingEnding?.opening;
-            final ending = openingEnding?.ending;
+          final opening = openingEnding?.opening;
+          final ending = openingEnding?.ending;
 
-            final duration = widget.duration.value;
+          final duration = widget.duration.value;
 
-            return Transform.translate(
-              offset: Offset(0, _barHeightAnimation.value / 2),
-              child: CustomPaint(
-                size: Size(parentSize.width, _barHeightAnimation.value),
-                painter: _ProgressBarPainter(
-                  progress: widget.progress.value.inMilliseconds /
-                      duration.inMilliseconds,
-                  range: [
-                    if (opening != null && duration.inMilliseconds > 0)
-                      (
-                        opening.start.inMilliseconds / duration.inMilliseconds,
-                        opening.end.inMilliseconds / duration.inMilliseconds,
-                      ),
-                    if (ending != null && duration.inMilliseconds > 0)
-                      (
-                        ending.start.inMilliseconds / duration.inMilliseconds,
-                        ending.end.inMilliseconds / duration.inMilliseconds,
-                      ),
-                  ],
-                  barHeight: _barHeightAnimation.value, // Animate bar height
-                ),
-              ),
-            );
-          });
-        },
-      ),
+          return CustomPaint(
+            size: Size(parentSize.width, _barHeightAnimation.value),
+            painter: _ProgressBarPainter(
+              progress: widget.progress.value.inMilliseconds /
+                  duration.inMilliseconds,
+              buffered: widget.buffered.value.inMilliseconds /
+                  duration.inMilliseconds,
+              range: [
+                if (opening != null && duration.inMilliseconds > 0)
+                  (
+                    opening.start.inMilliseconds / duration.inMilliseconds,
+                    opening.end.inMilliseconds / duration.inMilliseconds,
+                  ),
+                if (ending != null && duration.inMilliseconds > 0)
+                  (
+                    ending.start.inMilliseconds / duration.inMilliseconds,
+                    ending.end.inMilliseconds / duration.inMilliseconds,
+                  ),
+              ],
+              barHeight: _barHeightAnimation.value, // Animate bar height
+            ),
+          );
+        });
+      },
     );
   }
 
   Widget _buildHoverPreview(Size parentSize) {
     return Watch(() {
       if (!_isHovering.value) return SizedBox.shrink();
+
+      _hoverPosition.value;
 
       Widget builder(BuildContext context, _PreviewMeta? preview, bool done) {
         final String text = formatDuration(
@@ -420,11 +425,13 @@ class _SliderEigaState extends State<SliderEiga>
 
 class _ProgressBarPainter extends CustomPainter {
   final double progress; // Current progress
+  final double buffered;
   final double barHeight; // Height of the progress bar
   final List<(double, double)> range;
 
   _ProgressBarPainter({
     required this.progress,
+    required this.buffered,
     required this.range,
     this.barHeight = 5.0, // Default bar height to 5px
   });
@@ -439,13 +446,17 @@ class _ProgressBarPainter extends CustomPainter {
       ..color = Colors.red
       ..style = PaintingStyle.fill;
 
+    final bufferedPaint = Paint()
+      ..color = const Color(0x36F44336)
+      ..style = PaintingStyle.fill;
+
     final rangePaint = Paint()
       ..color = Colors.blue
       ..style = PaintingStyle.fill;
 
     // Draw background
     canvas.drawRect(
-      Rect.fromLTWH(0, size.height - barHeight, size.width, barHeight),
+      Rect.fromLTWH(0, 0, size.width, barHeight),
       backgroundPaint,
     );
 
@@ -453,11 +464,22 @@ class _ProgressBarPainter extends CustomPainter {
     canvas.drawRect(
       Rect.fromLTWH(
         0,
-        size.height - barHeight,
+        0,
         progress.isNaN ? 0 : progress * size.width,
         barHeight,
       ),
       progressPaint,
+    );
+
+    // Draw buffered
+    canvas.drawRect(
+      Rect.fromLTWH(
+        0,
+        0,
+        buffered.isNaN ? 0 : buffered * size.width,
+        barHeight,
+      ),
+      bufferedPaint,
     );
 
     // ranges
@@ -465,7 +487,7 @@ class _ProgressBarPainter extends CustomPainter {
       canvas.drawRect(
         Rect.fromLTWH(
           start * size.width,
-          size.height - barHeight,
+          0,
           (end - start) * size.width,
           barHeight,
         ),

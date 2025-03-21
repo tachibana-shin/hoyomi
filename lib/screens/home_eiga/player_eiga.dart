@@ -171,6 +171,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   late final _error = ref<String?>(null);
   late final _position = ref(Duration());
   late final _duration = ref(Duration());
+  late final _buffered = ref(Duration());
   late final _loading = ref(true);
   late final _playing = ref(true);
   late final _aspectRatio = ref<double>(1.0);
@@ -545,6 +546,8 @@ class _PlayerEigaState extends State<PlayerEiga>
     if (controller != null) {
       _position.value = controller.value.position;
       _duration.value = controller.value.duration;
+      _buffered.value =
+          controller.value.buffered.lastOrNull?.end ?? const Duration();
       _loading.value = controller.value.isInitialized != true ||
           controller.value.isBuffering;
       final playing = controller.value.isPlaying;
@@ -1149,13 +1152,13 @@ class _PlayerEigaState extends State<PlayerEiga>
               child: SliderEiga(
                 progress: _position,
                 duration: _duration,
+                buffered: _buffered,
                 showThumb: _showControls,
                 pauseAutoHideControls: _pauseAutoHideControls,
                 vttThumbnail: _thumbnailVtt,
                 openingEnding: _openingEnding,
-                onSeek: (position) {
-                  final duration = _duration.value;
-                  final seek = _position.value = duration * position;
+                onSeek: (duration) {
+                  final seek = _position.value = duration;
                   _controller.value?.seekTo(seek);
                 },
               ),
