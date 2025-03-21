@@ -743,7 +743,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           onVerticalDragCancel: _hideAllSlider,
           // HELP: delayed widget for fix size not correct if fullscreen change
           child: DelayedWidget(
-              delay: const Duration(milliseconds: 10),
+              delay: const Duration(milliseconds: 111),
               builder: (context) => LayoutBuilder(
                     builder: (_, constraints) => Watch(() {
                       final controller = _controller.value;
@@ -1220,7 +1220,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                           onTap: () {
                             _doubleTapToRewind.value++;
                             _controller.value?.seekTo(
-                                _position.value + Duration(seconds: 10));
+                                _position.value - Duration(seconds: 10));
                           },
                           child: Stack(children: [
                             Positioned(
