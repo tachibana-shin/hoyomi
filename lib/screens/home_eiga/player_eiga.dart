@@ -605,14 +605,10 @@ class _PlayerEigaState extends State<PlayerEiga>
     final controller = _controller.value;
     if (controller == null) return;
 
-    // Get the RenderBox of the widget to calculate the tap position relative to its width.
-    final box = context.findRenderObject() as RenderBox;
-    final localOffset = details.localPosition;
-    final width = box.size.width;
-    final dxRatio = localOffset.dx / width; // Normalize x coordinate
+    final dxRatio = localOffset.dx / 100.w(context); // Normalize x coordinate
 
     // Process only if tap is within left 1/3 or right 1/3 of the widget.
-    if (dxRatio <= 1 / 3) {
+    if (dxRatio < 1 / 2) {
       debugPrint('tap left');
       _doubleTapToRewind.value++;
       controller.seekTo(_position.value <= _teenSeconds
@@ -620,7 +616,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           : _position.value - _teenSeconds);
       return;
     }
-    if (dxRatio >= 2 / 3) {
+    if (dxRatio > 1 / 2) {
       debugPrint('tap right');
       _doubleTapToForward.value++;
       controller.seekTo(_position.value >= _duration.value - _teenSeconds
@@ -1447,43 +1443,36 @@ class _PlayerEigaState extends State<PlayerEiga>
   }
 
   Widget _buildOverlayInherit() {
-    return ValueListenableBuilder(
-      valueListenable: widget.overlayNotifier,
-      builder: (context, value, child) {
-        final child = AnimatedSwitcher(
-          duration: _durationAnimate,
-          transitionBuilder: (child, animation) =>
-              SlideFadeTransition(animation: animation, child: child),
-          child: value != null ? value(context) : null,
-        );
+    return Watch(() {
+      final overlayNotifier = widget.overlayNotifier.value;
 
-        return Positioned(
+      final child = AnimatedSwitcher(
+        duration: _durationAnimate,
+        transitionBuilder: (child, animation) =>
+            SlideFadeTransition(animation: animation, child: child),
+        child: overlayNotifier != null ? overlayNotifier(context) : null,
+      );
+
+      return Positioned(
           top: 0,
           bottom: 0,
           left: 0,
           right: 0,
-          child: Stack(
-            children: [
-              if (value != null)
-                Positioned(
+          child: overlayNotifier != null
+              ? Positioned(
                   top: 0,
                   bottom: 0,
                   left: 0,
                   right: 0,
                   child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      widget.overlayNotifier.value = null;
-                    },
-                    child: Container(color: Colors.black.withAlpha(0)),
-                  ),
-                ),
-              child,
-            ],
-          ),
-        );
-      },
-    );
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        widget.overlayNotifier.value = null;
+                      },
+                      child: child),
+                )
+              : SizedBox.shrink());
+    });
   }
 
   void _setFullscreen(bool value) {
