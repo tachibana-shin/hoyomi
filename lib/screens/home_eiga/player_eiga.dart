@@ -24,6 +24,7 @@ import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/transition/slide_fade_transition.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
+import 'package:hoyomi/widgets/delayed_widget.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:kaeru/kaeru.dart';
@@ -697,7 +698,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                   padding: EdgeInsets.only(bottom: SliderEiga.thumbSize),
                   child: AspectRatio(
                     aspectRatio: widget.aspectRatio,
-                    child: _buildStack(),
+                    child: _buildStack(context),
                   ),
                 ),
                 _buildMobileSliderProgress(),
@@ -706,7 +707,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     );
   }
 
-  Widget _buildStack() {
+  Widget _buildStack(BuildContext context) {
     return Stack(
       children: [
         Positioned(
@@ -739,56 +740,54 @@ class _PlayerEigaState extends State<PlayerEiga>
           onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
           onVerticalDragEnd: (_) => _hideAllSlider(),
           onVerticalDragCancel: _hideAllSlider,
-          child: LayoutBuilder(
-            builder: (context, constraints) => Watch((context) {
-              final controller = _controller.value;
-              if (controller == null) return SizedBox.shrink();
+          // HELP: delayed widget for fix size not correct if fullscreen change
+          child: DelayedWidget(
+              delay: const Duration(milliseconds: 10),
+              builder: (context) => LayoutBuilder(
+                    builder: (_, constraints) => Watch((_) {
+                      final controller = _controller.value;
+                      if (controller == null) return SizedBox.shrink();
 
-              final qualityCode = _qualityCode.value;
+                      final maxWidth = _fullscreen.value
+                          ? 100.w(context)
+                          : constraints.biggest.width;
+                      final maxHeight = _fullscreen.value
+                          ? 100.h(context)
+                          : (maxWidth / widget.aspectRatio);
 
-              final calcMaxWidth = 100.w(context);
-              // aspect = width / height => height = width / aspect
-              final calcMaxHeight = _fullscreen.value
-                  ? 100.h(context)
-                  : calcMaxWidth / widget.aspectRatio;
+                      final qualityCode = _qualityCode.value;
+                      final aspectRatio = _aspectRatio.value;
 
-              final maxWidth = calcMaxWidth;
-              final maxHeight = calcMaxHeight;
+                      double width = maxWidth;
+                      double height = width /
+                          aspectRatio; // Calculate height based on the aspect ratio
 
-              final aspectRatio = _aspectRatio.value;
+                      // If the calculated height exceeds the maximum allowed height,
+                      // adjust dimensions to use maxHeight
+                      if (height > maxHeight) {
+                        height = maxHeight;
+                        width = height *
+                            aspectRatio; // Recalculate width accordingly
+                      }
 
-              final aspectRatioView = maxWidth / maxHeight;
-              // try maxHeight
-              // aspect = w / h
-              // width = height * aspectRatio
-              // if with > maxWidth then width = maxWidth, height = maxWidth / aspectRatio
-              double width, height;
-              if (aspectRatioView < aspectRatio) {
-                width = maxWidth;
-                height = width / aspectRatio;
-              } else {
-                height = maxHeight;
-                width = height * aspectRatio;
-              }
-
-              return SubtitleWrapper(
-                enabled: qualityCode != null,
-                videoPlayerController: controller,
-                subtitleController: subtitleController,
-                subtitleStyle: SubtitleStyle(
-                  textColor: Colors.white,
-                  hasBorder: true,
-                ),
-                videoChild: Center(
-                  child: SizedBox(
-                    width: width,
-                    height: height,
-                    child: VideoPlayer(controller),
-                  ),
-                ),
-              );
-            }),
-          ),
+                      return SubtitleWrapper(
+                        enabled: qualityCode != null,
+                        videoPlayerController: controller,
+                        subtitleController: subtitleController,
+                        subtitleStyle: SubtitleStyle(
+                          textColor: Colors.white,
+                          hasBorder: true,
+                        ),
+                        videoChild: Center(
+                          child: SizedBox(
+                            width: width,
+                            height: height,
+                            child: VideoPlayer(controller),
+                          ),
+                        ),
+                      );
+                    }),
+                  )),
         ),
         Watch((context) {
           if (widget.metaEiga.value.poster == null ||
@@ -1500,7 +1499,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         context,
         MaterialPageRoute(
           fullscreenDialog: true,
-          builder: (context) => Material(child: _buildStack()),
+          builder: (context) => Material(child: _buildStack(context)),
         ),
       );
     } else {
