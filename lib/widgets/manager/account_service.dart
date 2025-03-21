@@ -60,12 +60,12 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
               ),
             ),
             const SizedBox(width: 5.0),
-            Watch((c) => _buildUserAvatar()),
+            Watch(() => _buildUserAvatar()),
           ],
         ),
         const SizedBox(height: 12.0),
-        Watch((c) => _buildUserDetails(context)),
-        Watch((c) => _buildActions()),
+        Watch(() => _buildUserDetails(context)),
+        Watch(() => _buildActions()),
       ],
     );
   }
