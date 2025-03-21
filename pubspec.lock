@@ -872,10 +872,10 @@ packages:
     dependency: "direct main"
     description:
       name: kaeru
-      sha256: "156ce2c1eb8f83616ec1b233b674b365e9a5fb0428ff63e43363a3ad0e87986f"
+      sha256: e39ae3e65d5896cf299e5a11fb32828c95354b707b3a9f34ba1ac507cb647ffd
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.7"
+    version: "0.1.8"
   leak_tracker:
     dependency: transitive
     description:
