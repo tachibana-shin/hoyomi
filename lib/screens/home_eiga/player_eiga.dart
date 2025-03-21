@@ -21,7 +21,6 @@ import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
-import 'package:hoyomi/transition/slide_fade_transition.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
 import 'package:hoyomi/widgets/delayed_widget.dart';
@@ -68,7 +67,7 @@ class PlayerEiga extends StatefulWidget {
   final double aspectRatio;
 
   final void Function() onBack;
-  final void Function(bool isFullscreen) onTapPlaylist;
+  final void Function(BuildContext context, bool isFullscreen) onTapPlaylist;
   final void Function(
       {required String eigaId,
       required String episodeId,
@@ -76,8 +75,6 @@ class PlayerEiga extends StatefulWidget {
       required Duration duration}) onWatchTimeUpdate;
   final Ref<void Function()?> onNext;
   final Ref<void Function()?> onPrev;
-
-  final Ref<Widget Function(BuildContext context)?> overlayNotifier;
 
   const PlayerEiga({
     super.key,
@@ -96,7 +93,6 @@ class PlayerEiga extends StatefulWidget {
     required this.onWatchTimeUpdate,
     required this.onNext,
     required this.onPrev,
-    required this.overlayNotifier,
   });
   @override
   State<PlayerEiga> createState() => _PlayerEigaState();
@@ -605,6 +601,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     final controller = _controller.value;
     if (controller == null) return;
 
+    final localOffset = details.localPosition;
     final dxRatio = localOffset.dx / 100.w(context); // Normalize x coordinate
 
     // Process only if tap is within left 1/3 or right 1/3 of the widget.
@@ -849,7 +846,6 @@ class _PlayerEigaState extends State<PlayerEiga>
         _buildUISwipeView(),
         _buildUIDoubleTapView(),
         _buildPopupOpeningEnding(),
-        _buildOverlayInherit(),
       ],
     );
   }
@@ -918,7 +914,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                 IconButton(
                   icon: Icon(MaterialCommunityIcons.playlist_play),
                   color: Colors.white,
-                  onPressed: () => widget.onTapPlaylist(_fullscreen.value),
+                  onPressed: () => widget.onTapPlaylist(context, _fullscreen.value),
                 ),
                 // icon subtitle
                 Watch(() {
@@ -1439,39 +1435,6 @@ class _PlayerEigaState extends State<PlayerEiga>
               )
             : null,
       );
-    });
-  }
-
-  Widget _buildOverlayInherit() {
-    return Watch(() {
-      final overlayNotifier = widget.overlayNotifier.value;
-
-      final child = AnimatedSwitcher(
-        duration: _durationAnimate,
-        transitionBuilder: (child, animation) =>
-            SlideFadeTransition(animation: animation, child: child),
-        child: overlayNotifier != null ? overlayNotifier(context) : null,
-      );
-
-      return Positioned(
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: overlayNotifier != null
-              ? Positioned(
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () {
-                        widget.overlayNotifier.value = null;
-                      },
-                      child: child),
-                )
-              : SizedBox.shrink());
     });
   }
 

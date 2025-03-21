@@ -71,8 +71,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final _subtitlesNotifier = ref<List<Subtitle>>([]);
   late final _onPrevNotifier = ref<VoidCallback?>(null);
   late final _onNextNotifier = ref<VoidCallback?>(null);
-  late final _overlayNotifier =
-      ref<Widget Function(BuildContext context)?>(null);
 
   late final Ref<String> _eigaId;
   late final _episodeId = ref<String?>(null);
@@ -246,9 +244,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       onBack: () {
         context.pop();
       },
-      onTapPlaylist: (isFullscreen) {
+      onTapPlaylist: (context, isFullscreen) {
         if (isFullscreen) {
-          _showModalEpisodesFullscreen(_metaEiga);
+          _showModalEpisodesFullscreen(context, _metaEiga);
           return;
         }
         _showModalEpisodes(_metaEiga);
@@ -287,7 +285,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       fetchSourceContent: _service.fetchSourceContent,
       onPrev: _onPrevNotifier,
       onNext: _onNextNotifier,
-      overlayNotifier: _overlayNotifier,
     );
   }
 
@@ -565,41 +562,39 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Widget _buildSchedule() {
-    return ValueListenableBuilder(
-      valueListenable: _schedule,
-      builder: (context, schedule, child) {
-        if (schedule == null) return SizedBox.shrink();
+    return Watch(() {
+      final schedule = _schedule.value;
+      if (schedule == null) return SizedBox.shrink();
 
-        return SizedBox(
-          height: 16 * 1.5,
-          child: Row(
-            children: [
-              Icon(
-                MaterialCommunityIcons.clock_outline,
-                size: 16.0,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-              SizedBox(width: 5.0),
-              Text(
-                'Updated on day ${[
-                  'Sunday',
-                  'Monday',
-                  'Tuesday',
-                  'Wednesday',
-                  'Thursday',
-                  'Friday',
-                  'Saturday'
-                ][schedule.day]} of the week at ${schedule.hour}:${schedule.minute}',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.secondary,
-                      fontSize: 14.0,
-                    ),
-              ),
-            ],
+      return Row(
+        children: [
+          Icon(
+            MaterialCommunityIcons.clock_outline,
+            size: 16.0,
+            color: Theme.of(context).colorScheme.secondary,
           ),
-        );
-      },
-    );
+          SizedBox(width: 5.0),
+          Expanded(
+            child: Text(
+              'Updated on day ${[
+                'Sunday',
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday'
+              ][schedule.day]} of the week at ${schedule.hour}:${schedule.minute}',
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontSize: 14.0,
+                  ),
+            ),
+          ),
+        ],
+      );
+    });
   }
 
   Widget _buildSeasonHeader(Ref<MetaEiga> metaEiga) {
@@ -652,7 +647,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     showModalBottomSheetNoScrim(
       context: context,
       isScrollControlled: true,
-      showDragHandle: true,
+      // showDragHandle: true,
       useSafeArea: true,
       builder: (context, pop) => DraggableScrollableSheet(
         expand: false,
@@ -664,7 +659,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         builder: (context, scrollController) {
           return SingleChildScrollView(
             controller: scrollController,
-            padding: EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
+            padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 16.0),
             child: Column(
               children: [
                 Row(
@@ -813,41 +808,59 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     );
   }
 
-  void _showModalEpisodesFullscreen(Ref<MetaEiga> metaEiga) {
-    if (_overlayNotifier.value == null) {
-      _overlayNotifier.value = (context) {
-        final size = MediaQuery.of(context).size;
+  void _showModalEpisodesFullscreen(
+      BuildContext context, Ref<MetaEiga> metaEiga) {
+    showGeneralDialog(
+      context: context,
+      useRootNavigator: true,
+      transitionBuilder: (context, anim, anim2, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: Offset(-1.0, 0.0),
+            end: Offset(0.0, 0.0),
+          ).animate(CurvedAnimation(
+            parent: anim,
+            curve: Curves.easeOut,
+          )),
+          child: child,
+        );
+      },
+      pageBuilder: (context, anim, anim2) {
         final padding = EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0);
 
-        return Theme(
-          data: ThemeData.dark(),
-          child: Container(
-            width: size.width * 0.45,
-            color: Colors.black.withValues(alpha: 0.8),
-            padding: padding,
-            child: Column(
-              children: [
-                _buildSchedule(),
-                SizedBox(height: 7.0),
-                _buildSeasonArea(
-                  metaEiga,
-                  scrollDirection: Axis.vertical,
-                  height: size.height -
-                      padding.top -
-                      padding.bottom -
-                      7.0 -
-                      2.0 -
-                      12.0 -
-                      (_schedule.value == null ? 0 : 16.0 * 1.5),
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context, rootNavigator: true).pop();
+          },
+          child: Material(
+            color: Colors.transparent,
+            child: Theme(
+              data: ThemeData.dark(),
+              child: FractionallySizedBox(
+                alignment: Alignment.topLeft,
+                widthFactor: 0.45,
+                heightFactor: 1.0,
+                child: Container(
+                  color: Colors.black.withValues(alpha: 0.8),
+                  padding: padding,
+                  child: Column(
+                    children: [
+                      _buildSchedule(),
+                      SizedBox(height: 7.0),
+                      Expanded(
+                          child: _buildSeasonArea(
+                        metaEiga,
+                        scrollDirection: Axis.vertical,
+                      )),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
           ),
         );
-      };
-    } else {
-      _overlayNotifier.value = null;
-    }
+      },
+    );
   }
 
   void _showModalEpisodes(Ref<MetaEiga> metaEiga) {
@@ -860,56 +873,43 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     showModalBottomSheetNoScrim(
       context: context,
       isScrollControlled: true,
-      showDragHandle: true,
+      // showDragHandle: true,
       useSafeArea: true,
       builder: (context, pop) => DraggableScrollableSheet(
-        expand: false,
-        snap: true,
-        snapSizes: [_initialBottomSheet],
-        initialChildSize: _initialBottomSheet,
-        minChildSize: 0,
-        maxChildSize: 1,
-        builder: (context, scrollController) {
-          return LayoutBuilder(
-            builder: (context, constraints) {
+            expand: false,
+            snap: true,
+            snapSizes: [0, _initialBottomSheet, 1],
+            initialChildSize: _initialBottomSheet,
+            minChildSize: 0,
+            maxChildSize: 1,
+            builder: (context, scrollController) {
               final padding = EdgeInsets.only(
                 left: 12.0,
                 right: 12.0,
-                bottom: 8.0,
+                top: 16.0,
               );
 
-              final heightChild = constraints.maxHeight -
-                  padding.top -
-                  padding.bottom -
-                  7.0 -
-                  2.0 -
-                  (_schedule.value == null ? 0 : 16.0 * 1.5);
-
-              if (heightChild <= 0 || constraints.maxHeight <= 0) {
-                pop();
-              }
-              return ClipRect(
+              return FractionallySizedBox(
+                widthFactor: 1.0,
+                heightFactor: 1.0,
                 child: Container(
-                  height: constraints.maxHeight,
                   padding: padding,
-                  child: ListView(
+                  child: Column(
                     children: [
                       _buildSchedule(),
                       SizedBox(height: 7.0),
-                      _buildSeasonArea(
+                      Expanded(
+                          child: _buildSeasonArea(
                         metaEiga,
                         scrollDirection: Axis.vertical,
                         controller: scrollController,
-                        height: heightChild,
-                      ),
+                      )),
                     ],
                   ),
                 ),
               );
             },
-          );
-        },
-      ),
+          ),
     );
   }
 
@@ -1003,8 +1003,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   Widget _buildSeasonArea(
     Ref<MetaEiga> metaEiga, {
     scrollDirection = Axis.horizontal,
-    ScrollController? controller,
-    double? height,
+    ScrollController? controller
   }) {
     return ValueListenableBuilder(
       valueListenable: metaEiga,
@@ -1074,8 +1073,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 }
               });
 
-              final tabBarHeight = 35.0;
-
               final children = [
                 ContentSizeTabBarView(
                   children: metaEiga$.seasons.asMap().entries.map((entry) {
@@ -1083,7 +1080,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     final index = entry.key;
 
                     return Container(
-                      height: height == null ? null : height - tabBarHeight,
                       padding: EdgeInsets.symmetric(vertical: 8.0),
                       child: ListEpisodes(
                         season: season,
@@ -1139,7 +1135,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   tabAlignment: TabAlignment.start,
                   dividerHeight: 0,
                   tabs: metaEiga$.seasons.map((season) {
-                    return Tab(text: season.name, height: tabBarHeight);
+                    return Tab(text: season.name);
                   }).toList(),
                 ),
               ];
