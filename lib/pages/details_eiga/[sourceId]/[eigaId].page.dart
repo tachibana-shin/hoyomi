@@ -194,37 +194,35 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   body: body,
                 ),
                 builder: (data, param) {
-                  return Watch(
-                    (context) {
-                      final loading = _loading.value;
+                  return Watch(() {
+                    final loading = _loading.value;
 
-                      return SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                          vertical: 8.0,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildInfo(_metaEiga),
-                            SizedBox(height: 10.0),
-                            // button group
-                            _buildButtonGroup(_metaEiga),
-                            SizedBox(height: 5.0),
-                            if (!loading) _buildSchedule(),
-                            if (!loading) _buildSeasonHeader(_metaEiga),
-                            SizedBox(height: 5.0),
-                            if (loading)
-                              ListEpisodesSkeleton()
-                            else
-                              _buildSeasonArea(_metaEiga),
-                            SizedBox(height: 12.0),
-                            _buildSuggest(),
-                          ],
-                        ),
-                      );
-                    },
-                  );
+                    return SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 8.0,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildInfo(_metaEiga),
+                          SizedBox(height: 10.0),
+                          // button group
+                          _buildButtonGroup(_metaEiga),
+                          SizedBox(height: 5.0),
+                          if (!loading) _buildSchedule(),
+                          if (!loading) _buildSeasonHeader(_metaEiga),
+                          SizedBox(height: 5.0),
+                          if (loading)
+                            ListEpisodesSkeleton()
+                          else
+                            _buildSeasonArea(_metaEiga),
+                          SizedBox(height: 12.0),
+                          _buildSuggest(),
+                        ],
+                      ),
+                    );
+                  });
                 },
               ),
             ),
@@ -1161,7 +1159,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Widget _buildSuggest() {
-    return Watch((_) {
+    return Watch(() {
       final suggest = _suggestNotifier.value;
       if (suggest == null) return SizedBox.shrink();
 

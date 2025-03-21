@@ -47,7 +47,7 @@ dependencies:
   intl: any
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
-  kaeru: ^0.1.8
+  kaeru: ^0.1.9
   markdown: ^7.3.0
   marquee: ^2.3.0
   mediaquery_sizer: ^1.1.1
@@ -62,7 +62,6 @@ dependencies:
   sharara_video_player: ^1.0.14
   share_plus: ^10.1.2
   shirne_dialog: ^4.8.3
-  signals: ^6.0.2
   skeletonizer: ^1.4.2
   speech_to_text: ^7.0.0
   speech_to_text_google_dialog: ^0.0.6

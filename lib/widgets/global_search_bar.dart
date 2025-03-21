@@ -208,7 +208,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                           appBar: _buildGlobalSearchBar(true),
                           body: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Watch((context2) {
+                              child: Watch(() {
                                 if (_keyword.value.isEmpty) {
                                   return Padding(
                                       padding:
@@ -318,7 +318,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
       return SizedBox.shrink();
     }
 
-    return Watch((context) {
+    return Watch(() {
       final service = _getCurrentService(context);
 
       if (service is ComicService) {
@@ -437,7 +437,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
       padding: EdgeInsets.all(3.0),
       menuPadding: EdgeInsets.all(5.0),
       offset: Offset(0, 18.0 * 2),
-      icon: Watch((context) {
+      icon: Watch(() {
         final service = _getCurrentService(context);
 
         return SizedBox(
@@ -552,7 +552,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                     },
                   )),
             ),
-            Watch((context) => AnimatedSwitcher(
+            Watch(() => AnimatedSwitcher(
                 duration: Duration(milliseconds: 300),
                 transitionBuilder: (child, animation) =>
                     ScaleTransition(scale: animation, child: child),

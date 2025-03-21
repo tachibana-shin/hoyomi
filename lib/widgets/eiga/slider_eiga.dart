@@ -273,121 +273,116 @@ class _SliderEigaState extends State<SliderEiga>
       child: AnimatedBuilder(
         animation: _barHeightAnimation,
         builder: (context, child) {
-          return Watch(
-            (context) {
-              final openingEnding = widget.openingEnding.value;
+          return Watch(() {
+            final openingEnding = widget.openingEnding.value;
 
-              final opening = openingEnding?.opening;
-              final ending = openingEnding?.ending;
+            final opening = openingEnding?.opening;
+            final ending = openingEnding?.ending;
 
-              final duration = widget.duration.value;
+            final duration = widget.duration.value;
 
-              return Transform.translate(
-                offset: Offset(0, _barHeightAnimation.value / 2),
-                child: CustomPaint(
-                  size: Size(parentSize.width, _barHeightAnimation.value),
-                  painter: _ProgressBarPainter(
-                    progress: widget.progress.value.inMilliseconds /
-                        duration.inMilliseconds,
-                    range: [
-                      if (opening != null && duration.inMilliseconds > 0)
-                        (
-                          opening.start.inMilliseconds /
-                              duration.inMilliseconds,
-                          opening.end.inMilliseconds / duration.inMilliseconds,
-                        ),
-                      if (ending != null && duration.inMilliseconds > 0)
-                        (
-                          ending.start.inMilliseconds / duration.inMilliseconds,
-                          ending.end.inMilliseconds / duration.inMilliseconds,
-                        ),
-                    ],
-                    barHeight: _barHeightAnimation.value, // Animate bar height
-                  ),
+            return Transform.translate(
+              offset: Offset(0, _barHeightAnimation.value / 2),
+              child: CustomPaint(
+                size: Size(parentSize.width, _barHeightAnimation.value),
+                painter: _ProgressBarPainter(
+                  progress: widget.progress.value.inMilliseconds /
+                      duration.inMilliseconds,
+                  range: [
+                    if (opening != null && duration.inMilliseconds > 0)
+                      (
+                        opening.start.inMilliseconds / duration.inMilliseconds,
+                        opening.end.inMilliseconds / duration.inMilliseconds,
+                      ),
+                    if (ending != null && duration.inMilliseconds > 0)
+                      (
+                        ending.start.inMilliseconds / duration.inMilliseconds,
+                        ending.end.inMilliseconds / duration.inMilliseconds,
+                      ),
+                  ],
+                  barHeight: _barHeightAnimation.value, // Animate bar height
                 ),
-              );
-            },
-          );
+              ),
+            );
+          });
         },
       ),
     );
   }
 
   Widget _buildHoverPreview(Size parentSize) {
-    return Watch(
-      (context) {
-        if (!_isHovering.value) return SizedBox.shrink();
+    return Watch(() {
+      if (!_isHovering.value) return SizedBox.shrink();
 
-        Widget builder(BuildContext context, _PreviewMeta? preview, bool done) {
-          final String text = formatDuration(
-            widget.duration.value * _hoverPosition.value,
-          );
-          const double fontSize = 12;
-          const double paddingX = 5;
+      Widget builder(BuildContext context, _PreviewMeta? preview, bool done) {
+        final String text = formatDuration(
+          widget.duration.value * _hoverPosition.value,
+        );
+        const double fontSize = 12;
+        const double paddingX = 5;
 
-          double width;
+        double width;
 
-          if (preview != null) {
-            width = preview.width;
-          } else {
-            // calc text
-            width = (text.length * fontSize / 2) + paddingX * 2;
-          }
-
-          final left = (_hoverPosition.value * parentSize.width - (width / 2))
-              .clamp(3, parentSize.width - width - 3)
-              .toDouble();
-
-          final child = Center(
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 3, horizontal: paddingX),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.7),
-                borderRadius: BorderRadius.circular(3),
-              ),
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          );
-          final previewWidget =
-              preview?.widget ?? (done ? null : _previewBlank.value);
-          return Positioned(
-            left: left,
-            bottom: sliderHeightMax + thumbSize / 2 + 7,
-            child: previewWidget != null
-                ? Stack(
-                    children: [
-                      previewWidget,
-                      Positioned(bottom: 10, left: 0, right: 0, child: child),
-                    ],
-                  )
-                : child,
-          );
+        if (preview != null) {
+          width = preview.width;
+        } else {
+          // calc text
+          width = (text.length * fontSize / 2) + paddingX * 2;
         }
 
-        return FutureBuilder(
-          future: _preview.value,
-          builder: (context, snapshot) => builder(
-            context,
-            snapshot.data,
-            snapshot.connectionState != ConnectionState.waiting ||
-                snapshot.connectionState == ConnectionState.done,
+        final left = (_hoverPosition.value * parentSize.width - (width / 2))
+            .clamp(3, parentSize.width - width - 3)
+            .toDouble();
+
+        final child = Center(
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 3, horizontal: paddingX),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.7),
+              borderRadius: BorderRadius.circular(3),
+            ),
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+            ),
           ),
         );
-      },
-    );
+        final previewWidget =
+            preview?.widget ?? (done ? null : _previewBlank.value);
+        return Positioned(
+          left: left,
+          bottom: sliderHeightMax + thumbSize / 2 + 7,
+          child: previewWidget != null
+              ? Stack(
+                  children: [
+                    previewWidget,
+                    Positioned(bottom: 10, left: 0, right: 0, child: child),
+                  ],
+                )
+              : child,
+        );
+      }
+
+      return FutureBuilder(
+        future: _preview.value,
+        builder: (context, snapshot) => builder(
+          context,
+          snapshot.data,
+          snapshot.connectionState != ConnectionState.waiting ||
+              snapshot.connectionState == ConnectionState.done,
+        ),
+      );
+    });
   }
 
   Widget _buildSliderThumb(Size parentSize) {
     final width = parentSize.width;
 
-    return Watch((context) {
+    return Watch(() {
       // NOTE: animate?
       if (!widget.showThumb.value) return SizedBox.shrink();
 

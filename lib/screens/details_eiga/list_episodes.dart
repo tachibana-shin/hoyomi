@@ -101,7 +101,7 @@ class _ListEpisodesState extends State<ListEpisodes> with KaeruMixin {
   Widget build(BuildContext context) {
     final height = 35.0;
 
-    return Watch((context) {
+    return Watch(() {
       final episodesEiga = _episodesEiga.value;
 
       return FutureBuilder(

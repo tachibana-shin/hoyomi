@@ -151,7 +151,7 @@ class _DetailsComicState extends State<DetailsComic>
               context.pop();
             },
           ),
-          title: Watch((context) => AnimatedOpacity(
+          title: Watch(() => AnimatedOpacity(
                 duration: const Duration(milliseconds: 200),
                 opacity: _isTitleVisible.value ? 1.0 : 0.0,
                 child: Text(_title),
@@ -453,7 +453,7 @@ class _DetailsComicState extends State<DetailsComic>
         const SizedBox(height: 16.0),
         Row(
           children: [
-            Watch((context) => Expanded(child: _buildButtonRead(comic))),
+            Watch(() => Expanded(child: _buildButtonRead(comic))),
             const SizedBox(width: 8.0),
             _buildButtonDownload(),
           ],
@@ -698,7 +698,7 @@ class _DetailsComicState extends State<DetailsComic>
 
   Widget? _buildSheetChapters() {
     if (_comic == null) return null;
-    return Watch((context) => SheetChapters(
+    return Watch(() => SheetChapters(
           comic: _comic!,
           sourceId: widget.sourceId,
           comicId: widget.comicId,
@@ -894,7 +894,7 @@ class _AvatarUserState extends State<_AvatarUser> {
       return SizedBox.shrink();
     }
 
-    return Watch((context) {
+    return Watch(() {
       final user = _user?.value;
 
       if (user != null) {

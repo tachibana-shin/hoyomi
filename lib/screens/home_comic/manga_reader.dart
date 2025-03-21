@@ -401,7 +401,7 @@ class _MangaReaderState extends State<MangaReader>
             rows: 3,
             columns: 3,
             onTap: _onTapGrid,
-            child: Watch((context) => _buildReader(_pages.value, _mode.value)),
+            child: Watch(() => _buildReader(_pages.value, _mode.value)),
           ),
           Positioned(left: 0, right: 0, bottom: 0, child: _buildBottomBar()),
         ],
@@ -416,7 +416,7 @@ class _MangaReaderState extends State<MangaReader>
         trackHeight: 15.0,
         overlayShape: SliderComponentShape.noOverlay,
       ),
-      child: Watch((context) => Slider(
+      child: Watch(() => Slider(
             min: 0.0,
             max: _realLength.value - 1,
             value: min(_realCurrentPage.value, _realLength.value - 1),
@@ -476,7 +476,7 @@ class _MangaReaderState extends State<MangaReader>
                   const SizedBox(height: 8.0),
 
                   // Button Group
-                  Watch((context) => ToggleButtons(
+                  Watch(() => ToggleButtons(
                         isSelected: [
                           _mode.value == ComicModes.leftToRight,
                           _mode.value == ComicModes.rightToLeft,
@@ -548,7 +548,7 @@ class _MangaReaderState extends State<MangaReader>
                           ),
                           Transform.scale(
                             scale: 0.8,
-                            child: Watch((context) => Switch(
+                            child: Watch(() => Switch(
                                   value: _useTwoPage.value,
                                   onChanged: (value) {
                                     _useTwoPage.value = value;
@@ -717,7 +717,7 @@ class _MangaReaderState extends State<MangaReader>
       );
     }
 
-    return Watch((context) => HorizonReader(
+    return Watch(() => HorizonReader(
           itemCount: pages.length,
           itemBuilder: (BuildContext context, int index) {
             return _buildPage(index);
@@ -750,7 +750,7 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   Widget _buildBottomBar() {
-    return Watch((context) => AnimatedSwitcher(
+    return Watch(() => AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
           transitionBuilder: (child, animation) {
             const begin = Offset(0.0, kToolbarHeight * 2.5);
@@ -776,7 +776,7 @@ class _MangaReaderState extends State<MangaReader>
                         children: [
                           Material(
                             color: Colors.transparent,
-                            child: Watch((context) => AbsorbPointer(
+                            child: Watch(() => AbsorbPointer(
                                   absorbing: _prevChapter.value == null,
                                   child: Ink(
                                     decoration: ShapeDecoration(
@@ -833,40 +833,38 @@ class _MangaReaderState extends State<MangaReader>
                           ),
                           Material(
                             color: Colors.transparent,
-                            child: Watch(
-                              (context) => AbsorbPointer(
-                                  absorbing: _nextChapter.value == null,
-                                  child: Ink(
-                                    decoration: ShapeDecoration(
-                                      color: Theme.of(
-                                        context,
-                                      )
-                                          .colorScheme
-                                          .surface
-                                          .withValues(alpha: 0.9),
-                                      shape: CircleBorder(),
-                                    ),
-                                    child: IconButton(
-                                      iconSize: 30.0,
-                                      icon: Icon(
-                                          MaterialCommunityIcons.skip_next),
-                                      color: _nextChapter.value != null
-                                          ? Theme.of(
-                                              context,
-                                            ).colorScheme.onSurface
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .onSurface
-                                              .withValues(alpha: 0.5),
-                                      onPressed: () {
-                                        context.replace(
-                                          "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_nextChapter.value!.chapterId}",
-                                          extra: {'comic': widget.comic},
-                                        );
-                                      },
-                                    ),
-                                  )),
-                            ),
+                            child: Watch(() => AbsorbPointer(
+                                absorbing: _nextChapter.value == null,
+                                child: Ink(
+                                  decoration: ShapeDecoration(
+                                    color: Theme.of(
+                                      context,
+                                    )
+                                        .colorScheme
+                                        .surface
+                                        .withValues(alpha: 0.9),
+                                    shape: CircleBorder(),
+                                  ),
+                                  child: IconButton(
+                                    iconSize: 30.0,
+                                    icon:
+                                        Icon(MaterialCommunityIcons.skip_next),
+                                    color: _nextChapter.value != null
+                                        ? Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withValues(alpha: 0.5),
+                                    onPressed: () {
+                                      context.replace(
+                                        "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_nextChapter.value!.chapterId}",
+                                        extra: {'comic': widget.comic},
+                                      );
+                                    },
+                                  ),
+                                ))),
                           ),
                         ],
                       ),
@@ -911,14 +909,12 @@ class _MangaReaderState extends State<MangaReader>
                                     ),
                                   ),
                                   Expanded(
-                                      child: Watch(
-                                    (context) => ButtonInset(
-                                      icon: Ionicons.list,
-                                      text:
-                                          '${_realCurrentPage.value.toInt() + 1} / ${_realLength.value}',
-                                      onPressed: _showPanelListChapters,
-                                    ),
-                                  )),
+                                      child: Watch(() => ButtonInset(
+                                            icon: Ionicons.list,
+                                            text:
+                                                '${_realCurrentPage.value.toInt() + 1} / ${_realLength.value}',
+                                            onPressed: _showPanelListChapters,
+                                          ))),
                                   Expanded(
                                     child: ButtonInset(
                                       icon: Ionicons.settings_outline,
