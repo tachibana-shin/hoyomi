@@ -840,7 +840,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                   FadeTransition(opacity: animation, child: child),
               child: child);
         }),
-        // _buildError(),
+        _buildError(),
         _buildIndicator(),
         // Watch(() => _fullscreen.value
         //     ? _buildMobileSliderProgress()
