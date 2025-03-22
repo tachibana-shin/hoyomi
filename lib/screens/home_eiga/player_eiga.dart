@@ -844,7 +844,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         Watch(() => _fullscreen.value
             ? _buildMobileSliderProgress()
             : SizedBox.shrink()),
-        _buildUISwipeView(),
+        // _buildUISwipeView(),
         _buildUIDoubleTapView(),
         _buildPopupOpeningEnding(),
       ],
