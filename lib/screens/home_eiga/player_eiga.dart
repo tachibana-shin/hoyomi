@@ -700,7 +700,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   Widget? _widgetCache;
   Widget _buildStack(BuildContext context) {
     final counter = ref(0);
-    
+
     Timer? timerCounter;
     onBeforeUnmount(() => timerCounter?.cancel());
 
