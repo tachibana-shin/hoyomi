@@ -705,19 +705,19 @@ class _PlayerEigaState extends State<PlayerEiga>
   Widget _buildStack(BuildContext context) {
     return _widgetCache ??= Stack(
       children: [
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: GestureDetector(
-              onTap: _onTapToggleControls,
-              onDoubleTapDown: _onDoubleTapPlayer,
-              onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
-              onVerticalDragEnd: (_) => _hideAllSlider(),
-              onVerticalDragCancel: _hideAllSlider,
-              child: Container(color: Colors.black)),
-        ),
+        // Positioned(
+        //   top: 0,
+        //   left: 0,
+        //   right: 0,
+        //   bottom: 0,
+        //   child: GestureDetector(
+        //       onTap: _onTapToggleControls,
+        //       onDoubleTapDown: _onDoubleTapPlayer,
+        //       onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
+        //       onVerticalDragEnd: (_) => _hideAllSlider(),
+        //       onVerticalDragCancel: _hideAllSlider,
+        //       child: Container(color: Colors.black)),
+        // ),
         GestureDetector(
           onTap: _onTapToggleControls,
           onDoubleTapDown: _onDoubleTapPlayer,
@@ -800,43 +800,43 @@ class _PlayerEigaState extends State<PlayerEiga>
                 )),
               ));
         }),
-        // Watch(() {
-        //   final child = _showControls.value || _error.value != null
-        //       ? GestureDetector(
-        //           onTap: _onTapToggleControls,
-        //           onDoubleTapDown: _onDoubleTapPlayer,
-        //           onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
-        //           onVerticalDragEnd: (_) => _hideAllSlider(),
-        //           onVerticalDragCancel: _hideAllSlider,
-        //           child: Container(
-        //             color: Colors.black.withValues(alpha: 0.5),
-        //             child: Stack(
-        //               children: [
-        //                 _buildMobileTopControls(),
-        //                 _buildMobileControls(),
-        //                 _buildMobileBottomControls(),
-        //               ],
-        //             ),
-        //           ),
-        //         )
-        //       : SizedBox.shrink();
+        Watch(() {
+          final child = _showControls.value || _error.value != null
+              ? GestureDetector(
+                  onTap: _onTapToggleControls,
+                  onDoubleTapDown: _onDoubleTapPlayer,
+                  onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
+                  onVerticalDragEnd: (_) => _hideAllSlider(),
+                  onVerticalDragCancel: _hideAllSlider,
+                  child: Container(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    child: Stack(
+                      children: [
+                        _buildMobileTopControls(),
+                        _buildMobileControls(),
+                        _buildMobileBottomControls(),
+                      ],
+                    ),
+                  ),
+                )
+              : SizedBox.shrink();
 
-        //   if (_error.value != null) return child;
+          if (_error.value != null) return child;
 
-        //   return AnimatedSwitcher(
-        //       duration: _durationAnimate,
-        //       transitionBuilder: (child, animation) =>
-        //           FadeTransition(opacity: animation, child: child),
-        //       child: child);
-        // }),
-        // _buildError(),
-        // _buildIndicator(),
-        // Watch(() => _fullscreen.value
-        //     ? _buildMobileSliderProgress()
-        //     : SizedBox.shrink()),
-        // _buildUISwipeView(),
-        // _buildUIDoubleTapView(),
-        // _buildPopupOpeningEnding(),
+          return AnimatedSwitcher(
+              duration: _durationAnimate,
+              transitionBuilder: (child, animation) =>
+                  FadeTransition(opacity: animation, child: child),
+              child: child);
+        }),
+        _buildError(),
+        _buildIndicator(),
+        Watch(() => _fullscreen.value
+            ? _buildMobileSliderProgress()
+            : SizedBox.shrink()),
+        _buildUISwipeView(),
+        _buildUIDoubleTapView(),
+        _buildPopupOpeningEnding(),
       ],
     );
   }
