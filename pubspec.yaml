@@ -1,7 +1,7 @@
 name: hoyomi
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.19+20
+version: 0.1.20+21
 
 environment:
   sdk: ^3.6.2
