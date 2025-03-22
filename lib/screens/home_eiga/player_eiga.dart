@@ -705,30 +705,19 @@ class _PlayerEigaState extends State<PlayerEiga>
   Widget _buildStack(BuildContext context) {
     return _widgetCache ??= Stack(
       children: [
-        // Positioned(
-        //   top: 0,
-        //   left: 0,
-        //   right: 0,
-        //   bottom: 0,
-        //   child: Container(color: Colors.black),
-        // ),
-        // Positioned(
-        //   top: 0,
-        //   left: 0,
-        //   right: 0,
-        //   bottom: 0,
-        //   child: Opacity(
-        //     opacity: 0.0,
-        //     child: GestureDetector(
-        //       onTap: _onTapToggleControls,
-        //       onDoubleTapDown: _onDoubleTapPlayer,
-        //       onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
-        //       onVerticalDragEnd: (_) => _hideAllSlider(),
-        //       onVerticalDragCancel: _hideAllSlider,
-        //       child: Container(color: Colors.black),
-        //     ),
-        //   ),
-        // ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: GestureDetector(
+              onTap: _onTapToggleControls,
+              onDoubleTapDown: _onDoubleTapPlayer,
+              onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
+              onVerticalDragEnd: (_) => _hideAllSlider(),
+              onVerticalDragCancel: _hideAllSlider,
+              child: Container(color: Colors.black)),
+        ),
         GestureDetector(
           onTap: _onTapToggleControls,
           onDoubleTapDown: _onDoubleTapPlayer,
@@ -784,33 +773,33 @@ class _PlayerEigaState extends State<PlayerEiga>
                   )),
         ),
         // poster
-        // Watch(() {
-        //   if (widget.metaEiga.value.poster == null ||
-        //       widget.metaEiga.value.fake ||
-        //       _firstLoadedSource.value ||
-        //       _controller.value != null) {
-        //     return SizedBox.shrink();
-        //   }
+        Watch(() {
+          if (widget.metaEiga.value.poster == null ||
+              widget.metaEiga.value.fake ||
+              _firstLoadedSource.value ||
+              _controller.value != null) {
+            return SizedBox.shrink();
+          }
 
-        //   return GestureDetector(
-        //       onTap: _onTapToggleControls,
-        //       onDoubleTapDown: _onDoubleTapPlayer,
-        //       onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
-        //       onVerticalDragEnd: (_) => _hideAllSlider(),
-        //       onVerticalDragCancel: _hideAllSlider,
-        //       child: Positioned(
-        //         top: 0,
-        //         left: 0,
-        //         right: 0,
-        //         bottom: 0,
-        //         child: Center(
-        //             child: OImage.oNetwork(
-        //           widget.metaEiga.value.poster!,
-        //           sourceId: widget.service.uid,
-        //           fit: BoxFit.cover,
-        //         )),
-        //       ));
-        // }),
+          return GestureDetector(
+              onTap: _onTapToggleControls,
+              onDoubleTapDown: _onDoubleTapPlayer,
+              onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
+              onVerticalDragEnd: (_) => _hideAllSlider(),
+              onVerticalDragCancel: _hideAllSlider,
+              child: Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Center(
+                    child: OImage.oNetwork(
+                  widget.metaEiga.value.poster!,
+                  sourceId: widget.service.uid,
+                  fit: BoxFit.cover,
+                )),
+              ));
+        }),
         // Watch(() {
         //   final child = _showControls.value || _error.value != null
         //       ? GestureDetector(
