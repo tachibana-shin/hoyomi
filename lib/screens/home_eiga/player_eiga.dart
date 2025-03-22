@@ -840,14 +840,14 @@ class _PlayerEigaState extends State<PlayerEiga>
                   FadeTransition(opacity: animation, child: child),
               child: child);
         }),
-        _buildError(),
+        // _buildError(),
         _buildIndicator(),
-        Watch(() => _fullscreen.value
-            ? _buildMobileSliderProgress()
-            : SizedBox.shrink()),
-        _buildUISwipeView(),
+        // Watch(() => _fullscreen.value
+        //     ? _buildMobileSliderProgress()
+        //     : SizedBox.shrink()),
+        // _buildUISwipeView(),
         // _buildUIDoubleTapView(),
-        _buildPopupOpeningEnding(),
+        // _buildPopupOpeningEnding(),
       ],
     );
   }
