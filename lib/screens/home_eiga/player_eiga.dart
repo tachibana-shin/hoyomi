@@ -189,8 +189,6 @@ class _PlayerEigaState extends State<PlayerEiga>
   late final Computed<_StateOpeningEnding> _stateOpeningEnding;
   late final Computed<bool> _visibleTooltipSkipOE;
 
-  late final _firstLoadedSource = ref(false);
-
   String get uid => '${widget.episodeId.value}@${widget.eigaId.value}';
 
   @override
@@ -316,7 +314,6 @@ class _PlayerEigaState extends State<PlayerEiga>
       if (_source.value != null) {
         _setupPlayer(_source.value!, uid);
       }
-      _firstLoadedSource.value = false;
     }, immediate: true);
 
     int loopIdAutoIncrement = -1;
@@ -557,7 +554,6 @@ class _PlayerEigaState extends State<PlayerEiga>
         }
       }
       _aspectRatio.value = controller.value.aspectRatio;
-      _firstLoadedSource.value = true;
 
       if (_watchTimeData.value?.eigaId == widget.eigaId.value &&
           _watchTimeData.value?.episodeId == widget.episodeId.value &&
@@ -703,6 +699,11 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   Widget? _widgetCache;
   Widget _buildStack(BuildContext context) {
+    final counter = ref(0);
+    
+    Timer? timerCounter;
+    onBeforeUnmount(() => timerCounter?.cancel());
+
     return _widgetCache ??= Stack(
       children: [
         Positioned(
@@ -729,6 +730,7 @@ class _PlayerEigaState extends State<PlayerEiga>
               delay: const Duration(milliseconds: 222),
               builder: (context) => LayoutBuilder(
                     builder: (_, constraints) => Watch(() {
+                      counter.value;
                       final controller = _controller.value;
                       if (controller == null) return SizedBox.shrink();
 
@@ -741,6 +743,12 @@ class _PlayerEigaState extends State<PlayerEiga>
 
                       final qualityCode = _qualityCode.value;
                       final aspectRatio = _aspectRatio.value;
+
+                      timerCounter?.cancel();
+                      timerCounter = Timer(Duration(milliseconds: 222), () {
+                        timerCounter = null;
+                        counter.value++;
+                      });
 
                       double width = maxWidth;
                       double height = width /
@@ -776,7 +784,6 @@ class _PlayerEigaState extends State<PlayerEiga>
         // Watch(() {
         //   if (widget.metaEiga.value.poster == null ||
         //       widget.metaEiga.value.fake ||
-        //       _firstLoadedSource.value ||
         //       _controller.value != null) {
         //     return SizedBox.shrink();
         //   }
