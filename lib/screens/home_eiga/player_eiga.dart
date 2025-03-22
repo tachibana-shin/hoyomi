@@ -787,7 +787,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         Watch(() {
           if (widget.metaEiga.value.poster == null ||
               widget.metaEiga.value.fake ||
-              _firstLoadedSource.value) {
+              _firstLoadedSource.value || _controller.value != null) {
             return SizedBox.shrink();
           }
 
@@ -844,8 +844,8 @@ class _PlayerEigaState extends State<PlayerEiga>
         Watch(() => _fullscreen.value
             ? _buildMobileSliderProgress()
             : SizedBox.shrink()),
-        // _buildUISwipeView(),
-        _buildUIDoubleTapView(),
+        _buildUISwipeView(),
+        // _buildUIDoubleTapView(),
         _buildPopupOpeningEnding(),
       ],
     );
