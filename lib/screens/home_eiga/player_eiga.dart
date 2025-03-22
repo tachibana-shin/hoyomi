@@ -787,7 +787,8 @@ class _PlayerEigaState extends State<PlayerEiga>
         Watch(() {
           if (widget.metaEiga.value.poster == null ||
               widget.metaEiga.value.fake ||
-              _firstLoadedSource.value || _controller.value != null) {
+              _firstLoadedSource.value ||
+              _controller.value != null) {
             return SizedBox.shrink();
           }
 
