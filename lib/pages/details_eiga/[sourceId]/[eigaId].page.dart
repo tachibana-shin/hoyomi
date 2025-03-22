@@ -876,40 +876,40 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       // showDragHandle: true,
       useSafeArea: true,
       builder: (context, pop) => DraggableScrollableSheet(
-            expand: false,
-            snap: true,
-            snapSizes: [0, _initialBottomSheet, 1],
-            initialChildSize: _initialBottomSheet,
-            minChildSize: 0,
-            maxChildSize: 1,
-            builder: (context, scrollController) {
-              final padding = EdgeInsets.only(
-                left: 12.0,
-                right: 12.0,
-                top: 16.0,
-              );
+        expand: false,
+        snap: true,
+        snapSizes: [0, _initialBottomSheet, 1],
+        initialChildSize: _initialBottomSheet,
+        minChildSize: 0,
+        maxChildSize: 1,
+        builder: (context, scrollController) {
+          final padding = EdgeInsets.only(
+            left: 12.0,
+            right: 12.0,
+            top: 16.0,
+          );
 
-              return FractionallySizedBox(
-                widthFactor: 1.0,
-                heightFactor: 1.0,
-                child: Container(
-                  padding: padding,
-                  child: Column(
-                    children: [
-                      _buildSchedule(),
-                      SizedBox(height: 7.0),
-                      Expanded(
-                          child: _buildSeasonArea(
-                        metaEiga,
-                        scrollDirection: Axis.vertical,
-                        controller: scrollController,
-                      )),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
+          return FractionallySizedBox(
+            widthFactor: 1.0,
+            heightFactor: 1.0,
+            child: Container(
+              padding: padding,
+              child: Column(
+                children: [
+                  _buildSchedule(),
+                  SizedBox(height: 7.0),
+                  Expanded(
+                      child: _buildSeasonArea(
+                    metaEiga,
+                    scrollDirection: Axis.vertical,
+                    controller: scrollController,
+                  )),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -1000,11 +1000,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         '/details_eiga/${widget.sourceId}/${_eigaId.value}?episodeId=${_episodeId.value}');
   }
 
-  Widget _buildSeasonArea(
-    Ref<MetaEiga> metaEiga, {
-    scrollDirection = Axis.horizontal,
-    ScrollController? controller
-  }) {
+  Widget _buildSeasonArea(Ref<MetaEiga> metaEiga,
+      {scrollDirection = Axis.horizontal, ScrollController? controller}) {
     return ValueListenableBuilder(
       valueListenable: metaEiga,
       builder: (_, metaEiga$, child) {

@@ -914,7 +914,8 @@ class _PlayerEigaState extends State<PlayerEiga>
                 IconButton(
                   icon: Icon(MaterialCommunityIcons.playlist_play),
                   color: Colors.white,
-                  onPressed: () => widget.onTapPlaylist(context, _fullscreen.value),
+                  onPressed: () =>
+                      widget.onTapPlaylist(context, _fullscreen.value),
                 ),
                 // icon subtitle
                 Watch(() {
