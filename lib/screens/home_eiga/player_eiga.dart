@@ -701,8 +701,9 @@ class _PlayerEigaState extends State<PlayerEiga>
           ));
   }
 
+  Widget? _widgetCache;
   Widget _buildStack(BuildContext context) {
-    return Stack(
+    return _widgetCache ??= Stack(
       children: [
         Positioned(
           top: 0,
@@ -736,7 +737,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           onVerticalDragCancel: _hideAllSlider,
           // HELP: delayed widget for fix size not correct if fullscreen change
           child: DelayedWidget(
-              delay: const Duration(milliseconds: 111),
+              delay: const Duration(milliseconds: 222),
               builder: (context) => LayoutBuilder(
                     builder: (_, constraints) => Watch(() {
                       final controller = _controller.value;
@@ -773,12 +774,11 @@ class _PlayerEigaState extends State<PlayerEiga>
                           hasBorder: true,
                         ),
                         videoChild: Center(
-                          child: SizedBox(
-                            width: width,
-                            height: height,
-                            child: VideoPlayer(controller),
-                          ),
-                        ),
+                            child: FractionallySizedBox(
+                          widthFactor: width / maxWidth,
+                          heightFactor: height / maxHeight,
+                          child: VideoPlayer(controller),
+                        )),
                       );
                     }),
                   )),
@@ -802,11 +802,12 @@ class _PlayerEigaState extends State<PlayerEiga>
                 left: 0,
                 right: 0,
                 bottom: 0,
-                child: OImage.oNetwork(
+                child: Center(
+                    child: OImage.oNetwork(
                   widget.metaEiga.value.poster!,
                   sourceId: widget.service.uid,
                   fit: BoxFit.cover,
-                ),
+                )),
               ));
         }),
         Watch(() {
@@ -1136,27 +1137,30 @@ class _PlayerEigaState extends State<PlayerEiga>
           bottom: _fullscreen.value ? kToolbarHeight : 0,
           left: _fullscreen.value ? 16.0 : 0,
           right: _fullscreen.value ? 16.0 : 0,
-          child: AnimatedOpacity(
-            duration: _durationAnimate,
-            opacity:
-                (_fullscreen.value ? _showControls.value : true) ? 1.0 : 0.0,
-            child: IgnorePointer(
-              ignoring: !(_fullscreen.value ? _showControls.value : true),
-              child: SliderEiga(
-                progress: _position,
-                duration: _duration,
-                buffered: _buffered,
-                showThumb: _showControls,
-                pauseAutoHideControls: _pauseAutoHideControls,
-                vttThumbnail: _thumbnailVtt,
-                openingEnding: _openingEnding,
-                onSeek: (duration) {
-                  final seek = _position.value = duration;
-                  _controller.value?.seekTo(seek);
-                },
-              ),
-            ),
-          ),
+          child: FractionallySizedBox(
+              widthFactor: 1.0,
+              child: AnimatedOpacity(
+                duration: _durationAnimate,
+                opacity: (_fullscreen.value ? _showControls.value : true)
+                    ? 1.0
+                    : 0.0,
+                child: IgnorePointer(
+                  ignoring: !(_fullscreen.value ? _showControls.value : true),
+                  child: SliderEiga(
+                    progress: _position,
+                    duration: _duration,
+                    buffered: _buffered,
+                    showThumb: _showControls,
+                    pauseAutoHideControls: _pauseAutoHideControls,
+                    vttThumbnail: _thumbnailVtt,
+                    openingEnding: _openingEnding,
+                    onSeek: (duration) {
+                      final seek = _position.value = duration;
+                      _controller.value?.seekTo(seek);
+                    },
+                  ),
+                ),
+              )),
         ));
   }
 
