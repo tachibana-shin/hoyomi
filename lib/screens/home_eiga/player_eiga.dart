@@ -842,12 +842,12 @@ class _PlayerEigaState extends State<PlayerEiga>
         }),
         _buildError(),
         _buildIndicator(),
-        // Watch(() => _fullscreen.value
-        //     ? _buildMobileSliderProgress()
-        //     : SizedBox.shrink()),
-        // _buildUISwipeView(),
-        // _buildUIDoubleTapView(),
-        // _buildPopupOpeningEnding(),
+        Watch(() => _fullscreen.value
+            ? _buildMobileSliderProgress()
+            : SizedBox.shrink()),
+        _buildUISwipeView(),
+        _buildUIDoubleTapView(),
+        _buildPopupOpeningEnding(),
       ],
     );
   }
@@ -1133,6 +1133,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   }
 
   Widget _buildMobileSliderProgress() {
+    return SizedBox.shrink();
     return Watch(() => Positioned(
           top: 0,
           bottom: _fullscreen.value ? kToolbarHeight : 0,

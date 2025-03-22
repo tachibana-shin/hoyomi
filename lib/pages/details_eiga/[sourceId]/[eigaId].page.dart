@@ -226,7 +226,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             ),
           ],
         ),
-        // Positioned(top: 0, left: 0, right: 0, child: _buildPlayer()),
+        Positioned(top: 0, left: 0, right: 0, child: _buildPlayer()),
       ],
     );
   }
