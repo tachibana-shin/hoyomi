@@ -11,7 +11,7 @@ import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 import 'package:hoyomi/controller/settings.dart';
-import 'package:hoyomi/core_services/eiga/eiga_service.dart';
+import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
@@ -51,7 +51,7 @@ import 'widget/vertical_volume_slider.dart';
 // import 'package:video_player_oneplusdream_example/cache.dart';
 
 class PlayerEiga extends StatefulWidget {
-  final EigaService service;
+  final ABEigaService service;
   final Ref<EigaEpisode?> episode;
   final Ref<int?> episodeIndex;
   final Ref<MetaEiga> metaEiga;

@@ -14,7 +14,7 @@ import 'package:hoyomi/core_services/interfaces/vtt.dart';
 
 export 'package:hoyomi/core_services/service.dart';
 
-abstract class EigaService extends Service {
+abstract class ABEigaService extends Service {
   Future<EigaHome> home();
 
   Future<EigaSection> getSection({

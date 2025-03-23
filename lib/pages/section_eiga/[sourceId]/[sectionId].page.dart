@@ -6,7 +6,7 @@ import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/eiga/eiga_service.dart';
+import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_section.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/interfaces/filter.dart';
@@ -39,7 +39,7 @@ class SectionEigaPage extends StatefulWidget {
 }
 
 class _SectionEigaPageState extends State<SectionEigaPage> {
-  late final EigaService _service;
+  late final ABEigaService _service;
   int _pageKey = 2;
 
   String? _title;

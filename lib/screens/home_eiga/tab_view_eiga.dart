@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/eiga/eiga_service.dart';
+import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
 import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/widgets/eiga/carousel_eiga.dart';
@@ -8,7 +8,7 @@ import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 
 class TabViewEiga extends StatefulWidget {
-  final EigaService service;
+  final ABEigaService service;
 
   const TabViewEiga({super.key, required this.service});
 

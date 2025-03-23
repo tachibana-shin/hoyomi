@@ -23,7 +23,7 @@ import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
-import 'package:hoyomi/core_services/eiga/eiga_service.dart';
+import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
@@ -58,7 +58,7 @@ class DetailsEigaPage extends StatefulWidget {
 
 class _DetailsEigaPageState extends State<DetailsEigaPage>
     with TickerProviderStateMixin, KaeruMixin {
-  late final EigaService _service;
+  late final ABEigaService _service;
   late final _metaEiga = ref(MetaEiga.createFakeData());
   late final _loading = computed(() => _metaEiga.value.fake);
 

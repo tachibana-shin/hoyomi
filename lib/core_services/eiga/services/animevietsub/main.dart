@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
-import 'package:hoyomi/core_services/eiga/eiga_service.dart';
+import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_section.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
@@ -86,7 +86,7 @@ mixin _SupabaseRPC {
   }
 }
 
-class AnimeVietsubService extends EigaService
+class AnimeVietsubService extends ABEigaService
     with
         AuthMixin,
         EigaAuthMixin,

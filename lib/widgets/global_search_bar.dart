@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/core_services/comic/comic_service.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
-import 'package:hoyomi/core_services/eiga/eiga_service.dart';
+import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/main.dart';
@@ -363,7 +363,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                       }));
             });
       }
-      if (service is EigaService) {
+      if (service is ABEigaService) {
         return FutureBuilder(
             future: service.search(
                 keyword: keyword, page: 1, filters: {}, quick: true),
