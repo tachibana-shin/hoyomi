@@ -745,10 +745,12 @@ class _PlayerEigaState extends State<PlayerEiga>
                       final aspectRatio = _aspectRatio.value;
 
                       timerCounter?.cancel();
-                      timerCounter = Timer(Duration(milliseconds: 222), () {
-                        timerCounter = null;
-                        counter.value++;
-                      });
+                      if (counter.value < 10) {
+                        timerCounter = Timer(Duration(milliseconds: 222), () {
+                          timerCounter = null;
+                          counter.value++;
+                        });
+                      }
 
                       double width = maxWidth;
                       double height = width /
