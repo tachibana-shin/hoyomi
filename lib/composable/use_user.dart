@@ -58,8 +58,6 @@ UserData useUser(
           user.value = value;
         }
       }).catchError((err) {
-        debugPrint('Error: $err (${StackTrace.current})');
-
         if (err is UserNotFoundException) {
           if (context != null && (context as State).mounted) {
             user.value = null;
@@ -70,6 +68,8 @@ UserData useUser(
         if (context != null && (context as State).mounted) {
           error.value = '$err';
         }
+
+        debugPrint('Error: $err (${StackTrace.current})');
       });
     } finally {
       fetching.value = false;
