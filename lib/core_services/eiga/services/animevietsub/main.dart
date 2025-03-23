@@ -753,7 +753,7 @@ class AnimeVietsubService extends EigaService
   }
 
   @override
-  get getThumbnail => ({
+  get getThumbnailPreview => ({
         required eigaId,
         required episode,
         required episodeIndex,

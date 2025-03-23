@@ -252,11 +252,11 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     /// Preview images
     _thumbnailVtt = asyncComputed(() async {
-      if (widget.service.getThumbnail != null &&
+      if (widget.service.getThumbnailPreview != null &&
           widget.episode.value != null &&
           widget.episodeIndex.value != null &&
           !widget.metaEiga.value.fake) {
-        return widget.service.getThumbnail!(
+        return widget.service.getThumbnailPreview!(
           eigaId: widget.eigaId.value,
           episode: widget.episode.value!,
           episodeIndex: widget.episodeIndex.value!,

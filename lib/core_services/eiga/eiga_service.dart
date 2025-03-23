@@ -38,7 +38,7 @@ abstract class EigaService extends Service {
     required EigaEpisode episode,
     required int episodeIndex,
     required MetaEiga metaEiga,
-  })? getThumbnail;
+  })? getThumbnailPreview;
 
   Future<List<Subtitle>> getSubtitles({
     required String eigaId,
