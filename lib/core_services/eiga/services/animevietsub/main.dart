@@ -94,12 +94,12 @@ class AnimeVietsubService extends EigaService
         EigaHistoryMixin,
         EigaFollowMixin,
         _SupabaseRPC {
-  final hostCUrl = "animevietsub.one";
+  final hostCUrl = "animevietsub.lol";
   @override
-  final init = ServiceInit(
+  late final init = ServiceInit(
     name: "AnimeVietsub",
     faviconUrl: OImage(src: '/favicon.ico'),
-    rootUrl: 'https://animevietsub.red',
+    rootUrl: 'https://$hostCUrl',
   );
   @override
   final authInit = AuthInit(
