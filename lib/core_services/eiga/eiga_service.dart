@@ -31,8 +31,10 @@ abstract class EigaService extends Service {
     required String eigaId,
     required EigaEpisode episode,
   });
-  Future<SourceContent> Function({required SourceVideo source})?
-      fetchSourceContent;
+  Future<SourceContent> fetchSourceContent({required SourceVideo source}) {
+    throw UnimplementedError();
+  }
+
   Future<Vtt?> Function({
     required String eigaId,
     required EigaEpisode episode,
@@ -50,13 +52,17 @@ abstract class EigaService extends Service {
     required EigaEpisode episode,
     required int episodeIndex,
     required MetaEiga metaEiga,
-  });
+  }) {
+    throw UnimplementedError();
+  }
 
-  Future<List<Eiga>> Function({
+  Future<List<Eiga>> getSuggest({
     required MetaEiga metaEiga,
     required String eigaId,
     int? page,
-  })? getSuggest;
+  }) {
+    throw UnimplementedError();
+  }
 
   Future<EigaSection> search({
     required String keyword,

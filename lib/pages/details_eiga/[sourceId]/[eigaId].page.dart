@@ -79,16 +79,18 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final _episodeIndex = ref<int?>(null);
   late final _currentSeason = ref<Season?>(null);
   late final _suggestNotifier = computed<Future<List<Eiga>>?>(() {
-    if (_service.getSuggest == null) return null;
-
     if (_metaEiga.value.fake) {
       return Completer<List<Eiga>>().future;
     }
 
-    return _service.getSuggest!(
-      metaEiga: _metaEiga.value,
-      eigaId: widget.eigaId,
-    );
+    try {
+      return _service.getSuggest(
+        metaEiga: _metaEiga.value,
+        eigaId: widget.eigaId,
+      );
+    } on UnimplementedError {
+      return null;
+    }
   });
 
   final _eventBus = EventBus();

@@ -704,11 +704,13 @@ class AnimeVietsubService extends EigaService
   }
 
   @override
-  get fetchSourceContent => ({required source}) async => SourceContent(
-        content: jsonDecode(_decryptM3u8(source.src)),
-        url: source.url,
-        headers: source.headers,
-      );
+  fetchSourceContent({required source}) async {
+    return SourceContent(
+      content: jsonDecode(_decryptM3u8(source.src)),
+      url: source.url,
+      headers: source.headers,
+    );
+  }
 
   final Map<String, Future<String>> _callApiStore = {};
   Future<String> _callApiAnimeVsub(String url) {
@@ -819,14 +821,14 @@ class AnimeVietsubService extends EigaService
   }
 
   @override
-  get getSuggest => ({required metaEiga, required eigaId, page}) async {
-        final items = (await _docEigaStore[eigaId]!)
-            .querySelectorAll(".MovieListRelated .TPostMv")
-            .map((item) => _parseItem(item))
-            .toList();
+  getSuggest({required metaEiga, required eigaId, page}) async {
+    final items = (await _docEigaStore[eigaId]!)
+        .querySelectorAll(".MovieListRelated .TPostMv")
+        .map((item) => _parseItem(item))
+        .toList();
 
-        return items;
-      };
+    return items;
+  }
 
   @override
   search({required keyword, required page, required filters, required quick}) {

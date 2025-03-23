@@ -271,12 +271,16 @@ class _PlayerEigaState extends State<PlayerEiga>
       if (widget.episode.value != null &&
           widget.episodeIndex.value != null &&
           !widget.metaEiga.value.fake) {
-        return widget.service.getOpeningEnding(
-          eigaId: widget.eigaId.value,
-          episode: widget.episode.value!,
-          episodeIndex: widget.episodeIndex.value!,
-          metaEiga: widget.metaEiga.value,
-        );
+        try {
+          return widget.service.getOpeningEnding(
+            eigaId: widget.eigaId.value,
+            episode: widget.episode.value!,
+            episodeIndex: widget.episodeIndex.value!,
+            metaEiga: widget.metaEiga.value,
+          );
+        } on UnimplementedError {
+          return null;
+        }
       }
       return null;
     }, onError: (error) => debugPrint('Error: $error (${StackTrace.current})'));
