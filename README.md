@@ -77,4 +77,6 @@ A new Flutter project.
 - [x] Fix manga layout
 
 - [x] Page settings for services
+
+- [ ] Poster for eiga player
 <!-- provider or mobx -->
