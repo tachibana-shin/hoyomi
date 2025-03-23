@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -135,6 +136,9 @@ abstract class Service with _SettingsMixin {
       maxLines: 5,
     ),
   ];
+
+  final Map<String, (DateTime?, Future<String>)> _cacheFetch = {};
+
   Service() {
     // init settings appear
     _initSettings();
@@ -410,6 +414,35 @@ abstract class Service with _SettingsMixin {
     } else {
       throw Exception('Failed to load data');
     }
+  }
+
+  Future<String> fetchWithCache(
+    String url, {
+    Duration? expires,
+    String? cookie,
+    Map<String, dynamic>? body,
+    Map<String, String>? headers,
+  }) async {
+    final uid = sha256
+        .convert(utf8.encode(
+            '$url|$cookie|${body == null ? '' : jsonEncode(body)}|${headers == null ? '' : jsonEncode(headers)}'))
+        .toString();
+
+    final inStore = _cacheFetch[uid];
+    if (inStore != null &&
+        (inStore.$1 == null || inStore.$1!.second > DateTime.now().second)) {
+      return inStore.$2;
+    }
+
+    final expiresIn = expires == null ? null : DateTime.now().add(expires);
+    final response = fetch(url, cookie: cookie, body: body, headers: headers)
+      ..catchError((error) {
+        _cacheFetch.remove(uid);
+        throw error;
+      });
+    _cacheFetch[uid] = (expiresIn, response);
+
+    return response;
   }
 
   /// Parses the provided HTML string into a [Document] object.
