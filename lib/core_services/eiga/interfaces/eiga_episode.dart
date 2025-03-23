@@ -1,16 +1,18 @@
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 
-class EigaEpisode {
+class EigaEpisode<E> {
   final String name;
   final String episodeId;
   final OImage? image;
   final String? description;
+  final E? extra;
 
   EigaEpisode({
     required this.name,
     required this.episodeId,
     this.image,
     this.description,
+    this.extra,
   });
 
   /// Override equality operator to compare instances
@@ -42,6 +44,7 @@ class EigaEpisode {
           ? OImage.fromJson(json['image'] as Map<String, dynamic>)
           : null,
       description: json['description'] as String?,
+      extra: json['extra'],
     );
   }
 
@@ -52,6 +55,7 @@ class EigaEpisode {
       'episodeId': episodeId,
       'image': image?.toJson(),
       'description': description,
+      'extra': extra,
     };
   }
 }
