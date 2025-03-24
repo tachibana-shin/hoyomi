@@ -1007,7 +1007,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     return ValueListenableBuilder(
       valueListenable: metaEiga,
       builder: (_, metaEiga$, child) {
-        if (metaEiga$.seasons.isEmpty) {
+        if (metaEiga$.seasons.isEmpty || metaEiga$.seasons.length == 1) {
           return ValueListenableBuilder(
             valueListenable: _eigaId,
             builder: (context, eigaId, child) {
