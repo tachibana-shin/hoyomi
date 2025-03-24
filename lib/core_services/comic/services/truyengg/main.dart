@@ -62,7 +62,7 @@ final List<Filter> globalFilters = [
   ),
 ];
 
-class TruyenGGService extends ComicService with AuthMixin, ComicAuthMixin {
+class TruyenGGService extends ABComicService with AuthMixin, ComicAuthMixin {
   @override
   final init = ServiceInit(
     name: 'TruyenGGP',

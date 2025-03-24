@@ -37,7 +37,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
   late Future<List<OImage>> _pagesFuture;
   late Future<MetaComic> _metaComicFuture;
   MetaComic? _metaComic;
-  late final ComicService _service;
+  late final ABComicService _service;
   final ValueNotifier<ComicChapter?> _chapter = ValueNotifier(null);
   final ValueNotifier<bool> _showToolbar = ValueNotifier(true);
 
@@ -132,7 +132,7 @@ class _AppBar extends StatefulWidget {
   final MetaComic? comic;
   final ValueNotifier<ComicChapter?> chapter;
   final ValueNotifier<bool> enabled;
-  final ComicService service;
+  final ABComicService service;
   final String comicId;
 
   const _AppBar({

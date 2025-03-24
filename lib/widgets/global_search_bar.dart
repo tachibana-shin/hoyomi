@@ -321,7 +321,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
     return Watch(() {
       final service = _getCurrentService(context);
 
-      if (service is ComicService) {
+      if (service is ABComicService) {
         return FutureBuilder(
             future: service.search(
                 keyword: keyword, page: 1, filters: {}, quick: true),

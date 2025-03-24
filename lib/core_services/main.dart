@@ -1,13 +1,14 @@
 import 'package:hoyomi/core_services/comic/comic_service.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
-import 'package:hoyomi/core_services/eiga/services/animevietsub/main.dart';
 
 import 'comic/services/truyengg/main.dart';
 import 'comic/services/truyenqq/main.dart';
+import 'eiga/services/animevietsub/main.dart';
+import 'eiga/services/ophim/main.dart';
 
-List<ComicService> comicServices = [TruyenGGService(), TruyenQQService()];
+List<ABComicService> comicServices = [TruyenGGService(), TruyenQQService()];
 
-ComicService getComicService(String id) {
+ABComicService getComicService(String id) {
   for (final service in comicServices) {
     if (service.uid == id) {
       return service;
@@ -17,7 +18,7 @@ ComicService getComicService(String id) {
   throw Exception('Service not found');
 }
 
-List<ABEigaService> eigaServices = [AnimeVietsubService()];
+List<ABEigaService> eigaServices = [AnimeVietsubService(), OPhimService()];
 
 ABEigaService getEigaService(String id) {
   for (final service in eigaServices) {

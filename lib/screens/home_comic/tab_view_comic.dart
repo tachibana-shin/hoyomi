@@ -7,7 +7,7 @@ import 'package:hoyomi/widgets/comic/vertical_comic_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 
 class TabViewComic extends StatefulWidget {
-  final ComicService service;
+  final ABComicService service;
 
   const TabViewComic({super.key, required this.service});
 

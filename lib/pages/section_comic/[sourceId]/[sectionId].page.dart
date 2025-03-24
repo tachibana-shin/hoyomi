@@ -39,7 +39,7 @@ class SectionComicPage extends StatefulWidget {
 }
 
 class _SectionComicPageState extends State<SectionComicPage> {
-  late final ComicService _service;
+  late final ABComicService _service;
   int _pageKey = 2;
 
   String? _title;

@@ -159,8 +159,8 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
             child: InkWell(
               onTap: () {
                 if (item.service == null) return;
-                final param = item.service is ComicService
-                    ? (item.service as ComicService).parseURL(item.link)
+                final param = item.service is ABComicService
+                    ? (item.service as ABComicService).parseURL(item.link)
                     : null;
 
                 if (param != null) {

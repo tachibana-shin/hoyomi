@@ -37,7 +37,7 @@ class ImageWithGroup extends OImage {
 }
 
 class MangaReader extends StatefulWidget {
-  final ComicService service;
+  final ABComicService service;
   final String comicId;
 
   final List<OImage> pages;

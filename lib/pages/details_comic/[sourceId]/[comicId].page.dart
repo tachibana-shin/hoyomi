@@ -46,7 +46,7 @@ class DetailsComic extends StatefulWidget {
 class _DetailsComicState extends State<DetailsComic>
     with SingleTickerProviderStateMixin, KaeruMixin {
   Future<ComicSection>? _suggestFuture;
-  late final ComicService _service;
+  late final ABComicService _service;
 
   late final AnimationController _bottomSheetAnimationController;
 
@@ -756,7 +756,7 @@ class _DetailsComicState extends State<DetailsComic>
 class _ButtonLike extends StatefulWidget {
   final String comicId;
   final MetaComic comic;
-  final ComicService service;
+  final ABComicService service;
 
   const _ButtonLike({
     required this.comicId,
@@ -848,7 +848,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
 }
 
 class _AvatarUser extends StatefulWidget {
-  final ComicService service;
+  final ABComicService service;
 
   const _AvatarUser({required this.service});
 
