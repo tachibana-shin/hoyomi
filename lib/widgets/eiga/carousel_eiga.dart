@@ -164,71 +164,74 @@ class _CarouselEigaState extends State<CarouselEiga> {
                             // rate
                             Wrap(
                               children: [
-                                ...(item.rate != null)
-                                    ? [
-                                        Icon(
-                                          MaterialCommunityIcons.star,
-                                          color: Colors.blue.shade200,
-                                          size: 12.0,
-                                        ),
-                                        Text(
-                                          ' ${item.rate}',
-                                          style: const TextStyle(
-                                            fontSize: 12.0,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ]
-                                    : [],
-                                ...(item.year != null)
-                                    ? [
-                                        VerticalSeparator(),
-                                        Text(
-                                          item.year!,
-                                          style: const TextStyle(
-                                            fontSize: 12.0,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ]
-                                    : [],
-                                ...(item.notice != null)
-                                    ? [
-                                        VerticalSeparator(),
-                                        Text(
-                                          item.notice!,
-                                          style: const TextStyle(
-                                            fontSize: 12.0,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ]
-                                    : [],
-                                ...(item.studio != null)
-                                    ? [
-                                        VerticalSeparator(),
-                                        Text(
-                                          item.studio!,
-                                          style: const TextStyle(
-                                            fontSize: 12.0,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ]
-                                    : [],
-                                ...(item.duration != null)
-                                    ? [
-                                        VerticalSeparator(),
-                                        Text(
-                                          item.duration!,
-                                          style: const TextStyle(
-                                            fontSize: 12.0,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ]
-                                    : [],
-                              ],
+                                if (item.rate != null)
+                                  [
+                                    Icon(
+                                      MaterialCommunityIcons.star,
+                                      color: Colors.blue.shade200,
+                                      size: 12.0,
+                                    ),
+                                    Text(
+                                      ' ${item.rate}',
+                                      style: const TextStyle(
+                                        fontSize: 12.0,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                if (item.year != null)
+                                  [
+                                    Text(
+                                      item.year!,
+                                      style: const TextStyle(
+                                        fontSize: 12.0,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                if (item.notice != null)
+                                  [
+                                    Text(
+                                      item.notice!,
+                                      style: const TextStyle(
+                                        fontSize: 12.0,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                if (item.studio != null)
+                                  [
+                                    Text(
+                                      item.studio!,
+                                      style: const TextStyle(
+                                        fontSize: 12.0,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                if (item.duration != null)
+                                  [
+                                    Text(
+                                      item.duration!,
+                                      style: const TextStyle(
+                                        fontSize: 12.0,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                              ].asMap().entries.fold<List<Widget>>([],
+                                  (arr, entry) {
+                                int index = entry.key;
+                                final item = entry.value;
+
+                                arr.addAll(item);
+
+                                if (index > 0 && index < arr.length - 1) {
+                                  arr.add(const VerticalSeparator());
+                                }
+
+                                return arr;
+                              }),
                             ),
                             SizedBox(height: 5.0),
                             // description
