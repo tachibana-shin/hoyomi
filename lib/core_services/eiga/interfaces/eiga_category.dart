@@ -1,14 +1,14 @@
-import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 import 'package:hoyomi/core_services/interfaces/filter.dart';
 import 'package:hoyomi/core_services/interfaces/paginate.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 
-class ComicSection extends Paginate<Comic> {
+class EigaCategory extends Paginate<Eiga> {
   final String name;
   final String url;
   final String? description;
   final List<Filter>? filters;
 
-  const ComicSection({
+  const EigaCategory({
     required this.name,
     required this.url,
     this.description,

@@ -6,7 +6,7 @@ import 'package:hoyomi/controller/history.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/comic_service.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_section.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic_category.dart';
 import 'package:hoyomi/core_services/interfaces/user.dart';
 
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
@@ -45,7 +45,7 @@ class DetailsComic extends StatefulWidget {
 
 class _DetailsComicState extends State<DetailsComic>
     with SingleTickerProviderStateMixin, KaeruMixin {
-  Future<ComicSection>? _suggestFuture;
+  Future<ComicCategory>? _suggestFuture;
   late final ABComicService _service;
 
   late final AnimationController _bottomSheetAnimationController;
@@ -493,7 +493,7 @@ class _DetailsComicState extends State<DetailsComic>
             ),
           ),
 
-        // Description Section
+        // Description Category
         Text(
           'Description',
           style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
@@ -511,7 +511,7 @@ class _DetailsComicState extends State<DetailsComic>
               onTap: () {
                 ///
                 context.push(
-                  "/section_comic/${_service.uid}/${genre.genreId}",
+                  "/category_comic/${_service.uid}/${genre.genreId}",
                 );
               },
               child: Chip(label: Text(genre.name)),

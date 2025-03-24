@@ -1,6 +1,6 @@
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_section.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_category.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_param.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
@@ -17,8 +17,8 @@ export 'package:hoyomi/core_services/service.dart';
 abstract class ABEigaService extends Service {
   Future<EigaHome> home();
 
-  Future<EigaSection> getSection({
-    required String sectionId,
+  Future<EigaCategory> getCategory({
+    required String categoryId,
     required int page,
     required Map<String, List<String>?> filters,
   });
@@ -64,7 +64,7 @@ abstract class ABEigaService extends Service {
     throw UnimplementedError();
   }
 
-  Future<EigaSection> search({
+  Future<EigaCategory> search({
     required String keyword,
     required int page,
     required Map<String, List<String>?> filters,

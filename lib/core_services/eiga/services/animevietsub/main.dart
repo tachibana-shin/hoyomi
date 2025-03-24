@@ -7,7 +7,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_section.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_category.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
@@ -20,7 +20,7 @@ import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/carousel.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/home_eiga_section.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/home_eiga_category.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_param.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/interfaces/filter.dart';
@@ -314,36 +314,36 @@ class AnimeVietsubService extends ABEigaService
         aspectRatio: 404 / 720,
         maxHeightBuilder: (context) => 30.h(context),
       ),
-      sections: [
-        HomeEigaSection(
+      categorys: [
+        HomeEigaCategory(
           name: 'Top',
           items: document
               .querySelectorAll(".MovieListTopCn .TPostMv")
               .map((item) => _parseItem(item))
               .toList(),
         ),
-        HomeEigaSection(
+        HomeEigaCategory(
           name: 'Latest',
           items: document
               .querySelectorAll("#single-home .TPostMv")
               .map((item) => _parseItem(item))
               .toList(),
         ),
-        HomeEigaSection(
+        HomeEigaCategory(
           name: 'Pre Release',
           items: document
               .querySelectorAll("#new-home .TPostMv")
               .map((item) => _parseItem(item))
               .toList(),
         ),
-        HomeEigaSection(
+        HomeEigaCategory(
           name: 'Hot',
           items: document
               .querySelectorAll("#hot-home .TPostMv")
               .map((item) => _parseItem(item))
               .toList(),
         ),
-        HomeEigaSection(
+        HomeEigaCategory(
           name: 'Top',
           items: document
               .querySelectorAll("#showTopPhim .TPost")
@@ -355,7 +355,7 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  getSection({required sectionId, required page, required filters}) async {
+  getCategory({required categoryId, required page, required filters}) async {
     final params = (filters['type'] == null || filters['type']!.isEmpty) &&
             (filters['genres[]'] == null || filters['genres[]']!.isEmpty) &&
             (filters['season'] == null || filters['season']!.isEmpty) &&
@@ -371,7 +371,7 @@ class AnimeVietsubService extends ABEigaService
             //list-le/2-44-3-4/winter/2025/
           ].join('/');
     final url = (params == null
-            ? baseUrl + sectionId.replaceAll('_', '/')
+            ? baseUrl + categoryId.replaceAll('_', '/')
             : '$baseUrl/$params') +
         (page > 1 ? '/trang-$page' : '') +
         (filters['sort'] == null ? '' : '?sort=${filters['sort']}');
@@ -431,7 +431,7 @@ class AnimeVietsubService extends ABEigaService
             ),
           );
 
-    return EigaSection(
+    return EigaCategory(
       name: name,
       url: url,
       items: items,
@@ -832,8 +832,8 @@ class AnimeVietsubService extends ABEigaService
 
   @override
   search({required keyword, required page, required filters, required quick}) {
-    return getSection(
-      sectionId: '/tim-kiem/$keyword/',
+    return getCategory(
+      categoryId: '/tim-kiem/$keyword/',
       page: page,
       filters: filters,
     );
@@ -982,19 +982,19 @@ class AnimeVietsubService extends ABEigaService
   getFollows({required int page}) async {
     await _getUidUser();
 
-    final section = await getSection(
-      sectionId: '/tu-phim/',
+    final category = await getCategory(
+      categoryId: '/tu-phim/',
       page: page,
       filters: {},
     );
     final items =
-        section.items.map((item) => FollowItem<Eiga>(item: item)).toList();
+        category.items.map((item) => FollowItem<Eiga>(item: item)).toList();
 
     return Paginate(
       items: items,
-      page: section.page,
-      totalItems: section.totalItems,
-      totalPages: section.totalPages,
+      page: category.page,
+      totalItems: category.totalItems,
+      totalPages: category.totalPages,
     );
   }
 }

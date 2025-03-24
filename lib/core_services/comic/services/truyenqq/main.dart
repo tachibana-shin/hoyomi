@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:hoyomi/core_services/comic/interfaces/comic_section.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic_category.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_chapter.dart';
 import 'package:hoyomi/core_services/interfaces/genre.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
-import 'package:hoyomi/core_services/comic/interfaces/home_comic_section.dart';
+import 'package:hoyomi/core_services/comic/interfaces/home_comic_category.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 import 'package:hoyomi/core_services/comic/interfaces/rate_value.dart';
 import 'package:hoyomi/core_services/comic/interfaces/status_enum.dart';
@@ -104,24 +104,24 @@ class TruyenQQService extends TruyenGGService {
   }
 
   @override
-  Future<List<HomeComicSection>> home() async {
+  Future<List<HomeComicCategory>> home() async {
     final document = await fetchDocument(baseUrl);
 
     return [
-      HomeComicSection(
+      HomeComicCategory(
         items: document
             .querySelectorAll("#list_suggest > li")
             .map((element) => parseComic(element, baseUrl))
             .toList(),
         name: 'Truyện Hay',
       ),
-      HomeComicSection(
+      HomeComicCategory(
         items: document
             .querySelectorAll("#list_new > li")
             .map((element) => parseComic(element, baseUrl))
             .toList(),
         name: 'Truyện Mới Cập Nhật',
-        sectionId: 'truyen-moi-cap-nhat',
+        categoryId: 'truyen-moi-cap-nhat',
       ),
     ];
   }
@@ -268,7 +268,7 @@ class TruyenQQService extends TruyenGGService {
           )
         : 1;
 
-    return ComicSection(
+    return ComicCategory(
       name: '',
       url: url,
       items: data.toList(),
@@ -279,9 +279,9 @@ class TruyenQQService extends TruyenGGService {
   }
 
   @override
-  getSection({required sectionId, required page, required filters}) async {
+  getCategory({required categoryId, required page, required filters}) async {
     final url =
-        "$baseUrl/${sectionId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html";
+        "$baseUrl/${categoryId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html";
 
     final Document document = await fetchDocument(
       buildQueryUri(url, filters: filters).toString(),
@@ -300,7 +300,7 @@ class TruyenQQService extends TruyenGGService {
           )
         : 1;
 
-    return ComicSection(
+    return ComicCategory(
       name: document
               .querySelector(".title_cate, .text_list_update")
               ?.text

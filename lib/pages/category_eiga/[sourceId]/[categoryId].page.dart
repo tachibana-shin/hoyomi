@@ -6,40 +6,40 @@ import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/comic/comic_service.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_section.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
+import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_category.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/interfaces/filter.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/comic/icon_button_open_browser.dart';
-import 'package:hoyomi/widgets/comic/vertical_comic.dart';
+import 'package:hoyomi/widgets/eiga/vertical_eiga.dart';
 import 'package:hoyomi/widgets/infinite_grid.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:hoyomi/widgets/vertical_list.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class SectionComicPage extends StatefulWidget {
+class CategoryEigaPage extends StatefulWidget {
   final String sourceId;
-  final String sectionId;
-  final Future<ComicSection> Function({
-    required String sectionId,
+  final String categoryId;
+  final Future<EigaCategory> Function({
+    required String categoryId,
     required int page,
     required Map<String, List<String>?> filters,
-  })? getSection;
+  })? getCategory;
 
-  const SectionComicPage({
+  const CategoryEigaPage({
     super.key,
     required this.sourceId,
-    required this.sectionId,
-    this.getSection,
+    required this.categoryId,
+    this.getCategory,
   });
 
   @override
-  createState() => _SectionComicPageState();
+  createState() => _CategoryEigaPageState();
 }
 
-class _SectionComicPageState extends State<SectionComicPage> {
-  late final ABComicService _service;
+class _CategoryEigaPageState extends State<CategoryEigaPage> {
+  late final ABEigaService _service;
   int _pageKey = 2;
 
   String? _title;
@@ -54,12 +54,12 @@ class _SectionComicPageState extends State<SectionComicPage> {
   @override
   void initState() {
     super.initState();
-    _service = getComicService(widget.sourceId);
+    _service = getEigaService(widget.sourceId);
   }
 
-  Future<(bool, List<Comic>)> _fetchComics(int pageKey) async {
-    final newComics = await (widget.getSection ?? _service.getSection)(
-      sectionId: widget.sectionId,
+  Future<(bool, List<Eiga>)> _fetchComics(int pageKey) async {
+    final newComics = await (widget.getCategory ?? _service.getCategory)(
+      categoryId: widget.categoryId,
       page: pageKey,
       filters: _selectFilters,
     );
@@ -82,9 +82,9 @@ class _SectionComicPageState extends State<SectionComicPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PullRefreshPage<List<Comic>>(
+    return PullRefreshPage<List<Eiga>>(
       onLoadData: () => _fetchComics(1).then((param) => param.$2),
-      onLoadFake: () => List.generate(30, (_) => Comic.createFakeData()),
+      onLoadFake: () => List.generate(30, (_) => Eiga.createFakeData()),
       builderError: (body) =>
           Scaffold(appBar: _buildAppBar(() async {}), body: body),
       builder: (data, param) =>
@@ -249,7 +249,7 @@ class _SectionComicPageState extends State<SectionComicPage> {
     );
   }
 
-  Widget _buildBody(List<Comic> data) {
+  Widget _buildBody(List<Eiga> data) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       child: InfiniteGrid(
@@ -264,8 +264,8 @@ class _SectionComicPageState extends State<SectionComicPage> {
 
           return result;
         },
-        itemBuilder: (context, comic, index) {
-          return VerticalComic(comic: comic, sourceId: widget.sourceId);
+        itemBuilder: (context, eiga, index) {
+          return VerticalEiga(eiga: eiga, sourceId: widget.sourceId);
         },
       ),
     );

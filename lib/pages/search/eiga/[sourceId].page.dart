@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_section.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_category.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/pages/section_eiga/[sourceId]/[sectionId].page.dart';
+import 'package:hoyomi/pages/category_eiga/%5BsourceId%5D/%5BcategoryId%5D.page.dart';
 
 class SearchEigaPage extends StatelessWidget {
   final String sourceId;
@@ -15,21 +15,21 @@ class SearchEigaPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SectionEigaPage(
+    return CategoryEigaPage(
       sourceId: sourceId,
-      sectionId: keyword,
-      getSection: ({
+      categoryId: keyword,
+      getCategory: ({
         required filters,
         required page,
-        required sectionId,
+        required categoryId,
       }) async {
         final data = await getEigaService(
           sourceId,
         ).search(
-            filters: filters, page: page, keyword: sectionId, quick: false);
+            filters: filters, page: page, keyword: categoryId, quick: false);
 
-        return EigaSection(
-          name: 'Search "$sectionId"',
+        return EigaCategory(
+          name: 'Search "$categoryId"',
           url: data.url,
           items: data.items,
           page: data.page,

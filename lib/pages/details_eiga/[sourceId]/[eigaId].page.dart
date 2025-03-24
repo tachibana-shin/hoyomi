@@ -355,7 +355,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         GestureDetector(
                           onTap: () {
                             context.push(
-                              '/section_eiga/${widget.sourceId}/${metaEiga$.studio!.genreId}',
+                              '/category_eiga/${widget.sourceId}/${metaEiga$.studio!.genreId}',
                             );
                           },
                           child: Text(
@@ -424,7 +424,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         child: GestureDetector(
                           onTap: () {
                             context.push(
-                              '/section_eiga/${widget.sourceId}/${country.genreId}',
+                              '/category_eiga/${widget.sourceId}/${country.genreId}',
                             );
                           },
                           child: Text(
@@ -477,7 +477,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   GestureDetector(
                     onTap: () {
                       context.push(
-                        '/section_eiga/${widget.sourceId}/${metaEiga$.movieSeason!.genreId}',
+                        '/category_eiga/${widget.sourceId}/${metaEiga$.movieSeason!.genreId}',
                       );
                     },
                     child: Text(
@@ -500,7 +500,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 return GestureDetector(
                   onTap: () {
                     context.push(
-                      '/section_eiga/${widget.sourceId}/${genre.genreId}',
+                      '/category_eiga/${widget.sourceId}/${genre.genreId}',
                     );
                   },
                   child: Text(

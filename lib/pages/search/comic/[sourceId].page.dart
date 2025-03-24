@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_section.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic_category.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/pages/section_comic/[sourceId]/[sectionId].page.dart';
+import 'package:hoyomi/pages/category_comic/%5BsourceId%5D/%5BcategoryId%5D.page.dart';
 
 class SearchComicPage extends StatelessWidget {
   final String sourceId;
@@ -15,21 +15,21 @@ class SearchComicPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SectionComicPage(
+    return CategoryComicPage(
       sourceId: sourceId,
-      sectionId: keyword,
-      getSection: ({
+      categoryId: keyword,
+      getCategory: ({
         required filters,
         required page,
-        required sectionId,
+        required categoryId,
       }) async {
         final data = await getComicService(
           sourceId,
         ).search(
-            filters: filters, page: page, keyword: sectionId, quick: false);
+            filters: filters, page: page, keyword: categoryId, quick: false);
 
-        return ComicSection(
-          name: 'Search "$sectionId"',
+        return ComicCategory(
+          name: 'Search "$categoryId"',
           url: data.url,
           items: data.items,
           page: data.page,

@@ -31,9 +31,9 @@ class _TabViewEigaState extends State<TabViewEiga>
       builder: (data, _) {
         return ListView.builder(
           padding: const EdgeInsets.all(8.0),
-          itemCount: data.sections.length + (data.carousel == null ? 0 : 1),
-          itemBuilder: (context, sectionIndex) {
-            if (sectionIndex == 0 && data.carousel != null) {
+          itemCount: data.categorys.length + (data.carousel == null ? 0 : 1),
+          itemBuilder: (context, categoryIndex) {
+            if (categoryIndex == 0 && data.carousel != null) {
               return CarouselEiga(
                 aspectRatio: data.carousel!.aspectRatio,
                 sourceId: widget.service.uid,
@@ -42,20 +42,20 @@ class _TabViewEigaState extends State<TabViewEiga>
               );
             }
 
-            final section = data.sections.elementAt(
-              sectionIndex - (data.carousel != null ? 1 : 0),
+            final category = data.categorys.elementAt(
+              categoryIndex - (data.carousel != null ? 1 : 0),
             );
             return ValueListenableBuilder<bool>(
               valueListenable: isGridViewEnabled,
               builder: (context, value, _) {
-                if (section.gridView != null) {
-                  value = section.gridView!;
+                if (category.gridView != null) {
+                  value = category.gridView!;
                 }
 
                 if (value == false) {
                   return HorizontalEigaList(
                     itemsFuture: Future.value(
-                      section.items
+                      category.items
                           .map(
                             (item) => EigaExtend(
                               eiga: item,
@@ -64,16 +64,16 @@ class _TabViewEigaState extends State<TabViewEiga>
                           )
                           .toList(),
                     ),
-                    title: section.name,
-                    more: section.sectionId != null
-                        ? '/section_eiga/${widget.service.uid}/${section.sectionId}'
+                    title: category.name,
+                    more: category.categoryId != null
+                        ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
                         : null,
                   );
                 }
 
                 return VerticalEigaList(
                   itemsFuture: Future.value(
-                    section.items
+                    category.items
                         .map(
                           (item) => EigaExtend(
                             eiga: item,
@@ -82,9 +82,9 @@ class _TabViewEigaState extends State<TabViewEiga>
                         )
                         .toList(),
                   ),
-                  title: section.name,
-                  more: section.sectionId != null
-                      ? '/section_eiga/${widget.service.uid}/${section.sectionId}'
+                  title: category.name,
+                  more: category.categoryId != null
+                      ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
                       : null,
                 );
               },

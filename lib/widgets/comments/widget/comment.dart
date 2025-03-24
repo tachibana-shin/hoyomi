@@ -205,7 +205,7 @@ class _CommentState extends State<Comment> {
             ),
           ],
         ),
-        // Replies section
+        // Replies category
         if (_showReplies)
           Comments(
             getComments: widget.getComments,

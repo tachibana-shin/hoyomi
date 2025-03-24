@@ -1,21 +1,21 @@
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 
-class HomeEigaSection {
+class HomeEigaCategory {
   final String name;
-  final String? sectionId;
+  final String? categoryId;
   final bool? gridView;
   final List<Eiga> items;
 
-  HomeEigaSection({
+  HomeEigaCategory({
     required this.items,
     required this.name,
-    this.sectionId,
+    this.categoryId,
     this.gridView,
   });
 
-  factory HomeEigaSection.createFakeData() {
-    return HomeEigaSection(
-      name: 'Section Name',
+  factory HomeEigaCategory.createFakeData() {
+    return HomeEigaCategory(
+      name: 'Category Name',
       items: List.generate(10, (index) => Eiga.createFakeData()),
     );
   }

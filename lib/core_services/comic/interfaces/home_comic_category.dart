@@ -1,22 +1,22 @@
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 
-class HomeComicSection {
+class HomeComicCategory {
   final String name;
-  final String? sectionId;
+  final String? categoryId;
   final bool? gridView;
   final List<Comic> items;
 
-  const HomeComicSection({
+  const HomeComicCategory({
     required this.items,
     required this.name,
-    this.sectionId,
+    this.categoryId,
     this.gridView,
   });
 
-  factory HomeComicSection.createFakeData() {
-    return HomeComicSection(
+  factory HomeComicCategory.createFakeData() {
+    return HomeComicCategory(
       name: "Popular Manga",
-      sectionId: "sec1",
+      categoryId: "sec1",
       gridView: true,
       items: List.generate(5, (index) => Comic.createFakeData()),
     );

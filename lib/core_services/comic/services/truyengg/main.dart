@@ -13,11 +13,11 @@ import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_section.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic_category.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 import 'package:hoyomi/core_services/interfaces/filter.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
-import 'package:hoyomi/core_services/comic/interfaces/home_comic_section.dart';
+import 'package:hoyomi/core_services/comic/interfaces/home_comic_category.dart';
 import 'package:hoyomi/core_services/interfaces/user.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_param.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_modes.dart';
@@ -132,35 +132,35 @@ class TruyenGGService extends ABComicService with AuthMixin, ComicAuthMixin {
 
   // Main
   @override
-  Future<List<HomeComicSection>> home() async {
+  Future<List<HomeComicCategory>> home() async {
     final Document document = await fetchDocument(baseUrl);
 
-    final sections = document.querySelectorAll(".list_item_home");
+    final categorys = document.querySelectorAll(".list_item_home");
 
     return [
-      HomeComicSection(
-        items: sections[0]
+      HomeComicCategory(
+        items: categorys[0]
             .querySelectorAll(".item_home")
             .map((element) => parseComic(element, baseUrl))
             .toList(),
         name: 'Mới Cập Nhật',
-        sectionId: 'truyen-moi-cap-nhat',
+        categoryId: 'truyen-moi-cap-nhat',
       ),
-      HomeComicSection(
-        items: sections[1]
+      HomeComicCategory(
+        items: categorys[1]
             .querySelectorAll(".item_home")
             .map((element) => parseComic(element, baseUrl))
             .toList(),
         name: "Bình Chọn",
-        sectionId: "top-binh-chon",
+        categoryId: "top-binh-chon",
       ),
-      HomeComicSection(
-        items: sections[2]
+      HomeComicCategory(
+        items: categorys[2]
             .querySelectorAll(".item_home")
             .map((element) => parseComic(element, baseUrl))
             .toList(),
         name: "Xem Nhiều",
-        sectionId: "top-thang",
+        categoryId: "top-thang",
       ),
     ];
   }
@@ -465,8 +465,8 @@ class TruyenGGService extends ABComicService with AuthMixin, ComicAuthMixin {
 
   @override
   get getSuggest => (comic, {page = 1}) async {
-        return getSection(
-          sectionId: "tim-kiem-nang-cao",
+        return getCategory(
+          categoryId: "tim-kiem-nang-cao",
           page: page!,
           filters: {
             'category': comic.genres
@@ -489,9 +489,9 @@ class TruyenGGService extends ABComicService with AuthMixin, ComicAuthMixin {
 
     final Document document = await fetchDocument(url);
 
-    final sections = document.querySelectorAll(".list_item_home");
+    final categorys = document.querySelectorAll(".list_item_home");
 
-    final data = sections[0]
+    final data = categorys[0]
         .querySelectorAll(".item_home")
         .map((element) => parseComic(element, baseUrl));
 
@@ -504,7 +504,7 @@ class TruyenGGService extends ABComicService with AuthMixin, ComicAuthMixin {
           )
         : 1;
 
-    return ComicSection(
+    return ComicCategory(
       name: '',
       url: url,
       items: data.toList(),
@@ -515,9 +515,9 @@ class TruyenGGService extends ABComicService with AuthMixin, ComicAuthMixin {
   }
 
   @override
-  getSection({required sectionId, required page, required filters}) async {
+  getCategory({required categoryId, required page, required filters}) async {
     final url =
-        "$baseUrl/${sectionId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html";
+        "$baseUrl/${categoryId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html";
 
     final Document document = await fetchDocument(
       buildQueryUri(url, filters: filters).toString(),
@@ -537,7 +537,7 @@ class TruyenGGService extends ABComicService with AuthMixin, ComicAuthMixin {
           )
         : 1;
 
-    return ComicSection(
+    return ComicCategory(
       name: document.querySelector(".title_cate")!.text,
       url: url,
       items: data.toList(),

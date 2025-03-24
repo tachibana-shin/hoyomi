@@ -17,8 +17,8 @@ import 'package:hoyomi/pages/manager_page.dart';
 import 'package:hoyomi/pages/search/comic/[sourceId].page.dart';
 import 'package:hoyomi/pages/search/eiga/[sourceId].page.dart';
 import 'package:hoyomi/pages/search/index_page.dart';
-import 'package:hoyomi/pages/section_comic/[sourceId]/[sectionId].page.dart';
-import 'package:hoyomi/pages/section_eiga/[sourceId]/[sectionId].page.dart';
+import 'package:hoyomi/pages/category_comic/%5BsourceId%5D/%5BcategoryId%5D.page.dart';
+import 'package:hoyomi/pages/category_eiga/%5BsourceId%5D/%5BcategoryId%5D.page.dart';
 import 'package:hoyomi/pages/service_settings/[sourceId].page.dart';
 import 'package:hoyomi/pages/webview_page.dart';
 import 'package:hoyomi/plugins/android_sdk_int.dart';
@@ -34,8 +34,8 @@ final List<String> routeIgnoreLayoutDefault = [
   '/webview',
   '/search/',
   '/search?q=',
-  '/section_comic',
-  '/section_eiga',
+  '/category_comic',
+  '/category_eiga',
 ];
 
 /// 日本語のコメント: ルートナビゲーターのためのグローバルキー。
@@ -247,31 +247,31 @@ final router = GoRouter(
           WebviewPage(sourceId: state.pathParameters['sourceId']!),
     ),
 
-    // Section Comic Route
+    // Category Comic Route
     GoRoute(
-      path: '/section_comic/:sourceId/:sectionId',
-      name: 'section_comic',
+      path: '/category_comic/:sourceId/:categoryId',
+      name: 'category_comic',
       pageBuilder: pageBuilder,
       parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => SectionComicPage(
+      builder: (context, state) => CategoryComicPage(
         sourceId: state.pathParameters['sourceId']!,
-        sectionId: state.pathParameters['sectionId']!,
+        categoryId: state.pathParameters['categoryId']!,
       ),
     ),
 
-    // Section Eiga Route
+    // Category Eiga Route
     GoRoute(
-      path: '/section_eiga/:sourceId/:sectionId',
-      name: 'section_eiga',
+      path: '/category_eiga/:sourceId/:categoryId',
+      name: 'category_eiga',
       pageBuilder: pageBuilder,
       parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => SectionEigaPage(
+      builder: (context, state) => CategoryEigaPage(
         sourceId: state.pathParameters['sourceId']!,
-        sectionId: state.pathParameters['sectionId']!,
+        categoryId: state.pathParameters['categoryId']!,
       ),
     ),
 
-    // Section Service Setting Route
+    // Category Service Setting Route
     GoRoute(
       path: '/service_settings/:sourceId',
       name: 'service_settings',
