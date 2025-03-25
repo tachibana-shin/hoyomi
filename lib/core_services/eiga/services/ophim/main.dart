@@ -123,65 +123,50 @@ class OPhimService extends ABEigaService
   }
 
   @override
-  home() async {
+  Future<EigaHome> home() async {
+    final categoryUrls = {
+      'Phim bộ': 'phim-bo',
+      'Phim lẻ': 'phim-le',
+      'Truyền hình': 'tv-shows',
+      'Hoạt hình': 'hoat-hinh',
+      'Sắp chiếu': 'phim-sap-chieu',
+      'Sub team': 'subteam',
+    };
+
+    final responses = await Future.wait([
+      _get('index.json'),
+      ...categoryUrls.values
+          .map((slug) => _get('danh-sach/$slug.json?slug=$slug')),
+    ]);
+
+    final carouselPage = responses.first;
+    final carouselItems = carouselPage.data.items
+        .map(
+            (item) => _parseCarousel(carouselPage.data.appDomainCdnImage, item))
+        .toList();
+
+    final categoryPages = responses.skip(1).toList();
+    final categorys = categoryUrls.entries.map((entry) {
+      final name = entry.key;
+      final slug = entry.value;
+      final page = categoryPages[categoryUrls.keys.toList().indexOf(name)];
+
+      return HomeEigaCategory(
+        name: name,
+        categoryId: 'danh-sach_$slug',
+        items: page.data.items
+            .map((item) => _parseItem(page.data.appDomainCdnImage, item))
+            .toList(),
+      );
+    }).toList();
+
     return EigaHome(
       carousel: Carousel(
-        items: await _get('index.json').then((page) => page.data.items
-            .map((item) => _parseCarousel(page.data.appDomainCdnImage, item))
-            .toList()),
+        items: carouselItems,
         aspectRatio: 404 / 720,
         maxHeightBuilder: (context) => 30.h(context),
       ),
-      categorys: [
-        HomeEigaCategory(
-          name: 'Phim bộ',
-          categoryId: 'danh-sach_phim-bo',
-          items: await _get('danh-sach/phim-bo.json?slug=phim-bo').then(
-              (page) => page.data.items
-                  .map((item) => _parseItem(page.data.appDomainCdnImage, item))
-                  .toList()),
-        ),
-        HomeEigaCategory(
-          name: 'Phim lẻ',
-          categoryId: 'danh-sach_phim-le',
-          items: await _get('danh-sach/phim-le.json?slug=phim-le').then(
-              (page) => page.data.items
-                  .map((item) => _parseItem(page.data.appDomainCdnImage, item))
-                  .toList()),
-        ),
-        HomeEigaCategory(
-          name: 'Truyền hình',
-          categoryId: 'danh-sach_tv-shows',
-          items: await _get('danh-sach/tv-shows.json?slug=tv-shows').then(
-              (page) => page.data.items
-                  .map((item) => _parseItem(page.data.appDomainCdnImage, item))
-                  .toList()),
-        ),
-        HomeEigaCategory(
-          name: 'Hoạt hình',
-          categoryId: 'danh-sach_hoat-hinh',
-          items: await _get('danh-sach/hoat-hinh.json?slug=hoat-hinh').then(
-              (page) => page.data.items
-                  .map((item) => _parseItem(page.data.appDomainCdnImage, item))
-                  .toList()),
-        ),
-        HomeEigaCategory(
-          name: 'Sắp chiếu',
-          categoryId: 'danh-sach_sap-chieu',
-          items: await _get('danh-sach/phim-sap-chieu.json?slug=phim-sap-chieu')
-              .then((page) => page.data.items
-                  .map((item) => _parseItem(page.data.appDomainCdnImage, item))
-                  .toList()),
-        ),
-        HomeEigaCategory(
-          name: 'Sub team',
-          categoryId: 'danh-sach_subteam',
-          items: await _get('danh-sach/subteam.json?slug=subteam').then(
-              (page) => page.data.items
-                  .map((item) => _parseItem(page.data.appDomainCdnImage, item))
-                  .toList()),
-        ),
-      ],
+      categorys: categorys,
     );
   }
 
@@ -189,13 +174,19 @@ class OPhimService extends ABEigaService
     final document = await fetchDocument('$baseUrl/danh-sach/phim-moi');
 
     return document.querySelectorAll('#form-filter select').map((select) {
-      final name = select.text;
       final key = select.attributes['name']!;
       final multiple = ['category', 'country', 'year'].contains(key);
-      final items = select.querySelectorAll('option').map((option) => Option(
-        name: option.text,
-        value: option.attributes['value']!,
-      )).toList();
+      final items = select
+          .querySelectorAll('option')
+          .indexed
+          .skip(1)
+          .map((entry) => Option(
+                name: entry.$2.text,
+                value: entry.$2.attributes['value']!,
+                selected: entry.$1 == 0,
+              ))
+          .toList();
+      final name = items.first.name;
 
       return Filter(
         name: name,
@@ -206,7 +197,7 @@ class OPhimService extends ABEigaService
     }).toList();
   }
 
-  List<Filter>?  _iFilters ;
+  List<Filter>? _iFilters;
 
   @override
   getCategory({required categoryId, required page, required filters}) async {
@@ -237,7 +228,7 @@ class OPhimService extends ABEigaService
         categoryId.replaceFirst('the-loai_', '')
       ];
     } else if (categoryId.startsWith('danh-sach_')) {
-      basePath = 'danh-sach/${categoryId.replaceFirst('danh-sach_', '')}';
+      basePath = 'danh-sach/${categoryId.replaceFirst('danh-sach_', '')}.json';
 
       query['slug'] = [categoryId.replaceFirst('danh-sach_', '')];
     } else {
