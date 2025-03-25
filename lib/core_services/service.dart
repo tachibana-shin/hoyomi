@@ -137,7 +137,8 @@ abstract class Service with _SettingsMixin {
     ),
   ];
 
-  final Map<String, (DateTime?, Future<String>)> _cacheFetch = {};
+  final Map<String, ({DateTime? expire, Future<String> response})> _cacheFetch =
+      {};
 
   Service() {
     // init settings appear
@@ -410,7 +411,7 @@ abstract class Service with _SettingsMixin {
     }
 
     if (response.statusCode == 200) {
-      return response.body;
+      return utf8.decode(response.bodyBytes);
     } else {
       throw Exception('Failed to load data');
     }
@@ -430,8 +431,9 @@ abstract class Service with _SettingsMixin {
 
     final inStore = _cacheFetch[uid];
     if (inStore != null &&
-        (inStore.$1 == null || inStore.$1!.second > DateTime.now().second)) {
-      return inStore.$2;
+        (inStore.expire == null ||
+            inStore.expire!.second > DateTime.now().second)) {
+      return inStore.response;
     }
 
     final expiresIn = expires == null ? null : DateTime.now().add(expires);
@@ -440,7 +442,7 @@ abstract class Service with _SettingsMixin {
         _cacheFetch.remove(uid);
         throw error;
       });
-    _cacheFetch[uid] = (expiresIn, response);
+    _cacheFetch[uid] = (expire: expiresIn, response: response);
 
     return response;
   }
