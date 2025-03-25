@@ -455,11 +455,15 @@ class _PlayerEigaState extends State<PlayerEiga>
   void _setupPlayer(SourceVideo source, String id) async {
     _availableResolutions.value = [];
 
+    late final Uri url;
+    String? content;
     try {
-      final content = await widget.fetchSourceContent(source: source);
+      final sourceContent = await widget.fetchSourceContent(source: source);
+      content = sourceContent.content;
+
       final fileCache = await saveFileCache(
-        content: content.content,
-        path: "${sha256.convert(utf8.encode(content.content))}.m3u8",
+        content: sourceContent.content,
+        path: "${sha256.convert(utf8.encode(sourceContent.content))}.m3u8",
       );
       if (!mounted) return;
 
@@ -467,61 +471,38 @@ class _PlayerEigaState extends State<PlayerEiga>
 
       if (!mounted) return;
 
-      _controller.value?.dispose();
-      _controllerId.value = id;
-      _controller.value = VideoPlayerController.networkUrl(
-        ProxyCache.instance.getUrlHttp(fileCache),
-        httpHeaders: source.headers,
-        videoPlayerOptions: VideoPlayerOptions(
-          allowBackgroundPlayback: true,
-        ),
-      )
-        ..addListener(_onPlayerValueChanged)
-        ..initialize().then((_) {
-          // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-          if (!_playing.value) _controller.value?.play();
-        }).catchError((err) {
-          debugPrint('Error: $err (${StackTrace.current})');
-          _error.value = '$err';
-        });
-
-      if (source.type == 'hls') {
-        _initializeHls(
-          content: content.content,
-          url: content.url,
-          headers: content.headers,
-        );
-      }
+      url = ProxyCache.instance.getUrlHttp(fileCache);
     } on UnimplementedError {
-      final url = Uri.parse(source.src);
-      _controller.value?.dispose();
-      _controllerId.value = id;
-      _controller.value = VideoPlayerController.networkUrl(
-        url,
-        httpHeaders: source.headers,
-        videoPlayerOptions: VideoPlayerOptions(
-          allowBackgroundPlayback: true,
-        ),
-      )
-        ..addListener(_onPlayerValueChanged)
-        ..initialize().then((_) {
-          // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-          if (!_playing.value) _controller.value?.play();
-        }).catchError((err) {
-          debugPrint('Error: $err (${StackTrace.current})');
-          _error.value = err + '';
-        });
+      url = Uri.parse(source.src);
+    }
 
-      final response =
-          await widget.service.fetch(url.toString(), headers: source.headers);
+    _controller.value?.dispose();
+    _controllerId.value = id;
 
-      if (source.type == 'hls') {
-        _initializeHls(
-          content: response,
-          url: url,
-          headers: source.headers,
-        );
-      }
+    _controller.value = VideoPlayerController.networkUrl(
+      url,
+      httpHeaders: source.headers,
+      videoPlayerOptions: VideoPlayerOptions(
+        allowBackgroundPlayback: true,
+      ),
+    )
+      ..addListener(_onPlayerValueChanged)
+      ..initialize().then((_) {
+        if (!_playing.value) _controller.value?.play();
+      }).catchError((err) {
+        debugPrint('Error: $err (${StackTrace.current})');
+        _error.value = '$err';
+      });
+
+    content ??=
+        await widget.service.fetch(url.toString(), headers: source.headers);
+
+    if (source.type == 'hls') {
+      _initializeHls(
+        content: content,
+        url: url,
+        headers: source.headers,
+      );
     }
   }
 
