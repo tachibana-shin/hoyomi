@@ -1052,7 +1052,7 @@ String _removeAdsFromM3U8(Uri url, String m3u8) {
   final output = <String>[];
   for (int i = 0; i < lines.length; i++) {
     if (indexSegmentsRemove.contains(i)) continue;
-    
+
     output.add(lines.elementAt(i));
   }
 
