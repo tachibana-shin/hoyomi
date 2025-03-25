@@ -1,0 +1,941 @@
+// ignore_for_file: library_private_types_in_public_api
+
+import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:get/get.dart';
+import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_category.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
+import 'package:hoyomi/core_services/interfaces/carousel.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/home_eiga_category.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_param.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
+import 'package:hoyomi/core_services/interfaces/filter.dart';
+import 'package:hoyomi/core_services/interfaces/genre.dart';
+import 'package:hoyomi/core_services/interfaces/o_image.dart';
+
+import 'package:mediaquery_sizer/mediaquery_sizer.dart';
+
+class OPhimService extends ABEigaService
+// with
+// EigaWatchTimeMixin,
+// EigaHistoryMixin,
+// EigaFollowMixin,
+{
+  final hostCUrl = "ophim17.cc";
+  final _buildId = 'YjU3ELa3ICaBELMtMHUHj';
+  @override
+  late final init = ServiceInit(
+    name: "OPhim",
+    faviconUrl: OImage(src: '/favicon.ico'),
+    rootUrl: 'https://$hostCUrl',
+  );
+
+  Future<_PageProps> _get(String path) {
+    return fetch('$baseUrl/_next/data/$_buildId/$path')
+        .then((value) => _PageProps.fromJson(jsonDecode(value)));
+  }
+
+  Future<_PageDetailsProps> _getDetails(String eigaId) {
+    return fetchWithCache(
+            '$baseUrl/_next/data/$_buildId/phim/$eigaId.json?slug=$eigaId',
+            expires: Duration(seconds: 30))
+        .then((value) => _PageDetailsProps.fromJson(jsonDecode(value)));
+  }
+
+  @override
+  parseURL(String url) {
+    final uri = Uri.parse(url);
+    assert(uri.path.startsWith("/phim"));
+
+    final seg = uri.path.split("/");
+    // [0] is empty, [1] is phim
+    final eigaId = seg[2];
+    final episodeId = seg.length >= 4 ? seg[3] : null;
+
+    return EigaParam(
+      eigaId: eigaId,
+      episodeId: episodeId?.replaceFirst(".html", ""),
+    );
+  }
+
+  OImage _getImage({required String cdn, required String src}) {
+    return OImage(src: '$cdn/uploads/movies/$src');
+  }
+
+  Eiga _parseItem(String domainCDNImage, _Item item) {
+    return Eiga(
+      name: item.name,
+      originalName: item.originName,
+      eigaId: item.slug,
+      image: _getImage(cdn: domainCDNImage, src: item.thumbUrl),
+      notice: '${item.quality}-${item.episodeCurrent}',
+      rate: item.tmdb?.voteAverage,
+      preRelease: null,
+      pending: item.episodeCurrent == 'Trailer',
+      lastEpisode: null,
+      timeAgo: DateTime.parse(item.modified.time),
+    );
+  }
+
+  CarouselItem _parseCarousel(String domainCDNImage, _Item item) {
+    final data = _parseItem(domainCDNImage, item);
+
+    final year = item.year?.toString();
+    final description = item.originName;
+    final studio = null;
+    final genres = item.category
+        .map((category) =>
+            Genre(name: category.name, genreId: 'the-loai_${category.slug}'))
+        .toList();
+    final duration = item.time;
+    //     final actors = item.querySelectorAll(".Cast a").map((anchor) {
+    //       final href = anchor.attributes['href']!.split('/');
+    //       return Genre(
+    // name: anchor.text.trim(),
+    // genreId: href.elementAt(href.length - 2)
+    //       );
+    //     });
+
+    return CarouselItem(
+      image:
+          _getImage(cdn: domainCDNImage, src: item.posterUrl ?? item.thumbUrl),
+      eigaId: data.eigaId,
+      name: data.name,
+      originalName: data.originalName,
+      rate: data.rate,
+      notice: data.notice,
+      year: year,
+      description: description,
+      studio: studio,
+      genres: genres,
+      actors: null,
+      duration: duration,
+    );
+  }
+
+  @override
+  home() async {
+    return EigaHome(
+      carousel: Carousel(
+        items: await _get('index.json').then((page) => page.data.items
+            .map((item) => _parseCarousel(page.data.appDomainCdnImage, item))
+            .toList()),
+        aspectRatio: 404 / 720,
+        maxHeightBuilder: (context) => 30.h(context),
+      ),
+      categorys: [
+        HomeEigaCategory(
+          name: 'Phim bộ',
+          categoryId: 'danh-sach_phim-bo',
+          items: await _get('danh-sach/phim-bo.json?slug=phim-bo').then(
+              (page) => page.data.items
+                  .map((item) => _parseItem(page.data.appDomainCdnImage, item))
+                  .toList()),
+        ),
+        HomeEigaCategory(
+          name: 'Phim lẻ',
+          categoryId: 'danh-sach_phim-le',
+          items: await _get('danh-sach/phim-le.json?slug=phim-le').then(
+              (page) => page.data.items
+                  .map((item) => _parseItem(page.data.appDomainCdnImage, item))
+                  .toList()),
+        ),
+        HomeEigaCategory(
+          name: 'Truyền hình',
+          categoryId: 'danh-sach_tv-shows',
+          items: await _get('danh-sach/tv-shows.json?slug=tv-shows').then(
+              (page) => page.data.items
+                  .map((item) => _parseItem(page.data.appDomainCdnImage, item))
+                  .toList()),
+        ),
+        HomeEigaCategory(
+          name: 'Hoạt hình',
+          categoryId: 'danh-sach_hoat-hinh',
+          items: await _get('danh-sach/hoat-hinh.json?slug=hoat-hinh').then(
+              (page) => page.data.items
+                  .map((item) => _parseItem(page.data.appDomainCdnImage, item))
+                  .toList()),
+        ),
+        HomeEigaCategory(
+          name: 'Sắp chiếu',
+          categoryId: 'danh-sach_sap-chieu',
+          items: await _get('danh-sach/phim-sap-chieu.json?slug=phim-sap-chieu')
+              .then((page) => page.data.items
+                  .map((item) => _parseItem(page.data.appDomainCdnImage, item))
+                  .toList()),
+        ),
+        HomeEigaCategory(
+          name: 'Sub team',
+          categoryId: 'danh-sach_subteam',
+          items: await _get('danh-sach/subteam.json?slug=subteam').then(
+              (page) => page.data.items
+                  .map((item) => _parseItem(page.data.appDomainCdnImage, item))
+                  .toList()),
+        ),
+      ],
+    );
+  }
+
+  @override
+  getCategory({required categoryId, required page, required filters}) async {
+    late final String basePath;
+    final Map<String, List<String>> query = Map.from(filters);
+
+    if (query['sort_field'] == null || query['sort_field']!.isEmpty) {
+      query['sort_field'] = ['modified.time'];
+    }
+    if (categoryId.startsWith('quoc-gia_')) {
+      basePath = 'danh-sach/phim-moi.json';
+
+      query['slug'] = ['phim-moi'];
+      query['country'] = [
+        ...query['country'] ?? [],
+        categoryId.replaceFirst('quoc-gia_', '')
+      ];
+    } else if (categoryId.startsWith('tim-kiem_')) {
+      basePath = 'tim-kiem.json';
+
+      query['keyword'] = [categoryId.replaceFirst('tim-kiem_', '')];
+    } else if (categoryId.startsWith('the-loai_')) {
+      basePath = 'danh-sach/phim-moi.json';
+
+      query['slug'] = ['phim-moi'];
+      query['category'] = [
+        ...query['category'] ?? [],
+        categoryId.replaceFirst('the-loai_', '')
+      ];
+    } else if (categoryId.startsWith('danh-sach_')) {
+      basePath = 'danh-sach/${categoryId.replaceFirst('danh-sach_', '')}';
+
+      query['slug'] = [categoryId.replaceFirst('danh-sach_', '')];
+    } else {
+      basePath = '$categoryId.json';
+
+      query['slug'] = [categoryId];
+    }
+
+    final url =
+        '$basePath?${query.entries.map((entry) => '${entry.key}=${entry.value.join(',')}').join('&')}';
+    final pageData = await _get(url);
+
+    final name = pageData.data.seoOnPage.titleHead;
+    final items = pageData.data.items
+        .map((item) => _parseItem(pageData.data.appDomainCdnImage, item))
+        .toList();
+    final totalPages = pageData.data.params.pagination.pageRanges;
+    final totalItems = pageData.data.params.pagination.totalItems;
+
+    // TODO: add filters
+    final List<Filter> iFilters = [];
+
+    return EigaCategory(
+      name: name,
+      url: url,
+      items: items,
+      page: page,
+      totalItems: totalItems,
+      totalPages: totalPages,
+      filters: iFilters,
+    );
+  }
+
+  @override
+  getDetails(String eigaId) async {
+    final index = max(0, eigaId.indexOf('@'));
+    final eigaIdRaw = index == 0 ? eigaId : eigaId.substring(0, index);
+
+    final pageData = await _getDetails(eigaIdRaw);
+
+    final name = pageData.data.item.name;
+    final originalName = pageData.data.item.originName;
+    final image = _getImage(
+        cdn: 'https://img.ophim.live', src: pageData.data.item.thumbUrl);
+    final poster = pageData.data.item.posterUrl == null
+        ? null
+        : _getImage(
+            cdn: 'https://img.ophim.live', src: pageData.data.item.posterUrl!);
+    final description = pageData.data.item.content;
+
+    final rate = pageData.data.item.tmdb?.voteAverage;
+    final countRate = pageData.data.item.tmdb?.voteCount;
+    final duration = pageData.data.item.episodeTotal;
+    final yearOf = pageData.data.item.year;
+    final views = pageData.data.item.view;
+    final seasons = pageData.data.item.episodes.map((item) {
+      return Season(
+          name: item.serverName, eigaId: '$eigaIdRaw@${item.serverName}');
+    }).toList();
+    final genres = pageData.data.item.category
+        .map((category) =>
+            Genre(name: category.name, genreId: 'the-loai_${category.slug}'))
+        .toList();
+    final quality = pageData.data.item.quality;
+
+    // final status = pageData.data.item.status;
+    final author = pageData.data.item.director.first;
+    final countries = pageData.data.item.country
+        .map((country) =>
+            Genre(name: country.name, genreId: 'quoc-gia_${country.slug}'))
+        .toList();
+    final language = pageData.data.item.lang;
+    final studio = null;
+    final trailer = pageData.data.item.trailerUrl;
+    final movieSeason = null;
+
+    return MetaEiga(
+      name: name,
+      originalName: originalName,
+      image: image,
+      poster: poster,
+      description: description,
+      rate: rate,
+      countRate: countRate,
+      duration: duration,
+      yearOf: yearOf,
+      views: views,
+      seasons: seasons,
+      genres: genres,
+      quality: quality,
+      author: author,
+      countries: countries,
+      language: language,
+      studio: studio,
+      movieSeason: movieSeason,
+      trailer: trailer,
+    );
+  }
+
+  @override
+  getEpisodes(String eigaId) async {
+    final index = max(0, eigaId.indexOf('@'));
+
+    final eigaIdRaw = index == 0 ? eigaId : eigaId.substring(0, index);
+    final seasonName = eigaId.substring(eigaIdRaw.length);
+
+    final pageData = await _getDetails(eigaIdRaw);
+
+    final episodes = pageData.data.item.episodes
+        .firstWhereOrNull(
+            (server) => seasonName.isEmpty || server.serverName == seasonName)
+        ?.serverData
+        .map((episode) => EigaEpisode(
+            name: episode.name,
+            episodeId: episode.slug,
+            extra: episode.toJson()))
+        .toList();
+    if (episodes == null) throw Exception('Episode not found');
+
+    final image = OImage(src: pageData.data.item.thumbUrl);
+    final poster = OImage(
+        src: pageData.data.item.posterUrl ?? pageData.data.item.thumbUrl);
+
+    return EigaEpisodes(
+      episodes: episodes,
+      image: image,
+      poster: poster,
+      // schedule: day != null && hour != null && minute != null
+      //     ? TimeAndDay(
+      //         hour: int.parse(hour),
+      //         minute: int.parse(minute),
+      //         day: day,
+      //       )
+      //     : null,
+    );
+  }
+
+  @override
+  getSource({required eigaId, required episode}) async {
+    final source = _ServerData.fromJson(episode.extra);
+
+    return SourceVideo(
+      src: source.linkM3u8,
+      url: Uri.parse(source.linkM3u8),
+      type: 'hls',
+      headers: {'referer': baseUrl},
+    );
+  }
+
+  @override
+  getSubtitles({required eigaId, required episode}) async {
+    return [];
+  }
+
+  @override
+  getSuggest({required metaEiga, required eigaId, page}) async {
+    final pageData = await _get(
+        'danh-sach/phim-moi.json?slug=phim-moi&sort_field=modified.time&category=${metaEiga.genres.map((genre) => genre.genreId.replaceFirst('the-loai_', '')).join(',')}&country=${metaEiga.countries?.map((genre) => genre.genreId.replaceFirst('quoc-gia_', '')).join(',') ?? ''}');
+
+    final metaSlugs = metaEiga.genres
+        .map((c) => c.genreId.replaceFirst('the-loai_', ''))
+        .toSet();
+
+    final scoredItems = pageData.data.items
+        .map<({_Item item, int matchCount})>((item) {
+          final matchCount =
+              item.category.where((cat) => metaSlugs.contains(cat.slug)).length;
+          return (item: item, matchCount: matchCount);
+        })
+        .where((entry) => entry.matchCount > 0)
+        .toList();
+
+    scoredItems.sort((a, b) => b.matchCount - a.matchCount);
+
+    return scoredItems
+        .take(30)
+        .map((entry) => _parseItem(pageData.data.appDomainCdnImage, entry.item))
+        .toList();
+  }
+
+  @override
+  search({required keyword, required page, required filters, required quick}) {
+    return getCategory(
+      categoryId: 'tim-kiem_$keyword',
+      page: page,
+      // /_next/data/YjU3ELa3ICaBELMtMHUHj/tim-kiem.json?keyword=%C4%91%E1%BA%A1o+l%C3%A0m+ch%E1%BB%93ng+%C4%91%E1%BA%A3m
+      filters: filters,
+    );
+  }
+}
+
+/// ======================= utils =========================
+class _PageProps {
+  _Data data;
+
+  _PageProps({required this.data});
+
+  factory _PageProps.fromJson(Map<String, dynamic> json) {
+    return _PageProps(
+      data: _Data.fromJson(json['pageProps']['data']),
+    );
+  }
+}
+
+class _Data {
+  _SeoOnPage seoOnPage;
+  List<_BreadCrumb> breadCrumb;
+  String? titlePage;
+  List<_Item> items;
+  _Params params;
+  String typeList;
+  String appDomainFrontend;
+  String appDomainCdnImage;
+
+  _Data({
+    required this.seoOnPage,
+    required this.breadCrumb,
+    required this.titlePage,
+    required this.items,
+    required this.params,
+    required this.typeList,
+    required this.appDomainFrontend,
+    required this.appDomainCdnImage,
+  });
+
+  factory _Data.fromJson(Map<String, dynamic> json) {
+    return _Data(
+      seoOnPage: _SeoOnPage.fromJson(json['seoOnPage']),
+      breadCrumb: List<_BreadCrumb>.from(
+          json['breadCrumb']?.map((x) => _BreadCrumb.fromJson(x)) ?? []),
+      titlePage: json['titlePage'],
+      items: List<_Item>.from(json['items'].map((x) => _Item.fromJson(x))),
+      params: _Params.fromJson(json['params']),
+      typeList: json['type_list'],
+      appDomainFrontend: json['APP_DOMAIN_FRONTEND'],
+      appDomainCdnImage: json['APP_DOMAIN_CDN_IMAGE'],
+    );
+  }
+}
+
+class _SeoOnPage {
+  String ogType;
+  String titleHead;
+  String descriptionHead;
+  List<String> ogImage;
+  int? updatedTime;
+  String? ogUrl;
+
+  _SeoOnPage({
+    required this.ogType,
+    required this.titleHead,
+    required this.descriptionHead,
+    required this.ogImage,
+    this.updatedTime,
+    this.ogUrl,
+  });
+
+  factory _SeoOnPage.fromJson(Map<String, dynamic> json) {
+    return _SeoOnPage(
+      ogType: json['og_type'],
+      titleHead: json['titleHead'],
+      descriptionHead: json['descriptionHead'],
+      ogImage: List<String>.from(json['og_image'].map((x) => x)),
+      updatedTime: json['updatedTime'],
+      ogUrl: json['og_url'],
+    );
+  }
+}
+
+class _BreadCrumb {
+  String name;
+  String? slug;
+  bool isCurrent;
+  int position;
+
+  _BreadCrumb({
+    required this.name,
+    this.slug,
+    required this.isCurrent,
+    required this.position,
+  });
+
+  factory _BreadCrumb.fromJson(Map<String, dynamic> json) {
+    return _BreadCrumb(
+      name: json['name'],
+      slug: json['slug'],
+      isCurrent: json['isCurrent'] ?? false,
+      position: json['position'],
+    );
+  }
+}
+
+class _Item {
+  _Tmdb? tmdb;
+  _Imdb? imdb;
+  _Modified modified;
+  String id;
+  String name;
+  String slug;
+  String originName;
+  String type;
+  String thumbUrl;
+  String? posterUrl;
+  bool subDocquyen;
+  bool chieurap;
+  String time;
+  String episodeCurrent;
+  String quality;
+  String lang;
+  int? year;
+  List<_Category> category;
+  List<_Country> country;
+
+  _Item({
+    required this.tmdb,
+    required this.imdb,
+    required this.modified,
+    required this.id,
+    required this.name,
+    required this.slug,
+    required this.originName,
+    required this.type,
+    required this.thumbUrl,
+    required this.posterUrl,
+    required this.subDocquyen,
+    required this.chieurap,
+    required this.time,
+    required this.episodeCurrent,
+    required this.quality,
+    required this.lang,
+    required this.year,
+    required this.category,
+    required this.country,
+  });
+
+  factory _Item.fromJson(Map<String, dynamic> json) {
+    return _Item(
+      tmdb: json['tmdb'] == null ? null : _Tmdb.fromJson(json['tmdb']),
+      imdb: json['imdb'] == null ? null : _Imdb.fromJson(json['imdb']),
+      modified: _Modified.fromJson(json['modified']),
+      id: json['_id'],
+      name: json['name'],
+      slug: json['slug'],
+      originName: json['origin_name'],
+      type: json['type'],
+      thumbUrl: json['thumb_url'],
+      posterUrl: json['poster_url'],
+      subDocquyen: json['sub_docquyen'],
+      chieurap: json['chieurap'] ?? false,
+      time: json['time'],
+      episodeCurrent: json['episode_current'],
+      quality: json['quality'],
+      lang: json['lang'],
+      year: json['year'],
+      category: List<_Category>.from(
+          json['category'].map((x) => _Category.fromJson(x))),
+      country:
+          List<_Country>.from(json['country'].map((x) => _Country.fromJson(x))),
+    );
+  }
+}
+
+class _Tmdb {
+  String type;
+  String id;
+  int? season;
+  double voteAverage;
+  int voteCount;
+
+  _Tmdb({
+    required this.type,
+    required this.id,
+    required this.season,
+    required this.voteAverage,
+    required this.voteCount,
+  });
+
+  factory _Tmdb.fromJson(Map<String, dynamic> json) {
+    return _Tmdb(
+      type: json['type'],
+      id: json['id'],
+      season: json['season'],
+      voteAverage: json['vote_average'].toDouble(),
+      voteCount: json['vote_count'],
+    );
+  }
+}
+
+class _Imdb {
+  String? id;
+
+  _Imdb({this.id});
+
+  factory _Imdb.fromJson(Map<String, dynamic> json) {
+    return _Imdb(id: json['id']);
+  }
+}
+
+class _Created {
+  String time;
+
+  _Created({required this.time});
+
+  factory _Created.fromJson(Map<String, dynamic> json) {
+    return _Created(time: json['time']);
+  }
+}
+
+class _Modified {
+  String time;
+
+  _Modified({required this.time});
+
+  factory _Modified.fromJson(Map<String, dynamic> json) {
+    return _Modified(time: json['time']);
+  }
+}
+
+class _Category {
+  String id;
+  String name;
+  String slug;
+
+  _Category({
+    required this.id,
+    required this.name,
+    required this.slug,
+  });
+
+  factory _Category.fromJson(Map<String, dynamic> json) {
+    return _Category(
+      id: json['id'],
+      name: json['name'],
+      slug: json['slug'],
+    );
+  }
+}
+
+class _Country {
+  String id;
+  String name;
+  String slug;
+
+  _Country({
+    required this.id,
+    required this.name,
+    required this.slug,
+  });
+
+  factory _Country.fromJson(Map<String, dynamic> json) {
+    return _Country(
+      id: json['id'],
+      name: json['name'],
+      slug: json['slug'],
+    );
+  }
+}
+
+class _Params {
+  String? typeSlug;
+  List<String>? filterCategory;
+  List<String>? filterCountry;
+  String? filterYear;
+  String? filterType;
+  String? sortField;
+  String? sortType;
+  _Pagination pagination;
+
+  _Params({
+    required this.typeSlug,
+    required this.filterCategory,
+    required this.filterCountry,
+    required this.filterYear,
+    required this.filterType,
+    required this.sortField,
+    required this.sortType,
+    required this.pagination,
+  });
+
+  factory _Params.fromJson(Map<String, dynamic> json) {
+    return _Params(
+      typeSlug: json['type_slug'],
+      filterCategory: List<String>.from(json['filterCategory'].map((x) => x)),
+      filterCountry: List<String>.from(json['filterCountry'].map((x) => x)),
+      filterYear: json['filterYear'],
+      filterType: json['filterType'],
+      sortField: json['sortField'],
+      sortType: json['sortType'],
+      pagination: _Pagination.fromJson(json['pagination']),
+    );
+  }
+}
+
+class _Pagination {
+  int totalItems;
+  int totalItemsPerPage;
+  int currentPage;
+  int pageRanges;
+
+  _Pagination({
+    required this.totalItems,
+    required this.totalItemsPerPage,
+    required this.currentPage,
+    required this.pageRanges,
+  });
+
+  factory _Pagination.fromJson(Map<String, dynamic> json) {
+    return _Pagination(
+      totalItems: json['totalItems'],
+      totalItemsPerPage: json['totalItemsPerPage'],
+      currentPage: json['currentPage'],
+      pageRanges: json['pageRanges'],
+    );
+  }
+}
+
+/// ======================= details ============================
+class _PageDetailsProps {
+  _DetailsData data;
+
+  _PageDetailsProps({required this.data});
+
+  factory _PageDetailsProps.fromJson(Map<String, dynamic> json) {
+    return _PageDetailsProps(
+      data: _DetailsData.fromJson(json['pageProps']['data']),
+    );
+  }
+}
+
+class _DetailsData {
+  _SeoOnPage seoOnPage;
+  List<_BreadCrumb> breadCrumb;
+  _ParamsSlug params;
+  _DetailsItem item;
+
+  _DetailsData({
+    required this.seoOnPage,
+    required this.breadCrumb,
+    required this.params,
+    required this.item,
+  });
+
+  factory _DetailsData.fromJson(Map<String, dynamic> json) {
+    return _DetailsData(
+      seoOnPage: _SeoOnPage.fromJson(json['seoOnPage']),
+      breadCrumb: List<_BreadCrumb>.from(
+          json['breadCrumb'].map((x) => _BreadCrumb.fromJson(x))),
+      params: _ParamsSlug.fromJson(json['params']),
+      item: _DetailsItem.fromJson(json['item']),
+    );
+  }
+}
+
+class _ParamsSlug {
+  String slug;
+
+  _ParamsSlug({required this.slug});
+
+  factory _ParamsSlug.fromJson(Map<String, dynamic> json) {
+    return _ParamsSlug(
+      slug: json['slug'],
+    );
+  }
+}
+
+class _DetailsItem {
+  _Tmdb? tmdb;
+  _Imdb? imdb;
+  _Created created;
+  _Modified modified;
+  String id;
+  String name;
+  String slug;
+  String originName;
+  String content;
+  String type;
+  String status;
+  String thumbUrl;
+  String? posterUrl;
+  bool isCopyright;
+  bool subDocquyen;
+  bool chieurap;
+  String trailerUrl;
+  String time;
+  String episodeCurrent;
+  String episodeTotal;
+  String quality;
+  String lang;
+  String notify;
+  String showtimes;
+  int year;
+  int view;
+  List<String> actor;
+  List<String> director;
+  List<_Category> category;
+  List<_Country> country;
+  List<_Episode> episodes;
+
+  _DetailsItem({
+    required this.tmdb,
+    required this.imdb,
+    required this.created,
+    required this.modified,
+    required this.id,
+    required this.name,
+    required this.slug,
+    required this.originName,
+    required this.content,
+    required this.type,
+    required this.status,
+    required this.thumbUrl,
+    required this.posterUrl,
+    required this.isCopyright,
+    required this.subDocquyen,
+    required this.chieurap,
+    required this.trailerUrl,
+    required this.time,
+    required this.episodeCurrent,
+    required this.episodeTotal,
+    required this.quality,
+    required this.lang,
+    required this.notify,
+    required this.showtimes,
+    required this.year,
+    required this.view,
+    required this.actor,
+    required this.director,
+    required this.category,
+    required this.country,
+    required this.episodes,
+  });
+
+  factory _DetailsItem.fromJson(Map<String, dynamic> json) {
+    return _DetailsItem(
+      tmdb: json['tmdb'] == null ? null : _Tmdb.fromJson(json['tmdb']),
+      imdb: json['imdb'] == null ? null : _Imdb.fromJson(json['imdb']),
+      created: _Created.fromJson(json['created']),
+      modified: _Modified.fromJson(json['modified']),
+      id: json['_id'],
+      name: json['name'],
+      slug: json['slug'],
+      originName: json['origin_name'],
+      content: json['content'],
+      type: json['type'],
+      status: json['status'],
+      thumbUrl: json['thumb_url'],
+      posterUrl: json['poster_url'],
+      isCopyright: json['is_copyright'],
+      subDocquyen: json['sub_docquyen'],
+      chieurap: json['chieurap'],
+      trailerUrl: json['trailer_url'],
+      time: json['time'],
+      episodeCurrent: json['episode_current'],
+      episodeTotal: json['episode_total'],
+      quality: json['quality'],
+      lang: json['lang'],
+      notify: json['notify'],
+      showtimes: json['showtimes'],
+      year: json['year'],
+      view: json['view'],
+      actor: List<String>.from(json['actor'].map((x) => x)),
+      director: List<String>.from(json['director'].map((x) => x)),
+      category: List<_Category>.from(
+          json['category'].map((x) => _Category.fromJson(x))),
+      country:
+          List<_Country>.from(json['country'].map((x) => _Country.fromJson(x))),
+      episodes: List<_Episode>.from(
+          json['episodes'].map((x) => _Episode.fromJson(x))),
+    );
+  }
+}
+
+class _Episode {
+  String serverName;
+  List<_ServerData> serverData;
+
+  _Episode({
+    required this.serverName,
+    required this.serverData,
+  });
+
+  factory _Episode.fromJson(Map<String, dynamic> json) {
+    return _Episode(
+      serverName: json['server_name'],
+      serverData: List<_ServerData>.from(
+          json['server_data'].map((x) => _ServerData.fromJson(x))),
+    );
+  }
+}
+
+class _ServerData {
+  String name;
+  String slug;
+  String? filename;
+  String? linkEmbed;
+  String linkM3u8;
+
+  _ServerData({
+    required this.name,
+    required this.slug,
+    required this.filename,
+    required this.linkEmbed,
+    required this.linkM3u8,
+  });
+
+  factory _ServerData.fromJson(Map<String, dynamic> json) {
+    return _ServerData(
+      name: json['name'],
+      slug: json['slug'],
+      filename: json['filename'],
+      linkEmbed: json['link_embed'],
+      linkM3u8: json['link_m3u8'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'slug': slug,
+      'filename': filename,
+      'link_embed': linkEmbed,
+      'link_m3u8': linkM3u8,
+    };
+  }
+}
