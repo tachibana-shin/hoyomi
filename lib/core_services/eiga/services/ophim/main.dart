@@ -6,11 +6,13 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:get/get.dart';
+import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_category.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:hoyomi/core_services/interfaces/carousel.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
@@ -378,6 +380,30 @@ class OPhimService extends ABEigaService
   }
 
   @override
+  fetchSourceContent({required source}) async {
+    final master = await fetch(source.url.toString(), headers: source.headers);
+    final m3u8 =
+        master.split('\n').firstWhere((line) => line.contains('.m3u8'));
+
+    final urlMediaPlaylist = source.url.resolve(m3u8);
+    final content =
+        await fetch(urlMediaPlaylist.toString(), headers: source.headers);
+
+    final playlist =
+        await HlsPlaylistParser.create().parseString(urlMediaPlaylist, content);
+
+    if (playlist is HlsMasterPlaylist) {
+      return SourceContent(
+          content: content, url: urlMediaPlaylist, headers: source.headers);
+    }
+
+    return SourceContent(
+        content: _removeAdsFromM3U8(urlMediaPlaylist, content),
+        url: urlMediaPlaylist,
+        headers: source.headers);
+  }
+
+  @override
   getSubtitles({required eigaId, required episode}) async {
     return [];
   }
@@ -591,11 +617,11 @@ class _Item {
 }
 
 class _Tmdb {
-  String type;
+  String? type;
   String id;
   int? season;
-  double voteAverage;
-  int voteCount;
+  double? voteAverage;
+  int? voteCount;
 
   _Tmdb({
     required this.type,
@@ -952,4 +978,83 @@ class _ServerData {
       'link_m3u8': linkM3u8,
     };
   }
+}
+
+const List<List<double>> _timeRanges = [
+  [
+    2.9029,
+    3.336667,
+    1.568233,
+    3.336667,
+    1.6016,
+    3.3033,
+    2.168833,
+    3.336667,
+    2.836167,
+    3.336667,
+    1.534867
+  ],
+  [
+    3.336667,
+    1.568233,
+    3.336667,
+    1.6016,
+    3.3033,
+    2.168833,
+    3.336667,
+    2.836167,
+    3.336667,
+    1.534867
+  ]
+];
+String _removeAdsFromM3U8(Uri url, String m3u8) {
+  final lines = m3u8.split('\n');
+  final regex = RegExp(r"#EXTINF:([\d.]+),");
+
+  final List<({double duration, String url})> segments = [];
+  for (int i = 0; i < lines.length; i++) {
+    final line = lines.elementAt(i);
+    final match = regex.firstMatch(line);
+    if (match != null) {
+      final duration = double.parse(match.group(1)!);
+      final url = lines.elementAt(i + 1);
+      i++;
+
+      segments.add((duration: duration, url: url));
+    }
+  }
+
+  final Set<int> indexSegmentsRemove = {};
+  for (int i = 0; i < segments.length; i++) {
+    var good = true;
+    var adStart = -1;
+    var adStop = -1;
+    for (int j = 0; j < _timeRanges.length; j++) {
+      final rangeCase = _timeRanges.elementAt(j);
+      for (int k = 0; k < rangeCase.length; k++) {
+        if (segments[i + k].duration != rangeCase[k]) {
+          good = false;
+          break;
+        }
+      }
+
+      if (good) {
+        adStart = i;
+        adStop = i + rangeCase.length - 1;
+        for (int l = adStart; l <= adStop; l++) {
+          indexSegmentsRemove.add(l);
+        }
+        break;
+      }
+    }
+  }
+
+  final output = <String>[];
+  for (int i = 0; i < lines.length; i++) {
+    if (indexSegmentsRemove.contains(i)) continue;
+    
+    output.add(lines.elementAt(i));
+  }
+
+  return output.join('\n');
 }
