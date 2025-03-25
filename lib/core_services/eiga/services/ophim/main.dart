@@ -1,4 +1,5 @@
 // ignore_for_file: library_private_types_in_public_api
+// remove ads in video
 
 import 'dart:async';
 import 'dart:convert';
@@ -184,6 +185,29 @@ class OPhimService extends ABEigaService
     );
   }
 
+  Future<List<Filter>> _getFilters() async {
+    final document = await fetchDocument('$baseUrl/danh-sach/phim-moi');
+
+    return document.querySelectorAll('#form-filter select').map((select) {
+      final name = select.text;
+      final key = select.attributes['name']!;
+      final multiple = ['category', 'country', 'year'].contains(key);
+      final items = select.querySelectorAll('option').map((option) => Option(
+        name: option.text,
+        value: option.attributes['value']!,
+      )).toList();
+
+      return Filter(
+        name: name,
+        key: key,
+        multiple: multiple,
+        options: items,
+      );
+    }).toList();
+  }
+
+  List<Filter>?  _iFilters ;
+
   @override
   getCategory({required categoryId, required page, required filters}) async {
     late final String basePath;
@@ -233,8 +257,7 @@ class OPhimService extends ABEigaService
     final totalPages = pageData.data.params.pagination.pageRanges;
     final totalItems = pageData.data.params.pagination.totalItems;
 
-    // TODO: add filters
-    final List<Filter> iFilters = [];
+    final List<Filter> iFilters = _iFilters ??= await _getFilters();
 
     return EigaCategory(
       name: name,
