@@ -46,7 +46,8 @@ class HorizontalComicList extends StatelessWidget {
                 (index) =>
                     ComicExtend(comic: Comic.createFakeData(), sourceId: null),
               ),
-              needSubtitle: false,
+              itemSubtitle: false,
+              itemTimeAgo: false,
               builder: (context, comic, index) {
                 return VerticalComic(
                   comic: comic.comic,
@@ -72,7 +73,8 @@ class HorizontalComicList extends StatelessWidget {
                 orElse: (error) => Text('Error: $error'),
               ),
             ),
-            needSubtitle: false,
+            itemSubtitle: false,
+            itemTimeAgo: false,
           );
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -82,7 +84,8 @@ class HorizontalComicList extends StatelessWidget {
             more: more,
             context,
             builder: (viewFraction) => Center(child: Text('No data available')),
-            needSubtitle: false,
+            itemSubtitle: false,
+            itemTimeAgo: false,
           );
         }
 
@@ -91,8 +94,12 @@ class HorizontalComicList extends StatelessWidget {
           subtitle: subtitle,
           more: more,
           items: snapshot.data!,
-          needSubtitle: snapshot.data!.firstWhereOrNull(
-                (comic) => VerticalComic.checkNeedSubtitle(comic.comic),
+          itemSubtitle: snapshot.data!.firstWhereOrNull(
+                (comic) => VerticalComic.existsSubtitle(comic.comic),
+              ) !=
+              null,
+          itemTimeAgo: snapshot.data!.firstWhereOrNull(
+                (comic) => VerticalComic.existsTimeAgo(comic.comic),
               ) !=
               null,
           builder: (context, comic, index) {

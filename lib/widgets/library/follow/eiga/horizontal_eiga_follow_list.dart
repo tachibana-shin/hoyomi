@@ -54,7 +54,8 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
                 orElse: (error) => Text('Error: $error'),
               ),
             ),
-            needSubtitle: false,
+            itemSubtitle: false,
+            itemTimeAgo: false,
           );
         }
         final loading = snapshot.connectionState == ConnectionState.waiting;
@@ -66,7 +67,8 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
             subtitle: subtitle,
             more: more,
             builder: (viewFraction) => Center(child: Text('No data available')),
-            needSubtitle: false,
+            itemSubtitle: false,
+            itemTimeAgo: false,
           );
         }
 
@@ -87,8 +89,12 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
                 : formatWatchUpdatedAt(data.first.updatedAt!, null),
             more: more,
             items: data,
-            needSubtitle: data.firstWhereOrNull(
-                  (eiga) => VerticalEiga.checkNeedSubtitle(eiga.item),
+            itemSubtitle: data.firstWhereOrNull(
+                  (eiga) => VerticalEiga.existsSubtitle(eiga.item),
+                ) !=
+                null,
+            itemTimeAgo: data.firstWhereOrNull(
+                  (eiga) => VerticalEiga.existsTimeAgo(eiga.item),
                 ) !=
                 null,
             builder: (context, follow, index) {

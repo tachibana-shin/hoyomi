@@ -9,7 +9,8 @@ class HorizontalList<T> extends StatelessWidget {
   final List<T>? items;
   final Widget? child;
 
-  final bool needSubtitle;
+  final bool itemSubtitle;
+  final bool itemTimeAgo;
 
   const HorizontalList({
     super.key,
@@ -19,7 +20,8 @@ class HorizontalList<T> extends StatelessWidget {
     this.items,
     this.child,
     required this.builder,
-    required this.needSubtitle,
+    required this.itemSubtitle,
+    required this.itemTimeAgo,
   }) : assert(items != null || child != null);
 
   static Widget buildContainer(
@@ -27,7 +29,8 @@ class HorizontalList<T> extends StatelessWidget {
     required String title,
     required String? subtitle,
     required String? more,
-    required bool needSubtitle,
+    required bool itemSubtitle,
+    required bool itemTimeAgo,
     required Widget Function(double viewFraction) builder,
   }) {
     final header = Row(
@@ -73,15 +76,34 @@ class HorizontalList<T> extends StatelessWidget {
           crossAxisCount = 6.5;
         }
 
-        final childAspectRatio = 2 / 3;
         final viewportFraction = 1 / crossAxisCount;
-        final height =
-            1 / childAspectRatio * (screenWidth * viewportFraction - 8.0) +
-                14.0 * 2 +
-                18.0 +
-                (needSubtitle ? 12.0 * 2 : 12.0 / 2);
 
-        return SizedBox(height: height, child: builder(viewportFraction));
+        final widthItem = (screenWidth / crossAxisCount);
+        final defaultLineHeight = 1.16667;
+        final heightItem = widthItem / (2 / 3) /* image */ +
+                4.0 * 2 /* space by Card */ +
+
+                /// === title ===
+                2.0 * 2 /* padding */ +
+                14.0 * defaultLineHeight /* font */ +
+
+                /// === /title ===
+                ///
+                /// === subtitle ===
+                (itemSubtitle ?  12.0 * defaultLineHeight : 0) /* font */ +
+
+                /// === /subtitle ===
+                ///
+                /// === time ago ===
+                (itemTimeAgo ? 12.0 * defaultLineHeight : 0) + /* font */
+
+                /// === /time ago ===
+                1.0
+
+            /// offset
+            ;
+
+        return SizedBox(height: heightItem, child: builder(viewportFraction));
       },
     );
 
@@ -98,7 +120,8 @@ class HorizontalList<T> extends StatelessWidget {
       title: title,
       subtitle: subtitle,
       more: more,
-      needSubtitle: needSubtitle,
+      itemSubtitle: itemSubtitle,
+      itemTimeAgo: itemTimeAgo,
       builder: (viewportFraction) =>
           child ??
           PageView.builder(

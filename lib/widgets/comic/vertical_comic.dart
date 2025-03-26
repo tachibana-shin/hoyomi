@@ -7,8 +7,11 @@ import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/circular_progress.dart';
 
 class VerticalComic extends StatelessWidget {
-  static bool checkNeedSubtitle(Comic comic) {
+  static bool existsSubtitle(Comic comic) {
     return comic.lastChap != null;
+  }
+  static bool existsTimeAgo(Comic comic) {
+    return comic.timeAgo != null;
   }
 
   final Comic comic;

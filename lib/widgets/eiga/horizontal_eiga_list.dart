@@ -46,7 +46,8 @@ class HorizontalEigaList extends StatelessWidget {
                 (index) =>
                     EigaExtend(eiga: Eiga.createFakeData(), sourceId: null),
               ),
-              needSubtitle: false,
+              itemSubtitle: false,
+              itemTimeAgo: false,
               builder: (context, eiga, index) {
                 return VerticalEiga(
                   eiga: eiga.eiga,
@@ -72,7 +73,8 @@ class HorizontalEigaList extends StatelessWidget {
                 orElse: (error) => Text('Error: $error'),
               ),
             ),
-            needSubtitle: false,
+            itemSubtitle: false,
+            itemTimeAgo: false,
           );
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -82,7 +84,8 @@ class HorizontalEigaList extends StatelessWidget {
             subtitle: subtitle,
             more: more,
             builder: (viewFraction) => Center(child: Text('No data available')),
-            needSubtitle: false,
+            itemSubtitle: false,
+            itemTimeAgo: false,
           );
         }
 
@@ -91,8 +94,12 @@ class HorizontalEigaList extends StatelessWidget {
           subtitle: subtitle,
           more: more,
           items: snapshot.data!,
-          needSubtitle: snapshot.data!.firstWhereOrNull(
-                (eiga) => VerticalEiga.checkNeedSubtitle(eiga.eiga),
+          itemSubtitle: snapshot.data!.firstWhereOrNull(
+                (eiga) => VerticalEiga.existsSubtitle(eiga.eiga),
+              ) !=
+              null,
+              itemTimeAgo: snapshot.data!.firstWhereOrNull(
+                (eiga) => VerticalEiga.existsTimeAgo(eiga.eiga),
               ) !=
               null,
           builder: (context, eiga, index) {

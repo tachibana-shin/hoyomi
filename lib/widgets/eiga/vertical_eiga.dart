@@ -7,8 +7,12 @@ import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/circular_progress.dart';
 
 class VerticalEiga extends StatelessWidget {
-  static bool checkNeedSubtitle(Eiga comic) {
+  static bool existsSubtitle(Eiga comic) {
     return comic.lastEpisode != null;
+  }
+
+  static bool existsTimeAgo(Eiga comic) {
+    return comic.timeAgo != null;
   }
 
   final Eiga eiga;
