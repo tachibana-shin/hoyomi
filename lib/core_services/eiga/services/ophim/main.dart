@@ -1011,16 +1011,15 @@ String _removeAdsFromM3U8(Uri url, String m3u8) {
   final lines = m3u8.split('\n');
   final regex = RegExp(r"#EXTINF:([\d.]+),");
 
-  final List<({double duration, String url})> segments = [];
+  final List<({double duration, int index})> segments = [];
   for (int i = 0; i < lines.length; i++) {
     final line = lines.elementAt(i);
     final match = regex.firstMatch(line);
     if (match != null) {
       final duration = double.parse(match.group(1)!);
-      final url = lines.elementAt(i + 1);
       i++;
 
-      segments.add((duration: duration, url: url));
+      segments.add((duration: duration, index: i));
     }
   }
 
@@ -1042,7 +1041,7 @@ String _removeAdsFromM3U8(Uri url, String m3u8) {
         adStart = i;
         adStop = i + rangeCase.length - 1;
         for (int l = adStart; l <= adStop; l++) {
-          indexSegmentsRemove.add(l);
+          indexSegmentsRemove.add(segments.elementAt(l).index);
         }
         break;
       }
@@ -1053,7 +1052,12 @@ String _removeAdsFromM3U8(Uri url, String m3u8) {
   for (int i = 0; i < lines.length; i++) {
     if (indexSegmentsRemove.contains(i)) continue;
 
-    output.add(lines.elementAt(i));
+    final line = lines.elementAt(i);
+    if (line.startsWith('#')) {
+      output.add(line);
+    } else {
+      output.add(url.resolve(line).toString());
+    }
   }
 
   return output.join('\n');
