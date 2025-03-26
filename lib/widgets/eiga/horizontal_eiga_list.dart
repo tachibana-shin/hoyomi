@@ -34,11 +34,10 @@ class HorizontalEigaList extends StatelessWidget {
       future: itemsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          final items =  List.generate(
-                30,
-                (index) =>
-                    EigaExtend(eiga: Eiga.createFakeData(), sourceId: null),
-              );
+          final items = List.generate(
+            30,
+            (index) => EigaExtend(eiga: Eiga.createFakeData(), sourceId: null),
+          );
           return Skeletonizer(
             enabled: true,
             enableSwitchAnimation: true,
@@ -46,7 +45,7 @@ class HorizontalEigaList extends StatelessWidget {
               title: title,
               subtitle: subtitle,
               more: more,
-              items:items,
+              items: items,
               titleLength: items
                   .map((item) => item.eiga.name.length)
                   .reduce((max, length) => length > max ? length : max),
@@ -77,7 +76,7 @@ class HorizontalEigaList extends StatelessWidget {
                 orElse: (error) => Text('Error: $error'),
               ),
             ),
-            titleLength : 1,
+            titleLength: 1,
             itemSubtitle: false,
             itemTimeAgo: false,
           );
@@ -89,7 +88,7 @@ class HorizontalEigaList extends StatelessWidget {
             subtitle: subtitle,
             more: more,
             builder: (viewFraction) => Center(child: Text('No data available')),
-            titleLength : 1,
+            titleLength: 1,
             itemSubtitle: false,
             itemTimeAgo: false,
           );

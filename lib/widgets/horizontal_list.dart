@@ -9,7 +9,7 @@ class HorizontalList<T> extends StatelessWidget {
   final List<T>? items;
   final Widget? child;
 
-final int titleLength;
+  final int titleLength;
   final bool itemSubtitle;
   final bool itemTimeAgo;
 
@@ -81,14 +81,17 @@ final int titleLength;
 
         final viewportFraction = 1 / crossAxisCount;
 
-        final widthItem = (screenWidth / crossAxisCount) - 4.0 * 2 /* space by Card */;
+        final widthItem =
+            (screenWidth / crossAxisCount) - 4.0 * 2 /* space by Card */;
         final defaultLineHeight = 1.42;
         final heightItem = (widthItem) / (2 / 3) /* image */ +
                 4.0 * 2 /* space by Card */ +
 
                 /// === title ===
                 2.0 * 2 /* padding */ +
-                14.0 * (widthItem < 14.0 * titleLength ? 2 : 1 ) * defaultLineHeight /* font */ +
+                14.0 *
+                    (widthItem < 14.0 * titleLength ? 2 : 1) *
+                    defaultLineHeight /* font */ +
 
                 /// === /title ===
                 ///
@@ -123,7 +126,7 @@ final int titleLength;
       title: title,
       subtitle: subtitle,
       more: more,
-            titleLength : titleLength,
+      titleLength: titleLength,
       itemSubtitle: itemSubtitle,
       itemTimeAgo: itemTimeAgo,
       builder: (viewportFraction) =>
