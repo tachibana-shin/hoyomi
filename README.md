@@ -78,6 +78,5 @@ A new Flutter project.
 
 - [x] Page settings for services
 
-- [ ] Poster for eiga player
 - [ ] Add multiple server in eiga
 <!-- provider or mobx -->
