@@ -715,7 +715,14 @@ class _PlayerEigaState extends State<PlayerEiga>
                     builder: (_, constraints) => Watch(() {
                       counter.value;
                       final controller = _controller.value;
-                      if (controller == null) return SizedBox.shrink();
+                      if (controller == null) {
+                        return Center(
+                            child: OImage.oNetwork(
+                          widget.metaEiga.value.poster!,
+                          sourceId: widget.service.uid,
+                          fit: BoxFit.cover,
+                        ));
+                      }
 
                       final maxWidth = _fullscreen.value
                           ? 100.w(context)
@@ -765,33 +772,6 @@ class _PlayerEigaState extends State<PlayerEiga>
                     }),
                   )),
         ),
-        // poster
-        // Watch(() {
-        //   if (widget.metaEiga.value.poster == null ||
-        //       widget.metaEiga.value.fake ||
-        //       _controller.value != null) {
-        //     return SizedBox.shrink();
-        //   }
-
-        //   return GestureDetector(
-        //       onTap: _onTapToggleControls,
-        //       onDoubleTapDown: _onDoubleTapPlayer,
-        //       onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
-        //       onVerticalDragEnd: (_) => _hideAllSlider(),
-        //       onVerticalDragCancel: _hideAllSlider,
-        //       child: Positioned(
-        //         top: 0,
-        //         left: 0,
-        //         right: 0,
-        //         bottom: 0,
-        //         child: Center(
-        //             child: OImage.oNetwork(
-        //           widget.metaEiga.value.poster!,
-        //           sourceId: widget.service.uid,
-        //           fit: BoxFit.cover,
-        //         )),
-        //       ));
-        // }),
         Watch(() {
           final child = _showControls.value || _error.value != null
               ? GestureDetector(
