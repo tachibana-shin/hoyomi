@@ -268,6 +268,8 @@ class VerticalEiga extends StatelessWidget {
                   fontSize: 12.0,
                   color: Theme.of(context).colorScheme.secondary,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             if (eiga.timeAgo != null)
               Text(
@@ -279,6 +281,8 @@ class VerticalEiga extends StatelessWidget {
                       .secondary
                       .withValues(alpha: 0.8),
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
           ],
         ),
