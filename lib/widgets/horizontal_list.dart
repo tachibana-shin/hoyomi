@@ -9,6 +9,7 @@ class HorizontalList<T> extends StatelessWidget {
   final List<T>? items;
   final Widget? child;
 
+final int titleLength;
   final bool itemSubtitle;
   final bool itemTimeAgo;
 
@@ -20,6 +21,7 @@ class HorizontalList<T> extends StatelessWidget {
     this.items,
     this.child,
     required this.builder,
+    required this.titleLength,
     required this.itemSubtitle,
     required this.itemTimeAgo,
   }) : assert(items != null || child != null);
@@ -29,6 +31,7 @@ class HorizontalList<T> extends StatelessWidget {
     required String title,
     required String? subtitle,
     required String? more,
+    required int titleLength,
     required bool itemSubtitle,
     required bool itemTimeAgo,
     required Widget Function(double viewFraction) builder,
@@ -78,14 +81,14 @@ class HorizontalList<T> extends StatelessWidget {
 
         final viewportFraction = 1 / crossAxisCount;
 
-        final widthItem = (screenWidth / crossAxisCount);
-        final defaultLineHeight = 1.16667;
-        final heightItem = widthItem / (2 / 3) /* image */ +
+        final widthItem = (screenWidth / crossAxisCount) - 4.0 * 2 /* space by Card */;
+        final defaultLineHeight = 1.42;
+        final heightItem = (widthItem) / (2 / 3) /* image */ +
                 4.0 * 2 /* space by Card */ +
 
                 /// === title ===
                 2.0 * 2 /* padding */ +
-                14.0 * defaultLineHeight /* font */ +
+                14.0 * (widthItem < 14.0 * titleLength ? 2 : 1 ) * defaultLineHeight /* font */ +
 
                 /// === /title ===
                 ///
@@ -120,6 +123,7 @@ class HorizontalList<T> extends StatelessWidget {
       title: title,
       subtitle: subtitle,
       more: more,
+            titleLength : titleLength,
       itemSubtitle: itemSubtitle,
       itemTimeAgo: itemTimeAgo,
       builder: (viewportFraction) =>

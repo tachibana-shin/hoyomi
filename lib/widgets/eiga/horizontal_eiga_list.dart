@@ -34,6 +34,11 @@ class HorizontalEigaList extends StatelessWidget {
       future: itemsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
+          final items =  List.generate(
+                30,
+                (index) =>
+                    EigaExtend(eiga: Eiga.createFakeData(), sourceId: null),
+              );
           return Skeletonizer(
             enabled: true,
             enableSwitchAnimation: true,
@@ -41,11 +46,10 @@ class HorizontalEigaList extends StatelessWidget {
               title: title,
               subtitle: subtitle,
               more: more,
-              items: List.generate(
-                30,
-                (index) =>
-                    EigaExtend(eiga: Eiga.createFakeData(), sourceId: null),
-              ),
+              items:items,
+              titleLength: items
+                  .map((item) => item.eiga.name.length)
+                  .reduce((max, length) => length > max ? length : max),
               itemSubtitle: false,
               itemTimeAgo: false,
               builder: (context, eiga, index) {
@@ -73,6 +77,7 @@ class HorizontalEigaList extends StatelessWidget {
                 orElse: (error) => Text('Error: $error'),
               ),
             ),
+            titleLength : 1,
             itemSubtitle: false,
             itemTimeAgo: false,
           );
@@ -84,6 +89,7 @@ class HorizontalEigaList extends StatelessWidget {
             subtitle: subtitle,
             more: more,
             builder: (viewFraction) => Center(child: Text('No data available')),
+            titleLength : 1,
             itemSubtitle: false,
             itemTimeAgo: false,
           );
@@ -94,6 +100,9 @@ class HorizontalEigaList extends StatelessWidget {
           subtitle: subtitle,
           more: more,
           items: snapshot.data!,
+          titleLength: snapshot.data!
+              .map((item) => item.eiga.name.length)
+              .reduce((max, length) => length > max ? length : max),
           itemSubtitle: snapshot.data!.firstWhereOrNull(
                 (eiga) => VerticalEiga.existsSubtitle(eiga.eiga),
               ) !=

@@ -34,6 +34,11 @@ class HorizontalComicList extends StatelessWidget {
       future: itemsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
+          final items = List.generate(
+            30,
+            (index) =>
+                ComicExtend(comic: Comic.createFakeData(), sourceId: null),
+          );
           return Skeletonizer(
             enabled: true,
             enableSwitchAnimation: true,
@@ -41,11 +46,10 @@ class HorizontalComicList extends StatelessWidget {
               title: title,
               subtitle: subtitle,
               more: more,
-              items: List.generate(
-                30,
-                (index) =>
-                    ComicExtend(comic: Comic.createFakeData(), sourceId: null),
-              ),
+              items: items,
+              titleLength: items
+                  .map((item) => item.comic.name.length)
+                  .reduce((max, length) => length > max ? length : max),
               itemSubtitle: false,
               itemTimeAgo: false,
               builder: (context, comic, index) {
@@ -73,6 +77,7 @@ class HorizontalComicList extends StatelessWidget {
                 orElse: (error) => Text('Error: $error'),
               ),
             ),
+            titleLength: 1,
             itemSubtitle: false,
             itemTimeAgo: false,
           );
@@ -84,6 +89,7 @@ class HorizontalComicList extends StatelessWidget {
             more: more,
             context,
             builder: (viewFraction) => Center(child: Text('No data available')),
+            titleLength: 1,
             itemSubtitle: false,
             itemTimeAgo: false,
           );
@@ -94,6 +100,9 @@ class HorizontalComicList extends StatelessWidget {
           subtitle: subtitle,
           more: more,
           items: snapshot.data!,
+          titleLength: snapshot.data!
+              .map((item) => item.comic.name.length)
+              .reduce((max, length) => length > max ? length : max),
           itemSubtitle: snapshot.data!.firstWhereOrNull(
                 (comic) => VerticalComic.existsSubtitle(comic.comic),
               ) !=

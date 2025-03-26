@@ -54,6 +54,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
                 orElse: (error) => Text('Error: $error'),
               ),
             ),
+            titleLength: 1,
             itemSubtitle: false,
             itemTimeAgo: false,
           );
@@ -67,6 +68,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
             subtitle: subtitle,
             more: more,
             builder: (viewFraction) => Center(child: Text('No data available')),
+            titleLength: 1,
             itemSubtitle: false,
             itemTimeAgo: false,
           );
@@ -89,6 +91,9 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
                 : formatWatchUpdatedAt(data.first.updatedAt!, null),
             more: more,
             items: data,
+            titleLength: data
+                .map((eiga) => eiga.item.name.length)
+                .reduce((max, length) => length > max ? length : max),
             itemSubtitle: data.firstWhereOrNull(
                   (eiga) => VerticalEiga.existsSubtitle(eiga.item),
                 ) !=
