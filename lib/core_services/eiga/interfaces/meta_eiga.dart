@@ -1,5 +1,9 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'package:hoyomi/core_services/interfaces/genre.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
+
+part 'meta_eiga.freezed.dart';
 
 class Season {
   final String name;
@@ -19,11 +23,12 @@ class Season {
   }
 }
 
-class MetaEiga {
+@freezed
+class MetaEiga with _$MetaEiga {
   final String name;
   final String? originalName;
-  OImage image;
-  OImage? poster;
+  final OImage image;
+  final OImage? poster;
   final String description;
   final double? rate;
   final int? countRate;
