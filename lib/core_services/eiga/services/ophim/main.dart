@@ -357,6 +357,12 @@ class OPhimService extends ABEigaService
         cdn: $cdn,
         src: pageData.data.item.posterUrl ?? pageData.data.item.thumbUrl);
 
+    // analytics
+    fetch('$baseUrl/api/movies', body: {
+      'action': 'update-view',
+      'slug': eigaIdRaw,
+    });
+
     return EigaEpisodes(
       episodes: episodes,
       image: image,
