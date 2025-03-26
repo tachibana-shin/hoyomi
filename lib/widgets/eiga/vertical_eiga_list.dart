@@ -52,8 +52,8 @@ class VerticalEigaList extends StatelessWidget {
                 return VerticalEiga(
                   eiga: eiga.eiga,
                   sourceId: eiga.sourceId,
-                  percentRead: eiga.percentRead,
-                  goMode: goMode,
+                  progress: eiga.progress,
+                  replace: goMode,
                 );
               },
             ),
@@ -82,8 +82,8 @@ class VerticalEigaList extends StatelessWidget {
             return VerticalEiga(
               eiga: eiga.eiga,
               sourceId: eiga.sourceId,
-              percentRead: eiga.percentRead,
-              goMode: goMode,
+              progress: eiga.progress,
+              replace: goMode,
             );
           },
         );

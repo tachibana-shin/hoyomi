@@ -9,9 +9,9 @@ import 'package:skeletonizer/skeletonizer.dart';
 class EigaExtend {
   final Eiga eiga;
   final String? sourceId;
-  final double? percentRead;
+  final double? progress;
 
-  EigaExtend({required this.eiga, required this.sourceId, this.percentRead});
+  EigaExtend({required this.eiga, required this.sourceId, this.progress});
 }
 
 class HorizontalEigaList extends StatelessWidget {
@@ -56,7 +56,7 @@ class HorizontalEigaList extends StatelessWidget {
                 return VerticalEiga(
                   eiga: eiga.eiga,
                   sourceId: eiga.sourceId,
-                  percentRead: eiga.percentRead,
+                  progress: eiga.progress,
                 );
               },
             ),
@@ -115,7 +115,7 @@ class HorizontalEigaList extends StatelessWidget {
             return VerticalEiga(
               eiga: eiga.eiga,
               sourceId: eiga.sourceId,
-              percentRead: eiga.percentRead,
+              progress: eiga.progress,
             );
           },
         );

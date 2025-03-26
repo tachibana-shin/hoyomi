@@ -9,9 +9,9 @@ import 'vertical_comic.dart';
 class ComicExtend {
   final Comic comic;
   final String? sourceId;
-  final double? percentRead;
+  final double? progress;
 
-  ComicExtend({required this.comic, required this.sourceId, this.percentRead});
+  ComicExtend({required this.comic, required this.sourceId, this.progress});
 }
 
 class HorizontalComicList extends StatelessWidget {
@@ -56,7 +56,7 @@ class HorizontalComicList extends StatelessWidget {
                 return VerticalComic(
                   comic: comic.comic,
                   sourceId: comic.sourceId,
-                  percentRead: comic.percentRead,
+                  progress: comic.progress,
                 );
               },
             ),
@@ -115,7 +115,7 @@ class HorizontalComicList extends StatelessWidget {
             return VerticalComic(
               comic: comic.comic,
               sourceId: comic.sourceId,
-              percentRead: comic.percentRead,
+              progress: comic.progress,
             );
           },
         );

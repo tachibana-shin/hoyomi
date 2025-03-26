@@ -46,7 +46,7 @@ class VerticalComicList extends StatelessWidget {
                 return VerticalComic(
                   comic: comic.comic,
                   sourceId: comic.sourceId,
-                  percentRead: comic.percentRead,
+                  progress: comic.progress,
                 );
               },
             ),
@@ -74,7 +74,7 @@ class VerticalComicList extends StatelessWidget {
             return VerticalComic(
               comic: comic.comic,
               sourceId: comic.sourceId,
-              percentRead: comic.percentRead,
+              progress: comic.progress,
             );
           },
         );

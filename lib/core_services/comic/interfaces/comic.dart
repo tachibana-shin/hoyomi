@@ -10,6 +10,8 @@ class Comic {
   final ComicChapter? lastChap;
   final DateTime? timeAgo;
   final String? notice;
+  final bool pending;
+  final DateTime? preRelease;
   final double? rate;
   final String? description;
 
@@ -21,6 +23,8 @@ class Comic {
     required this.lastChap,
     required this.timeAgo,
     required this.notice,
+    this.pending = false,
+    this.preRelease,
     required this.rate,
     this.description,
   });
