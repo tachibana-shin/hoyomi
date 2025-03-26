@@ -98,7 +98,7 @@ class HorizontalEigaList extends StatelessWidget {
                 (eiga) => VerticalEiga.existsSubtitle(eiga.eiga),
               ) !=
               null,
-              itemTimeAgo: snapshot.data!.firstWhereOrNull(
+          itemTimeAgo: snapshot.data!.firstWhereOrNull(
                 (eiga) => VerticalEiga.existsTimeAgo(eiga.eiga),
               ) !=
               null,

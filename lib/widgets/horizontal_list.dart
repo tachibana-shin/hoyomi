@@ -90,7 +90,7 @@ class HorizontalList<T> extends StatelessWidget {
                 /// === /title ===
                 ///
                 /// === subtitle ===
-                (itemSubtitle ?  12.0 * defaultLineHeight : 0) /* font */ +
+                (itemSubtitle ? 12.0 * defaultLineHeight : 0) /* font */ +
 
                 /// === /subtitle ===
                 ///

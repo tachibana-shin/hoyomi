@@ -10,6 +10,7 @@ class VerticalComic extends StatelessWidget {
   static bool existsSubtitle(Comic comic) {
     return comic.lastChap != null;
   }
+
   static bool existsTimeAgo(Comic comic) {
     return comic.timeAgo != null;
   }
