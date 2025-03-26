@@ -272,12 +272,12 @@ class OPhimService extends ABEigaService
 
     final name = pageData.data.item.name;
     final originalName = pageData.data.item.originName;
-    final image = _getImage(
-        cdn: 'https://img.ophim.live', src: pageData.data.item.thumbUrl);
+    final $uri = Uri.parse(pageData.data.seoOnPage.image!);
+    final $cdn = '${$uri.scheme}://${$uri.host}';
+    final image = _getImage(cdn: $cdn, src: pageData.data.item.thumbUrl);
     final poster = pageData.data.item.posterUrl == null
         ? null
-        : _getImage(
-            cdn: 'https://img.ophim.live', src: pageData.data.item.posterUrl!);
+        : _getImage(cdn: $cdn, src: pageData.data.item.posterUrl!);
     final description = pageData.data.item.content;
 
     final rate = pageData.data.item.tmdb?.voteAverage;
@@ -349,8 +349,12 @@ class OPhimService extends ABEigaService
         .toList();
     if (episodes == null) throw Exception('Episode not found');
 
-    final image = OImage(src: pageData.data.item.thumbUrl);
-    final poster = OImage(
+    final $uri = Uri.parse(pageData.data.seoOnPage.image!);
+    final $cdn = '${$uri.scheme}://${$uri.host}';
+
+    final image = _getImage(cdn: $cdn, src: pageData.data.item.thumbUrl);
+    final poster = _getImage(
+        cdn: $cdn,
         src: pageData.data.item.posterUrl ?? pageData.data.item.thumbUrl);
 
     return EigaEpisodes(
@@ -501,6 +505,7 @@ class _SeoOnPage {
   List<String> ogImage;
   int? updatedTime;
   String? ogUrl;
+  String? image;
 
   _SeoOnPage({
     required this.ogType,
@@ -509,6 +514,7 @@ class _SeoOnPage {
     required this.ogImage,
     this.updatedTime,
     this.ogUrl,
+    this.image,
   });
 
   factory _SeoOnPage.fromJson(Map<String, dynamic> json) {
@@ -519,6 +525,7 @@ class _SeoOnPage {
       ogImage: List<String>.from(json['og_image'].map((x) => x)),
       updatedTime: json['updatedTime'],
       ogUrl: json['og_url'],
+      image: json['seoSchema']?['image'],
     );
   }
 }
