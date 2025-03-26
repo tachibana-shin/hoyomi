@@ -42,7 +42,8 @@ class MetaEiga with _$MetaEiga {
     @Default(false) bool fake,
   }) = _MetaEiga;
 
-  factory MetaEiga.fromJson(Map<String, dynamic> json) => _$MetaEigaFromJson(json);
+  factory MetaEiga.fromJson(Map<String, dynamic> json) =>
+      _$MetaEigaFromJson(json);
 
   /// Fake data generator
   factory MetaEiga.createFakeData() {
