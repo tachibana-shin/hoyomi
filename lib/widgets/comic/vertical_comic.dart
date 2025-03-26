@@ -103,6 +103,8 @@ class VerticalComic extends StatelessWidget {
                             style: Theme.of(
                               context,
                             ).textTheme.bodySmall?.copyWith(fontSize: 10.0),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -110,64 +112,64 @@ class VerticalComic extends StatelessWidget {
                   ),
 
                 // bottom
-                if (comic.timeAgo != null)
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.only(
-                        top: 16.0,
-                        left: 8.0,
-                        right: 8.0,
-                        bottom: 4.0,
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.black.withValues(alpha: 0.8),
-                            Colors.transparent,
-                          ],
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                        ),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: Text(
-                        formatTimeAgo(comic.timeAgo!),
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.blueGrey.shade50,
-                        ),
-                      ),
-                    ),
-                    //  Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       if (comic.rate != null)
-                    //         Row(
-                    //           children: [
-                    //             Icon(
-                    //               Icons.star,
-                    //               color: Colors.yellow[700],
-                    //               size: 16.0,
-                    //             ),
-                    //             const SizedBox(width: 4.0),
-                    //             Text(
-                    //               comic.rate!.toString(),
-                    //               style: const TextStyle(
-                    //                   fontSize: 14.0, color: Colors.white),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       if (comic.notice != null)
-                    //         Text(
-                    //           comic.notice!,
-                    //           style: const TextStyle(
-                    //               fontSize: 12.0, color: Colors.orange),
-                    //         ),
-                    //     ])),
-                  ),
+                // if (comic.timeAgo != null)
+                //   Positioned(
+                //     bottom: 0,
+                //     left: 0,
+                //     right: 0,
+                //     child: Container(
+                //       padding: const EdgeInsets.only(
+                //         top: 16.0,
+                //         left: 8.0,
+                //         right: 8.0,
+                //         bottom: 4.0,
+                //       ),
+                //       decoration: BoxDecoration(
+                //         gradient: LinearGradient(
+                //           colors: [
+                //             Colors.black.withValues(alpha: 0.8),
+                //             Colors.transparent,
+                //           ],
+                //           begin: Alignment.bottomCenter,
+                //           end: Alignment.topCenter,
+                //         ),
+                //         borderRadius: BorderRadius.circular(4.0),
+                //       ),
+                //       child: Text(
+                //         formatTimeAgo(comic.timeAgo!),
+                //         style: TextStyle(
+                //           fontSize: 12.0,
+                //           color: Colors.blueGrey.shade50,
+                //         ),
+                //       ),
+                //     ),
+                //  Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       if (comic.rate != null)
+                //         Row(
+                //           children: [
+                //             Icon(
+                //               Icons.star,
+                //               color: Colors.yellow[700],
+                //               size: 16.0,
+                //             ),
+                //             const SizedBox(width: 4.0),
+                //             Text(
+                //               comic.rate!.toString(),
+                //               style: const TextStyle(
+                //                   fontSize: 14.0, color: Colors.white),
+                //             ),
+                //           ],
+                //         ),
+                //       if (comic.notice != null)
+                //         Text(
+                //           comic.notice!,
+                //           style: const TextStyle(
+                //               fontSize: 12.0, color: Colors.orange),
+                //         ),
+                //     ])),
+                // ),
 
                 if (comic.rate != null)
                   Positioned(
@@ -220,18 +222,15 @@ class VerticalComic extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 2.0),
-              child: Container(
-                constraints: BoxConstraints(minHeight: 40.0),
-                child: Text(
-                  comic.name,
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+              child: Text(
+                comic.name,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w500,
                 ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             if (comic.lastChap != null)
@@ -244,6 +243,17 @@ class VerticalComic extends StatelessWidget {
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+              ),
+            if (comic.timeAgo != null)
+              Text(
+                formatTimeAgo(comic.timeAgo!),
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .secondary
+                      .withValues(alpha: 0.8),
+                ),
               ),
           ],
         ),
