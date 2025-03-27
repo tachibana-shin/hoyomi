@@ -911,7 +911,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     final metaEiga = _metaEiga.value;
 
     if (episodes.image != metaEiga.image && episodes.image != null) {
-      _metaEiga.value = metaEiga.copyWith(image: episodes.image);
+      _metaEiga.value = metaEiga.copyWith(image: episodes.image!);
     }
     if (episodes.poster != metaEiga.poster) {
       _metaEiga.value = metaEiga.copyWith(poster: episodes.poster);

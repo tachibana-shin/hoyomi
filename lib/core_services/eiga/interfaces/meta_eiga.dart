@@ -6,7 +6,6 @@ part 'meta_eiga.freezed.dart';
 part 'meta_eiga.g.dart';
 
 @freezed
-@JsonSerializable()
 class Season with _$Season {
   const factory Season({
     required String name,
@@ -17,7 +16,6 @@ class Season with _$Season {
 }
 
 @freezed
-@JsonSerializable()
 class MetaEiga with _$MetaEiga {
   const factory MetaEiga({
     required String name,
