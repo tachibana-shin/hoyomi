@@ -19,6 +19,8 @@ dependencies:
   dynamic_height_grid_view: ^0.0.4
   event_bus: ^2.0.1
   expandable_page_view: ^1.0.17
+  firebase_auth: ^5.5.1
+  firebase_core: ^3.12.1
   flash: ^3.1.1
   flutter:
     sdk: flutter
@@ -41,6 +43,7 @@ dependencies:
   get: ^4.6.6
   go_router: ^14.6.0
   go_transitions: ^0.7.0
+  google_sign_in: ^6.3.0
   grouped_list: ^6.0.0
   html: ^0.15.5
   http: ^1.2.2

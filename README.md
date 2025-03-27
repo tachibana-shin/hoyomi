@@ -80,3 +80,13 @@ A new Flutter project.
 
 - [ ] Add multiple server in eiga
 <!-- provider or mobx -->
+
+## Development
+> [TIP]
+>
+> This project depends Firebase. Please first run
+> ```bash
+> flutterfire configure
+> ```
+> 
+> and configuring file `/android/app/google-services.json`, `/ios/Runner/GoogleService-Info.plist` (two file auto create by `flutterfire`)
