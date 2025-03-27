@@ -70,5 +70,22 @@
 		<key>NSMicrophoneUsageDescription</key>
 		<true/>
 	</dict>
+	<!-- Put me in the [my_project]/ios/Runner/Info.plist file -->
+	<!-- Google Sign-In section -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<!-- TODO Replace this value: -->
+				<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
+				<string>com.googleusercontent.apps.972743069461-1oulppj3blpvvro8hl9pd6p8e8lgi1km</string>
+			</array>
+		</dict>
+	</array>
+	<!-- End of the Google Sign-In section -->
 </dict>
+
 </plist>
