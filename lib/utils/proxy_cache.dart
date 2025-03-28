@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ProxyCache {
   static final ProxyCache _instance = ProxyCache._internal();
@@ -10,7 +11,7 @@ class ProxyCache {
   ProxyCache._internal();
 
   HttpServer? _server;
-  final int _port = 55912;
+  final int _port = int.tryParse(dotenv.env['PROXY_CACHE_PORT'] ?? '') ?? 55912;
   Timer? _timeoutTimer;
 
   Future<void> start() async {
