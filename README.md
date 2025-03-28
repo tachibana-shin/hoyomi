@@ -83,8 +83,27 @@ A new Flutter project.
 
 ## Development
 
+### Prerequisites
+#### Step 1: Set up the Firebase project
+The first step is to set up the Firebase project and enable Google sign-in. if you already have a flutter project, you can skip this step.
+
+1. Go to the [Firebase console](https://console.firebase.google.com/) and create a new project.
+2. Click on the `Authentication` link in the left-hand menu, then click on the `Sign-in Method` tab.
+3. Enable the `Google` sign-in method.
+
+
+#### Step 2: Configure the OAuth client
+You need your application's client ID and Secret from Google Cloud Console to enable Google sign-in. If you’ve it already then skip this step.
+
+- To get the client ID and secret, follow the steps from the given [link](https://support.google.com/cloud/answer/6158849?hl=en).
+- Choose `a web application`.
+- In the `Authorized redirect URIs` and `Authorized JavaScript origin`, enter the URL `http://localhost`
+
+-----
+Next
+
 ### Step 1 (Required in mobile platform)
-> [TIP]
+> [!TIP]
 >
 > This project depends Firebase. Please first run
 > ```bash
@@ -96,7 +115,7 @@ A new Flutter project.
 - `/android/app/google-services.json` required for Android
 - `/ios/Runner/GoogleService-Info.plist` required for iOS
 
-> [TIP]
+> [!TIP]
 > 
 > **NOTE** (If you development for iOS)
 >
