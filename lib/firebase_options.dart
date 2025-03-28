@@ -65,7 +65,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '972743069461',
     projectId: 'hoyomi-app',
     storageBucket: 'hoyomi-app.firebasestorage.app',
-    iosClientId: '972743069461-1oulppj3blpvvro8hl9pd6p8e8lgi1km.apps.googleusercontent.com',
+    iosClientId:
+        '972743069461-1oulppj3blpvvro8hl9pd6p8e8lgi1km.apps.googleusercontent.com',
     iosBundleId: 'git.shin.hoyomi',
   );
 
@@ -75,7 +76,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '972743069461',
     projectId: 'hoyomi-app',
     storageBucket: 'hoyomi-app.firebasestorage.app',
-    iosClientId: '972743069461-1oulppj3blpvvro8hl9pd6p8e8lgi1km.apps.googleusercontent.com',
+    iosClientId:
+        '972743069461-1oulppj3blpvvro8hl9pd6p8e8lgi1km.apps.googleusercontent.com',
     iosBundleId: 'git.shin.hoyomi',
   );
 
