@@ -25,6 +25,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_background_service: ^5.0.10
+  flutter_bloc: ^8.1.6
+  flutter_dotenv: ^5.2.1
   flutter_hls_parser: ^2.0.1
   flutter_inappwebview:
     git:
@@ -44,6 +46,7 @@ dependencies:
   go_router: ^14.6.0
   go_transitions: ^0.7.0
   google_sign_in: ^6.3.0
+  google_sign_in_all_platforms: ^1.1.0
   grouped_list: ^6.0.0
   html: ^0.15.5
   http: ^1.2.2
@@ -61,6 +64,7 @@ dependencies:
   path: ^1.9.0
   path_provider: ^2.1.5
   pointycastle: ^3.9.1
+  provider: ^6.1.4
   rss_feed_parser: ^1.0.6
   screen_brightness: ^2.1.2
   scrollable_positioned_list: ^0.3.8
@@ -99,3 +103,4 @@ flutter:
   assets:
       - assets/ca/
       - assets/images/
+      - .env
