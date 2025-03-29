@@ -173,7 +173,21 @@ class ManagerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Accounts manager")),
+      appBar: AppBar(
+        actions: [
+          /// icon search
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {},
+          ),
+
+          /// icon settings
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () {},
+          ),
+        ],
+      ),
       body: PullRefreshPage(
           onLoadData: () async {
             return false;
