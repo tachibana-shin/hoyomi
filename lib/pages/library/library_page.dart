@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_follow_mixin.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
 import 'package:hoyomi/core_services/main.dart';
