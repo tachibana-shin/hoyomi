@@ -36,35 +36,28 @@ class HorizontalList<T> extends StatelessWidget {
     required bool itemTimeAgo,
     required Widget Function(double viewFraction) builder,
   }) {
-    final header = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            if (subtitle != null)
-              Text(
-                subtitle,
-                style: TextStyle(fontSize: 14, color: Colors.white70),
-              ),
-          ],
+    final header = ListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(
+        title,
+        style: TextStyle(
+          // fontSize: 18.0,
+          // fontWeight: FontWeight.w600,
+          // color: Theme.of(context).colorScheme.onSurface,
         ),
-        if (more != null)
-          ElevatedButton(
-            onPressed: () => context.push(more),
-            child: Text('More'),
-          )
-        else
-          SizedBox.shrink(),
-      ],
+      ),
+      subtitle: subtitle != null
+          ? Text(
+              subtitle,
+              style: TextStyle(fontSize: 14, color: Colors.white70),
+            )
+          : null,
+      trailing: more != null
+          ? ElevatedButton(
+              onPressed: () => context.push(more),
+              child: Text('More'),
+            )
+          : null,
     );
     final main = LayoutBuilder(
       builder: (context, constraints) {

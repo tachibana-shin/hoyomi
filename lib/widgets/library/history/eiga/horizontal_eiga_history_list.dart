@@ -40,33 +40,28 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
     required bool needSubtitle,
     required Widget Function(double viewFraction) builder,
   }) {
-    final header = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            Text(
+    final header = ListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(
+        title,
+        style: TextStyle(
+          // fontSize: 18.0,
+          // fontWeight: FontWeight.w600,
+          // color: Theme.of(context).colorScheme.onSurface,
+        ),
+      ),
+      subtitle: subtitle.isNotEmpty
+          ? Text(
               subtitle,
               style: TextStyle(fontSize: 14, color: Colors.white70),
-            ),
-          ],
-        ),
-        ElevatedButton(
-          onPressed: () {
-            context.push(more);
-          },
-          child: Text('More'),
-        ),
-      ],
+            )
+          : null,
+      trailing: ElevatedButton(
+        onPressed: () {
+          context.push(more);
+        },
+        child: Text('More'),
+      ),
     );
     final main = LayoutBuilder(
       builder: (context, constraints) {
