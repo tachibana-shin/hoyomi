@@ -136,6 +136,7 @@ class ManagerPage extends StatelessWidget {
               applicationName: packageInfo.appName,
               applicationVersion: packageInfo.version,
               applicationLegalese: '© ${DateTime.now().year} Tachibana Shin',
+              useRootNavigator: true,
             );
           },
         ),
@@ -153,6 +154,7 @@ class ManagerPage extends StatelessWidget {
               applicationName: packageInfo.appName,
               applicationVersion: packageInfo.version,
               applicationLegalese: '© ${DateTime.now().year} Tachibana Shin',
+              useRootNavigator: true,
               children: [
                 const Padding(
                   padding: EdgeInsets.only(top: 15),
