@@ -13,16 +13,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 class ManagerPage extends StatelessWidget {
   const ManagerPage({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: _ServiceAccounts());
-  }
-}
-
-// ignore: must_be_immutable
-class _ServiceAccounts extends StatelessWidget {
-  Widget? _widgetMain;
-
   Future<String> _getInfoDevice() async {
     final deviceInfoPlugin = DeviceInfoPlugin();
     String info = "";
@@ -53,12 +43,10 @@ class _ServiceAccounts extends StatelessWidget {
     return info;
   }
 
-  void _buildWidgetMain(BuildContext context) {
-    _widgetMain = ListView(
+  Widget _buildWidgetMain(BuildContext context) {
+    return ListView(
       children: [
-        Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text('Comic services')),
+        ListTile(title: const Text('Comic services')),
         DynamicHeightGridView(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -74,10 +62,10 @@ class _ServiceAccounts extends StatelessWidget {
             return _buildCard(comicServices[index]);
           },
         ),
+
         SizedBox(height: 15.0),
-        Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text('Eiga services')),
+
+        ListTile(title: const Text('Eiga services')),
         DynamicHeightGridView(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -175,11 +163,10 @@ class _ServiceAccounts extends StatelessWidget {
       appBar: AppBar(title: Text("Accounts manager")),
       body: PullRefreshPage(
           onLoadData: () async {
-            _buildWidgetMain(context);
             return false;
           },
           onLoadFake: () => true,
-          builder: (loading, _) => _widgetMain!),
+          builder: (loading, _) => _buildWidgetMain(context)),
     );
   }
 
