@@ -2,16 +2,23 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/utils/authentication.dart';
 import 'package:hoyomi/widgets/manager/account_service.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class ManagerPage extends StatelessWidget {
   const ManagerPage({super.key});
+
+  Widget _buildAccountMain() {
+    return _AccountMainTile();
+  }
 
   Future<String> _getInfoDevice() async {
     final deviceInfoPlugin = DeviceInfoPlugin();
@@ -46,7 +53,11 @@ class ManagerPage extends StatelessWidget {
   Widget _buildWidgetMain(BuildContext context) {
     return ListView(
       children: [
-        ListTile(title: const Text('Comic services')),
+        _buildAccountMain(),
+
+        const Divider(),
+
+        const ListTile(title: Text('Comic services')),
         DynamicHeightGridView(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -63,9 +74,9 @@ class ManagerPage extends StatelessWidget {
           },
         ),
 
-        SizedBox(height: 15.0),
+        const SizedBox(height: 15.0),
 
-        ListTile(title: const Text('Eiga services')),
+        const ListTile(title: Text('Eiga services')),
         DynamicHeightGridView(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -82,7 +93,7 @@ class ManagerPage extends StatelessWidget {
           },
         ),
 
-        Divider(),
+        const Divider(),
 
         /// OS button
         FutureBuilder(
@@ -174,6 +185,104 @@ class ManagerPage extends StatelessWidget {
     return AccountService(
       key: ValueKey(DateTime.now().millisecond.toString()),
       service: service,
+    );
+  }
+}
+
+/// ============ utils ===============
+class _AccountMainTile extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          final user = snapshot.data;
+
+          return ListTile(
+            leading: GestureDetector(
+                onTap: user?.photoURL != null
+                    ? () => _showAvatarDialog(context, user!.photoURL!)
+                    : null,
+                child: CircleAvatar(
+                  radius: 24,
+                  backgroundColor: Colors.grey.shade300,
+                  backgroundImage: user?.photoURL != null
+                      ? NetworkImage(user!.photoURL!)
+                      : null,
+                  child: user?.photoURL == null
+                      ? Text(
+                          (user?.displayName ?? 'U')
+                              .substring(0, 1)
+                              .toUpperCase(),
+                          style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        )
+                      : null,
+                )),
+            title: Text(
+              user?.displayName ?? 'Guest',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(user?.email ?? 'No email'),
+            onTap: user != null
+                ? () => _showUserMenu(context, user)
+                : () => context.push('/sign_in/main'),
+          );
+        });
+  }
+
+  void _showAvatarDialog(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: InteractiveViewer(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.network(imageUrl, fit: BoxFit.contain),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showUserMenu(BuildContext context, User? user) {
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: CircleAvatar(
+              backgroundImage:
+                  user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
+              child: user?.photoURL == null
+                  ? Text(
+                      (user?.displayName ?? 'U').substring(0, 1).toUpperCase(),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    )
+                  : null,
+            ),
+            title: Text(user?.displayName ?? 'Guest'),
+            subtitle: Text(user?.email ?? 'No email'),
+          ),
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Sign Out'),
+            onTap: () async {
+              await Authentication.instance.signOut();
+              if (context.mounted) context.pop();
+            },
+          ),
+        ],
+      ),
     );
   }
 }

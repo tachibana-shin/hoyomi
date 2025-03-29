@@ -17,9 +17,16 @@ class Authentication {
   final _redirectPort =
       int.tryParse(dotenv.env['GOOGLE_REDIRECT_PORT'] ?? '') ?? 9003;
 
-  GoogleSignIn? _googleSignIn;
+  late final _googleSignIn = GoogleSignIn(
+    params: GoogleSignInParams(
+      clientId: _clientId,
+      clientSecret: _clientSecret,
+      redirectPort: _redirectPort,
+    ),
+  );
 
   Future<User?> signInWithGoogle() async {
+    bool firebaseError = false;
     try {
       if (kIsWeb) {
         final googleProvider = GoogleAuthProvider();
@@ -34,15 +41,7 @@ class Authentication {
         return user;
       }
 
-      _googleSignIn ??= GoogleSignIn(
-        params: GoogleSignInParams(
-          clientId: _clientId,
-          clientSecret: _clientSecret,
-          redirectPort: _redirectPort,
-        ),
-      );
-
-      final googleAuth = await _googleSignIn!.signIn();
+      final googleAuth = await _googleSignIn.signIn();
       if (googleAuth == null) throw Exception('Google Sign-In failed.');
 
       final credential = GoogleAuthProvider.credential(
@@ -59,11 +58,12 @@ class Authentication {
 
       return user;
     } on FirebaseAuthException catch (err) {
+      firebaseError = true;
       _catchFirebaseAuthException(err);
 
       rethrow;
     } catch (e) {
-      _catchNormalException(e);
+      if (!firebaseError) _catchNormalException(e);
 
       rethrow;
     }
@@ -135,7 +135,7 @@ class Authentication {
   Future<void> signOut() async {
     try {
       if (!kIsWeb) {
-        await _googleSignIn?.signOut();
+        await _googleSignIn.signOut();
       }
       await _auth.signOut();
 
@@ -159,6 +159,7 @@ class Authentication {
       case 'invalid-credential':
         showSnackBar(
             Text('Error occurred while accessing credentials. Try again.'));
+        signOut();
         break;
       default:
         showSnackBar(Text('Error occurred: ${err.message ?? err.code}'));
