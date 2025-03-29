@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hoyomi/apis/show_snack_bar.dart';
 
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
@@ -267,7 +270,16 @@ class _AccountMainTile extends StatelessWidget {
     );
   }
 
-  void _showUserMenu(BuildContext context, User? user) {
+  void _showUserMenu(BuildContext context, User? user) async {
+    String? idToken;
+
+    if (kDebugMode && user != null) {
+      final tokenResult = await user.getIdTokenResult();
+      idToken = tokenResult.token;
+    }
+
+    if (!context.mounted) return;
+
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
@@ -289,6 +301,27 @@ class _AccountMainTile extends StatelessWidget {
             title: Text(user?.displayName ?? 'Guest'),
             subtitle: Text(user?.email ?? 'No email'),
           ),
+          if (kDebugMode && idToken != null) ...[
+            ListTile(
+              title: Text(
+                'Token:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                idToken,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 12, fontFamily: 'monospace'),
+              ),
+              trailing: IconButton(
+                icon: Icon(Icons.copy),
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: idToken!));
+                  showSnackBar(Text('Copied to clipboard!'));
+                },
+              ),
+            ),
+          ],
           ListTile(
             leading: Icon(Icons.logout),
             title: Text('Sign Out'),
