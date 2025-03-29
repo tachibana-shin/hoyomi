@@ -20,6 +20,7 @@ import 'package:hoyomi/pages/search/index_page.dart';
 import 'package:hoyomi/pages/category_comic/%5BsourceId%5D/%5BcategoryId%5D.page.dart';
 import 'package:hoyomi/pages/category_eiga/%5BsourceId%5D/%5BcategoryId%5D.page.dart';
 import 'package:hoyomi/pages/service_settings/[sourceId].page.dart';
+import 'package:hoyomi/pages/sign_in/main/sign_in_main_page.dart';
 import 'package:hoyomi/pages/webview_page.dart';
 import 'package:hoyomi/plugins/android_sdk_int.dart';
 
@@ -235,6 +236,15 @@ final router = GoRouter(
           episodeId: episodeId,
         );
       },
+    ),
+
+    // Sign In Route
+    GoRoute(
+      path: '/sign_in/main',
+      name: 'sign_in_main',
+      pageBuilder: pageBuilder,
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) => SignInMainPage(),
     ),
 
     // Webview Route
