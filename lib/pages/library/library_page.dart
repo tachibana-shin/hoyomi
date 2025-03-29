@@ -53,10 +53,7 @@ class _LibraryPageState extends State<LibraryPage>
       body: TabBarView(
         controller: _tabController,
         children: eigaServices
-            .map(
-              (service) =>
-                  _TabView(key: Key(service.uid), sourceId: service.uid),
-            )
+            .map((service) => _TabView(sourceId: service.uid))
             .toList(),
       ),
     );
@@ -66,7 +63,7 @@ class _LibraryPageState extends State<LibraryPage>
 class _TabView extends StatefulWidget {
   final String sourceId;
 
-  const _TabView({super.key, required this.sourceId});
+  const _TabView({required this.sourceId});
 
   @override
   State<_TabView> createState() => _TabViewState();
@@ -94,7 +91,6 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
 
     return PullRefreshPage(
       onLoadData: () async {
-        GoRouter.of(context).refresh();
         return [0x0, 0x0];
       },
       onLoadFake: () => [0x0, 0x0],
