@@ -11,6 +11,7 @@ void showSnackBar(Widget content, {SnackBarAction? action}) {
       content: content,
       action: action,
       showCloseIcon: action == null,
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
     ),
   );
 }
