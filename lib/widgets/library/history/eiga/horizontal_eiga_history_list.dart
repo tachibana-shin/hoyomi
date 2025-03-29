@@ -45,10 +45,10 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
       title: Text(
         title,
         style: TextStyle(
-          // fontSize: 18.0,
-          // fontWeight: FontWeight.w600,
-          // color: Theme.of(context).colorScheme.onSurface,
-        ),
+            // fontSize: 18.0,
+            // fontWeight: FontWeight.w600,
+            // color: Theme.of(context).colorScheme.onSurface,
+            ),
       ),
       subtitle: subtitle.isNotEmpty
           ? Text(

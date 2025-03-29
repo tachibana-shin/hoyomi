@@ -41,10 +41,10 @@ class HorizontalList<T> extends StatelessWidget {
       title: Text(
         title,
         style: TextStyle(
-          // fontSize: 18.0,
-          // fontWeight: FontWeight.w600,
-          // color: Theme.of(context).colorScheme.onSurface,
-        ),
+            // fontSize: 18.0,
+            // fontWeight: FontWeight.w600,
+            // color: Theme.of(context).colorScheme.onSurface,
+            ),
       ),
       subtitle: subtitle != null
           ? Text(
