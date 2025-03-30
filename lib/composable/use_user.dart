@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:hoyomi/controller/service_setting.dart';
+import 'package:hoyomi/controller/service_settings_controller.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/core_services/service.dart';
@@ -39,9 +39,8 @@ UserData useUser(
     try {
       if (service is! Service) return;
 
-      final record = await ServiceSettingController.getAsync(
-        sourceId: (service as Service).uid,
-      );
+      final record = await ServiceSettingsController.instance
+          .get((service as Service).uid);
 
       if (record != null) {
         final json = record.userDataCache;

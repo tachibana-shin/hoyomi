@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:go_transitions/go_transitions.dart';
-import 'package:hoyomi/database/isar.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/plugins/android_sdk_int.dart';
 import 'package:hoyomi/plugins/dot_env.dart';
 import 'package:hoyomi/plugins/firebase.dart';
+import 'package:hoyomi/plugins/init_services.dart';
 import 'package:hoyomi/router/index.dart';
 
 import 'package:flutter/material.dart';
@@ -23,8 +23,8 @@ Future<void> main() async {
   if (!kIsWeb && androidSdkInt != null && androidSdkInt! < 25) {
     await _installCert();
   }
-  await initializeIsar();
   await initializeFirebase();
+  await initializeServices();
 
   runApp(MainApp(androidSdkInt: androidSdkInt));
 

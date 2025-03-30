@@ -73,6 +73,7 @@ dependencies:
   scrollview_observer: ^1.23.0
   sharara_video_player: ^1.0.14
   share_plus: ^10.1.2
+  shared_preferences: ^2.5.3
   shirne_dialog: ^4.8.3
   skeletonizer: ^1.4.2
   speech_to_text: ^7.0.0

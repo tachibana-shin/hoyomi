@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
-import 'package:hoyomi/controller/settings.dart';
+import 'package:hoyomi/controller/general_settings_controller.dart';
+import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:http/http.dart';
 import 'package:flutter_package_installer/flutter_package_installer.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -249,22 +250,20 @@ class UpdateAvailableController {
   }
 
   void _pauseUpdate() async {
-    final controller = SettingsController.instance;
-    final settings = await controller.getSettings();
-
-    settings.lastCheckUpdateApp = DateTime.now().toString();
-
-    await controller.setSettings(settings);
+    final settings =
+        await GeneralSettingsController.instance.get() ?? GeneralSettings();
+    await GeneralSettingsController.instance
+        .save(settings.copyWith(lastCheckUpdateApp: DateTime.now()));
   }
 
   Future<bool> _checkPauseUpdate() async {
-    final settings = await SettingsController.instance.getSettings();
+    final settings =
+        await GeneralSettingsController.instance.get() ?? GeneralSettings();
 
     final time = settings.lastCheckUpdateApp;
     if (time == null) return false;
 
-    return DateTime.parse(time).add(expiresCheckUpdate).second >
-        DateTime.now().second;
+    return time.add(expiresCheckUpdate).second > DateTime.now().second;
   }
 
   Future<List<Release>> _getReleases() async {

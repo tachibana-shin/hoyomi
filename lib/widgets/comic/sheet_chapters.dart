@@ -1,19 +1,14 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
-import 'package:hoyomi/database/scheme/history_chap.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
-import 'package:hoyomi/widgets/circular_progress.dart';
 
 class SheetChapters extends StatefulWidget {
   final MetaComic comic;
   final String sourceId;
   final String comicId;
   final String? currentChapterId;
-  final Map<String, HistoryChap>? histories;
   final bool replace;
 
   final double initialChildSize;
@@ -24,7 +19,6 @@ class SheetChapters extends StatefulWidget {
     required this.sourceId,
     required this.comicId,
     this.currentChapterId,
-    required this.histories,
     this.replace = false,
     required this.initialChildSize,
   });
@@ -37,14 +31,8 @@ class SheetChapters extends StatefulWidget {
 class _SheetChaptersState extends State<SheetChapters> {
   @override
   Widget build(BuildContext context) {
-    final lastHistoryChapObject = widget.histories?.values.isNotEmpty == true
-        ? widget.histories!.values.reduce(
-            (a, b) => a.updatedAt.isAfter(b.updatedAt) ? a : b,
-          )
-        : null;
-    final currentChapterId = widget.currentChapterId ??
-        lastHistoryChapObject?.chapterId ??
-        widget.comic.chapters.first.chapterId;
+    final currentChapterId =
+        widget.currentChapterId ?? widget.comic.chapters.first.chapterId;
 
     return DraggableScrollableSheet(
       expand: false,
@@ -79,10 +67,6 @@ class _SheetChaptersState extends State<SheetChapters> {
                   final chapter = widget.comic.chapters.elementAt(
                     index,
                   ); //[index];
-                  final history =
-                      widget.histories?.containsKey(chapter.chapterId) == true
-                          ? widget.histories![chapter.chapterId]
-                          : null;
                   final bool selected = chapter.chapterId == currentChapterId;
 
                   return ListTile(
@@ -125,25 +109,25 @@ class _SheetChaptersState extends State<SheetChapters> {
                         fontSize: 12.0,
                       ),
                     ),
-                    trailing: history == null
-                        ? null
-                        : CircularProgress(
-                            value: min(
-                              1,
-                              (history.currentPage + 1) / history.maxPage,
-                            ),
-                            strokeWidth: 3.0,
-                            textStyle: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
-                            borderColor: AlwaysStoppedAnimation<Color>(
-                              Colors.green,
-                            ),
-                            backgroundBorder: Colors.grey[300],
-                            size: 25,
-                          ),
+                    // trailing: history == null
+                    //     ? null
+                    //     : CircularProgress(
+                    //         value: min(
+                    //           1,
+                    //           (history.currentPage + 1) / history.maxPage,
+                    //         ),
+                    //         strokeWidth: 3.0,
+                    //         textStyle: TextStyle(
+                    //           fontSize: 10,
+                    //           fontWeight: FontWeight.w600,
+                    //           color: Theme.of(context).colorScheme.onSurface,
+                    //         ),
+                    //         borderColor: AlwaysStoppedAnimation<Color>(
+                    //           Colors.green,
+                    //         ),
+                    //         backgroundBorder: Colors.grey[300],
+                    //         size: 25,
+                    //       ),
                     onTap: () {
                       final url =
                           "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${chapter.chapterId}";

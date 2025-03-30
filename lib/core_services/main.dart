@@ -39,3 +39,7 @@ Service getService(String uid) {
 }
 
 List<Service> allServices = [...comicServices, ...eigaServices];
+
+Future<void> initializeServices() async {
+  await Future.wait(allServices.map((service) => service.initState()));
+}

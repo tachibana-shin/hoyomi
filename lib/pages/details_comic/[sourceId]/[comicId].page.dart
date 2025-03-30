@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user_async.dart';
-import 'package:hoyomi/controller/history.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/comic_service.dart';
@@ -15,8 +14,6 @@ import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
-import 'package:hoyomi/database/scheme/history_chap.dart';
-import 'package:hoyomi/plugins/event_bus.dart';
 import 'package:hoyomi/utils/format_number.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/comic/icon_button_follow.dart';
@@ -56,9 +53,6 @@ class _DetailsComicState extends State<DetailsComic>
   String _title = "";
   MetaComic? _comic;
 
-  // History data
-  late final _historyChapters = ref<Map<String, HistoryChap>?>(null);
-
   @override
   void initState() {
     super.initState();
@@ -68,15 +62,6 @@ class _DetailsComicState extends State<DetailsComic>
     _service = getComicService(widget.sourceId);
 
     _scrollController.addListener(_onScroll);
-  }
-
-  void _updateGetHistory() async {
-    final history = HistoryController();
-    final map = await history.getHistory(_service.uid, widget.comicId);
-
-    if (mounted && map != null) {
-      _historyChapters.value = {for (var item in map) item.chapterId: item};
-    }
   }
 
   @override
@@ -107,25 +92,6 @@ class _DetailsComicState extends State<DetailsComic>
           _suggestFuture = _service.getSuggest == null
               ? null
               : _service.getSuggest!(_comic!);
-
-          HistoryController().createComic(
-            _service.uid,
-            comicId: widget.comicId,
-            comic: comic,
-          );
-
-          _updateGetHistory();
-          eventBus.on<UpdatedHistory>().listen((event) {
-            if (!mounted) return;
-            // ignore: use_build_context_synchronously
-            final name = GoRouter.of(context).state.name;
-
-            // lazy call history
-            if (event.comicId == widget.comicId &&
-                (name == "details_comic" || event.force)) {
-              _updateGetHistory();
-            }
-          });
         }),
       onLoadFake: () => MetaComic.createFakeData(),
       builderError: (body) => Scaffold(
@@ -527,11 +493,12 @@ class _DetailsComicState extends State<DetailsComic>
   Widget _buildButtonRead(MetaComic comic) {
     //    _historyChapters
 
-    final current = _historyChapters.value?.entries.isNotEmpty == true
-        ? _historyChapters.value?.entries.reduce(
-            (a, b) => a.value.updatedAt.isAfter(b.value.updatedAt) ? a : b,
-          )
-        : null;
+    // final current = _historyChapters.value?.entries.isNotEmpty == true
+    //     ? _historyChapters.value?.entries.reduce(
+    //         (a, b) => a.value.updatedAt.isAfter(b.value.updatedAt) ? a : b,
+    //       )
+    //     : null;
+    final current = null;
     final currentEpisodeIndex = current == null
         ? null
         : comic.chapters.toList().lastIndexWhere((chapter) {
@@ -702,7 +669,7 @@ class _DetailsComicState extends State<DetailsComic>
           comic: _comic!,
           sourceId: widget.sourceId,
           comicId: widget.comicId,
-          histories: _historyChapters.value,
+          // histories: _historyChapters.value,
           initialChildSize: 0.15,
         ));
   }

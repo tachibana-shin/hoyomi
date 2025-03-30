@@ -5,7 +5,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:hoyomi/controller/service_setting.dart';
+import 'package:hoyomi/controller/service_settings_controller.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/interfaces/setting/field_input.dart';
@@ -13,7 +13,7 @@ import 'package:hoyomi/core_services/interfaces/setting/setting_field.dart';
 import 'package:hoyomi/core_services/interfaces/user.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
-import 'package:hoyomi/database/scheme/service_setting.dart';
+import 'package:hoyomi/database/scheme/service_settings.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:html/dom.dart' as d;
 import 'package:html/parser.dart';
@@ -52,6 +52,11 @@ class ServiceInit {
 mixin _SettingsMixin {
   String get uid;
   ServiceInit get init;
+  late final ServiceSettings? _serviceSettings;
+
+  Future<void> initState() async {
+    _serviceSettings = await ServiceSettingsController.instance.get(uid);
+  }
 
   void _initSettings() {
     // init settings appear
@@ -67,36 +72,28 @@ mixin _SettingsMixin {
   }
 
   String? getSetting({required String key}) {
-    final settings = ServiceSettingController.getSettings(sourceId: uid);
-    return settings?[key];
-  }
-
-  Future<String?> getSettingAsync({required String key}) async {
-    final settings =
-        await ServiceSettingController.getSettingsAsync(sourceId: uid);
-    return settings?[key];
+    return _serviceSettings?.settings?[key];
   }
 
   Future<void> setSetting(String name, String value) async {
-    final record = ServiceSettingController.get(sourceId: uid) ??
-        ServiceSetting(
-          sourceId: uid,
-          settings: null,
-          userDataCache: null,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
+    var record = _serviceSettings ??
+        ServiceSettings(
+            sourceId: uid,
+            settings: null,
+            userDataCache: null,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now());
 
     try {
-      record.settings = jsonEncode({
-        if (record.settings != null) ...jsonDecode(record.settings!),
+      record = record.copyWith(settings: {
+        if (record.settings != null) ...record.settings!,
         name: value,
       });
     } catch (err) {
-      record.settings = jsonEncode({name: value});
+      record = record.copyWith(settings: {name: value});
     }
 
-    await ServiceSettingController.save(record);
+    await ServiceSettingsController.instance.save(uid, record);
   }
 }
 
@@ -162,6 +159,8 @@ abstract class Service with _SettingsMixin {
       : Uri.parse(baseUrl).resolve(init.rss!).toString();
 
   Future<User>? _userFuture;
+
+  var ServiceSettingController;
 
   static void showCaptchaResolve(
     BuildContext? context, {
@@ -517,56 +516,60 @@ abstract class Service with _SettingsMixin {
 
     final service = this as AuthMixin;
     // save to cache
-    final ServiceSetting oldData =
-        await ServiceSettingController.getAsync(sourceId: uid) ??
-            ServiceSetting(
+    var currentServiceSettings =
+        await ServiceSettingsController.instance.get(uid) ??
+            ServiceSettings(
               sourceId: uid,
               settings: null,
               userDataCache: null,
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
             );
+    final currentSettings = currentServiceSettings.settings ?? {};
+
     try {
       final user = await service.getUser(cookie: cookie);
       final jsonNewUserData = jsonEncode(user.toJson());
 
-      if (oldData.userDataCache != jsonNewUserData) {
-        oldData.userDataCache = jsonNewUserData;
+      if (currentServiceSettings.userDataCache != jsonNewUserData) {
+        currentServiceSettings =
+            currentServiceSettings.copyWith(userDataCache: jsonNewUserData);
       }
-
-      final currentSettings =
-          await ServiceSettingController.getSettingsAsync(sourceId: uid) ?? {};
 
       currentSettings['cookie'] = cookie;
 
-      oldData.settings = jsonEncode(currentSettings);
-      oldData.updatedAt = DateTime.now();
+      currentServiceSettings = currentServiceSettings.copyWith(
+        settings: currentSettings,
+        updatedAt: DateTime.now(),
+      );
 
       _userFuture = Future.value(user);
 
-      await ServiceSettingController.save(oldData);
+      await ServiceSettingsController.instance
+          .save(uid, currentServiceSettings);
 
       return user;
     } on UserNotFoundException catch (_) {
-      final currentSettings =
-          await ServiceSettingController.getSettingsAsync(sourceId: uid) ?? {};
-
       currentSettings['cookie'] = cookie;
-      oldData.userDataCache = null;
-      oldData.settings = jsonEncode(currentSettings);
-      oldData.updatedAt = DateTime.now();
 
-      await ServiceSettingController.save(oldData);
+      currentServiceSettings = currentServiceSettings.copyWith(
+        userDataCache: null,
+        settings: currentSettings,
+        updatedAt: DateTime.now(),
+      );
+
+      await ServiceSettingsController.instance
+          .save(uid, currentServiceSettings);
 
       rethrow;
     }
   }
 
-  Future<User> fetchUser({ServiceSetting? row, bool? recordLoaded}) async {
+  Future<User> fetchUser({ServiceSettings? row, bool? recordLoaded}) async {
     return _userFuture ??= _fetchUser(record: row, recordLoaded: recordLoaded);
   }
 
-  Future<User> _fetchUser({ServiceSetting? record, bool? recordLoaded}) async {
+  Future<User> _fetchUser({ServiceSettings? record, bool? recordLoaded}) async {
     if (this is! AuthMixin) {
       throw Exception('Service must be an instance of AuthMixin');
     }
@@ -575,8 +578,8 @@ abstract class Service with _SettingsMixin {
     record = recordLoaded == true
         ? record
         : await ServiceSettingController.getAsync(sourceId: uid);
-    final settings = jsonDecode(record?.settings ?? '{}');
-    final cookie = settings is Map ? settings['cookie'] : null;
+    final settings = record?.settings ?? {};
+    final cookie = settings['cookie'] as String?;
     var user = record?.userDataCache;
 
     try {
@@ -584,7 +587,7 @@ abstract class Service with _SettingsMixin {
       // if (user == null) {
       user = jsonEncode((await service.getUser(cookie: cookie)).toJson());
 
-      record ??= ServiceSetting(
+      record ??= ServiceSettings(
         sourceId: uid,
         settings: null,
         userDataCache: null,
@@ -592,26 +595,20 @@ abstract class Service with _SettingsMixin {
         updatedAt: DateTime.now(),
       );
 
-      record.userDataCache = user;
+      record = record.copyWith(userDataCache: user);
 
-      await ServiceSettingController.save(record);
+      await ServiceSettingsController.instance.save(uid, record);
       // }
 
       return User.fromJson(jsonDecode(user));
     } on UserNotFoundException catch (_) {
       if (record != null) {
-        Map settings;
-        try {
-          settings = jsonDecode(record.settings ?? '{}');
-        } catch (err) {
-          settings = {};
-        }
-
+        final settings = record.settings ?? {};
         settings['cookie'] = cookie;
 
-        record.userDataCache = null;
+        record = record.copyWith(settings: settings, userDataCache: null);
 
-        await ServiceSettingController.save(record);
+        await ServiceSettingsController.instance.save(uid, record);
       }
 
       rethrow;

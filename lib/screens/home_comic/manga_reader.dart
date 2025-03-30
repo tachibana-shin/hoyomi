@@ -6,14 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/controller/history.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_chapter.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/comic_service.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_modes.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
-import 'package:hoyomi/database/scheme/history_chap.dart';
 import 'package:hoyomi/screens/details_comic/horizon_reader.dart';
 import 'package:hoyomi/screens/details_comic/vertical_reader.dart';
 import 'package:hoyomi/screens/details_comic/webtoon_reader.dart';
@@ -80,8 +78,6 @@ class _MangaReaderState extends State<MangaReader>
 
   late final _showToolbar = ref(true);
   late final _useTwoPage = ref(false);
-
-  Map<String, HistoryChap>? _historyChapters;
 
   late final _currentPage = ref(0.0);
   late final Computed<double> _realCurrentPage;
@@ -236,19 +232,6 @@ class _MangaReaderState extends State<MangaReader>
     });
 
     super.initState();
-
-    _updateGetHistory();
-  }
-
-  void _updateGetHistory() async {
-    final history = HistoryController();
-    final map = await history.getHistory(widget.service.uid, widget.comicId);
-
-    if (mounted && map != null) {
-      setState(() {
-        _historyChapters = {for (var item in map) item.chapterId: item};
-      });
-    }
   }
 
   void _updateRoute() {
@@ -256,7 +239,6 @@ class _MangaReaderState extends State<MangaReader>
         .chapterId; // Get the group id of the current page
     if (_chapterId.value != currentGroup) {
       _chapterId.value = currentGroup;
-      _updateGetHistory();
       widget.onChangeChap(currentGroup);
       // GoRouter.of(context)
       // context.go("/details_comic/${widget.sourceId}/${widget.chapterId}/view?chap=$currentGroup");
@@ -647,7 +629,6 @@ class _MangaReaderState extends State<MangaReader>
         comic: widget.comic,
         sourceId: widget.service.uid,
         comicId: widget.comicId,
-        histories: _historyChapters,
         currentChapterId: _chapterId.value,
         initialChildSize: 0.6,
       ),

@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
-import 'package:hoyomi/controller/settings.dart';
+import 'package:hoyomi/controller/general_settings_controller.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
@@ -21,6 +21,7 @@ import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
 import 'package:hoyomi/widgets/delayed_widget.dart';
@@ -397,8 +398,10 @@ class _PlayerEigaState extends State<PlayerEiga>
     // ScreenBrightness.instance.application
     //     .then((value) => _appBrightness.value = value);
     // Brightness
-    SettingsController.instance.getSettings().then((settings) async {
+    GeneralSettingsController.instance.get().then((settings) async {
       if (!mounted) return;
+
+      settings ??= GeneralSettings();
 
       var valueStore = settings.brightnessApp;
       if (valueStore != null) {
@@ -415,9 +418,9 @@ class _PlayerEigaState extends State<PlayerEiga>
       watch([_appBrightness], () {
         ScreenBrightness.instance
             .setApplicationScreenBrightness(_appBrightness.value);
-        settings.brightnessApp = _appBrightness.value;
+        settings = settings!.copyWith(brightnessApp: _appBrightness.value);
 
-        SettingsController.instance.setSettings(settings);
+        GeneralSettingsController.instance.save(settings!);
       });
     });
     // Volume
