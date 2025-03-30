@@ -1,0 +1,39 @@
+{
+  "imports": {
+    "@firebase/database-compat": "npm:@firebase/database-compat@^2.0.5",
+    "@google-cloud/firestore": "npm:@google-cloud/firestore@^7.11.0",
+    "@google-cloud/storage": "npm:@google-cloud/storage@^7.15.2",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
+    "@xata.io/client": "npm:@xata.io/client@^0.30.1",
+    "drizzle-orm": "npm:drizzle-orm@^0.41.0",
+    "firebase-admin": "npm:firebase-admin@^13.2.0",
+    "buffer": "node:buffer",
+    "fs": "node:fs",
+    "firebase-admin-release": "https://esm.sh/gh/tachibana-shin/firebase-admin-deno-release@431b35b",
+    "google-auth-library": "npm:google-auth-library@^9.15.1",
+    "hono": "npm:hono@^4.7.5",
+    "jsonwebtoken": "npm:jsonwebtoken@^9.0.2",
+    "jwks-rsa": "npm:jwks-rsa@^3.2.0",
+    "node-forge": "npm:node-forge@^1.3.1",
+    "path": "node:path",
+    "crypto": "node:crypto",
+    "events": "node:events",
+    "zlib": "npm:zlib@^1.0.5",
+    "https": "node:https",
+    "http": "node:http",
+    "url": "node:url",
+    "stream": "node:stream",
+    "zod": "npm:zod",
+    "@hono/zod-validator": "npm:@hono/zod-validator"
+  },
+  "tasks": {
+    "start": "deno run --allow-net main.ts",
+    "xata:init": "deno run -A npm:@xata.io/cli init",
+    "open:studio": "deno run -A npm:drizzle-kit studio"
+  },
+  "compilerOptions": {
+    "jsx": "precompile",
+    "jsxImportSource": "hono/jsx"
+  },
+  "nodeModulesDir": "none"
+}

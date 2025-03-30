@@ -1,0 +1,7 @@
+{
+  "deno.enablePaths": [
+    "./"
+  ],
+  "deno.disablePaths": ["./firebase-admin"],
+  "editor.inlayHints.enabled": "off"
+}

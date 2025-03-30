@@ -6,6 +6,13 @@
   ];
   idx.extensions = [
     pkgs.gh
+    "Codium.codium"
+    "Dart-Code.dart-code"
+    "Dart-Code.flutter"
+    "denoland.vscode-deno"
+    "golang.go"
+    "Nash.awesome-flutter-snippets"
+    "RodrigoRahman.flutter-dart-utils"
   ];
   idx.previews = {
     previews = {

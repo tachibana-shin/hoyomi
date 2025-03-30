@@ -1,0 +1,19 @@
+{
+  "name": "serverless",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0",
+    "dotenv": "^16.4.7",
+    "drizzle-kit": "^0.30.6",
+    "drizzle-orm": "^0.41.0",
+    "postgres": "^3.4.5",
+    "zlib": "^1.0.5",
+    "zod": "^3.24.2"
+  }
+}

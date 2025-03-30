@@ -99,6 +99,18 @@ You need your application's client ID and Secret from Google Cloud Console to en
 - Choose `a web application`.
 - In the `Authorized redirect URIs` and `Authorized JavaScript origin`, enter the URL `http://localhost`
 
+### Step 3: Configure the Firebase Admin
+Please goto `Project Settings`
+![image](https://github.com/user-attachments/assets/620edb61-7ce8-43f4-ab6b-01de9b558d01)
+
+1. Click to `Generate new private key`
+2. Paste file download to `serverless/service-account-key.json`
+
+### Step 4: Configre the Xata database
+The server required xata database for working
+1. Run `xata init` and select project. The command auto create new file `.env`
+2. Add `XATA_DATABASE_URL` from `setting project` xata to `.env`
+
 -----
 Next
 

@@ -1,0 +1,4 @@
+.env
+.qodo
+service-account-key.json
+node_modules
