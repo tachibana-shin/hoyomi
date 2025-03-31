@@ -956,14 +956,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
-  hugeicons:
-    dependency: "direct main"
-    description:
-      name: hugeicons
-      sha256: d7dd54ca1faf91b12a4b5eb9d2ce2bce3066dc0cae7209c0ddfc29e7bb48c045
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.10"
   iconify_flutter:
     dependency: "direct main"
     description:

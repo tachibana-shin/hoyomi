@@ -52,7 +52,6 @@ dependencies:
   grouped_list: ^6.0.0
   html: ^0.15.5
   http: ^1.2.2
-  hugeicons: ^0.0.7
   iconify_flutter: ^0.0.7
   intl: any
   isar: ^3.1.0+1
