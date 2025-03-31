@@ -42,26 +42,22 @@ class CardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final widgetStar = switch (rate) {
-      != null => Text.rich(
-          TextSpan(
-            children: [
-              WidgetSpan(
-                alignment: PlaceholderAlignment.middle,
-                child: Iconify(
-                  Eva.star_fill,
-                  color: Colors.blue.shade200,
-                  size: 12.0,
-                ),
+      != null => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Iconify(
+              Eva.star_fill,
+              color: Colors.blue.shade200,
+              size: 12.0,
+            ),
+            Text(
+              ' $rate',
+              style: TextStyle(
+                fontSize: 10.0,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
-              TextSpan(
-                text: ' $rate',
-                style: TextStyle(
-                  fontSize: 10.0,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       _ => null,
     };
@@ -197,24 +193,21 @@ class CardItem extends StatelessWidget {
                     bottom: 4,
                     left: 4,
                     right: 0,
-                    child: Wrap(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(
-                            left: 8.0,
-                            right: 8.0,
-                            top: 4.0,
-                            bottom: 4.0,
-                          ),
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).colorScheme.surfaceContainer,
-                            borderRadius: BorderRadius.circular(14.0),
-                          ),
-                          child: widgetStar,
+                    child: Wrap(children: [
+                      Container(
+                        padding: const EdgeInsets.only(
+                          left: 8.0,
+                          right: 8.0,
+                          top: 4.0,
+                          bottom: 4.0,
                         ),
-                      ],
-                    ),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                        child: widgetStar,
+                      ),
+                    ]),
                   ),
 
                 // progress read

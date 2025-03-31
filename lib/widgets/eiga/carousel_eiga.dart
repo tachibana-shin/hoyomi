@@ -167,18 +167,22 @@ class _CarouselEigaState extends State<CarouselEiga> {
                               children: [
                                 if (item.rate != null)
                                   [
-                                    Iconify(
-                                      Eva.star_fill,
-                                      color: Colors.blue.shade200,
-                                      size: 12.0,
-                                    ),
-                                    Text(
-                                      ' ${item.rate}',
-                                      style: const TextStyle(
-                                        fontSize: 12.0,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                    Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Iconify(
+                                            Eva.star_fill,
+                                            color: Colors.blue.shade200,
+                                            size: 12.0,
+                                          ),
+                                          Text(
+                                            ' ${item.rate}',
+                                            style: const TextStyle(
+                                              fontSize: 12.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ])
                                   ],
                                 if (item.year != null)
                                   [
