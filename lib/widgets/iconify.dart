@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class Iconify extends StatelessWidget {
   final String icon;
@@ -29,14 +30,19 @@ class Iconify extends StatelessWidget {
       iconColor = iconColor.withAlpha((iconColor.a * iconOpacity).round());
     }
 
-    return SvgPicture.string(
-      icon,
-      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-      width: iconSize,
-      height: iconSize,
-      alignment: Alignment.center,
-      matchTextDirection : true ,
-      excludeFromSemantics : true,
-    );
+    return Skeleton.replace(
+        replacement: Container(width: iconSize, height: iconSize, decoration: BoxDecoration(
+          // color: iconColor,
+          shape: BoxShape.circle,
+        )),
+        child: SvgPicture.string(
+          icon,
+          colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          width: iconSize,
+          height: iconSize,
+          alignment: Alignment.center,
+          matchTextDirection: true,
+          excludeFromSemantics: true,
+        ));
   }
 }
