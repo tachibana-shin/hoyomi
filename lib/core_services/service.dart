@@ -276,8 +276,7 @@ abstract class Service with _SettingsMixin {
     Map<String, dynamic>? body,
     Map<String, String>? headers,
   }) async {
-    final record =
-        await ServiceSettingsController.instance.get(uid);
+    final record = await ServiceSettingsController.instance.get(uid);
     String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;
 
     cookiesText = init.onBeforeInsertCookie?.call(cookiesText) ?? cookiesText;

@@ -31,10 +31,13 @@ class Iconify extends StatelessWidget {
     }
 
     return Skeleton.replace(
-        replacement: Container(width: iconSize, height: iconSize, decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onSecondary,
-          shape: BoxShape.circle,
-        )),
+        replacement: Container(
+            width: iconSize,
+            height: iconSize,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.onSecondary,
+              shape: BoxShape.circle,
+            )),
         child: SvgPicture.string(
           icon,
           colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
