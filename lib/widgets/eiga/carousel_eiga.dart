@@ -42,6 +42,66 @@ class _CarouselEigaState extends State<CarouselEiga> {
         // scale: 0.9,
         itemBuilder: (BuildContext context, int index) {
           final item = widget.items.elementAt(index);
+          final headers = [
+            if (item.rate != null)
+              [
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  Iconify(
+                    Eva.star_fill,
+                    color: Colors.blue.shade200,
+                    size: 12.0,
+                  ),
+                  Text(
+                    ' ${item.rate}',
+                    style: const TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                ])
+              ],
+            if (item.year != null)
+              [
+                Text(
+                  item.year!,
+                  style: const TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            if (item.notice != null)
+              [
+                Text(
+                  item.notice!,
+                  style: const TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            if (item.studio != null)
+              [
+                Text(
+                  item.studio!,
+                  style: const TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            if (item.duration != null)
+              [
+                Text(
+                  item.duration!,
+                  style: const TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+          ];
+
           return GestureDetector(
             onTap: () {
               context.push("/details_eiga/${widget.sourceId}/${item.eigaId}");
@@ -164,74 +224,16 @@ class _CarouselEigaState extends State<CarouselEiga> {
                             SizedBox(height: 5.0),
                             // rate
                             Wrap(
-                              children: [
-                                if (item.rate != null)
-                                  [
-                                    Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Iconify(
-                                            Eva.star_fill,
-                                            color: Colors.blue.shade200,
-                                            size: 12.0,
-                                          ),
-                                          Text(
-                                            ' ${item.rate}',
-                                            style: const TextStyle(
-                                              fontSize: 12.0,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ])
-                                  ],
-                                if (item.year != null)
-                                  [
-                                    Text(
-                                      item.year!,
-                                      style: const TextStyle(
-                                        fontSize: 12.0,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                if (item.notice != null)
-                                  [
-                                    Text(
-                                      item.notice!,
-                                      style: const TextStyle(
-                                        fontSize: 12.0,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                if (item.studio != null)
-                                  [
-                                    Text(
-                                      item.studio!,
-                                      style: const TextStyle(
-                                        fontSize: 12.0,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                if (item.duration != null)
-                                  [
-                                    Text(
-                                      item.duration!,
-                                      style: const TextStyle(
-                                        fontSize: 12.0,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                              ].asMap().entries.fold<List<Widget>>([],
-                                  (arr, entry) {
+                              children: headers
+                                  .asMap()
+                                  .entries
+                                  .fold<List<Widget>>([], (arr, entry) {
                                 int index = entry.key;
                                 final item = entry.value;
 
                                 arr.addAll(item);
 
-                                if (index > 0 && index < arr.length - 1) {
+                                if (index > 0 && index < headers.length - 1) {
                                   arr.add(const VerticalSeparator());
                                 }
 
