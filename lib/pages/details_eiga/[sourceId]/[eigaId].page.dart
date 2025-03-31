@@ -294,6 +294,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   Widget _buildInfo() {
     return Watch(() {
+      final colorScheme = Theme.of(context).colorScheme;
       final metaEiga = _metaEiga.value;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,7 +318,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   Text(
                     '${formatNumber(metaEiga.views!)} views',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: colorScheme.secondary,
                           fontSize: 14.0,
                         ),
                   ),
@@ -330,7 +331,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     Text(
                       'Author ',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: colorScheme.secondary,
                             fontSize: 14.0,
                           ),
                     ),
@@ -349,7 +350,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         style: Theme.of(
                           context,
                         ).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: colorScheme.secondary,
                               fontSize: 14.0,
                             ),
                       ),
@@ -366,7 +367,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           style: Theme.of(
                             context,
                           ).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface,
+                                color: colorScheme.onSurface,
                                 fontSize: 14.0,
                               ),
                         ),
@@ -434,7 +435,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                 fontSize: 14.0,
                                 color: Theme.of(
                                   context,
-                                ).colorScheme.tertiaryFixedDim,
+                                ).colorScheme.tertiary,
                               ),
                         ),
                       ),
@@ -467,7 +468,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 Text(
                   '${metaEiga.countRate} people rated',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: colorScheme.secondary,
                         fontSize: 14.0,
                       ),
                 ),
@@ -483,7 +484,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     metaEiga.movieSeason!.name,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontSize: 14.0,
-                          color: Theme.of(context).colorScheme.tertiaryFixedDim,
+                          color: colorScheme.tertiary,
                         ),
                   ),
                 ),
@@ -505,7 +506,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   '#${genre.name}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontSize: 14.0,
-                        color: Theme.of(context).colorScheme.tertiaryFixedDim,
+                        color: colorScheme.tertiary,
                       ),
                 ),
               );
@@ -523,7 +524,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   TextSpan(
                     text: 'Other name: ',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: colorScheme.secondary,
                           fontSize: 14.0,
                         ),
                   ),
