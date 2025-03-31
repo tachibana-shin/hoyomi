@@ -2,11 +2,12 @@ import 'dart:math';
 
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/widgets/vertical_separator.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/eva.dart';
 
 class CarouselEiga extends StatefulWidget {
   final double aspectRatio;
@@ -166,8 +167,8 @@ class _CarouselEigaState extends State<CarouselEiga> {
                               children: [
                                 if (item.rate != null)
                                   [
-                                    Icon(
-                                      MaterialCommunityIcons.star,
+                                    Iconify(
+                                      Eva.star_fill,
                                       color: Colors.blue.shade200,
                                       size: 12.0,
                                     ),

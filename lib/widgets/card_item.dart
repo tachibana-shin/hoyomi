@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/eva.dart';
 
 import 'circular_progress.dart';
 
@@ -46,8 +47,8 @@ class CardItem extends StatelessWidget {
             children: [
               WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
-                child: Icon(
-                  MaterialCommunityIcons.star,
+                child: Iconify(
+                  Eva.star_fill,
                   color: Colors.blue.shade200,
                   size: 12.0,
                 ),

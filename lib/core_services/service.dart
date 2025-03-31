@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/controller/service_settings_controller.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
@@ -21,6 +20,8 @@ import 'package:http/http.dart';
 
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/router/index.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 
 class ServiceInit {
   final String name;
@@ -56,6 +57,7 @@ mixin _SettingsMixin {
 
   Future<void> initState() async {
     _serviceSettings = await ServiceSettingsController.instance.get(uid);
+    _initSettings();
   }
 
   void _initSettings() {
@@ -137,11 +139,6 @@ abstract class Service with _SettingsMixin {
   final Map<String, ({DateTime? expire, Future<String> response})> _cacheFetch =
       {};
 
-  Service() {
-    // init settings appear
-    _initSettings();
-  }
-
   String get baseUrl {
     return getSetting(key: 'url') ?? init.rootUrl;
   }
@@ -159,8 +156,6 @@ abstract class Service with _SettingsMixin {
       : Uri.parse(baseUrl).resolve(init.rss!).toString();
 
   Future<User>? _userFuture;
-
-  var ServiceSettingController;
 
   static void showCaptchaResolve(
     BuildContext? context, {
@@ -198,8 +193,8 @@ abstract class Service with _SettingsMixin {
           children: [
             Row(
               children: [
-                Icon(
-                  MaterialCommunityIcons.earth,
+                Iconify(
+                  Mdi.earth,
                   color: isSnackbar || context == null
                       ? Colors.black
                       : Theme.of(context).colorScheme.onSurface,
@@ -282,8 +277,8 @@ abstract class Service with _SettingsMixin {
     Map<String, String>? headers,
   }) async {
     final record =
-        await ServiceSettingController.getSettingsAsync(sourceId: uid);
-    String? cookiesText = cookie ?? record?['cookie'] as String?;
+        await ServiceSettingsController.instance.get(uid);
+    String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;
 
     cookiesText = init.onBeforeInsertCookie?.call(cookiesText) ?? cookiesText;
 
@@ -312,7 +307,7 @@ abstract class Service with _SettingsMixin {
       'sec-fetch-site': 'same-origin',
       'sec-fetch-user': '?1',
       'upgrade-insecure-requests': '1',
-      'user-agent': record?['user_agent'] as String? ??
+      'user-agent': record?.settings?['user_agent'] as String? ??
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
     };
 
@@ -577,7 +572,7 @@ abstract class Service with _SettingsMixin {
 
     record = recordLoaded == true
         ? record
-        : await ServiceSettingController.getAsync(sourceId: uid);
+        : await ServiceSettingsController.instance.get(uid);
     final settings = record?.settings ?? {};
     final cookie = settings['cookie'] as String?;
     var user = record?.userDataCache;

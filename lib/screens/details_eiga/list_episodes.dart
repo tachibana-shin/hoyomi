@@ -107,66 +107,50 @@ class _ListEpisodesState extends State<ListEpisodes> with KaeruMixin {
       return FutureBuilder(
           future: episodesEiga,
           builder: (context, snapshot) {
-            return FutureBuilder(
-                future: episodesEiga,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Service.errorWidgetBuilder(
-                        context,
-                        error: snapshot.error,
-                        service: null,
-                        orElse: (error) => Text('Error: $error'),
-                      ),
-                    );
-                  }
+            if (snapshot.hasError) {
+              return Center(
+                child: Service.errorWidgetBuilder(
+                  context,
+                  error: snapshot.error,
+                  service: null,
+                  orElse: (error) => Text('Error: $error'),
+                ),
+              );
+            }
 
-                  final waiting =
-                      snapshot.connectionState == ConnectionState.waiting;
-                  if (!snapshot.hasData && !waiting) {
-                    return const Center(child: Text('No data available'));
-                  }
+            final waiting = snapshot.connectionState == ConnectionState.waiting;
+            if (!snapshot.hasData && !waiting) {
+              return const Center(child: Text('No data available'));
+            }
 
-                  final episodesEiga =
-                      waiting ? EigaEpisodes.createFakeData() : snapshot.data!;
+            final episodesEiga =
+                waiting ? EigaEpisodes.createFakeData() : snapshot.data!;
 
-                  final isVertical = widget.scrollDirection == Axis.vertical;
+            final isVertical = widget.scrollDirection == Axis.vertical;
 
-                  final child = AnimatedBuilder(
-                    animation: Listenable.merge([
-                      widget.eigaIdNotifier,
-                      widget.episodeIdNotifier,
-                    ]),
-                    builder: (context, child) {
-                      final child = ListView.builder(
-                        scrollDirection: widget.scrollDirection,
-                        itemCount: episodesEiga.episodes.length,
-                        shrinkWrap: true,
-                        controller: widget.controller,
-                        itemBuilder: (context, index) => itemBuilder(
-                          context,
-                          index: index,
-                          episodesEiga: episodesEiga,
-                          waiting: waiting,
-                          isVertical: isVertical,
-                          height: height,
-                        ),
-                      );
+            Widget child = ListView.builder(
+              scrollDirection: widget.scrollDirection,
+              itemCount: episodesEiga.episodes.length,
+              shrinkWrap: true,
+              controller: widget.controller,
+              itemBuilder: (context, index) => itemBuilder(
+                context,
+                index: index,
+                episodesEiga: episodesEiga,
+                waiting: waiting,
+                isVertical: isVertical,
+                height: height,
+              ),
+            );
 
-                      if (waiting) {
-                        return Skeletonizer(
-                          enabled: true,
-                          enableSwitchAnimation: true,
-                          child: child,
-                        );
-                      }
-                      return child;
-                    },
-                  );
-                  return isVertical
-                      ? child
-                      : SizedBox(height: height, child: child);
-                });
+            if (waiting) {
+              child = Skeletonizer(
+                enabled: true,
+                enableSwitchAnimation: true,
+                child: child,
+              );
+            }
+            return isVertical ? child : SizedBox(height: height, child: child);
           });
     });
   }

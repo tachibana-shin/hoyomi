@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/core_services/comic/comic_service.dart';
@@ -18,6 +17,8 @@ import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/widgets/blurred_part_background.dart';
 import 'package:hoyomi/widgets/speech_to_text.dart';
 import 'package:http/http.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:speech_to_text_google_dialog/speech_to_text_google_dialog.dart';
@@ -507,8 +508,8 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
             // )
             else
               IconButton(
-                icon: Icon(
-                  MaterialCommunityIcons.magnify,
+                icon: Iconify(
+                  Mdi.magnify,
                   color: theme.colorScheme.secondaryFixedDim
                       .withValues(alpha: 0.7),
                 ),
@@ -559,9 +560,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                 child: (_keyword.value.isEmpty || !focusing)
                     ? (!Platform.isLinux && !Platform.isWindows)
                         ? IconButton(
-                            icon: Icon(MaterialCommunityIcons.microphone,
-                                color: theme.colorScheme.secondary
-                                    .withValues(alpha: 0.8)),
+                            icon: Iconify(Mdi.microphone),
                             onPressed: () async {
                               final completer = Completer();
 
@@ -612,8 +611,8 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
 
   Widget _buildButtonMore() {
     return PopupMenuButton<String>(
-      icon: Icon(
-        MaterialCommunityIcons.dots_vertical,
+      icon: Iconify(
+        Mdi.dots_vertical,
         color: Theme.of(
           context,
         ).colorScheme.secondaryFixedDim.withValues(alpha: 0.7),

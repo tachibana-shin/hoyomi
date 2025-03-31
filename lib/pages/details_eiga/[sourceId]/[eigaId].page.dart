@@ -6,7 +6,6 @@ import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/bottom_sheet_no_scrim.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
@@ -20,6 +19,10 @@ import 'package:hoyomi/widgets/eiga/button_share_eiga.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/eva.dart';
+import 'package:iconify_flutter/icons/fluent_mdl2.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
@@ -184,7 +187,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     scrolledUnderElevation: 0.0,
                     leading: IconButton(
-                      icon: const Icon(MaterialCommunityIcons.arrow_left),
+                      icon: const Iconify(FluentMdl2.chevron_left),
                       onPressed: () {
                         context.pop();
                       },
@@ -448,8 +451,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               if (metaEiga.rate != null)
                 Row(
                   children: [
-                    Icon(
-                      MaterialCommunityIcons.star,
+                    Iconify(
+                      Eva.star_fill,
                       color: Colors.blue.shade200,
                       size: 14.0,
                     ),
@@ -564,8 +567,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
       return Row(
         children: [
-          Icon(
-            MaterialCommunityIcons.clock_outline,
+          Iconify(
+            Mdi.clock_outline,
             size: 16.0,
             color: Theme.of(context).colorScheme.secondary,
           ),
@@ -619,8 +622,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       ),
                 ),
                 Center(
-                  child: Icon(
-                    MaterialCommunityIcons.chevron_right,
+                  child: Iconify(
+                    FluentMdl2.chevron_right,
                     size: 16.0,
                     color: Theme.of(context).colorScheme.secondary,
                   ),

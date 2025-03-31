@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/comic_service.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_category.dart';
@@ -16,6 +15,8 @@ import 'package:hoyomi/widgets/comic/vertical_comic.dart';
 import 'package:hoyomi/widgets/infinite_grid.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:hoyomi/widgets/vertical_list.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/fluent_mdl2.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class CategoryComicPage extends StatefulWidget {
@@ -226,14 +227,12 @@ class _CategoryComicPageState extends State<CategoryComicPage> {
                                           ),
                                     ),
                                   ),
-                                  Padding(
+                                  const Padding(
                                     padding: EdgeInsets.only(
                                       left: 7.0,
                                       right: 0.0,
                                     ),
-                                    child: Icon(
-                                      MaterialCommunityIcons.chevron_down,
-                                    ),
+                                    child: Iconify(FluentMdl2.chevron_down),
                                   ),
                                 ],
                               ),

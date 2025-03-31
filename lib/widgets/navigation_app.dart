@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:hoyomi/constraints/huge_icons.dart';
+import 'package:hoyomi/widgets/iconify.dart';
 
 class NavigationApp extends StatelessWidget {
   final int selectedIndex;
@@ -17,11 +17,11 @@ class NavigationApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final destinations = const [
-      (icon: Icon(HugeIcons.strokeRoundedBook04), label: ('Comic')),
-      (icon: Icon(HugeIcons.strokeRoundedFlimSlate), label: ('Eiga')),
-      (icon: Icon(MaterialCommunityIcons.magnify), label: ('Search')),
-      (icon: Icon(MaterialCommunityIcons.apple_safari), label: ('Library')),
-      (icon: Icon(MaterialCommunityIcons.account_circle), label: ('Profile')),
+      (icon: Iconify(Hg.strokeRoundedBook04), label: ('Comic')),
+      (icon: Iconify(Hg.strokeRoundedFlimSlate), label: ('Eiga')),
+      (icon: Iconify(Hg.search01), label: ('Search')),
+      (icon: Iconify(Hg.safari), label: ('Library')),
+      (icon: Iconify(Hg.userCircle), label: ('Profile')),
     ];
 
     if (rail) {

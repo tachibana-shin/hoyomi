@@ -3,7 +3,6 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_chapter.dart';
@@ -20,6 +19,10 @@ import 'package:hoyomi/widgets/comments/widget/comments_sheet.dart';
 import 'package:hoyomi/widgets/image_picker.dart';
 import 'package:hoyomi/widgets/comic/sheet_chapters.dart';
 import 'package:hoyomi/widgets/tap_listener.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/ic.dart';
+import 'package:iconify_flutter/icons/ion.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
@@ -435,7 +438,7 @@ class _MangaReaderState extends State<MangaReader>
                       ),
                       child: Row(
                         children: const [
-                          Icon(MaterialCommunityIcons.screen_rotation),
+                          Iconify(Ic.outline_screen_rotation),
                           SizedBox(width: 16.0),
                           Text('Rotate Screen'),
                         ],
@@ -478,19 +481,19 @@ class _MangaReaderState extends State<MangaReader>
                         ),
                         children: [
                           _buildIconWithLabel(
-                            MaterialCommunityIcons.cog,
+                            Mdi.cog,
                             "Standard",
                           ),
                           _buildIconWithLabel(
-                            MaterialCommunityIcons.arrow_left,
+                            Mdi.arrow_left,
                             "RTL",
                           ),
                           _buildIconWithLabel(
-                            MaterialCommunityIcons.format_vertical_align_center,
+                            Mdi.format_vertical_align_center,
                             "Vertical",
                           ),
                           _buildIconWithLabel(
-                            MaterialCommunityIcons.web,
+                            Mdi.web,
                             "Webtoon",
                           ),
                         ],
@@ -523,7 +526,7 @@ class _MangaReaderState extends State<MangaReader>
                         children: [
                           Row(
                             children: const [
-                              Icon(MaterialCommunityIcons.book),
+                              Iconify(Mdi.book),
                               SizedBox(width: 16.0),
                               Text('Use Two Page'),
                             ],
@@ -560,7 +563,7 @@ class _MangaReaderState extends State<MangaReader>
                         children: [
                           Row(
                             children: const [
-                              Icon(MaterialCommunityIcons.autorenew),
+                              Iconify(Mdi.autorenew),
                               SizedBox(width: 16.0),
                               Text('Auto Scroll'),
                             ],
@@ -635,11 +638,11 @@ class _MangaReaderState extends State<MangaReader>
     );
   }
 
-  Widget _buildIconWithLabel(IconData icon, String label) {
+  Widget _buildIconWithLabel(String icon, String label) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(icon, size: 20), // Smaller icon size
+        Iconify(icon, size: 20), // Smaller icon size
         const SizedBox(height: 4.0),
         Text(
           label,
@@ -771,9 +774,7 @@ class _MangaReaderState extends State<MangaReader>
                                     ),
                                     child: IconButton(
                                       iconSize: 30.0,
-                                      icon: Icon(
-                                        MaterialCommunityIcons.skip_previous,
-                                      ),
+                                      icon: const Iconify(Mdi.skip_previous),
                                       color: _prevChapter.value != null
                                           ? Theme.of(
                                               context,
@@ -828,8 +829,7 @@ class _MangaReaderState extends State<MangaReader>
                                   ),
                                   child: IconButton(
                                     iconSize: 30.0,
-                                    icon:
-                                        Icon(MaterialCommunityIcons.skip_next),
+                                    icon: const Iconify(Mdi.skip_next),
                                     color: _nextChapter.value != null
                                         ? Theme.of(
                                             context,
@@ -872,14 +872,14 @@ class _MangaReaderState extends State<MangaReader>
                                 children: [
                                   Expanded(
                                     child: ButtonInset(
-                                      icon: Ionicons.heart_outline,
+                                      icon: Ion.heart_outline,
                                       text: 'Like',
                                       onPressed: () {},
                                     ),
                                   ),
                                   Expanded(
                                     child: ButtonInset(
-                                      icon: Ionicons.chatbox_ellipses_outline,
+                                      icon: Ion.chatbox_ellipses_outline,
                                       text: 'Comments',
                                       disabled:
                                           widget.service is! ComicAuthMixin ||
@@ -891,21 +891,21 @@ class _MangaReaderState extends State<MangaReader>
                                   ),
                                   Expanded(
                                       child: Watch(() => ButtonInset(
-                                            icon: Ionicons.list,
+                                            icon: Ion.list,
                                             text:
                                                 '${_realCurrentPage.value.toInt() + 1} / ${_realLength.value}',
                                             onPressed: _showPanelListChapters,
                                           ))),
                                   Expanded(
                                     child: ButtonInset(
-                                      icon: Ionicons.settings_outline,
+                                      icon: Ion.settings_outline,
                                       text: 'Settings',
                                       onPressed: _showPanelSettings,
                                     ),
                                   ),
                                   Expanded(
                                     child: ButtonInset(
-                                      icon: Ionicons.arrow_forward,
+                                      icon: Ion.arrow_forward,
                                       text: 'Skip',
                                       onPressed: _showPanelSkipPages,
                                     ),

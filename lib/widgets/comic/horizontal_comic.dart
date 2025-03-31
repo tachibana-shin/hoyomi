@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/eva.dart';
 
 class HorizontalComic extends StatelessWidget {
   final Comic comic;
@@ -62,8 +63,8 @@ class HorizontalComic extends StatelessWidget {
                       if (comic.rate != null)
                         Row(
                           children: [
-                            Icon(
-                              MaterialCommunityIcons.star,
+                            Iconify(
+                              Eva.star_fill,
                               color: Colors.blue.shade200,
                               size: 16.0,
                             ),

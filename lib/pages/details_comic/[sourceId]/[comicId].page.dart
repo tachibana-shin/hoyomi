@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user_async.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
@@ -23,6 +22,13 @@ import 'package:hoyomi/widgets/comments/widget/comments.dart';
 import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
 import 'package:hoyomi/widgets/comic/sheet_chapters.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/eva.dart';
+import 'package:iconify_flutter/icons/fluent_mdl2.dart';
+import 'package:iconify_flutter/icons/ic.dart';
+import 'package:iconify_flutter/icons/ion.dart';
+import 'package:iconify_flutter/icons/material_symbols.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
@@ -99,7 +105,7 @@ class _DetailsComicState extends State<DetailsComic>
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           scrolledUnderElevation: 0.0,
           leading: IconButton(
-            icon: const Icon(MaterialCommunityIcons.arrow_left),
+            icon: const Iconify(FluentMdl2.chevron_left),
             onPressed: () {
               context.pop();
             },
@@ -112,7 +118,7 @@ class _DetailsComicState extends State<DetailsComic>
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           scrolledUnderElevation: 0.0,
           leading: IconButton(
-            icon: const Icon(MaterialCommunityIcons.arrow_left),
+            icon: Iconify(FluentMdl2.chevron_left),
             onPressed: () {
               context.pop();
             },
@@ -222,7 +228,7 @@ class _DetailsComicState extends State<DetailsComic>
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(MaterialCommunityIcons.account, size: 18.0),
+                        const Iconify(Ic.round_account_circle, size: 18.0),
                         SizedBox(width: 8.0),
                         Expanded(
                           child: Text(
@@ -242,7 +248,7 @@ class _DetailsComicState extends State<DetailsComic>
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(MaterialCommunityIcons.translate, size: 18.0),
+                          const Iconify(Mdi.translate_variant, size: 18.0),
                           SizedBox(width: 8.0),
                           Text(
                             comic.translator!,
@@ -258,7 +264,7 @@ class _DetailsComicState extends State<DetailsComic>
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(MaterialCommunityIcons.play_outline, size: 18.0),
+                        const Iconify(Ion.play_outline, size: 18.0),
                         SizedBox(width: 8.0),
                         Text(
                           {
@@ -338,8 +344,8 @@ class _DetailsComicState extends State<DetailsComic>
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      MaterialCommunityIcons.television,
+                    Iconify(
+                      Mdi.television,
                       size: 20.0,
                       color: Colors.blueGrey.shade100,
                     ),
@@ -369,8 +375,8 @@ class _DetailsComicState extends State<DetailsComic>
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      MaterialCommunityIcons.update,
+                    Iconify(
+                      MaterialSymbols.tips_and_updates_outline,
                       size: 20.0,
                       color: Colors.blueGrey.shade100,
                     ),
@@ -395,8 +401,8 @@ class _DetailsComicState extends State<DetailsComic>
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      MaterialCommunityIcons.star_outline,
+                    Iconify(
+                      Eva.star_outline,
                       size: 20.0,
                       color: Colors.blueGrey.shade100,
                     ),
@@ -615,7 +621,7 @@ class _DetailsComicState extends State<DetailsComic>
       child: Center(
         child: IconButton(
           onPressed: () {},
-          icon: Icon(MaterialCommunityIcons.download),
+          icon: Iconify(MaterialSymbols.download),
           iconSize: 48 / 2,
         ),
       ),
@@ -791,10 +797,10 @@ class _ButtonLikeState extends State<_ButtonLike> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              Iconify(
                 _liked ?? false
-                    ? MaterialCommunityIcons.thumb_up
-                    : MaterialCommunityIcons.thumb_up_outline,
+                    ? Ic.baseline_thumb_up_alt
+                    : Ic.outline_thumb_up_alt,
                 size: 20.0,
                 color: Colors.blueGrey.shade100,
               ),

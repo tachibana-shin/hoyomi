@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/ion.dart';
 
 class SheetChapters extends StatefulWidget {
   final MetaComic comic;
@@ -77,8 +78,8 @@ class _SheetChaptersState extends State<SheetChapters> {
                     title: Row(
                       children: [
                         if (selected)
-                          Icon(
-                            MaterialCommunityIcons.play,
+                          Iconify(
+                            Ion.play,
                             size: 20,
                             color: Colors.green.shade500,
                           ),
