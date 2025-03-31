@@ -846,6 +846,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       Expanded(
                           child: _buildSeasonArea(
                         scrollDirection: Axis.vertical,
+                        inModal: true,
                       )),
                     ],
                   ),
@@ -870,6 +871,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       isScrollControlled: true,
       // showDragHandle: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (context, pop) => DraggableScrollableSheet(
         expand: false,
         snap: true,
@@ -897,6 +899,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       child: _buildSeasonArea(
                     scrollDirection: Axis.vertical,
                     controller: scrollController,
+                    inModal: true,
                   )),
                 ],
               ),
@@ -984,7 +987,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Widget _buildSeasonArea(
-      {scrollDirection = Axis.horizontal, ScrollController? controller}) {
+      {scrollDirection = Axis.horizontal,
+      ScrollController? controller,
+      bool inModal = false}) {
     return Watch(() {
       final metaEiga$ = _metaEiga.value;
 
@@ -1053,14 +1058,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             });
 
             final children = [
-              ContentSizeTabBarView(
-                children: metaEiga$.seasons.asMap().entries.map((entry) {
-                  final season = entry.value;
-                  final index = entry.key;
+              (double? height) => ContentSizeTabBarView(
+                      children: metaEiga$.seasons.asMap().entries.map((entry) {
+                    final season = entry.value;
+                    final index = entry.key;
 
-                  return Container(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
-                    child: ListEpisodes(
+                    final child = ListEpisodes(
                       season: season,
                       sourceId: widget.sourceId,
                       thumbnail: metaEiga$.poster ?? metaEiga$.image,
@@ -1096,34 +1099,53 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           seasons: metaEiga$.seasons,
                         );
                       },
+                    );
+
+                    return height == null
+                        ? child
+                        : SizedBox(height: height, child: child);
+                  }).toList()),
+              (void _) => TabBar(
+                    isScrollable: true,
+                    padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 0),
+                    labelPadding: EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 0,
                     ),
-                  );
-                }).toList(),
-              ),
-              TabBar(
-                isScrollable: true,
-                padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 0),
-                labelPadding: EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 0,
-                ),
-                splashBorderRadius: BorderRadius.circular(10.0),
-                labelStyle: TextStyle(fontSize: 13.0),
-                indicatorColor: Theme.of(context).colorScheme.secondary,
-                tabAlignment: TabAlignment.start,
-                dividerHeight: 0,
-                tabs: metaEiga$.seasons.map((season) {
-                  return Tab(text: season.name);
-                }).toList(),
-              ),
+                    splashBorderRadius: BorderRadius.circular(10.0),
+                    labelStyle: TextStyle(fontSize: 13.0),
+                    indicatorColor: Theme.of(context).colorScheme.secondary,
+                    tabAlignment: TabAlignment.start,
+                    dividerHeight: 0,
+                    tabs: metaEiga$.seasons.map((season) {
+                      return Tab(text: season.name);
+                    }).toList(),
+                  ),
             ];
+
+            if (inModal) {
+              return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    children[1](null),
+                    Expanded(
+                        child: LayoutBuilder(
+                      builder: (context, constrains) => FractionallySizedBox(
+                          heightFactor: 0.99,
+                          widthFactor: 1.0,
+                          child: children[0](constrains.biggest.height)),
+                    ))
+                  ]);
+            }
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               verticalDirection: scrollDirection == Axis.vertical
                   ? VerticalDirection.up
                   : VerticalDirection.down,
-              children: children,
+              children: children.map((fn) => fn(null)).toList(),
             );
           },
         ),
