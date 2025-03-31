@@ -345,7 +345,7 @@ class PersistentScaffold extends StatelessWidget {
     return Scaffold(
       body: Row(
         children: [
-          if (!showToolbar) ...[
+          if (showToolbar) ...[
             NavigationApp(
               selectedIndex: navigationShell.currentIndex,
               rail: true,
