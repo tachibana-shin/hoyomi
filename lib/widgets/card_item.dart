@@ -4,6 +4,7 @@ import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/eva.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import 'circular_progress.dart';
 
@@ -86,11 +87,16 @@ class CardItem extends StatelessWidget {
                   aspectRatio: 2 / 3,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
-                    child: OImage.oNetwork(
-                      image,
-                      sourceId: sourceId,
-                      fit: BoxFit.cover,
-                    ),
+                    child: Skeleton.replace(
+                        replacement: Image.asset(
+                          'assets/images/blank.png',
+                          fit: BoxFit.cover,
+                        ),
+                        child: OImage.oNetwork(
+                          image,
+                          sourceId: sourceId,
+                          fit: BoxFit.cover,
+                        )),
                   ),
                 ),
 
