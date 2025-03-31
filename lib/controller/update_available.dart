@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/controller/general_settings_controller.dart';
 import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:http/http.dart';
@@ -201,7 +202,7 @@ class UpdateAvailableController {
 
       final packageInfo = await PackageInfo.fromPlatform();
 
-      if (Platform.isAndroid) {
+      if (XPlatform.isAndroid) {
         // app-arm64-v8a-release
         // app-armeabi-v7a-release
         // app-x86_64-release
@@ -230,7 +231,7 @@ class UpdateAvailableController {
         } else {
           _pauseUpdate();
         }
-      } else if (Platform.isIOS) {
+      } else if (XPlatform.isIOS) {
         final release = _findReleaseLatest(releases,
             contentType: 'application/octet-stream');
         if (release != null &&
@@ -295,7 +296,7 @@ class UpdateAvailableController {
 
   Future<File> _downloadRelease(
       Release release, void Function(double progress) onProgress) async {
-    if (!Platform.isAndroid) {
+    if (!XPlatform.isAndroid) {
       throw Exception('Platform not supported');
     }
 
@@ -418,7 +419,7 @@ class UpdateAvailableController {
                       child: FilledButton(
                         child: Text(installing ? 'Installing' : 'Download'),
                         onPressed: () async {
-                          if (Platform.isAndroid) {
+                          if (XPlatform.isAndroid) {
                             downloading = true;
                             setState(() {});
 
@@ -437,7 +438,7 @@ class UpdateAvailableController {
 
                             installing = false;
                             setState(() {});
-                          } else if (Platform.isIOS) {
+                          } else if (XPlatform.isIOS) {
                             await launchUrl(Uri.parse(release.htmlUrl));
                           }
                         },

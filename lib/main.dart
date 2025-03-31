@@ -29,7 +29,7 @@ Future<void> main() async {
   runApp(MainApp(androidSdkInt: androidSdkInt));
 
   // register background service
-  // if (Platform.isAndroid || Platform.isIOS) {
+  // if (XPlatform.isAndroid || XPlatform.isIOS) {
   //   ComicChanges().initializeBackgroundService();
   // ComicChanges().checkUpdateAll();
   // }

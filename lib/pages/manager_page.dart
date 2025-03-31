@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/constraints/x_platform.dart';
 
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
@@ -27,23 +26,23 @@ class ManagerPage extends StatelessWidget {
     final deviceInfoPlugin = DeviceInfoPlugin();
     String info = "";
 
-    if (Platform.isAndroid) {
+    if (XPlatform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
       info =
           "Android ${androidInfo.version.release} (${androidInfo.version.codename})\n"
           "${androidInfo.model} Build/${androidInfo.version.incremental}";
-    } else if (Platform.isIOS) {
+    } else if (XPlatform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
       info =
           "iOS ${iosInfo.systemVersion}\n${iosInfo.utsname.machine} (${iosInfo.name})";
-    } else if (Platform.isWindows) {
+    } else if (XPlatform.isWindows) {
       WindowsDeviceInfo windowsInfo = await deviceInfoPlugin.windowsInfo;
       info =
           "Windows ${windowsInfo.productName} (Build ${windowsInfo.buildNumber})";
-    } else if (Platform.isMacOS) {
+    } else if (XPlatform.isMacOS) {
       MacOsDeviceInfo macInfo = await deviceInfoPlugin.macOsInfo;
       info = "macOS ${macInfo.osRelease} (${macInfo.model})";
-    } else if (Platform.isLinux) {
+    } else if (XPlatform.isLinux) {
       LinuxDeviceInfo linuxInfo = await deviceInfoPlugin.linuxInfo;
       info = "Linux ${linuxInfo.name} ${linuxInfo.version}";
     } else {
@@ -107,15 +106,15 @@ class ManagerPage extends StatelessWidget {
               final osInfo = snapshot.data!;
               IconData osIcon = Icons.device_unknown;
 
-              if (Platform.isAndroid) {
+              if (XPlatform.isAndroid) {
                 osIcon = Icons.android;
-              } else if (Platform.isIOS) {
+              } else if (XPlatform.isIOS) {
                 osIcon = Icons.apple;
-              } else if (Platform.isWindows) {
+              } else if (XPlatform.isWindows) {
                 osIcon = Icons.laptop_windows;
-              } else if (Platform.isMacOS) {
+              } else if (XPlatform.isMacOS) {
                 osIcon = Icons.laptop_mac;
-              } else if (Platform.isLinux) {
+              } else if (XPlatform.isLinux) {
                 osIcon = Icons.laptop;
               }
 

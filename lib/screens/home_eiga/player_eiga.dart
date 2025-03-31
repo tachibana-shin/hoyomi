@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:crypto/crypto.dart';
@@ -9,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
+import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/controller/general_settings_controller.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
@@ -1313,7 +1313,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                 child: Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: 12.0,
-                    vertical: Platform.isWindows ? 8.0 : 2.0,
+                    vertical: XPlatform.isWindows ? 8.0 : 2.0,
                   ),
                   decoration: BoxDecoration(
                     color: Color.fromRGBO(28, 28, 28, 0.9),

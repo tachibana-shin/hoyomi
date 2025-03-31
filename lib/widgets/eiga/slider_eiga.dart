@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:kaeru/kaeru.dart';
@@ -52,7 +52,7 @@ class _SliderEigaState extends State<SliderEiga>
 
   double get thumbSize => SliderEiga.thumbSize;
   final double sliderHeightMin = 2;
-  final double sliderHeightMax = Platform.isAndroid || Platform.isIOS ? 4 : 3;
+  final double sliderHeightMax = XPlatform.isAndroid || XPlatform.isIOS ? 4 : 3;
 
   late final _hoverPosition = ref(0.0); // Hover position
   late final _isHovering = ref(false);
