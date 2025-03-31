@@ -38,7 +38,10 @@ jobs:
           
       - name: Decode google-services.json
         run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > android/app/google-services.json
-  
+
+      - name: Create .env file
+        run: echo -e "${{ secrets.ENV_CONTENT }}" > .env
+
       - run: flutter build apk --release --split-per-abi
 
       - name: Setup upterm session
@@ -70,9 +73,12 @@ jobs:
 
       - run: pod repo update
         working-directory: ios
-      
+
       - name: Decode GoogleService-Info.plist
         run: echo "${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}" | base64 --decode > ios/Runner/GoogleService-Info.plist
+
+      - name: Create .env file
+        run: echo -e "${{ secrets.ENV_CONTENT }}" > .env
 
       - run: flutter build ios --release --no-codesign
 
