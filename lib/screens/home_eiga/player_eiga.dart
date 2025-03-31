@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 import 'package:hoyomi/controller/general_settings_controller.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
@@ -27,6 +26,8 @@ import 'package:hoyomi/utils/proxy_cache.dart';
 import 'package:hoyomi/widgets/delayed_widget.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:hoyomi/utils/format_duration.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -878,7 +879,7 @@ class _PlayerEigaState extends State<PlayerEiga>
             Row(
               children: [
                 IconButton(
-                  icon: Icon(MaterialCommunityIcons.playlist_play),
+                  icon: const Iconify(Mdi.playlist_play),
                   color: Colors.white,
                   onPressed: () =>
                       widget.onTapPlaylist(context, _fullscreen.value),
@@ -891,10 +892,10 @@ class _PlayerEigaState extends State<PlayerEiga>
                     child: IgnorePointer(
                       ignoring: !isEnabled,
                       child: IconButton(
-                        icon: Icon(
+                        icon: Iconify(
                           _subtitleCode.value == null
-                              ? MaterialCommunityIcons.subtitles_outline
-                              : MaterialCommunityIcons.subtitles,
+                              ? Mdi.subtitles_outline
+                              : Mdi.subtitles,
                         ),
                         color: Colors.white,
                         onPressed: () => _subtitleCode.value == null
@@ -939,8 +940,8 @@ class _PlayerEigaState extends State<PlayerEiga>
                     backgroundColor: Colors.black.withAlpha(20),
                     shadowColor: Colors.transparent,
                   ),
-                  child: Icon(
-                    MaterialCommunityIcons.skip_previous,
+                  child: const Iconify(
+                    Mdi.skip_previous,
                     color: Colors.white,
                     size: 25.0,
                   ),
@@ -986,8 +987,8 @@ class _PlayerEigaState extends State<PlayerEiga>
                     backgroundColor: Colors.grey.shade300.withAlpha(20),
                     shadowColor: Colors.transparent,
                   ),
-                  child: Icon(
-                    MaterialCommunityIcons.skip_next,
+                  child: const Iconify(
+                    Mdi.skip_next,
                     color: Colors.white,
                     size: 25.0,
                   ),

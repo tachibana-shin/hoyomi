@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -34,8 +35,8 @@ class _ButtonShareEigaState extends State<ButtonShareEiga> {
               '${widget.episodeName.value} ${widget.metaEiga.value.name}, ${widget.metaEiga.value.originalName}';
           Share.share('Watch $title on Hoyomi: ', subject: title);
         },
-        icon: Icon(
-          MaterialCommunityIcons.share_outline,
+        icon: Iconify(
+          Mdi.share_outline,
           color: Theme.of(context).textTheme.labelLarge?.color,
         ),
         label: Text(

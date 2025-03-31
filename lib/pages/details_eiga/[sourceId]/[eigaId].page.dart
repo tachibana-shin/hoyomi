@@ -6,7 +6,6 @@ import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/bottom_sheet_no_scrim.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
@@ -20,6 +19,10 @@ import 'package:hoyomi/widgets/eiga/button_share_eiga.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/eva.dart';
+import 'package:iconify_flutter/icons/fluent_mdl2.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
@@ -184,7 +187,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     scrolledUnderElevation: 0.0,
                     leading: IconButton(
-                      icon: const Icon(MaterialCommunityIcons.arrow_left),
+                      icon: const Iconify(FluentMdl2.chevron_left),
                       onPressed: () {
                         context.pop();
                       },
@@ -291,6 +294,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   Widget _buildInfo() {
     return Watch(() {
+      final colorScheme = Theme.of(context).colorScheme;
       final metaEiga = _metaEiga.value;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,7 +318,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   Text(
                     '${formatNumber(metaEiga.views!)} views',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: colorScheme.secondary,
                           fontSize: 14.0,
                         ),
                   ),
@@ -327,7 +331,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     Text(
                       'Author ',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: colorScheme.secondary,
                             fontSize: 14.0,
                           ),
                     ),
@@ -346,7 +350,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         style: Theme.of(
                           context,
                         ).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: colorScheme.secondary,
                               fontSize: 14.0,
                             ),
                       ),
@@ -363,7 +367,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           style: Theme.of(
                             context,
                           ).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface,
+                                color: colorScheme.onSurface,
                                 fontSize: 14.0,
                               ),
                         ),
@@ -431,7 +435,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                 fontSize: 14.0,
                                 color: Theme.of(
                                   context,
-                                ).colorScheme.tertiaryFixedDim,
+                                ).colorScheme.tertiary,
                               ),
                         ),
                       ),
@@ -448,8 +452,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               if (metaEiga.rate != null)
                 Row(
                   children: [
-                    Icon(
-                      MaterialCommunityIcons.star,
+                    Iconify(
+                      Eva.star_fill,
                       color: Colors.blue.shade200,
                       size: 14.0,
                     ),
@@ -464,7 +468,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 Text(
                   '${metaEiga.countRate} people rated',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: colorScheme.secondary,
                         fontSize: 14.0,
                       ),
                 ),
@@ -480,7 +484,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     metaEiga.movieSeason!.name,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontSize: 14.0,
-                          color: Theme.of(context).colorScheme.tertiaryFixedDim,
+                          color: colorScheme.tertiary,
                         ),
                   ),
                 ),
@@ -502,7 +506,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   '#${genre.name}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontSize: 14.0,
-                        color: Theme.of(context).colorScheme.tertiaryFixedDim,
+                        color: colorScheme.tertiary,
                       ),
                 ),
               );
@@ -520,7 +524,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   TextSpan(
                     text: 'Other name: ',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: colorScheme.secondary,
                           fontSize: 14.0,
                         ),
                   ),
@@ -564,8 +568,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
       return Row(
         children: [
-          Icon(
-            MaterialCommunityIcons.clock_outline,
+          Iconify(
+            Mdi.clock_outline,
             size: 16.0,
             color: Theme.of(context).colorScheme.secondary,
           ),
@@ -619,8 +623,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       ),
                 ),
                 Center(
-                  child: Icon(
-                    MaterialCommunityIcons.chevron_right,
+                  child: Iconify(
+                    FluentMdl2.chevron_right,
                     size: 16.0,
                     color: Theme.of(context).colorScheme.secondary,
                   ),
@@ -846,6 +850,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       Expanded(
                           child: _buildSeasonArea(
                         scrollDirection: Axis.vertical,
+                        inModal: true,
                       )),
                     ],
                   ),
@@ -870,6 +875,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       isScrollControlled: true,
       // showDragHandle: true,
       useSafeArea: true,
+      useRootNavigator: true,
       builder: (context, pop) => DraggableScrollableSheet(
         expand: false,
         snap: true,
@@ -897,6 +903,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       child: _buildSeasonArea(
                     scrollDirection: Axis.vertical,
                     controller: scrollController,
+                    inModal: true,
                   )),
                 ],
               ),
@@ -984,7 +991,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Widget _buildSeasonArea(
-      {scrollDirection = Axis.horizontal, ScrollController? controller}) {
+      {scrollDirection = Axis.horizontal,
+      ScrollController? controller,
+      bool inModal = false}) {
     return Watch(() {
       final metaEiga$ = _metaEiga.value;
 
@@ -1053,14 +1062,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             });
 
             final children = [
-              ContentSizeTabBarView(
-                children: metaEiga$.seasons.asMap().entries.map((entry) {
-                  final season = entry.value;
-                  final index = entry.key;
+              (double? height) => ContentSizeTabBarView(
+                      children: metaEiga$.seasons.asMap().entries.map((entry) {
+                    final season = entry.value;
+                    final index = entry.key;
 
-                  return Container(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
-                    child: ListEpisodes(
+                    final child = ListEpisodes(
                       season: season,
                       sourceId: widget.sourceId,
                       thumbnail: metaEiga$.poster ?? metaEiga$.image,
@@ -1096,34 +1103,53 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           seasons: metaEiga$.seasons,
                         );
                       },
+                    );
+
+                    return height == null
+                        ? child
+                        : SizedBox(height: height, child: child);
+                  }).toList()),
+              (void _) => TabBar(
+                    isScrollable: true,
+                    padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 0),
+                    labelPadding: EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 0,
                     ),
-                  );
-                }).toList(),
-              ),
-              TabBar(
-                isScrollable: true,
-                padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 0),
-                labelPadding: EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 0,
-                ),
-                splashBorderRadius: BorderRadius.circular(10.0),
-                labelStyle: TextStyle(fontSize: 13.0),
-                indicatorColor: Theme.of(context).colorScheme.secondary,
-                tabAlignment: TabAlignment.start,
-                dividerHeight: 0,
-                tabs: metaEiga$.seasons.map((season) {
-                  return Tab(text: season.name);
-                }).toList(),
-              ),
+                    splashBorderRadius: BorderRadius.circular(10.0),
+                    labelStyle: TextStyle(fontSize: 13.0),
+                    indicatorColor: Theme.of(context).colorScheme.secondary,
+                    tabAlignment: TabAlignment.start,
+                    dividerHeight: 0,
+                    tabs: metaEiga$.seasons.map((season) {
+                      return Tab(text: season.name);
+                    }).toList(),
+                  ),
             ];
+
+            if (inModal) {
+              return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    children[1](null),
+                    Expanded(
+                        child: LayoutBuilder(
+                      builder: (context, constrains) => FractionallySizedBox(
+                          heightFactor: 0.99,
+                          widthFactor: 1.0,
+                          child: children[0](constrains.biggest.height)),
+                    ))
+                  ]);
+            }
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               verticalDirection: scrollDirection == Axis.vertical
                   ? VerticalDirection.up
                   : VerticalDirection.down,
-              children: children,
+              children: children.map((fn) => fn(null)).toList(),
             );
           },
         ),

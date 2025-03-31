@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hoyomi/widgets/iconify.dart';
 
 class ButtonInset extends StatelessWidget {
   final String text;
-  final IconData icon;
+  final String icon;
   final bool disabled;
   final void Function() onPressed;
 
@@ -32,7 +33,7 @@ class ButtonInset extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 24),
+              Iconify(icon, size: 24),
               SizedBox(height: 2),
               Text(
                 text,

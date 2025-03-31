@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hoyomi/composable/use_user.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 
 class AccountService extends StatefulWidget {
@@ -75,10 +76,9 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
       case "NOT_SUPPORT":
         return CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.onSecondary,
-          child: const Icon(
-            MaterialCommunityIcons.block_helper,
-            // color: Colors.red,
-          ),
+          child: const Iconify(Mdi.block_helper
+              // color: Colors.red,
+              ),
         );
       case "LOADING":
         return CircleAvatar(
@@ -91,13 +91,13 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
       case "NOT_SIGN":
         return CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.onSecondary,
-          child: const Icon(MaterialCommunityIcons.help),
+          child: const Iconify(Mdi.help),
         );
       case "ERROR":
         return CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.onSecondary,
-          child: const Icon(
-            MaterialCommunityIcons.alert_circle_outline,
+          child: const Iconify(
+            Mdi.alert_circle_outline,
             color: Colors.orange,
           ),
         );

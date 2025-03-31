@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comments.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comment.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:hoyomi/widgets/comments/widget/comments.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/fluent_mdl2.dart';
+import 'package:iconify_flutter/icons/ic.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 
 class Comment extends StatefulWidget {
   final ComicComment comment;
@@ -104,10 +107,10 @@ class _CommentState extends State<Comment> {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(
+                        icon: Iconify(
                           widget.comment.like == true
-                              ? MaterialCommunityIcons.thumb_up
-                              : MaterialCommunityIcons.thumb_up_outline,
+                              ? Ic.outline_thumb_up_alt
+                              : Ic.baseline_thumb_up_alt,
                         ),
                         iconSize: 20,
                         padding: EdgeInsets.zero,
@@ -122,10 +125,10 @@ class _CommentState extends State<Comment> {
                       ),
                       const SizedBox(width: 4),
                       IconButton(
-                        icon: Icon(
-                          widget.comment.like == false
-                              ? MaterialCommunityIcons.thumb_down
-                              : MaterialCommunityIcons.thumb_down_outline,
+                        icon: Iconify(
+                          widget.comment.like == true
+                              ? Ic.outline_thumb_up_alt
+                              : Ic.baseline_thumb_up_alt,
                         ),
                         iconSize: 20,
                         padding: EdgeInsets.zero,
@@ -141,10 +144,7 @@ class _CommentState extends State<Comment> {
                       const SizedBox(width: 16),
                       TextButton.icon(
                         onPressed: _showRepliesList,
-                        icon: const Icon(
-                          MaterialCommunityIcons.reply,
-                          size: 18,
-                        ),
+                        icon: const Iconify(Mdi.reply, size: 18),
                         label: Text(
                           'Reply',
                           style: Theme.of(context).textTheme.bodySmall,
@@ -156,8 +156,8 @@ class _CommentState extends State<Comment> {
                             _confirmDelete(context);
                           },
                           padding: EdgeInsets.zero,
-                          icon: const Icon(
-                            MaterialCommunityIcons.trash_can_outline,
+                          icon: const Iconify(
+                            Mdi.trash_can_outline,
                             size: 20,
                             color: Colors.red,
                           ),
@@ -188,8 +188,8 @@ class _CommentState extends State<Comment> {
                                 WidgetSpan(
                                   child: Padding(
                                     padding: EdgeInsets.only(left: 4.0),
-                                    child: Icon(
-                                      MaterialCommunityIcons.chevron_down,
+                                    child: const Iconify(
+                                      FluentMdl2.chevron_down,
                                       size: 18,
                                     ),
                                   ),

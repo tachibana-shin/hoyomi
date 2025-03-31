@@ -11,7 +11,7 @@ class ServiceSettingsController {
       _instance ??= ServiceSettingsController._();
 
   late final SharedPreferencesAsync asyncPrefs = SharedPreferencesAsync();
-  late final Map<String, ServiceSettings?> _cacheStore;
+  late final Map<String, ServiceSettings?> _cacheStore = {};
 
   Future<ServiceSettings?> get(String name) async {
     if (_cacheStore[name] != null) return _cacheStore[name];

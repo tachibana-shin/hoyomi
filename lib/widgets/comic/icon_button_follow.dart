@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 
 class IconButtonFollow extends StatefulWidget {
   final String sourceId;
@@ -37,10 +38,8 @@ class _IconButtonFollowState extends State<IconButtonFollow> {
         tooltip: _isFollowed.value ? "Unfollow" : "Follow",
         icon: ValueListenableBuilder<bool>(
           valueListenable: _isFollowed,
-          builder: (context, value, child) => Icon(
-            value
-                ? MaterialCommunityIcons.bookmark
-                : MaterialCommunityIcons.bookmark_outline,
+          builder: (context, value, child) => Iconify(
+            value ? Mdi.bookmark : Mdi.bookmark_outline,
           ),
         ),
         onPressed: () {

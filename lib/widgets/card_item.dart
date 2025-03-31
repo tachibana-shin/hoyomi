@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/eva.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import 'circular_progress.dart';
 
@@ -41,26 +43,22 @@ class CardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final widgetStar = switch (rate) {
-      != null => Text.rich(
-          TextSpan(
-            children: [
-              WidgetSpan(
-                alignment: PlaceholderAlignment.middle,
-                child: Icon(
-                  MaterialCommunityIcons.star,
-                  color: Colors.blue.shade200,
-                  size: 12.0,
-                ),
+      != null => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Iconify(
+              Eva.star_fill,
+              color: Colors.blue.shade200,
+              size: 12.0,
+            ),
+            Text(
+              ' $rate',
+              style: TextStyle(
+                fontSize: 10.0,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
-              TextSpan(
-                text: ' $rate',
-                style: TextStyle(
-                  fontSize: 10.0,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       _ => null,
     };
@@ -89,11 +87,16 @@ class CardItem extends StatelessWidget {
                   aspectRatio: 2 / 3,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
-                    child: OImage.oNetwork(
-                      image,
-                      sourceId: sourceId,
-                      fit: BoxFit.cover,
-                    ),
+                    child: Skeleton.replace(
+                        replacement: Image.asset(
+                          'assets/images/blank.png',
+                          fit: BoxFit.cover,
+                        ),
+                        child: OImage.oNetwork(
+                          image,
+                          sourceId: sourceId,
+                          fit: BoxFit.cover,
+                        )),
                   ),
                 ),
 
@@ -196,24 +199,21 @@ class CardItem extends StatelessWidget {
                     bottom: 4,
                     left: 4,
                     right: 0,
-                    child: Wrap(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(
-                            left: 8.0,
-                            right: 8.0,
-                            top: 4.0,
-                            bottom: 4.0,
-                          ),
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).colorScheme.surfaceContainer,
-                            borderRadius: BorderRadius.circular(14.0),
-                          ),
-                          child: widgetStar,
+                    child: Wrap(children: [
+                      Container(
+                        padding: const EdgeInsets.only(
+                          left: 8.0,
+                          right: 8.0,
+                          top: 4.0,
+                          bottom: 4.0,
                         ),
-                      ],
-                    ),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                        child: widgetStar,
+                      ),
+                    ]),
                   ),
 
                 // progress read

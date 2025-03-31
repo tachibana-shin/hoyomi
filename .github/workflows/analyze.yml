@@ -23,6 +23,9 @@ jobs:
           channel: stable
           version: 3.27.4
 
+      - name: Touch file .env
+        run: touch .env
+
       - name: Install dependencies
         run: flutter pub get
 

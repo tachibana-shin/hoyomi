@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class IconButtonOpenBrowser extends StatelessWidget {
@@ -20,7 +21,7 @@ class IconButtonOpenBrowser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(MaterialCommunityIcons.earth),
+      icon: const Iconify(Mdi.earth),
       onPressed: () async {
         open(url);
       },

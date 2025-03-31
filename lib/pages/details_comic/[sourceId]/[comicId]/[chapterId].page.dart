@@ -10,10 +10,11 @@ import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/screens/home_comic/manga_reader.dart';
 
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hoyomi/widgets/comic/icon_button_follow.dart';
 import 'package:hoyomi/widgets/comic/icon_button_open_browser.dart';
 import 'package:hoyomi/widgets/comic/icon_button_share.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/fluent_mdl2.dart';
 
 class DetailsComicReader extends StatefulWidget {
   final String sourceId;
@@ -180,7 +181,7 @@ class _AppBarState extends State<_AppBar> {
                         ).scaffoldBackgroundColor.withValues(alpha: 0.8),
                         elevation: 0,
                         leading: IconButton(
-                          icon: const Icon(MaterialCommunityIcons.arrow_left),
+                          icon: const Iconify(FluentMdl2.chevron_left),
                           onPressed: () {
                             context.pop();
                           },

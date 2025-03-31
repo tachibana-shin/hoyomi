@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/utils/authentication.dart';
-import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:hoyomi/widgets/iconify.dart';
 import 'package:colorful_iconify_flutter/icons/logos.dart';
 
 class SignInMainPage extends StatefulWidget {
@@ -53,7 +53,7 @@ class _SignInMainPageState extends State<SignInMainPage> {
 
         Future.microtask(() {
           if (_signed) showSnackBar(Text('You are already signed in'));
-          context.pop();
+          if (context.mounted) context.pop();
         });
 
         return const SizedBox.shrink();

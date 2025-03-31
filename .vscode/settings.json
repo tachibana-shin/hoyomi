@@ -6,6 +6,7 @@
     "debouncer",
     "Eiga",
     "hoyomi",
+    "Iconify",
     "referer",
     "tabbarview",
     "Toon",
@@ -20,5 +21,5 @@
   "flutterTools.displayGetxContextMenu": true,
   "flutterTools.displayMobxContextMenu": false,
   "flutterTools.displayRiverpodContextMenu": false,
-  "flutterTools.displayModularContextMenu": true
+  "flutterTools.displayModularContextMenu": false
 }
