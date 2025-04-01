@@ -8,21 +8,7 @@ import 'dart:math';
 import 'package:get/get.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_category.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
-import 'package:hoyomi/core_services/interfaces/carousel.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/home_eiga_category.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_param.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:hoyomi/core_services/interfaces/filter.dart';
-import 'package:hoyomi/core_services/interfaces/genre.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
 
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
