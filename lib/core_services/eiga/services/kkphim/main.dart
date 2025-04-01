@@ -312,7 +312,9 @@ class KKPhimService extends ABEigaService
     final index = max(0, eigaId.indexOf('@'));
 
     final eigaIdRaw = index == 0 ? eigaId : eigaId.substring(0, index);
-    final seasonName = eigaIdRaw.length + 1 < eigaId.length ? eigaId.substring(eigaIdRaw.length + 1) : '';
+    final seasonName = eigaIdRaw.length + 1 < eigaId.length
+        ? eigaId.substring(eigaIdRaw.length + 1)
+        : '';
 
     final pageData = await _getDetails(eigaIdRaw);
 
