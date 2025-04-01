@@ -182,6 +182,7 @@ abstract class Service with _SettingsMixin {
     required Service? service,
     required Widget Function(Object? error) orElse,
   }) {
+    debugPrint('$error');
     if (error is CaptchaRequiredException) {
       return Padding(
         padding: isSnackbar
