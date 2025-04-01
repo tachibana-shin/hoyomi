@@ -954,7 +954,7 @@ String _removeAdsFromM3U8(Uri url, String m3u8) {
   for (int i = 0; i < lines.length; i++) {
     final line = lines.elementAt(i);
     final match = regex.firstMatch(line);
-    if (match != null) {
+    if (match != null && i + 1 < lines.length) {
       // if line is segment. Example #EXTINF:133343
       // the next line is url
       final url = lines.elementAt(i + 1);
