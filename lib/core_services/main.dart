@@ -19,7 +19,11 @@ ABComicService getComicService(String id) {
   throw Exception('Service not found');
 }
 
-List<ABEigaService> eigaServices = [AnimeVietsubService(), OPhimService(), KKPhimService()];
+List<ABEigaService> eigaServices = [
+  AnimeVietsubService(),
+  OPhimService(),
+  KKPhimService()
+];
 
 ABEigaService getEigaService(String id) {
   for (final service in eigaServices) {
