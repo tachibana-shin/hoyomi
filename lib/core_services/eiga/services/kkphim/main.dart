@@ -23,7 +23,7 @@ class KKPhimService extends ABEigaService
   @override
   late final init = ServiceInit(
     name: "KKPhim",
-    faviconUrl: OImage(src: 'https://kkphim.com/assets/img/favicon.png'),
+    faviconUrl: OImage(src: '$_homeCms/../assets/img/favicon.png'),
     rootUrl: 'https://$hostCUrl',
   );
 
