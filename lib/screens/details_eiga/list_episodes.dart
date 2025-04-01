@@ -52,7 +52,11 @@ class ListEpisodes extends StatefulWidget {
   State<ListEpisodes> createState() => _ListEpisodesState();
 }
 
-class _ListEpisodesState extends State<ListEpisodes> with KaeruMixin {
+class _ListEpisodesState extends State<ListEpisodes>
+    with KaeruMixin, AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   late final _episodesEiga = computed<Future<EigaEpisodes>>(() async {
     try {
       final episodes = await widget.getData(_updateEpisodesEiga);
@@ -99,6 +103,8 @@ class _ListEpisodesState extends State<ListEpisodes> with KaeruMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final height = 35.0;
 
     return Watch(() {
