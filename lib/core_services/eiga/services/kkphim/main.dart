@@ -205,8 +205,8 @@ class KKPhimService extends ABEigaService
       basePath =
           'v1/api/quoc-gia/${query['country']?.lastOrNull ?? categoryId.replaceFirst('quoc-gia_', '')}';
     } else if (categoryId.startsWith('tim-kiem_')) {
-      basePath =
-          'v1/api/tim-kiem?keyword=${categoryId.replaceFirst('tim-kiem_', '')}';
+      basePath = 'v1/api/tim-kiem';
+      query['keyword'] = [categoryId.replaceFirst('tim-kiem_', '')];
     } else if (categoryId.startsWith('the-loai_')) {
       basePath =
           'v1/api/the-loai/${query['category']?.lastOrNull ?? categoryId.replaceFirst('the-loai_', '')}';
@@ -258,7 +258,7 @@ class KKPhimService extends ABEigaService
     final poster = _getImage(cdn: null, src: pageData.movie.posterUrl);
     final description = pageData.movie.content;
 
-    final rate = pageData.movie.tmdb.voteAverage.toDouble();
+    final rate = pageData.movie.tmdb.voteAverage;
     final countRate = pageData.movie.tmdb.voteCount;
     final duration = pageData.movie.episodeTotal;
     final yearOf = pageData.movie.year;
@@ -754,25 +754,16 @@ class _MovieDetail {
 }
 
 class _Tmdb {
-  final dynamic type;
-  final dynamic id;
-  final dynamic season;
-  final int voteAverage;
-  final int voteCount;
+  final double? voteAverage;
+  final int? voteCount;
 
   _Tmdb({
-    this.type,
-    this.id,
-    this.season,
     required this.voteAverage,
     required this.voteCount,
   });
 
   factory _Tmdb.fromJson(Map<String, dynamic> json) {
     return _Tmdb(
-      type: json['type'],
-      id: json['id'],
-      season: json['season'],
       voteAverage: json['vote_average'],
       voteCount: json['vote_count'],
     );
