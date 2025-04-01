@@ -19,6 +19,7 @@ class KKPhimService extends ABEigaService
 // EigaFollowMixin,
 {
   final hostCUrl = "phimapi.com";
+  final _homeCms = "https://kkphim.com/duyet-tim";
   @override
   late final init = ServiceInit(
     name: "KKPhim",
@@ -53,16 +54,17 @@ class KKPhimService extends ABEigaService
     );
   }
 
-  OImage _getImage({required String src}) {
-    return OImage(src: src);
+  OImage _getImage({required String? cdn, required String src}) {
+    return OImage(
+        src: cdn == null ? src : Uri.parse(cdn).resolve(src).toString());
   }
 
-  Eiga _parseItem(String domainCDNImage, _MovieItem item) {
+  Eiga _parseItem(String? cdn, _MovieItem item) {
     return Eiga(
       name: item.name,
       originalName: item.originName,
       eigaId: item.slug,
-      image: _getImage(src: item.thumbUrl),
+      image: _getImage(cdn: cdn, src: item.thumbUrl),
       notice: '${item.quality}-${item.episodeCurrent}',
       preRelease: null,
       pending: item.episodeCurrent == 'Trailer',
@@ -71,8 +73,8 @@ class KKPhimService extends ABEigaService
     );
   }
 
-  CarouselItem _parseCarousel(String domainCDNImage, _MovieItem item) {
-    final data = _parseItem(domainCDNImage, item);
+  CarouselItem _parseCarousel(_MovieItem item) {
+    final data = _parseItem(null, item);
 
     final year = item.year.toString();
     final description = item.originName;
@@ -91,7 +93,7 @@ class KKPhimService extends ABEigaService
     //     });
 
     return CarouselItem(
-      image: _getImage(src: item.posterUrl),
+      image: _getImage(cdn: null, src: item.posterUrl),
       eigaId: data.eigaId,
       name: data.name,
       originalName: data.originalName,
@@ -113,23 +115,25 @@ class KKPhimService extends ABEigaService
       'Phim lẻ': 'phim-le',
       'Truyền hình': 'tv-shows',
       'Hoạt hình': 'hoat-hinh',
-      'Sắp chiếu': 'phim-sap-chieu',
-      'Sub team': 'subteam',
+      'Nhật Bản': '/v1/api/quoc-gia/nhat-ban',
+      'Thuyết minh & Lồng tiếng':
+          '/v1/api/nam/2025?sort_lang=thuyet-minh,long-tieng',
     };
 
-    final responses = await Future.wait([
-      _get('index.json'),
-      ...categoryUrls.values
-          .map((slug) => _get('danh-sach/$slug.json?slug=$slug')),
-    ]);
-
-    final carouselPage = responses.first;
-    final carouselItems = carouselPage.data.items
-        .map(
-            (item) => _parseCarousel(carouselPage.data.appDomainCdnImage, item))
+    final carouselPage$ = fetch('$baseUrl/danh-sach/phim-moi-cap-nhat-v3').then(
+        (json) => List<_MovieItem>.from(
+            jsonDecode(json)['items'].map((x) => _MovieItem.fromJson(x))));
+    final categoryPages$ = categoryUrls.values
+        .map((slug) =>
+            _get(slug.startsWith('/') ? slug : 'v1/api/danh-sach/$slug?page=1'))
         .toList();
 
-    final categoryPages = responses.skip(1).toList();
+    await Future.wait([carouselPage$, ...categoryPages$]);
+
+    final carouselPage = await carouselPage$;
+    final categoryPages = await Future.wait(categoryPages$);
+
+    final carouselItems = carouselPage.map(_parseCarousel).toList();
     final categorys = categoryUrls.entries.map((entry) {
       final name = entry.key;
       final slug = entry.value;
@@ -155,22 +159,27 @@ class KKPhimService extends ABEigaService
   }
 
   Future<List<Filter>> _getFilters() async {
-    final document = await fetchDocument('$baseUrl/danh-sach/phim-moi');
+    final document = await fetchDocument('$_homeCms');
 
-    return document.querySelectorAll('#form-filter select').map((select) {
-      final key = select.attributes['name']!;
-      final multiple = ['category', 'country', 'year'].contains(key);
-      final items = select
-          .querySelectorAll('option')
+    return document
+        .querySelectorAll('#filter-panel > form > div:not([class])')
+        .map((group) {
+      final name = group.querySelector('.font-bold')!.text;
+      final key = group
+          .querySelector('input')!
+          .attributes['name']!
+          .replaceFirst('[]', '');
+      final multiple = false;
+      final items = group
+          .querySelectorAll('label')
           .indexed
           .skip(1)
           .map((entry) => Option(
-                name: entry.$2.text,
-                value: entry.$2.attributes['value']!,
-                selected: entry.$1 == 0,
+                name: entry.$2.text.trim(),
+                value: entry.$2.querySelector('input')!.attributes['value']!,
+                selected: false,
               ))
           .toList();
-      final name = items.first.name;
 
       return Filter(
         name: name,
@@ -191,34 +200,23 @@ class KKPhimService extends ABEigaService
     if (query['sort_field'] == null || query['sort_field']!.isEmpty) {
       query['sort_field'] = ['modified.time'];
     }
+    bool isListMode = false;
     if (categoryId.startsWith('quoc-gia_')) {
-      basePath = 'danh-sach/phim-moi.json';
-
-      query['slug'] = ['phim-moi'];
-      query['country'] = [
-        ...query['country'] ?? [],
-        categoryId.replaceFirst('quoc-gia_', '')
-      ];
+      basePath =
+          'v1/api/quoc-gia/${query['country']?.lastOrNull ?? categoryId.replaceFirst('quoc-gia_', '')}';
     } else if (categoryId.startsWith('tim-kiem_')) {
-      basePath = 'tim-kiem.json';
-
-      query['keyword'] = [categoryId.replaceFirst('tim-kiem_', '')];
+      basePath =
+          'v1/api/tim-kiem?keyword=${categoryId.replaceFirst('tim-kiem_', '')}';
     } else if (categoryId.startsWith('the-loai_')) {
-      basePath = 'danh-sach/phim-moi.json';
-
-      query['slug'] = ['phim-moi'];
-      query['category'] = [
-        ...query['category'] ?? [],
-        categoryId.replaceFirst('the-loai_', '')
-      ];
+      basePath =
+          'v1/api/the-loai/${query['category']?.lastOrNull ?? categoryId.replaceFirst('the-loai_', '')}';
     } else if (categoryId.startsWith('danh-sach_')) {
-      basePath = 'danh-sach/${categoryId.replaceFirst('danh-sach_', '')}.json';
-
-      query['slug'] = [categoryId.replaceFirst('danh-sach_', '')];
-    } else {
-      basePath = '$categoryId.json';
-
-      query['slug'] = [categoryId];
+      basePath =
+          'v1/api/danh-sach/${query['type']?.lastOrNull ?? categoryId.replaceFirst('danh-sach_', '')}';
+      isListMode = true;
+    } else if (categoryId.startsWith('nam_')) {
+      basePath =
+          'v1/api/nam/${query['year']?.lastOrNull ?? categoryId.replaceFirst('nam_', '')}';
     }
 
     final url =
@@ -241,7 +239,9 @@ class KKPhimService extends ABEigaService
       page: page,
       totalItems: totalItems,
       totalPages: totalPages,
-      filters: iFilters,
+      filters: isListMode
+          ? iFilters
+          : iFilters.where((filter) => filter.key != 'type').toList(),
     );
   }
 
@@ -254,8 +254,8 @@ class KKPhimService extends ABEigaService
 
     final name = pageData.movie.name;
     final originalName = pageData.movie.originName;
-    final image = _getImage(src: pageData.movie.thumbUrl);
-    final poster = _getImage(src: pageData.movie.posterUrl);
+    final image = _getImage(cdn: null, src: pageData.movie.thumbUrl);
+    final poster = _getImage(cdn: null, src: pageData.movie.posterUrl);
     final description = pageData.movie.content;
 
     final rate = pageData.movie.tmdb.voteAverage.toDouble();
@@ -327,14 +327,8 @@ class KKPhimService extends ABEigaService
         .toList();
     if (episodes == null) throw Exception('Episode not found');
 
-    final image = _getImage(src: pageData.movie.thumbUrl);
-    final poster = _getImage(src: pageData.movie.posterUrl);
-
-    // analytics
-    fetch('$baseUrl/api/movies', body: {
-      'action': 'update-view',
-      'slug': eigaIdRaw,
-    });
+    final image = _getImage(cdn: null, src: pageData.movie.thumbUrl);
+    final poster = _getImage(cdn: null, src: pageData.movie.posterUrl);
 
     return EigaEpisodes(
       episodes: episodes,
@@ -393,8 +387,8 @@ class KKPhimService extends ABEigaService
 
   @override
   getSuggest({required metaEiga, required eigaId, page}) async {
-    final pageData = await _get(
-        'danh-sach/phim-moi.json?slug=phim-moi&sort_field=modified.time&category=${metaEiga.genres.map((genre) => genre.genreId.replaceFirst('the-loai_', '')).join(',')}&country=${metaEiga.countries?.map((genre) => genre.genreId.replaceFirst('quoc-gia_', '')).join(',') ?? ''}');
+    final pageData =
+        await _get('v1/api/the-loai/${metaEiga.genres.first.genreId}?limit=30');
 
     final metaSlugs = metaEiga.genres
         .map((c) => c.genreId.replaceFirst('the-loai_', ''))
@@ -430,20 +424,12 @@ class KKPhimService extends ABEigaService
 
 /// ======================= utils =========================
 class _MovieResponse {
-  final String status;
-  final String msg;
   final _Data data;
 
-  _MovieResponse({
-    required this.status,
-    required this.msg,
-    required this.data,
-  });
+  _MovieResponse({required this.data});
 
   factory _MovieResponse.fromJson(Map<String, dynamic> json) {
     return _MovieResponse(
-      status: json['status'],
-      msg: json['msg'],
       data: _Data.fromJson(json['data']),
     );
   }
@@ -536,6 +522,7 @@ class _BreadCrumb {
 }
 
 class _MovieItem {
+  final _Modified modified;
   final String id;
   final String name;
   final String slug;
@@ -543,6 +530,7 @@ class _MovieItem {
   final String type;
   final String posterUrl;
   final String thumbUrl;
+  final bool subDocquyen;
   final String time;
   final String episodeCurrent;
   final String quality;
@@ -550,11 +538,9 @@ class _MovieItem {
   final int year;
   final List<_Category> category;
   final List<_Country> country;
-  final bool subDocQuyen;
-  final bool chieuRap;
-  final _Modified modified;
 
   _MovieItem({
+    required this.modified,
     required this.id,
     required this.name,
     required this.slug,
@@ -562,6 +548,7 @@ class _MovieItem {
     required this.type,
     required this.posterUrl,
     required this.thumbUrl,
+    required this.subDocquyen,
     required this.time,
     required this.episodeCurrent,
     required this.quality,
@@ -569,13 +556,11 @@ class _MovieItem {
     required this.year,
     required this.category,
     required this.country,
-    required this.subDocQuyen,
-    required this.chieuRap,
-    required this.modified,
   });
 
   factory _MovieItem.fromJson(Map<String, dynamic> json) {
     return _MovieItem(
+      modified: _Modified.fromJson(json['modified']),
       id: json['_id'],
       name: json['name'],
       slug: json['slug'],
@@ -583,18 +568,16 @@ class _MovieItem {
       type: json['type'],
       posterUrl: json['poster_url'],
       thumbUrl: json['thumb_url'],
+      subDocquyen: json['sub_docquyen'],
       time: json['time'],
       episodeCurrent: json['episode_current'],
       quality: json['quality'],
       lang: json['lang'],
       year: json['year'],
-      category: List<_Category>.from(
-          json['category'].map((x) => _Category.fromJson(x))),
+      category:
+          (json['category'] as List).map((e) => _Category.fromJson(e)).toList(),
       country:
-          List<_Country>.from(json['country'].map((x) => _Country.fromJson(x))),
-      subDocQuyen: json['sub_docquyen'],
-      chieuRap: json['chieurap'],
-      modified: _Modified.fromJson(json['modified']),
+          (json['country'] as List).map((e) => _Country.fromJson(e)).toList(),
     );
   }
 }
@@ -880,8 +863,8 @@ class _Params {
   final String typeSlug;
   final List<String> filterCategory;
   final List<String> filterCountry;
-  final List<String> filterYear;
-  final List<String> filterType;
+  final List<int>? filterYear;
+  final List<String>? filterType;
   final String sortField;
   final String sortType;
   final _Pagination pagination;
@@ -897,14 +880,23 @@ class _Params {
     required this.pagination,
   });
 
+  static List<T> _toArray<T>(dynamic value) {
+    if (value is List<T?>) {
+      return value.where((item) => item != null).toList() as List<T>;
+    }
+    if (value is T) return [value];
+    return <T>[];
+  }
+
   // Factory constructor to create an instance of Params from JSON
   factory _Params.fromJson(Map<String, dynamic> json) {
+    print(json['filterYear']);
     return _Params(
       typeSlug: json['type_slug'],
-      filterCategory: List<String>.from(json['filterCategory']),
-      filterCountry: List<String>.from(json['filterCountry']),
-      filterYear: List<String>.from(json['filterYear']),
-      filterType: List<String>.from(json['filterType']),
+      filterCategory: _toArray<String>(json['filterCategory']),
+      filterCountry: _toArray<String>(json['filterCountry']),
+      filterYear: _toArray<int>(json['filterYear']),
+      filterType: _toArray<String>(json['filterType']),
       sortField: json['sortField'],
       sortType: json['sortType'],
       pagination: _Pagination.fromJson(json['pagination']),
