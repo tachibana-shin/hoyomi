@@ -254,8 +254,8 @@ class KKPhimService extends ABEigaService
 
     final name = pageData.movie.name;
     final originalName = pageData.movie.originName;
-    final image = _getImage(cdn: null, src: pageData.movie.thumbUrl);
-    final poster = _getImage(cdn: null, src: pageData.movie.posterUrl);
+    final image = _getImage(cdn: null, src: pageData.movie.posterUrl);
+    final poster = _getImage(cdn: null, src: pageData.movie.thumbUrl);
     final description = pageData.movie.content;
 
     final rate = pageData.movie.tmdb.voteAverage;
