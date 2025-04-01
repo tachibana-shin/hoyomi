@@ -13,6 +13,7 @@ dependencies:
   cached_network_image: ^3.4.1
   card_swiper: ^3.0.1
   colorful_iconify_flutter: ^0.0.5
+  contentsize_tabbarview: ^0.0.2
   crypto: ^3.0.6
   device_info_plus: ^11.3.0
   drop_down_list: ^0.0.8

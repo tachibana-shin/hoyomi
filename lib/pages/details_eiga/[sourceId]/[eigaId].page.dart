@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -1061,53 +1062,58 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             });
 
             final children = [
-              (double? height) => TabBarView(
-                      children: metaEiga$.seasons.asMap().entries.map((entry) {
-                    final season = entry.value;
-                    final index = entry.key;
+              (double? height) {
+                final children = metaEiga$.seasons.asMap().entries.map((entry) {
+                  final season = entry.value;
+                  final index = entry.key;
 
-                    final child = ListEpisodes(
-                      season: season,
-                      sourceId: widget.sourceId,
-                      thumbnail: metaEiga$.poster ?? metaEiga$.image,
-                      eigaIdNotifier: _eigaId,
-                      episodeIdNotifier: _episodeId,
-                      eventBus: _eventBus,
-                      getData: (update) async =>
-                          _cacheEpisodesStore[season.eigaId] ??=
-                              await _getEpisodes(
-                        season.eigaId,
-                        update,
-                      ),
-                      getWatchTimeEpisodes: (episodesEiga) async =>
-                          _cacheWatchTimeStore[season.eigaId] ??=
-                              _service is EigaWatchTimeMixin
-                                  ? await (_service as EigaWatchTimeMixin)
-                                      .getWatchTimeEpisodes(
-                                      eigaId: season.eigaId,
-                                      episodes: episodesEiga.episodes,
-                                    )
-                                  : {},
-                      eager: true,
-                      scrollDirection: scrollDirection,
-                      controller: controller,
-                      onTapEpisode: ({
-                        required episodesEiga,
-                        required indexEpisode,
-                      }) {
-                        _onChangeEpisode(
-                          indexEpisode: indexEpisode,
-                          indexSeason: index,
-                          episodesEiga: episodesEiga,
-                          seasons: metaEiga$.seasons,
-                        );
-                      },
-                    );
+                  final child = ListEpisodes(
+                    season: season,
+                    sourceId: widget.sourceId,
+                    thumbnail: metaEiga$.poster ?? metaEiga$.image,
+                    eigaIdNotifier: _eigaId,
+                    episodeIdNotifier: _episodeId,
+                    eventBus: _eventBus,
+                    getData: (update) async =>
+                        _cacheEpisodesStore[season.eigaId] ??=
+                            await _getEpisodes(
+                      season.eigaId,
+                      update,
+                    ),
+                    getWatchTimeEpisodes: (episodesEiga) async =>
+                        _cacheWatchTimeStore[season.eigaId] ??=
+                            _service is EigaWatchTimeMixin
+                                ? await (_service as EigaWatchTimeMixin)
+                                    .getWatchTimeEpisodes(
+                                    eigaId: season.eigaId,
+                                    episodes: episodesEiga.episodes,
+                                  )
+                                : {},
+                    eager: true,
+                    scrollDirection: scrollDirection,
+                    controller: controller,
+                    onTapEpisode: ({
+                      required episodesEiga,
+                      required indexEpisode,
+                    }) {
+                      _onChangeEpisode(
+                        indexEpisode: indexEpisode,
+                        indexSeason: index,
+                        episodesEiga: episodesEiga,
+                        seasons: metaEiga$.seasons,
+                      );
+                    },
+                  );
 
-                    return height == null
-                        ? child
-                        : SizedBox(height: height, child: child);
-                  }).toList()),
+                  return height == null
+                      ? child
+                      : SizedBox(height: height, child: child);
+                }).toList();
+
+                return inModal
+                    ? TabBarView(children: children)
+                    : ContentSizeTabBarView(children: children);
+              },
               (void _) => TabBar(
                     isScrollable: true,
                     padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 0),

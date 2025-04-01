@@ -241,6 +241,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.1"
+  contentsize_tabbarview:
+    dependency: "direct main"
+    description:
+      name: contentsize_tabbarview
+      sha256: "4a3cf5e3a17bb5ebe5ee56d55c518f4dde7db639334b79f874f03ecea4755b22"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   convert:
     dependency: transitive
     description:
