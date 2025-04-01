@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -1062,7 +1061,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             });
 
             final children = [
-              (double? height) => ContentSizeTabBarView(
+              (double? height) => TabBarView(
                       children: metaEiga$.seasons.asMap().entries.map((entry) {
                     final season = entry.value;
                     final index = entry.key;
