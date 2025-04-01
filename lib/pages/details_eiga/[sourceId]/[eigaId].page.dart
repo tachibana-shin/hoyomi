@@ -20,7 +20,7 @@ import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/eva.dart';
-import 'package:iconify_flutter/icons/fluent_mdl2.dart';
+import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
@@ -186,7 +186,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     scrolledUnderElevation: 0.0,
                     leading: IconButton(
-                      icon: const Iconify(FluentMdl2.chevron_left),
+                      icon: const Iconify(Ion.chevron_left),
                       onPressed: () {
                         context.pop();
                       },
@@ -623,7 +623,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 ),
                 Center(
                   child: Iconify(
-                    FluentMdl2.chevron_right,
+                    Ion.chevron_right,
                     size: 16.0,
                     color: Theme.of(context).colorScheme.secondary,
                   ),

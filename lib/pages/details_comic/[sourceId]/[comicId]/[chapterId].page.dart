@@ -14,7 +14,7 @@ import 'package:hoyomi/widgets/comic/icon_button_follow.dart';
 import 'package:hoyomi/widgets/comic/icon_button_open_browser.dart';
 import 'package:hoyomi/widgets/comic/icon_button_share.dart';
 import 'package:hoyomi/widgets/iconify.dart';
-import 'package:iconify_flutter/icons/fluent_mdl2.dart';
+import 'package:iconify_flutter/icons/ion.dart';
 
 class DetailsComicReader extends StatefulWidget {
   final String sourceId;
@@ -181,7 +181,7 @@ class _AppBarState extends State<_AppBar> {
                         ).scaffoldBackgroundColor.withValues(alpha: 0.8),
                         elevation: 0,
                         leading: IconButton(
-                          icon: const Iconify(FluentMdl2.chevron_left),
+                          icon: const Iconify(Ion.chevron_left),
                           onPressed: () {
                             context.pop();
                           },

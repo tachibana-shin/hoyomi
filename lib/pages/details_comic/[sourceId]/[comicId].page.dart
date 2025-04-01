@@ -24,7 +24,6 @@ import 'package:hoyomi/widgets/comic/sheet_chapters.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/eva.dart';
-import 'package:iconify_flutter/icons/fluent_mdl2.dart';
 import 'package:iconify_flutter/icons/ic.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
@@ -105,7 +104,7 @@ class _DetailsComicState extends State<DetailsComic>
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           scrolledUnderElevation: 0.0,
           leading: IconButton(
-            icon: const Iconify(FluentMdl2.chevron_left),
+            icon: const Iconify(Ion.chevron_left),
             onPressed: () {
               context.pop();
             },
@@ -118,7 +117,7 @@ class _DetailsComicState extends State<DetailsComic>
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           scrolledUnderElevation: 0.0,
           leading: IconButton(
-            icon: Iconify(FluentMdl2.chevron_left),
+            icon: Iconify(Ion.chevron_left),
             onPressed: () {
               context.pop();
             },

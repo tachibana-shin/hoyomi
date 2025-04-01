@@ -6,8 +6,8 @@ import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:hoyomi/widgets/comments/widget/comments.dart';
 import 'package:hoyomi/widgets/iconify.dart';
-import 'package:iconify_flutter/icons/fluent_mdl2.dart';
 import 'package:iconify_flutter/icons/ic.dart';
+import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 
 class Comment extends StatefulWidget {
@@ -189,7 +189,7 @@ class _CommentState extends State<Comment> {
                                   child: Padding(
                                     padding: EdgeInsets.only(left: 4.0),
                                     child: const Iconify(
-                                      FluentMdl2.chevron_down,
+                                      Ion.chevron_down,
                                       size: 18,
                                     ),
                                   ),

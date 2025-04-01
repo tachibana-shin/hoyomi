@@ -16,7 +16,7 @@ import 'package:hoyomi/widgets/infinite_grid.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:hoyomi/widgets/vertical_list.dart';
 import 'package:hoyomi/widgets/iconify.dart';
-import 'package:iconify_flutter/icons/fluent_mdl2.dart';
+import 'package:iconify_flutter/icons/ion.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class CategoryEigaPage extends StatefulWidget {
@@ -232,7 +232,7 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
                                       left: 7.0,
                                       right: 0.0,
                                     ),
-                                    child: Iconify(FluentMdl2.chevron_down),
+                                    child: Iconify(Ion.chevron_down),
                                   ),
                                 ],
                               ),
