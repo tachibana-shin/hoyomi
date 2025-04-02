@@ -5,6 +5,7 @@ import 'comic/services/truyengg/main.dart';
 import 'comic/services/truyenqq/main.dart';
 import 'eiga/services/animevietsub/main.dart';
 import 'eiga/services/kkphim/main.dart';
+import 'eiga/services/nguonc/main.dart';
 import 'eiga/services/ophim/main.dart';
 
 List<ABComicService> comicServices = [TruyenGGService(), TruyenQQService()];
@@ -22,7 +23,8 @@ ABComicService getComicService(String id) {
 List<ABEigaService> eigaServices = [
   AnimeVietsubService(),
   OPhimService(),
-  KKPhimService()
+  KKPhimService(),
+  NguonCService(),
 ];
 
 ABEigaService getEigaService(String id) {
