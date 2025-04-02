@@ -159,7 +159,7 @@ class KKPhimService extends ABEigaService
   }
 
   Future<List<Filter>> _getFilters() async {
-    final document = await fetchDocument('$_homeCms');
+    final document = await fetchDocument(_homeCms);
 
     return document
         .querySelectorAll('#filter-panel > form > div:not([class])')
@@ -883,7 +883,6 @@ class _Params {
 
   // Factory constructor to create an instance of Params from JSON
   factory _Params.fromJson(Map<String, dynamic> json) {
-    print(json['filterYear']);
     return _Params(
       typeSlug: json['type_slug'],
       filterCategory: _toArray<String>(json['filterCategory']),
