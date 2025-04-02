@@ -342,25 +342,25 @@ class _SocialOauth2 {
 
 Widget _generateButtonOAuth(_SocialOauth2 socialOAuth2,
     {bool icon = false, required VoidCallback onTap}) {
-  var foregroundColor = socialOAuth2.btnBgColor;
+  // var foregroundColor = socialOAuth2.btnBgColor;
   var backgroundColor = socialOAuth2.btnBgColor;
-  var overlayColor = Colors.white10;
+  // var overlayColor = Colors.white10;
 
-  final iconColor = Colors.white;
+  // final iconColor = Colors.white;
 
   if (socialOAuth2.name == 'google') {
-    foregroundColor = Colors.black;
+    // foregroundColor = Colors.black;
     backgroundColor = Colors.white;
-    overlayColor = Colors.white;
+    // overlayColor = Colors.white;
   }
 
   Widget iconWidget = Iconify(socialOAuth2.iconData, size: 30);
 
   final authButtonStyle = ButtonStyle(
-    foregroundColor: WidgetStateProperty.all(foregroundColor),
-    backgroundColor: WidgetStateProperty.all(backgroundColor),
-    overlayColor: WidgetStateProperty.all(overlayColor),
-    iconColor: WidgetStateProperty.all(iconColor),
+    // foregroundColor: WidgetStateProperty.all(foregroundColor),
+    // backgroundColor: WidgetStateProperty.all(backgroundColor),
+    // overlayColor: WidgetStateProperty.all(overlayColor),
+    // iconColor: WidgetStateProperty.all(iconColor),
     padding: WidgetStateProperty.all(EdgeInsets.all(12)),
   );
 
