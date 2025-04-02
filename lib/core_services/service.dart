@@ -520,7 +520,7 @@ abstract class Service with _SettingsMixin {
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
             );
-    final currentSettings = currentServiceSettings.settings ?? {};
+    var currentSettings = currentServiceSettings.settings ?? {};
 
     try {
       final user = await service.getUser(cookie: cookie);
@@ -531,7 +531,7 @@ abstract class Service with _SettingsMixin {
             currentServiceSettings.copyWith(userDataCache: jsonNewUserData);
       }
 
-      currentSettings['cookie'] = cookie;
+      currentSettings = {...currentSettings, 'cookie': cookie};
 
       currentServiceSettings = currentServiceSettings.copyWith(
         settings: currentSettings,
@@ -545,7 +545,7 @@ abstract class Service with _SettingsMixin {
 
       return user;
     } on UserNotFoundException catch (_) {
-      currentSettings['cookie'] = cookie;
+      currentSettings = {...currentSettings, 'cookie': cookie};
 
       currentServiceSettings = currentServiceSettings.copyWith(
         userDataCache: null,
@@ -601,8 +601,8 @@ abstract class Service with _SettingsMixin {
       return User.fromJson(jsonDecode(user));
     } on UserNotFoundException catch (_) {
       if (record != null) {
-        final settings = record.settings ?? {};
-        settings['cookie'] = cookie;
+        var settings = record.settings ?? {};
+        settings = {...settings, 'cookie': cookie};
 
         record = record.copyWith(settings: settings, userDataCache: null);
 
