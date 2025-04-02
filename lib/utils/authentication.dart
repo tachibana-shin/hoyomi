@@ -1,9 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart';
+import 'package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart'
+    as g_all;
+import 'package:google_sign_in/google_sign_in.dart' as g_native;
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/constraints/x_platform.dart';
+
+final _googleNativeSupport = XPlatform.isAndroid ||
+    XPlatform.isIOS ||
+    XPlatform.isMacOS ||
+    XPlatform.isWeb;
 
 class Authentication {
   static final Authentication _instance = Authentication._internal();
@@ -17,37 +24,57 @@ class Authentication {
   final _redirectPort =
       int.tryParse(dotenv.env['GOOGLE_REDIRECT_PORT'] ?? '') ?? 9003;
 
-  late final _googleSignIn = GoogleSignIn(
-    params: GoogleSignInParams(
-      clientId: _clientId,
-      clientSecret: _clientSecret,
-      redirectPort: _redirectPort,
-    ),
-  );
+  late final _googleSignIn =
+      _googleNativeSupport ? g_native.GoogleSignIn() : null;
+  late final _googleSignInAll = _googleNativeSupport
+      ? null
+      : g_all.GoogleSignIn(
+          params: g_all.GoogleSignInParams(
+            clientId: _clientId,
+            clientSecret: _clientSecret,
+            redirectPort: _redirectPort,
+          ),
+        );
 
   Future<User?> signInWithGoogle() async {
+    assert(_googleSignIn != null || _googleSignInAll != null);
+
     bool firebaseError = false;
     try {
-      if (kIsWeb) {
-        final googleProvider = GoogleAuthProvider();
-        final userCredential = await _auth.signInWithPopup(googleProvider);
+      // if (kIsWeb) {
+      //   final googleProvider = GoogleAuthProvider();
+      //   final userCredential = await _auth.signInWithPopup(googleProvider);
 
-        final user = userCredential.user;
+      //   final user = userCredential.user;
 
-        if (user != null) {
-          showSnackBar(Text('Logged in as ${user.displayName ?? user.email}'));
-        }
+      //   if (user != null) {
+      //     showSnackBar(Text('Logged in as ${user.displayName ?? user.email}'));
+      //   }
 
-        return user;
+      //   return user;
+      // }
+
+      late final OAuthCredential credential;
+      if (_googleSignIn != null) {
+        final client = await _googleSignIn.signIn();
+        final googleAuth = await client?.authentication;
+
+        if (googleAuth == null) throw Exception('Google Sign-In failed.');
+
+        credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+      } else {
+        final googleAuth = await _googleSignInAll!.signIn();
+
+        if (googleAuth == null) throw Exception('Google Sign-In failed.');
+
+        credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
       }
-
-      final googleAuth = await _googleSignIn.signIn();
-      if (googleAuth == null) throw Exception('Google Sign-In failed.');
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
 
       final userCredential = await _auth.signInWithCredential(credential);
       final user = userCredential.user;
@@ -134,9 +161,8 @@ class Authentication {
 
   Future<void> signOut() async {
     try {
-      if (!kIsWeb) {
-        await _googleSignIn.signOut();
-      }
+      await _googleSignIn?.signOut();
+      await _googleSignInAll?.signOut();
       await _auth.signOut();
 
       showSnackBar(Text('Signed out.'));
