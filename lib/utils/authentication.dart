@@ -68,7 +68,7 @@ class Authentication {
       } else {
         final googleAuth = await _googleSignInAll!.signIn();
 
-        if (googleAuth == null) throw Exception('Google Sign-In failed.');
+        if (googleAuth == null) return null; // User cancelled sign-in
 
         credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
