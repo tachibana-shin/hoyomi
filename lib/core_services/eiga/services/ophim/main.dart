@@ -192,6 +192,8 @@ class OPhimService extends ABEigaService
     late final String basePath;
     final Map<String, List<String>> query = Map.from(filters);
 
+    query['page'] = [page.toString()];
+
     if (query['sort_field'] == null || query['sort_field']!.isEmpty) {
       query['sort_field'] = ['modified.time'];
     }
