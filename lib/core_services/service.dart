@@ -115,7 +115,7 @@ abstract class Service with _SettingsMixin {
       placeholder: 'Example https://example.com/rss',
       description: 'The RSS feed of the service',
     ),
-    FieldInput(
+    FieldInput(tol
       name: 'User Agent',
       key: 'user_agent',
       defaultFn: (service) =>
@@ -309,6 +309,7 @@ abstract class Service with _SettingsMixin {
       'upgrade-insecure-requests': '1',
       'user-agent': record?.settings?['user_agent'] as String? ??
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      if (headers != null) ...headers
     };
 
     final DateTime? startTime = kDebugMode ? DateTime.now() : null;
@@ -407,6 +408,7 @@ abstract class Service with _SettingsMixin {
     if (response.statusCode == 200) {
       return utf8.decode(response.bodyBytes);
     } else {
+      debugPrint('Error: ${response.statusCode} ${response.reasonPhrase}');
       throw Exception('Failed to load data');
     }
   }
