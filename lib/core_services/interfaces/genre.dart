@@ -6,6 +6,8 @@ class Genre {
   final String? description;
   final OImage? image;
 
+  static const String noId = '\$_no_id_\$';
+
   const Genre({
     required this.name,
     required this.genreId,

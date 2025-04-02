@@ -12,6 +12,7 @@ class CarouselItem {
   final String? description;
   final String? studio;
   final String? duration;
+  final String? language;
   final List<Genre>? genres;
   final List<Genre>? actors;
 
@@ -26,6 +27,7 @@ class CarouselItem {
     required this.description,
     required this.studio,
     required this.duration,
+    this.language,
     required this.genres,
     required this.actors,
   });

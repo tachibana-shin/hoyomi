@@ -4,7 +4,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/widgets/vertical_separator.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/eva.dart';
@@ -100,6 +100,16 @@ class _CarouselEigaState extends State<CarouselEiga> {
                   ),
                 ),
               ],
+            if (item.language != null)
+              [
+                Text(
+                  item.language!,
+                  style: const TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.white,
+                  ),
+                )
+              ]
           ];
 
           return GestureDetector(
@@ -240,6 +250,66 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                 return arr;
                               }),
                             ),
+                            // genres
+                            if (item.genres?.isNotEmpty == true)
+                              Wrap(
+                                spacing: 7.0, // Space between the genre tags
+                                children: item.genres!.map((genre) {
+                                  return GestureDetector(
+                                    onTap: genre.genreId == Genre.noId
+                                        ? null
+                                        : () {
+                                            context.push(
+                                              '/category_eiga/${widget.sourceId}/${genre.genreId}',
+                                            );
+                                          },
+                                    child: Text(
+                                      '#${genre.name}',
+                                      style: genre.genreId == Genre.noId
+                                          ? null
+                                          : Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                fontSize: 14.0,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .tertiary,
+                                              ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            // actors
+                            if (item.actors?.isNotEmpty == true)
+                              Wrap(
+                                spacing: 7.0, // Space between the genre tags
+                                children: item.actors!.map((genre) {
+                                  return GestureDetector(
+                                    onTap: genre.genreId == Genre.noId
+                                        ? null
+                                        : () {
+                                            context.push(
+                                              '/category_eiga/${widget.sourceId}/${genre.genreId}',
+                                            );
+                                          },
+                                    child: Text(
+                                      '#${genre.name}',
+                                      style: genre.genreId == Genre.noId
+                                          ? null
+                                          : Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                fontSize: 14.0,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .tertiary,
+                                              ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
                             SizedBox(height: 5.0),
                             // description
                             Text(
