@@ -182,7 +182,10 @@ class AnimeVietsubService extends ABEigaService
   getFollowCount({required eigaId}) async {
     final document = await (_docEigaStore[eigaId] ??= fetchDocument(
       '$baseUrl/phim/$eigaId',
-    ));
+    ).catchError((error) {
+      _docEigaStore.remove(eigaId);
+      throw error;
+    }));
 
     final infoListLeft = document.querySelectorAll(
       ".mvici-left > .InfoList > .AAIco-adjust",
@@ -472,7 +475,10 @@ class AnimeVietsubService extends ABEigaService
   getDetails(String eigaId) async {
     final document = await (_docEigaStore[eigaId] ??= fetchDocument(
       '$baseUrl/phim/$eigaId',
-    ));
+    ).catchError((error) {
+      _docEigaStore.remove(eigaId);
+      throw error;
+    }));
 
     final name = document.querySelector(".Title")!.text;
     final originalName = document.querySelector(".SubTitle")!.text;

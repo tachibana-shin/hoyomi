@@ -561,7 +561,10 @@ abstract class Service with _SettingsMixin {
   }
 
   Future<User> fetchUser({ServiceSettings? row, bool? recordLoaded}) async {
-    return _userFuture ??= _fetchUser(record: row, recordLoaded: recordLoaded);
+    return _userFuture ??= _fetchUser(record: row, recordLoaded: recordLoaded).catchError((error) {
+      _userFuture = null;
+      throw error;
+    });
   }
 
   Future<User> _fetchUser({ServiceSettings? record, bool? recordLoaded}) async {
