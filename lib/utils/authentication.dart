@@ -37,7 +37,7 @@ class Authentication {
         );
 
   Future<User?> signInWithGoogle() async {
-    assert(_googleSignIn != null || _googleSignInAll != null);
+    assert(_googleSignIn != null || _googleSignInAll != null, 'No Google Sign-In implementation available for this platform');
 
     bool firebaseError = false;
     try {
