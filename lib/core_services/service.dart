@@ -115,7 +115,7 @@ abstract class Service with _SettingsMixin {
       placeholder: 'Example https://example.com/rss',
       description: 'The RSS feed of the service',
     ),
-    FieldInput(tol
+    FieldInput(
       name: 'User Agent',
       key: 'user_agent',
       defaultFn: (service) =>
