@@ -3,13 +3,22 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
+import 'package:hoyomi/core_services/service.dart';
 import 'package:http/http.dart';
 
 import '../interfaces/main.dart';
 import 'eiga_watch_time_mixin.dart';
 
 final _baseApiGeneral = dotenv.env['BASE_API_GENERAL'];
-mixin EigaWatchTimeGeneralMixin implements EigaWatchTimeMixin {
+mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
+  /// General watch time support but service not auth
+  @override
+  final bool $noAuth = true;
+  @override
+  getUser({required String cookie}) {
+    throw UnimplementedError();
+  }
+
   @override
   Future<WatchTime> getWatchTime({
     required String eigaId,
@@ -26,7 +35,7 @@ mixin EigaWatchTimeGeneralMixin implements EigaWatchTimeMixin {
 
     final response = await get(
         Uri.parse(_baseApiGeneral!).resolve(
-            '/eiga/get-watch-time?eiga_text_id=$eigaId&chap_id=${episode.episodeId}'),
+            '/eiga/get-watch-time?eiga_text_id=$eigaId&chap_id=${episode.episodeId}&sourceId=$uid'),
         headers: {'Authorization': 'Bearer ${idToken.token}'});
 
     if (response.statusCode != 200) {
@@ -53,8 +62,8 @@ mixin EigaWatchTimeGeneralMixin implements EigaWatchTimeMixin {
     final idToken = await user.getIdTokenResult();
 
     final response = await get(
-        Uri.parse(_baseApiGeneral!)
-            .resolve('/eiga/get-watch-time-episodes?eiga_text_id=$eigaId'),
+        Uri.parse(_baseApiGeneral!).resolve(
+            '/eiga/get-watch-time-episodes?eiga_text_id=$eigaId&sourceId=$uid'),
         headers: {'Authorization': 'Bearer ${idToken.token}'});
 
     if (response.statusCode != 200) {
@@ -94,15 +103,9 @@ mixin EigaWatchTimeGeneralMixin implements EigaWatchTimeMixin {
           'Authorization': 'Bearer ${idToken.token}'
         },
         body: <String, String>{
+          'sourceId': uid,
+          // data
           'name': metaEiga.name,
-          //         poster: z.string().min(1),
-          // eiga_text_id: z.string().min(1),
-          // season_name: z.string().min(1),
-          // cur: z.number(),
-          // dur: z.number(),
-          // episode_name: z.string(),
-          // episode_id: z.string()
-
           'poster': metaEiga.poster?.src ?? metaEiga.image.src,
           'eiga_text_id': eigaId,
           'season_name': season.name,

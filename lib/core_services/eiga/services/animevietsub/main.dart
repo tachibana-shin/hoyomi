@@ -101,11 +101,6 @@ class AnimeVietsubService extends ABEigaService
     faviconUrl: OImage(src: '/favicon.ico'),
     rootUrl: 'https://$hostCUrl',
   );
-  @override
-  final authInit = AuthInit(
-    signInUrl: (service) =>
-        "${service.baseUrl}/account/login/?_fxRef=${service.baseUrl}/",
-  );
 
   final String _apiOpEnd = "https://opend-9animetv.animevsub.eu.org";
   final String _apiThumb = "https://sk-hianime.animevsub.eu.org";

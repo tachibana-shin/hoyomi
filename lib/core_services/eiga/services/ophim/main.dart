@@ -444,16 +444,6 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
       filters: filters,
     );
   }
-
-  @override
-  // TODO: implement authInit
-  AuthInit get authInit => throw UnimplementedError();
-
-  @override
-  Future<User> getUser({required String cookie}) {
-    // TODO: implement getUser
-    throw UnimplementedError();
-  }
 }
 
 /// ======================= utils =========================
