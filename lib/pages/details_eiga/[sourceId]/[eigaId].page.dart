@@ -381,24 +381,26 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           SizedBox(height: 2.0),
 
           /////
-          Row(
+          Wrap(
             children: [
               if (metaEiga.quality != null)
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 4.0),
-                  decoration: BoxDecoration(
-                    color: Colors.greenAccent.shade400,
-                    borderRadius: BorderRadius.circular(4.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      metaEiga.quality!,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(fontSize: 14.0),
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                    decoration: BoxDecoration(
+                      color: Colors.greenAccent.shade400,
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    child: Center(
+                      child: Text(
+                        metaEiga.quality!,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(fontSize: 14.0),
+                      ),
                     ),
                   ),
-                ),
+                ]),
               if (metaEiga.quality != null) VerticalSeparator(),
               if (metaEiga.yearOf != null)
                 Text(
@@ -417,31 +419,34 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 ),
               if (metaEiga.countries?.isNotEmpty == true) VerticalSeparator(),
               if (metaEiga.countries?.isNotEmpty == true)
-                Row(
-                  children: metaEiga.countries!.map((country) {
-                    return Padding(
-                      padding: EdgeInsets.only(right: 4.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          context.push(
-                            '/category_eiga/${widget.sourceId}/${country.genreId}',
-                          );
-                        },
-                        child: Text(
-                          country.name,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(
-                                fontSize: 14.0,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.tertiary,
-                              ),
-                        ),
+                ...metaEiga.countries!.indexed.map((entry) {
+                  final index = entry.$1;
+                  final country = entry.$2;
+
+                  return Padding(
+                    padding: EdgeInsets.only(right: 4.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push(
+                          '/category_eiga/${widget.sourceId}/${country.genreId}',
+                        );
+                      },
+                      child: Text(
+                        index < metaEiga.countries!.length - 1
+                            ? '${country.name}, '
+                            : country.name,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(
+                              fontSize: 14.0,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.tertiary,
+                            ),
                       ),
-                    );
-                  }).toList(),
-                ),
+                    ),
+                  );
+                })
             ],
           ),
 
