@@ -36,5 +36,13 @@
     "jsx": "precompile",
     "jsxImportSource": "hono/jsx"
   },
-  "nodeModulesDir": "none"
+  "nodeModulesDir": "none",
+  "deploy": {
+    "project": "309bc9ed-d904-45c6-ab2d-3e27eb93094a",
+    "exclude": [
+      "**/node_modules"
+    ],
+    "include": [],
+    "entrypoint": "main.ts"
+  }
 }

@@ -1,10 +1,65 @@
-import { asc, and, eq, desc, exists } from "drizzle-orm"
+import { asc, and, or, eq, desc, isNull, isNotNull, exists } from "drizzle-orm"
 
 import { db } from "../db/db.ts"
 import { eigaHistories, eigaHistoryChapters } from "../db/schema.ts"
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Eiga {
+  static getWatchHistory(
+    sourceId: string,
+    params: {
+      user_id: number,
+      page: number,
+      limit: number
+    }
+  ) {
+    return db
+      .select({
+        sourceId: eigaHistories.sourceId,
+        eigaTextId: eigaHistories.eigaTextId,
+        name: eigaHistories.name,
+        poster: eigaHistories.poster,
+        seasonName: eigaHistories.seasonName,
+        createdAt: eigaHistories.createdAt,
+        watchUpdatedAt: eigaHistoryChapters.updatedAt,
+        watchName: eigaHistoryChapters.name,
+        watchId: eigaHistoryChapters.chapId,
+        watchCur: eigaHistoryChapters.cur,
+        watchDur: eigaHistoryChapters.dur
+      })
+      .from(eigaHistories)
+      .leftJoin(
+        eigaHistoryChapters,
+        or(
+          and(
+            isNull(eigaHistories.vChap),
+            eq(eigaHistoryChapters.id, eigaHistories.vChap)
+          ),
+          and(
+            isNotNull(eigaHistories.vChap),
+            eq(eigaHistoryChapters.id, eigaHistories.forTo)
+          )
+          // sql`
+          //   ${eigaHistoryChapters.id} in (
+          //     SELECT h_alt.${eigaHistories.id.name} FROM eiga_histories h_alt
+          //     WHERE
+          //       h_alt.${eigaHistories.sourceId.name} = ${eigaHistories.sourceId} AND
+          //       h_alt.${eigaHistories.userId.name} = ${eigaHistories.userId} AND
+          //       h_alt.${eigaHistories.eigaTextId.name} = ${eigaHistories.eigaTextId}
+          //   )
+          // `
+        )
+      )
+      .where(
+        and(
+        eq(eigaHistories.sourceId, sourceId),
+        eq(eigaHistories.userId, params.user_id)
+      ))
+      .orderBy(desc(eigaHistories.createdAt))
+      .limit(params.limit)
+      .offset((params.page - 1) * params.limit)
+  }
+
   static async setWatchTime(
     sourceId: string,
     params: {
@@ -46,6 +101,7 @@ export class Eiga {
       .from(eigaHistories)
       .where(
         and(
+          eq(eigaHistories.sourceId, sourceId),
           eq(eigaHistories.userId, params.user_id),
           eq(eigaHistories.eigaTextId, params.eiga_text_id),
           exists(
@@ -157,6 +213,7 @@ export class Eiga {
       .where(
         and(
           eq(eigaHistories.sourceId, sourceId),
+          eq(eigaHistories.userId, params.user_id),
           eq(eigaHistories.eigaTextId, params.eiga_text_id),
           eq(eigaHistoryChapters.chapId, params.chap_id)
         )
@@ -164,7 +221,7 @@ export class Eiga {
       .orderBy(desc(eigaHistoryChapters.updatedAt))
       .limit(1)
 
-    return row[0]
+    return row[0] as typeof row[0] | null
   }
   static async getWatchTimeEpisodes(
     sourceId: string,
@@ -211,6 +268,7 @@ export class Eiga {
       .where(
         and(
           eq(eigaHistories.sourceId, sourceId),
+          eq(eigaHistories.userId, params.user_id),
           eq(eigaHistories.eigaTextId, params.eiga_text_id)
         )
       )

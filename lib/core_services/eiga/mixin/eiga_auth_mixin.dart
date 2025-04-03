@@ -1,6 +1,8 @@
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 
-mixin EigaAuthMixin on AuthMixin {
+mixin EigaAuthMixin implements AuthMixin {
+  @override
+  final bool $noAuth = true;
   Future<bool> isFollowed({required String eigaId});
   Future<bool> setFollow({required String eigaId, required bool value});
   Future<int> getFollowCount({required String eigaId});
