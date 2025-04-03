@@ -212,19 +212,19 @@ class _WatchHistory {
 
   factory _WatchHistory.fromJson(Map<String, dynamic> json) {
     return _WatchHistory(
-      sourceId: json['sourceId'] as String,
-      eigaTextId: json['eigaTextId'] as String,
+      sourceId: json['source_id'] as String,
+      eigaTextId: json['eiga_text_id'] as String,
       name: json['name'] as String,
       poster: json['poster'] as String,
-      seasonName: json['seasonName'] as String,
-      createdAt: DateTime.parse(json['createdAt']),
-      watchUpdatedAt: json['watchUpdatedAt'] != null
-          ? DateTime.parse(json['watchUpdatedAt'])
+      seasonName: json['season_name'] as String,
+      createdAt: DateTime.parse(json['created_at']),
+      watchUpdatedAt: json['watch_updated_at'] != null
+          ? DateTime.parse(json['watch_updated_at'])
           : null,
-      watchName: json['watchName'] as String?,
-      watchId: json['watchId'] as String?,
-      watchCur: json['watchCur'] as num?,
-      watchDur: json['watchDur'] as num?,
+      watchName: json['watch_name'] as String?,
+      watchId: json['watch_id'] as String?,
+      watchCur: json['watch_cur'] as num?,
+      watchDur: json['watch_dur'] as num?,
     );
   }
 }

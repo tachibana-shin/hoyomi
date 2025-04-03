@@ -9,8 +9,9 @@ import {
 import { users } from "./users.ts"
 import { eigaHistoryChapters } from "./eiga_history_chapters.ts"
 
+export const  eigaHistoriesName =  "eiga_histories"
 export const eigaHistories = pgTable(
-  "eiga_histories",
+  eigaHistoriesName,
   {
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
     userId: integer("user_id")
