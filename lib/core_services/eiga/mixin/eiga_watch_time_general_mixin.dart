@@ -35,8 +35,11 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
 
     final response = await get(
         Uri.parse(_baseApiGeneral!).resolve(
-            '/eiga/get-watch-time?eiga_text_id=$eigaId&chap_id=${episode.episodeId}&sourceId=$uid'),
-        headers: {'Authorization': 'Bearer ${idToken.token}'});
+            '/api/eiga/get-watch-time?eiga_text_id=$eigaId&chap_id=${episode.episodeId}&sourceId=$uid'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${idToken.token}'
+        });
 
     if (response.statusCode != 200) {
       throw Exception('Failed to get watch time: ${response.statusCode}');
@@ -63,8 +66,11 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
 
     final response = await get(
         Uri.parse(_baseApiGeneral!).resolve(
-            '/eiga/get-watch-time-episodes?eiga_text_id=$eigaId&sourceId=$uid'),
-        headers: {'Authorization': 'Bearer ${idToken.token}'});
+            '/api/eiga/get-watch-time-episodes?eiga_text_id=$eigaId&sourceId=$uid'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${idToken.token}'
+        });
 
     if (response.statusCode != 200) {
       throw Exception('Failed to get watch time: ${response.statusCode}');
@@ -98,22 +104,23 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
     final idToken = await user.getIdTokenResult();
 
     final response = await post(
-        Uri.parse(_baseApiGeneral!).resolve('/eiga/set-watch-time'),
+        Uri.parse(_baseApiGeneral!).resolve('/api/eiga/set-watch-time'),
         headers: {
+          'Content-Type': 'application/json',
           'Authorization': 'Bearer ${idToken.token}'
         },
-        body: <String, String>{
+        body: jsonEncode({
           'sourceId': uid,
           // data
           'name': metaEiga.name,
           'poster': metaEiga.poster?.src ?? metaEiga.image.src,
           'eiga_text_id': eigaId,
           'season_name': season.name,
-          'cur': watchTime.position.inMilliseconds.toString(),
-          'dur': watchTime.duration.inMilliseconds.toString(),
+          'cur': watchTime.position.inMilliseconds / 1e3,
+          'dur': watchTime.duration.inMilliseconds / 1e3,
           'episode_name': episode.name,
           'episode_id': episode.episodeId,
-        });
+        }));
 
     if (response.statusCode != 200) {
       throw Exception('Failed to get watch time: ${response.statusCode}');
