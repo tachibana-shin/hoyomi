@@ -2,6 +2,6 @@
   "deno.enablePaths": [
     "./"
   ],
-  "deno.disablePaths": ["./firebase-admin"],
+  "deno.disablePaths": ["./firebase-admin", "./drizzle-kit"],
   "editor.inlayHints.enabled": "off"
 }
