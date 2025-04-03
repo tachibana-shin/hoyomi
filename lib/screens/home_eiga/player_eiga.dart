@@ -17,6 +17,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
+import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
@@ -238,7 +239,9 @@ class _PlayerEigaState extends State<PlayerEiga>
                   watchTime: data,
                 ))
             .catchError((error) {
-          debugPrint('Error: $error (${StackTrace.current})');
+          if (error is! UserNotFoundException) {
+            debugPrint('Error: $error (${StackTrace.current})');
+          }
 
           return WatchTimeData(
             eigaId: eigaId,

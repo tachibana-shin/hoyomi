@@ -12,6 +12,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
+import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/utils/cache_remember.dart';
 import 'package:hoyomi/widgets/eiga/button_follow_eiga.dart';
@@ -275,14 +276,18 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               ),
             ),
           );
-          (_service as EigaWatchTimeMixin).setWatchTime(
+          (_service as EigaWatchTimeMixin)
+              .setWatchTime(
             eigaId: eigaId,
             episode: _episode.value!,
             episodeIndex: _episodeIndex.value!,
             metaEiga: _metaEiga.value,
             season: _currentSeason.value!,
             watchTime: watchTime,
-          );
+          )
+              .catchError((error) {
+            if (error is! UserNotFoundException) debugPrint('Error: $error (${StackTrace.current})');
+          });
         }
       },
       aspectRatio: _aspectRatio,

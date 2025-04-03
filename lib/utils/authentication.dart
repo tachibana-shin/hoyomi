@@ -199,7 +199,7 @@ class Authentication {
   } // =================== utils ===================
 
   void _catchFirebaseAuthException(FirebaseAuthException err) {
-    debugPrint('Error: $err');
+    debugPrint('Error: $err (${StackTrace.current})');
     switch (err.code) {
       case 'account-exists-with-different-credential':
         showSnackBar(
@@ -216,7 +216,7 @@ class Authentication {
   }
 
   void _catchNormalException(dynamic err) {
-    debugPrint('Error: $err');
+    debugPrint('Error: $err (${StackTrace.current})');
     showSnackBar(Text('Error occurred Auth: $err'));
   }
 }

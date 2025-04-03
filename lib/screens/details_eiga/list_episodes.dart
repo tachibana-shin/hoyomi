@@ -6,6 +6,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
+import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/pages/details_eiga/[sourceId]/[eigaId].page.dart';
@@ -64,6 +65,8 @@ class _ListEpisodesState extends State<ListEpisodes>
 
       widget.getWatchTimeEpisodes(episodes).then((watchTimes) {
         if (mounted) _watchTimeEpisodes.value = watchTimes;
+      }).catchError((error) {
+        if (error is! UserNotFoundException) debugPrint('Error: $error (${StackTrace.current})');
       });
 
       if (widget.eager) {
