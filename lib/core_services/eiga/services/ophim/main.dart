@@ -68,7 +68,7 @@ class OPhimService extends ABEigaService
       notice: '${item.quality}-${item.episodeCurrent}',
       rate: item.tmdb?.voteAverage,
       preRelease: null,
-      pending: item.episodeCurrent == 'Trailer',
+      pending: item.episodeCurrent == 'Trailer' || item.episodeCurrent == 'Tập 0',
       lastEpisode: null,
       timeAgo: DateTime.parse(item.modified.time),
     );
