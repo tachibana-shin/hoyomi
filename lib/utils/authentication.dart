@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -175,6 +177,26 @@ class Authentication {
   }
 
   User? get currentUser => _auth.currentUser;
+
+  Future<User?> getUserAsync() {
+    final completer = Completer<User?>();
+
+    bool firstChanged = false;
+    late final StreamSubscription<User?> subscription;
+    subscription = _auth.userChanges().listen((user) {
+      if (firstChanged) {
+        subscription.cancel();
+        completer.complete(user);
+      } else {
+        firstChanged = true;
+      }
+    }, onError: (error) {
+      subscription.cancel();
+      completer.completeError(error);
+    }, onDone: () => subscription.cancel());
+
+    return completer.future;
+  } // =================== utils ===================
 
   void _catchFirebaseAuthException(FirebaseAuthException err) {
     debugPrint('Error: $err');

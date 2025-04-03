@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/utils/authentication.dart';
 import 'package:http/http.dart';
 
 import '../interfaces/main.dart';
@@ -28,7 +28,7 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
   }) async {
     assert(_baseApiGeneral != null, 'BASE_API_GENERAL is not set');
 
-    final user = FirebaseAuth.instance.currentUser;
+    final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
     final idToken = await user.getIdTokenResult();
@@ -59,7 +59,7 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
   }) async {
     assert(_baseApiGeneral != null, 'BASE_API_GENERAL is not set');
 
-    final user = FirebaseAuth.instance.currentUser;
+    final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
     final idToken = await user.getIdTokenResult();
@@ -98,7 +98,7 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
   }) async {
     assert(_baseApiGeneral != null, 'BASE_API_GENERAL is not set');
 
-    final user = FirebaseAuth.instance.currentUser;
+    final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
     final idToken = await user.getIdTokenResult();
