@@ -28,7 +28,7 @@
   },
   "tasks": {
     "start": "deno run --allow-net main.ts",
-    "dev": "deno run -A main.ts",
+    "dev": "deno run -A --watch main.ts",
     "xata:init": "deno run -A npm:@xata.io/cli init",
     "open:studio": "deno run -A npm:drizzle-kit studio"
   },
