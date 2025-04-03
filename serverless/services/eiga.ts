@@ -3,18 +3,22 @@ import { asc, and, eq, desc, exists } from "drizzle-orm"
 import { db } from "../db/db.ts"
 import { eigaHistories, eigaHistoryChapters } from "../db/schema.ts"
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Eiga {
-  static async setWatchTime(params: {
-    user_id: number
-    name: string
-    poster: string
-    eiga_text_id: string
-    season_name: string
-    cur: number
-    dur: number
-    episode_name: string
-    episode_id: string
-  }): Promise<void> {
+  static async setWatchTime(
+    sourceId: string,
+    params: {
+      user_id: number
+      name: string
+      poster: string
+      eiga_text_id: string
+      season_name: string
+      cur: number
+      dur: number
+      episode_name: string
+      episode_id: string
+    }
+  ): Promise<void> {
     if (params.dur <= 0) {
       throw new Error("Duration must be greater than 0")
     }
@@ -28,6 +32,7 @@ export class Eiga {
       .from(eigaHistories)
       .where(
         and(
+          eq(eigaHistories.sourceId, sourceId),
           eq(eigaHistories.userId, params.user_id),
           eq(eigaHistories.eigaTextId, params.eiga_text_id)
         )
@@ -63,6 +68,7 @@ export class Eiga {
       const result = await db
         .insert(eigaHistories)
         .values({
+          sourceId: sourceId,
           userId: params.user_id,
           eigaTextId: params.eiga_text_id,
           name: params.episode_name,
@@ -118,11 +124,14 @@ export class Eiga {
         .where(eq(eigaHistories.id, latestHistory[0].id))
     }
   }
-  static async getWatchTime(params: {
-    user_id: number
-    eiga_text_id: string
-    chap_id: string
-  }) {
+  static async getWatchTime(
+    sourceId: string,
+    params: {
+      user_id: number
+      eiga_text_id: string
+      chap_id: string
+    }
+  ) {
     // SELECT c.created_at, c.cur, c.dur, c.name, c.updated_at
     // FROM public.chaps c
     // JOIN public.history h ON c.history_id = h.id
@@ -143,10 +152,11 @@ export class Eiga {
       .from(eigaHistoryChapters)
       .leftJoin(
         eigaHistories,
-        and(eigaHistories.id, eigaHistoryChapters.eigaHistoryId)
+        eq(eigaHistories.id, eigaHistoryChapters.eigaHistoryId)
       )
       .where(
         and(
+          eq(eigaHistories.sourceId, sourceId),
           eq(eigaHistories.eigaTextId, params.eiga_text_id),
           eq(eigaHistoryChapters.chapId, params.chap_id)
         )
@@ -156,10 +166,13 @@ export class Eiga {
 
     return row[0]
   }
-  static async getWatchTimeEpisodes(params: {
-    user_id: number
-    eiga_text_id: string
-  }) {
+  static async getWatchTimeEpisodes(
+    sourceId: string,
+    params: {
+      user_id: number
+      eiga_text_id: string
+    }
+  ) {
     // BEGIN
     //     RETURN QUERY
     //    SELECT
@@ -195,7 +208,12 @@ export class Eiga {
         eigaHistories,
         eq(eigaHistoryChapters.eigaHistoryId, eigaHistories.id)
       )
-      .where(eq(eigaHistories.eigaTextId, params.eiga_text_id))
+      .where(
+        and(
+          eq(eigaHistories.sourceId, sourceId),
+          eq(eigaHistories.eigaTextId, params.eiga_text_id)
+        )
+      )
       .orderBy(eigaHistories.id)
   }
 }

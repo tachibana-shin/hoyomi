@@ -8,6 +8,8 @@ import {
   unique
   // foreignKey
 } from "drizzle-orm/pg-core"
+import { eigaHistories } from "./eiga_histories.ts"
+import { relations } from "drizzle-orm"
 // import { eigaHistories } from "./eiga_histories.ts"
 
 export const eigaHistoryChapters = pgTable(
@@ -25,12 +27,22 @@ export const eigaHistoryChapters = pgTable(
       .defaultNow()
   },
   (table) => [
-    unique("unique_chap_id_eiga_history_id_idx").on(table.chapId, table.eigaHistoryId),
+    unique("unique_chap_id_eiga_history_id_idx").on(
+      table.chapId,
+      table.eigaHistoryId
+    ),
     index("eiga_history_id_idx").on(table.eigaHistoryId)
-    // foreignKey({
-    //   columns: [table.historyId],
-    //   foreignColumns: [eigaHistories.id]
-    // // deno-lint-ignore no-explicit-any
-    // }) as unknown as any
   ]
+)
+
+export const eigaHistoryChaptersRelations = relations(
+  eigaHistoryChapters,
+  ({ one }) => {
+    return {
+      eigaHistory: one(eigaHistories, {
+        fields: [eigaHistoryChapters.eigaHistoryId],
+        references: [eigaHistories.id]
+      })
+    }
+  }
 )
