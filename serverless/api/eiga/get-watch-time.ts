@@ -10,8 +10,8 @@ const schema = z.object({
   eiga_text_id: z.string().min(1),
   chap_id: z.string().min(1)
 })
-app.get("/eiga/get-watch-time", zValidator("json", schema), async (c) => {
-  const params = c.req.valid("json")
+app.get("/eiga/get-watch-time", zValidator("query", schema), async (c) => {
+  const params = c.req.valid("query")
 
   const user = useUser(c)
 
