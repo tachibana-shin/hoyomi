@@ -8,7 +8,6 @@ import 'package:hoyomi/core_services/comic/interfaces/comic_comment.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/genre.dart';
 import 'package:hoyomi/core_services/comic/interfaces/status_enum.dart';
-import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 
@@ -62,7 +61,7 @@ final List<Filter> globalFilters = [
   ),
 ];
 
-class TruyenGGService extends ABComicService with AuthMixin, ComicAuthMixin {
+class TruyenGGService extends ABComicService with ComicAuthMixin {
   @override
   final init = ServiceInit(
     name: 'TruyenGGP',
