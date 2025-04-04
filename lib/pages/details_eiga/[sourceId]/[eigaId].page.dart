@@ -117,6 +117,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       final metaEiga = _metaEiga.value;
 
       if (!metaEiga.fake &&
+          metaEiga.seasons.isNotEmpty &&
           metaEiga.seasons.firstWhereOrNull(
                   (season) => season.eigaId == _eigaId.value) ==
               null) {
