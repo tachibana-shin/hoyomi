@@ -530,7 +530,9 @@ class _PlayerEigaState extends State<PlayerEiga>
       _position.value = controller.value.position;
       _duration.value = controller.value.duration;
       _buffered.value =
-          controller.value.buffered.lastOrNull?.end ?? const Duration();
+          controller.value.buffered.fold(Duration.zero, (max, range) {
+        return range.end > max ? range.end : max;
+      });
       _loading.value = controller.value.isInitialized != true ||
           controller.value.isBuffering;
       final playing = controller.value.isPlaying;
