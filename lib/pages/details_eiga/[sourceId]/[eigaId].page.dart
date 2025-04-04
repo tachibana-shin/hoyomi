@@ -286,7 +286,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             watchTime: watchTime,
           )
               .catchError((error) {
-            if (error is! UserNotFoundException) debugPrint('Error: $error (${StackTrace.current})');
+            if (error is! UserNotFoundException) {
+              debugPrint('Error: $error (${StackTrace.current})');
+            }
           });
         }
       },
