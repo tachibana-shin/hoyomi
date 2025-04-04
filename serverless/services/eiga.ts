@@ -1,7 +1,8 @@
-import { asc, and, eq, desc, exists, sql } from "drizzle-orm"
+import { and, eq, desc, sql } from "drizzle-orm"
 // import { PgDialect } from "drizzle-orm/pg-core"
 import { db } from "../db/db.ts"
 import { eigaHistories, eigaHistoryChapters } from "../db/schema.ts"
+import { single } from "../logic/single.ts"
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Eiga {
@@ -103,102 +104,163 @@ limit
       throw new Error("Duration must be current")
     }
 
-    let latestHistory = await db
-      .select()
-      .from(eigaHistories)
-      .where(
-        and(
-          eq(eigaHistories.sourceId, sourceId),
-          eq(eigaHistories.userId, params.user_id),
-          eq(eigaHistories.eigaTextId, params.eiga_text_id)
-        )
-      )
-      .orderBy(desc(eigaHistories.createdAt))
-      .limit(1)
-    let idHistoryRax = await db
-      .select({
-        id: eigaHistories.id
-      })
-      .from(eigaHistories)
-      .where(
-        and(
-          eq(eigaHistories.sourceId, sourceId),
-          eq(eigaHistories.userId, params.user_id),
-          eq(eigaHistories.eigaTextId, params.eiga_text_id),
-          exists(
-            db
-              .select({ id: eigaHistoryChapters.id })
-              .from(eigaHistoryChapters)
-              .where(eq(eigaHistoryChapters.eigaHistoryId, eigaHistories.id))
-              .limit(1)
+    const lastHistory = single(
+      await db
+        .select()
+        .from(eigaHistories)
+        .where(
+          and(
+            eq(eigaHistories.sourceId, sourceId),
+            eq(eigaHistories.userId, params.user_id)
           )
         )
-      )
-      .orderBy(asc(eigaHistories.createdAt))
-      .limit(1)
+        .orderBy(desc(eigaHistories.createdAt))
+        .limit(1)
+    )
 
-    // -- Insert new history if it does not exist or is not the latest for today
+    // if lastHistory is current history
     if (
-      latestHistory.length === 0 ||
-      latestHistory[0].createdAt.toDateString() !== new Date().toDateString()
+      lastHistory?.eigaTextId === params.eiga_text_id &&
+      lastHistory.seasonName === params.season_name
     ) {
-      const result = await db
-        .insert(eigaHistories)
-        .values({
+      const values = {
+        eigaHistoryId: lastHistory.forTo ?? lastHistory.id,
+        cur: params.cur,
+        dur: params.dur,
+        name: params.episode_name,
+        updatedAt: new Date(),
+        chapId: params.episode_id
+      }
+      const [{ id }] = await db
+        .insert(eigaHistoryChapters)
+        .values(values)
+        .onConflictDoUpdate({
+          target: [
+            eigaHistoryChapters.eigaHistoryId,
+            eigaHistoryChapters.chapId
+          ],
+          set: values
+        })
+        .returning({ id: eigaHistoryChapters.id })
+
+      // check the time lastHistory equal to current date. !==> if the last history is today
+      if (lastHistory.createdAt.toDateString() === new Date().toDateString()) {
+        // update the last history
+
+        // update the last history with new chapter id
+        await db
+          .update(eigaHistories)
+          .set({
+            name: params.name,
+            poster: params.poster,
+            seasonName: params.season_name,
+            // forTo not update
+            vChap: id,
+            createdAt: new Date()
+          })
+          .where(eq(eigaHistories.id, lastHistory.id))
+      } else {
+        // insert new history
+        await db.insert(eigaHistories).values({
           sourceId: sourceId,
           userId: params.user_id,
           eigaTextId: params.eiga_text_id,
           name: params.episode_name,
           poster: params.poster,
           seasonName: params.season_name,
-          forTo: idHistoryRax[0]?.id ?? null,
-          vChap: null
+          forTo: lastHistory.forTo ?? lastHistory.id,
+          vChap: id
         })
-        .returning()
-
-      if (idHistoryRax.length === 0) {
-        idHistoryRax = result
       }
-
-      latestHistory = []
-    }
-
-    if (idHistoryRax.length === 0) {
-      throw new Error("Failed to retrieve or create history record")
-    }
-
-    // -- Check if the chapter already exists for the history record
-    const values = {
-      eigaHistoryId: idHistoryRax[0].id,
-      cur: params.cur,
-      dur: params.dur,
-      name: params.episode_name,
-      updatedAt: new Date(),
-      chapId: params.episode_id
-    }
-    const [{ id: idChap }] = await db
-      .insert(eigaHistoryChapters)
-      .values(values)
-      .onConflictDoUpdate({
-        target: [eigaHistoryChapters.eigaHistoryId, eigaHistoryChapters.chapId],
-        set: values
-      })
-      .returning({ id: eigaHistoryChapters.id })
-
-    if (latestHistory.length === 0) {
-      await db
-        .update(eigaHistories)
-        .set({
-          vChap: idChap
-        })
-        .where(eq(eigaHistories.id, idHistoryRax[0].id))
     } else {
-      await db
-        .update(eigaHistories)
-        .set({
-          vChap: idChap
+      // insert new history
+      // find movie exists in history
+      const existsHistory = single(
+        await db
+          .select()
+          .from(eigaHistories)
+          .where(
+            and(
+              eq(eigaHistories.sourceId, sourceId),
+              eq(eigaHistories.userId, params.user_id),
+              eq(eigaHistories.eigaTextId, params.eiga_text_id)
+            )
+          )
+          .limit(1)
+      )
+      // exists history is any row . if row.forTo is null then this row is parent
+      // if row.forTo not null it parent
+      if (existsHistory) {
+        const values = {
+          eigaHistoryId: existsHistory.forTo ?? existsHistory.id,
+          cur: params.cur,
+          dur: params.dur,
+          name: params.episode_name,
+          updatedAt: new Date(),
+          chapId: params.episode_id
+        }
+        const [{ id }] = await db
+          .insert(eigaHistoryChapters)
+          .values(values)
+          .onConflictDoUpdate({
+            target: [
+              eigaHistoryChapters.eigaHistoryId,
+              eigaHistoryChapters.chapId
+            ],
+            set: values
+          })
+          .returning({ id: eigaHistoryChapters.id })
+
+        await db.insert(eigaHistories).values({
+          sourceId: sourceId,
+          userId: params.user_id,
+          eigaTextId: params.eiga_text_id,
+          name: params.episode_name,
+          poster: params.poster,
+          seasonName: params.season_name,
+          forTo: existsHistory.forTo ?? existsHistory.id,
+          vChap: id
         })
-        .where(eq(eigaHistories.id, latestHistory[0].id))
+      } else {
+        const [{ id }] = await db
+          .insert(eigaHistories)
+          .values({
+            sourceId: sourceId,
+            userId: params.user_id,
+            eigaTextId: params.eiga_text_id,
+            name: params.episode_name,
+            poster: params.poster,
+            seasonName: params.season_name,
+            forTo: null, // this is parent
+            vChap: null
+          })
+          .returning({ id: eigaHistories.id })
+
+        const values = {
+          eigaHistoryId: id,
+          cur: params.cur,
+          dur: params.dur,
+          name: params.episode_name,
+          updatedAt: new Date(),
+          chapId: params.episode_id
+        }
+        const [{ id: rowChapId }] = await db
+          .insert(eigaHistoryChapters)
+          .values(values)
+          .onConflictDoUpdate({
+            target: [
+              eigaHistoryChapters.eigaHistoryId,
+              eigaHistoryChapters.chapId
+            ],
+            set: values
+          })
+          .returning({ id: eigaHistoryChapters.id })
+
+        await db
+          .update(eigaHistories)
+          .set({ vChap: rowChapId })
+          .where(eq(eigaHistories.id, id))
+      }
     }
   }
   static async getWatchTime(
@@ -218,31 +280,31 @@ limit
     // AND c.chap_id = p_chap_id
     // ORDER BY c.updated_at DESC
     // limit 1;
-    const row = await db
-      .select({
-        cur: eigaHistoryChapters.cur,
-        dur: eigaHistoryChapters.dur,
-        name: eigaHistoryChapters.name,
-        createdAt: eigaHistoryChapters.createdAt,
-        updatedAt: eigaHistoryChapters.updatedAt
-      })
-      .from(eigaHistoryChapters)
-      .leftJoin(
-        eigaHistories,
-        eq(eigaHistories.id, eigaHistoryChapters.eigaHistoryId)
-      )
-      .where(
-        and(
-          eq(eigaHistories.sourceId, sourceId),
-          eq(eigaHistories.userId, params.user_id),
-          eq(eigaHistories.eigaTextId, params.eiga_text_id),
-          eq(eigaHistoryChapters.chapId, params.chap_id)
+    return single(
+      await db
+        .select({
+          cur: eigaHistoryChapters.cur,
+          dur: eigaHistoryChapters.dur,
+          name: eigaHistoryChapters.name,
+          createdAt: eigaHistoryChapters.createdAt,
+          updatedAt: eigaHistoryChapters.updatedAt
+        })
+        .from(eigaHistoryChapters)
+        .leftJoin(
+          eigaHistories,
+          eq(eigaHistories.id, eigaHistoryChapters.eigaHistoryId)
         )
-      )
-      .orderBy(desc(eigaHistoryChapters.updatedAt))
-      .limit(1)
-
-    return row[0] as (typeof row)[0] | null
+        .where(
+          and(
+            eq(eigaHistories.sourceId, sourceId),
+            eq(eigaHistories.userId, params.user_id),
+            eq(eigaHistories.eigaTextId, params.eiga_text_id),
+            eq(eigaHistoryChapters.chapId, params.chap_id)
+          )
+        )
+        .orderBy(desc(eigaHistoryChapters.updatedAt))
+        .limit(1)
+    )
   }
   static async getWatchTimeEpisodes(
     sourceId: string,
@@ -296,5 +358,3 @@ limit
       .orderBy(eigaHistories.id)
   }
 }
-
-console.log(await Eiga.getWatchHistory("r", { user_id: 1, page: 1, limit: 30 }))
