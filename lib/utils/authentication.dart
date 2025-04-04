@@ -179,6 +179,10 @@ class Authentication {
   User? get currentUser => _auth.currentUser;
 
   Future<User?> getUserAsync() {
+    if (_auth.currentUser != null) {
+      return Future.value(_auth.currentUser);
+    }
+
     final completer = Completer<User?>();
 
     bool firstChanged = false;
