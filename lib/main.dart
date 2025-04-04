@@ -1,25 +1,19 @@
 import 'package:go_transitions/go_transitions.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
-import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/plugins/android_sdk_int.dart';
 import 'package:hoyomi/plugins/dot_env.dart';
 import 'package:hoyomi/plugins/firebase.dart';
 import 'package:hoyomi/plugins/init_services.dart';
 import 'package:hoyomi/plugins/install_cert.dart';
+import 'package:hoyomi/plugins/video_polyfill_stub.dart';
 import 'package:hoyomi/router/index.dart';
 
 import 'package:flutter/material.dart';
-import 'package:video_player_media_kit/video_player_media_kit.dart';
 // import 'package:go_transitions/go_transitions.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (XPlatform.isWindows || XPlatform.isLinux) {
-    VideoPlayerMediaKit.ensureInitialized(
-      windows: XPlatform.isWindows,
-      linux: XPlatform.isLinux,
-    );
-  }
+  initializeVideoPolyfill();
 
   await initializeDotEnv();
 
