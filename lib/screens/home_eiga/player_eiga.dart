@@ -690,15 +690,8 @@ class _PlayerEigaState extends State<PlayerEiga>
             ],
           ));
   }
-
-  Widget? _widgetCache;
   Widget _buildStack(BuildContext context) {
-    final counter = ref(0);
-
-    Timer? timerCounter;
-    onBeforeUnmount(() => timerCounter?.cancel());
-
-    return _widgetCache ??= Stack(
+    return Stack(
       children: [
         Positioned(
           top: 0,
@@ -729,68 +722,57 @@ class _PlayerEigaState extends State<PlayerEiga>
           // HELP: delayed widget for fix size not correct if fullscreen change
           child: DelayedWidget(
               delay: const Duration(milliseconds: 222),
-              builder: (context) =>
-                  StatefulBuilder(builder: (context, setState2) {
-                    timerCounter?.cancel();
-                    if (counter.value < 10) {
-                      timerCounter = Timer(Duration(milliseconds: 222), () {
-                        timerCounter = null;
-                        if (context.mounted) setState2(() {});
-                      });
-                    }
+              builder: (context) => LayoutBuilder(
+                    builder: (_, constraints) => Watch(() {
+                      final controller = _controller.value;
+                      if (controller == null) {
+                        return Center(
+                            child: OImage.oNetwork(
+                          widget.metaEiga.value.poster!,
+                          sourceId: widget.service.uid,
+                          fit: BoxFit.cover,
+                        ));
+                      }
 
-                    return LayoutBuilder(
-                      builder: (_, constraints) => Watch(() {
-                        final controller = _controller.value;
-                        if (controller == null) {
-                          return Center(
-                              child: OImage.oNetwork(
-                            widget.metaEiga.value.poster!,
-                            sourceId: widget.service.uid,
-                            fit: BoxFit.cover,
-                          ));
-                        }
+                      final maxWidth = _fullscreen.value
+                          ? 100.w(context)
+                          : constraints.biggest.width;
+                      final maxHeight = _fullscreen.value
+                          ? 100.h(context)
+                          : (maxWidth / widget.aspectRatio);
 
-                        final maxWidth = _fullscreen.value
-                            ? 100.w(context)
-                            : constraints.biggest.width;
-                        final maxHeight = _fullscreen.value
-                            ? 100.h(context)
-                            : (maxWidth / widget.aspectRatio);
+                      final qualityCode = _qualityCode.value;
+                      final aspectRatio = _aspectRatio.value;
 
-                        final qualityCode = _qualityCode.value;
-                        final aspectRatio = _aspectRatio.value;
+                      double width = maxWidth;
+                      double height = width /
+                          aspectRatio; // Calculate height based on the aspect ratio
 
-                        double width = maxWidth;
-                        double height = width /
-                            aspectRatio; // Calculate height based on the aspect ratio
+                      // If the calculated height exceeds the maximum allowed height,
+                      // adjust dimensions to use maxHeight
+                      if (height > maxHeight) {
+                        height = maxHeight;
+                        width = height *
+                            aspectRatio; // Recalculate width accordingly
+                      }
 
-                        // If the calculated height exceeds the maximum allowed height,
-                        // adjust dimensions to use maxHeight
-                        if (height > maxHeight) {
-                          height = maxHeight;
-                          width = height *
-                              aspectRatio; // Recalculate width accordingly
-                        }
-
-                        return SubtitleWrapper(
-                          enabled: qualityCode != null,
-                          videoPlayerController: controller,
-                          subtitleController: subtitleController,
-                          subtitleStyle: SubtitleStyle(
-                            textColor: Colors.white,
-                            hasBorder: true,
-                          ),
-                          videoChild: Center(
-                              child: FractionallySizedBox(
-                            widthFactor: width / maxWidth,
-                            heightFactor: height / maxHeight,
-                            child: VideoPlayer(controller),
-                          )),
-                        );
-                      }),
-                    );
-                  })),
+                      return SubtitleWrapper(
+                        enabled: qualityCode != null,
+                        videoPlayerController: controller,
+                        subtitleController: subtitleController,
+                        subtitleStyle: SubtitleStyle(
+                          textColor: Colors.white,
+                          hasBorder: true,
+                        ),
+                        videoChild: Center(
+                            child: FractionallySizedBox(
+                          widthFactor: width / maxWidth,
+                          heightFactor: height / maxHeight,
+                          child: VideoPlayer(controller),
+                        )),
+                      );
+                    }),
+                  )),
         ),
         Watch(() {
           final child = _showControls.value || _error.value != null
