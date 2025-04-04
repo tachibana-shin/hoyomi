@@ -2,26 +2,12 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:hoyomi/core_services/comic/comic_service.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_comments.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_chapter.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_comment.dart';
+import 'package:hoyomi/core_services/comic/interfaces/main.dart';
+import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
-import 'package:hoyomi/core_services/interfaces/genre.dart';
-import 'package:hoyomi/core_services/comic/interfaces/status_enum.dart';
 import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 
-import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_category.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
-import 'package:hoyomi/core_services/interfaces/filter.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
-import 'package:hoyomi/core_services/comic/interfaces/home_comic_category.dart';
-import 'package:hoyomi/core_services/interfaces/user.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_param.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_modes.dart';
-import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
-import 'package:hoyomi/core_services/comic/interfaces/rate_value.dart';
 import 'package:hoyomi/utils/time_utils.dart';
 
 final List<Filter> globalFilters = [

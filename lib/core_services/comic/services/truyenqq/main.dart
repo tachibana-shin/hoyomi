@@ -1,17 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:hoyomi/core_services/comic/interfaces/comic_category.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_chapter.dart';
-import 'package:hoyomi/core_services/interfaces/genre.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
-import 'package:hoyomi/core_services/comic/interfaces/home_comic_category.dart';
-import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
-import 'package:hoyomi/core_services/comic/interfaces/rate_value.dart';
-import 'package:hoyomi/core_services/comic/interfaces/status_enum.dart';
+import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/core_services/comic/services/truyengg/main.dart';
-import 'package:hoyomi/core_services/interfaces/setting/field_input.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/time_utils.dart';
 import 'package:html/dom.dart';
