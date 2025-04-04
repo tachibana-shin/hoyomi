@@ -5,7 +5,7 @@ import 'package:hoyomi/plugins/dot_env.dart';
 import 'package:hoyomi/plugins/firebase.dart';
 import 'package:hoyomi/plugins/init_services.dart';
 import 'package:hoyomi/plugins/install_cert.dart';
-import 'package:hoyomi/plugins/video_polyfill_stub.dart';
+import 'package:hoyomi/plugins/video_polyfill.dart';
 import 'package:hoyomi/router/index.dart';
 
 import 'package:flutter/material.dart';

@@ -1,3 +1,11 @@
-export 'video_polyfill_stub.dart'
-    if (XPlatform.isWindows) 'video_polyfill_win_linux.dart'
-    if (XPlatform.isLinux) 'video_polyfill_win_linux.dart';
+import 'package:hoyomi/constraints/x_platform.dart';
+import 'package:video_player_media_kit/video_player_media_kit.dart';
+
+Future<void> initializeVideoPolyfill() async {
+  if (XPlatform.isWindows || XPlatform.isLinux) {
+    VideoPlayerMediaKit.ensureInitialized(
+      windows: XPlatform.isWindows,
+      linux: XPlatform.isLinux,
+    );
+  }
+}
