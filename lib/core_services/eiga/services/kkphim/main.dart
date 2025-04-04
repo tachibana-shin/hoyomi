@@ -947,12 +947,17 @@ String _removeAdsFromM3U8(Uri url, String m3u8) {
     if (match != null && i + 1 < lines.length) {
       // if line is segment. Example #EXTINF:133343
       // the next line is url
-      final url = lines.elementAt(i + 1);
-      final isAd = RegExp(r'^\d+\.ts$').hasMatch(url) || url.contains("adjump");
+      final currentUrl = lines.elementAt(i + 1);
+      final isAd = RegExp(r'^\d+\.ts$').hasMatch(currentUrl) || currentUrl.contains("adjump");
 
+      i++;
       // if ad skip segment
       if (isAd) {
-        i++;
+        continue;
+      } else {
+        // if not ad, add segment to output
+        output.add(line);
+        output.add(url.resolve(currentUrl).toString());
         continue;
       }
     }
