@@ -70,10 +70,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   double _aspectRatio = 16 / 9;
 
-  final Map<String, EigaEpisodes> _cacheEpisodesStore = {};
+  final Map<String, EigaEpisodes>  _cacheEpisodesStore = {};
   final Map<String, Map<String, WatchTime>> _cacheWatchTimeStore = {};
-  late final _title = computed(() => _metaEiga.value.name);
-  late final _subtitle = computed(() => 'Episode ${_episode.value?.name}');
+  late final _title = computed(() => _metaEiga.value.fake ? '' : _metaEiga.value.name);
+  late final _subtitle = computed(() => _metaEiga.value.fake ? '' :'Episode ${_episode.value?.name}');
   late final _subtitlesNotifier = ref<List<Subtitle>>([]);
   late final _onPrevNotifier = ref<VoidCallback?>(null);
   late final _onNextNotifier = ref<VoidCallback?>(null);

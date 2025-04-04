@@ -252,64 +252,68 @@ class _CarouselEigaState extends State<CarouselEiga> {
                             ),
                             // genres
                             if (item.genres?.isNotEmpty == true)
-                              Wrap(
-                                spacing: 7.0, // Space between the genre tags
-                                children: item.genres!.map((genre) {
-                                  return GestureDetector(
-                                    onTap: genre.genreId == Genre.noId
-                                        ? null
-                                        : () {
-                                            context.push(
-                                              '/category_eiga/${widget.sourceId}/${genre.genreId}',
-                                            );
-                                          },
-                                    child: Text(
-                                      '#${genre.name}',
-                                      style: genre.genreId == Genre.noId
-                                          ? null
-                                          : Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                fontSize: 14.0,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .tertiary,
-                                              ),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
+                              SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Wrap(
+                                    spacing: 7.0,
+                                    children: item.genres!.map((genre) {
+                                      return GestureDetector(
+                                        onTap: genre.genreId == Genre.noId
+                                            ? null
+                                            : () {
+                                                context.push(
+                                                  '/category_eiga/${widget.sourceId}/${genre.genreId}',
+                                                );
+                                              },
+                                        child: Text(
+                                          '#${genre.name}',
+                                          style: genre.genreId == Genre.noId
+                                              ? null
+                                              : Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                    fontSize: 14.0,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .tertiary,
+                                                  ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  )),
                             // actors
                             if (item.actors?.isNotEmpty == true)
-                              Wrap(
-                                spacing: 7.0, // Space between the genre tags
-                                children: item.actors!.map((genre) {
-                                  return GestureDetector(
-                                    onTap: genre.genreId == Genre.noId
-                                        ? null
-                                        : () {
-                                            context.push(
-                                              '/category_eiga/${widget.sourceId}/${genre.genreId}',
-                                            );
-                                          },
-                                    child: Text(
-                                      '#${genre.name}',
-                                      style: genre.genreId == Genre.noId
-                                          ? null
-                                          : Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                fontSize: 14.0,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .tertiary,
-                                              ),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
+                              SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Wrap(
+                                    spacing: 7.0,
+                                    children: item.actors!.map((genre) {
+                                      return GestureDetector(
+                                        onTap: genre.genreId == Genre.noId
+                                            ? null
+                                            : () {
+                                                context.push(
+                                                  '/category_eiga/${widget.sourceId}/${genre.genreId}',
+                                                );
+                                              },
+                                        child: Text(
+                                          '#${genre.name}',
+                                          style: genre.genreId == Genre.noId
+                                              ? null
+                                              : Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                    fontSize: 14.0,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .tertiary,
+                                                  ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  )),
                             SizedBox(height: 5.0),
                             // description
                             Text(
