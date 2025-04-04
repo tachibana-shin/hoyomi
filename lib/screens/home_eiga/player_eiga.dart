@@ -633,6 +633,10 @@ class _PlayerEigaState extends State<PlayerEiga>
     _showVolume.value = false;
   }
 
+  void _onHorizontalDragStart(DragStartDetails _) {}
+  void _onHorizontalDragUpdate(DragUpdateDetails _) {}
+  void _onHorizontalDragEnd(DragEndDetails _) {}
+
   Future<void> _initializeHls({
     required String content,
     required Uri url,
@@ -707,6 +711,10 @@ class _PlayerEigaState extends State<PlayerEiga>
               onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
               onVerticalDragEnd: (_) => _hideAllSlider(),
               onVerticalDragCancel: _hideAllSlider,
+              onHorizontalDragStart: _onHorizontalDragStart,
+              onHorizontalDragUpdate: _onHorizontalDragUpdate,
+              onHorizontalDragEnd: _onHorizontalDragEnd,
+              onHorizontalDragCancel: _hideAllSlider,
               child: Container(color: Colors.black)),
         ),
         GestureDetector(
@@ -715,6 +723,9 @@ class _PlayerEigaState extends State<PlayerEiga>
           onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
           onVerticalDragEnd: (_) => _hideAllSlider(),
           onVerticalDragCancel: _hideAllSlider,
+          onHorizontalDragStart: _onHorizontalDragStart,
+          onHorizontalDragUpdate: _onHorizontalDragUpdate,
+          onHorizontalDragEnd: _onHorizontalDragEnd,
           // HELP: delayed widget for fix size not correct if fullscreen change
           child: DelayedWidget(
               delay: const Duration(milliseconds: 222),
@@ -789,6 +800,9 @@ class _PlayerEigaState extends State<PlayerEiga>
                   onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
                   onVerticalDragEnd: (_) => _hideAllSlider(),
                   onVerticalDragCancel: _hideAllSlider,
+                  onHorizontalDragStart: _onHorizontalDragStart,
+                  onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                  onHorizontalDragEnd: _onHorizontalDragEnd,
                   child: Container(
                     color: Colors.black.withValues(alpha: 0.5),
                     child: Stack(
