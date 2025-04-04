@@ -690,6 +690,7 @@ class _PlayerEigaState extends State<PlayerEiga>
             ],
           ));
   }
+
   Widget _buildStack(BuildContext context) {
     return Stack(
       children: [
