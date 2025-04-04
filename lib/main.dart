@@ -45,7 +45,7 @@ class MainApp extends StatelessWidget {
     }
 
     return MaterialApp.router(
-      title: 'Flutter App',
+      title: 'Hoyomi',
       scaffoldMessengerKey: snackbarKey,
       theme: ThemeData(useMaterial3: true),
       darkTheme: ThemeData.dark(useMaterial3: true),
