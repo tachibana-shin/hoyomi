@@ -9,7 +9,7 @@ import {
 import { users } from "./users.ts"
 import { eigaHistoryChapters } from "./eiga_history_chapters.ts"
 
-export const  eigaHistoriesName =  "eiga_histories"
+export const eigaHistoriesName = "eiga_histories"
 export const eigaHistories = pgTable(
   eigaHistoriesName,
   {
@@ -32,6 +32,10 @@ export const eigaHistories = pgTable(
     index("eiga_history_user_id_idx").on(table.userId),
     index("eiga_history_source_id_idx").on(table.sourceId),
     index("eiga_history_for_to_idx").on(table.forTo),
+    index("eiga_history_source_id_user_id_idx").on(
+      table.userId,
+      table.sourceId
+    ),
     index("eiga_history_user_id_source_id_eiga_text_id_idx").on(
       table.userId,
       table.sourceId,

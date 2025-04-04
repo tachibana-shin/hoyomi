@@ -1,0 +1,1 @@
+CREATE INDEX "eiga_history_source_id_user_id_idx" ON "eiga_histories" USING btree ("user_id","source_id");
