@@ -9,7 +9,8 @@ import 'package:http/http.dart';
 import '../interfaces/main.dart';
 import 'eiga_watch_time_mixin.dart';
 
-final _baseApiGeneral = dotenv.env['BASE_API_GENERAL'];
+mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
+  final String? _baseApiGeneral = dotenv.env['BASE_API_GENERAL'];
 mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
   /// General watch time support but service not auth
   @override
