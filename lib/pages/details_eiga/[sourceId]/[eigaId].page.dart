@@ -6,8 +6,10 @@ import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/bottom_sheet_no_scrim.dart';
+import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
@@ -61,7 +63,7 @@ class DetailsEigaPage extends StatefulWidget {
 }
 
 class _DetailsEigaPageState extends State<DetailsEigaPage>
-    with TickerProviderStateMixin, KaeruMixin {
+    with TickerProviderStateMixin, KaeruMixin, KaeruListenMixin {
   late final ABEigaService _service;
   late final _metaEiga = ref(MetaEiga.createFakeData());
   late final _loading = computed(() => _metaEiga.value.fake);
@@ -110,6 +112,18 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     _eigaId = ref(widget.eigaId);
     _episodeId.value = widget.episodeId;
+
+    listenAll([_metaEiga, _eigaId], () {
+      final metaEiga = _metaEiga.value;
+
+      if (!metaEiga.fake &&
+          metaEiga.seasons.firstWhereOrNull(
+                  (season) => season.eigaId == _eigaId.value) ==
+              null) {
+        showSnackBar(Text(
+            'Service error: Episode not found. Please check `seasons` result in `getDetails`'));
+      }
+    });
   }
 
   void _updatePlayer(EigaEpisode episode, int episodeIndex) {
