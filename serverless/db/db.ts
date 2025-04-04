@@ -1,6 +1,12 @@
 import { drizzle } from "drizzle-orm/xata-http"
-import { getXataClient } from "../xata.ts"
-import { users } from "./schema.ts"
+import { XataClient } from "../xata.ts"
+import { eigaHistories, eigaHistoryChapters, users } from "./schema.ts"
+import { assert } from "@std/assert"
 
-const xata = getXataClient()
-export const db = drizzle(xata, { schema: { users } })
+const apiKey = Deno.env.get("XATA_API_KEY")
+assert(apiKey, "XATA_API_KEY missing")
+
+const xata = new XataClient({ apiKey })
+export const db = drizzle(xata, {
+  schema: { users, eigaHistories, eigaHistoryChapters }
+})

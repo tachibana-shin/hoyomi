@@ -1,5 +1,5 @@
 import { Hono } from "hono"
-import { z } from "npm:zod"
+import { z } from "zod"
 import { Eiga } from "../../services/eiga.ts"
 import { useUser } from "../../logic/use-user.ts"
 import { zValidator } from "@hono/zod-validator"

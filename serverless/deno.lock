@@ -1,7 +1,9 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@std/assert@^1.0.12": "1.0.12",
     "jsr:@std/dotenv@~0.225.3": "0.225.3",
+    "jsr:@std/internal@^1.0.6": "1.0.6",
     "npm:@firebase/database-compat@^2.0.5": "2.0.5",
     "npm:@google-cloud/firestore@^7.11.0": "7.11.0",
     "npm:@google-cloud/storage@^7.15.2": "7.15.2",
@@ -29,8 +31,17 @@
     "npm:zod@^3.24.2": "3.24.2"
   },
   "jsr": {
+    "@std/assert@1.0.12": {
+      "integrity": "08009f0926dda9cbd8bef3a35d3b6a4b964b0ab5c3e140a4e0351fbf34af5b9a",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
     "@std/dotenv@0.225.3": {
       "integrity": "a95e5b812c27b0854c52acbae215856d9cce9d4bbf774d938c51d212711e8d4a"
+    },
+    "@std/internal@1.0.6": {
+      "integrity": "9533b128f230f73bd209408bb07a4b12f8d4255ab2a4d22a1fd6d87304aca9a4"
     }
   },
   "npm": {
@@ -1739,6 +1750,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@std/assert@^1.0.12",
       "jsr:@std/dotenv@~0.225.3",
       "npm:@firebase/database-compat@^2.0.5",
       "npm:@google-cloud/firestore@^7.11.0",
@@ -1752,15 +1764,15 @@
       "npm:jsonwebtoken@^9.0.2",
       "npm:jwks-rsa@^3.2.0",
       "npm:node-forge@^1.3.1",
-      "npm:zlib@^1.0.5",
-      "npm:zod@*"
+      "npm:zlib@^1.0.5"
     ],
     "packageJson": {
       "dependencies": [
         "npm:@types/bun@latest",
         "npm:dotenv@^16.4.7",
         "npm:drizzle-kit@~0.30.6",
-        "npm:drizzle-orm@0.41"
+        "npm:drizzle-orm@0.41",
+        "npm:zod@^3.24.2"
       ]
     }
   }

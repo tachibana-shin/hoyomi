@@ -1,7 +1,7 @@
 {
   "databaseURL": "https://Tachibana-Shin-s-workspace-lp3l17.us-east-1.xata.sh/db/hoyomi",
   "codegen": {
-    "output": "src/xata.ts",
+    "output": "xata.ts",
     "moduleType": "deno"
   }
 }
