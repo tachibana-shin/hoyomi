@@ -16,7 +16,7 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
   @override
   final bool $noAuth = true;
   @override
-  getUser({required String cookie}) {
+  Future<User> getUser({required String cookie}) {
     throw UnimplementedError();
   }
 
