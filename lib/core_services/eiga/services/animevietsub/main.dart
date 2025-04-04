@@ -64,11 +64,7 @@ mixin _SupabaseRPC {
 }
 
 class AnimeVietsubService extends ABEigaService
-    with
-        EigaAuthMixin,
-        EigaWatchTimeMixin,
-        EigaFollowMixin,
-        _SupabaseRPC {
+    with EigaAuthMixin, EigaWatchTimeMixin, EigaFollowMixin, _SupabaseRPC {
   final hostCUrl = "animevietsub.lol";
   @override
   late final init = ServiceInit(

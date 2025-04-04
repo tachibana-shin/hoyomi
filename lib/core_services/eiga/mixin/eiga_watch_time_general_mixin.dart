@@ -131,7 +131,8 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
           'Failed to get watch time episodes: ${response.statusCode}');
     }
 
-    final body = _WatchTimeEpisode.fromJsonList(jsonDecode(response.body) as List);
+    final body =
+        _WatchTimeEpisode.fromJsonList(jsonDecode(response.body) as List);
 
     return {
       for (final item in body)
@@ -255,7 +256,6 @@ class _WatchTime {
     );
   }
 }
-
 
 class _WatchTimeEpisode {
   final num cur;
