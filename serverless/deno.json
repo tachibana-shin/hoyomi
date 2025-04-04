@@ -40,7 +40,9 @@
   "deploy": {
     "project": "309bc9ed-d904-45c6-ab2d-3e27eb93094a",
     "exclude": [
-      "**/node_modules"
+      "**/node_modules",
+      "drizzle/*.sql",
+      "drizzle/meta/*.json"
     ],
     "include": [],
     "entrypoint": "main.ts"
