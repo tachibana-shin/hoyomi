@@ -21,7 +21,7 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
   @override
   late final init = ServiceInit(
     name: "NguonC",
-    faviconUrl: OImage(src: '$hostCUrl/favicon.png'),
+    faviconUrl: OImage(src: 'https://i.imgur.com/3Vowy8s.png'),
     rootUrl: 'https://$hostCUrl',
   );
 
