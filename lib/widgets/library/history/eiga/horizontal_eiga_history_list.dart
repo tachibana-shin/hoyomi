@@ -124,6 +124,17 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
         }
 
         final loading = snapshot.connectionState == ConnectionState.waiting;
+        if (!loading && (!snapshot.hasData || snapshot.data!.isEmpty)) {
+          return _buildContainer(
+            context,
+            title: title,
+            subtitle: '',
+            more: more,
+            builder: (viewFraction) => Center(child: Text('No data available')),
+            needSubtitle: false,
+          );
+        }
+
         final data = loading
             ? List.generate(
                 30,
