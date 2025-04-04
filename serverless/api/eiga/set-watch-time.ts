@@ -6,6 +6,7 @@ import { useUser } from "../../logic/use-user.ts"
 
 export const app = new Hono()
 const schema = z.object({
+  sourceId: z.string().min(1),
   name: z.string().min(1),
   poster: z.string().min(1),
   eiga_text_id: z.string().min(1),
@@ -20,7 +21,7 @@ app.post("/eiga/set-watch-time", zValidator("json", schema), async (c) => {
 
   const user = useUser(c)
 
-  await Eiga.setWatchTime({ user_id: user.userId, ...params })
+  await Eiga.setWatchTime(params.sourceId, { user_id: user.userId, ...params })
 
   return c.json({
     success: true

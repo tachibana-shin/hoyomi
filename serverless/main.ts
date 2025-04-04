@@ -5,6 +5,7 @@ import { etag } from "hono/etag"
 import { bearerAuth } from "hono/bearer-auth"
 import { getUser } from "./logic/get-user.ts"
 
+import { app as appGetWatchHistory } from "./api/eiga/get-watch-history.ts"
 import { app as appGetWatchTimeEpisodes } from "./api/eiga/get-watch-time-episodes.ts"
 import { app as appGetWatchTime } from "./api/eiga/get-watch-time.ts"
 import { app as appSetWatchTime } from "./api/eiga/set-watch-time.ts"
@@ -31,6 +32,7 @@ app.use(
   })
 )
 
+app.route("/api", appGetWatchHistory)
 app.route("/api", appGetWatchTimeEpisodes)
 app.route("/api", appGetWatchTime)
 app.route("/api", appSetWatchTime)

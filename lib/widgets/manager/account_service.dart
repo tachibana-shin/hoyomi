@@ -31,7 +31,7 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
   });
 
   bool get _serviceAccountSupport {
-    return widget.service is AuthMixin;
+    return widget.service is AuthMixin && AuthMixin.support(widget.service);
   }
 
   @override

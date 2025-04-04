@@ -3,35 +3,12 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_category.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_follow_mixin.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
-import 'package:hoyomi/core_services/interfaces/carousel.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/home_eiga_category.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_param.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:hoyomi/core_services/interfaces/filter.dart';
-import 'package:hoyomi/core_services/interfaces/follow_item.dart';
-import 'package:hoyomi/core_services/interfaces/genre.dart';
-import 'package:hoyomi/core_services/interfaces/history_item.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
-import 'package:hoyomi/core_services/interfaces/paginate.dart';
-import 'package:hoyomi/core_services/interfaces/user.dart';
-import 'package:hoyomi/core_services/interfaces/vtt.dart';
-import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:html/dom.dart';
 
 import 'package:crypto/crypto.dart';
@@ -87,24 +64,13 @@ mixin _SupabaseRPC {
 }
 
 class AnimeVietsubService extends ABEigaService
-    with
-        AuthMixin,
-        EigaAuthMixin,
-        EigaWatchTimeMixin,
-        EigaHistoryMixin,
-        EigaFollowMixin,
-        _SupabaseRPC {
+    with EigaAuthMixin, EigaWatchTimeMixin, EigaFollowMixin, _SupabaseRPC {
   final hostCUrl = "animevietsub.lol";
   @override
   late final init = ServiceInit(
     name: "AnimeVietsub",
     faviconUrl: OImage(src: '/favicon.ico'),
     rootUrl: 'https://$hostCUrl',
-  );
-  @override
-  final authInit = AuthInit(
-    signInUrl: (service) =>
-        "${service.baseUrl}/account/login/?_fxRef=${service.baseUrl}/",
   );
 
   final String _apiOpEnd = "https://opend-9animetv.animevsub.eu.org";

@@ -128,7 +128,7 @@ class _DetailsComicState extends State<DetailsComic>
                 child: Text(_title),
               )),
           actions: [
-            if (_service is ComicAuthMixin && _service is AuthMixin)
+            if (_service is ComicAuthMixin && AuthMixin.support(_service))
               _AvatarUser(service: _service),
             IconButtonShare(),
             IconButtonFollow(
@@ -433,6 +433,7 @@ class _DetailsComicState extends State<DetailsComic>
 
         // Comment
         if (_service is ComicAuthMixin &&
+            !(_service as AuthMixin).$noAuth &&
             (_service as ComicAuthMixin).getComments != null)
           Padding(
             padding: EdgeInsets.only(bottom: 16),
@@ -749,7 +750,8 @@ class _ButtonLikeState extends State<_ButtonLike> {
     super.initState();
     _likes = widget.comic.likes;
 
-    if (widget.service is ComicAuthMixin) {
+    if (widget.service is ComicAuthMixin &&
+        !(widget.service as AuthMixin).$noAuth) {
       (widget.service as ComicAuthMixin)
           .isLiked(comicId: widget.comicId)
           .then((liked) {
@@ -787,7 +789,10 @@ class _ButtonLikeState extends State<_ButtonLike> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (widget.service is ComicAuthMixin) ? _onTap : null,
+      onTap: (widget.service is ComicAuthMixin &&
+              !(widget.service as AuthMixin).$noAuth)
+          ? _onTap
+          : null,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(30.0),
         child: Padding(

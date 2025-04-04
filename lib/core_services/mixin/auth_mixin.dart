@@ -1,14 +1,10 @@
-import 'package:hoyomi/core_services/service.dart';
-
 import '../interfaces/user.dart';
 
-class AuthInit {
-  final String Function(Service service) signInUrl;
-
-  AuthInit({required this.signInUrl});
-}
-
 mixin AuthMixin {
-  AuthInit get authInit;
+  static bool support(Object $mixin) {
+    return $mixin is AuthMixin && $mixin.$noAuth == false;
+  }
+
+  final bool $noAuth = false;
   Future<User> getUser({required String cookie});
 }

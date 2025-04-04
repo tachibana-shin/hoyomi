@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_follow_mixin.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/widgets/library/follow/eiga/horizontal_eiga_follow_list.dart';
@@ -84,7 +84,7 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
 
-    if (_service is! EigaHistoryMixin && _service is! EigaFollowMixin) {
+    if (_service is! EigaWatchTimeMixin && _service is! EigaFollowMixin) {
       return Center(child: Text('This service not support history or follow'));
     }
 
@@ -97,7 +97,7 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
         return ListView(
           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           children: [
-            if (_service is EigaHistoryMixin)
+            if (_service is EigaWatchTimeMixin)
               HorizontalEigaHistoryList(sourceId: widget.sourceId),
             if (_service is EigaFollowMixin)
               HorizontalEigaFollowList(sourceId: widget.sourceId),

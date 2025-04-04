@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -176,8 +178,28 @@ class Authentication {
 
   User? get currentUser => _auth.currentUser;
 
+  Future<User?> getUserAsync() {
+    final completer = Completer<User?>();
+
+    bool firstChanged = false;
+    late final StreamSubscription<User?> subscription;
+    subscription = _auth.userChanges().listen((user) {
+      if (firstChanged || user != null) {
+        subscription.cancel();
+        completer.complete(user);
+      } else {
+        firstChanged = true;
+      }
+    }, onError: (error) {
+      subscription.cancel();
+      completer.completeError(error);
+    }, onDone: () => subscription.cancel());
+
+    return completer.future;
+  } // =================== utils ===================
+
   void _catchFirebaseAuthException(FirebaseAuthException err) {
-    debugPrint('Error: $err');
+    debugPrint('Error: $err (${StackTrace.current})');
     switch (err.code) {
       case 'account-exists-with-different-credential':
         showSnackBar(
@@ -194,7 +216,7 @@ class Authentication {
   }
 
   void _catchNormalException(dynamic err) {
-    debugPrint('Error: $err');
+    debugPrint('Error: $err (${StackTrace.current})');
     showSnackBar(Text('Error occurred Auth: $err'));
   }
 }

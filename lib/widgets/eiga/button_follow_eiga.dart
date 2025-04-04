@@ -35,7 +35,8 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with KaeruMixin {
 
   late final UserData? _user;
 
-  bool get _supportAuth => widget.service is EigaAuthMixin;
+  bool get _supportAuth =>
+      widget.service is EigaAuthMixin && AuthMixin.support(widget.service);
 
   @override
   void initState() {

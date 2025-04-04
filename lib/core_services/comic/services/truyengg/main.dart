@@ -75,8 +75,6 @@ class TruyenGGService extends ABComicService with AuthMixin, ComicAuthMixin {
       return 'type_comic=1; $cookie';
     },
   );
-  @override
-  final authInit = AuthInit(signInUrl: (service) => '${service.baseUrl}/');
 
   final Map<String, String> _comicCachedStore = {};
   final Map<String, String> _episodeIdStore = {};

@@ -28,7 +28,7 @@
   },
   "tasks": {
     "start": "deno run --allow-net main.ts",
-    "dev": "deno run -A main.ts",
+    "dev": "deno run -A --watch main.ts",
     "xata:init": "deno run -A npm:@xata.io/cli init",
     "open:studio": "deno run -A npm:drizzle-kit studio"
   },
@@ -36,5 +36,15 @@
     "jsx": "precompile",
     "jsxImportSource": "hono/jsx"
   },
-  "nodeModulesDir": "none"
+  "nodeModulesDir": "none",
+  "deploy": {
+    "project": "309bc9ed-d904-45c6-ab2d-3e27eb93094a",
+    "exclude": [
+      "**/node_modules",
+      "drizzle/*.sql",
+      "drizzle/meta/*.json"
+    ],
+    "include": [],
+    "entrypoint": "main.ts"
+  }
 }

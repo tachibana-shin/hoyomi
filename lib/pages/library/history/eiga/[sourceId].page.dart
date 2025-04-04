@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_history_mixin.dart';
+import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/interfaces/history_item.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
@@ -20,11 +20,11 @@ class HistoryEigaPage extends StatefulWidget {
 
 class _HistoryEigaPageState extends State<HistoryEigaPage> {
   int _pageKey = 2;
-  late final EigaHistoryMixin _service;
+  late final EigaWatchTimeMixin _service;
 
   @override
   void initState() {
-    _service = getEigaService(widget.sourceId) as EigaHistoryMixin;
+    _service = getEigaService(widget.sourceId) as EigaWatchTimeMixin;
     super.initState();
   }
 
