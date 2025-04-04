@@ -769,7 +769,7 @@ class _Tmdb {
 
   factory _Tmdb.fromJson(Map<String, dynamic> json) {
     return _Tmdb(
-      voteAverage: json['vote_average'],
+      voteAverage: (json['vote_average'] as num).toDouble(),
       voteCount: json['vote_count'],
     );
   }
