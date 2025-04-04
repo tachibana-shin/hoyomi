@@ -233,14 +233,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.5"
-  combined_animation:
-    dependency: transitive
-    description:
-      name: combined_animation
-      sha256: "8d4bc2e6db00aa747e008317b3dcb435cfda03730efdaa89e5e73847f9a4746c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.1"
   contentsize_tabbarview:
     dependency: "direct main"
     description:
@@ -297,14 +289,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
-  dartx:
-    dependency: transitive
-    description:
-      name: dartx
-      sha256: "8b25435617027257d43e6508b5fe061012880ddfdaa75a71d607c3de2a13d244"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   dbus:
     dependency: transitive
     description:
@@ -370,7 +354,7 @@ packages:
     source: hosted
     version: "2.0.1"
   expandable_page_view:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: expandable_page_view
       sha256: "210dc6961cfc29f7ed42867824eb699c9a4b9b198a7c04b8bdc1c05844969dc6"
@@ -385,14 +369,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.12"
-  fading_edge_scrollview:
-    dependency: transitive
-    description:
-      name: fading_edge_scrollview
-      sha256: "1f84fe3ea8e251d00d5735e27502a6a250e4aa3d3b330d3fdcb475af741464ef"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.1"
   fake_async:
     dependency: transitive
     description:
@@ -658,14 +634,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.2.1"
-  flutter_subtitle:
-    dependency: "direct main"
-    description:
-      name: flutter_subtitle
-      sha256: f9e361096df4c8df6df964ac42071f3ead79e89055cb285b160d2a532cb49b08
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.5"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -908,14 +876,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
-  grouped_list:
-    dependency: "direct main"
-    description:
-      name: grouped_list
-      sha256: c52551bc17699e304634d4653b824a1aa7c6b1d3a2c1a0da1a80839f867353fb
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.0"
   html:
     dependency: "direct main"
     description:
@@ -980,30 +940,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  isar:
-    dependency: "direct main"
-    description:
-      name: isar
-      sha256: "99165dadb2cf2329d3140198363a7e7bff9bbd441871898a87e26914d25cf1ea"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0+1"
-  isar_flutter_libs:
-    dependency: "direct main"
-    description:
-      name: isar_flutter_libs
-      sha256: bc6768cc4b9c61aabff77152e7f33b4b17d2fc93134f7af1c3dd51500fe8d5e8
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0+1"
-  isar_generator:
-    dependency: "direct dev"
-    description:
-      name: isar_generator
-      sha256: "76c121e1295a30423604f2f819bc255bc79f852f3bc8743a24017df6068ad133"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0+1"
   js:
     dependency: transitive
     description:
@@ -1108,14 +1044,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.3.0"
-  marquee:
-    dependency: "direct main"
-    description:
-      name: marquee
-      sha256: a87e7e80c5d21434f90ad92add9f820cf68be374b226404fe881d2bba7be0862
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.0"
   matcher:
     dependency: transitive
     description:
@@ -1436,22 +1364,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.8"
-  scrollview_observer:
-    dependency: "direct main"
-    description:
-      name: scrollview_observer
-      sha256: "437c930927c5a3240ed2d40398f99d96eaca58f861817ff44f6d0c60113bcf9d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.26.0"
-  sharara_video_player:
-    dependency: "direct main"
-    description:
-      name: sharara_video_player
-      sha256: "94b725edbc4a30089c281bc3660d4130c4a2ecc29b8b8610c74fd063ddd45801"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.14"
   share_plus:
     dependency: "direct main"
     description:
@@ -1548,14 +1460,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
-  shirne_dialog:
-    dependency: "direct main"
-    description:
-      name: shirne_dialog
-      sha256: "31d7a94b908b499760183cfcfc0d2e5ad058c5863ebd0ce34da70b2da0e6def7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.8.3"
   skeletonizer:
     dependency: "direct main"
     description:
@@ -1738,14 +1642,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.3"
-  time:
-    dependency: transitive
-    description:
-      name: time
-      sha256: "370572cf5d1e58adcb3e354c47515da3f7469dac3a95b447117e728e7be6f461"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.5"
   timing:
     dependency: transitive
     description:
@@ -2042,14 +1938,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.5.0"
-  xxh3:
-    dependency: transitive
-    description:
-      name: xxh3
-      sha256: "399a0438f5d426785723c99da6b16e136f4953fb1e9db0bf270bd41dd4619916"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   yaml:
     dependency: transitive
     description:
