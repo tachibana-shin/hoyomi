@@ -66,8 +66,9 @@ class _ListEpisodesState extends State<ListEpisodes>
       widget.getWatchTimeEpisodes(episodes).then((watchTimes) {
         if (mounted) _watchTimeEpisodes.value = watchTimes;
       }).catchError((error) {
-        if (error is! UserNotFoundException)
+        if (error is! UserNotFoundException) {
           debugPrint('Error: $error (${StackTrace.current})');
+        }
       });
 
       if (widget.eager) {
