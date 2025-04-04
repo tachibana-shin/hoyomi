@@ -184,7 +184,7 @@ class Authentication {
     bool firstChanged = false;
     late final StreamSubscription<User?> subscription;
     subscription = _auth.userChanges().listen((user) {
-      if (firstChanged) {
+      if (firstChanged || user != null) {
         subscription.cancel();
         completer.complete(user);
       } else {
