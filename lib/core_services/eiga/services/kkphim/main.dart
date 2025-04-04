@@ -266,9 +266,12 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final duration = pageData.movie.episodeTotal;
     final yearOf = pageData.movie.year;
     final views = pageData.movie.view;
-    final seasons = pageData.episodes.map((item) {
+    final seasons = pageData.episodes.indexed.map((entry) {
+      final index = entry.$1;
+      final item = entry.$2;
       return Season(
-          name: item.serverName, eigaId: '$eigaIdRaw@${item.serverName}');
+          name: item.serverName,
+          eigaId: index == 0 ? eigaIdRaw : '$eigaIdRaw@${item.serverName}');
     }).toList();
     final genres = pageData.movie.category
         .map((category) =>

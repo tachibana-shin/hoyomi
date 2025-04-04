@@ -275,9 +275,12 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final duration = pageData.data.item.episodeTotal;
     final yearOf = pageData.data.item.year;
     final views = pageData.data.item.view;
-    final seasons = pageData.data.item.episodes.map((item) {
+    final seasons = pageData.data.item.episodes.indexed.map((entry) {
+      final index = entry.$1;
+      final item = entry.$2;
       return Season(
-          name: item.serverName, eigaId: '$eigaIdRaw@${item.serverName}');
+          name: item.serverName,
+          eigaId: index == 0 ? eigaIdRaw : '$eigaIdRaw@${item.serverName}');
     }).toList();
     final genres = pageData.data.item.category
         .map((category) =>

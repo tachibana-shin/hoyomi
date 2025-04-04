@@ -261,9 +261,12 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
     final yearOf =
         int.tryParse(_findGroup(movie, 'Năm')?.list.firstOrNull?.name ?? '');
     final views = 0;
-    final seasons = movie.episodes.map((item) {
+    final seasons = movie.episodes.indexed.map((entry) {
+      final index = entry.$1;
+      final item = entry.$2;
       return Season(
-          name: item.serverName, eigaId: '$eigaIdRaw@${item.serverName}');
+          name: item.serverName,
+          eigaId: index == 0 ? eigaIdRaw : '$eigaIdRaw@${item.serverName}');
     }).toList();
     final genres = _findGroup(movie, 'Thể loại')
             ?.list
