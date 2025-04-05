@@ -1,3 +1,6 @@
+// Fullscreen mode fixed. Thanks for @Nandakishor Dhanaji Valakunde
+// StackOverflow: https://stackoverflow.com/a/67961757
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -24,7 +27,6 @@ import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
-import 'package:hoyomi/widgets/delayed_widget.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:hoyomi/widgets/iconify.dart';
@@ -723,59 +725,59 @@ class _PlayerEigaState extends State<PlayerEiga>
           onHorizontalDragUpdate: _onHorizontalDragUpdate,
           onHorizontalDragEnd: _onHorizontalDragEnd,
           // HELP: delayed widget for fix size not correct if fullscreen change
-          child: DelayedWidget(
-              delay: const Duration(milliseconds: 222),
-              builder: (context) => LayoutBuilder(
-                    builder: (_, constraints) => Watch(() {
-                      final controller = _controller.value;
-                      if (controller == null) {
-                        return Center(
-                            child: OImage.oNetwork(
-                          widget.metaEiga.value.poster!,
-                          sourceId: widget.service.uid,
-                          fit: BoxFit.cover,
-                        ));
-                      }
+          child: Watch(() {
+            final controller = _controller.value;
+            if (controller == null) {
+              return Center(
+                  child: OImage.oNetwork(
+                widget.metaEiga.value.poster!,
+                sourceId: widget.service.uid,
+                fit: BoxFit.cover,
+              ));
+            }
 
-                      final maxWidth = _fullscreen.value
-                          ? 100.w(context)
-                          : constraints.biggest.width;
-                      final maxHeight = _fullscreen.value
-                          ? 100.h(context)
-                          : (maxWidth / widget.aspectRatio);
+            // final videoChild =
+            //     OrientationBuilder(builder: (context, orientation) {
+            //   final isPortrait = false;
+            //   // orientation == Orientation.portrait;
+            //   return Center(
+            //     child: Stack(
+            //       //This will help to expand video in Horizontal mode till last pixel of screen
+            //       fit: isPortrait ? StackFit.loose : StackFit.expand,
+            //       children: [
+            //         AspectRatio(
+            //           aspectRatio: _aspectRatio.value,
+            //           child: VideoPlayer(controller),
+            //         ),
+            //       ],
+            //     ),
+            //   );
+            // });
 
-                      final qualityCode = _qualityCode.value;
-                      final aspectRatio = _aspectRatio.value;
-
-                      double width = maxWidth;
-                      double height = width /
-                          aspectRatio; // Calculate height based on the aspect ratio
-
-                      // If the calculated height exceeds the maximum allowed height,
-                      // adjust dimensions to use maxHeight
-                      if (height > maxHeight) {
-                        height = maxHeight;
-                        width = height *
-                            aspectRatio; // Recalculate width accordingly
-                      }
-
-                      return SubtitleWrapper(
-                        enabled: qualityCode != null,
-                        videoPlayerController: controller,
-                        subtitleController: subtitleController,
-                        subtitleStyle: SubtitleStyle(
-                          textColor: Colors.white,
-                          hasBorder: true,
-                        ),
-                        videoChild: Center(
-                            child: FractionallySizedBox(
-                          widthFactor: width / maxWidth,
-                          heightFactor: height / maxHeight,
-                          child: VideoPlayer(controller),
-                        )),
-                      );
-                    }),
-                  )),
+            // Thanks for @Nandakishor Dhanaji Valakunde
+            // https://stackoverflow.com/a/67961757
+            final videoChild = Center(
+              child: Stack(
+                //This will help to expand video in Horizontal mode till last pixel of screen
+                fit: StackFit.expand,
+                children: [
+                  AspectRatio(
+                    aspectRatio: _aspectRatio.value,
+                    child: VideoPlayer(controller),
+                  ),
+                ],
+              ),
+            );
+            return SubtitleWrapper(
+                enabled: _qualityCode.value != null,
+                videoPlayerController: controller,
+                subtitleController: subtitleController,
+                subtitleStyle: SubtitleStyle(
+                  textColor: Colors.white,
+                  hasBorder: true,
+                ),
+                videoChild: videoChild);
+          }),
         ),
         Watch(() {
           final child = _showControls.value || _error.value != null
@@ -1422,13 +1424,21 @@ class _PlayerEigaState extends State<PlayerEiga>
         DeviceOrientation.landscapeLeft,
       ]);
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (context) => Material(child: _buildStack(context)),
-        ),
-      );
+
+      Navigator.of(context).push(PageRouteBuilder(
+          opaque: false,
+          settings: RouteSettings(),
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) {
+            return Scaffold(
+              backgroundColor: Colors.transparent,
+              extendBodyBehindAppBar: true,
+              body: _buildStack(context),
+            );
+          }));
     } else {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
       SystemChrome.setEnabledSystemUIMode(
