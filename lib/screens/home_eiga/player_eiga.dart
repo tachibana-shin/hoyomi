@@ -25,6 +25,7 @@ import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/database/scheme/general_settings.dart';
+import 'package:hoyomi/plugins/fullscreen.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
@@ -1419,11 +1420,15 @@ class _PlayerEigaState extends State<PlayerEiga>
     _fullscreen.value = value;
 
     if (value) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeRight,
-        DeviceOrientation.landscapeLeft,
-      ]);
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+      if (XPlatform.isAndroid || XPlatform.isIOS) {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+        ]);
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+      } else {
+        setFullScreen(true);
+      }
 
       Navigator.of(context).push(PageRouteBuilder(
           opaque: false,
@@ -1440,11 +1445,16 @@ class _PlayerEigaState extends State<PlayerEiga>
             );
           }));
     } else {
-      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-      SystemChrome.setEnabledSystemUIMode(
-        SystemUiMode.manual,
-        overlays: SystemUiOverlay.values,
-      );
+      if (XPlatform.isAndroid || XPlatform.isIOS) {
+        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+        SystemChrome.setEnabledSystemUIMode(
+          SystemUiMode.manual,
+          overlays: SystemUiOverlay.values,
+        );
+      } else {
+        setFullScreen(false);
+      }
+
       Navigator.pop(context);
     }
   }

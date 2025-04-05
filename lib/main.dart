@@ -3,6 +3,7 @@ import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/plugins/android_sdk_int.dart';
 import 'package:hoyomi/plugins/dot_env.dart';
 import 'package:hoyomi/plugins/firebase.dart';
+import 'package:hoyomi/plugins/fullscreen.dart';
 import 'package:hoyomi/plugins/init_services.dart';
 import 'package:hoyomi/plugins/install_cert.dart';
 import 'package:hoyomi/plugins/video_polyfill.dart';
@@ -21,6 +22,7 @@ Future<void> main() async {
   await initializeCert();
   await initializeFirebase();
   await initializeServices();
+  await initializeFullscreen();
 
   runApp(MainApp());
 

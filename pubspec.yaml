@@ -28,6 +28,7 @@ dependencies:
   flutter_background_service: ^5.0.10
   flutter_bloc: ^8.1.6
   flutter_dotenv: ^5.2.1
+  flutter_fullscreen: ^1.1.0
   flutter_hls_parser: ^2.0.1
   flutter_inappwebview:
     git:
