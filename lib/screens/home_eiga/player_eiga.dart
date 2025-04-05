@@ -739,8 +739,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
             // final videoChild =
             //     OrientationBuilder(builder: (context, orientation) {
-            //   final isPortrait = false;
-            //   // orientation == Orientation.portrait;
+            //   final isPortrait = orientation == Orientation.portrait;
             //   return Center(
             //     child: Stack(
             //       //This will help to expand video in Horizontal mode till last pixel of screen
@@ -758,15 +757,9 @@ class _PlayerEigaState extends State<PlayerEiga>
             // Thanks for @Nandakishor Dhanaji Valakunde
             // https://stackoverflow.com/a/67961757
             final videoChild = Center(
-              child: Stack(
-                //This will help to expand video in Horizontal mode till last pixel of screen
-                fit: StackFit.expand,
-                children: [
-                  AspectRatio(
-                    aspectRatio: _aspectRatio.value,
-                    child: VideoPlayer(controller),
-                  ),
-                ],
+              child: AspectRatio(
+                aspectRatio: _aspectRatio.value,
+                child: VideoPlayer(controller),
               ),
             );
             return SubtitleWrapper(
