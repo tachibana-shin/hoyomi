@@ -41,7 +41,7 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
       throw Exception('Failed to get histories: ${response.statusCode}');
     }
 
-    final body = jsonDecode(response.body) as List;
+    final body = jsonDecode(utf8.decode(response.bodyBytes)) as List;
 
     return body
         .map((raw) {
@@ -96,7 +96,7 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
       throw Exception('Failed to get watch time: ${response.statusCode}');
     }
 
-    final body = jsonDecode(response.body);
+    final body = jsonDecode(utf8.decode(response.bodyBytes));
     if (body == null) throw Exception('No watch time found');
 
     final history = _WatchTime.fromJson(body);
@@ -131,8 +131,8 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
           'Failed to get watch time episodes: ${response.statusCode}');
     }
 
-    final body =
-        _WatchTimeEpisode.fromJsonList(jsonDecode(response.body) as List);
+    final body = _WatchTimeEpisode.fromJsonList(
+        jsonDecode(utf8.decode(response.bodyBytes)) as List);
 
     return {
       for (final item in body)
