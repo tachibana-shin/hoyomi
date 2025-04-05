@@ -11,18 +11,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/controller/general_settings_controller.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/main.dart' hide Subtitle;
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
-import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:hoyomi/plugins/fullscreen.dart';
@@ -38,7 +33,6 @@ import 'package:screen_brightness/screen_brightness.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
 
-import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart' as type;
 import 'package:hoyomi/utils/save_file_cache.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -58,47 +52,43 @@ import 'widget/vertical_volume_slider.dart';
 
 class PlayerEiga extends StatefulWidget {
   final ABEigaService service;
-  final Ref<EigaEpisode?> episode;
-  final Ref<int?> episodeIndex;
-  final Ref<MetaEiga> metaEiga;
 
   final Ref<String> eigaId;
+  final Ref<MetaEiga> metaEiga;
+
   final Ref<String?> episodeId;
+  final Ref<EigaEpisode?> episode;
+  final Ref<int?> episodeIndex;
+
+  final Ref<Season?> season;
+
   final Computed<String> title;
   final Computed<String> subtitle;
 
-  final Future<SourceContent> Function({required SourceVideo source})
-      fetchSourceContent;
-
   final double aspectRatio;
 
-  final void Function() onBack;
   final void Function(BuildContext context, bool isFullscreen) onTapPlaylist;
-  final void Function(
-      {required String eigaId,
-      required String episodeId,
-      required Duration position,
-      required Duration duration}) onWatchTimeUpdate;
   final Ref<void Function()?> onNext;
   final Ref<void Function()?> onPrev;
+
+  final Function(WatchTimeData data) onWatchTimeChanged;
 
   const PlayerEiga({
     super.key,
     required this.service,
+    required this.eigaId,
+    required this.metaEiga,
+    required this.episodeId,
     required this.episode,
     required this.episodeIndex,
-    required this.metaEiga,
-    required this.eigaId,
-    required this.episodeId,
+    required this.season,
     required this.title,
     required this.subtitle,
-    required this.fetchSourceContent,
     required this.aspectRatio,
-    required this.onBack,
     required this.onTapPlaylist,
-    required this.onWatchTimeUpdate,
     required this.onNext,
     required this.onPrev,
+    required this.onWatchTimeChanged,
   });
   @override
   State<PlayerEiga> createState() => _PlayerEigaState();
@@ -345,8 +335,11 @@ class _PlayerEigaState extends State<PlayerEiga>
 
       final loopId = ++loopIdAutoIncrement;
       while (!controller.value.isInitialized && loopIdAutoIncrement == loopId) {
+        if (!mounted) return;
         await Future.delayed(Duration(milliseconds: 300));
       }
+
+      if (!mounted) return;
 
       /// Free memory
       if (loopIdAutoIncrement != loopId) return;
@@ -445,20 +438,64 @@ class _PlayerEigaState extends State<PlayerEiga>
   }
 
   Timer? _timer;
-  void _emitWatchTimeUpdate(
-      {required String eigaId,
-      required String episodeId,
-      required Duration position,
-      required Duration duration}) {
-    _timer?.cancel();
-    _timer ??= Timer(Duration(seconds: 30), () {
-      if (kDebugMode) return;
-      widget.onWatchTimeUpdate(
-          eigaId: eigaId,
-          episodeId: episodeId,
-          position: position,
-          duration: duration);
+  void _emitWatchTimeUpdate() {
+    if (_timer != null || widget.service is! EigaWatchTimeMixin) return;
+    _timer = Timer(Duration(seconds: 30), () {
       _timer = null;
+    });
+
+    final eigaId = widget.eigaId.value;
+    final metaEiga = widget.metaEiga.value;
+
+    final episodeId = widget.episodeId.value;
+    final episode = widget.episode.value;
+    final episodeIndex = widget.episodeIndex.value;
+
+    final season = widget.season.value;
+
+    if (metaEiga.fake ||
+        episodeId == null ||
+        episode == null ||
+        episodeIndex == null ||
+        season == null) {
+      return;
+    }
+
+    final watchTimeData = _watchTimeData.value;
+    if (watchTimeData == null) {
+      return debugPrint(
+          'Skip saving watch time because watch time data loading.');
+    }
+
+    if (watchTimeData.eigaId != eigaId ||
+        watchTimeData.episodeId != episodeId ||
+        _duration.value == Duration.zero ||
+        _controller.value == null ||
+        _controller.value!.value.position == Duration.zero) {
+      return;
+    }
+
+    final watchTime =
+        WatchTime(position: _position.value, duration: _duration.value);
+
+    widget.onWatchTimeChanged(WatchTimeData(
+      eigaId: eigaId,
+      episodeId: episodeId,
+      watchTime: watchTime,
+    ));
+    (widget.service as EigaWatchTimeMixin)
+        .setWatchTime(
+      eigaId: eigaId,
+      episode: episode,
+      episodeIndex: episodeIndex,
+      metaEiga: metaEiga,
+      season: season,
+      watchTime: watchTime,
+    )
+        .catchError((error) {
+      if (error is! UserNotFoundException) {
+        debugPrint('Error: $error (${StackTrace.current})');
+      }
     });
   }
 
@@ -468,7 +505,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     late final Uri url;
     String? content;
     try {
-      final sourceContent = await widget.fetchSourceContent(source: source);
+      final sourceContent = await widget.service.fetchSourceContent(source: source);
       content = sourceContent.content;
 
       final fileCache = await saveFileCache(
@@ -550,17 +587,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       }
       _aspectRatio.value = controller.value.aspectRatio;
 
-      if (_watchTimeData.value?.eigaId == widget.eigaId.value &&
-          _watchTimeData.value?.episodeId == widget.episodeId.value &&
-          _duration.value > Duration.zero &&
-          controller.value.position > Duration.zero) {
-        _emitWatchTimeUpdate(
-          eigaId: widget.eigaId.value,
-          episodeId: widget.episodeId.value!,
-          position: _position.value,
-          duration: _duration.value,
-        );
-      }
+      _emitWatchTimeUpdate();
     }
 
     // if (_controller.value?.isBlank == true ||
@@ -841,7 +868,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                       if (_fullscreen.value) {
                         _setFullscreen(false);
                       } else {
-                        widget.onBack();
+                        context.pop();
                       }
                     },
                   ),

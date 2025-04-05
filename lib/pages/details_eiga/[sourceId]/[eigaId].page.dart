@@ -14,7 +14,6 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
-import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/utils/cache_remember.dart';
 import 'package:hoyomi/widgets/eiga/button_follow_eiga.dart';
@@ -256,16 +255,16 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   Widget _buildPlayer() {
     return PlayerEiga(
       service: _service,
+      eigaId: _eigaId,
+      metaEiga: _metaEiga,
+      episodeId: _episodeId,
       episode: _episode,
       episodeIndex: _episodeIndex,
-      metaEiga: _metaEiga,
-      eigaId: _eigaId,
-      episodeId: _episodeId,
+      season: _currentSeason,
+
+      /// ===============
       title: _title,
       subtitle: _subtitle,
-      onBack: () {
-        context.pop();
-      },
       onTapPlaylist: (context, isFullscreen) {
         if (isFullscreen) {
           _showModalEpisodesFullscreen(context);
@@ -273,44 +272,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         }
         _showModalEpisodes();
       },
-      onWatchTimeUpdate: (
-          {required String eigaId,
-          required String episodeId,
-          required position,
-          required duration}) {
-        if (_service is EigaWatchTimeMixin) {
-          final eigaId = _eigaId.value;
-          final watchTime = WatchTime(position: position, duration: duration);
-
-          if (_episode.value == null || _currentSeason.value == null) return;
-
-          _eventBus.fire(
-            WatchTimeDataEvent(
-              WatchTimeData(
-                eigaId: eigaId,
-                episodeId: _episode.value!.episodeId,
-                watchTime: watchTime,
-              ),
-            ),
-          );
-          (_service as EigaWatchTimeMixin)
-              .setWatchTime(
-            eigaId: eigaId,
-            episode: _episode.value!,
-            episodeIndex: _episodeIndex.value!,
-            metaEiga: _metaEiga.value,
-            season: _currentSeason.value!,
-            watchTime: watchTime,
-          )
-              .catchError((error) {
-            if (error is! UserNotFoundException) {
-              debugPrint('Error: $error (${StackTrace.current})');
-            }
-          });
-        }
+      onWatchTimeChanged: (watchTimeData) {
+        _eventBus.fire(WatchTimeDataEvent(watchTimeData));
       },
       aspectRatio: _aspectRatio,
-      fetchSourceContent: _service.fetchSourceContent,
       onPrev: _onPrevNotifier,
       onNext: _onNextNotifier,
     );
