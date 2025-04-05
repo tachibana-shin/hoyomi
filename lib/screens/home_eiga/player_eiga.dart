@@ -187,6 +187,12 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   String get uid => '${widget.episodeId.value}@${widget.eigaId.value}';
 
+  bool _positionChangedByUser = false;
+  void _resetPositionChangedByUser() {
+    if (!mounted) return;
+    _positionChangedByUser = false;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -346,7 +352,11 @@ class _PlayerEigaState extends State<PlayerEiga>
 
       await controller.pause();
       _position.value = watchTime.position;
+
+      _positionChangedByUser = true;
       await controller.seekTo(watchTime.position);
+      Future.microtask(_resetPositionChangedByUser);
+
       if (!controller.value.isPlaying) controller.play();
 
       showSnackBar(
@@ -568,6 +578,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     }
 
     if (controller != null) {
+      final positionChanged = _position.value != controller.value.position;
       _position.value = controller.value.position;
       _duration.value = controller.value.duration;
       _buffered.value =
@@ -575,7 +586,10 @@ class _PlayerEigaState extends State<PlayerEiga>
         return range.end > max ? range.end : max;
       });
       _loading.value = controller.value.isInitialized != true ||
-          controller.value.isBuffering;
+          (controller.value.isBuffering &&
+              _playing.value &&
+              positionChanged &&
+              !_positionChangedByUser);
       final playing = controller.value.isPlaying;
       if (_playing.value != playing) {
         _playing.value = playing;
@@ -627,17 +641,24 @@ class _PlayerEigaState extends State<PlayerEiga>
     if (dxRatio < 1 / 2) {
       debugPrint('tap left');
       _doubleTapToRewind.value++;
+
+      _positionChangedByUser = true;
       controller.seekTo(_position.value <= _teenSeconds
           ? Duration.zero
           : _position.value - _teenSeconds);
+      Future.microtask(_resetPositionChangedByUser);
+
       return;
     }
     if (dxRatio > 1 / 2) {
       debugPrint('tap right');
       _doubleTapToForward.value++;
+
+      _positionChangedByUser = true;
       controller.seekTo(_position.value >= _duration.value - _teenSeconds
           ? _duration.value
           : _position.value + _teenSeconds);
+      Future.microtask(_resetPositionChangedByUser);
     }
   }
 
@@ -1150,7 +1171,10 @@ class _PlayerEigaState extends State<PlayerEiga>
                     openingEnding: _openingEnding,
                     onSeek: (duration) {
                       final seek = _position.value = duration;
+
+                      _positionChangedByUser = true;
                       _controller.value?.seekTo(seek);
+                      Future.microtask(_resetPositionChangedByUser);
                     },
                   ),
                 ),
@@ -1210,8 +1234,11 @@ class _PlayerEigaState extends State<PlayerEiga>
                       ? GestureDetector(
                           onTap: () {
                             _doubleTapToRewind.value++;
+
+                            _positionChangedByUser = true;
                             _controller.value?.seekTo(
                                 _position.value - Duration(seconds: 10));
+                            Future.microtask(_resetPositionChangedByUser);
                           },
                           child: Stack(children: [
                             Positioned(
@@ -1263,8 +1290,11 @@ class _PlayerEigaState extends State<PlayerEiga>
                       ? GestureDetector(
                           onTap: () {
                             _doubleTapToForward.value++;
+
+                            _positionChangedByUser = true;
                             _controller.value?.seekTo(
                                 _position.value + Duration(seconds: 10));
+                            Future.microtask(_resetPositionChangedByUser);
                           },
                           child: Stack(children: [
                             Positioned(
@@ -1724,6 +1754,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   void dispose() {
     _controller.value?.dispose();
     _resetAppBrightness();
+    WakelockPlus.disable();
 
     super.dispose();
   }
