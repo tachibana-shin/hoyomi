@@ -4,7 +4,9 @@ import {
   text,
   timestamp,
   foreignKey,
-  index
+  index,
+  date,
+  unique
 } from "drizzle-orm/pg-core"
 import { users } from "./users.ts"
 import { eigaHistoryChapters } from "./eiga_history_chapters.ts"
@@ -24,6 +26,7 @@ export const eigaHistories = pgTable(
     seasonName: text("season_name").notNull(),
     forTo: integer("for_to"),
     vChap: integer("v_chap").references(() => eigaHistoryChapters.id),
+    dateCreated: date("date_created").notNull().defaultNow(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow()
@@ -45,6 +48,12 @@ export const eigaHistories = pgTable(
     foreignKey({
       columns: [table.forTo],
       foreignColumns: [table.id]
-    })
+    }),
+    unique("eiga_history__user_source_eiga_date_created__idx").on(
+      table.userId,
+      table.sourceId,
+      table.eigaTextId,
+      table.dateCreated
+    )
   ]
 )

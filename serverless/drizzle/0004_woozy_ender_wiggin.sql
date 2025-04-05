@@ -1,0 +1,2 @@
+ALTER TABLE "eiga_histories" ADD COLUMN "date_created" date DEFAULT now() NOT NULL;--> statement-breakpoint
+ALTER TABLE "eiga_histories" ADD CONSTRAINT "eiga_history__user_source_eiga_date_created__idx" UNIQUE("user_id","source_id","eiga_text_id","date_created");
