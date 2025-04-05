@@ -23,11 +23,7 @@ class ProxyCache {
     _server = await HttpServer.bind(InternetAddress.loopbackIPv4, _port);
     debugPrint('ProxyCache started on http://localhost:$_port/');
 
-    _resetTimeout();
-
     _server!.listen((HttpRequest request) async {
-      _resetTimeout();
-
       final String fileName = request.uri.path.substring(1);
       final File file = File('$cachePath/$fileName');
 
@@ -54,13 +50,5 @@ class ProxyCache {
     _server = null;
     _timeoutTimer?.cancel();
     debugPrint('ProxyCache stopped.');
-  }
-
-  void _resetTimeout() {
-    _timeoutTimer?.cancel();
-    _timeoutTimer = Timer(Duration(seconds: 60), () {
-      debugPrint('ProxyCache auto shutdown due to inactivity.');
-      stop();
-    });
   }
 }
