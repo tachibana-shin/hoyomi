@@ -28,6 +28,7 @@ dependencies:
   flutter_background_service: ^5.0.10
   flutter_bloc: ^8.1.6
   flutter_dotenv: ^5.2.1
+  flutter_fullscreen: ^1.1.0
   flutter_hls_parser: ^2.0.1
   flutter_inappwebview:
     git:
@@ -54,6 +55,8 @@ dependencies:
   json_annotation: ^4.9.0
   kaeru: ^0.1.9
   markdown: ^7.3.0
+  media_kit_libs_linux: ^1.2.1
+  media_kit_libs_windows_video: ^1.0.11
   mediaquery_sizer: ^1.1.1
   package_info_plus: ^8.3.0
   path: ^1.9.0
@@ -77,6 +80,7 @@ dependencies:
   url_launcher: ^6.3.1
   very_good_infinite_list: ^0.9.0
   video_player: ^2.9.3
+  video_player_media_kit: ^1.0.6
   wakelock_plus: ^1.2.10
   webview_flutter: ^4.10.0
   xml: ^6.5.0
