@@ -505,7 +505,8 @@ class _PlayerEigaState extends State<PlayerEiga>
     late final Uri url;
     String? content;
     try {
-      final sourceContent = await widget.service.fetchSourceContent(source: source);
+      final sourceContent =
+          await widget.service.fetchSourceContent(source: source);
       content = sourceContent.content;
 
       final fileCache = await saveFileCache(
