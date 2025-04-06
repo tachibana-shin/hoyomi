@@ -5,7 +5,7 @@ import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/comic/comic_service.dart';
+import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_category.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 import 'package:hoyomi/core_services/interfaces/filter.dart';

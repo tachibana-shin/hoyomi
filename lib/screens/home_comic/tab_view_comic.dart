@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/comic/comic_service.dart';
+import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
 import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/core_services/comic/interfaces/home_comic_category.dart';
 import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';

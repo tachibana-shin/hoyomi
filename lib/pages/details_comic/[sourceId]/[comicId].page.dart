@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user_async.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
-import 'package:hoyomi/core_services/comic/comic_service.dart';
+import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_category.dart';
 import 'package:hoyomi/core_services/interfaces/user.dart';
 

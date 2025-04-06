@@ -1,4 +1,4 @@
-import 'package:hoyomi/core_services/comic/comic_service.dart';
+import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 
 import 'comic/services/truyengg/main.dart';
