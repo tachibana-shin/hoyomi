@@ -784,7 +784,7 @@ class _PlayerEigaState extends State<PlayerEiga>
             if (controller == null) {
               return Center(
                   child: OImage.oNetwork(
-                widget.metaEiga.value.poster!,
+                widget.metaEiga.value.poster ?? widget.metaEiga.value.image,
                 sourceId: widget.service.uid,
                 fit: BoxFit.cover,
               ));
