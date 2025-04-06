@@ -588,8 +588,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       _loading.value = controller.value.isInitialized != true ||
           (controller.value.isBuffering &&
               _playing.value &&
-              positionChanged &&
-              !_positionChangedByUser);
+              !(positionChanged && !_positionChangedByUser));
       final playing = controller.value.isPlaying;
       if (_playing.value != playing) {
         _playing.value = playing;

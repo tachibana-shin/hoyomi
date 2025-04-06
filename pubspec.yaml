@@ -79,7 +79,7 @@ dependencies:
       ref: main
   url_launcher: ^6.3.1
   very_good_infinite_list: ^0.9.0
-  video_player: ^2.9.3
+  video_player: ^2.9.5
   video_player_media_kit: ^1.0.6
   wakelock_plus: ^1.2.10
   webview_flutter: ^4.10.0
