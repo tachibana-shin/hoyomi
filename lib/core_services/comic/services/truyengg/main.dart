@@ -67,37 +67,37 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
   // Utils
   Comic parseComic(DQuery itemComic, String referer) {
     final String comicId = itemComic
-        .queryOne("a")
+        .queryOne('a')
         .attr('href')
-        .split("/")
+        .split('/')
         .last
-        .replaceFirst(".html", "");
-    final $image = itemComic.queryOne("img");
+        .replaceFirst('.html', '');
+    final $image = itemComic.queryOne('img');
     final OImage image = OImage(
-      src: $image.attr("data-src"),
-      headers: {"referer": referer},
+      src: $image.attr('data-src'),
+      headers: {'referer': referer},
     );
-    final String name = itemComic.queryOne(".comic_name").textRaw() ??
-        itemComic.queryOne("img").attr('alt');
+    final String name = itemComic.queryOne('.comic_name').textRaw() ??
+        itemComic.queryOne('img').attr('alt');
 
     final ComicChapter lastChap = ComicChapter(
-      name: itemComic.queryOne(".cl99").text(),
+      name: itemComic.queryOne('.cl99').text(),
       chapterId: itemComic
-          .queryOne(".cl99")
+          .queryOne('.cl99')
           .attr('href')
-          .split("/")
+          .split('/')
           .last
-          .replaceFirst(".html", "")
-          .replaceFirst("Chapter", "chap"),
+          .replaceFirst('.html', '')
+          .replaceFirst('Chapter', 'chap'),
     );
 
-    final timeAgoElement = itemComic.queryOne(".time-ago");
+    final timeAgoElement = itemComic.queryOne('.time-ago');
     final timeAgo = timeAgoElement.isNotEmpty
         ? convertTimeAgoToUtc(timeAgoElement.text())
         : null;
-    final String notice = itemComic.queryOne(".type-label").text();
+    final String notice = itemComic.queryOne('.type-label').text();
 
-    final rateValueText = itemComic.queryOne(".rate-star").text();
+    final rateValueText = itemComic.queryOne('.rate-star').text();
     final double? rate =
         rateValueText.isNotEmpty ? double.tryParse(rateValueText) : null;
 
@@ -118,13 +118,13 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
   Future<List<HomeComicCategory>> home() async {
     final $ = await fetch$(baseUrl);
 
-    final categorys = $(".list_item_home");
+    final categorys = $('.list_item_home');
 
     return [
       HomeComicCategory(
         items: categorys
             .first()
-            .query(".item_home")
+            .query('.item_home')
             .map((element) => parseComic(element, baseUrl))
             .toList(),
         name: 'Mới Cập Nhật',
@@ -133,20 +133,20 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
       HomeComicCategory(
         items: categorys
             .eq(1)
-            .query(".item_home")
+            .query('.item_home')
             .map((element) => parseComic(element, baseUrl))
             .toList(),
-        name: "Bình Chọn",
-        categoryId: "top-binh-chon",
+        name: 'Bình Chọn',
+        categoryId: 'top-binh-chon',
       ),
       HomeComicCategory(
         items: categorys
             .eq(2)
-            .query(".item_home")
+            .query('.item_home')
             .map((element) => parseComic(element, baseUrl))
             .toList(),
-        name: "Xem Nhiều",
-        categoryId: "top-thang",
+        name: 'Xem Nhiều',
+        categoryId: 'top-thang',
       ),
     ];
   }
@@ -157,70 +157,70 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
       _comicCachedStore[comicId] = await fetch(getURL(comicId)),
     );
 
-    final String name = $("h1[itemprop=name]", single: true).text();
+    final String name = $('h1[itemprop=name]', single: true).text();
     final OImage image = OImage(
-      src: $(".thumbblock > img", single: true).attr('src'),
-      headers: {"referer": baseUrl},
+      src: $('.thumbblock > img', single: true).attr('src'),
+      headers: {'referer': baseUrl},
     );
 
-    final tales = $(".info_tale > .row");
+    final tales = $('.info_tale > .row');
 
-    final author = _getInfoTale(tales, "Tác Giả:")?.textRaw();
-    final translator = _getInfoTale(tales, "Dịch Giả:")?.textRaw();
+    final author = _getInfoTale(tales, 'Tác Giả:')?.textRaw();
+    final translator = _getInfoTale(tales, 'Dịch Giả:')?.textRaw();
     final status$ =
-        _getInfoTale(tales, "Trạng Thái:")?.textRaw()?.toLowerCase() ??
-            "Unknown";
+        _getInfoTale(tales, 'Trạng Thái:')?.textRaw()?.toLowerCase() ??
+            'Unknown';
     final status = status$ == 'đang cập nhật'
         ? StatusEnum.ongoing
         : status$ == 'unknown'
             ? StatusEnum.unknown
             : StatusEnum.completed;
     final views = int.tryParse(
-      _getInfoTale(tales, "Lượt Xem:")?.textRaw()?.replaceAll(",", "") ?? '',
+      _getInfoTale(tales, 'Lượt Xem:')?.textRaw()?.replaceAll(',', '') ?? '',
     );
     final likes = int.tryParse(
-      _getInfoTale(tales, "Theo Dõi:")?.textRaw()?.replaceAll(",", "") ?? "",
+      _getInfoTale(tales, 'Theo Dõi:')?.textRaw()?.replaceAll(',', '') ?? '',
     );
 
     final rate$ = JsonDecoder().convert(
-      $("script[type='application/ld+json']", single: true).textRaw() ?? "{}",
+      $('script[type=\'application/ld+json\']', single: true).textRaw() ?? '{}',
     ) as Map<String, dynamic>;
 
     final rate = rate$.containsKey('aggregateRating')
         ? RateValue(
-            best: int.parse("${rate$['aggregateRating']['bestRating']}"),
+            best: int.parse('${rate$['aggregateRating']['bestRating']}'),
             count: int.parse(rate$['aggregateRating']['ratingCount']),
             value: double.parse(rate$['aggregateRating']['ratingValue']),
           )
         : null;
 
-    final genres = $(".clblue").map(
+    final genres = $('.clblue').map(
       (anchor) => Genre(
         name: anchor.text(),
         genreId:
-            "the-loai*${anchor.attr('href').split("/").last.replaceFirst(".html", "")}",
+            'the-loai*${anchor.attr('href').split('/').last.replaceFirst('.html', '')}',
       ),
     );
-    final description = $(".story-detail-info", single: true).text();
-    final chaps = $(".item_chap").map((chap) {
-      final name = chap.queryOne("a").text();
+    final description = $('.story-detail-info', single: true).text();
+    final chaps = $('.item_chap').map((chap) {
+      final name = chap.queryOne('a').text();
       final chapterId = chap
-          .queryOne("a")
+          .queryOne('a')
           .attr('href')
-          .split("/")
+          .split('/')
           .last
-          .replaceFirst("$comicId-", "")
-          .replaceFirst(".html", "");
+          .replaceFirst('$comicId-', '')
+          .replaceFirst('.html', '');
 
       final time$ = chap.queryOne('.cl99').textRaw();
-      final time = time$ != null ? DateFormat("dd/MM/yyyy").parse(time$) : null;
+      final time = time$ != null ? DateFormat('dd/MM/yyyy').parse(time$) : null;
 
       return ComicChapter(name: name, chapterId: chapterId, time: time);
     });
-    final lastModified = rate$.containsKey("dateModified")
-        ? DateTime.parse(rate$["dateModified"])
-        : DateFormat("dd/MM/yyyy")
-            .parse($("div.w110.text-right > span > em", single: true).text());
+    final lastModified = rate$.containsKey('dateModified')
+        ? DateTime.parse(rate$['dateModified'])
+        : DateFormat('dd/MM/yyyy')
+            .parse($('div.w110.text-right > span > em', single: true).text());
 
     return MetaComic(
       name: name,
@@ -257,13 +257,13 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
 
   @override
   String getURL(comicId, {chapterId}) {
-    return "$baseUrl/truyen-tranh/$comicId${chapterId != null ? "-$chapterId" : ""}.html";
+    return '$baseUrl/truyen-tranh/$comicId${chapterId != null ? '-$chapterId' : ''}.html';
   }
 
   @override
   parseURL(url) {
-    final pathname = url.split("/").last.replaceFirst(".html", "");
-    final index = pathname.indexOf("chap-");
+    final pathname = url.split('/').last.replaceFirst('.html', '');
+    final index = pathname.indexOf('chap-');
     final chapterId = index == -1 ? null : pathname.substring(index + 5);
     final comicId = index == -1 ? pathname : pathname.substring(0, index);
 
@@ -274,12 +274,12 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
   Future<List<OImage>> getPages(String manga, String chap) async {
     final $ = await fetch$(getURL(manga, chapterId: chap));
 
-    _episodeIdStore[chap] = $("#episode_id", single: true).val();
+    _episodeIdStore[chap] = $('#episode_id', single: true).val();
 
-    return $(".content_detail_manga > img").map((img) {
+    return $('.content_detail_manga > img').map((img) {
       final src = img.attr('src');
 
-      return OImage(src: src, headers: {"referer": baseUrl});
+      return OImage(src: src, headers: {'referer': baseUrl});
     }).toList();
   }
 
@@ -291,7 +291,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
           // pre-fetch
           chapterId = _episodeIdStore[chapterId] ??= (await fetch$(
             getURL(comicId, chapterId: chapterId),
-          ))("#episode_id", single: true)
+          ))('#episode_id', single: true)
               .val();
         }
 
@@ -301,7 +301,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
         final $ = page == 1
             ? docB
             : await fetch$(
-                "$baseUrl/frontend/comment/list",
+                '$baseUrl/frontend/comment/list',
                 body: {
                   'comic_id': RegExp(r'(\d+)$').firstMatch(comicId)!.group(1)!,
                   'parent_id': parentId,
@@ -312,29 +312,29 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
                 },
               );
 
-        final items = $(".info-comment").map((element) {
+        final items = $('.info-comment').map((element) {
           final id =
               RegExp(r'child_(\d+)').firstMatch(element.className())!.group(1)!;
 
-          final photoUrl = element.queryOne(".avartar-comment img").attr('src');
-          final name = element.queryOne(".avartar-comment img").attr('alt');
-          final time = convertTimeAgoToUtc(element.queryOne(".time").text());
+          final photoUrl = element.queryOne('.avartar-comment img').attr('src');
+          final name = element.queryOne('.avartar-comment img').attr('alt');
+          final time = convertTimeAgoToUtc(element.queryOne('.time').text());
 
-          final content = element.queryOne(".content-comment").html();
+          final content = element.queryOne('.content-comment').html();
 
           final like =
-              int.parse(element.queryOne(".total-like-comment").text());
+              int.parse(element.queryOne('.total-like-comment').text());
           final dislike = int.parse(
-              element.queryOne(".total-dislike-comment").textRaw() ?? '0');
+              element.queryOne('.total-dislike-comment').textRaw() ?? '0');
 
-          final countReply$ = element.queryOne(".text-list-reply").text();
+          final countReply$ = element.queryOne('.text-list-reply').text();
           final countReply = countReply$.isNotEmpty
               ? int.parse(
                   RegExp(r'(\d+)').firstMatch(countReply$)?.group(0) ?? '0',
                 )
               : 0;
 
-          final canDelete = element.queryOne(".remove_comnent").isNotEmpty;
+          final canDelete = element.queryOne('.remove_comnent').isNotEmpty;
 
           return ComicComment(
             id: id,
@@ -342,7 +342,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
             chapterId: chapterId,
             userId: name,
             name: name,
-            photoUrl: OImage(src: photoUrl, headers: {"referer": baseUrl}),
+            photoUrl: OImage(src: photoUrl, headers: {'referer': baseUrl}),
             content: content,
             countLike: like,
             countDislike: dislike,
@@ -353,10 +353,10 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
         });
 
         final totalItems =
-            int.parse(docB(".comment-count", single: true).text());
+            int.parse(docB('.comment-count', single: true).text());
         final totalPages = int.parse(
           RegExp(r'loadComment\((\d+)\);')
-                  .firstMatch($(".page-item").last().attr('onclick'))
+                  .firstMatch($('.page-item').last().attr('onclick'))
                   ?.group(1) ??
               '1',
         );
@@ -381,7 +381,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
         );
 
         await fetch(
-          "$baseUrl/frontend/comment/remove",
+          '$baseUrl/frontend/comment/remove',
           body: {
             'id': comment.id,
             'comic_id': comicId,
@@ -401,20 +401,20 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
       }) async {
         if (value) {
           final json = jsonDecode(
-            await fetch("$baseUrl/frontend/comment/like",
+            await fetch('$baseUrl/frontend/comment/like',
                 body: {'id': comment.id}),
           );
 
-          if (json["success"] == 0) throw Exception(json["error"]);
+          if (json['success'] == 0) throw Exception(json['error']);
         } else {
           final json = jsonDecode(
             await fetch(
-              "$baseUrl/frontend/comment/dislike",
+              '$baseUrl/frontend/comment/dislike',
               body: {'id': comment.id},
             ),
           );
 
-          if (json["success"] == 0) throw Exception(json["error"]);
+          if (json['success'] == 0) throw Exception(json['error']);
         }
 
         return value;
@@ -423,7 +423,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
   @override
   get getSuggest => (comic, {page = 1}) async {
         return getCategory(
-          categoryId: "tim-kiem-nang-cao",
+          categoryId: 'tim-kiem-nang-cao',
           page: page!,
           filters: {
             'category': comic.genres
@@ -442,19 +442,19 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
       required filters,
       required quick}) async {
     final url =
-        "$baseUrl/tim-kiem${page > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}";
+        '$baseUrl/tim-kiem${page > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}';
 
     final $ = await fetch$(url);
 
-    final categorys = $(".list_item_home");
+    final categorys = $('.list_item_home');
 
     final data = categorys
         .first()
-        .query(".item_home")
+        .query('.item_home')
         .map((element) => parseComic(element, baseUrl));
 
     final lastPageLink =
-        $(".pagination > a:last-child", single: true).attr("href");
+        $('.pagination > a:last-child', single: true).attr('href');
     final maxPage = lastPageLink.isNotEmpty
         ? int.parse(
             RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
@@ -474,18 +474,18 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
   @override
   getCategory({required categoryId, required page, required filters}) async {
     final url =
-        "$baseUrl/${categoryId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html";
+        '$baseUrl/${categoryId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html';
 
     final $ = await fetch$(
       buildQueryUri(url, filters: filters).toString(),
     );
 
-    final data = $(".list_item_home, .list_grid", single: true)
-        .query(".item_home")
+    final data = $('.list_item_home, .list_grid', single: true)
+        .query('.item_home')
         .map((element) => parseComic(element, baseUrl));
 
     final lastPageLink =
-        $(".pagination > a:last-child", single: true).attr('href');
+        $('.pagination > a:last-child', single: true).attr('href');
     final maxPage = lastPageLink.isNotEmpty
         ? int.parse(
             RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
@@ -493,7 +493,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
         : 1;
 
     return ComicCategory(
-      name: $(".title_cate", single: true).text(),
+      name: $('.title_cate', single: true).text(),
       url: url,
       items: data.toList(),
       page: page,
@@ -507,20 +507,20 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
   @override
   getUser({required cookie}) async {
     final $ = await fetch$(
-      "$baseUrl/thiet-lap-tai-khoan.html",
+      '$baseUrl/thiet-lap-tai-khoan.html',
       cookie: cookie,
     );
 
-    if ($("title", single: true).text() != 'Thông Tin Tài Khoản') {
+    if ($('title', single: true).text() != 'Thông Tin Tài Khoản') {
       throw UserNotFoundException(); // Not logged in
     }
 
-    final txtCms = $("input.txt_cm");
+    final txtCms = $('input.txt_cm');
     final user = txtCms.eq(0).val();
     final email = txtCms.eq(1).val();
-    final photoUrl = $(".image-avatar", single: true).attr("src");
+    final photoUrl = $('.image-avatar', single: true).attr('src');
     final fullName =
-        "${$("#first_name", single: true).attr('value')} ${$("#last_name", single: true).val()}";
+        '${$('#first_name', single: true).attr('value')} ${$('#last_name', single: true).val()}';
 
     return User(
       user: user,
@@ -532,24 +532,24 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
 
   @override
   Future<bool> isLiked({required comicId}) async {
-    final $ = await fetch$("$baseUrl/truyen-tranh/$comicId.html");
+    final $ = await fetch$('$baseUrl/truyen-tranh/$comicId.html');
 
-    return $('body').text().contains("Bỏ Theo Dõi");
+    return $('body').text().contains('Bỏ Theo Dõi');
     // ok
-    // final csrf = document.querySelector("#csrf-token")!.attributes["value"]!;
+    // final csrf = document.querySelector('#csrf-token')!.attributes['value']!;
   }
 
   @override
   Future<bool> setLike({required comicId, required value}) async {
-    final $ = await fetch$("$baseUrl/truyen-tranh/$comicId.html");
+    final $ = await fetch$('$baseUrl/truyen-tranh/$comicId.html');
 
-    final id = $(".subscribe_button", single: true).attr('data-id');
-    final csrf = $("#csrf-token", single: true).val();
+    final id = $('.subscribe_button', single: true).attr('data-id');
+    final csrf = $('#csrf-token', single: true).val();
 
     final data = await fetch(
-      "$baseUrl/frontend/user/regiter-subscribe",
-      headers: {"x-requested-with": "XMLHttpRequest"},
-      body: {"id": id, "token": csrf},
+      '$baseUrl/frontend/user/regiter-subscribe',
+      headers: {'x-requested-with': 'XMLHttpRequest'},
+      body: {'id': id, 'token': csrf},
     );
 
     return data != '0';

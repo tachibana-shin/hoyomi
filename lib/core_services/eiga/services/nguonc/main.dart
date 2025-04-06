@@ -17,10 +17,10 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
 // EigaHistoryMixin,
 // EigaFollowMixin,
 {
-  final hostCUrl = "phim.nguonc.com";
+  final hostCUrl = 'phim.nguonc.com';
   @override
   late final init = ServiceInit(
-    name: "NguonC",
+    name: 'NguonC',
     faviconUrl: OImage(src: 'https://i.imgur.com/3Vowy8s.png'),
     rootUrl: 'https://$hostCUrl',
   );
@@ -39,16 +39,16 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
   @override
   parseURL(String url) {
     final uri = Uri.parse(url);
-    assert(uri.path.startsWith("/phim"));
+    assert(uri.path.startsWith('/phim'));
 
-    final seg = uri.path.split("/");
+    final seg = uri.path.split('/');
     // [0] is empty, [1] is phim
     final eigaId = seg[2];
     final episodeId = seg.length >= 4 ? seg[3] : null;
 
     return EigaParam(
       eigaId: eigaId,
-      episodeId: episodeId?.replaceFirst(".html", ""),
+      episodeId: episodeId?.replaceFirst('.html', ''),
     );
   }
 
@@ -83,7 +83,7 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
         .toList();
     final duration = item.totalEpisodes.toString();
     final language = item.language;
-    //     final actors = item.querySelectorAll(".Cast a").map((anchor) {
+    //     final actors = item.querySelectorAll('.Cast a').map((anchor) {
     //       final href = anchor.attributes['href']!.split('/');
     //       return Genre(
     // name: anchor.text,
@@ -370,26 +370,26 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
 
   @override
   fetchSourceContent({required source}) async {
-    final url = source.src.toString().replaceFirst("embed.php", "get.php");
+    final url = source.src.toString().replaceFirst('embed.php', 'get.php');
     final content = await fetch(url, headers: {
       'accept':
-          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-      "accept-language": "vi-VN,vi;q=0.6",
-      "cache-control": "no-cache",
-      'cookie': "af30a30f-1d12-406e-ad01-d76d8b94da41=1",
-      'pragma': "no-cache",
-      'priority': "u=0, i",
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+      'accept-language': 'vi-VN,vi;q=0.6',
+      'cache-control': 'no-cache',
+      'cookie': 'af30a30f-1d12-406e-ad01-d76d8b94da41=1',
+      'pragma': 'no-cache',
+      'priority': 'u=0, i',
       'referer': source.src.toString(),
-      "sec-ch-ua": '"Chromium";v="130", "Brave";v="130", "Not?A_Brand";v="99"',
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": '"Windows"',
-      "sec-fetch-dest": "document",
-      "sec-fetch-mode": "navigate",
-      "sec-fetch-site": "same-origin",
-      "sec-gpc": "1",
-      "upgrade-insecure-requests": "1",
-      "user-agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+      'sec-ch-ua': '"Chromium";v="130", "Brave";v="130", "Not?A_Brand";v="99"',
+      'sec-ch-ua-mobile': '?0',
+      'sec-ch-ua-platform': '"Windows"',
+      'sec-fetch-dest': 'document',
+      'sec-fetch-mode': 'navigate',
+      'sec-fetch-site': 'same-origin',
+      'sec-gpc': '1',
+      'upgrade-insecure-requests': '1',
+      'user-agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
     });
 
     return SourceContent(

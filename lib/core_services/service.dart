@@ -145,7 +145,7 @@ abstract class Service with _SettingsMixin {
 
   String get name => init.name;
   @override
-  String get uid => init.uid ?? name.toLowerCase().replaceAll(r"\s", "-");
+  String get uid => init.uid ?? name.toLowerCase().replaceAll(r'\s', '-');
   OImage? _faviconUrl;
   OImage get faviconUrl => _faviconUrl ??= OImage(
       src: Uri.parse(baseUrl).resolve(init.faviconUrl.src).toString(),
@@ -378,7 +378,7 @@ abstract class Service with _SettingsMixin {
     //   await setCookie(
     //       uid,
     //       response.headers['set-cookie']
-    //               ?.split(",")
+    //               ?.split(',')
     //               .map((cookie) => cookie.split(';')[0].trim())
     //               .join(';') ??
     //           cookiesText ??

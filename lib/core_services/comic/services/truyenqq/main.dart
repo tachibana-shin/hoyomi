@@ -47,37 +47,37 @@ class TruyenQQService extends TruyenGGService {
   @override
   Comic parseComic(DQuery itemComic, String referer) {
     final String comicId = itemComic
-        .queryOne("a")
+        .queryOne('a')
         .attr('href')
-        .split("/")
+        .split('/')
         .last
-        .replaceFirst(".html", "");
-    final $image = itemComic.queryOne("img");
+        .replaceFirst('.html', '');
+    final $image = itemComic.queryOne('img');
     final OImage image = OImage(
       src: $image.attr('src'),
-      headers: {"referer": referer},
+      headers: {'referer': referer},
     );
-    final String name = (itemComic.queryOne(".book_name a").textRaw() ??
-        itemComic.queryOne("img").attr('alt'));
+    final String name = (itemComic.queryOne('.book_name a').textRaw() ??
+        itemComic.queryOne('img').attr('alt'));
 
     final ComicChapter lastChap = ComicChapter(
-      name: itemComic.queryOne(".last_chapter > a").text(),
+      name: itemComic.queryOne('.last_chapter > a').text(),
       chapterId: itemComic
-          .queryOne(".cl99, .last_chapter > a")
+          .queryOne('.cl99, .last_chapter > a')
           .attr('href')
-          .split("/")
+          .split('/')
           .last
-          .replaceFirst("$comicId-", "")
-          .replaceFirst(".html", ""),
+          .replaceFirst('$comicId-', '')
+          .replaceFirst('.html', ''),
     );
 
-    final timeAgoElement = itemComic.queryOne(".time-ago");
+    final timeAgoElement = itemComic.queryOne('.time-ago');
     final timeAgo = timeAgoElement.isNotEmpty
         ? convertTimeAgoToUtc(timeAgoElement.text())
         : null;
-    final String? notice = itemComic.queryOne(".type-label").textRaw();
+    final String? notice = itemComic.queryOne('.type-label').textRaw();
 
-    final rateValueText = itemComic.queryOne(".rate-star").textRaw();
+    final rateValueText = itemComic.queryOne('.rate-star').textRaw();
     final double? rate =
         rateValueText != null ? double.tryParse(rateValueText) : null;
 
@@ -99,13 +99,13 @@ class TruyenQQService extends TruyenGGService {
 
     return [
       HomeComicCategory(
-        items: $("#list_suggest > li")
+        items: $('#list_suggest > li')
             .map((element) => parseComic(element, baseUrl))
             .toList(),
         name: 'Truyện Hay',
       ),
       HomeComicCategory(
-        items: $("#list_new > li")
+        items: $('#list_new > li')
             .map((element) => parseComic(element, baseUrl))
             .toList(),
         name: 'Truyện Mới Cập Nhật',
@@ -116,22 +116,22 @@ class TruyenQQService extends TruyenGGService {
 
   @override
   Future<MetaComic> getDetails(String comicId) async {
-    final $ = await fetch$("$baseUrl/truyen-tranh/$comicId.html");
+    final $ = await fetch$('$baseUrl/truyen-tranh/$comicId.html');
 
-    final String name = $("h1[itemprop=name]", single: true).text();
+    final String name = $('h1[itemprop=name]', single: true).text();
     final OImage image = OImage(
-      src: $(".book_avatar img", single: true).attr("src"),
-      headers: {"referer": baseUrl},
+      src: $('.book_avatar img', single: true).attr('src'),
+      headers: {'referer': baseUrl},
     );
 
-    final tales = $(".list-info > li");
+    final tales = $('.list-info > li');
 
-    final originalName = _getInfoTale(tales, "Tên khác")?.textRaw();
-    final author = _getInfoTale(tales, "Tác giả")?.textRaw();
-    final translator = _getInfoTale(tales, "Dịch giả")?.textRaw();
+    final originalName = _getInfoTale(tales, 'Tên khác')?.textRaw();
+    final author = _getInfoTale(tales, 'Tác giả')?.textRaw();
+    final translator = _getInfoTale(tales, 'Dịch giả')?.textRaw();
     final status$ =
-        _getInfoTale(tales, "Tình trạng")?.textRaw()?.toLowerCase() ??
-            "unknown";
+        _getInfoTale(tales, 'Tình trạng')?.textRaw()?.toLowerCase() ??
+            'unknown';
     final status = status$ == 'đang cập nhật'
         ? StatusEnum.ongoing
         : status$ == 'unknown'
@@ -139,52 +139,52 @@ class TruyenQQService extends TruyenGGService {
             : StatusEnum.completed;
 
     final views = int.tryParse(
-      _getInfoTale(tales, "Lượt xem")?.textRaw()?.replaceAll(",", "") ?? '',
+      _getInfoTale(tales, 'Lượt xem')?.textRaw()?.replaceAll(',', '') ?? '',
     );
     final likes = int.tryParse(
-      _getInfoTale(tales, "Lượt theo dõi")?.textRaw()?.replaceAll(",", "") ??
-          "",
+      _getInfoTale(tales, 'Lượt theo dõi')?.textRaw()?.replaceAll(',', '') ??
+          '',
     );
 
     final rate$ = JsonDecoder().convert(
-      $("script[type='application/ld+json']", single: true).textRaw() ?? "{}",
+      $('script[type=\'application/ld+json\']', single: true).textRaw() ?? '{}',
     ) as Map<String, dynamic>;
 
     final rate = rate$.containsKey('aggregateRating')
         ? RateValue(
-            best: int.parse("${rate$['aggregateRating']['bestRating']}"),
+            best: int.parse('${rate$['aggregateRating']['bestRating']}'),
             count: int.parse(rate$['aggregateRating']['ratingCount']),
             value: double.parse(rate$['aggregateRating']['ratingValue']),
           )
         : null;
 
-    final genres = $(".list01 a").map(
+    final genres = $('.list01 a').map(
       (anchor) => Genre(
         name: anchor.text(),
         genreId:
-            "the-loai*${anchor.attr('href').split("/").last.replaceFirst(".html", "")}",
+            'the-loai*${anchor.attr('href').split('/').last.replaceFirst('.html', '')}',
       ),
     );
-    final description = $(".story-detail-info", single: true).text();
-    final chapters = $(".works-chapter-item").reversed().map((chap) {
-      final name = chap.queryOne("a").text();
+    final description = $('.story-detail-info', single: true).text();
+    final chapters = $('.works-chapter-item').reversed().map((chap) {
+      final name = chap.queryOne('a').text();
       final chapterId = chap
-          .queryOne("a")
+          .queryOne('a')
           .attr('href')
-          .split("/")
+          .split('/')
           .last
-          .replaceFirst("$comicId-", "")
-          .replaceFirst(".html", "");
+          .replaceFirst('$comicId-', '')
+          .replaceFirst('.html', '');
 
       final time$ = chap.queryOne('.time-chap').textRaw();
       final time =
-          time$ != null ? DateFormat("dd/MM/yyyy").tryParse(time$) : null;
+          time$ != null ? DateFormat('dd/MM/yyyy').tryParse(time$) : null;
 
       return ComicChapter(name: name, chapterId: chapterId, time: time);
     });
-    final lastModified = rate$.containsKey("dateModified")
-        ? DateTime.parse(rate$["dateModified"])
-        : DateFormat("dd/MM/yyyy").parse($(".time-chap", single: true).text());
+    final lastModified = rate$.containsKey('dateModified')
+        ? DateTime.parse(rate$['dateModified'])
+        : DateFormat('dd/MM/yyyy').parse($('.time-chap', single: true).text());
 
     return MetaComic(
       name: name,
@@ -207,10 +207,10 @@ class TruyenQQService extends TruyenGGService {
   Future<List<OImage>> getPages(String manga, String chap) async {
     final $ = await fetch$(getURL(manga, chapterId: chap));
 
-    return $(".chapter_content img").map((img) {
-      final src = img.attr("src");
+    return $('.chapter_content img').map((img) {
+      final src = img.attr('src');
 
-      return OImage(src: src, headers: {"referer": baseUrl});
+      return OImage(src: src, headers: {'referer': baseUrl});
     }).toList();
   }
 
@@ -225,14 +225,14 @@ class TruyenQQService extends TruyenGGService {
       required filters,
       required quick}) async {
     final url =
-        "$baseUrl/tim-kiem${page > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}";
+        '$baseUrl/tim-kiem${page > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}';
     final $ = await fetch$(url);
 
     final data =
-        $(".list_grid_out li").map((element) => parseComic(element, baseUrl));
+        $('.list_grid_out li').map((element) => parseComic(element, baseUrl));
 
     final lastPageLink =
-        $(".page_redirect > a:last-child", single: true).attrRaw('href');
+        $('.page_redirect > a:last-child', single: true).attrRaw('href');
     final maxPage = lastPageLink != null
         ? int.parse(
             RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
@@ -252,17 +252,17 @@ class TruyenQQService extends TruyenGGService {
   @override
   getCategory({required categoryId, required page, required filters}) async {
     final url =
-        "$baseUrl/${categoryId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html";
+        '$baseUrl/${categoryId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html';
 
     final $ = await fetch$(
       buildQueryUri(url, filters: filters).toString(),
     );
 
     final data =
-        $(".list_grid_out li").map((element) => parseComic(element, baseUrl));
+        $('.list_grid_out li').map((element) => parseComic(element, baseUrl));
 
     final lastPageLink =
-        $(".page_redirect > a:last-child", single: true).attrRaw('href');
+        $('.page_redirect > a:last-child', single: true).attrRaw('href');
     final maxPage = lastPageLink != null
         ? int.parse(
             RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
@@ -270,9 +270,9 @@ class TruyenQQService extends TruyenGGService {
         : 1;
 
     return ComicCategory(
-      name: $(".title_cate, .text_list_update", single: true).text(),
+      name: $('.title_cate, .text_list_update', single: true).text(),
       url: url,
-      description: $("tags_detail", single: true).text(),
+      description: $('tags_detail', single: true).text(),
       items: data.toList(),
       page: page,
       totalItems: data.length * maxPage,

@@ -19,11 +19,11 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
 // EigaHistoryMixin,
 // EigaFollowMixin,
 {
-  final hostCUrl = "ophim17.cc";
+  final hostCUrl = 'ophim17.cc';
   final _buildId = 'YjU3ELa3ICaBELMtMHUHj';
   @override
   late final init = ServiceInit(
-    name: "OPhim",
+    name: 'OPhim',
     faviconUrl: OImage(src: '/favicon.ico'),
     rootUrl: 'https://$hostCUrl',
   );
@@ -43,16 +43,16 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
   @override
   parseURL(String url) {
     final uri = Uri.parse(url);
-    assert(uri.path.startsWith("/phim"));
+    assert(uri.path.startsWith('/phim'));
 
-    final seg = uri.path.split("/");
+    final seg = uri.path.split('/');
     // [0] is empty, [1] is phim
     final eigaId = seg[2];
     final episodeId = seg.length >= 4 ? seg[3] : null;
 
     return EigaParam(
       eigaId: eigaId,
-      episodeId: episodeId?.replaceFirst(".html", ""),
+      episodeId: episodeId?.replaceFirst('.html', ''),
     );
   }
 
@@ -87,7 +87,7 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
             Genre(name: category.name, genreId: 'the-loai_${category.slug}'))
         .toList();
     final duration = item.time;
-    //     final actors = item.querySelectorAll(".Cast a").map((anchor) {
+    //     final actors = item.querySelectorAll('.Cast a').map((anchor) {
     //       final href = anchor.attributes['href']!.split('/');
     //       return Genre(
     // name: anchor.text,
@@ -1038,7 +1038,7 @@ const List<List<double>> _timeRanges = [
 ];
 String _removeAdsFromM3U8(Uri url, String m3u8) {
   final lines = m3u8.split('\n');
-  final regex = RegExp(r"#EXTINF:([\d.]+),");
+  final regex = RegExp(r'#EXTINF:([\d.]+),');
 
   final List<({double duration, int index})> segments = [];
   for (int i = 0; i < lines.length; i++) {

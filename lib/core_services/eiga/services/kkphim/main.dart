@@ -19,11 +19,11 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
 // EigaHistoryMixin,
 // EigaFollowMixin,
 {
-  final hostCUrl = "phimapi.com";
-  final _homeCms = "https://kkphim.com/duyet-tim";
+  final hostCUrl = 'phimapi.com';
+  final _homeCms = 'https://kkphim.com/duyet-tim';
   @override
   late final init = ServiceInit(
-    name: "KKPhim",
+    name: 'KKPhim',
     faviconUrl: OImage(src: '$_homeCms/../assets/img/favicon.png'),
     rootUrl: 'https://$hostCUrl',
   );
@@ -42,16 +42,16 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
   @override
   parseURL(String url) {
     final uri = Uri.parse(url);
-    assert(uri.path.startsWith("/phim"));
+    assert(uri.path.startsWith('/phim'));
 
-    final seg = uri.path.split("/");
+    final seg = uri.path.split('/');
     // [0] is empty, [1] is phim
     final eigaId = seg[2];
     final episodeId = seg.length >= 4 ? seg[3] : null;
 
     return EigaParam(
       eigaId: eigaId,
-      episodeId: episodeId?.replaceFirst(".html", ""),
+      episodeId: episodeId?.replaceFirst('.html', ''),
     );
   }
 
@@ -85,7 +85,7 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
             Genre(name: category.name, genreId: 'the-loai_${category.slug}'))
         .toList();
     final duration = item.time;
-    //     final actors = item.querySelectorAll(".Cast a").map((anchor) {
+    //     final actors = item.querySelectorAll('.Cast a').map((anchor) {
     //       final href = anchor.attributes['href']!.split('/');
     //       return Genre(
     // name: anchor.text,
@@ -934,7 +934,7 @@ class _ServerData {
 
 String _removeAdsFromM3U8(Uri url, String m3u8) {
   final lines = m3u8.split('\n');
-  final regex = RegExp(r"#EXTINF:([\d.]+),");
+  final regex = RegExp(r'#EXTINF:([\d.]+),');
 
   final output = <String>[];
   for (int i = 0; i < lines.length; i++) {
@@ -945,7 +945,7 @@ String _removeAdsFromM3U8(Uri url, String m3u8) {
       // the next line is url
       final currentUrl = lines.elementAt(i + 1);
       final isAd = RegExp(r'^\d+\.ts$').hasMatch(currentUrl) ||
-          currentUrl.contains("adjump");
+          currentUrl.contains('adjump');
 
       i++;
       // if ad skip segment

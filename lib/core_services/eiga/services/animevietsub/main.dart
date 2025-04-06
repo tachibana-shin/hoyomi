@@ -19,9 +19,9 @@ import 'package:archive/archive.dart';
 import 'package:video_player/video_player.dart';
 
 mixin _SupabaseRPC {
-  final String _supabaseUrl = "https://ctwwltbkwksgnispcjmq.supabase.co";
+  final String _supabaseUrl = 'https://ctwwltbkwksgnispcjmq.supabase.co';
   final String _supabaseKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0d3dsdGJrd2tzZ25pc3Bjam1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAxNjM5ODksImV4cCI6MjAzNTczOTk4OX0.Dva9EPqy4P0KFYLAGpFqFoMBH4I_yz0VWnGny0uA-8U";
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0d3dsdGJrd2tzZ25pc3Bjam1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAxNjM5ODksImV4cCI6MjAzNTczOTk4OX0.Dva9EPqy4P0KFYLAGpFqFoMBH4I_yz0VWnGny0uA-8U';
 
   Future<List<dynamic>> rpc(String name, Object requestData) async {
     final response = await post(
@@ -65,16 +65,16 @@ mixin _SupabaseRPC {
 
 class AnimeVietsubService extends ABEigaService
     with EigaAuthMixin, EigaWatchTimeMixin, EigaFollowMixin, _SupabaseRPC {
-  final hostCUrl = "animevietsub.lol";
+  final hostCUrl = 'animevietsub.lol';
   @override
   late final init = ServiceInit(
-    name: "AnimeVietsub",
+    name: 'AnimeVietsub',
     faviconUrl: OImage(src: '/favicon.ico'),
     rootUrl: 'https://$hostCUrl',
   );
 
-  final String _apiOpEnd = "https://opend-9animetv.animevsub.eu.org";
-  final String _apiThumb = "https://sk-hianime.animevsub.eu.org";
+  final String _apiOpEnd = 'https://opend-9animetv.animevsub.eu.org';
+  final String _apiThumb = 'https://sk-hianime.animevsub.eu.org';
 
   final Map<String, Completer<Map<String, _ParamsEpisode>>>
       _paramsEpisodeStore = {};
@@ -123,12 +123,12 @@ class AnimeVietsubService extends ABEigaService
     final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
 
     final text = await fetch(
-      "$baseUrl/ajax/notification?Bookmark=true&filmId=$id",
+      '$baseUrl/ajax/notification?Bookmark=true&filmId=$id',
     );
 
     return jsonDecode(text)['status'] == 1;
     // ok
-    // final csrf = document.querySelector("#csrf-token")!.attributes["value"]!;
+    // final csrf = document.querySelector('#csrf-token')!.attributes['value']!;
   }
 
   @override
@@ -136,7 +136,7 @@ class AnimeVietsubService extends ABEigaService
     final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
 
     final text = await fetch(
-      "$baseUrl/ajax/notification?Bookmark=true&filmId=$id&type=${value ? "add" : "remove"}",
+      '$baseUrl/ajax/notification?Bookmark=true&filmId=$id&type=${value ? 'add' : 'remove'}',
     );
 
     return jsonDecode(text)['status'] == 1 ? value : !value;
@@ -151,13 +151,13 @@ class AnimeVietsubService extends ABEigaService
       throw error;
     }));
 
-    final infoListLeft = $(".mvici-left > .InfoList > .AAIco-adjust");
+    final infoListLeft = $('.mvici-left > .InfoList > .AAIco-adjust');
 
     final followCount = int.parse(
       _findInfo(
             infoListLeft,
-            "số người theo dõi",
-          )?.text().split(":")[1].replaceAll(',', '') ??
+            'số người theo dõi',
+          )?.text().split(':')[1].replaceAll(',', '') ??
           '0',
     );
 
@@ -167,45 +167,45 @@ class AnimeVietsubService extends ABEigaService
   @override
   parseURL(String url) {
     final uri = Uri.parse(url);
-    assert(uri.path.startsWith("/phim"));
+    assert(uri.path.startsWith('/phim'));
 
-    final seg = uri.path.split("/");
+    final seg = uri.path.split('/');
     // [0] is empty, [1] is phim
     final eigaId = seg[2];
     final episodeId = seg.length >= 4 ? seg[3] : null;
 
     return EigaParam(
       eigaId: eigaId,
-      episodeId: episodeId?.replaceFirst(".html", ""),
+      episodeId: episodeId?.replaceFirst('.html', ''),
     );
   }
 
   Eiga _parseItem(DQuery item) {
-    final name = item.queryOne(".Title").text();
-    final eigaId = parseURL(item.queryOne("a").attr("href")).eigaId;
-    final lty$ = item.queryOne(".mli-quality").text();
+    final name = item.queryOne('.Title').text();
+    final eigaId = parseURL(item.queryOne('a').attr('href')).eigaId;
+    final lty$ = item.queryOne('.mli-quality').text();
     final originalName =
-        lty$.isNotEmpty ? lty$ : item.queryOne(".mli-quality").text();
+        lty$.isNotEmpty ? lty$ : item.queryOne('.mli-quality').text();
 
-    final $img = item.queryOne("img");
+    final $img = item.queryOne('img');
     final image = OImage(
-      src: $img.attr("data-cfsrc").isNotEmpty
-          ? $img.attr("data-cfsrc")
-          : $img.attr("src"),
-      headers: {"Referer": baseUrl},
+      src: $img.attr('data-cfsrc').isNotEmpty
+          ? $img.attr('data-cfsrc')
+          : $img.attr('src'),
+      headers: {'Referer': baseUrl},
     );
     final notice =
-        '${originalName.isNotEmpty == true ? '$originalName ' : ''}${item.queryOne(".AAIco-access_time, .mli-eps").text()}';
+        '${originalName.isNotEmpty == true ? '$originalName ' : ''}${item.queryOne('.AAIco-access_time, .mli-eps').text()}';
 
     final rate = num.parse(
-      item.queryOne(".anime-avg-user-rating").textRaw() ??
-          item.queryOne(".AAIco-star").text(),
+      item.queryOne('.anime-avg-user-rating').textRaw() ??
+          item.queryOne('.AAIco-star').text(),
     ).toDouble();
 
-    final timeSchedule = item.queryOne(".mli-timeschedule");
+    final timeSchedule = item.queryOne('.mli-timeschedule');
     final countdownInSeconds = timeSchedule.isEmpty
         ? null
-        : int.tryParse(timeSchedule.attr("data-timer_second"));
+        : int.tryParse(timeSchedule.attr('data-timer_second'));
     final currentTime = DateTime.now();
     final countdown = countdownInSeconds == null
         ? null
@@ -228,18 +228,18 @@ class AnimeVietsubService extends ABEigaService
   CarouselItem _parseCarousel(DQuery item) {
     final data = _parseItem(item);
 
-    final year = item.queryOne(".AAIco-date_range").text();
-    final description = item.queryOne(".Description > p").html();
+    final year = item.queryOne('.AAIco-date_range').text();
+    final description = item.queryOne('.Description > p').html();
     final studio =
-        item.queryOne(".AAIco-videocam").text().replaceFirst('Studio:', '');
-    final genres = item.query(".AAIco-movie_creation a").map((anchor) {
+        item.queryOne('.AAIco-videocam').text().replaceFirst('Studio:', '');
+    final genres = item.query('.AAIco-movie_creation a').map((anchor) {
       final href = anchor.attr('href').split('/');
       return Genre(
         name: anchor.text(),
         genreId: href.elementAt(href.length - 2),
       );
     }).toList();
-    //     final actors = item.querySelectorAll(".Cast a").map((anchor) {
+    //     final actors = item.querySelectorAll('.Cast a').map((anchor) {
     //       final href = anchor.attributes['href']!.split('/');
     //       return Genre(
     // name: anchor.text,
@@ -269,7 +269,7 @@ class AnimeVietsubService extends ABEigaService
 
     return EigaHome(
       carousel: Carousel(
-        items: $(".MovieListSldCn .TPostMv")
+        items: $('.MovieListSldCn .TPostMv')
             .map((item) => _parseCarousel(item))
             .toList(),
         aspectRatio: 404 / 720,
@@ -278,30 +278,30 @@ class AnimeVietsubService extends ABEigaService
       categorys: [
         HomeEigaCategory(
           name: 'Top',
-          items: $(".MovieListTopCn .TPostMv")
+          items: $('.MovieListTopCn .TPostMv')
               .map((item) => _parseItem(item))
               .toList(),
         ),
         HomeEigaCategory(
           name: 'Latest',
-          items: $("#single-home .TPostMv")
+          items: $('#single-home .TPostMv')
               .map((item) => _parseItem(item))
               .toList(),
         ),
         HomeEigaCategory(
           name: 'Pre Release',
           items:
-              $("#new-home .TPostMv").map((item) => _parseItem(item)).toList(),
+              $('#new-home .TPostMv').map((item) => _parseItem(item)).toList(),
         ),
         HomeEigaCategory(
           name: 'Hot',
           items:
-              $("#hot-home .TPostMv").map((item) => _parseItem(item)).toList(),
+              $('#hot-home .TPostMv').map((item) => _parseItem(item)).toList(),
         ),
         HomeEigaCategory(
           name: 'Top',
           items:
-              $("#showTopPhim .TPost").map((item) => _parseItem(item)).toList(),
+              $('#showTopPhim .TPost').map((item) => _parseItem(item)).toList(),
         ),
       ],
     );
@@ -331,18 +331,18 @@ class AnimeVietsubService extends ABEigaService
     final $ = await fetch$(url);
 
     final name = $('title', single: true).text();
-    final items = $(".MovieList", single: true)
-        .query(".TPostMv")
+    final items = $('.MovieList', single: true)
+        .query('.TPostMv')
         .map((item) => _parseItem(item))
         .toList();
     final $pageNavi =
-        $(".larger:last-child, .wp-pagenavi > *:last-child", single: true);
+        $('.larger:last-child, .wp-pagenavi > *:last-child', single: true);
     final totalPages = int.parse(
-        $pageNavi.attrRaw('data') ?? $pageNavi.attrRaw('title') ?? "1");
+        $pageNavi.attrRaw('data') ?? $pageNavi.attrRaw('title') ?? '1');
 
     final totalItems = items.length * totalPages;
 
-    final List<Filter> iFilters = $("div[class^='fc-']").map((fc) {
+    final List<Filter> iFilters = $('div[class^=\'fc-\']').map((fc) {
       final name = fc.queryOne('.fc-title').text().replaceFirst(r'\n', '');
       final key = fc.queryOne('input').attr('name');
       final multiple = fc.queryOne('input').attr('type') == 'checkbox';
@@ -386,7 +386,7 @@ class AnimeVietsubService extends ABEigaService
 
   DQuery? _findInfo(DQuery elements, String label) {
     return elements.findOne((element) =>
-        element.queryOne("strong").text().toLowerCase().startsWith(label));
+        element.queryOne('strong').text().toLowerCase().startsWith(label));
   }
 
   Genre _getInfoAnchor(DQuery item) {
@@ -407,71 +407,71 @@ class AnimeVietsubService extends ABEigaService
       throw error;
     }));
 
-    final name = $(".Title", single: true).text();
-    final originalName = $(".SubTitle", single: true).text();
+    final name = $('.Title', single: true).text();
+    final originalName = $('.SubTitle', single: true).text();
     final image = OImage(
-      src: $(".Image img", single: true).attr('src'),
+      src: $('.Image img', single: true).attr('src'),
       headers: {'referer': baseUrl},
     );
-    final $img = $(".TPostBg img", single: true);
+    final $img = $('.TPostBg img', single: true);
     final poster = $img.isEmpty
         ? null
         : OImage(src: $img.attr('src'), headers: {'referer': baseUrl});
-    final description = $(".Description", single: true).text();
+    final description = $('.Description', single: true).text();
 
     final rate = num.parse(
       RegExp(r'[\d.]+')
-          .firstMatch($("#average_score", single: true).text())!
+          .firstMatch($('#average_score', single: true).text())!
           .group(0)!,
     ).toDouble();
     final countRate = int.parse(
       RegExp(r'\d+')
-          .firstMatch($(".num-rating", single: true).text())!
+          .firstMatch($('.num-rating', single: true).text())!
           .group(0)!,
     );
-    final duration = $(".AAIco-access_time", single: true).text();
+    final duration = $('.AAIco-access_time', single: true).text();
     final yearOf = int.parse(
-      $(".AAIco-date_range > a", single: true).text(),
+      $('.AAIco-date_range > a', single: true).text(),
     );
     final views = int.parse(
       RegExp(r'\d+')
-          .firstMatch($(".AAIco-remove_red_eye", single: true)
+          .firstMatch($('.AAIco-remove_red_eye', single: true)
               .text()
               .replaceAll(',', ''))!
           .group(0)!,
     );
-    final seasons = $(".season_item > a").map((item) {
+    final seasons = $('.season_item > a').map((item) {
       return Season(
         name: item.text(),
         eigaId: Uri.parse(item.attr('href')).path.split('/').elementAt(2),
       );
     }).toList();
-    final $genresAnchor = $(".breadcrumb > li > a");
+    final $genresAnchor = $('.breadcrumb > li > a');
     final genres = $genresAnchor
         .skip(1)
         .take($genresAnchor.length - 2)
         .map((item) => _getInfoAnchor(item))
         .toList();
-    final quality = $(".Qlty", single: true).text();
+    final quality = $('.Qlty', single: true).text();
 
     // ==== info ====
-    final infoListLeft = $(".mvici-left > .InfoList > .AAIco-adjust");
-    final infoListRight = $(".mvici-right > .InfoList > .AAIco-adjust");
+    final infoListLeft = $('.mvici-left > .InfoList > .AAIco-adjust');
+    final infoListRight = $('.mvici-right > .InfoList > .AAIco-adjust');
 
     // final status =
-    //     _findInfo(infoListLeft, "trạng thái")?.text.split(":")[1];
-    final author = _findInfo(infoListLeft, "đạo diễn")?.text().split(":")[1];
+    //     _findInfo(infoListLeft, 'trạng thái')?.text.split(':')[1];
+    final author = _findInfo(infoListLeft, 'đạo diễn')?.text().split(':')[1];
     final countries = _findInfo(
       infoListLeft,
-      "quốc gia",
-    )?.query("a").map((item) => _getInfoAnchor(item)).toList();
-    final language = _findInfo(infoListRight, "ngôn ngữ")?.text().split(":")[1];
-    final studio = _findInfo(infoListRight, "studio") == null
+      'quốc gia',
+    )?.query('a').map((item) => _getInfoAnchor(item)).toList();
+    final language = _findInfo(infoListRight, 'ngôn ngữ')?.text().split(':')[1];
+    final studio = _findInfo(infoListRight, 'studio') == null
         ? null
-        : _getInfoAnchor(_findInfo(infoListRight, "studio")!.queryOne("a"));
-    final trailer = $("#Opt1 iframe", single: true).attr('src');
+        : _getInfoAnchor(_findInfo(infoListRight, 'studio')!.queryOne('a'));
+    final trailer = $('#Opt1 iframe', single: true).attr('src');
     final movieSeason =
-        _getInfoAnchor(_findInfo(infoListRight, "season")!.queryOne("a"));
+        _getInfoAnchor(_findInfo(infoListRight, 'season')!.queryOne('a'));
 
     return MetaEiga(
       name: name,
@@ -507,14 +507,14 @@ class AnimeVietsubService extends ABEigaService
     return fetch$('$baseUrl/phim/$eigaId/xem-phim.html').then(($) {
       final Map<String, _ParamsEpisode> map = {};
 
-      episodes = $("#list-server .list-episode .episode a").map((
+      episodes = $('#list-server .list-episode .episode a').map((
         item,
       ) {
         final episodeId = Uri.parse(item.attr('href'))
             .path
             .split('/')
             .elementAt(3)
-            .replaceFirst(".html", "");
+            .replaceFirst('.html', '');
 
         final params = _ParamsEpisode(
           id: item.attr('data-id'),
@@ -554,7 +554,7 @@ class AnimeVietsubService extends ABEigaService
     final (episodes, $) = await _fetchHtmlEpisodes(eigaId);
 
     final scheduleText =
-        $(".schedule-title-main > h4 > strong").last().textRaw();
+        $('.schedule-title-main > h4 > strong').last().textRaw();
     final match = RegExp(
       r'(Thứ [^\s]+|chủ nhật) vào lúc (\d+) giờ (\d+) phút',
       caseSensitive: false,
@@ -575,11 +575,11 @@ class AnimeVietsubService extends ABEigaService
             'thứ bảy',
           ].indexOf(day$.toLowerCase());
 
-    final image$ = $(".Image img", single: true).attrRaw('src');
+    final image$ = $('.Image img', single: true).attrRaw('src');
     final image = image$ == null
         ? null
         : OImage(src: image$, headers: {'referer': baseUrl});
-    final poster$ = $(".TPostBg img", single: true).attrRaw('data-cfsrc');
+    final poster$ = $('.TPostBg img', single: true).attrRaw('data-cfsrc');
     final poster = poster$ == null
         ? null
         : OImage(src: poster$, headers: {'referer': baseUrl});
@@ -644,7 +644,7 @@ class AnimeVietsubService extends ABEigaService
     final episodes = await _callApiAnimeVsub(
       '$_apiOpEnd/list-episodes?${[
         metaEiga.name,
-        ...metaEiga.originalName?.split(",").map((name) => name) ?? []
+        ...metaEiga.originalName?.split(',').map((name) => name) ?? []
       ].map((name) => 'name=$name').join('&')}',
     );
 
@@ -686,7 +686,7 @@ class AnimeVietsubService extends ABEigaService
         );
 
         final file = (meta['tracks'] as List<dynamic>).firstWhereOrNull(
-          (item) => item['kind'] == "thumbnails",
+          (item) => item['kind'] == 'thumbnails',
         );
 
         if (file != null) return Vtt(src: file['file']);
@@ -736,7 +736,7 @@ class AnimeVietsubService extends ABEigaService
 
   @override
   getSuggest({required metaEiga, required eigaId, page}) async {
-    final items = (await _docEigaStore[eigaId]!)(".MovieListRelated .TPostMv")
+    final items = (await _docEigaStore[eigaId]!)('.MovieListRelated .TPostMv')
         .map((item) => _parseItem(item))
         .toList();
 
@@ -834,7 +834,7 @@ class AnimeVietsubService extends ABEigaService
       'e_dur': watchTime.duration.inMilliseconds / 1e3,
       'e_name': episode.name,
       'e_chap': RegExp(r'(\d+)$').firstMatch(episode.episodeId)!.group(1)!,
-      'gmt': "Asia/Saigon",
+      'gmt': 'Asia/Saigon',
     });
   }
 
@@ -938,7 +938,7 @@ String _decryptM3u8(
   bool flag4 = false,
   String? key,
 }) {
-  final keyString = key ?? "ZG1fdGhhbmdfc3VjX3ZhdF9nZXRfbGlua19hbl9kYnQ=";
+  final keyString = key ?? 'ZG1fdGhhbmdfc3VjX3ZhdF9nZXRfbGlua19hbl9kYnQ=';
   final keyBytes = base64.decode(keyString);
   final digest = sha256.convert(keyBytes).bytes;
 
