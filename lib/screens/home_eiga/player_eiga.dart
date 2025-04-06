@@ -26,6 +26,7 @@ import 'package:hoyomi/utils/proxy_cache.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:hoyomi/widgets/iconify.dart';
+import 'package:http/http.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
@@ -203,7 +204,9 @@ class _PlayerEigaState extends State<PlayerEiga>
             ? null
             : widget.service.getSource(
                 eigaId: widget.eigaId.value, episode: widget.episode.value!),
-        onError: (error) => debugPrint('Error: $error (${StackTrace.current})'),
+        onError: (error) => (error is Response)
+            ? debugPrint('[source]: ${error.body}')
+            : debugPrint('[source]: $error (${StackTrace.current})'),
         beforeUpdate: () => null);
 
     /// Subtitles language
@@ -212,8 +215,9 @@ class _PlayerEigaState extends State<PlayerEiga>
             ? []
             : widget.service.getSubtitles(
                 eigaId: widget.eigaId.value, episode: widget.episode.value!),
-        onError: (error) =>
-            debugPrint('Error: $error (${StackTrace.current})'));
+        onError: (error) => (error is Response)
+            ? debugPrint('[subtitles]: ${error.statusCode}')
+            : debugPrint('[subtitles]: $error (${StackTrace.current})'));
 
     /// Watch data position
     _watchTimeData = asyncComputed<WatchTimeData?>(() async {
@@ -251,7 +255,9 @@ class _PlayerEigaState extends State<PlayerEiga>
       }
       return null;
     },
-        onError: (error) => debugPrint('Error: $error (${StackTrace.current})'),
+        onError: (error) => (error is Response)
+            ? debugPrint('[watch_time]: ${error.statusCode}')
+            : debugPrint('[watch_time]: $error (${StackTrace.current})'),
         beforeUpdate: () => null);
 
     /// Preview images
@@ -268,7 +274,10 @@ class _PlayerEigaState extends State<PlayerEiga>
         );
       }
       return null;
-    }, onError: (error) => debugPrint('Error: $error (${StackTrace.current})'));
+    },
+        onError: (error) => (error is Response)
+            ? debugPrint('[seek_thumb]: ${error.statusCode}')
+            : debugPrint('[seek_thumb]: $error (${StackTrace.current})'));
 
     /// Position opening / ending
     _openingEnding = asyncComputed(() async {
@@ -287,7 +296,10 @@ class _PlayerEigaState extends State<PlayerEiga>
         }
       }
       return null;
-    }, onError: (error) => debugPrint('Error: $error (${StackTrace.current})'));
+    },
+        onError: (error) => (error is Response)
+            ? debugPrint('[opening_ending]: ${error.statusCode}')
+            : debugPrint('[opening_ending]: $error (${StackTrace.current})'));
 
     _stateOpeningEnding = computed(() {
       final opEnd = _openingEnding.value;
