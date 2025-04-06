@@ -79,14 +79,14 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
     final genres = null;
     final actors = item.casts
         ?.split(',')
-        .map((item) => Genre(name: item.trim(), genreId: Genre.noId))
+        .map((item) => Genre(name: item, genreId: Genre.noId))
         .toList();
     final duration = item.totalEpisodes.toString();
     final language = item.language;
     //     final actors = item.querySelectorAll(".Cast a").map((anchor) {
     //       final href = anchor.attributes['href']!.split('/');
     //       return Genre(
-    // name: anchor.text.trim(),
+    // name: anchor.text,
     // genreId: href.elementAt(href.length - 2)
     //       );
     //     });
@@ -153,18 +153,19 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
   }
 
   Future<List<Filter>> _getFilters() async {
-    final document = await fetchDocument('$baseUrl/tim-kiem?keyword=*');
+    final $ = await fetch$('$baseUrl/tim-kiem?keyword=*');
 
-    return document.querySelectorAll('#form-filter select').map((select) {
-      final key = select.attributes['name']!;
+    return $('#form-filter select').map((select) {
+      final key = select.attr('name');
       final multiple = false;
       final items = select
-          .querySelectorAll('option')
-          .indexed
+          .query('option')
           .skip(1)
+          .toList()
+          .indexed
           .map((entry) => Option(
-                name: entry.$2.text.trim(),
-                value: entry.$2.attributes['value']!,
+                name: entry.$2.text(),
+                value: entry.$2.attr('value'),
                 selected: entry.$1 == 0,
               ))
           .toList();

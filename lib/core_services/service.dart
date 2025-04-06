@@ -14,6 +14,7 @@ import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/database/scheme/service_settings.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
+import 'package:hoyomi/utils/d_query.dart';
 import 'package:html/dom.dart' as d;
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
@@ -452,20 +453,16 @@ abstract class Service with _SettingsMixin {
     return parse(html);
   }
 
-  /// Fetches a document from the provided URL.
-  ///
-  /// [url] The URL of the document to fetch.
-  ///
-  /// [cookie] The cookie to include in the request. Defaults to null.
-  ///
-  /// Returns a parsed [Document] object.
-  Future<d.Document> fetchDocument(
-    String url, {
-    String? cookie,
-    Map<String, dynamic>? body,
-    Map<String, String>? headers,
-  }) async {
-    return parseDocument(
+  DollarFunction parse$(String html) {
+    final document = parseDocument(html);
+    return DQuery.fromDocument(document);
+  }
+
+  Future<DollarFunction> fetch$(String url,
+      {String? cookie,
+      Map<String, dynamic>? body,
+      Map<String, String>? headers}) async {
+    return parse$(
       await fetch(url, cookie: cookie, body: body, headers: headers),
     );
   }

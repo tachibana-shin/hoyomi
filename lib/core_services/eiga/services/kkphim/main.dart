@@ -88,7 +88,7 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     //     final actors = item.querySelectorAll(".Cast a").map((anchor) {
     //       final href = anchor.attributes['href']!.split('/');
     //       return Genre(
-    // name: anchor.text.trim(),
+    // name: anchor.text,
     // genreId: href.elementAt(href.length - 2)
     //       );
     //     });
@@ -160,24 +160,20 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
   }
 
   Future<List<Filter>> _getFilters() async {
-    final document = await fetchDocument(_homeCms);
+    final $ = await fetch$(_homeCms);
 
-    return document
-        .querySelectorAll('#filter-panel > form > div:not([class])')
-        .map((group) {
-      final name = group.querySelector('.font-bold')!.text;
-      final key = group
-          .querySelector('input')!
-          .attributes['name']!
-          .replaceFirst('[]', '');
+    return $('#filter-panel > form > div:not([class])').map((group) {
+      final name = group.queryOne('.font-bold').text();
+      final key = group.queryOne('input').attr('name').replaceFirst('[]', '');
       final multiple = false;
       final items = group
-          .querySelectorAll('label')
-          .indexed
+          .query('label')
           .skip(1)
+          .toList()
+          .indexed
           .map((entry) => Option(
-                name: entry.$2.text.trim(),
-                value: entry.$2.querySelector('input')!.attributes['value']!,
+                name: entry.$2.text(),
+                value: entry.$2.queryOne('input').attr('value'),
                 selected: false,
               ))
           .toList();

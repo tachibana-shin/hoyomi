@@ -1176,8 +1176,9 @@ class _PlayerEigaState extends State<PlayerEiga>
                     onSeek: (duration) {
                       final seek = _position.value = duration;
 
-                      if (_controller.value != null)
+                      if (_controller.value != null) {
                         _seekTo(_controller.value!, seek);
+                      }
                     },
                   ),
                 ),

@@ -90,7 +90,7 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     //     final actors = item.querySelectorAll(".Cast a").map((anchor) {
     //       final href = anchor.attributes['href']!.split('/');
     //       return Genre(
-    // name: anchor.text.trim(),
+    // name: anchor.text,
     // genreId: href.elementAt(href.length - 2)
     //       );
     //     });
@@ -161,18 +161,19 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
   }
 
   Future<List<Filter>> _getFilters() async {
-    final document = await fetchDocument('$baseUrl/danh-sach/phim-moi');
+    final $ = await fetch$('$baseUrl/danh-sach/phim-moi');
 
-    return document.querySelectorAll('#form-filter select').map((select) {
-      final key = select.attributes['name']!;
+    return $('#form-filter select').map((select) {
+      final key = select.attr('name');
       final multiple = ['category', 'country', 'year'].contains(key);
       final items = select
-          .querySelectorAll('option')
-          .indexed
+          .query('option')
           .skip(1)
+          .toList()
+          .indexed
           .map((entry) => Option(
-                name: entry.$2.text,
-                value: entry.$2.attributes['value']!,
+                name: entry.$2.text(),
+                value: entry.$2.attr('value'),
                 selected: entry.$1 == 0,
               ))
           .toList();
