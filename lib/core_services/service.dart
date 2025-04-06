@@ -15,7 +15,6 @@ import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/database/scheme/service_settings.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:hoyomi/utils/d_query.dart';
-import 'package:html/dom.dart' as d;
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
 
@@ -444,17 +443,8 @@ abstract class Service with _SettingsMixin {
     return response;
   }
 
-  /// Parses the provided HTML string into a [Document] object.
-  ///
-  /// [html] The HTML string to parse.
-  ///
-  /// Returns a parsed [Document] object.
-  d.Document parseDocument(String html) {
-    return parse(html);
-  }
-
   DollarFunction parse$(String html) {
-    final document = parseDocument(html);
+    final document = parse(html);
     return DQuery.fromDocument(document);
   }
 

@@ -6,7 +6,6 @@ import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/utils/d_query.dart';
-import 'package:html/dom.dart';
 import 'package:intl/intl.dart';
 
 import 'package:hoyomi/utils/time_utils.dart';
@@ -154,37 +153,37 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
 
   @override
   Future<MetaComic> getDetails(String comicId) async {
-    final document = parseDocument(
+    final $ = parse$(
       _comicCachedStore[comicId] = await fetch(getURL(comicId)),
     );
 
-    final String name = document.querySelector("h1[itemprop=name]")!.text;
+    final String name = $("h1[itemprop=name]", single: true).text();
     final OImage image = OImage(
-      src: document.querySelector(".thumbblock > img")!.attributes["src"]!,
+      src: $(".thumbblock > img", single: true).attr('src'),
       headers: {"referer": baseUrl},
     );
 
-    final tales = document.querySelectorAll(".info_tale > .row");
+    final tales = $(".info_tale > .row");
 
-    final author = _getInfoTale(tales, "Tác Giả:")?.text;
-    final translator = _getInfoTale(tales, "Dịch Giả:")?.text;
+    final author = _getInfoTale(tales, "Tác Giả:")?.textRaw();
+    final translator = _getInfoTale(tales, "Dịch Giả:")?.textRaw();
     final status$ =
-        _getInfoTale(tales, "Trạng Thái:")?.text.toLowerCase() ?? "Unknown";
+        _getInfoTale(tales, "Trạng Thái:")?.textRaw()?.toLowerCase() ??
+            "Unknown";
     final status = status$ == 'đang cập nhật'
         ? StatusEnum.ongoing
         : status$ == 'unknown'
             ? StatusEnum.unknown
             : StatusEnum.completed;
     final views = int.tryParse(
-      _getInfoTale(tales, "Lượt Xem:")?.text.replaceAll(",", "") ?? '',
+      _getInfoTale(tales, "Lượt Xem:")?.textRaw()?.replaceAll(",", "") ?? '',
     );
     final likes = int.tryParse(
-      _getInfoTale(tales, "Theo Dõi:")?.text.replaceAll(",", "") ?? "",
+      _getInfoTale(tales, "Theo Dõi:")?.textRaw()?.replaceAll(",", "") ?? "",
     );
 
     final rate$ = JsonDecoder().convert(
-      document.querySelector("script[type='application/ld+json']")?.text ??
-          "{}",
+      $("script[type='application/ld+json']", single: true).textRaw() ?? "{}",
     ) as Map<String, dynamic>;
 
     final rate = rate$.containsKey('aggregateRating')
@@ -195,34 +194,33 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
           )
         : null;
 
-    final genres = document.querySelectorAll(".clblue").map(
-          (anchor) => Genre(
-            name: anchor.text,
-            genreId:
-                "the-loai*${anchor.attributes["href"]!.split("/").last.replaceFirst(".html", "")}",
-          ),
-        );
-    final description = document.querySelector(".story-detail-info")!.text;
-    final chaps = document.querySelectorAll(".item_chap").map((chap) {
-      final name = chap.querySelector("a")!.text;
+    final genres = $(".clblue").map(
+      (anchor) => Genre(
+        name: anchor.text(),
+        genreId:
+            "the-loai*${anchor.attr('href').split("/").last.replaceFirst(".html", "")}",
+      ),
+    );
+    final description = $(".story-detail-info", single: true).text();
+    final chaps = $(".item_chap").map((chap) {
+      final name = chap.queryOne("a").text();
       final chapterId = chap
-          .querySelector("a")!
-          .attributes["href"]!
+          .queryOne("a")
+          .attr('href')
           .split("/")
           .last
           .replaceFirst("$comicId-", "")
           .replaceFirst(".html", "");
 
-      final time$ = chap.querySelector('.cl99')?.text;
+      final time$ = chap.queryOne('.cl99').textRaw();
       final time = time$ != null ? DateFormat("dd/MM/yyyy").parse(time$) : null;
 
       return ComicChapter(name: name, chapterId: chapterId, time: time);
     });
     final lastModified = rate$.containsKey("dateModified")
         ? DateTime.parse(rate$["dateModified"])
-        : DateFormat("dd/MM/yyyy").parse(
-            document.querySelector("div.w110.text-right > span > em")!.text,
-          );
+        : DateFormat("dd/MM/yyyy")
+            .parse($("div.w110.text-right > span > em", single: true).text());
 
     return MetaComic(
       name: name,
@@ -252,14 +250,9 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
     return null;
   }
 
-  Element? _getInfoTale(List<Element> tales, String name) {
-    for (final element in tales) {
-      if (element.querySelector(".name-title")?.text.contains(name) ?? false) {
-        return element.children.last;
-      }
-    }
-
-    return null;
+  DQuery? _getInfoTale(DQuery tales, String name) {
+    return tales.findOne(
+        (element) => element.queryOne('.name-title').text().contains(name));
   }
 
   @override
@@ -383,7 +376,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
         parent,
         required comment,
       }) async {
-        final docB = parseDocument(
+        final docB = parse$(
           _comicCachedStore[comicId] ?? await fetch(getURL(comicId)),
         );
 
@@ -392,7 +385,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
           body: {
             'id': comment.id,
             'comic_id': comicId,
-            'token': docB.querySelector('#csrf-token')?.attributes['value'],
+            'token': docB('#csrf-token', single: true).val(),
             'episode_id': chapterId,
           },
         );
