@@ -1,5 +1,6 @@
 {
-  "name": "drizzle-kit",
+  "name": "hoyomi-general-api",
+  "version": "1.0.0",
   "module": "index.ts",
   "type": "module",
   "private": true,
@@ -12,6 +13,9 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@hono/swagger-ui": "^0.5.1",
+    "@hono/zod-openapi": "^0.19.2",
+    "@hono/zod-validator": "^0.4.3",
     "drizzle-orm": "^0.41.0",
     "zod": "^3.24.2"
   }

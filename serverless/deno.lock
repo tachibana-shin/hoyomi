@@ -7,7 +7,10 @@
     "npm:@firebase/database-compat@^2.0.5": "2.0.5",
     "npm:@google-cloud/firestore@^7.11.0": "7.11.0",
     "npm:@google-cloud/storage@^7.15.2": "7.15.2",
+    "npm:@hono/swagger-ui@~0.5.1": "0.5.1_hono@4.7.5",
+    "npm:@hono/zod-openapi@~0.19.2": "0.19.2_hono@4.7.5_zod@3.24.2",
     "npm:@hono/zod-validator@*": "0.4.3_hono@4.7.5_zod@3.24.2",
+    "npm:@hono/zod-validator@~0.4.3": "0.4.3_hono@4.7.5_zod@3.24.2",
     "npm:@neondatabase/serverless@1": "1.0.0",
     "npm:@types/bun@latest": "1.2.8",
     "npm:@types/node@*": "22.12.0",
@@ -45,6 +48,13 @@
     }
   },
   "npm": {
+    "@asteasolutions/zod-to-openapi@7.3.0_zod@3.24.2": {
+      "integrity": "sha512-7tE/r1gXwMIvGnXVUdIqUhCU1RevEFC4Jk6Bussa0fk1ecbnnINkZzj1EOAJyE/M3AI25DnHT/zKQL1/FPFi8Q==",
+      "dependencies": [
+        "openapi3-ts",
+        "zod"
+      ]
+    },
     "@drizzle-team/brocli@0.10.2": {
       "integrity": "sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w=="
     },
@@ -315,6 +325,21 @@
         "long",
         "protobufjs",
         "yargs"
+      ]
+    },
+    "@hono/swagger-ui@0.5.1_hono@4.7.5": {
+      "integrity": "sha512-XpUCfszLJ9b1rtFdzqOSHfdg9pfBiC2J5piEjuSanYpDDTIwpMz0ciiv5N3WWUaQpz9fEgH8lttQqL41vIFuDA==",
+      "dependencies": [
+        "hono"
+      ]
+    },
+    "@hono/zod-openapi@0.19.2_hono@4.7.5_zod@3.24.2": {
+      "integrity": "sha512-lkFa6wdQVgY7d7/m++Ixr3hvKCF5Y+zjTIPM37fex5ylCfX53A/W28gZRDuFZx3aR+noKob7lHfwdk9dURLzxw==",
+      "dependencies": [
+        "@asteasolutions/zod-to-openapi",
+        "@hono/zod-validator",
+        "hono",
+        "zod"
       ]
     },
     "@hono/zod-validator@0.4.3_hono@4.7.5_zod@3.24.2": {
@@ -1098,6 +1123,12 @@
         "wrappy"
       ]
     },
+    "openapi3-ts@4.4.0": {
+      "integrity": "sha512-9asTNB9IkKEzWMcHmVZE7Ts3kC9G7AFHfs8i7caD8HbI76gEjdkId4z/AkP83xdZsH7PLAnnbl47qZkXuxpArw==",
+      "dependencies": [
+        "yaml"
+      ]
+    },
     "p-limit@3.1.0": {
       "integrity": "sha512-TYOanM3wGwNGsZN2cVTYPArw454xnXj5qmWF1bEoAc4+cU/ol7GVh7odevjp1FNHduHc3KZMcFduxU5Xc6uJRQ==",
       "dependencies": [
@@ -1325,6 +1356,9 @@
     },
     "yallist@4.0.0": {
       "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A=="
+    },
+    "yaml@2.7.1": {
+      "integrity": "sha512-10ULxpnOCQXxJvBgxsn9ptjq6uviG/htZKk9veJGhlqn3w/DxQ631zFF+nlQXLwmImeS5amR2dl2U8sg6U9jsQ=="
     },
     "yargs-parser@21.1.1": {
       "integrity": "sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw=="
@@ -1755,7 +1789,6 @@
       "npm:@firebase/database-compat@^2.0.5",
       "npm:@google-cloud/firestore@^7.11.0",
       "npm:@google-cloud/storage@^7.15.2",
-      "npm:@hono/zod-validator@*",
       "npm:@xata.io/client@~0.30.1",
       "npm:drizzle-orm@0.41",
       "npm:firebase-admin@^13.2.0",
@@ -1768,6 +1801,9 @@
     ],
     "packageJson": {
       "dependencies": [
+        "npm:@hono/swagger-ui@~0.5.1",
+        "npm:@hono/zod-openapi@~0.19.2",
+        "npm:@hono/zod-validator@~0.4.3",
         "npm:@types/bun@latest",
         "npm:dotenv@^16.4.7",
         "npm:drizzle-kit@~0.30.6",

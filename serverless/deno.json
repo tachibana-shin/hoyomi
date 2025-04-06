@@ -23,8 +23,7 @@
     "https": "node:https",
     "http": "node:http",
     "url": "node:url",
-    "stream": "node:stream",
-    "@hono/zod-validator": "npm:@hono/zod-validator"
+    "stream": "node:stream"
   },
   "tasks": {
     "start": "deno run --allow-net main.ts",
