@@ -26,15 +26,15 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
-class ImageWithGroup extends OImage {
+class ImageWithGroup {
+  final OImage image;
   final ComicChapter chapter;
   final int index;
 
   ImageWithGroup(
       {required this.chapter,
       required this.index,
-      required super.src,
-      super.headers});
+      required this.image,});
 }
 
 class MangaReader extends StatefulWidget {
@@ -95,20 +95,19 @@ class _MangaReaderState extends State<MangaReader>
       return ImageWithGroup(
         chapter: chapter,
         index: index,
-        src: page.src,
-        headers: page.headers,
+        image: OImage(src: page.src, headers: page.headers),
       );
     }).toList());
 
     final startPage = computed(() {
       return _pages.value.indexWhere((page) =>
           page.chapter.chapterId == _chapterId.value &&
-          page.src != OImage.fake);
+          page.image.src != OImage.fake);
     });
     final stopPage = computed(() {
       return _pages.value.lastIndexWhere((page) =>
           page.chapter.chapterId == _chapterId.value &&
-          page.src != OImage.fake);
+          page.image.src != OImage.fake);
     });
 
     _mode =
@@ -209,8 +208,10 @@ class _MangaReaderState extends State<MangaReader>
                       (params) => ImageWithGroup(
                         chapter: nextChapter,
                         index: params.$1,
+                        image: OImage(
                         src: params.$2.src,
                         headers: params.$2.headers,
+                        ),
                       ),
                     );
 
@@ -222,7 +223,8 @@ class _MangaReaderState extends State<MangaReader>
                 ImageWithGroup(
                   chapter: currentChapter,
                   index: -1,
-                  src: OImage.fake,
+                  image: OImage(
+                  src: OImage.fake),
                 ),
                 ...$pages
               ];
@@ -339,7 +341,7 @@ class _MangaReaderState extends State<MangaReader>
 
   Widget _buildPage(int index) {
     final item = _pages.value.elementAt(index);
-    if (item.src == OImage.fake) {
+    if (item.image.src == OImage.fake) {
       final prevPage = index < 1 ? null : _pages.value.elementAt(index - 1);
       if (prevPage != null && prevPage.chapter != item.chapter) {
         return _buildPlacePage(
@@ -353,10 +355,9 @@ class _MangaReaderState extends State<MangaReader>
       }
     }
 
-    return OImage.network(
-      item.src,
+    return OImage.oNetwork(
+      item.image,
       sourceId: widget.service.uid,
-      headers: item.headers,
       fit: BoxFit.contain,
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) {
@@ -598,7 +599,7 @@ class _MangaReaderState extends State<MangaReader>
       isScrollControlled: true,
       showDragHandle: true,
       builder: (context) => ImagePicker(
-        images: _pages.value,
+        images: _pages.value.map((page) => page.image).toList(),
         sourceId: widget.service.uid,
         onChange: (selected) {
           setState(() {
@@ -710,10 +711,9 @@ class _MangaReaderState extends State<MangaReader>
           builderImage: (int index) {
             final item = pages.elementAt(index);
 
-            return OImage.network(
-              item.src,
+            return OImage.oNetwork(
+              item.image,
               sourceId: widget.service.uid,
-              headers: item.headers,
               fit: BoxFit.contain,
             );
           },

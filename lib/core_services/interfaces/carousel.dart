@@ -1,19 +1,21 @@
-import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
 import 'package:hoyomi/core_services/interfaces/genre.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
-import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
-class Carousel {
-  final List<CarouselItem> items;
-  final double aspectRatio;
-  final double Function(BuildContext context) maxHeightBuilder;
+part 'carousel.freezed.dart';
+part 'carousel.g.dart';
 
-  const Carousel({
-    required this.items,
-    required this.aspectRatio,
-    required this.maxHeightBuilder,
-  });
+@freezed
+class Carousel with _$Carousel {
+  const factory Carousel({
+    required List<CarouselItem> items,
+    required double aspectRatio,
+    required double maxHeightBuilder,
+  }) = _Carousel;
+
+  factory Carousel.fromJson(Map<String, dynamic> json) =>
+      _$CarouselFromJson(json);
 
   factory Carousel.createFakeData() {
     return Carousel(
@@ -37,7 +39,7 @@ class Carousel {
         ),
       ],
       aspectRatio: 404 / 720,
-      maxHeightBuilder: (context) => 30.h(context),
+      maxHeightBuilder: 0.3,
     );
   }
 }

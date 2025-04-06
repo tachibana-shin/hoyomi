@@ -223,6 +223,11 @@ abstract class $MetaEigaCopyWith<$Res> {
       Genre? movieSeason,
       String? trailer,
       bool fake});
+
+  $OImageCopyWith<$Res> get image;
+  $OImageCopyWith<$Res>? get poster;
+  $GenreCopyWith<$Res>? get studio;
+  $GenreCopyWith<$Res>? get movieSeason;
 }
 
 /// @nodoc
@@ -342,6 +347,50 @@ class _$MetaEigaCopyWithImpl<$Res, $Val extends MetaEiga>
               as bool,
     ) as $Val);
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $OImageCopyWith<$Res> get image {
+    return $OImageCopyWith<$Res>(_value.image, (value) {
+      return _then(_value.copyWith(image: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $OImageCopyWith<$Res>? get poster {
+    if (_value.poster == null) {
+      return null;
+    }
+
+    return $OImageCopyWith<$Res>(_value.poster!, (value) {
+      return _then(_value.copyWith(poster: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $GenreCopyWith<$Res>? get studio {
+    if (_value.studio == null) {
+      return null;
+    }
+
+    return $GenreCopyWith<$Res>(_value.studio!, (value) {
+      return _then(_value.copyWith(studio: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $GenreCopyWith<$Res>? get movieSeason {
+    if (_value.movieSeason == null) {
+      return null;
+    }
+
+    return $GenreCopyWith<$Res>(_value.movieSeason!, (value) {
+      return _then(_value.copyWith(movieSeason: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -373,6 +422,15 @@ abstract class _$$MetaEigaImplCopyWith<$Res>
       Genre? movieSeason,
       String? trailer,
       bool fake});
+
+  @override
+  $OImageCopyWith<$Res> get image;
+  @override
+  $OImageCopyWith<$Res>? get poster;
+  @override
+  $GenreCopyWith<$Res>? get studio;
+  @override
+  $GenreCopyWith<$Res>? get movieSeason;
 }
 
 /// @nodoc

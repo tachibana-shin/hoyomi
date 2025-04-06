@@ -1,21 +1,29 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 
-class ComicComment {
-  final String id;
-  final String comicId;
-  final String? chapterId;
-  final String userId;
-  final String name;
-  final OImage photoUrl;
-  final String content;
-  final DateTime timeAgo;
+part 'comic_comment.freezed.dart';
+part 'comic_comment.g.dart';
 
-  int? countLike;
-  int? countDislike;
-  final int countReply;
+@freezed
+class ComicComment with _$ComicComment {
+  const factory ComicComment({
+    required String id,
+    required String comicId,
+    String? chapterId,
+    required String userId,
+    required String name,
+    required OImage photoUrl,
+    required String content,
+    required DateTime timeAgo,
+    int? countLike,
+    int? countDislike,
+    required int countReply,
+    @Default(false) bool canDelete,
+    bool? like,
+  }) = _ComicComment;
 
-  final bool canDelete;
-  bool? like;
+  factory ComicComment.fromJson(Map<String, dynamic> json) =>
+      _$ComicCommentFromJson(json);
 
   factory ComicComment.createFakeData() {
     return ComicComment(
@@ -34,20 +42,4 @@ class ComicComment {
       like: true,
     );
   }
-
-  ComicComment({
-    required this.id,
-    required this.comicId,
-    this.chapterId,
-    required this.userId,
-    required this.name,
-    required this.photoUrl,
-    required this.content,
-    required this.timeAgo,
-    this.countLike,
-    this.countDislike,
-    required this.countReply,
-    this.canDelete = false,
-    this.like,
-  });
 }

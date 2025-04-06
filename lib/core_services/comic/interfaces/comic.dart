@@ -1,33 +1,28 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_chapter.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 
-class Comic {
-  final String name;
-  final String comicId;
-  final String? originalName;
-  final OImage image;
-  final ComicChapter? lastChap;
-  final DateTime? timeAgo;
-  final String? notice;
-  final bool pending;
-  final DateTime? preRelease;
-  final double? rate;
-  final String? description;
+part 'comic.freezed.dart';
+part 'comic.g.dart';
 
-  Comic({
-    required this.name,
-    required this.comicId,
-    required this.originalName,
-    required this.image,
-    required this.lastChap,
-    required this.timeAgo,
-    required this.notice,
-    this.pending = false,
-    this.preRelease,
-    required this.rate,
-    this.description,
-  });
+@freezed
+class Comic with _$Comic {
+  const factory Comic({
+    required String name,
+    required String comicId,
+    String? originalName,
+    required OImage image,
+    ComicChapter? lastChap,
+    DateTime? timeAgo,
+    String? notice,
+    @Default(false) bool pending,
+    DateTime? preRelease,
+    double? rate,
+    String? description,
+  }) = _Comic;
+
+  factory Comic.fromJson(Map<String, dynamic> json) => _$ComicFromJson(json);
 
   factory Comic.fromMeta(String comicId, {required MetaComic comic}) {
     return Comic(

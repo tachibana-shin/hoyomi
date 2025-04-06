@@ -1,37 +1,19 @@
-class User {
-  final String user;
-  final String? email;
-  final String photoUrl;
-  final String fullName;
-  final Sex sex;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  User({
-    required this.user,
-    required this.email,
-    required this.photoUrl,
-    required this.fullName,
-    this.sex = Sex.other,
-  });
+part 'user.freezed.dart';
+part 'user.g.dart';
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      user: json['user'],
-      email: json['email'],
-      photoUrl: json['photoUrl'],
-      fullName: json['fullName'],
-      sex: Sex.values.firstWhere((e) => e.toString() == 'Sex.${json['sex']}'),
-    );
-  }
+@freezed
+class User with _$User {
+  const factory User({
+    required String user,
+    String? email,
+    required String photoUrl,
+    required String fullName,
+    @Default(Sex.other) Sex sex,
+  }) = _User;
 
-  Map<String, dynamic> toJson() {
-    return {
-      'user': user,
-      'email': email,
-      'photoUrl': photoUrl,
-      'fullName': fullName,
-      'sex': sex.toString().split('.').last,
-    };
-  }
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 }
 
 enum Sex { male, female, other }

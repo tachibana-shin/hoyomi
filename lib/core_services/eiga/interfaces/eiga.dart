@@ -1,31 +1,27 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 
-class Eiga {
-  final String name;
-  final String eigaId;
-  final String? originalName;
-  final OImage image;
-  final EigaEpisode? lastEpisode;
-  final DateTime? timeAgo;
-  final String? notice;
-  final double? rate;
-  final bool pending;
-  final DateTime? preRelease;
-  final String? description;
+part 'eiga.freezed.dart';
+part 'eiga.g.dart';
 
-  Eiga(
-      {required this.name,
-      required this.eigaId,
-      this.originalName,
-      required this.image,
-      this.lastEpisode,
-      this.timeAgo,
-      this.notice,
-      this.rate,
-      this.pending = false,
-      this.preRelease,
-      this.description});
+@freezed
+class Eiga with _$Eiga {
+  const factory Eiga({
+    required String name,
+    required String eigaId,
+    String? originalName,
+    required OImage image,
+    EigaEpisode? lastEpisode,
+    DateTime? timeAgo,
+    String? notice,
+    double? rate,
+    @Default(false) bool pending,
+    DateTime? preRelease,
+    String? description,
+  }) = _Eiga;
+
+  factory Eiga.fromJson(Map<String, dynamic> json) => _$EigaFromJson(json);
 
   factory Eiga.createFakeData() {
     return Eiga(

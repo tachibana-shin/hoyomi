@@ -1,17 +1,20 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 
-class HomeEigaCategory {
-  final String name;
-  final String? categoryId;
-  final bool? gridView;
-  final List<Eiga> items;
+part 'home_eiga_category.freezed.dart';
+part 'home_eiga_category.g.dart';
 
-  HomeEigaCategory({
-    required this.items,
-    required this.name,
-    this.categoryId,
-    this.gridView,
-  });
+@freezed
+class HomeEigaCategory with _$HomeEigaCategory {
+  const factory HomeEigaCategory({
+    required String name,
+    String? categoryId,
+    bool? gridView,
+    required List<Eiga> items,
+  }) = _HomeEigaCategory;
+
+  factory HomeEigaCategory.fromJson(Map<String, dynamic> json) =>
+      _$HomeEigaCategoryFromJson(json);
 
   factory HomeEigaCategory.createFakeData() {
     return HomeEigaCategory(

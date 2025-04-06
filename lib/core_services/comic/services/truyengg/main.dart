@@ -118,11 +118,11 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
   Future<List<HomeComicCategory>> home() async {
     final $ = await fetch$(baseUrl);
 
-    final categorys = $('.list_item_home');
+    final categories = $('.list_item_home');
 
     return [
       HomeComicCategory(
-        items: categorys
+        items: categories
             .first()
             .query('.item_home')
             .map((element) => parseComic(element, baseUrl))
@@ -131,7 +131,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
         categoryId: 'truyen-moi-cap-nhat',
       ),
       HomeComicCategory(
-        items: categorys
+        items: categories
             .eq(1)
             .query('.item_home')
             .map((element) => parseComic(element, baseUrl))
@@ -140,7 +140,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
         categoryId: 'top-binh-chon',
       ),
       HomeComicCategory(
-        items: categorys
+        items: categories
             .eq(2)
             .query('.item_home')
             .map((element) => parseComic(element, baseUrl))
@@ -446,9 +446,9 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
 
     final $ = await fetch$(url);
 
-    final categorys = $('.list_item_home');
+    final categories = $('.list_item_home');
 
-    final data = categorys
+    final data = categories
         .first()
         .query('.item_home')
         .map((element) => parseComic(element, baseUrl));

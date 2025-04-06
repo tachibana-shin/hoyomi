@@ -1,32 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class OImage {
-  final String src;
-  final Map<String, String>? headers;
+part 'o_image.freezed.dart';
+part 'o_image.g.dart';
 
-  static final fake = "fake:";
+@freezed
+class OImage with _$OImage {
+  const factory OImage({
+    required String src,
+    Map<String, String>? headers,
+  }) = _OImage;
 
-  OImage({required this.src, this.headers});
-
-  // Convert from JSON
-  factory OImage.fromJson(Map<String, dynamic> json) {
-    return OImage(
-      src: json['src'],
-      headers: (json['headers'] as Map<String, dynamic>?)?.map(
-        (key, value) => MapEntry(key, value as String),
-      ),
-    );
-  }
-
-  // Convert to JSON
-  Map<String, dynamic> toJson() {
-    return {'src': src, 'headers': headers};
-  }
+  factory OImage.fromJson(Map<String, dynamic> json) => _$OImageFromJson(json);
 
   factory OImage.createFakeData() {
-    return OImage(src: fake);
+    return OImage(src: "fake:");
   }
+  
+  static final fake = "fake:";
 
   static Image network(
     String src, {

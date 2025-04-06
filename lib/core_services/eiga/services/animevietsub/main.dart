@@ -13,10 +13,8 @@ import 'package:hoyomi/utils/d_query.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
-import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:pointycastle/export.dart';
 import 'package:archive/archive.dart';
-import 'package:video_player/video_player.dart';
 
 mixin _SupabaseRPC {
   final String _supabaseUrl = 'https://ctwwltbkwksgnispcjmq.supabase.co';
@@ -273,9 +271,9 @@ class AnimeVietsubService extends ABEigaService
             .map((item) => _parseCarousel(item))
             .toList(),
         aspectRatio: 404 / 720,
-        maxHeightBuilder: (context) => 30.h(context),
+        maxHeightBuilder: 0.3,
       ),
-      categorys: [
+      categories: [
         HomeEigaCategory(
           name: 'Top',
           items: $('.MovieListTopCn .TPostMv')
@@ -716,14 +714,14 @@ class AnimeVietsubService extends ABEigaService
     return OpeningEnding(
       opening: opening != null
           ? DurationRange(
-              Duration(seconds: opening['start'] as int),
-              Duration(seconds: opening['end'] as int),
+              start: Duration(seconds: (opening['start'] as num).floor()),
+              end: Duration(seconds: (opening['end'] as num).floor()),
             )
           : null,
       ending: ending != null
           ? DurationRange(
-              Duration(seconds: ending['start'] as int),
-              Duration(seconds: ending['end'] as int),
+              start: Duration(seconds: (ending['start'] as num).floor()),
+              end: Duration(seconds: (ending['end'] as num).floor()),
             )
           : null,
     );

@@ -1,17 +1,17 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 
-class HomeComicCategory {
-  final String name;
-  final String? categoryId;
-  final bool? gridView;
-  final List<Comic> items;
+part 'home_comic_category.freezed.dart';
 
-  const HomeComicCategory({
-    required this.items,
-    required this.name,
-    this.categoryId,
-    this.gridView,
-  });
+@freezed
+class HomeComicCategory with _$HomeComicCategory {
+  const factory HomeComicCategory({
+    required String name,
+    String? categoryId,
+    bool? gridView,
+    required List<Comic> items,
+  }) = _HomeComicCategory;
+
 
   factory HomeComicCategory.createFakeData() {
     return HomeComicCategory(

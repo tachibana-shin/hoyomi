@@ -1,25 +1,27 @@
-class Option {
-  final String name;
-  final String value;
-  final bool selected;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  const Option({
-    required this.name,
-    required this.value,
-    this.selected = false,
-  });
+part 'filter.freezed.dart';
+part 'filter.g.dart';
+
+@freezed
+class Option with _$Option {
+  const factory Option({
+    required String name,
+    required String value,
+    @Default(false) bool selected,
+  }) = _Option;
+
+  factory Option.fromJson(Map<String, dynamic> json) => _$OptionFromJson(json);
 }
 
-class Filter {
-  final String name;
-  final String key;
-  final bool multiple;
-  final List<Option> options;
+@freezed
+class Filter with _$Filter {
+  const factory Filter({
+    required String name,
+    required String key,
+    required bool multiple,
+    required List<Option> options,
+  }) = _Filter;
 
-  const Filter({
-    required this.name,
-    required this.key,
-    required this.multiple,
-    required this.options,
-  });
+  factory Filter.fromJson(Map<String, dynamic> json) => _$FilterFromJson(json);
 }

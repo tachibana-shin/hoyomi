@@ -11,8 +11,6 @@ import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_general_mixin.dart';
 
-import 'package:mediaquery_sizer/mediaquery_sizer.dart';
-
 class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
 // with
 // EigaWatchTimeMixin,
@@ -135,7 +133,7 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final categoryPages = await Future.wait(categoryPages$);
 
     final carouselItems = carouselPage.map(_parseCarousel).toList();
-    final categorys = categoryUrls.entries.map((entry) {
+    final categories = categoryUrls.entries.map((entry) {
       final name = entry.key;
       final slug = entry.value;
       final page = categoryPages[categoryUrls.keys.toList().indexOf(name)];
@@ -153,9 +151,9 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
       carousel: Carousel(
         items: carouselItems,
         aspectRatio: 404 / 720,
-        maxHeightBuilder: (context) => 30.h(context),
+        maxHeightBuilder: 0.3,
       ),
-      categorys: categorys,
+      categories: categories,
     );
   }
 
@@ -327,7 +325,7 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
         .map((episode) => EigaEpisode(
             name: episode.name,
             episodeId: episode.slug,
-            extra: episode.toJson()))
+            extra: jsonEncode(episode.toJson())))
         .toList();
     if (episodes == null) throw Exception('Episode not found');
 
@@ -350,7 +348,7 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
 
   @override
   getSource({required eigaId, required episode}) async {
-    final source = _ServerData.fromJson(episode.extra);
+    final source = _ServerData.fromJson(jsonDecode(episode.extra!));
 
     return SourceVideo(
       src: source.linkM3u8,

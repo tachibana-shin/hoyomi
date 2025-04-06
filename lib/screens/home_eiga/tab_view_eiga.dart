@@ -6,6 +6,7 @@ import 'package:hoyomi/widgets/eiga/carousel_eiga.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
 class TabViewEiga extends StatefulWidget {
   final ABEigaService service;
@@ -31,18 +32,18 @@ class _TabViewEigaState extends State<TabViewEiga>
       builder: (data, _) {
         return ListView.builder(
           padding: const EdgeInsets.all(8.0),
-          itemCount: data.categorys.length + (data.carousel == null ? 0 : 1),
+          itemCount: data.categories.length + (data.carousel == null ? 0 : 1),
           itemBuilder: (context, categoryIndex) {
             if (categoryIndex == 0 && data.carousel != null) {
               return CarouselEiga(
                 aspectRatio: data.carousel!.aspectRatio,
                 sourceId: widget.service.uid,
                 items: data.carousel!.items,
-                maxHeight: data.carousel!.maxHeightBuilder(context),
+                maxHeight: data.carousel!.maxHeightBuilder * 100.w(context),
               );
             }
 
-            final category = data.categorys.elementAt(
+            final category = data.categories.elementAt(
               categoryIndex - (data.carousel != null ? 1 : 0),
             );
             return ValueListenableBuilder<bool>(

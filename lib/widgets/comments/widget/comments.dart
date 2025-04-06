@@ -99,6 +99,9 @@ class _CommentsState extends State<Comments> {
             });
           },
           parent: widget.parent,
+          onCommentChanged: (comment) {
+            comments.items[index] = comment;
+          }
         ),
       );
     }

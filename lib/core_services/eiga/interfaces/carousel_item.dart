@@ -1,34 +1,28 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/interfaces/genre.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 
-class CarouselItem {
-  final OImage image;
-  final String eigaId;
-  final String name;
-  final String? originalName;
-  final double? rate;
-  final String? notice; // optional: quality + process
-  final String? year;
-  final String? description;
-  final String? studio;
-  final String? duration;
-  final String? language;
-  final List<Genre>? genres;
-  final List<Genre>? actors;
+part 'carousel_item.freezed.dart';
+part 'carousel_item.g.dart';
 
-  CarouselItem({
-    required this.image,
-    required this.eigaId,
-    required this.name,
-    required this.originalName,
-    required this.rate,
-    required this.notice,
-    required this.year,
-    required this.description,
-    required this.studio,
-    required this.duration,
-    this.language,
-    required this.genres,
-    required this.actors,
-  });
+@freezed
+class CarouselItem with _$CarouselItem {
+  const factory CarouselItem({
+    required OImage image,
+    required String eigaId,
+    required String name,
+    String? originalName,
+    double? rate,
+    String? notice,
+    String? year,
+    String? description,
+    String? studio,
+    String? duration,
+    String? language,
+    List<Genre>? genres,
+    List<Genre>? actors,
+  }) = _CarouselItem;
+
+  factory CarouselItem.fromJson(Map<String, dynamic> json) =>
+      _$CarouselItemFromJson(json);
 }

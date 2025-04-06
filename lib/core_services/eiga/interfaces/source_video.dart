@@ -1,13 +1,17 @@
-class SourceVideo {
-  final String src;
-  final Uri url;
-  final String type;
-  final Map<String, String> headers;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  SourceVideo({
-    required this.src,
-    required this.url,
-    required this.type,
-    this.headers = const {},
-  });
+part 'source_video.freezed.dart';
+part 'source_video.g.dart';
+
+@freezed
+class SourceVideo with _$SourceVideo {
+  const factory SourceVideo({
+    required String src,
+    required Uri url,
+    required String type,
+    @Default({}) Map<String, String> headers,
+  }) = _SourceVideo;
+
+  factory SourceVideo.fromJson(Map<String, dynamic> json) =>
+      _$SourceVideoFromJson(json);
 }

@@ -28,6 +28,7 @@ class Comment extends StatefulWidget {
     required bool value,
   }) setLikeComment;
   final void Function() onPop;
+  final void Function (ComicComment comment) onCommentChanged;
 
   const Comment({
     super.key,
@@ -37,6 +38,7 @@ class Comment extends StatefulWidget {
     required this.deleteComment,
     required this.onPop,
     required this.setLikeComment,
+    required this.onCommentChanged,
   });
 
   @override
@@ -222,17 +224,19 @@ class _CommentState extends State<Comment> {
     final old = widget.comment.like;
     try {
       setState(() {
-        widget.comment.like = value;
+        var comment = widget.comment;
+        comment = comment.copyWith(like: value);
         if (value) {
           if (old != true) {
-            widget.comment.countLike = (widget.comment.countLike ?? 0) + 1;
+            comment = comment.copyWith(countLike: (comment.countLike ?? 0) + 1);
           }
         } else {
           if (old != false) {
-            widget.comment.countDislike =
-                (widget.comment.countDislike ?? 0) + 1;
+            comment = comment.copyWith(countDislike: (comment.countDislike ?? 0) + 1);
           }
         }
+
+        widget.onCommentChanged(comment);
       });
       await widget.setLikeComment(
         comment: widget.comment,
@@ -241,7 +245,7 @@ class _CommentState extends State<Comment> {
       );
     } catch (err) {
       setState(() {
-        widget.comment.like = old;
+        widget.onCommentChanged(widget.comment.copyWith(like: old));
       });
       showSnackBar(Text('Error: $err'));
       debugPrint('Error: $err (${StackTrace.current})');
