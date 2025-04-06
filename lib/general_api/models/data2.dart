@@ -28,6 +28,6 @@ class Data2 with _$Data2 {
     /// The unique identifier for the chapter within the episode or series.
     required String chapId,
   }) = _Data2;
-  
+
   factory Data2.fromJson(Map<String, Object?> json) => _$Data2FromJson(json);
 }

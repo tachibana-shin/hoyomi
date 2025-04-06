@@ -15,4 +15,3 @@ export 'models/data2.dart';
 export 'models/data3.dart';
 // Root client
 export 'general_api_client.dart';
-
