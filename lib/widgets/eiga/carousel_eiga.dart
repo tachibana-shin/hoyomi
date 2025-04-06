@@ -269,15 +269,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                           '#${genre.name}',
                                           style: genre.genreId == Genre.noId
                                               ? null
-                                              : Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium
-                                                  ?.copyWith(
-                                                    fontSize: 14.0,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .tertiary,
-                                                  ),
+                                              : TextStyle(color: Colors.white.withValues(alpha: 0.8))
                                         ),
                                       );
                                     }).toList(),
@@ -301,15 +293,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                           '#${genre.name}',
                                           style: genre.genreId == Genre.noId
                                               ? null
-                                              : Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium
-                                                  ?.copyWith(
-                                                    fontSize: 14.0,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .tertiary,
-                                                  ),
+                                              : TextStyle(color: Colors.white.withValues(alpha: 0.8))
                                         ),
                                       );
                                     }).toList(),
