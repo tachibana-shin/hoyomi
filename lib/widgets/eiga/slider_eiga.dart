@@ -323,7 +323,7 @@ class _SliderEigaState extends State<SliderEiga>
         final String text = formatDuration(
           widget.duration.value * _hoverPosition.value,
         );
-        const double fontSize = 12;
+        const double fontSize = 14;
         const double paddingX = 5;
 
         double width;
