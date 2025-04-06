@@ -445,7 +445,8 @@ class _PlayerEigaState extends State<PlayerEiga>
     /// ================== /Brightness and volume system ===================
   }
 
-  Future<void> _seekTo(VideoPlayerController controller, Duration position) async {
+  Future<void> _seekTo(
+      VideoPlayerController controller, Duration position) async {
     _positionChangedByUser = true;
     await controller.seekTo(position);
     Future.microtask(_resetPositionChangedByUser);

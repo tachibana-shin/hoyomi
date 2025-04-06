@@ -265,12 +265,13 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                                   '/category_eiga/${widget.sourceId}/${genre.genreId}',
                                                 );
                                               },
-                                        child: Text(
-                                          '#${genre.name}',
-                                          style: genre.genreId == Genre.noId
-                                              ? null
-                                              : TextStyle(color: Colors.white.withValues(alpha: 0.8))
-                                        ),
+                                        child: Text('#${genre.name}',
+                                            style: genre.genreId == Genre.noId
+                                                ? null
+                                                : TextStyle(
+                                                    color: Colors.white
+                                                        .withValues(
+                                                            alpha: 0.8))),
                                       );
                                     }).toList(),
                                   )),
@@ -289,12 +290,13 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                                   '/category_eiga/${widget.sourceId}/${genre.genreId}',
                                                 );
                                               },
-                                        child: Text(
-                                          '#${genre.name}',
-                                          style: genre.genreId == Genre.noId
-                                              ? null
-                                              : TextStyle(color: Colors.white.withValues(alpha: 0.8))
-                                        ),
+                                        child: Text('#${genre.name}',
+                                            style: genre.genreId == Genre.noId
+                                                ? null
+                                                : TextStyle(
+                                                    color: Colors.white
+                                                        .withValues(
+                                                            alpha: 0.8))),
                                       );
                                     }).toList(),
                                   )),
