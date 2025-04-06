@@ -93,7 +93,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     try {
       return _service.getSuggest(
         metaEiga: _metaEiga.value,
-        eigaId: widget.eigaId,
+        eigaId: _eigaId.value,
       );
     } on UnimplementedError {
       return null;
@@ -1162,13 +1162,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       if (suggest == null) return SizedBox.shrink();
 
       return VerticalEigaList(
-        itemsFuture: suggest.then(
-          (data) => data
-              .map(
-                (item) => EigaExtend(eiga: item, sourceId: _service.uid),
-              )
-              .toList(),
-        ),
+        itemsFuture: suggest.then((data) => data
+            .map((item) => EigaExtend(eiga: item, sourceId: _service.uid))
+            .toList()),
         title: 'Suggest',
         disableScroll: true,
         goMode: true,
