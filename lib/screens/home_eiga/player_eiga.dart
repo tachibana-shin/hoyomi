@@ -353,9 +353,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       await controller.pause();
       _position.value = watchTime.position;
 
-      _positionChangedByUser = true;
-      await controller.seekTo(watchTime.position);
-      Future.microtask(_resetPositionChangedByUser);
+      await _seekTo(controller, watchTime.position);
 
       if (!controller.value.isPlaying) controller.play();
 
@@ -445,6 +443,12 @@ class _PlayerEigaState extends State<PlayerEiga>
     });
 
     /// ================== /Brightness and volume system ===================
+  }
+
+  Future<void> _seekTo(VideoPlayerController controller, Duration position) async {
+    _positionChangedByUser = true;
+    await controller.seekTo(position);
+    Future.microtask(_resetPositionChangedByUser);
   }
 
   Timer? _timer;
@@ -641,11 +645,11 @@ class _PlayerEigaState extends State<PlayerEiga>
       debugPrint('tap left');
       _doubleTapToRewind.value++;
 
-      _positionChangedByUser = true;
-      controller.seekTo(_position.value <= _teenSeconds
-          ? Duration.zero
-          : _position.value - _teenSeconds);
-      Future.microtask(_resetPositionChangedByUser);
+      _seekTo(
+          controller,
+          _position.value <= _teenSeconds
+              ? Duration.zero
+              : _position.value - _teenSeconds);
 
       return;
     }
@@ -653,11 +657,11 @@ class _PlayerEigaState extends State<PlayerEiga>
       debugPrint('tap right');
       _doubleTapToForward.value++;
 
-      _positionChangedByUser = true;
-      controller.seekTo(_position.value >= _duration.value - _teenSeconds
-          ? _duration.value
-          : _position.value + _teenSeconds);
-      Future.microtask(_resetPositionChangedByUser);
+      _seekTo(
+          controller,
+          _position.value >= _duration.value - _teenSeconds
+              ? _duration.value
+              : _position.value + _teenSeconds);
     }
   }
 
@@ -1171,9 +1175,8 @@ class _PlayerEigaState extends State<PlayerEiga>
                     onSeek: (duration) {
                       final seek = _position.value = duration;
 
-                      _positionChangedByUser = true;
-                      _controller.value?.seekTo(seek);
-                      Future.microtask(_resetPositionChangedByUser);
+                      if (_controller.value != null)
+                        _seekTo(_controller.value!, seek);
                     },
                   ),
                 ),
@@ -1234,10 +1237,10 @@ class _PlayerEigaState extends State<PlayerEiga>
                           onTap: () {
                             _doubleTapToRewind.value++;
 
-                            _positionChangedByUser = true;
-                            _controller.value?.seekTo(
-                                _position.value - Duration(seconds: 10));
-                            Future.microtask(_resetPositionChangedByUser);
+                            if (_controller.value != null) {
+                              _seekTo(_controller.value!,
+                                  _position.value - Duration(seconds: 10));
+                            }
                           },
                           child: Stack(children: [
                             Positioned(
@@ -1290,10 +1293,10 @@ class _PlayerEigaState extends State<PlayerEiga>
                           onTap: () {
                             _doubleTapToForward.value++;
 
-                            _positionChangedByUser = true;
-                            _controller.value?.seekTo(
-                                _position.value + Duration(seconds: 10));
-                            Future.microtask(_resetPositionChangedByUser);
+                            if (_controller.value != null) {
+                              _seekTo(_controller.value!,
+                                  _position.value + Duration(seconds: 10));
+                            }
                           },
                           child: Stack(children: [
                             Positioned(
@@ -1417,13 +1420,19 @@ class _PlayerEigaState extends State<PlayerEiga>
                             onPressed: () {
                               if (_stateOpeningEnding.value ==
                                   _StateOpeningEnding.opening) {
-                                _controller.value?.seekTo(
-                                  _openingEnding.value!.opening!.end,
-                                );
+                                if (_controller.value != null) {
+                                  _seekTo(
+                                    _controller.value!,
+                                    _openingEnding.value!.opening!.end,
+                                  );
+                                }
                               } else {
-                                _controller.value?.seekTo(
-                                  _openingEnding.value!.ending!.end,
-                                );
+                                if (_controller.value != null) {
+                                  _seekTo(
+                                    _controller.value!,
+                                    _openingEnding.value!.ending!.end,
+                                  );
+                                }
                               }
                             },
                             child: Column(
