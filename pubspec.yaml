@@ -16,6 +16,7 @@ dependencies:
   contentsize_tabbarview: ^0.0.2
   crypto: ^3.0.6
   device_info_plus: ^11.3.0
+  dio: ^5.8.0+1
   drop_down_list: ^0.0.8
   dynamic_height_grid_view: ^0.0.4
   email_validator: ^2.1.17
@@ -93,6 +94,8 @@ dev_dependencies:
   prompts: ^2.0.0
   json_serializable: ^6.8.0
   freezed: ^2.5.2
+  retrofit_generator: ^8.2.1
+  swagger_parser: ^1.22.1
 
 flutter:
   uses-material-design: true
