@@ -10,7 +10,7 @@ class AreaForward extends CustomPainter {
       ..color = Colors.white.withValues(alpha: 0.2)
       ..style = PaintingStyle.fill;
     final center = Offset(size.width, size.height / 2);
-    canvas.drawCircle(center, max(size.width, size.height), paint);
+    canvas.drawCircle(center, min(size.width, size.height), paint);
   }
 
   @override
