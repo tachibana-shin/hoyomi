@@ -28,7 +28,7 @@ class Comment extends StatefulWidget {
     required bool value,
   }) setLikeComment;
   final void Function() onPop;
-  final void Function (ComicComment comment) onCommentChanged;
+  final void Function(ComicComment comment) onCommentChanged;
 
   const Comment({
     super.key,
@@ -232,7 +232,8 @@ class _CommentState extends State<Comment> {
           }
         } else {
           if (old != false) {
-            comment = comment.copyWith(countDislike: (comment.countDislike ?? 0) + 1);
+            comment =
+                comment.copyWith(countDislike: (comment.countDislike ?? 0) + 1);
           }
         }
 

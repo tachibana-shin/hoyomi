@@ -31,10 +31,11 @@ class ImageWithGroup {
   final ComicChapter chapter;
   final int index;
 
-  ImageWithGroup(
-      {required this.chapter,
-      required this.index,
-      required this.image,});
+  ImageWithGroup({
+    required this.chapter,
+    required this.index,
+    required this.image,
+  });
 }
 
 class MangaReader extends StatefulWidget {
@@ -209,8 +210,8 @@ class _MangaReaderState extends State<MangaReader>
                         chapter: nextChapter,
                         index: params.$1,
                         image: OImage(
-                        src: params.$2.src,
-                        headers: params.$2.headers,
+                          src: params.$2.src,
+                          headers: params.$2.headers,
                         ),
                       ),
                     );
@@ -223,8 +224,7 @@ class _MangaReaderState extends State<MangaReader>
                 ImageWithGroup(
                   chapter: currentChapter,
                   index: -1,
-                  image: OImage(
-                  src: OImage.fake),
+                  image: OImage(src: OImage.fake),
                 ),
                 ...$pages
               ];

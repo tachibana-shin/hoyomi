@@ -89,20 +89,19 @@ class _CommentsState extends State<Comments> {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
         child: Comment(
-          comment: comment,
-          getComments: widget.getComments,
-          deleteComment: widget.deleteComment,
-          setLikeComment: widget.setLikeComment,
-          onPop: () {
-            setState(() {
-              comments.items.removeAt(index);
-            });
-          },
-          parent: widget.parent,
-          onCommentChanged: (comment) {
-            comments.items[index] = comment;
-          }
-        ),
+            comment: comment,
+            getComments: widget.getComments,
+            deleteComment: widget.deleteComment,
+            setLikeComment: widget.setLikeComment,
+            onPop: () {
+              setState(() {
+                comments.items.removeAt(index);
+              });
+            },
+            parent: widget.parent,
+            onCommentChanged: (comment) {
+              comments.items[index] = comment;
+            }),
       );
     }
 

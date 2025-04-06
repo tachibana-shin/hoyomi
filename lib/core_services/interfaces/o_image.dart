@@ -17,7 +17,7 @@ class OImage with _$OImage {
   factory OImage.createFakeData() {
     return OImage(src: "fake:");
   }
-  
+
   static final fake = "fake:";
 
   static Image network(

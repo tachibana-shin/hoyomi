@@ -333,7 +333,7 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
         .map((episode) => EigaEpisode(
             name: episode.name,
             episodeId: episode.slug,
-            extra:jsonEncode( episode.toJson())))
+            extra: jsonEncode(episode.toJson())))
         .toList();
     if (episodes == null) throw Exception('Episode not found');
 

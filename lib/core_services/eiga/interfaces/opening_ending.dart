@@ -9,7 +9,7 @@ class DurationRange with _$DurationRange {
     required Duration start,
     required Duration end,
   }) = _DurationRange;
-  
+
   factory DurationRange.fromJson(Map<String, dynamic> json) =>
       _$DurationRangeFromJson(json);
 }

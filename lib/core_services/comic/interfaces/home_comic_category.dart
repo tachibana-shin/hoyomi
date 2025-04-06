@@ -12,7 +12,6 @@ class HomeComicCategory with _$HomeComicCategory {
     required List<Comic> items,
   }) = _HomeComicCategory;
 
-
   factory HomeComicCategory.createFakeData() {
     return HomeComicCategory(
       name: "Popular Manga",
