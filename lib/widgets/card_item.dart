@@ -43,7 +43,7 @@ class CardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final widgetStar = switch (rate) {
-      != null => Row(
+      (!= null && != 0) => Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Iconify(
@@ -194,7 +194,7 @@ class CardItem extends StatelessWidget {
                 //     ])),
                 // ),
 
-                if (rate != null)
+                if (widgetStar != null)
                   Positioned(
                     bottom: 4,
                     left: 4,
