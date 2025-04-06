@@ -177,7 +177,7 @@ class GlobalSearchBar extends StatefulWidget {
 class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
   late final TextEditingController _controller;
 
-  FocusNode? _focusNode;
+  final _focusNode = FocusNode();
   bool _showingSearchLayer = false;
 
   @override
@@ -191,7 +191,8 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
   }
 
   void _showSearchLayer() {
-    if (_showingSearchLayer) return;
+    Future.microtask(() => _focusNode.requestFocus());
+    if (_showingSearchLayer) _closeSearchLayer();
     _showingSearchLayer = true;
     showGeneralDialog(
         context: context,
@@ -244,8 +245,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
   }
 
   void _closeSearchLayer({bool changeMode = false}) {
-    _focusNode?.unfocus();
-    _focusNode = null;
+    _focusNode.unfocus();
 
     if (_showingSearchLayer) {
       Navigator.of(context, rootNavigator: true).pop();
@@ -281,30 +281,28 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
               : snapshot.data! as List;
           if (!snapshot.hasData || data.isEmpty) return SizedBox.shrink();
 
-          final maxLines = 2;
           return Column(children: [
             Skeletonizer(
-                enabled: loading,
-                enableSwitchAnimation: true,
-                child: SizedBox(
-                  height: (50.0 * maxLines) + (4.0 * maxLines),
-                  child: ClipRect(
-                    child: Wrap(
-                      spacing: 8.0,
-                      runSpacing: 4.0,
-                      children: data
-                          .map((text) => GestureDetector(
-                              onTap: () {
-                                _controller.text = _keyword.value = text;
-                              },
-                              child: Chip(
-                                label: Text(text),
-                                padding: EdgeInsets.zero,
-                              )))
-                          .toList(),
-                    ),
-                  ),
-                )),
+              enabled: loading,
+              enableSwitchAnimation: true,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Wrap(
+                  spacing: 8.0,
+                  runSpacing: 4.0,
+                  children: data
+                      .map((text) => GestureDetector(
+                          onTap: () {
+                            _controller.text = _keyword.value = text;
+                          },
+                          child: Chip(
+                            label: Text(text),
+                            padding: EdgeInsets.zero,
+                          )))
+                      .toList(),
+                ),
+              ),
+            ),
             Divider(
               color: Colors.grey.withValues(alpha: 0.5),
               thickness: 1,
@@ -477,7 +475,6 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
 
   _AppBarExtended _buildGlobalSearchBar(bool focusing) {
     final theme = Theme.of(context);
-    _focusNode = FocusNode();
 
     return _AppBarExtended(
       // key: _keySearch,
