@@ -183,6 +183,18 @@ class DQuery {
     return DQuery(_elements.reversed.toList());
   }
 
+  /// Filters the elements to only those whose text content includes the given [text].
+  /// This is case-sensitive. If you want case-insensitive, modify to `.contains(text.toLowerCase())` and use `.toLowerCase()` on both sides.
+  DQuery contains(String text) {
+    return where((el) => el.text().contains(text));
+  }
+
+  /// Returns the first element whose text content includes the given [text].
+  /// Returns an empty DQuery if no match is found.
+  DQuery containsOne(String text) {
+    return findOne((el) => el.text().contains(text));
+  }
+
   // --- Iteration/Transformation ---
 
   /// Iterates over the DQuery object, executing a function for each matched element.
