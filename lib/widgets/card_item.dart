@@ -103,7 +103,7 @@ class CardItem extends StatelessWidget {
                 ),
 
                 // top
-                if (notice != null)
+                if (notice != null && notice!.isNotEmpty)
                   Positioned(
                     top: 4,
                     left: 0,

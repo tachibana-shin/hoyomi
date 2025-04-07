@@ -48,18 +48,22 @@ class VerticalEiga extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 4.0),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFB0E3AF),
+                  color: const Color.fromRGBO(176, 227, 175, 1.0),
                   borderRadius: BorderRadius.circular(4.0),
                 ),
                 child: Center(
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Iconify(Bi.badge_cc_fill, size: 12.0),
+                  Iconify(
+                    Bi.badge_cc_fill,
+                    color: Colors.black,
+                    size: 12.0,
+                  ),
                   Text(
-                    eiga.countSub.toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontSize: 14.0),
+                    ' ${eiga.countSub}',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 12.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600),
                   ),
                 ])),
               )
@@ -69,18 +73,22 @@ class VerticalEiga extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 4.0),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFB0E3AF),
+                  color: const Color.fromRGBO(185, 231, 255, 1.0),
                   borderRadius: BorderRadius.circular(4.0),
                 ),
                 child: Center(
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Iconify(Eva.mic_fill, size: 12.0),
+                  Iconify(
+                    Eva.mic_fill,
+                    color: Colors.black,
+                    size: 12.0,
+                  ),
                   Text(
-                    eiga.countDub.toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontSize: 14.0),
+                    ' ${eiga.countDub}',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 12.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600),
                   ),
                 ])),
               )

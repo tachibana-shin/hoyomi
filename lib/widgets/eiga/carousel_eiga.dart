@@ -322,18 +322,21 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                             fontWeight: FontWeight.w500,
                                             fontSize: 14.0)),
                               ),
-                            Text(
-                              item.name,
-                              maxLines: height < 300 ? 1 : 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 20.0,
-                                  ),
+                            FractionallySizedBox(
+                              widthFactor: 0.8,
+                              child: Text(
+                                item.name,
+                                maxLines: height < 300 ? 1 : 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 20.0,
+                                    ),
+                              ),
                             ),
                             if (item.originalName?.isNotEmpty == true)
                               Text(
