@@ -108,33 +108,46 @@ class CardItem extends StatelessWidget {
                     top: 4,
                     left: 0,
                     right: 4,
-                    child: Wrap(
-                      alignment: WrapAlignment.end,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(
-                            left: 8.0,
-                            right: 8.0,
-                            top: 4.0,
-                            bottom: 4.0,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Wrap(
+                            alignment: WrapAlignment.end,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.only(
+                                  left: 8.0,
+                                  right: 8.0,
+                                  top: 4.0,
+                                  bottom: 4.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainer,
+                                  borderRadius: BorderRadius.circular(14.0),
+                                ),
+                                child: Text(
+                                  notice!,
+                                  style: Theme.of(
+                                    context,
+                                  )
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(fontSize: 10.0),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).colorScheme.surfaceContainer,
-                            borderRadius: BorderRadius.circular(14.0),
-                          ),
-                          child: Text(
-                            notice!,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodySmall?.copyWith(fontSize: 10.0),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        ...extend
-                      ],
-                    ),
+                          if (extend.isNotEmpty)
+                            Wrap(
+                              alignment: WrapAlignment.end,
+                              spacing: 2,
+                              children: extend,
+                            ),
+                        ]),
                   ),
 
                 // bottom
