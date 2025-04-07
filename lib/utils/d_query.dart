@@ -61,6 +61,11 @@ class DQuery {
   /// Returns `null` if the element doesn't exist or the property is missing.
   String? prop(String name) => attrRaw(name);
 
+  /// Gets the value of the specified `data-*` attribute for the *first* element in the collection.
+  /// For example, `data('id')` retrieves the value of the `data-id` attribute.
+  /// Returns an empty string (`''`) if the element doesn't exist or the attribute is missing.
+  String data(String name) => attr('data-$name');
+
   /// Gets the `value` attribute of the *first* element in the collection.
   /// Convenience method for `attr('value')`.
   String val() => attr('value');

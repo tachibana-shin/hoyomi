@@ -8,10 +8,18 @@ part 'carousel_item.g.dart';
 @freezed
 class CarouselItem with _$CarouselItem {
   const factory CarouselItem({
+    String? subText,
+
     required OImage image,
     required String eigaId,
     required String name,
     String? originalName,
+    String? type,
+    String? episodeDuration,
+    DateTime? updatedAt,
+    String? quality,
+    int? countSub,
+    int? countDub,
     double? rate,
     String? notice,
     String? year,

@@ -13,6 +13,7 @@ class OImage with _$OImage {
   }) = _OImage;
 
   factory OImage.fromJson(Map<String, dynamic> json) => _$OImageFromJson(json);
+  factory OImage.from(String src) => OImage(src: src);
 
   factory OImage.createFakeData() {
     return OImage(src: "fake:");

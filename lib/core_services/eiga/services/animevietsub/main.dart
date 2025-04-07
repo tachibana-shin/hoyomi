@@ -561,7 +561,7 @@ class AnimeVietsubService extends ABEigaService
     final hour = match?.group(2);
     final minute = match?.group(3);
 
-    final day = day$ == null
+    final dayIndex = day$ == null
         ? null
         : [
             'chủ nhật',
@@ -572,6 +572,25 @@ class AnimeVietsubService extends ABEigaService
             'thứ sáu',
             'thứ bảy',
           ].indexOf(day$.toLowerCase());
+
+    DateTime? nextScheduleDateTime;
+    if (dayIndex != null && hour != null && minute != null) {
+      final now = DateTime.now();
+      final todayIndex = now.weekday % 7;
+
+      int daysUntil = (dayIndex - todayIndex) % 7;
+      if (daysUntil == 0 &&
+          (now.hour > int.parse(hour) ||
+              (now.hour == int.parse(hour) &&
+                  now.minute >= int.parse(minute)))) {
+        daysUntil = 7;
+      }
+
+      final scheduledDay = now
+          .add(Duration(days: daysUntil))
+          .copyWith(hour: int.parse(hour), minute: int.parse(minute));
+      nextScheduleDateTime = scheduledDay;
+    }
 
     final image$ = $('.Image img', single: true).attrRaw('src');
     final image = image$ == null
@@ -586,13 +605,7 @@ class AnimeVietsubService extends ABEigaService
       episodes: episodes,
       image: image,
       poster: poster,
-      schedule: day != null && hour != null && minute != null
-          ? TimeAndDay(
-              hour: int.parse(hour),
-              minute: int.parse(minute),
-              day: day,
-            )
-          : null,
+      schedule: nextScheduleDateTime,
     );
   }
 

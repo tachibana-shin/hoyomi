@@ -274,6 +274,7 @@ abstract class Service with _SettingsMixin {
   Future<String> fetch(
     String url, {
     String? cookie,
+    Map<String, dynamic>? query,
     Map<String, dynamic>? body,
     Map<String, String>? headers,
   }) async {
@@ -282,7 +283,10 @@ abstract class Service with _SettingsMixin {
 
     cookiesText = init.onBeforeInsertCookie?.call(cookiesText) ?? cookiesText;
 
-    final uri = Uri.parse(url);
+    var uri = Uri.parse(url);
+    if (query != null) {
+      uri = uri.replace(queryParameters: {...uri.queryParametersAll, ...query});
+    }
     final $headers = {
       'accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -417,12 +421,13 @@ abstract class Service with _SettingsMixin {
     String url, {
     Duration? expires,
     String? cookie,
+    Map<String, dynamic>? query,
     Map<String, dynamic>? body,
     Map<String, String>? headers,
   }) async {
     final uid = sha256
         .convert(utf8.encode(
-            '$url|$cookie|${body == null ? '' : jsonEncode(body)}|${headers == null ? '' : jsonEncode(headers)}'))
+            '$url|$cookie|${jsonEncode(query)}|${body == null ? '' : jsonEncode(body)}|${headers == null ? '' : jsonEncode(headers)}'))
         .toString();
 
     final inStore = _cacheFetch[uid];
@@ -433,11 +438,12 @@ abstract class Service with _SettingsMixin {
     }
 
     final expiresIn = expires == null ? null : DateTime.now().add(expires);
-    final response = fetch(url, cookie: cookie, body: body, headers: headers)
-      ..catchError((error) {
-        _cacheFetch.remove(uid);
-        throw error;
-      });
+    final response =
+        fetch(url, cookie: cookie, query: query, body: body, headers: headers)
+          ..catchError((error) {
+            _cacheFetch.remove(uid);
+            throw error;
+          });
     _cacheFetch[uid] = (expire: expiresIn, response: response);
 
     return response;
@@ -450,10 +456,12 @@ abstract class Service with _SettingsMixin {
 
   Future<DollarFunction> fetch$(String url,
       {String? cookie,
+      Map<String, dynamic>? query,
       Map<String, dynamic>? body,
       Map<String, String>? headers}) async {
     return parse$(
-      await fetch(url, cookie: cookie, body: body, headers: headers),
+      await fetch(url,
+          cookie: cookie, query: query, body: body, headers: headers),
     );
   }
 

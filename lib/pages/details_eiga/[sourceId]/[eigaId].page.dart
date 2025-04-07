@@ -81,7 +81,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   late final Ref<String> _eigaId;
   late final _episodeId = ref<String?>(null);
-  late final _schedule = ref<TimeAndDay?>(null);
+  late final _schedule = ref<DateTime?>(null);
   late final _episode = ref<EigaEpisode?>(null);
   late final _episodeIndex = ref<int?>(null);
   late final _currentSeason = ref<Season?>(null);

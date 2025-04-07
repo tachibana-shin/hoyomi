@@ -19,7 +19,7 @@ _$EigaEpisodesImpl _$$EigaEpisodesImplFromJson(Map<String, dynamic> json) =>
           : OImage.fromJson(json['poster'] as Map<String, dynamic>),
       schedule: json['schedule'] == null
           ? null
-          : TimeAndDay.fromJson(json['schedule'] as Map<String, dynamic>),
+          : DateTime.parse(json['schedule'] as String),
     );
 
 Map<String, dynamic> _$$EigaEpisodesImplToJson(_$EigaEpisodesImpl instance) =>
@@ -27,19 +27,5 @@ Map<String, dynamic> _$$EigaEpisodesImplToJson(_$EigaEpisodesImpl instance) =>
       'episodes': instance.episodes,
       'image': instance.image,
       'poster': instance.poster,
-      'schedule': instance.schedule,
-    };
-
-_$TimeAndDayImpl _$$TimeAndDayImplFromJson(Map<String, dynamic> json) =>
-    _$TimeAndDayImpl(
-      day: (json['day'] as num).toInt(),
-      hour: (json['hour'] as num).toInt(),
-      minute: (json['minute'] as num).toInt(),
-    );
-
-Map<String, dynamic> _$$TimeAndDayImplToJson(_$TimeAndDayImpl instance) =>
-    <String, dynamic>{
-      'day': instance.day,
-      'hour': instance.hour,
-      'minute': instance.minute,
+      'schedule': instance.schedule?.toIso8601String(),
     };

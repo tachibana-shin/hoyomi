@@ -23,6 +23,7 @@ class CardItem extends StatelessWidget {
   final String title;
   final String? subtitle;
   final DateTime? timeAgo;
+  final List<Widget> extend;
 
   const CardItem({
     super.key,
@@ -38,6 +39,7 @@ class CardItem extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.timeAgo,
+    required this.extend,
   });
 
   @override
@@ -130,6 +132,7 @@ class CardItem extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        ...extend
                       ],
                     ),
                   ),

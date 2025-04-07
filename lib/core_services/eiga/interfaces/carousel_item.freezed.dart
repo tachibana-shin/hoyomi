@@ -20,10 +20,17 @@ CarouselItem _$CarouselItemFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$CarouselItem {
+  String? get subText => throw _privateConstructorUsedError;
   OImage get image => throw _privateConstructorUsedError;
   String get eigaId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String? get originalName => throw _privateConstructorUsedError;
+  String? get type => throw _privateConstructorUsedError;
+  String? get episodeDuration => throw _privateConstructorUsedError;
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
+  String? get quality => throw _privateConstructorUsedError;
+  int? get countSub => throw _privateConstructorUsedError;
+  int? get countDub => throw _privateConstructorUsedError;
   double? get rate => throw _privateConstructorUsedError;
   String? get notice => throw _privateConstructorUsedError;
   String? get year => throw _privateConstructorUsedError;
@@ -47,10 +54,17 @@ abstract class $CarouselItemCopyWith<$Res> {
       _$CarouselItemCopyWithImpl<$Res, CarouselItem>;
   @useResult
   $Res call(
-      {OImage image,
+      {String? subText,
+      OImage image,
       String eigaId,
       String name,
       String? originalName,
+      String? type,
+      String? episodeDuration,
+      DateTime? updatedAt,
+      String? quality,
+      int? countSub,
+      int? countDub,
       double? rate,
       String? notice,
       String? year,
@@ -77,10 +91,17 @@ class _$CarouselItemCopyWithImpl<$Res, $Val extends CarouselItem>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? subText = freezed,
     Object? image = null,
     Object? eigaId = null,
     Object? name = null,
     Object? originalName = freezed,
+    Object? type = freezed,
+    Object? episodeDuration = freezed,
+    Object? updatedAt = freezed,
+    Object? quality = freezed,
+    Object? countSub = freezed,
+    Object? countDub = freezed,
     Object? rate = freezed,
     Object? notice = freezed,
     Object? year = freezed,
@@ -92,6 +113,10 @@ class _$CarouselItemCopyWithImpl<$Res, $Val extends CarouselItem>
     Object? actors = freezed,
   }) {
     return _then(_value.copyWith(
+      subText: freezed == subText
+          ? _value.subText
+          : subText // ignore: cast_nullable_to_non_nullable
+              as String?,
       image: null == image
           ? _value.image
           : image // ignore: cast_nullable_to_non_nullable
@@ -108,6 +133,30 @@ class _$CarouselItemCopyWithImpl<$Res, $Val extends CarouselItem>
           ? _value.originalName
           : originalName // ignore: cast_nullable_to_non_nullable
               as String?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      episodeDuration: freezed == episodeDuration
+          ? _value.episodeDuration
+          : episodeDuration // ignore: cast_nullable_to_non_nullable
+              as String?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      quality: freezed == quality
+          ? _value.quality
+          : quality // ignore: cast_nullable_to_non_nullable
+              as String?,
+      countSub: freezed == countSub
+          ? _value.countSub
+          : countSub // ignore: cast_nullable_to_non_nullable
+              as int?,
+      countDub: freezed == countDub
+          ? _value.countDub
+          : countDub // ignore: cast_nullable_to_non_nullable
+              as int?,
       rate: freezed == rate
           ? _value.rate
           : rate // ignore: cast_nullable_to_non_nullable
@@ -165,10 +214,17 @@ abstract class _$$CarouselItemImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {OImage image,
+      {String? subText,
+      OImage image,
       String eigaId,
       String name,
       String? originalName,
+      String? type,
+      String? episodeDuration,
+      DateTime? updatedAt,
+      String? quality,
+      int? countSub,
+      int? countDub,
       double? rate,
       String? notice,
       String? year,
@@ -194,10 +250,17 @@ class __$$CarouselItemImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? subText = freezed,
     Object? image = null,
     Object? eigaId = null,
     Object? name = null,
     Object? originalName = freezed,
+    Object? type = freezed,
+    Object? episodeDuration = freezed,
+    Object? updatedAt = freezed,
+    Object? quality = freezed,
+    Object? countSub = freezed,
+    Object? countDub = freezed,
     Object? rate = freezed,
     Object? notice = freezed,
     Object? year = freezed,
@@ -209,6 +272,10 @@ class __$$CarouselItemImplCopyWithImpl<$Res>
     Object? actors = freezed,
   }) {
     return _then(_$CarouselItemImpl(
+      subText: freezed == subText
+          ? _value.subText
+          : subText // ignore: cast_nullable_to_non_nullable
+              as String?,
       image: null == image
           ? _value.image
           : image // ignore: cast_nullable_to_non_nullable
@@ -225,6 +292,30 @@ class __$$CarouselItemImplCopyWithImpl<$Res>
           ? _value.originalName
           : originalName // ignore: cast_nullable_to_non_nullable
               as String?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      episodeDuration: freezed == episodeDuration
+          ? _value.episodeDuration
+          : episodeDuration // ignore: cast_nullable_to_non_nullable
+              as String?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      quality: freezed == quality
+          ? _value.quality
+          : quality // ignore: cast_nullable_to_non_nullable
+              as String?,
+      countSub: freezed == countSub
+          ? _value.countSub
+          : countSub // ignore: cast_nullable_to_non_nullable
+              as int?,
+      countDub: freezed == countDub
+          ? _value.countDub
+          : countDub // ignore: cast_nullable_to_non_nullable
+              as int?,
       rate: freezed == rate
           ? _value.rate
           : rate // ignore: cast_nullable_to_non_nullable
@@ -269,10 +360,17 @@ class __$$CarouselItemImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$CarouselItemImpl implements _CarouselItem {
   const _$CarouselItemImpl(
-      {required this.image,
+      {this.subText,
+      required this.image,
       required this.eigaId,
       required this.name,
       this.originalName,
+      this.type,
+      this.episodeDuration,
+      this.updatedAt,
+      this.quality,
+      this.countSub,
+      this.countDub,
       this.rate,
       this.notice,
       this.year,
@@ -289,6 +387,8 @@ class _$CarouselItemImpl implements _CarouselItem {
       _$$CarouselItemImplFromJson(json);
 
   @override
+  final String? subText;
+  @override
   final OImage image;
   @override
   final String eigaId;
@@ -296,6 +396,18 @@ class _$CarouselItemImpl implements _CarouselItem {
   final String name;
   @override
   final String? originalName;
+  @override
+  final String? type;
+  @override
+  final String? episodeDuration;
+  @override
+  final DateTime? updatedAt;
+  @override
+  final String? quality;
+  @override
+  final int? countSub;
+  @override
+  final int? countDub;
   @override
   final double? rate;
   @override
@@ -332,7 +444,7 @@ class _$CarouselItemImpl implements _CarouselItem {
 
   @override
   String toString() {
-    return 'CarouselItem(image: $image, eigaId: $eigaId, name: $name, originalName: $originalName, rate: $rate, notice: $notice, year: $year, description: $description, studio: $studio, duration: $duration, language: $language, genres: $genres, actors: $actors)';
+    return 'CarouselItem(subText: $subText, image: $image, eigaId: $eigaId, name: $name, originalName: $originalName, type: $type, episodeDuration: $episodeDuration, updatedAt: $updatedAt, quality: $quality, countSub: $countSub, countDub: $countDub, rate: $rate, notice: $notice, year: $year, description: $description, studio: $studio, duration: $duration, language: $language, genres: $genres, actors: $actors)';
   }
 
   @override
@@ -340,11 +452,22 @@ class _$CarouselItemImpl implements _CarouselItem {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CarouselItemImpl &&
+            (identical(other.subText, subText) || other.subText == subText) &&
             (identical(other.image, image) || other.image == image) &&
             (identical(other.eigaId, eigaId) || other.eigaId == eigaId) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.originalName, originalName) ||
                 other.originalName == originalName) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.episodeDuration, episodeDuration) ||
+                other.episodeDuration == episodeDuration) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
+            (identical(other.quality, quality) || other.quality == quality) &&
+            (identical(other.countSub, countSub) ||
+                other.countSub == countSub) &&
+            (identical(other.countDub, countDub) ||
+                other.countDub == countDub) &&
             (identical(other.rate, rate) || other.rate == rate) &&
             (identical(other.notice, notice) || other.notice == notice) &&
             (identical(other.year, year) || other.year == year) &&
@@ -361,21 +484,29 @@ class _$CarouselItemImpl implements _CarouselItem {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      image,
-      eigaId,
-      name,
-      originalName,
-      rate,
-      notice,
-      year,
-      description,
-      studio,
-      duration,
-      language,
-      const DeepCollectionEquality().hash(_genres),
-      const DeepCollectionEquality().hash(_actors));
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        subText,
+        image,
+        eigaId,
+        name,
+        originalName,
+        type,
+        episodeDuration,
+        updatedAt,
+        quality,
+        countSub,
+        countDub,
+        rate,
+        notice,
+        year,
+        description,
+        studio,
+        duration,
+        language,
+        const DeepCollectionEquality().hash(_genres),
+        const DeepCollectionEquality().hash(_actors)
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -393,10 +524,17 @@ class _$CarouselItemImpl implements _CarouselItem {
 
 abstract class _CarouselItem implements CarouselItem {
   const factory _CarouselItem(
-      {required final OImage image,
+      {final String? subText,
+      required final OImage image,
       required final String eigaId,
       required final String name,
       final String? originalName,
+      final String? type,
+      final String? episodeDuration,
+      final DateTime? updatedAt,
+      final String? quality,
+      final int? countSub,
+      final int? countDub,
       final double? rate,
       final String? notice,
       final String? year,
@@ -411,6 +549,8 @@ abstract class _CarouselItem implements CarouselItem {
       _$CarouselItemImpl.fromJson;
 
   @override
+  String? get subText;
+  @override
   OImage get image;
   @override
   String get eigaId;
@@ -418,6 +558,18 @@ abstract class _CarouselItem implements CarouselItem {
   String get name;
   @override
   String? get originalName;
+  @override
+  String? get type;
+  @override
+  String? get episodeDuration;
+  @override
+  DateTime? get updatedAt;
+  @override
+  String? get quality;
+  @override
+  int? get countSub;
+  @override
+  int? get countDub;
   @override
   double? get rate;
   @override

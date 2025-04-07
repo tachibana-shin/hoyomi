@@ -27,6 +27,8 @@ mixin _$Eiga {
   EigaEpisode? get lastEpisode => throw _privateConstructorUsedError;
   DateTime? get timeAgo => throw _privateConstructorUsedError;
   String? get notice => throw _privateConstructorUsedError;
+  int? get countSub => throw _privateConstructorUsedError;
+  int? get countDub => throw _privateConstructorUsedError;
   double? get rate => throw _privateConstructorUsedError;
   bool get pending => throw _privateConstructorUsedError;
   DateTime? get preRelease => throw _privateConstructorUsedError;
@@ -50,6 +52,8 @@ abstract class $EigaCopyWith<$Res> {
       EigaEpisode? lastEpisode,
       DateTime? timeAgo,
       String? notice,
+      int? countSub,
+      int? countDub,
       double? rate,
       bool pending,
       DateTime? preRelease,
@@ -79,6 +83,8 @@ class _$EigaCopyWithImpl<$Res, $Val extends Eiga>
     Object? lastEpisode = freezed,
     Object? timeAgo = freezed,
     Object? notice = freezed,
+    Object? countSub = freezed,
+    Object? countDub = freezed,
     Object? rate = freezed,
     Object? pending = null,
     Object? preRelease = freezed,
@@ -113,6 +119,14 @@ class _$EigaCopyWithImpl<$Res, $Val extends Eiga>
           ? _value.notice
           : notice // ignore: cast_nullable_to_non_nullable
               as String?,
+      countSub: freezed == countSub
+          ? _value.countSub
+          : countSub // ignore: cast_nullable_to_non_nullable
+              as int?,
+      countDub: freezed == countDub
+          ? _value.countDub
+          : countDub // ignore: cast_nullable_to_non_nullable
+              as int?,
       rate: freezed == rate
           ? _value.rate
           : rate // ignore: cast_nullable_to_non_nullable
@@ -168,6 +182,8 @@ abstract class _$$EigaImplCopyWith<$Res> implements $EigaCopyWith<$Res> {
       EigaEpisode? lastEpisode,
       DateTime? timeAgo,
       String? notice,
+      int? countSub,
+      int? countDub,
       double? rate,
       bool pending,
       DateTime? preRelease,
@@ -196,6 +212,8 @@ class __$$EigaImplCopyWithImpl<$Res>
     Object? lastEpisode = freezed,
     Object? timeAgo = freezed,
     Object? notice = freezed,
+    Object? countSub = freezed,
+    Object? countDub = freezed,
     Object? rate = freezed,
     Object? pending = null,
     Object? preRelease = freezed,
@@ -230,6 +248,14 @@ class __$$EigaImplCopyWithImpl<$Res>
           ? _value.notice
           : notice // ignore: cast_nullable_to_non_nullable
               as String?,
+      countSub: freezed == countSub
+          ? _value.countSub
+          : countSub // ignore: cast_nullable_to_non_nullable
+              as int?,
+      countDub: freezed == countDub
+          ? _value.countDub
+          : countDub // ignore: cast_nullable_to_non_nullable
+              as int?,
       rate: freezed == rate
           ? _value.rate
           : rate // ignore: cast_nullable_to_non_nullable
@@ -261,6 +287,8 @@ class _$EigaImpl implements _Eiga {
       this.lastEpisode,
       this.timeAgo,
       this.notice,
+      this.countSub,
+      this.countDub,
       this.rate,
       this.pending = false,
       this.preRelease,
@@ -284,6 +312,10 @@ class _$EigaImpl implements _Eiga {
   @override
   final String? notice;
   @override
+  final int? countSub;
+  @override
+  final int? countDub;
+  @override
   final double? rate;
   @override
   @JsonKey()
@@ -295,7 +327,7 @@ class _$EigaImpl implements _Eiga {
 
   @override
   String toString() {
-    return 'Eiga(name: $name, eigaId: $eigaId, originalName: $originalName, image: $image, lastEpisode: $lastEpisode, timeAgo: $timeAgo, notice: $notice, rate: $rate, pending: $pending, preRelease: $preRelease, description: $description)';
+    return 'Eiga(name: $name, eigaId: $eigaId, originalName: $originalName, image: $image, lastEpisode: $lastEpisode, timeAgo: $timeAgo, notice: $notice, countSub: $countSub, countDub: $countDub, rate: $rate, pending: $pending, preRelease: $preRelease, description: $description)';
   }
 
   @override
@@ -312,6 +344,10 @@ class _$EigaImpl implements _Eiga {
                 other.lastEpisode == lastEpisode) &&
             (identical(other.timeAgo, timeAgo) || other.timeAgo == timeAgo) &&
             (identical(other.notice, notice) || other.notice == notice) &&
+            (identical(other.countSub, countSub) ||
+                other.countSub == countSub) &&
+            (identical(other.countDub, countDub) ||
+                other.countDub == countDub) &&
             (identical(other.rate, rate) || other.rate == rate) &&
             (identical(other.pending, pending) || other.pending == pending) &&
             (identical(other.preRelease, preRelease) ||
@@ -331,6 +367,8 @@ class _$EigaImpl implements _Eiga {
       lastEpisode,
       timeAgo,
       notice,
+      countSub,
+      countDub,
       rate,
       pending,
       preRelease,
@@ -359,6 +397,8 @@ abstract class _Eiga implements Eiga {
       final EigaEpisode? lastEpisode,
       final DateTime? timeAgo,
       final String? notice,
+      final int? countSub,
+      final int? countDub,
       final double? rate,
       final bool pending,
       final DateTime? preRelease,
@@ -380,6 +420,10 @@ abstract class _Eiga implements Eiga {
   DateTime? get timeAgo;
   @override
   String? get notice;
+  @override
+  int? get countSub;
+  @override
+  int? get countDub;
   @override
   double? get rate;
   @override
