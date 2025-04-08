@@ -212,7 +212,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     /// Source
     _source = asyncComputed(
       () async {
-        if (widget.episode.value == null) return null;
+        if (metaIsFake.value || widget.episode.value == null) return null;
 
         late final List<ServerSource>? servers;
         try {
@@ -252,7 +252,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     _subtitles = asyncComputed(
       () async {
         final episode = widget.episode.value;
-        if (episode == null) return null;
+        if (metaIsFake.value || episode == null) return null;
 
         final source = _source.value;
         if (source == null) return null;
