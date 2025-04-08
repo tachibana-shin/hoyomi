@@ -337,7 +337,7 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
   @override
   getServers({required eigaId, required episode}) async {
     final json = jsonDecode(await fetch(
-        '$baseUrl/ajax/v2/episode/servers?episodeId=${RegExp(r'-(\d+)$').firstMatch(eigaId)!.group(1)}'));
+        '$baseUrl/ajax/v2/episode/servers?episodeId=${episode.episodeId}'));
     final html = json['html'] as String;
 
     final $ = parse$(html);
@@ -380,7 +380,7 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
       },
     );
   }
-  
+
   // @override
   // Future<SourceContent> fetchSourceContent({required SourceVideo source}) async {
   //   final content = await fetch(source.src, headers: source.headers);
