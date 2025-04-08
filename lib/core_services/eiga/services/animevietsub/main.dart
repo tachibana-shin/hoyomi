@@ -743,11 +743,6 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  getSubtitles({required eigaId, required episode}) async {
-    return [];
-  }
-
-  @override
   getSuggest({required metaEiga, required eigaId, page}) async {
     final items = (await _docEigaStore[eigaId]!)('.MovieListRelated .TPostMv')
         .map((item) => _parseItem(item))

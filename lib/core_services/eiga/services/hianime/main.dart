@@ -9,9 +9,11 @@ library;
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:get/get.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_general_mixin.dart';
+import 'package:hoyomi/env.dart';
 import 'package:hoyomi/utils/d_query.dart';
 import 'package:intl/intl.dart';
 
@@ -333,17 +335,65 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
   }
 
   @override
-  getSource({required eigaId, required episode}) async {
-    return SourceVideo(
-      src: ' source.linkM3u8',
-      url: Uri.parse('source.linkM3u8'),
-      type: 'hls',
-      headers: {'referer': baseUrl},
-    );
+  getServers({required eigaId, required episode}) async {
+    final json = jsonDecode(await fetch(
+        '$baseUrl/ajax/v2/episode/servers?episodeId=${RegExp(r'-(\d+)$').firstMatch(eigaId)!.group(1)}'));
+    final html = json['html'] as String;
+
+    final $ = parse$(html);
+
+    return $('.server-item[data-id]').map(($item) {
+      final name = $item.text();
+      // val serverlist = listOf("vidstreaming", "vidcloud")
+      final server = name.contains('HD-1') ? 'vidstreaming' : 'vidcloud';
+      final type = $item.data('type');
+
+      return ServerSource(
+        name: $item.text(),
+        serverId: '$type&server=$server',
+      );
+    });
   }
 
   @override
-  getSubtitles({required eigaId, required episode}) async {
+  getSource({required eigaId, required episode, server}) async {
+    final json = await fetch(
+        '${Env.twoApi}?episodeId=$eigaId\$episode\$${RegExp(r'-(\d+)$').firstMatch(eigaId)!.group(1)}\$${server!.serverId}');
+    final data = jsonDecode(json);
+
+    final sources = data['sources'] as List<dynamic>;
+    // find first source type is hls or  m3u8
+    final source = sources.firstWhereOrNull((source) =>
+        source['type'] == 'hls' ||
+        source['isM3U8'] == true ||
+        source['url'].toString().endsWith('.m3u8'));
+
+    if (source == null) throw Exception('No source found');
+
+    return SourceVideo(
+      src: source['url'],
+      url: Uri.parse(source['url']),
+      type: source['type'] ?? 'hls',
+      headers: {
+        'Referer': 'https://megacloud.club/',
+        'Origin': 'https://megacloud.club/'
+      },
+    );
+  }
+  
+  // @override
+  // Future<SourceContent> fetchSourceContent({required SourceVideo source}) async {
+  //   final content = await fetch(source.src, headers: source.headers);
+
+  //   return SourceContent(
+  //     content: content,
+  //     url: source.url,
+  //     headers: source.headers,
+  //   );
+  // }
+
+  @override
+  getSubtitles({required eigaId, required episode, required source}) async {
     return [];
   }
 

@@ -74,6 +74,12 @@ class PlayerEiga extends StatefulWidget {
 
   final Function(WatchTimeData data) onWatchTimeChanged;
 
+  /// ================= player expose =================
+  final Computed<Future<List<ServerSource>>?> serversFuture;
+  final Ref<int?> serverSelected;
+
+  /// ================= /player expose =================
+
   const PlayerEiga({
     super.key,
     required this.service,
@@ -90,6 +96,8 @@ class PlayerEiga extends StatefulWidget {
     required this.onNext,
     required this.onPrev,
     required this.onWatchTimeChanged,
+    required this.serversFuture,
+    required this.serverSelected,
   });
   @override
   State<PlayerEiga> createState() => _PlayerEigaState();
@@ -179,7 +187,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   late final _showVolume = ref(false);
 
   late final AsyncComputed<SourceVideo?> _source;
-  late final AsyncComputed<List<type.Subtitle>> _subtitles;
+  late final AsyncComputed<List<type.Subtitle>?> _subtitles;
   late final AsyncComputed<WatchTimeData?> _watchTimeData;
   late final AsyncComputed<Vtt?> _thumbnailVtt;
   late final AsyncComputed<OpeningEnding?> _openingEnding;
@@ -199,29 +207,82 @@ class _PlayerEigaState extends State<PlayerEiga>
     super.initState();
 
     /// =================== Core data ====================
+    final metaIsFake = computed(() => widget.metaEiga.value.fake);
+
+    /// Source
     _source = asyncComputed(
-        () async => widget.episode.value == null
-            ? null
-            : widget.service.getSource(
-                eigaId: widget.eigaId.value, episode: widget.episode.value!),
-        onError: (error) => (error is Response)
-            ? debugPrint('[source]: ${error.body}')
-            : debugPrint('[source]: $error (${StackTrace.current})'),
-        beforeUpdate: () => null);
+      () async {
+        if (widget.episode.value == null) return null;
+
+        late final List<ServerSource>? servers;
+        try {
+          servers = await widget.serversFuture.value;
+        } on UnimplementedError {
+          servers = null;
+        }
+
+        final episode = widget.episode.value;
+        if (episode == null) return null;
+
+        final serverSelected =
+            servers == null ? null : widget.serverSelected.value;
+
+        return widget.service.getSource(
+          eigaId: widget.eigaId.value,
+          episode: episode,
+          server: servers
+              ?.elementAt((serverSelected ?? 0).clamp(0, servers.length - 1)),
+        );
+      },
+      onError: (error) {
+        if (error is Response) {
+          debugPrint('[source]: ${error.body}');
+        } else {
+          debugPrint('[source]: $error (${StackTrace.current})');
+        }
+
+        if (error is! UnimplementedError) {
+          showSnackBar(Text('Source error: $error'));
+        }
+      },
+      beforeUpdate: () => null,
+    );
 
     /// Subtitles language
     _subtitles = asyncComputed(
-        () async => widget.episode.value == null
-            ? []
-            : widget.service.getSubtitles(
-                eigaId: widget.eigaId.value, episode: widget.episode.value!),
-        onError: (error) => (error is Response)
-            ? debugPrint('[subtitles]: ${error.statusCode}')
-            : debugPrint('[subtitles]: $error (${StackTrace.current})'));
+      () async {
+        final episode = widget.episode.value;
+        if (episode == null) return null;
+
+        final source = _source.value;
+        if (source == null) return null;
+
+        try {
+          return await widget.service.getSubtitles(
+            eigaId: widget.eigaId.value,
+            episode: episode,
+            source: source,
+          );
+        } on UnimplementedError {
+          return null;
+        }
+      },
+      onError: (error) {
+        if (error is Response) {
+          debugPrint('[subtitles]: ${error.body}');
+        } else {
+          debugPrint('[subtitles]: $error (${StackTrace.current})');
+        }
+
+        if (error is! UnimplementedError) {
+          showSnackBar(Text('Subtitle error: $error'));
+        }
+      },
+    );
 
     /// Watch data position
     _watchTimeData = asyncComputed<WatchTimeData?>(() async {
-      if (widget.service is EigaWatchTimeMixin && !widget.metaEiga.value.fake) {
+      if (widget.service is EigaWatchTimeMixin && !metaIsFake.value) {
         final eigaId = widget.eigaId.value;
         final episode = widget.episode.value;
         final episodeIndex = widget.episodeIndex.value;
@@ -265,7 +326,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       if (widget.service.getThumbnailPreview != null &&
           widget.episode.value != null &&
           widget.episodeIndex.value != null &&
-          !widget.metaEiga.value.fake) {
+          !metaIsFake.value) {
         return widget.service.getThumbnailPreview!(
           eigaId: widget.eigaId.value,
           episode: widget.episode.value!,
@@ -283,7 +344,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     _openingEnding = asyncComputed(() async {
       if (widget.episode.value != null &&
           widget.episodeIndex.value != null &&
-          !widget.metaEiga.value.fake) {
+          !metaIsFake.value) {
         try {
           return widget.service.getOpeningEnding(
             eigaId: widget.eigaId.value,

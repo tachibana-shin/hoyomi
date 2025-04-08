@@ -28,7 +28,7 @@ abstract class ABEigaService extends Service {
 
   Future<MetaEiga> getDetails(String eigaId);
   Future<EigaEpisodes> getEpisodes(String eigaId);
-  Future<ServerSource> getServers({
+  Future<List<ServerSource>> getServers({
     required String eigaId,
     required EigaEpisode episode,
   }) {
@@ -53,7 +53,10 @@ abstract class ABEigaService extends Service {
   Future<List<Subtitle>> getSubtitles({
     required String eigaId,
     required EigaEpisode episode,
-  });
+    required SourceVideo source,
+  }) {
+    throw UnimplementedError();
+  }
 
   Future<OpeningEnding?> getOpeningEnding({
     required String eigaId,

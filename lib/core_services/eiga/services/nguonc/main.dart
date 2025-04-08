@@ -398,11 +398,6 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
   }
 
   @override
-  getSubtitles({required eigaId, required episode}) async {
-    return [];
-  }
-
-  @override
   getSuggest({required metaEiga, required eigaId, page}) async {
     return (await getCategory(
             categoryId: metaEiga.genres.first.genreId, page: 1, filters: {}))

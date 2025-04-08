@@ -408,11 +408,6 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
   }
 
   @override
-  getSubtitles({required eigaId, required episode}) async {
-    return [];
-  }
-
-  @override
   getSuggest({required metaEiga, required eigaId, page}) async {
     final pageData = await _get(
         'danh-sach/phim-moi.json?slug=phim-moi&sort_field=modified.time&category=${metaEiga.genres.map((genre) => genre.genreId.replaceFirst('the-loai_', '')).join(',')}&country=${metaEiga.countries?.map((genre) => genre.genreId.replaceFirst('quoc-gia_', '')).join(',') ?? ''}');

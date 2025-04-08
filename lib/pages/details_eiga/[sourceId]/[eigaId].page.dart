@@ -61,19 +61,32 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     with TickerProviderStateMixin, KaeruMixin, KaeruListenMixin {
   late final ABEigaService _service;
   late final _metaEiga = ref(MetaEiga.createFakeData());
-  late final _loading = computed(() => _metaEiga.value.fake);
+  late final _metaIsFake = _metaEiga.select((meta) => meta.fake);
+  late final _loading = _metaIsFake;
 
   double _aspectRatio = 16 / 9;
 
   final Map<String, EigaEpisodes> _cacheEpisodesStore = {};
   final Map<String, Map<String, WatchTime>> _cacheWatchTimeStore = {};
   late final _title =
-      computed(() => _metaEiga.value.fake ? '' : _metaEiga.value.name);
+      computed(() => _metaIsFake.value ? '' : _metaEiga.value.name);
   late final _subtitle = computed(
-      () => _metaEiga.value.fake ? '' : 'Episode ${_episode.value?.name}');
-  late final _subtitlesNotifier = ref<List<Subtitle>>([]);
+      () => _metaIsFake.value ? '' : 'Episode ${_episode.value?.name}');
   late final _onPrevNotifier = ref<VoidCallback?>(null);
   late final _onNextNotifier = ref<VoidCallback?>(null);
+
+  /// ================= player expose =================
+  late final _serversFuture = computed<Future<List<ServerSource>>?>(() {
+    if (_metaIsFake.value) return null;
+
+    final episode = _episode.value;
+    if (episode == null) return null;
+
+    return _service.getServers(eigaId: _eigaId.value, episode: episode);
+  });
+  late final _serverSelected = ref<int?>(null);
+
+  /// ================= /player expose =================
 
   late final Ref<String> _eigaId;
   late final _episodeId = ref<String?>(null);
@@ -82,7 +95,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final _episodeIndex = ref<int?>(null);
   late final _currentSeason = ref<Season?>(null);
   late final _suggestNotifier = computed<Future<List<Eiga>>?>(() {
-    if (_metaEiga.value.fake) {
+    if (_metaIsFake.value) {
       return Completer<List<Eiga>>().future;
     }
 
@@ -121,20 +134,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         showSnackBar(Text(
             'Service error: Episode not found. Please check `seasons` result in `getDetails`'));
       }
-    });
-  }
-
-  void _updatePlayer(EigaEpisode episode, int episodeIndex) {
-    assert(_episode.value != null);
-    if (_metaEiga.value.fake) return;
-
-    _subtitlesNotifier.value = [];
-    _service
-        .getSubtitles(eigaId: _eigaId.value, episode: episode)
-        .then((subtitles) {
-      _subtitlesNotifier.value = subtitles;
-    }).catchError((error) {
-      debugPrint('Error: $error (${StackTrace.current})');
     });
   }
 
@@ -274,6 +273,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       aspectRatio: _aspectRatio,
       onPrev: _onPrevNotifier,
       onNext: _onNextNotifier,
+
+      /// ===============
+      serversFuture: _serversFuture,
+      serverSelected: _serverSelected,
     );
   }
 
@@ -1025,20 +1028,11 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       _eigaId.value = seasons[indexSeason].eigaId;
     }
 
-    var episodeChanged = false;
-    if (_episodeId.value != currentEpisode.episodeId) {
-      _episodeId.value = currentEpisode.episodeId;
-      episodeChanged = true;
-    }
-    if (_episode.value != currentEpisode) {
-      _episode.value = currentEpisode;
-      _episodeIndex.value = indexEpisode;
-      episodeChanged = true;
-    }
+    _episodeId.value = currentEpisode.episodeId;
+    _episode.value = currentEpisode;
+    _episodeIndex.value = indexEpisode;
 
-    if (_currentSeason.value != seasons[indexSeason]) {
-      _currentSeason.value = seasons[indexSeason];
-    }
+    _currentSeason.value = seasons[indexSeason];
 
     final currentIndex = episodesEiga.episodes.indexWhere(
       (e) => e.episodeId == _episodeId.value,
@@ -1061,9 +1055,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             )
         : null;
 
-    if (episodeChanged) {
-      _updatePlayer(currentEpisode, indexEpisode);
-    }
     _updateImageAndSchedule(episodes: episodesEiga);
 
     if (seasonChanged) {
