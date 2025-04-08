@@ -319,9 +319,14 @@ class _ListEpisodesState extends State<ListEpisodes>
                           if (episode.description?.isNotEmpty == true)
                             Text(
                               episode.description!,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodySmall?.copyWith(fontSize: 12.0),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                      fontSize: 12.0,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
                               maxLines: 2,
                             ),
                         ],
