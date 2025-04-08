@@ -612,7 +612,7 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  getSource({required eigaId, required EigaEpisode episode}) async {
+  getSource({required eigaId, required episode, server}) async {
     await _fetchHtmlEpisodes(eigaId);
 
     final text = (await fetch(

@@ -1,3 +1,4 @@
+import 'package:hoyomi/core_services/eiga/interfaces/server_source.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_category.dart';
@@ -27,9 +28,16 @@ abstract class ABEigaService extends Service {
 
   Future<MetaEiga> getDetails(String eigaId);
   Future<EigaEpisodes> getEpisodes(String eigaId);
+  Future<ServerSource> getServers({
+    required String eigaId,
+    required EigaEpisode episode,
+  }) {
+    throw UnimplementedError();
+  }
   Future<SourceVideo> getSource({
     required String eigaId,
     required EigaEpisode episode,
+    ServerSource? server,
   });
   Future<SourceContent> fetchSourceContent({required SourceVideo source}) {
     throw UnimplementedError();

@@ -347,7 +347,7 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
   }
 
   @override
-  getSource({required eigaId, required episode}) async {
+  getSource({required eigaId, required episode, server}) async {
     final source = _ServerData.fromJson(jsonDecode(episode.extra!));
 
     return SourceVideo(

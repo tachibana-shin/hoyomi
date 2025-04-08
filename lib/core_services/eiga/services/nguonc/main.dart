@@ -355,7 +355,7 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
   }
 
   @override
-  getSource({required eigaId, required episode}) async {
+  getSource({required eigaId, required episode, server}) async {
     final source = _EpisodeItem.fromJson(jsonDecode(episode.extra!));
 
     return SourceVideo(
