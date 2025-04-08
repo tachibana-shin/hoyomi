@@ -31,7 +31,7 @@ void showSnackError(String source, Object error) {
       // if is response show status and body
       error is Response
           ? 'Error<$source>: ${error.statusCode} ${utf8.decode(error.bodyBytes)}'
-          : 'Error<$source>: error.toString()',
+          : 'Error<$source>: ${error.toString()}',
     ),
     action: SnackBarAction(
       label: 'Close',

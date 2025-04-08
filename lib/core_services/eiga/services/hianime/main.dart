@@ -358,7 +358,7 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
   @override
   getSource({required eigaId, required episode, server}) async {
     final json = await fetch(
-        '${Env.twoApi}?episodeId=$eigaId\$episode\$${RegExp(r'-(\d+)$').firstMatch(eigaId)!.group(1)}\$${server!.serverId}');
+        '${Env.twoApi}?episodeId=$eigaId\$episode\$${episode.episodeId}\$${server!.serverId}');
     final data = jsonDecode(json);
 
     final sources = data['sources'] as List<dynamic>;
