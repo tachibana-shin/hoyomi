@@ -111,10 +111,10 @@ class _CarouselEigaState extends State<CarouselEiga> {
                     child: Center(
                       child: Text(
                         item.quality!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontSize: 12.0),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 12.0,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -389,7 +389,6 @@ class _CarouselEigaState extends State<CarouselEiga> {
                               SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: Wrap(
-                                    spacing: 7.0,
                                     children: item.actors!.indexed
                                         .mapWithIterable((entry, list) {
                                       final (index, actor) = entry;

@@ -310,81 +310,73 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
                 SizedBox(height: 2.0),
 
-                // author
-                Wrap(
-                  children: <List<Widget>>[
-                    if (metaEiga.authors != null &&
-                        metaEiga.authors!.isNotEmpty)
-                      [
-                        Text(
-                          'Author ',
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: colorScheme.secondary,
-                                    fontSize: 14.0,
-                                  ),
-                        ),
-                        Wrap(
-                          spacing: 7.0,
+                // authors
+                if (metaEiga.authors != null && metaEiga.authors!.isNotEmpty)
+                  Wrap(
+                    children: [
+                      Text(
+                        'Author ',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.secondary,
+                              fontSize: 14.0,
+                            ),
+                      ),
+                      Wrap(
                           children: metaEiga.authors!.indexed
                               .mapWithIterable((entry, list) {
-                            final (index, author) = entry;
-                            return GestureDetector(
-                              onTap: author.genreId == Genre.noId
-                                  ? null
-                                  : () => context.push(
-                                      '/category_eiga/${widget.sourceId}/${author.genreId}'),
-                              child: Text(
-                                '${author.name}${index < list.length - 1 ? ', ' : ''}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      fontSize: 14.0,
-                                      color: colorScheme.tertiary,
-                                    ),
-                              ),
-                            );
-                          }).toList(),
-                        )
-                      ],
-                    if (metaEiga.studios != null &&
-                        metaEiga.studios!.isNotEmpty)
-                      [
-                        Text(
-                          'Studio ',
+                        final (index, author) = entry;
+                        return GestureDetector(
+                          onTap: author.genreId == Genre.noId
+                              ? null
+                              : () => context.push(
+                                  '/category_eiga/${widget.sourceId}/${author.genreId}'),
+                          child: Text(
+                            '${author.name}${index < list.length - 1 ? ', ' : ''}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  fontSize: 14.0,
+                                  color: colorScheme.tertiary,
+                                ),
+                          ),
+                        );
+                      }).toList())
+                    ],
+                  ),
+
+                // studios
+                if (metaEiga.studios != null && metaEiga.studios!.isNotEmpty)
+                  Wrap(children: [
+                    Text(
+                      'Studio ',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.secondary,
+                            fontSize: 14.0,
+                          ),
+                    ),
+                    Wrap(
+                        children: metaEiga.studios!.indexed
+                            .mapWithIterable((entry, list) {
+                      final (index, author) = entry;
+                      return GestureDetector(
+                        onTap: author.genreId == Genre.noId
+                            ? null
+                            : () => context.push(
+                                '/category_eiga/${widget.sourceId}/${author.genreId}'),
+                        child: Text(
+                          '${author.name}${index < list.length - 1 ? ', ' : ''}',
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: colorScheme.secondary,
                                     fontSize: 14.0,
+                                    color: colorScheme.tertiary,
                                   ),
                         ),
-                        Wrap(
-                          spacing: 7.0,
-                          children: metaEiga.studios!.indexed
-                              .mapWithIterable((entry, list) {
-                            final (index, author) = entry;
-                            return GestureDetector(
-                              onTap: author.genreId == Genre.noId
-                                  ? null
-                                  : () => context.push(
-                                      '/category_eiga/${widget.sourceId}/${author.genreId}'),
-                              child: Text(
-                                '${author.name}${index < list.length - 1 ? ', ' : ''}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      fontSize: 14.0,
-                                      color: colorScheme.tertiary,
-                                    ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                  ].joinWith(const VerticalSeparator()),
-                ),
+                      );
+                    }).toList()),
+                  ]),
+
+                SizedBox(height: 2.0),
               ],
             ),
           ),
@@ -405,9 +397,13 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       child: Center(
                         child: Text(
                           metaEiga.quality!,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(fontSize: 14.0),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  fontSize: 12.0,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
