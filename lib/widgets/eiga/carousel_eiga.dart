@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
 import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/extensions/iterable_extension.dart';
+import 'package:hoyomi/extensions/list_extension.dart';
 import 'package:hoyomi/widgets/vertical_separator.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/bi.dart';
@@ -358,21 +359,8 @@ class _CarouselEigaState extends State<CarouselEiga> {
                             SizedBox(height: 5.0),
                             // rate
                             Wrap(
-                              children: headers
-                                  .asMap()
-                                  .entries
-                                  .fold<List<Widget>>([], (arr, entry) {
-                                int index = entry.key;
-                                final item = entry.value;
-
-                                arr.addAll(item);
-
-                                if (index < headers.length - 1) {
-                                  arr.add(const VerticalSeparator());
-                                }
-
-                                return arr;
-                              }),
+                              children:
+                                  headers.joinWith(const VerticalSeparator()),
                             ),
                             // genres
                             if (item.genres?.isNotEmpty == true)

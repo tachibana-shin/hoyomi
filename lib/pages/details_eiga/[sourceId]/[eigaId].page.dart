@@ -13,6 +13,7 @@ import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/extensions/iterable_extension.dart';
+import 'package:hoyomi/extensions/list_extension.dart';
 import 'package:hoyomi/utils/cache_remember.dart';
 import 'package:hoyomi/widgets/eiga/button_follow_eiga.dart';
 import 'package:hoyomi/widgets/eiga/button_share_eiga.dart';
@@ -347,16 +348,16 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           }).toList(),
                         )
                       ],
-                    if (metaEiga.studios != null && metaEiga.studios!.isNotEmpty)
+                    if (metaEiga.studios != null &&
+                        metaEiga.studios!.isNotEmpty)
                       [
                         Text(
                           'Studio ',
-                          style: Theme.of(
-                            context
-                          ).textTheme.bodyMedium?.copyWith(
-                                color: colorScheme.secondary,
-                                fontSize: 14.0,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: colorScheme.secondary,
+                                    fontSize: 14.0,
+                                  ),
                         ),
                         Wrap(
                           spacing: 7.0,
@@ -382,19 +383,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           }).toList(),
                         ),
                       ],
-                  ].asMap().entries.foldWithIterable<List<Widget>>([],
-                      (arr, entry, list) {
-                    int index = entry.key;
-                    final item = entry.value;
-
-                    arr.addAll(item);
-
-                    if (index < list.length - 1) {
-                      arr.add(const VerticalSeparator());
-                    }
-
-                    return arr;
-                  }),
+                  ].joinWith(const VerticalSeparator()),
                 ),
               ],
             ),
@@ -530,19 +519,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     ),
                   );
                 }).toList()
-            ].asMap().entries.foldWithIterable<List<Widget>>([],
-                (arr, entry, list) {
-              int index = entry.key;
-              final item = entry.value;
-
-              arr.addAll(item);
-
-              if (index < list.length - 1) {
-                arr.add(const VerticalSeparator());
-              }
-
-              return arr;
-            }),
+            ].joinWith(const VerticalSeparator()),
           ),
 
           SizedBox(height: 2.0),
@@ -550,49 +527,53 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           Row(
             children: [
               if (metaEiga.rate != null)
-                Row(
-                  children: [
-                    Iconify(
-                      Eva.star_fill,
-                      color: Colors.blue.shade200,
-                      size: 14.0,
-                    ),
-                    Text(
-                      ' ${metaEiga.rate}',
-                      style: const TextStyle(fontSize: 14.0),
-                    ),
-                  ],
-                ),
-              if (metaEiga.countRate != null) VerticalSeparator(),
-              if (metaEiga.countRate != null)
-                Text(
-                  '${metaEiga.countRate} people rated',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.secondary,
-                        fontSize: 14.0,
+                [
+                  Row(
+                    children: [
+                      Iconify(
+                        Eva.star_fill,
+                        color: Colors.blue.shade200,
+                        size: 14.0,
                       ),
-                ),
-              if (metaEiga.countRate != null) VerticalSeparator(),
-              if (metaEiga.movieSeason != null)
-                GestureDetector(
-                  onTap: metaEiga.movieSeason!.genreId == Genre.noId
-                      ? null
-                      : () {
-                          context.push(
-                            '/category_eiga/${widget.sourceId}/${metaEiga.movieSeason!.genreId}',
-                          );
-                        },
-                  child: Text(
-                    metaEiga.movieSeason!.name,
+                      Text(
+                        ' ${metaEiga.rate}',
+                        style: const TextStyle(fontSize: 14.0),
+                      ),
+                    ],
+                  )
+                ],
+              if (metaEiga.countRate != null)
+                [
+                  Text(
+                    '${metaEiga.countRate} people rated',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.secondary,
                           fontSize: 14.0,
-                          color: metaEiga.movieSeason!.genreId == Genre.noId
-                              ? null
-                              : colorScheme.tertiary,
                         ),
-                  ),
-                ),
-            ],
+                  )
+                ],
+              if (metaEiga.movieSeason != null)
+                [
+                  GestureDetector(
+                    onTap: metaEiga.movieSeason!.genreId == Genre.noId
+                        ? null
+                        : () {
+                            context.push(
+                              '/category_eiga/${widget.sourceId}/${metaEiga.movieSeason!.genreId}',
+                            );
+                          },
+                    child: Text(
+                      metaEiga.movieSeason!.name,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 14.0,
+                            color: metaEiga.movieSeason!.genreId == Genre.noId
+                                ? null
+                                : colorScheme.tertiary,
+                          ),
+                    ),
+                  )
+                ],
+            ].joinWith(const VerticalSeparator()),
           ),
 
           SizedBox(height: 2.0),
