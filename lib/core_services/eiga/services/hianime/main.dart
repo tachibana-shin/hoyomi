@@ -13,6 +13,7 @@ import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_general_mixin.dart';
 import 'package:hoyomi/utils/d_query.dart';
+import 'package:intl/intl.dart';
 
 class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
   final hostCUrl = 'hianime.bz';
@@ -49,9 +50,9 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
         image: OImage.from($trend.queryOne('img').data('src')),
         notice: [
           $trend.queryOne('.fdi-item').text(),
-          'EP.${$trend.queryOne('.tick-sub').text()}',
+          'EP ${$trend.queryOne('.tick-sub').text()}',
           $trend.queryOne('.fdi-duration').text()
-        ].where((item) => item.isNotEmpty).join('-'),
+        ].where((item) => item.isNotEmpty && item != 'EP ').join('-'),
         countSub: int.tryParse($trend.queryOne('.tick-sub').text()),
         countDub: int.tryParse($trend.queryOne('.tick-dub').text()),
         description: $trend.queryOne('.description').html());
@@ -62,7 +63,7 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
     final $ = await fetch$('$baseUrl/home');
 
     final carousel = Carousel(
-      aspectRatio: 407 / 950,
+      aspectRatio: 679 / 350,
       maxHeightBuilder: 0.4,
       items: $('#slider .deslide-item').map(($deslide) {
         final subText = $deslide.queryOne('.desi-sub-text').text();
@@ -76,14 +77,18 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
         final $scdItems = $deslide.query('.scd-item');
         final type = $scdItems.eq(0).text();
         final episodeDuration = $scdItems.eq(1).text();
-        final updatedAt = DateTime.parse($scdItems.eq(2).text());
+        final updatedAt =
+            DateFormat('MMM d, yyyy').parse($scdItems.eq(2).text());
         final quality = $scdItems.queryOne('.quality').text();
         final countSub = int.tryParse($scdItems.queryOne('.tick-sub').text());
         final countDub = int.tryParse($scdItems.queryOne('.tick-dub').text());
         // final countEpisodes =
         //     int.tryParse($scdItems.queryOne('.tick-eps').text());
 
-        final description = $deslide.queryOne('.desi-description').html();
+        final description = $deslide
+            .queryOne('.desi-description')
+            .text()
+            .replaceAll(r'\s+', ' ');
 
         /// double? rate,
         /// String? notice,
@@ -112,59 +117,76 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
       }),
     );
 
+    final $hBlocks = $('.anif-block-header');
+    final $hAreas = $('.block_area-header');
+
     final List<HomeEigaCategory> categories = [
       HomeEigaCategory(
           name: 'Trending', items: $('#trending-home .item').map(_parseItem)),
       HomeEigaCategory(
         name: 'Top Airing',
         categoryId: 'top-airing',
-        items:
-            $('#anime-featured > div > div > div > div:nth-child(1) > div > div.anif-block-ul > ul > li')
-                .map(_parseItem),
+        items: $hBlocks
+            .containsOne('Top Airing')
+            .next()
+            .query('li')
+            .map(_parseItem),
       ),
       HomeEigaCategory(
         name: 'Most Popular',
         categoryId: 'most-popular',
-        items:
-            $('#anime-featured > div > div > div > div:nth-child(2) > div > div.anif-block-ul > ul > li')
-                .map(_parseItem),
+        items: $hBlocks
+            .containsOne('Most Popular')
+            .next()
+            .query('li')
+            .map(_parseItem),
       ),
       HomeEigaCategory(
         name: 'Most Favorite',
         categoryId: 'most-favorite',
-        items:
-            $('#anime-featured > div > div > div > div:nth-child(3) > div > div.anif-block-ul > ul > li')
-                .map(_parseItem),
+        items: $hBlocks
+            .containsOne('Most Favorite')
+            .next()
+            .query('li')
+            .map(_parseItem),
       ),
       HomeEigaCategory(
         name: 'Latest Completed',
         categoryId: 'completed',
-        items:
-            $('#anime-featured > div > div > div > div:nth-child(4) > div > div.anif-block-ul > ul > li')
-                .map(_parseItem),
+        items: $hBlocks
+            .containsOne('Latest Completed')
+            .next()
+            .query('li')
+            .map(_parseItem),
       ),
       // =============================================================
 
       HomeEigaCategory(
         name: 'Latest Episode',
         categoryId: 'recently-updated',
-        items:
-            $('#main-content > section:nth-child(2) > div.tab-content > div > div.film_list-wrap .flw-item')
-                .map(_parseItem),
+        items: $hAreas
+            .containsOne('Latest Episode')
+            .next()
+            .query('.flw-item')
+            .map(_parseItem),
       ),
       HomeEigaCategory(
         name: 'New On HiAnime',
         categoryId: 'recently-added',
-        items:
-            $('#main-content > section:nth-child(4) > div.tab-content > div > div.film_list-wrap .flw-item')
-                .map(_parseItem),
+        items: $hAreas
+            .containsOne('New On HiAnime')
+            .next()
+            .query('.flw-item')
+            .map(_parseItem),
       ),
       HomeEigaCategory(
         name: 'Top Upcoming',
         categoryId: 'top-upcoming',
-        items:
-            $('#main-content > section:nth-child(7) > div.tab-content > div > div.film_list-wrap .flw-item')
-                .map(_parseItem),
+        items: $hAreas
+            .containsOne('Top Upcoming')
+            .next()
+            .query('.flw-item')
+            .map(_parseItem),
       ),
     ];
 
@@ -207,47 +229,56 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
 
   @override
   getDetails(String eigaId) async {
-    final $ = await (_cacheDetails[eigaId] = fetch$('$baseUrl/watch/$eigaId'));
+    final $ = await (_cacheDetails[eigaId] = fetch$('$baseUrl/$eigaId'));
 
     final name = $('.dynamic-name').text();
     final originalName = $('.dynamic-name').data('jname');
     final image = OImage.from($('.film-poster-img').attr('src'));
     final poster = null; // OImage.from($('.film-poster-img').attr('src'));
-    final description = $('.film-description').html();
+    final description =
+        $('.film-description > .text, .film-description', single: true)
+            .html()
+            .trim();
 
     final countRate = null; // pageData.data.item.tmdb?.voteCount;
-    final $aniscInfo = $('.anisc-info > .item', single: true);
-    DQuery findInfo(String name) => $aniscInfo
-        .findOne(($info) => $info.queryOne('.item-head').text() == name);
-    final rate = double.tryParse(findInfo('MAL Score:')
-        .queryOne('.text')
+    final $aniScInfo = $('.anisc-info > .item');
+    final rate = double.tryParse($aniScInfo
+        .containsOne('MAL Score:')
+        .queryOne('.name, .text')
         .text()); // pageData.data.item.tmdb?.voteAverage;
-    final duration = findInfo('Duration:').queryOne('.text').text();
+    final duration =
+        $aniScInfo.containsOne('Duration:').queryOne('.name, .text').textRaw();
     final yearOf = int.tryParse(RegExp(r', (\d+) ')
-            .firstMatch(findInfo('Aired:').queryOne('.text').text())
+            .firstMatch($aniScInfo
+                .containsOne('Aired:')
+                .queryOne('.name, .text')
+                .text())
             ?.group(1) ??
         '');
     final views = null; //pageData.data.item.view;
     final seasons = $('.os-list > a').map(($a) {
       return Season(name: $a.text(), eigaId: $a.attr('href').split('/').last);
     });
-    final genres = findInfo('Genres:').query('a').map(($a) =>
+    final genres = $aniScInfo.containsOne('Genres:').query('a').map(($a) =>
         Genre(name: $a.text(), genreId: $a.attr('href').split('/').last));
-    final quality = $('.tick-quality').textRaw();
+    final quality = $('.tick-quality', single: true).textRaw();
+    final countSub = int.tryParse($('.tick-sub', single: true).textRaw() ?? '');
+    final countDub = int.tryParse($('.tick-dub', single: true).textRaw() ?? '');
 
     // final status = pageData.data.item.status;
-    final author = findInfo('Producers:').text().replaceFirst('Producers:', '');
+    final authors = $aniScInfo.containsOne('Producers:').query('a').map(($a) =>
+        Genre(name: $a.text(), genreId: $a.attr('href').split('/').last));
     final countries = null;
-    final language = findInfo('Duration:').queryOne('.text').textRaw();
-    final $studio = findInfo('Studios:').queryOne('a');
-    final studio = $studio.isNotEmpty
-        ? Genre(
-            name: $studio.text(),
-            genreId: $studio.attr('href').split('/').last,
-          )
-        : null;
+    final language =
+        $aniScInfo.containsOne('Duration:').queryOne('.name, .text').textRaw();
+    final studios =
+        $aniScInfo.containsOne('Studios:').queryOne('a').map(($studio) => Genre(
+              name: $studio.text(),
+              genreId: $studio.attr('href').split('/').last,
+            ));
     final trailer = null; //pageData.data.item.trailerUrl;
-    final movieSeason = null;
+    final movieSeason =
+        $aniScInfo.containsOne('Premiered:').queryOne('.name, .text').textRaw();
 
     return MetaEiga(
       name: name,
@@ -263,11 +294,15 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
       seasons: seasons,
       genres: genres,
       quality: quality,
-      author: author,
+      countSub: countSub,
+      countDub: countDub,
+      authors: authors,
       countries: countries,
       language: language,
-      studio: studio,
-      movieSeason: movieSeason,
+      studios: studios,
+      movieSeason: movieSeason == null
+          ? null
+          : Genre(name: movieSeason, genreId: Genre.noId),
       trailer: trailer,
     );
   }
@@ -282,15 +317,19 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
 
     final episodes = $('.ep-item').map(($item) {
       return EigaEpisode(
-          name: $item.text().replaceAll(r'\s+', ' '),
-          episodeId: $item.data('id'));
+        name: $item.queryOne('.ssli-order').text(),
+        episodeId: $item.data('id'),
+        description:
+            '${$item.queryOne('.e-dynamic-name').text()}(${$item.queryOne('.e-dynamic-name').data('jname')})',
+      );
     });
 
     return EigaEpisodes(
         episodes: episodes,
         // image: image,
         // poster: poster,
-        schedule: DateTime.tryParse($('#schedule-date').textRaw() ?? '?'));
+        schedule: DateFormat('MMM d, yyyy')
+            .tryParse($('#schedule-date').textRaw() ?? '?'));
   }
 
   @override
