@@ -21,11 +21,14 @@ jobs:
           channel: stable
           version: 3.27.4
 
-      - name: Touch file .env
-        run: touch .env
+      - name: Create .env file
+        run: echo -e "${{ secrets.ENV_CONTENT }}" > .env
 
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Build runner
+        run: sh build_bunner.sh
 
       - name: Analyze code
         run: flutter analyze

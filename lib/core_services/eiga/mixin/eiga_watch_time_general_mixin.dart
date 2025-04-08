@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/env.dart';
 import 'package:hoyomi/general_api/export.dart';
 import 'package:hoyomi/utils/authentication.dart';
 import 'package:http/http.dart';
@@ -12,7 +12,7 @@ import '../interfaces/main.dart';
 import 'eiga_watch_time_mixin.dart';
 
 mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
-  final String? _baseApiGeneral = dotenv.env['BASE_API_GENERAL'];
+  final _baseApiGeneral = Env.baseApiGeneral;
   GeneralApiClient? _client;
 
   /// General watch time support but service not auth
@@ -29,8 +29,6 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
 
   @override
   Future<List<HistoryItem<Eiga>>> getWatchHistory({required int page}) async {
-    assert(_baseApiGeneral != null, 'BASE_API_GENERAL is not set');
-
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
@@ -65,8 +63,6 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
     required int episodeIndex,
     required MetaEiga metaEiga,
   }) async {
-    assert(_baseApiGeneral != null, 'BASE_API_GENERAL is not set');
-
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
@@ -92,8 +88,6 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
     required String eigaId,
     required List<EigaEpisode> episodes,
   }) async {
-    assert(_baseApiGeneral != null, 'BASE_API_GENERAL is not set');
-
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
@@ -122,8 +116,6 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
     required Season season,
     required WatchTime watchTime,
   }) async {
-    assert(_baseApiGeneral != null, 'BASE_API_GENERAL is not set');
-
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
@@ -145,7 +137,7 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
         authorization: 'Bearer ${idToken.token}');
 
     final response = await post(
-        Uri.parse(_baseApiGeneral!).resolve('/api/eiga/set-watch-time'),
+        Uri.parse(_baseApiGeneral).resolve('/api/eiga/set-watch-time'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${idToken.token}'

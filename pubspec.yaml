@@ -20,6 +20,7 @@ dependencies:
   drop_down_list: ^0.0.8
   dynamic_height_grid_view: ^0.0.4
   email_validator: ^2.1.17
+  envied: ^1.1.1
   event_bus: ^2.0.1
   firebase_auth: ^5.5.1
   firebase_core: ^3.12.1
@@ -96,6 +97,7 @@ dev_dependencies:
   freezed: ^2.5.2
   retrofit_generator: ^8.2.1
   swagger_parser: ^1.22.1
+  envied_generator: ^1.1.1
 
 flutter:
   uses-material-design: true
