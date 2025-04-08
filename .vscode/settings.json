@@ -21,5 +21,10 @@
   "flutterTools.displayGetxContextMenu": true,
   "flutterTools.displayMobxContextMenu": false,
   "flutterTools.displayRiverpodContextMenu": false,
-  "flutterTools.displayModularContextMenu": false
+  "flutterTools.displayModularContextMenu": false,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*.dart": "${capture}.g.dart, ${capture}.freezed.dart"
+  }
 }
