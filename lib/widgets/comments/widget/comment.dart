@@ -248,7 +248,7 @@ class _CommentState extends State<Comment> {
       setState(() {
         widget.onCommentChanged(widget.comment.copyWith(like: old));
       });
-      showSnackBar(Text('Error: $err'));
+      showSnackError('like', err);
       debugPrint('Error: $err (${StackTrace.current})');
     }
   }
@@ -294,9 +294,7 @@ class _CommentState extends State<Comment> {
                             setState(() {
                               isDeleting = false;
                             });
-
-                            showSnackBar(Text('Error: $e'));
-                            debugPrint('Error: $e');
+                            showSnackError('delete', e);
                           }
                         },
                   child: isDeleting

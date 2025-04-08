@@ -221,7 +221,7 @@ class _SignInMainPageState extends State<SignInMainPage> {
         _isRecoveringPassword = false;
       });
     } catch (error) {
-      showSnackBar(Text('Error: $error'));
+      showSnackError('recovery', error);
     } finally {
       if (mounted) {
         setState(() {

@@ -762,7 +762,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
         }
       }).catchError((error) {
         if (error is! CaptchaRequiredException) {
-          showSnackBar(Text('Error: $error')); // 显示錯誤訊息
+          showSnackError('like', error); // 显示錯誤訊息
         }
       });
     }
@@ -781,7 +781,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
       }
     }).catchError((error) {
       if (error is! CaptchaRequiredException) {
-        showSnackBar(Text('Error: $error')); // 显示錯誤訊息
+        showSnackError('like', error); // 显示錯誤訊息
       }
     });
   }

@@ -589,7 +589,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
 
                                 _showSearchLayer();
                               } catch (error) {
-                                showSnackBar(Text('Error: $error'));
+                                showSnackError('speech voice', error);
                               }
                             })
                         : null

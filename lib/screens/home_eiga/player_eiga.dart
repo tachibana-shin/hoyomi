@@ -213,6 +213,8 @@ class _PlayerEigaState extends State<PlayerEiga>
     _source = asyncComputed(
       () async {
         if (metaIsFake.value || widget.episode.value == null) return null;
+        widget.eigaId.value;
+        widget.serverSelected.value;
 
         late final List<ServerSource>? servers;
         try {
@@ -235,15 +237,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         );
       },
       onError: (error) {
-        if (error is Response) {
-          debugPrint('[source]: ${error.body}');
-        } else {
-          debugPrint('[source]: $error (${StackTrace.current})');
-        }
-
-        if (error is! UnimplementedError) {
-          showSnackBar(Text('Source error: $error'));
-        }
+        if (error is! UnimplementedError) showSnackError('source', error);
       },
       beforeUpdate: () => null,
     );
@@ -268,15 +262,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         }
       },
       onError: (error) {
-        if (error is Response) {
-          debugPrint('[subtitles]: ${error.body}');
-        } else {
-          debugPrint('[subtitles]: $error (${StackTrace.current})');
-        }
-
-        if (error is! UnimplementedError) {
-          showSnackBar(Text('Subtitle error: $error'));
-        }
+        if (error is! UnimplementedError) showSnackError('subtitle', error);
       },
     );
 

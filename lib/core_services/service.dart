@@ -413,7 +413,7 @@ abstract class Service with _SettingsMixin {
       return utf8.decode(response.bodyBytes);
     } else {
       debugPrint('Error: ${response.statusCode} ${response.reasonPhrase}');
-      throw Exception('Failed to load data');
+      throw response;
     }
   }
 

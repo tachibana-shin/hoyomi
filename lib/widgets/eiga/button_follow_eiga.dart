@@ -148,9 +148,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with KaeruMixin {
     } catch (err) {
       // restore value
       _isFollowed.value = oldFollowed;
-      showSnackBar(Text('Follow error: $err'));
-
-      debugPrint('Error: $err (${StackTrace.current})');
+      showSnackError('follow', err);
     }
   }
 }
