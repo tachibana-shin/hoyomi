@@ -10,11 +10,9 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/bottom_sheet_no_scrim.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/watch_time_data.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/extensions/iterable_extension.dart';
 import 'package:hoyomi/utils/cache_remember.dart';
 import 'package:hoyomi/widgets/eiga/button_follow_eiga.dart';
 import 'package:hoyomi/widgets/eiga/button_share_eiga.dart';
@@ -22,6 +20,7 @@ import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/bi.dart';
 import 'package:iconify_flutter/icons/eva.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
@@ -29,10 +28,6 @@ import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/screens/details_eiga/list_episodes.dart';
 import 'package:hoyomi/screens/home_eiga/player_eiga.dart';
@@ -316,53 +311,90 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
                 // author
                 Wrap(
-                  children: [
-                    Text(
-                      'Author ',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.secondary,
-                            fontSize: 14.0,
-                          ),
-                    ),
-                    Text(
-                      metaEiga.author ?? 'Unknown',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(fontSize: 14.0),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (metaEiga.studio != null) VerticalSeparator(),
-                    if (metaEiga.studio != null) ...[
-                      Text(
-                        'Studio ',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.secondary,
-                              fontSize: 14.0,
-                            ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          context.push(
-                            '/category_eiga/${widget.sourceId}/${metaEiga.studio!.genreId}',
-                          );
-                        },
-                        child: Text(
-                          metaEiga.studio!.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                  children: <List<Widget>>[
+                    if (metaEiga.authors != null &&
+                        metaEiga.authors!.isNotEmpty)
+                      [
+                        Text(
+                          'Author ',
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: colorScheme.secondary,
+                                    fontSize: 14.0,
+                                  ),
+                        ),
+                        Wrap(
+                          spacing: 7.0,
+                          children: metaEiga.authors!.indexed
+                              .mapWithIterable((entry, list) {
+                            final (index, author) = entry;
+                            return GestureDetector(
+                              onTap: author.genreId == Genre.noId
+                                  ? null
+                                  : () => context.push(
+                                      '/category_eiga/${widget.sourceId}/${author.genreId}'),
+                              child: Text(
+                                '${author.name}${index < list.length - 1 ? ', ' : ''}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      fontSize: 14.0,
+                                      color: colorScheme.tertiary,
+                                    ),
+                              ),
+                            );
+                          }).toList(),
+                        )
+                      ],
+                    if (metaEiga.studios != null && metaEiga.studios!.isNotEmpty)
+                      [
+                        Text(
+                          'Studio ',
                           style: Theme.of(
-                            context,
+                            context
                           ).textTheme.bodyMedium?.copyWith(
-                                color: colorScheme.onSurface,
+                                color: colorScheme.secondary,
                                 fontSize: 14.0,
                               ),
                         ),
-                      ),
-                    ],
-                  ],
+                        Wrap(
+                          spacing: 7.0,
+                          children: metaEiga.studios!.indexed
+                              .mapWithIterable((entry, list) {
+                            final (index, author) = entry;
+                            return GestureDetector(
+                              onTap: author.genreId == Genre.noId
+                                  ? null
+                                  : () => context.push(
+                                      '/category_eiga/${widget.sourceId}/${author.genreId}'),
+                              child: Text(
+                                '${author.name}${index < list.length - 1 ? ', ' : ''}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      fontSize: 14.0,
+                                      color: colorScheme.tertiary,
+                                    ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                  ].asMap().entries.foldWithIterable<List<Widget>>([],
+                      (arr, entry, list) {
+                    int index = entry.key;
+                    final item = entry.value;
+
+                    arr.addAll(item);
+
+                    if (index < list.length - 1) {
+                      arr.add(const VerticalSeparator());
+                    }
+
+                    return arr;
+                  }),
                 ),
               ],
             ),
@@ -373,53 +405,115 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           Wrap(
             children: [
               if (metaEiga.quality != null)
-                Row(mainAxisSize: MainAxisSize.min, children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 4.0),
-                    decoration: BoxDecoration(
-                      color: Colors.greenAccent.shade400,
-                      borderRadius: BorderRadius.circular(4.0),
-                    ),
-                    child: Center(
-                      child: Text(
-                        metaEiga.quality!,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodyMedium?.copyWith(fontSize: 14.0),
+                [
+                  Row(mainAxisSize: MainAxisSize.min, children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 4.0),
+                      decoration: BoxDecoration(
+                        color: Colors.greenAccent.shade400,
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
+                      child: Center(
+                        child: Text(
+                          metaEiga.quality!,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(fontSize: 14.0),
+                        ),
                       ),
                     ),
-                  ),
-                ]),
-              if (metaEiga.quality != null) VerticalSeparator(),
+                  ])
+                ],
+              if (metaEiga.countDub != null)
+                [
+                  Row(mainAxisSize: MainAxisSize.min, children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 4.0),
+                      decoration: BoxDecoration(
+                        color: const Color.fromRGBO(176, 227, 175, 1.0),
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
+                      child: Center(
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Iconify(
+                          Bi.badge_cc_fill,
+                          color: Colors.black,
+                          size: 12.0,
+                        ),
+                        Text(
+                          ' ${metaEiga.countSub}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  fontSize: 12.0,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600),
+                        ),
+                      ])),
+                    )
+                  ])
+                ],
+              if (metaEiga.countDub != null)
+                [
+                  Row(mainAxisSize: MainAxisSize.min, children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 4.0),
+                      decoration: BoxDecoration(
+                        color: const Color.fromRGBO(185, 231, 255, 1.0),
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
+                      child: Center(
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Iconify(
+                          Eva.mic_fill,
+                          color: Colors.black,
+                          size: 12.0,
+                        ),
+                        Text(
+                          ' ${metaEiga.countDub}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  fontSize: 12.0,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600),
+                        ),
+                      ])),
+                    )
+                  ])
+                ],
               if (metaEiga.yearOf != null)
-                Text(
-                  metaEiga.yearOf.toString(),
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(fontSize: 14.0),
-                ),
-              if (metaEiga.duration != null) VerticalSeparator(),
+                [
+                  Text(
+                    metaEiga.yearOf.toString(),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(fontSize: 14.0),
+                  )
+                ],
               if (metaEiga.duration != null)
-                Text(
-                  'Updated to ${metaEiga.duration}',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(fontSize: 14.0),
-                ),
-              if (metaEiga.countries?.isNotEmpty == true) VerticalSeparator(),
+                [
+                  Text(
+                    'Updated to ${metaEiga.duration}',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(fontSize: 14.0),
+                  )
+                ],
               if (metaEiga.countries?.isNotEmpty == true)
-                ...metaEiga.countries!.indexed.map((entry) {
+                metaEiga.countries!.indexed.map((entry) {
                   final index = entry.$1;
                   final country = entry.$2;
 
                   return Padding(
                     padding: EdgeInsets.only(right: 4.0),
                     child: GestureDetector(
-                      onTap: () {
-                        context.push(
-                          '/category_eiga/${widget.sourceId}/${country.genreId}',
-                        );
-                      },
+                      onTap: country.genreId == Genre.noId
+                          ? null
+                          : () => context.push(
+                              '/category_eiga/${widget.sourceId}/${country.genreId}'),
                       child: Text(
                         index < metaEiga.countries!.length - 1
                             ? '${country.name}, '
@@ -435,8 +529,20 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       ),
                     ),
                   );
-                })
-            ],
+                }).toList()
+            ].asMap().entries.foldWithIterable<List<Widget>>([],
+                (arr, entry, list) {
+              int index = entry.key;
+              final item = entry.value;
+
+              arr.addAll(item);
+
+              if (index < list.length - 1) {
+                arr.add(const VerticalSeparator());
+              }
+
+              return arr;
+            }),
           ),
 
           SizedBox(height: 2.0),
@@ -469,16 +575,20 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               if (metaEiga.countRate != null) VerticalSeparator(),
               if (metaEiga.movieSeason != null)
                 GestureDetector(
-                  onTap: () {
-                    context.push(
-                      '/category_eiga/${widget.sourceId}/${metaEiga.movieSeason!.genreId}',
-                    );
-                  },
+                  onTap: metaEiga.movieSeason!.genreId == Genre.noId
+                      ? null
+                      : () {
+                          context.push(
+                            '/category_eiga/${widget.sourceId}/${metaEiga.movieSeason!.genreId}',
+                          );
+                        },
                   child: Text(
                     metaEiga.movieSeason!.name,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontSize: 14.0,
-                          color: colorScheme.tertiary,
+                          color: metaEiga.movieSeason!.genreId == Genre.noId
+                              ? null
+                              : colorScheme.tertiary,
                         ),
                   ),
                 ),
@@ -491,16 +601,19 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             spacing: 7.0, // Space between the genre tags
             children: metaEiga.genres.map((genre) {
               return GestureDetector(
-                onTap: () {
-                  context.push(
-                    '/category_eiga/${widget.sourceId}/${genre.genreId}',
-                  );
-                },
+                onTap: genre.genreId == Genre.noId
+                    ? null
+                    : () {
+                        context.push(
+                            '/category_eiga/${widget.sourceId}/${genre.genreId}');
+                      },
                 child: Text(
                   '#${genre.name}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontSize: 14.0,
-                        color: colorScheme.tertiary,
+                        color: genre.genreId == Genre.noId
+                            ? null
+                            : colorScheme.tertiary,
                       ),
                 ),
               );

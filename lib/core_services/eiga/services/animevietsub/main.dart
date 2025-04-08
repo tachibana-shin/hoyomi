@@ -458,15 +458,17 @@ class AnimeVietsubService extends ABEigaService
 
     // final status =
     //     _findInfo(infoListLeft, 'trạng thái')?.text.split(':')[1];
-    final author = _findInfo(infoListLeft, 'đạo diễn')?.text().split(':')[1];
+    final authorName$ =
+        _findInfo(infoListLeft, 'đạo diễn')?.text().split(':')[1];
+    final authors = authorName$ == null
+        ? null
+        : [Genre(name: authorName$, genreId: Genre.noId)];
     final countries = _findInfo(
       infoListLeft,
       'quốc gia',
     )?.query('a').map((item) => _getInfoAnchor(item)).toList();
     final language = _findInfo(infoListRight, 'ngôn ngữ')?.text().split(':')[1];
-    final studio = _findInfo(infoListRight, 'studio') == null
-        ? null
-        : _getInfoAnchor(_findInfo(infoListRight, 'studio')!.queryOne('a'));
+    final studios =  _findInfo(infoListRight, 'studio')?.queryOne('a').map(_getInfoAnchor);
     final trailer = $('#Opt1 iframe', single: true).attr('src');
     final movieSeason =
         _getInfoAnchor(_findInfo(infoListRight, 'season')!.queryOne('a'));
@@ -485,10 +487,10 @@ class AnimeVietsubService extends ABEigaService
       seasons: seasons,
       genres: genres,
       quality: quality,
-      author: author,
+      authors: authors,
       countries: countries,
       language: language,
-      studio: studio,
+      studios: studios,
       movieSeason: movieSeason,
       trailer: trailer,
     );

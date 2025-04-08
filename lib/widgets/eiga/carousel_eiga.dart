@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
 import 'package:hoyomi/core_services/interfaces/main.dart';
+import 'package:hoyomi/extensions/iterable_extension.dart';
 import 'package:hoyomi/widgets/vertical_separator.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/bi.dart';
@@ -383,11 +384,8 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                       return GestureDetector(
                                         onTap: genre.genreId == Genre.noId
                                             ? null
-                                            : () {
-                                                context.push(
-                                                  '/category_eiga/${widget.sourceId}/${genre.genreId}',
-                                                );
-                                              },
+                                            : () => context.push(
+                                                '/category_eiga/${widget.sourceId}/${genre.genreId}'),
                                         child: Text('#${genre.name}',
                                             style: genre.genreId == Genre.noId
                                                 ? null
@@ -404,17 +402,17 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                   scrollDirection: Axis.horizontal,
                                   child: Wrap(
                                     spacing: 7.0,
-                                    children: item.actors!.map((genre) {
+                                    children: item.actors!.indexed
+                                        .mapWithIterable((entry, list) {
+                                      final (index, actor) = entry;
                                       return GestureDetector(
-                                        onTap: genre.genreId == Genre.noId
+                                        onTap: actor.genreId == Genre.noId
                                             ? null
-                                            : () {
-                                                context.push(
-                                                  '/category_eiga/${widget.sourceId}/${genre.genreId}',
-                                                );
-                                              },
-                                        child: Text('#${genre.name}',
-                                            style: genre.genreId == Genre.noId
+                                            : () => context.push(
+                                                '/category_eiga/${widget.sourceId}/${actor.genreId}'),
+                                        child: Text(
+                                            '${actor.name}${index < list.length - 1 ? ', ' : ''}',
+                                            style: actor.genreId == Genre.noId
                                                 ? null
                                                 : TextStyle(
                                                     color: Colors.white

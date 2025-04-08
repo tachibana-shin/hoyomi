@@ -278,7 +278,7 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
     final quality = movie.quality;
 
     // final status = movie.status;
-    final author = movie.director;
+    final authors = movie.director == null ? null : [Genre(name: movie.director!, genreId: Genre.noId)];
     final countries = _findGroup(movie, 'Quốc gia')
         ?.list
         .map((country) => Genre(
@@ -305,10 +305,10 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
       seasons: seasons,
       genres: genres,
       quality: quality,
-      author: author,
+      authors: authors,
       countries: countries,
       language: language,
-      studio: studio,
+      studios:  studio == null ? null : [Genre(name: studio, genreId: Genre.noId)],
       movieSeason: movieSeason,
       trailer: trailer,
     );

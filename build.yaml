@@ -5,3 +5,20 @@ global_options:
   json_serializable:
     runs_before:
       - retrofit_generator
+
+targets:
+  $default:
+    builders:
+      freezed:
+        generate_for:
+          - lib/core_services/**/*.dart
+          - lib/general_api/**/*.dart
+          - lib/database/**/*.dart
+      json_serializable:
+        generate_for:
+          - lib/core_services/**/*.dart
+          - lib/general_api/**/*.dart
+          - lib/database/**/*.dart
+      retrofit_generator:
+        generate_for:
+          - lib/general_api/**/*.dart

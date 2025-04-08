@@ -28,6 +28,8 @@ _$MetaEigaImpl _$$MetaEigaImplFromJson(Map<String, dynamic> json) =>
       description: json['description'] as String,
       rate: (json['rate'] as num?)?.toDouble(),
       countRate: (json['countRate'] as num?)?.toInt(),
+      countSub: (json['countSub'] as num?)?.toInt(),
+      countDub: (json['countDub'] as num?)?.toInt(),
       duration: json['duration'] as String?,
       yearOf: (json['yearOf'] as num?)?.toInt(),
       views: (json['views'] as num?)?.toInt(),
@@ -38,14 +40,16 @@ _$MetaEigaImpl _$$MetaEigaImplFromJson(Map<String, dynamic> json) =>
           .map((e) => Genre.fromJson(e as Map<String, dynamic>))
           .toList(),
       quality: json['quality'] as String?,
-      author: json['author'] as String?,
+      authors: (json['authors'] as List<dynamic>?)
+          ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
+          .toList(),
       countries: (json['countries'] as List<dynamic>?)
           ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
           .toList(),
       language: json['language'] as String?,
-      studio: json['studio'] == null
-          ? null
-          : Genre.fromJson(json['studio'] as Map<String, dynamic>),
+      studios: (json['studios'] as List<dynamic>?)
+          ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
+          .toList(),
       movieSeason: json['movieSeason'] == null
           ? null
           : Genre.fromJson(json['movieSeason'] as Map<String, dynamic>),
@@ -62,16 +66,18 @@ Map<String, dynamic> _$$MetaEigaImplToJson(_$MetaEigaImpl instance) =>
       'description': instance.description,
       'rate': instance.rate,
       'countRate': instance.countRate,
+      'countSub': instance.countSub,
+      'countDub': instance.countDub,
       'duration': instance.duration,
       'yearOf': instance.yearOf,
       'views': instance.views,
       'seasons': instance.seasons,
       'genres': instance.genres,
       'quality': instance.quality,
-      'author': instance.author,
+      'authors': instance.authors,
       'countries': instance.countries,
       'language': instance.language,
-      'studio': instance.studio,
+      'studios': instance.studios,
       'movieSeason': instance.movieSeason,
       'trailer': instance.trailer,
       'fake': instance.fake,

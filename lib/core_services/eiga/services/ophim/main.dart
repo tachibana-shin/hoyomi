@@ -288,7 +288,7 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final quality = pageData.data.item.quality;
 
     // final status = pageData.data.item.status;
-    final author = pageData.data.item.director.first;
+    final authors = [Genre(name: pageData.data.item.director.first, genreId: Genre.noId)];
     final countries = pageData.data.item.country
         .map((country) =>
             Genre(name: country.name, genreId: 'quoc-gia_${country.slug}'))
@@ -312,10 +312,10 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
       seasons: seasons,
       genres: genres,
       quality: quality,
-      author: author,
+      authors: authors,
       countries: countries,
       language: language,
-      studio: studio,
+      studios: studio == null ? null : [Genre(name: studio, genreId: Genre.noId)],
       movieSeason: movieSeason,
       trailer: trailer,
     );

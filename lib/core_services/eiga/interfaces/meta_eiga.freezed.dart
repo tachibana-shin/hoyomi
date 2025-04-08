@@ -177,16 +177,18 @@ mixin _$MetaEiga {
   String get description => throw _privateConstructorUsedError;
   double? get rate => throw _privateConstructorUsedError;
   int? get countRate => throw _privateConstructorUsedError;
+  int? get countSub => throw _privateConstructorUsedError;
+  int? get countDub => throw _privateConstructorUsedError;
   String? get duration => throw _privateConstructorUsedError;
   int? get yearOf => throw _privateConstructorUsedError;
   int? get views => throw _privateConstructorUsedError;
   List<Season> get seasons => throw _privateConstructorUsedError;
   List<Genre> get genres => throw _privateConstructorUsedError;
   String? get quality => throw _privateConstructorUsedError;
-  String? get author => throw _privateConstructorUsedError;
+  List<Genre>? get authors => throw _privateConstructorUsedError;
   List<Genre>? get countries => throw _privateConstructorUsedError;
   String? get language => throw _privateConstructorUsedError;
-  Genre? get studio => throw _privateConstructorUsedError;
+  List<Genre>? get studios => throw _privateConstructorUsedError;
   Genre? get movieSeason => throw _privateConstructorUsedError;
   String? get trailer => throw _privateConstructorUsedError;
   bool get fake => throw _privateConstructorUsedError;
@@ -210,23 +212,24 @@ abstract class $MetaEigaCopyWith<$Res> {
       String description,
       double? rate,
       int? countRate,
+      int? countSub,
+      int? countDub,
       String? duration,
       int? yearOf,
       int? views,
       List<Season> seasons,
       List<Genre> genres,
       String? quality,
-      String? author,
+      List<Genre>? authors,
       List<Genre>? countries,
       String? language,
-      Genre? studio,
+      List<Genre>? studios,
       Genre? movieSeason,
       String? trailer,
       bool fake});
 
   $OImageCopyWith<$Res> get image;
   $OImageCopyWith<$Res>? get poster;
-  $GenreCopyWith<$Res>? get studio;
   $GenreCopyWith<$Res>? get movieSeason;
 }
 
@@ -250,16 +253,18 @@ class _$MetaEigaCopyWithImpl<$Res, $Val extends MetaEiga>
     Object? description = null,
     Object? rate = freezed,
     Object? countRate = freezed,
+    Object? countSub = freezed,
+    Object? countDub = freezed,
     Object? duration = freezed,
     Object? yearOf = freezed,
     Object? views = freezed,
     Object? seasons = null,
     Object? genres = null,
     Object? quality = freezed,
-    Object? author = freezed,
+    Object? authors = freezed,
     Object? countries = freezed,
     Object? language = freezed,
-    Object? studio = freezed,
+    Object? studios = freezed,
     Object? movieSeason = freezed,
     Object? trailer = freezed,
     Object? fake = null,
@@ -293,6 +298,14 @@ class _$MetaEigaCopyWithImpl<$Res, $Val extends MetaEiga>
           ? _value.countRate
           : countRate // ignore: cast_nullable_to_non_nullable
               as int?,
+      countSub: freezed == countSub
+          ? _value.countSub
+          : countSub // ignore: cast_nullable_to_non_nullable
+              as int?,
+      countDub: freezed == countDub
+          ? _value.countDub
+          : countDub // ignore: cast_nullable_to_non_nullable
+              as int?,
       duration: freezed == duration
           ? _value.duration
           : duration // ignore: cast_nullable_to_non_nullable
@@ -317,10 +330,10 @@ class _$MetaEigaCopyWithImpl<$Res, $Val extends MetaEiga>
           ? _value.quality
           : quality // ignore: cast_nullable_to_non_nullable
               as String?,
-      author: freezed == author
-          ? _value.author
-          : author // ignore: cast_nullable_to_non_nullable
-              as String?,
+      authors: freezed == authors
+          ? _value.authors
+          : authors // ignore: cast_nullable_to_non_nullable
+              as List<Genre>?,
       countries: freezed == countries
           ? _value.countries
           : countries // ignore: cast_nullable_to_non_nullable
@@ -329,10 +342,10 @@ class _$MetaEigaCopyWithImpl<$Res, $Val extends MetaEiga>
           ? _value.language
           : language // ignore: cast_nullable_to_non_nullable
               as String?,
-      studio: freezed == studio
-          ? _value.studio
-          : studio // ignore: cast_nullable_to_non_nullable
-              as Genre?,
+      studios: freezed == studios
+          ? _value.studios
+          : studios // ignore: cast_nullable_to_non_nullable
+              as List<Genre>?,
       movieSeason: freezed == movieSeason
           ? _value.movieSeason
           : movieSeason // ignore: cast_nullable_to_non_nullable
@@ -370,18 +383,6 @@ class _$MetaEigaCopyWithImpl<$Res, $Val extends MetaEiga>
 
   @override
   @pragma('vm:prefer-inline')
-  $GenreCopyWith<$Res>? get studio {
-    if (_value.studio == null) {
-      return null;
-    }
-
-    return $GenreCopyWith<$Res>(_value.studio!, (value) {
-      return _then(_value.copyWith(studio: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
   $GenreCopyWith<$Res>? get movieSeason {
     if (_value.movieSeason == null) {
       return null;
@@ -409,16 +410,18 @@ abstract class _$$MetaEigaImplCopyWith<$Res>
       String description,
       double? rate,
       int? countRate,
+      int? countSub,
+      int? countDub,
       String? duration,
       int? yearOf,
       int? views,
       List<Season> seasons,
       List<Genre> genres,
       String? quality,
-      String? author,
+      List<Genre>? authors,
       List<Genre>? countries,
       String? language,
-      Genre? studio,
+      List<Genre>? studios,
       Genre? movieSeason,
       String? trailer,
       bool fake});
@@ -427,8 +430,6 @@ abstract class _$$MetaEigaImplCopyWith<$Res>
   $OImageCopyWith<$Res> get image;
   @override
   $OImageCopyWith<$Res>? get poster;
-  @override
-  $GenreCopyWith<$Res>? get studio;
   @override
   $GenreCopyWith<$Res>? get movieSeason;
 }
@@ -451,16 +452,18 @@ class __$$MetaEigaImplCopyWithImpl<$Res>
     Object? description = null,
     Object? rate = freezed,
     Object? countRate = freezed,
+    Object? countSub = freezed,
+    Object? countDub = freezed,
     Object? duration = freezed,
     Object? yearOf = freezed,
     Object? views = freezed,
     Object? seasons = null,
     Object? genres = null,
     Object? quality = freezed,
-    Object? author = freezed,
+    Object? authors = freezed,
     Object? countries = freezed,
     Object? language = freezed,
-    Object? studio = freezed,
+    Object? studios = freezed,
     Object? movieSeason = freezed,
     Object? trailer = freezed,
     Object? fake = null,
@@ -494,6 +497,14 @@ class __$$MetaEigaImplCopyWithImpl<$Res>
           ? _value.countRate
           : countRate // ignore: cast_nullable_to_non_nullable
               as int?,
+      countSub: freezed == countSub
+          ? _value.countSub
+          : countSub // ignore: cast_nullable_to_non_nullable
+              as int?,
+      countDub: freezed == countDub
+          ? _value.countDub
+          : countDub // ignore: cast_nullable_to_non_nullable
+              as int?,
       duration: freezed == duration
           ? _value.duration
           : duration // ignore: cast_nullable_to_non_nullable
@@ -518,10 +529,10 @@ class __$$MetaEigaImplCopyWithImpl<$Res>
           ? _value.quality
           : quality // ignore: cast_nullable_to_non_nullable
               as String?,
-      author: freezed == author
-          ? _value.author
-          : author // ignore: cast_nullable_to_non_nullable
-              as String?,
+      authors: freezed == authors
+          ? _value._authors
+          : authors // ignore: cast_nullable_to_non_nullable
+              as List<Genre>?,
       countries: freezed == countries
           ? _value._countries
           : countries // ignore: cast_nullable_to_non_nullable
@@ -530,10 +541,10 @@ class __$$MetaEigaImplCopyWithImpl<$Res>
           ? _value.language
           : language // ignore: cast_nullable_to_non_nullable
               as String?,
-      studio: freezed == studio
-          ? _value.studio
-          : studio // ignore: cast_nullable_to_non_nullable
-              as Genre?,
+      studios: freezed == studios
+          ? _value._studios
+          : studios // ignore: cast_nullable_to_non_nullable
+              as List<Genre>?,
       movieSeason: freezed == movieSeason
           ? _value.movieSeason
           : movieSeason // ignore: cast_nullable_to_non_nullable
@@ -561,22 +572,26 @@ class _$MetaEigaImpl implements _MetaEiga {
       required this.description,
       this.rate,
       this.countRate,
+      this.countSub,
+      this.countDub,
       this.duration,
       this.yearOf,
       this.views,
       required final List<Season> seasons,
       required final List<Genre> genres,
       this.quality,
-      this.author,
+      final List<Genre>? authors,
       final List<Genre>? countries,
       this.language,
-      this.studio,
+      final List<Genre>? studios,
       this.movieSeason,
       this.trailer,
       this.fake = false})
       : _seasons = seasons,
         _genres = genres,
-        _countries = countries;
+        _authors = authors,
+        _countries = countries,
+        _studios = studios;
 
   factory _$MetaEigaImpl.fromJson(Map<String, dynamic> json) =>
       _$$MetaEigaImplFromJson(json);
@@ -595,6 +610,10 @@ class _$MetaEigaImpl implements _MetaEiga {
   final double? rate;
   @override
   final int? countRate;
+  @override
+  final int? countSub;
+  @override
+  final int? countDub;
   @override
   final String? duration;
   @override
@@ -619,8 +638,16 @@ class _$MetaEigaImpl implements _MetaEiga {
 
   @override
   final String? quality;
+  final List<Genre>? _authors;
   @override
-  final String? author;
+  List<Genre>? get authors {
+    final value = _authors;
+    if (value == null) return null;
+    if (_authors is EqualUnmodifiableListView) return _authors;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   final List<Genre>? _countries;
   @override
   List<Genre>? get countries {
@@ -633,8 +660,16 @@ class _$MetaEigaImpl implements _MetaEiga {
 
   @override
   final String? language;
+  final List<Genre>? _studios;
   @override
-  final Genre? studio;
+  List<Genre>? get studios {
+    final value = _studios;
+    if (value == null) return null;
+    if (_studios is EqualUnmodifiableListView) return _studios;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   @override
   final Genre? movieSeason;
   @override
@@ -645,7 +680,7 @@ class _$MetaEigaImpl implements _MetaEiga {
 
   @override
   String toString() {
-    return 'MetaEiga(name: $name, originalName: $originalName, image: $image, poster: $poster, description: $description, rate: $rate, countRate: $countRate, duration: $duration, yearOf: $yearOf, views: $views, seasons: $seasons, genres: $genres, quality: $quality, author: $author, countries: $countries, language: $language, studio: $studio, movieSeason: $movieSeason, trailer: $trailer, fake: $fake)';
+    return 'MetaEiga(name: $name, originalName: $originalName, image: $image, poster: $poster, description: $description, rate: $rate, countRate: $countRate, countSub: $countSub, countDub: $countDub, duration: $duration, yearOf: $yearOf, views: $views, seasons: $seasons, genres: $genres, quality: $quality, authors: $authors, countries: $countries, language: $language, studios: $studios, movieSeason: $movieSeason, trailer: $trailer, fake: $fake)';
   }
 
   @override
@@ -663,6 +698,10 @@ class _$MetaEigaImpl implements _MetaEiga {
             (identical(other.rate, rate) || other.rate == rate) &&
             (identical(other.countRate, countRate) ||
                 other.countRate == countRate) &&
+            (identical(other.countSub, countSub) ||
+                other.countSub == countSub) &&
+            (identical(other.countDub, countDub) ||
+                other.countDub == countDub) &&
             (identical(other.duration, duration) ||
                 other.duration == duration) &&
             (identical(other.yearOf, yearOf) || other.yearOf == yearOf) &&
@@ -670,12 +709,12 @@ class _$MetaEigaImpl implements _MetaEiga {
             const DeepCollectionEquality().equals(other._seasons, _seasons) &&
             const DeepCollectionEquality().equals(other._genres, _genres) &&
             (identical(other.quality, quality) || other.quality == quality) &&
-            (identical(other.author, author) || other.author == author) &&
+            const DeepCollectionEquality().equals(other._authors, _authors) &&
             const DeepCollectionEquality()
                 .equals(other._countries, _countries) &&
             (identical(other.language, language) ||
                 other.language == language) &&
-            (identical(other.studio, studio) || other.studio == studio) &&
+            const DeepCollectionEquality().equals(other._studios, _studios) &&
             (identical(other.movieSeason, movieSeason) ||
                 other.movieSeason == movieSeason) &&
             (identical(other.trailer, trailer) || other.trailer == trailer) &&
@@ -693,16 +732,18 @@ class _$MetaEigaImpl implements _MetaEiga {
         description,
         rate,
         countRate,
+        countSub,
+        countDub,
         duration,
         yearOf,
         views,
         const DeepCollectionEquality().hash(_seasons),
         const DeepCollectionEquality().hash(_genres),
         quality,
-        author,
+        const DeepCollectionEquality().hash(_authors),
         const DeepCollectionEquality().hash(_countries),
         language,
-        studio,
+        const DeepCollectionEquality().hash(_studios),
         movieSeason,
         trailer,
         fake
@@ -731,16 +772,18 @@ abstract class _MetaEiga implements MetaEiga {
       required final String description,
       final double? rate,
       final int? countRate,
+      final int? countSub,
+      final int? countDub,
       final String? duration,
       final int? yearOf,
       final int? views,
       required final List<Season> seasons,
       required final List<Genre> genres,
       final String? quality,
-      final String? author,
+      final List<Genre>? authors,
       final List<Genre>? countries,
       final String? language,
-      final Genre? studio,
+      final List<Genre>? studios,
       final Genre? movieSeason,
       final String? trailer,
       final bool fake}) = _$MetaEigaImpl;
@@ -763,6 +806,10 @@ abstract class _MetaEiga implements MetaEiga {
   @override
   int? get countRate;
   @override
+  int? get countSub;
+  @override
+  int? get countDub;
+  @override
   String? get duration;
   @override
   int? get yearOf;
@@ -775,13 +822,13 @@ abstract class _MetaEiga implements MetaEiga {
   @override
   String? get quality;
   @override
-  String? get author;
+  List<Genre>? get authors;
   @override
   List<Genre>? get countries;
   @override
   String? get language;
   @override
-  Genre? get studio;
+  List<Genre>? get studios;
   @override
   Genre? get movieSeason;
   @override
