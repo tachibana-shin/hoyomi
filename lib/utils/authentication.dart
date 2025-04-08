@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart'
     as g_all;
 import 'package:google_sign_in/google_sign_in.dart' as g_native;
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
+import 'package:hoyomi/env.dart';
 
 final _googleNativeSupport = XPlatform.isAndroid ||
     XPlatform.isIOS ||
@@ -21,10 +21,9 @@ class Authentication {
   Authentication._internal();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final _clientId = dotenv.env['GOOGLE_CLIENT_ID'];
-  final _clientSecret = dotenv.env['GOOGLE_CLIENT_SECRET'];
-  final _redirectPort =
-      int.tryParse(dotenv.env['GOOGLE_REDIRECT_PORT'] ?? '') ?? 9003;
+  final _clientId = Env.googleClientId;
+  final _clientSecret = Env.googleClientSecret;
+  final _redirectPort = Env.googleRedirectPort;
 
   late final _googleSignIn =
       _googleNativeSupport ? g_native.GoogleSignIn() : null;
