@@ -105,4 +105,3 @@ flutter:
   assets:
       - assets/ca/
       - assets/images/
-      - .env
