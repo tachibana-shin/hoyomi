@@ -106,11 +106,12 @@ class _HtmlSubtitleWrapperState extends State<HtmlSubtitleWrapper>
                       (widget.textStyle?.fontSize ?? 18) * widget.maxLines,
                 ),
                 child: HtmlWidget(
-                  data,
+                  '<center>$data</center>',
                   textStyle: TextStyle(
                     color: widget.textStyle?.color ?? Colors.white,
                     fontSize: widget.textStyle?.fontSize ?? 18,
-                    backgroundColor: widget.textStyle?.backgroundColor ??
+                    backgroundColor:
+                     widget.textStyle?.backgroundColor ??
                         Colors.black.withValues(alpha: 0.5),
                   ),
                 ),
