@@ -576,6 +576,8 @@ class _PlayerEigaState extends State<PlayerEiga>
   void _setupPlayer(SourceVideo source, String id) async {
     _availableResolutions.value = [];
 
+    _loading.value = true;
+
     late final Uri url;
     String? content;
     try {

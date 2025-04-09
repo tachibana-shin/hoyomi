@@ -349,7 +349,7 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
       final type = $item.data('type');
 
       return ServerSource(
-        name: $item.text(),
+        name: '${type.toUpperCase()} ${$item.text()}',
         serverId: '$type&server=$server',
       );
     });

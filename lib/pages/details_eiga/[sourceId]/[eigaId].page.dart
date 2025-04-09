@@ -34,6 +34,7 @@ import 'package:hoyomi/screens/details_eiga/list_episodes.dart';
 import 'package:hoyomi/screens/home_eiga/player_eiga.dart';
 import 'package:hoyomi/utils/format_number.dart';
 import 'package:hoyomi/widgets/vertical_separator.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class WatchTimeDataEvent {
   final WatchTimeData watchTimeData;
@@ -225,7 +226,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           _buildButtonGroup(),
                           SizedBox(height: 5.0),
                           if (!loading) _buildSchedule(),
-                          if (!loading) _buildSeasonHeader(),
+                          _buildServers(),
+                          _buildSeasonHeader(),
                           SizedBox(height: 5.0),
                           if (loading)
                             ListEpisodesSkeleton()
@@ -324,9 +326,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                               fontSize: 14.0,
                             ),
                       ),
-                      Wrap(
-                          children: metaEiga.authors!.indexed
-                              .mapWithIterable((entry, list) {
+                      ...metaEiga.authors!.indexed
+                          .mapWithIterable((entry, list) {
                         final (index, author) = entry;
                         return GestureDetector(
                           onTap: author.genreId == Genre.noId
@@ -344,7 +345,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                 ),
                           ),
                         );
-                      }).toList())
+                      }).toList()
                     ],
                   ),
 
@@ -358,9 +359,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                             fontSize: 14.0,
                           ),
                     ),
-                    Wrap(
-                        children: metaEiga.studios!.indexed
-                            .mapWithIterable((entry, list) {
+                    ...metaEiga.studios!.indexed.mapWithIterable((entry, list) {
                       final (index, author) = entry;
                       return GestureDetector(
                         onTap: author.genreId == Genre.noId
@@ -376,7 +375,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                   ),
                         ),
                       );
-                    }).toList()),
+                    }).toList(),
                   ]),
 
                 SizedBox(height: 2.0),
@@ -1063,6 +1062,51 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     context.replace(
         '/details_eiga/${widget.sourceId}/${_eigaId.value}?episodeId=${_episodeId.value}');
+  }
+
+  Widget _buildServers() {
+    return Watch(() {
+      return FutureBuilder(
+        future: _serversFuture.value,
+        builder: (context, snapshot) {
+          if (snapshot.hasError && snapshot.error is UnimplementedError) {
+            return SizedBox.shrink();
+          }
+
+          final loading = snapshot.connectionState == ConnectionState.waiting;
+          if (loading || !snapshot.hasData) return SizedBox.shrink();
+
+          final servers = snapshot.data!;
+          return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Server',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w400),
+                ),
+                SizedBox(height: 3.0),
+                Watch(
+                  () => SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Scrollbar(
+                        child: ToggleSwitch(
+                          minHeight: 30,
+                          initialLabelIndex: (_serverSelected.value ?? 0)
+                              .clamp(0, servers.length - 1),
+                          totalSwitches: servers.length,
+                          labels: servers.map((server) => server.name).toList(),
+                          radiusStyle: true,
+                          onToggle: (index) => _serverSelected.value = index,
+                        ),
+                      )),
+                ),
+              ]);
+        },
+      );
+    });
   }
 
   Widget _buildSeasonArea(
