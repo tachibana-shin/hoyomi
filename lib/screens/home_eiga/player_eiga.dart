@@ -806,7 +806,8 @@ class _PlayerEigaState extends State<PlayerEiga>
           headers: {...headers, 'referer': variant.url.toString()},
         );
       }).toList();
-      _setQualityCode(_availableResolutions.value.first.code);
+      /// video_player always select media playlist first in master playlist
+      _qualityCode.value = _availableResolutions.value.first.code;
     } else if (playlist is HlsMediaPlaylist) {
       // media m3u8 file
       debugPrint("[initialize_hls]: no action because is media playlist");
@@ -1667,7 +1668,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   }
 
   void _setQualityCode(String? value) {
-    if (_availableResolutions.value.isNotEmpty) return;
+    if (_availableResolutions.value.isEmpty) return;
 
     _qualityCode.value = value;
 
@@ -1704,7 +1705,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                   title: Text(item.label),
                   onTap: () {
                     Navigator.pop(context);
-                    _qualityCode.value = item.code;
+                    _setQualityCode(item.code);
                   },
                 );
               },
