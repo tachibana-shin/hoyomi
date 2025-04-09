@@ -1653,8 +1653,8 @@ class _PlayerEigaState extends State<PlayerEiga>
                         showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,
-                          builder: (context) => SubtitleSettingsSheet(
-                              height: 50.h(context)),
+                          builder: (context) =>
+                              SubtitleSettingsSheet(height: 50.h(context)),
                         );
                       },
                     )
@@ -1662,29 +1662,28 @@ class _PlayerEigaState extends State<PlayerEiga>
                 ),
                 const Divider(),
                 Watch(() => ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _subtitles.value?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          final item = _subtitles.value!.elementAt(index);
+                      shrinkWrap: true,
+                      itemCount: _subtitles.value?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final item = _subtitles.value!.elementAt(index);
 
-                          return ListTile(
-                            dense: true,
-                            visualDensity: VisualDensity.compact,
-                            leading: _subtitleCode.value == item.code
-                                ? Icon(Icons.check, color: colorScheme.primary)
-                                : const SizedBox(width: 24), // for alignment
-                            title: Text(
-                              item.language,
-                              style: textTheme.bodyMedium,
-                            ),
-                            onTap: () {
-                              Navigator.pop(context);
-                              _subtitleCode.value = item.code;
-                            },
-                          );
-                        },
-                      )),
-                
+                        return ListTile(
+                          dense: true,
+                          visualDensity: VisualDensity.compact,
+                          leading: _subtitleCode.value == item.code
+                              ? Icon(Icons.check, color: colorScheme.primary)
+                              : const SizedBox(width: 24), // for alignment
+                          title: Text(
+                            item.language,
+                            style: textTheme.bodyMedium,
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            _subtitleCode.value = item.code;
+                          },
+                        );
+                      },
+                    )),
               ],
             ),
           ),
@@ -1826,14 +1825,10 @@ class _PlayerEigaState extends State<PlayerEiga>
                         'Subtitle',
                         style: TextStyle(fontSize: 14.0),
                       ),
-                      trailing: _subtitleCode.value == null ||
-                              _subtitles.value == null
+                      trailing: _subtitle.value == null
                           ? null
                           : Text(
-                              _subtitles.value!
-                                  .firstWhere((item) =>
-                                      item.code == _subtitleCode.value)
-                                  .language,
+                              _subtitle.value!.language,
                               style: TextStyle(
                                 color: Theme.of(context).colorScheme.secondary,
                               ),
@@ -1843,6 +1838,44 @@ class _PlayerEigaState extends State<PlayerEiga>
                         _showSubtitleOptions();
                       },
                     ),
+                  ),
+                ),
+                Watch(
+                  () => FutureBuilder(
+                    future: widget.serversFuture.value,
+                    builder: (context, snapshot) =>
+                        snapshot.data?.isNotEmpty != true
+                            ? SizedBox.shrink()
+                            : Watch(
+                                () {
+                                  final servers = snapshot.data!;
+                                  final serverSelected =
+                                      widget.serverSelected.value;
+
+                                  final server = servers.elementAt(
+                                      (serverSelected ?? 0)
+                                          .clamp(0, servers.length - 1));
+
+                                  return ListTile(
+                                      leading: Icon(Icons.cloud),
+                                      title: Text(
+                                        'Server play',
+                                        style: TextStyle(fontSize: 14.0),
+                                      ),
+                                      trailing: Text(
+                                        server.name,
+                                        style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        _showServerPickerBottomSheet();
+                                      });
+                                },
+                              ),
                   ),
                 ),
                 ListTile(
@@ -1871,6 +1904,45 @@ class _PlayerEigaState extends State<PlayerEiga>
                 ),
               ],
             ));
+      },
+    );
+  }
+
+  void _showServerPickerBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                'Server',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const Divider(height: 1),
+            Watch(() => FutureBuilder(
+                  future: widget.serversFuture.value,
+                  builder: (context, snapshot) {
+                    return ListView(
+                      children: snapshot.data?.map((server) {
+                            return ListTile(
+                              title: Text(server.name),
+                              onTap: () => Navigator.pop(context, server),
+                            );
+                          }).toList() ??
+                          const <Widget>[],
+                    );
+                  },
+                )),
+            const SizedBox(height: 8),
+          ],
+        );
       },
     );
   }
