@@ -361,10 +361,14 @@ class _ListEpisodesState extends State<ListEpisodes>
                 clipBehavior: Clip.antiAlias,
                 child: Stack(
                   children: [
-                    Ink(
+                    Container(
                       height: height * 0.9,
+                      constraints: const BoxConstraints(minWidth: 40),
                       padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Center(child: Text(episode.name)),
+                      child: Align(
+                        widthFactor: 1.0,
+                        child: Text(episode.name, textAlign: TextAlign.center),
+                      ),
                     ),
                     if (watchTime != null)
                       Positioned(
