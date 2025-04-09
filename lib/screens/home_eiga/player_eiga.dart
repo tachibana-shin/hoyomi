@@ -23,6 +23,7 @@ import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:hoyomi/plugins/fullscreen.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
+import 'package:hoyomi/widgets/eiga/html_subtitle_wrapper.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:hoyomi/widgets/iconify.dart';
@@ -31,7 +32,6 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart' as type;
@@ -144,7 +144,6 @@ class _PlayerEigaState extends State<PlayerEiga>
   /// Like <video>
   late final _controllerId = ref<String?>(null);
   late final _controller = ref<VideoPlayerController?>(null);
-  late final SubtitleController subtitleController = SubtitleController();
 
   final _durationAnimate = const Duration(milliseconds: 300);
   final _teenSeconds = const Duration(seconds: 10);
@@ -188,6 +187,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   late final AsyncComputed<SourceVideo?> _source;
   late final AsyncComputed<List<type.Subtitle>?> _subtitles;
+  late final Computed<type.Subtitle?> _subtitle;
   late final AsyncComputed<WatchTimeData?> _watchTimeData;
   late final AsyncComputed<Vtt?> _thumbnailVtt;
   late final AsyncComputed<OpeningEnding?> _openingEnding;
@@ -265,6 +265,29 @@ class _PlayerEigaState extends State<PlayerEiga>
         if (error is! UnimplementedError) showSnackError('subtitle', error);
       },
     );
+
+    /// watch subtitles
+    watch([_subtitles], () {
+      final subtitles = _subtitles.value;
+      if (subtitles == null) return;
+
+      _subtitleCode.value ??= subtitles.first.code;
+    });
+
+    /// _subtitle
+    _subtitle = computed(() {
+      final subtitles = _subtitles.value;
+      if (subtitles == null) {
+        return null;
+      }
+
+      final subtitleCode = _subtitleCode.value;
+      if (subtitleCode == null) {
+        return null;
+      }
+
+      return subtitles.firstWhere((item) => item.code == subtitleCode);
+    });
 
     /// Watch data position
     _watchTimeData = asyncComputed<WatchTimeData?>(() async {
@@ -876,15 +899,13 @@ class _PlayerEigaState extends State<PlayerEiga>
                 child: VideoPlayer(controller),
               ),
             );
-            return SubtitleWrapper(
-                enabled: _qualityCode.value != null,
-                videoPlayerController: controller,
-                subtitleController: subtitleController,
-                subtitleStyle: SubtitleStyle(
-                  textColor: Colors.white,
-                  hasBorder: true,
-                ),
-                videoChild: videoChild);
+
+            return HtmlSubtitleWrapper(
+              service: widget.service,
+              subtitle: _subtitle,
+              videoController: controller,
+              child: videoChild,
+            );
           }),
         ),
         Watch(() {
@@ -1000,7 +1021,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                 ),
                 // icon subtitle
                 Watch(() {
-                  final isEnabled = _availableResolutions.value.isNotEmpty;
+                  final isEnabled = _subtitles.value?.isNotEmpty == true;
                   return Opacity(
                     opacity: isEnabled ? 1.0 : 0.5,
                     child: IgnorePointer(
@@ -1014,7 +1035,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                         color: Colors.white,
                         onPressed: () => _subtitleCode.value == null
                             ? _showSubtitleOptions()
-                            : _setSubtitleCode(null),
+                            : (_subtitleCode.value = null),
                       ),
                     ),
                   );
@@ -1692,17 +1713,6 @@ class _PlayerEigaState extends State<PlayerEiga>
     );
   }
 
-  void _setSubtitleCode(String? value) {
-    _subtitleCode.value = value;
-    if (value != null) {
-      subtitleController.updateSubtitleUrl(
-        url: _subtitles.value!.firstWhere((item) {
-          return item.code == value;
-        }).url,
-      );
-    }
-  }
-
   void _showSettingOptions() {
     showModalBottomSheet(
       context: context,
@@ -1752,9 +1762,9 @@ class _PlayerEigaState extends State<PlayerEiga>
                   },
                 ),
                 Opacity(
-                  opacity: _availableResolutions.value.isNotEmpty ? 1.0 : 0.5,
+                  opacity: _subtitles.value?.isNotEmpty == true ? 1.0 : 0.5,
                   child: IgnorePointer(
-                    ignoring: !_availableResolutions.value.isNotEmpty,
+                    ignoring: _subtitles.value?.isNotEmpty != true,
                     child: ListTile(
                       leading: Icon(Icons.subtitles_outlined),
                       title: Text(

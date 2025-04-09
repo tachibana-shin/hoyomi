@@ -378,6 +378,7 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
         'Referer': 'https://megacloud.club/',
         'Origin': 'https://megacloud.club/'
       },
+      extra: json,
     );
   }
 
@@ -394,7 +395,23 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
 
   @override
   getSubtitles({required eigaId, required episode, required source}) async {
-    return [];
+    final data = jsonDecode(source.extra!);
+
+    final subtitles = data['subtitles'] as List;
+    // is {url: string, lang: string}[] ! lang=thumbnails is preview thumbnail
+
+    return subtitles
+        .where((subtitle) => subtitle['lang'] != 'thumbnails')
+        .map((subtitle) {
+      return Subtitle(
+        url: subtitle['url'],
+        language: subtitle['lang'],
+        code: subtitle['lang'],
+        type: subtitle['url'].endsWith('srt')
+            ? SubtitleType.srt
+            : SubtitleType.vtt,
+      );
+    }).toList();
   }
 
   @override

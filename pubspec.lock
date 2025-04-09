@@ -197,10 +197,10 @@ packages:
     dependency: transitive
     description:
       name: chewie
-      sha256: "0bf6f7692cb65f7b8f59a2a17025b9cbe8f75ab4251e66161a4fc86162475fb6"
+      sha256: df6711bc3ba165ad19cb496e350250be5673327f79c61c9cc8a15088ed8007ed
       url: "https://pub.dev"
     source: hosted
-    version: "1.11.0"
+    version: "1.11.1"
   clock:
     dependency: transitive
     description:
@@ -1024,18 +1024,18 @@ packages:
     dependency: transitive
     description:
       name: just_audio_platform_interface
-      sha256: "271b93b484c6f494ecd72a107fffbdb26b425f170c665b9777a0a24a726f2f24"
+      sha256: "4cd94536af0219fa306205a58e78d67e02b0555283c1c094ee41e402a14a5c4a"
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.0"
+    version: "4.5.0"
   just_audio_web:
     dependency: transitive
     description:
       name: just_audio_web
-      sha256: "58915be64509a7683c44bf11cd1a23c15a48de104927bee116e3c63c8eeea0d4"
+      sha256: "8c7e779892e180cbc9ffb5a3c52f6e90e1cbbf4a63694cc450972a7edbd2bb6d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.14"
+    version: "0.4.15"
   kaeru:
     dependency: "direct main"
     description:
@@ -1769,15 +1769,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.0-beta.3"
-  subtitle_wrapper_package:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: main
-      resolved-ref: "6d63fded3cd7995f7e35af433312caa60a4c5485"
-      url: "https://github.com/tachibana-shin/flutter_subtitle_wrapper"
-    source: git
-    version: "2.2.1"
   swagger_parser:
     dependency: "direct dev"
     description:

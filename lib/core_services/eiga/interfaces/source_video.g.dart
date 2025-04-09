@@ -15,6 +15,7 @@ _$SourceVideoImpl _$$SourceVideoImplFromJson(Map<String, dynamic> json) =>
             (k, e) => MapEntry(k, e as String),
           ) ??
           const {},
+      extra: json['extra'] as String?,
     );
 
 Map<String, dynamic> _$$SourceVideoImplToJson(_$SourceVideoImpl instance) =>
@@ -23,4 +24,5 @@ Map<String, dynamic> _$$SourceVideoImplToJson(_$SourceVideoImpl instance) =>
       'url': instance.url.toString(),
       'type': instance.type,
       'headers': instance.headers,
+      'extra': instance.extra,
     };

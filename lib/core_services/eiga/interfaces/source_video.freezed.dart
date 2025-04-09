@@ -24,6 +24,7 @@ mixin _$SourceVideo {
   Uri get url => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
   Map<String, String> get headers => throw _privateConstructorUsedError;
+  String? get extra => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -37,7 +38,12 @@ abstract class $SourceVideoCopyWith<$Res> {
           SourceVideo value, $Res Function(SourceVideo) then) =
       _$SourceVideoCopyWithImpl<$Res, SourceVideo>;
   @useResult
-  $Res call({String src, Uri url, String type, Map<String, String> headers});
+  $Res call(
+      {String src,
+      Uri url,
+      String type,
+      Map<String, String> headers,
+      String? extra});
 }
 
 /// @nodoc
@@ -57,6 +63,7 @@ class _$SourceVideoCopyWithImpl<$Res, $Val extends SourceVideo>
     Object? url = null,
     Object? type = null,
     Object? headers = null,
+    Object? extra = freezed,
   }) {
     return _then(_value.copyWith(
       src: null == src
@@ -75,6 +82,10 @@ class _$SourceVideoCopyWithImpl<$Res, $Val extends SourceVideo>
           ? _value.headers
           : headers // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
+      extra: freezed == extra
+          ? _value.extra
+          : extra // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -87,7 +98,12 @@ abstract class _$$SourceVideoImplCopyWith<$Res>
       __$$SourceVideoImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String src, Uri url, String type, Map<String, String> headers});
+  $Res call(
+      {String src,
+      Uri url,
+      String type,
+      Map<String, String> headers,
+      String? extra});
 }
 
 /// @nodoc
@@ -105,6 +121,7 @@ class __$$SourceVideoImplCopyWithImpl<$Res>
     Object? url = null,
     Object? type = null,
     Object? headers = null,
+    Object? extra = freezed,
   }) {
     return _then(_$SourceVideoImpl(
       src: null == src
@@ -123,6 +140,10 @@ class __$$SourceVideoImplCopyWithImpl<$Res>
           ? _value._headers
           : headers // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
+      extra: freezed == extra
+          ? _value.extra
+          : extra // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -134,7 +155,8 @@ class _$SourceVideoImpl implements _SourceVideo {
       {required this.src,
       required this.url,
       required this.type,
-      final Map<String, String> headers = const {}})
+      final Map<String, String> headers = const {},
+      this.extra})
       : _headers = headers;
 
   factory _$SourceVideoImpl.fromJson(Map<String, dynamic> json) =>
@@ -156,8 +178,11 @@ class _$SourceVideoImpl implements _SourceVideo {
   }
 
   @override
+  final String? extra;
+
+  @override
   String toString() {
-    return 'SourceVideo(src: $src, url: $url, type: $type, headers: $headers)';
+    return 'SourceVideo(src: $src, url: $url, type: $type, headers: $headers, extra: $extra)';
   }
 
   @override
@@ -168,13 +193,14 @@ class _$SourceVideoImpl implements _SourceVideo {
             (identical(other.src, src) || other.src == src) &&
             (identical(other.url, url) || other.url == url) &&
             (identical(other.type, type) || other.type == type) &&
-            const DeepCollectionEquality().equals(other._headers, _headers));
+            const DeepCollectionEquality().equals(other._headers, _headers) &&
+            (identical(other.extra, extra) || other.extra == extra));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, src, url, type,
-      const DeepCollectionEquality().hash(_headers));
+      const DeepCollectionEquality().hash(_headers), extra);
 
   @JsonKey(ignore: true)
   @override
@@ -195,7 +221,8 @@ abstract class _SourceVideo implements SourceVideo {
       {required final String src,
       required final Uri url,
       required final String type,
-      final Map<String, String> headers}) = _$SourceVideoImpl;
+      final Map<String, String> headers,
+      final String? extra}) = _$SourceVideoImpl;
 
   factory _SourceVideo.fromJson(Map<String, dynamic> json) =
       _$SourceVideoImpl.fromJson;
@@ -208,6 +235,8 @@ abstract class _SourceVideo implements SourceVideo {
   String get type;
   @override
   Map<String, String> get headers;
+  @override
+  String? get extra;
   @override
   @JsonKey(ignore: true)
   _$$SourceVideoImplCopyWith<_$SourceVideoImpl> get copyWith =>

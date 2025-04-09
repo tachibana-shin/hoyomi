@@ -10,6 +10,7 @@ class SourceVideo with _$SourceVideo {
     required Uri url,
     required String type,
     @Default({}) Map<String, String> headers,
+    String? extra,
   }) = _SourceVideo;
 
   factory SourceVideo.fromJson(Map<String, dynamic> json) =>
