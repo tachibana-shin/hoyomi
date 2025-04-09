@@ -345,7 +345,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                 ),
                           ),
                         );
-                      }).toList()
+                      })
                     ],
                   ),
 
@@ -375,7 +375,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                   ),
                         ),
                       );
-                    }).toList(),
+                    }),
                   ]),
 
                 SizedBox(height: 2.0),
