@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:hoyomi/controller/subtitle_settings_controller.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
 import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/database/scheme/subtitle_settings.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:subtitle/subtitle.dart' as lib_subtitle;
 import 'package:video_player/video_player.dart';
@@ -26,8 +28,8 @@ class HtmlSubtitleWrapper extends StatefulWidget {
     required this.child,
     this.textStyle,
     this.alignment = Alignment.bottomCenter,
-    this.padding = const EdgeInsets.only(bottom: 30),
-    this.maxLines = 3,
+    this.padding = const EdgeInsets.only(bottom: 30, left: 30, right: 30),
+    this.maxLines = 5,
   });
 
   @override
@@ -38,6 +40,7 @@ class _HtmlSubtitleWrapperState extends State<HtmlSubtitleWrapper>
     with KaeruMixin, KaeruListenMixin {
   late final _controller = ref<lib_subtitle.SubtitleController?>(null);
   late final _position = ref<Duration?>(null);
+  late final _subtitleSettings = ref<SubtitleSettings?>(null);
   late VoidCallback _cancelListenUpdatePosition;
 
   @override
@@ -62,6 +65,13 @@ class _HtmlSubtitleWrapperState extends State<HtmlSubtitleWrapper>
       await controller.initial();
 
       _controller.value = controller;
+    }, immediate: true);
+
+    watch([SubtitleSettingsController.instance], () async {
+      final settings = await SubtitleSettingsController.instance.get();
+      if (!mounted) return;
+
+      _subtitleSettings.value = settings;
     }, immediate: true);
 
     _cancelListenUpdatePosition =
@@ -96,25 +106,28 @@ class _HtmlSubtitleWrapperState extends State<HtmlSubtitleWrapper>
 
           if (controller == null || data == null) return SizedBox.shrink();
 
+          final textStyle = _subtitleSettings.value?.toTextStyle();
+
           return Align(
             alignment: widget.alignment,
             child: Padding(
               padding: widget.padding,
-              child: ConstrainedBox(
+              child: Container(
                 constraints: BoxConstraints(
-                  maxHeight:
-                      (widget.textStyle?.fontSize ?? 18) * widget.maxLines,
+                  maxHeight: (textStyle?.fontSize ?? 18) * widget.maxLines,
                 ),
-                child: HtmlWidget(
-                  '<center>$data</center>',
-                  textStyle: TextStyle(
-                    color: widget.textStyle?.color ?? Colors.white,
-                    fontSize: widget.textStyle?.fontSize ?? 18,
-                    backgroundColor:
-                     widget.textStyle?.backgroundColor ??
-                        Colors.black.withValues(alpha: 0.5),
-                  ),
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                decoration: _subtitleSettings.value?.toWindowDecoration(),
+                child: HtmlWidget('<center>$data</center>', textStyle: textStyle
+
+                    // TextStyle(
+                    //   color: widget.textStyle?.color ?? Colors.white,
+                    //   fontSize: widget.textStyle?.fontSize ?? 18,
+                    //   backgroundColor:
+                    //    widget.textStyle?.backgroundColor ??
+                    //       Colors.black.withValues(alpha: 0.5),
+                    // ),
+                    ),
               ),
             ),
           );

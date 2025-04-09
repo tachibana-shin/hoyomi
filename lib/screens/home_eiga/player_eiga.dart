@@ -38,6 +38,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart' as type;
 import 'package:hoyomi/utils/save_file_cache.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import 'widget/subtitle_settings_sheet.dart';
 import 'widget/animated_icon_forward.dart';
 import 'widget/animated_icon_rewind.dart';
 import 'widget/area_forward.dart';
@@ -806,6 +807,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           headers: {...headers, 'referer': variant.url.toString()},
         );
       }).toList();
+
       /// video_player always select media playlist first in master playlist
       _qualityCode.value = _availableResolutions.value.first.code;
     } else if (playlist is HlsMediaPlaylist) {
@@ -1615,26 +1617,78 @@ class _PlayerEigaState extends State<PlayerEiga>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      showDragHandle: true,
       builder: (context) {
-        return Watch(() => ListView.builder(
-              shrinkWrap: true,
-              itemCount: _subtitles.value?.length,
-              itemBuilder: (context, index) {
-                final item = _subtitles.value!.elementAt(index);
+        final theme = Theme.of(context);
+        final textTheme = theme.textTheme;
+        final colorScheme = theme.colorScheme;
 
-                return ListTile(
-                  leading: _subtitleCode.value == item.code
-                      ? Icon(Icons.check)
-                      : Text(''),
-                  title: Text(item.language),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _subtitleCode.value = item.code;
-                  },
-                );
-              },
-            ));
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            top: 16,
+          ),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 400),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Subtitles',
+                        style: textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.settings),
+                      onPressed: () {
+                        Navigator.pop(context);
+
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (context) => SubtitleSettingsSheet(
+                              height: 50.h(context)),
+                        );
+                      },
+                    )
+                  ],
+                ),
+                const Divider(),
+                Watch(() => ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: _subtitles.value?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final item = _subtitles.value!.elementAt(index);
+
+                          return ListTile(
+                            dense: true,
+                            visualDensity: VisualDensity.compact,
+                            leading: _subtitleCode.value == item.code
+                                ? Icon(Icons.check, color: colorScheme.primary)
+                                : const SizedBox(width: 24), // for alignment
+                            title: Text(
+                              item.language,
+                              style: textTheme.bodyMedium,
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              _subtitleCode.value = item.code;
+                            },
+                          );
+                        },
+                      )),
+                
+              ],
+            ),
+          ),
+        );
       },
     );
   }
