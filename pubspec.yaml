@@ -68,6 +68,7 @@ dependencies:
   rss_feed_parser: ^1.0.6
   screen_brightness: ^2.1.2
   scrollable_positioned_list: ^0.3.8
+  sealed_languages: ^2.1.0
   share_plus: ^10.1.2
   shared_preferences: ^2.5.3
   # shirne_dialog: ^4.8.3

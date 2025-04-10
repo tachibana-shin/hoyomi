@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
+import 'package:get/get.dart' hide Response;
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/controller/general_settings_controller.dart';
@@ -20,6 +21,7 @@ import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/database/scheme/general_settings.dart';
+import 'package:hoyomi/logic/search_language.dart';
 import 'package:hoyomi/plugins/fullscreen.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
@@ -270,13 +272,24 @@ class _PlayerEigaState extends State<PlayerEiga>
       final subtitles = _subtitles.value;
       if (subtitles == null) return;
 
-      _subtitleCode.value ??= subtitles.first.code;
+      if (_subtitleCode.value == null) {
+        // detect user language
+        final locale =
+            PlatformDispatcher.instance.locale.languageCode.toUpperCase();
+        debugPrint('current lang=$locale');
+        final subtitle = subtitles.firstWhereOrNull((subtitle) =>
+                searchLanguage(subtitle.code)?.codeShort == locale) ??
+            subtitles.firstWhereOrNull(
+                (subtitle) => searchLanguage(subtitle.code)?.codeShort == 'EN');
+
+        _subtitleCode.value = subtitle?.code;
+      }
     });
 
     /// _subtitle
     _subtitle = computed(() {
       final subtitles = _subtitles.value;
-      if (subtitles == null) {
+      if (subtitles == null || subtitles.isEmpty) {
         return null;
       }
 
@@ -285,7 +298,8 @@ class _PlayerEigaState extends State<PlayerEiga>
         return null;
       }
 
-      return subtitles.firstWhere((item) => item.code == subtitleCode);
+      return subtitles.firstWhereOrNull((item) => item.code == subtitleCode) ??
+          subtitles.first;
     });
 
     /// Watch data position
@@ -1649,29 +1663,31 @@ class _PlayerEigaState extends State<PlayerEiga>
                   ],
                 ),
                 const Divider(),
-                Watch(() => ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _subtitles.value?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final item = _subtitles.value!.elementAt(index);
+                Expanded(
+                    child: Watch(() => ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: _subtitles.value?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final item = _subtitles.value!.elementAt(index);
 
-                        return ListTile(
-                          dense: true,
-                          visualDensity: VisualDensity.compact,
-                          leading: _subtitleCode.value == item.code
-                              ? Icon(Icons.check, color: colorScheme.primary)
-                              : const SizedBox(width: 24), // for alignment
-                          title: Text(
-                            item.language,
-                            style: textTheme.bodyMedium,
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            _subtitleCode.value = item.code;
+                            return ListTile(
+                              dense: true,
+                              visualDensity: VisualDensity.compact,
+                              leading: _subtitle.value == item
+                                  ? Icon(Icons.check,
+                                      color: colorScheme.primary)
+                                  : const SizedBox(width: 24), // for alignment
+                              title: Text(
+                                item.language,
+                                style: textTheme.bodyMedium,
+                              ),
+                              onTap: () {
+                                Navigator.pop(context);
+                                _subtitleCode.value = item.code;
+                              },
+                            );
                           },
-                        );
-                      },
-                    )),
+                        ))),
               ],
             ),
           ),
