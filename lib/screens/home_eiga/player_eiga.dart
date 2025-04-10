@@ -1771,6 +1771,47 @@ class _PlayerEigaState extends State<PlayerEiga>
     );
   }
 
+  void _showServerPickerBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                'Server',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: Watch(() => FutureBuilder(
+                    future: widget.serversFuture.value,
+                    builder: (context, snapshot) {
+                      return ListView(
+                        children: snapshot.data?.map((server) {
+                              return ListTile(
+                                title: Text(server.name),
+                                onTap: () => Navigator.pop(context, server),
+                              );
+                            }).toList() ??
+                            const <Widget>[],
+                      );
+                    },
+                  )),
+            ),
+            const SizedBox(height: 8),
+          ],
+        );
+      },
+    );
+  }
+
   void _showSettingOptions() {
     showModalBottomSheet(
       context: context,
@@ -1908,45 +1949,6 @@ class _PlayerEigaState extends State<PlayerEiga>
                 ),
               ],
             ));
-      },
-    );
-  }
-
-  void _showServerPickerBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'Server',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const Divider(height: 1),
-            Watch(() => FutureBuilder(
-                  future: widget.serversFuture.value,
-                  builder: (context, snapshot) {
-                    return ListView(
-                      children: snapshot.data?.map((server) {
-                            return ListTile(
-                              title: Text(server.name),
-                              onTap: () => Navigator.pop(context, server),
-                            );
-                          }).toList() ??
-                          const <Widget>[],
-                    );
-                  },
-                )),
-            const SizedBox(height: 8),
-          ],
-        );
       },
     );
   }
