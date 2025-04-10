@@ -25,6 +25,7 @@ mixin _$EigaEpisode {
   OImage? get image => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   String? get extra => throw _privateConstructorUsedError;
+  int get index => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -43,7 +44,8 @@ abstract class $EigaEpisodeCopyWith<$Res> {
       String episodeId,
       OImage? image,
       String? description,
-      String? extra});
+      String? extra,
+      int index});
 
   $OImageCopyWith<$Res>? get image;
 }
@@ -66,6 +68,7 @@ class _$EigaEpisodeCopyWithImpl<$Res, $Val extends EigaEpisode>
     Object? image = freezed,
     Object? description = freezed,
     Object? extra = freezed,
+    Object? index = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -88,6 +91,10 @@ class _$EigaEpisodeCopyWithImpl<$Res, $Val extends EigaEpisode>
           ? _value.extra
           : extra // ignore: cast_nullable_to_non_nullable
               as String?,
+      index: null == index
+          ? _value.index
+          : index // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 
@@ -117,7 +124,8 @@ abstract class _$$EigaEpisodeImplCopyWith<$Res>
       String episodeId,
       OImage? image,
       String? description,
-      String? extra});
+      String? extra,
+      int index});
 
   @override
   $OImageCopyWith<$Res>? get image;
@@ -139,6 +147,7 @@ class __$$EigaEpisodeImplCopyWithImpl<$Res>
     Object? image = freezed,
     Object? description = freezed,
     Object? extra = freezed,
+    Object? index = null,
   }) {
     return _then(_$EigaEpisodeImpl(
       name: null == name
@@ -161,6 +170,10 @@ class __$$EigaEpisodeImplCopyWithImpl<$Res>
           ? _value.extra
           : extra // ignore: cast_nullable_to_non_nullable
               as String?,
+      index: null == index
+          ? _value.index
+          : index // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -173,7 +186,8 @@ class _$EigaEpisodeImpl implements _EigaEpisode {
       required this.episodeId,
       this.image,
       this.description,
-      this.extra});
+      this.extra,
+      this.index = -1});
 
   factory _$EigaEpisodeImpl.fromJson(Map<String, dynamic> json) =>
       _$$EigaEpisodeImplFromJson(json);
@@ -188,10 +202,13 @@ class _$EigaEpisodeImpl implements _EigaEpisode {
   final String? description;
   @override
   final String? extra;
+  @override
+  @JsonKey()
+  final int index;
 
   @override
   String toString() {
-    return 'EigaEpisode(name: $name, episodeId: $episodeId, image: $image, description: $description, extra: $extra)';
+    return 'EigaEpisode(name: $name, episodeId: $episodeId, image: $image, description: $description, extra: $extra, index: $index)';
   }
 
   @override
@@ -205,13 +222,14 @@ class _$EigaEpisodeImpl implements _EigaEpisode {
             (identical(other.image, image) || other.image == image) &&
             (identical(other.description, description) ||
                 other.description == description) &&
-            (identical(other.extra, extra) || other.extra == extra));
+            (identical(other.extra, extra) || other.extra == extra) &&
+            (identical(other.index, index) || other.index == index));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, name, episodeId, image, description, extra);
+  int get hashCode => Object.hash(
+      runtimeType, name, episodeId, image, description, extra, index);
 
   @JsonKey(ignore: true)
   @override
@@ -233,7 +251,8 @@ abstract class _EigaEpisode implements EigaEpisode {
       required final String episodeId,
       final OImage? image,
       final String? description,
-      final String? extra}) = _$EigaEpisodeImpl;
+      final String? extra,
+      final int index}) = _$EigaEpisodeImpl;
 
   factory _EigaEpisode.fromJson(Map<String, dynamic> json) =
       _$EigaEpisodeImpl.fromJson;
@@ -248,6 +267,8 @@ abstract class _EigaEpisode implements EigaEpisode {
   String? get description;
   @override
   String? get extra;
+  @override
+  int get index;
   @override
   @JsonKey(ignore: true)
   _$$EigaEpisodeImplCopyWith<_$EigaEpisodeImpl> get copyWith =>

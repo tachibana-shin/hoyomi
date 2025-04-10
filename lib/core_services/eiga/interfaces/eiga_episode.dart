@@ -12,6 +12,7 @@ class EigaEpisode with _$EigaEpisode {
     OImage? image,
     String? description,
     String? extra,
+    @Default(-1) int index,
   }) = _EigaEpisode;
 
   factory EigaEpisode.fromJson(Map<String, dynamic> json) =>

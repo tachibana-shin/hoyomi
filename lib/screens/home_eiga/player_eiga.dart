@@ -60,7 +60,6 @@ class PlayerEiga extends StatefulWidget {
 
   final Ref<String?> episodeId;
   final Ref<EigaEpisode?> episode;
-  final Ref<int?> episodeIndex;
 
   final Ref<Season?> season;
 
@@ -88,7 +87,6 @@ class PlayerEiga extends StatefulWidget {
     required this.metaEiga,
     required this.episodeId,
     required this.episode,
-    required this.episodeIndex,
     required this.season,
     required this.title,
     required this.subtitle,
@@ -295,8 +293,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       if (widget.service is EigaWatchTimeMixin && !metaIsFake.value) {
         final eigaId = widget.eigaId.value;
         final episode = widget.episode.value;
-        final episodeIndex = widget.episodeIndex.value;
-        if (episode == null || episodeIndex == null) return null;
+        if (episode == null) return null;
 
         final episodeId = episode.episodeId;
 
@@ -304,7 +301,6 @@ class _PlayerEigaState extends State<PlayerEiga>
             .getWatchTime(
               eigaId: eigaId,
               episode: episode,
-              episodeIndex: episodeIndex,
               metaEiga: widget.metaEiga.value,
             )
             .then((data) => WatchTimeData(
@@ -333,16 +329,19 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     /// Preview images
     _thumbnailVtt = asyncComputed(() async {
-      if (widget.service.getThumbnailPreview != null &&
-          widget.episode.value != null &&
-          widget.episodeIndex.value != null &&
-          !metaIsFake.value) {
-        return widget.service.getThumbnailPreview!(
-          eigaId: widget.eigaId.value,
-          episode: widget.episode.value!,
-          episodeIndex: widget.episodeIndex.value!,
-          metaEiga: widget.metaEiga.value,
-        );
+      if (widget.episode.value != null &&
+          !metaIsFake.value &&
+          _source.value != null) {
+        try {
+          return await widget.service.getSeekThumbnail(PropsGetSeekThumbnail(
+            eigaId: widget.eigaId.value,
+            episode: widget.episode.value!,
+            metaEiga: widget.metaEiga.value,
+            source: _source.value!,
+          ));
+        } on UnimplementedError {
+          return null;
+        }
       }
       return null;
     },
@@ -353,15 +352,15 @@ class _PlayerEigaState extends State<PlayerEiga>
     /// Position opening / ending
     _openingEnding = asyncComputed(() async {
       if (widget.episode.value != null &&
-          widget.episodeIndex.value != null &&
-          !metaIsFake.value) {
+          !metaIsFake.value &&
+          _source.value != null) {
         try {
-          return widget.service.getOpeningEnding(
+          return widget.service.getOpeningEnding(PropsGetOpeningEnding(
             eigaId: widget.eigaId.value,
-            episode: widget.episode.value!,
-            episodeIndex: widget.episodeIndex.value!,
             metaEiga: widget.metaEiga.value,
-          );
+            episode: widget.episode.value!,
+            source: _source.value!,
+          ));
         } on UnimplementedError {
           return null;
         }
@@ -547,14 +546,12 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     final episodeId = widget.episodeId.value;
     final episode = widget.episode.value;
-    final episodeIndex = widget.episodeIndex.value;
 
     final season = widget.season.value;
 
     if (metaEiga.fake ||
         episodeId == null ||
         episode == null ||
-        episodeIndex == null ||
         season == null) {
       return;
     }
@@ -585,7 +582,6 @@ class _PlayerEigaState extends State<PlayerEiga>
         .setWatchTime(
       eigaId: eigaId,
       episode: episode,
-      episodeIndex: episodeIndex,
       metaEiga: metaEiga,
       season: season,
       watchTime: watchTime,

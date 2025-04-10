@@ -93,7 +93,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final _episodeId = ref<String?>(null);
   late final _schedule = ref<DateTime?>(null);
   late final _episode = ref<EigaEpisode?>(null);
-  late final _episodeIndex = ref<int?>(null);
   late final _currentSeason = ref<Season?>(null);
   late final _suggestNotifier = computed<Future<List<Eiga>>?>(() {
     if (_metaIsFake.value) {
@@ -158,7 +157,13 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   ) async {
     return await cacheRemember<EigaEpisodes>(
       'episodes_eiga/${_service.uid}/$eigaId',
-      get: () => _service.getEpisodes(eigaId),
+      get: () => _service.getEpisodes(eigaId).then(
+            (data) => data.copyWith(
+              episodes: data.episodes.indexed
+                  .map((entry) => entry.$2.copyWith(index: entry.$1))
+                  .toList(),
+            ),
+          ),
       fromCache: (value) => EigaEpisodes.fromJson(jsonDecode(value)),
       toCache: (value) => jsonEncode(value.toJson()),
       onUpdate: update,
@@ -256,7 +261,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       metaEiga: _metaEiga,
       episodeId: _episodeId,
       episode: _episode,
-      episodeIndex: _episodeIndex,
       season: _currentSeason,
 
       /// ===============
@@ -1029,7 +1033,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     _episodeId.value = currentEpisode.episodeId;
     _episode.value = currentEpisode;
-    _episodeIndex.value = indexEpisode;
 
     _currentSeason.value = seasons[indexSeason];
 

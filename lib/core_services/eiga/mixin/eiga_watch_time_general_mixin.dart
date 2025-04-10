@@ -60,7 +60,6 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
   Future<WatchTime> getWatchTime({
     required String eigaId,
     required EigaEpisode episode,
-    required int episodeIndex,
     required MetaEiga metaEiga,
   }) async {
     final user = await Authentication.instance.getUserAsync();
@@ -111,7 +110,6 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
   Future<void> setWatchTime({
     required String eigaId,
     required EigaEpisode episode,
-    required int episodeIndex,
     required MetaEiga metaEiga,
     required Season season,
     required WatchTime watchTime,

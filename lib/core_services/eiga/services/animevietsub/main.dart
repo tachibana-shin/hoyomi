@@ -468,7 +468,8 @@ class AnimeVietsubService extends ABEigaService
       'quốc gia',
     )?.query('a').map((item) => _getInfoAnchor(item)).toList();
     final language = _findInfo(infoListRight, 'ngôn ngữ')?.text().split(':')[1];
-    final studios =  _findInfo(infoListRight, 'studio')?.queryOne('a').map(_getInfoAnchor);
+    final studios =
+        _findInfo(infoListRight, 'studio')?.queryOne('a').map(_getInfoAnchor);
     final trailer = $('#Opt1 iframe', single: true).attr('src');
     final movieSeason =
         _getInfoAnchor(_findInfo(infoListRight, 'season')!.queryOne('a'));
@@ -651,7 +652,6 @@ class AnimeVietsubService extends ABEigaService
   Future<String?> _getEpisodeIDApi({
     required String eigaId,
     required EigaEpisode episode,
-    required int episodeIndex,
     required MetaEiga metaEiga,
   }) async {
     final episodes = await _callApiAnimeVsub(
@@ -674,7 +674,7 @@ class AnimeVietsubService extends ABEigaService
 
           return num.parse(item['name']).toDouble() == epFloat;
         }) ??
-        (episodeIndex < list.length - 1 ? list[episodeIndex] : null);
+        list.elementAtOrNull(episode.index);
 
     if (episodeD == null) return null;
 
@@ -682,42 +682,27 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  get getThumbnailPreview => ({
-        required eigaId,
-        required episode,
-        required episodeIndex,
-        required metaEiga,
-      }) async {
-        final episodeId = await _getEpisodeIDApi(
-          eigaId: eigaId,
-          episode: episode,
-          episodeIndex: episodeIndex,
-          metaEiga: metaEiga,
-        );
-        final meta = jsonDecode(
-          await _callApiAnimeVsub('$_apiThumb/episode-skip/$episodeId'),
-        );
+  getSeekThumbnail(props) async {
+    final episodeId = await _getEpisodeIDApi(
+      eigaId: props.eigaId,
+      episode: props.episode,
+      metaEiga: props.metaEiga,
+    );
+    final meta = jsonDecode(
+      await _callApiAnimeVsub('$_apiThumb/episode-skip/$episodeId'),
+    );
 
-        final file = (meta['tracks'] as List<dynamic>).firstWhereOrNull(
-          (item) => item['kind'] == 'thumbnails',
-        );
-
-        if (file != null) return Vtt(src: file['file']);
-        return null;
-      };
+    final file = meta['thumbs'] as String?;
+    if (file != null) return Vtt(src: file);
+    return null;
+  }
 
   @override
-  getOpeningEnding({
-    required eigaId,
-    required episode,
-    required episodeIndex,
-    required metaEiga,
-  }) async {
+  getOpeningEnding(props) async {
     final episodeId = await _getEpisodeIDApi(
-      eigaId: eigaId,
-      episode: episode,
-      episodeIndex: episodeIndex,
-      metaEiga: metaEiga,
+      eigaId: props.eigaId,
+      episode: props.episode,
+      metaEiga: props.metaEiga,
     );
     final meta = jsonDecode(
       await _callApiAnimeVsub('$_apiThumb/episode-skip/$episodeId'),
@@ -771,7 +756,6 @@ class AnimeVietsubService extends ABEigaService
   getWatchTime({
     required String eigaId,
     required EigaEpisode episode,
-    required int episodeIndex,
     required MetaEiga metaEiga,
   }) async {
     final userUid = await _getUidUser();
@@ -823,7 +807,6 @@ class AnimeVietsubService extends ABEigaService
   Future<void> setWatchTime({
     required eigaId,
     required episode,
-    required episodeIndex,
     required MetaEiga metaEiga,
     required season,
     required WatchTime watchTime,

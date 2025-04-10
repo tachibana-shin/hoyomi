@@ -415,6 +415,41 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
   }
 
   @override
+  getSeekThumbnail(props) async {
+    final data = jsonDecode(props.source.extra!);
+
+    final subtitles = data['subtitles'] as List;
+    // is {url: string, lang: string}[] ! lang=thumbnails is preview thumbnail
+
+    final file = subtitles.firstWhereOrNull(
+        (subtitle) => subtitle['lang'] == 'thumbnails') as Map?;
+    return file == null ? null : Vtt(src: file['url']);
+  }
+
+  @override
+  getOpeningEnding(props) async {
+    final data = jsonDecode(props.source.extra!);
+
+    final opening = data['intro'] as Map;
+    final ending = data['outro'] as Map;
+
+    return OpeningEnding(
+      opening: opening['start'] != opening['end']
+          ? DurationRange(
+              start: Duration(seconds: (opening['start'] as num).floor()),
+              end: Duration(seconds: (opening['end'] as num).floor()),
+            )
+          : null,
+      ending: ending['start'] != ending['end']
+          ? DurationRange(
+              start: Duration(seconds: (ending['start'] as num).floor()),
+              end: Duration(seconds: (ending['end'] as num).floor()),
+            )
+          : null,
+    );
+  }
+
+  @override
   getSuggest({required metaEiga, required eigaId, page}) async {
     final $ = await _cacheDetails[eigaId]!;
     return $('#main-content .flw-item').map(_parseItem);

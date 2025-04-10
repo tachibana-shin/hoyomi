@@ -1,3 +1,4 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/server_source.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
@@ -14,6 +15,28 @@ import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
 
 export 'package:hoyomi/core_services/service.dart';
+
+part 'ab_eiga_service.freezed.dart';
+
+@freezed
+class PropsGetSeekThumbnail with _$PropsGetSeekThumbnail {
+  const factory PropsGetSeekThumbnail({
+    required String eigaId,
+    required MetaEiga metaEiga,
+    required EigaEpisode episode,
+    required SourceVideo source,
+  }) = _PropsGetSeekThumbnail;
+}
+
+@freezed
+class PropsGetOpeningEnding with _$PropsGetOpeningEnding {
+  const factory PropsGetOpeningEnding({
+    required String eigaId,
+    required MetaEiga metaEiga,
+    required EigaEpisode episode,
+    required SourceVideo source,
+  }) = _PropsGetOpeningEnding;
+}
 
 abstract class ABEigaService extends Service {
   Future<EigaHome> home();
@@ -43,13 +66,6 @@ abstract class ABEigaService extends Service {
     throw UnimplementedError();
   }
 
-  Future<Vtt?> Function({
-    required String eigaId,
-    required EigaEpisode episode,
-    required int episodeIndex,
-    required MetaEiga metaEiga,
-  })? getThumbnailPreview;
-
   Future<List<Subtitle>> getSubtitles({
     required String eigaId,
     required EigaEpisode episode,
@@ -58,12 +74,11 @@ abstract class ABEigaService extends Service {
     throw UnimplementedError();
   }
 
-  Future<OpeningEnding?> getOpeningEnding({
-    required String eigaId,
-    required EigaEpisode episode,
-    required int episodeIndex,
-    required MetaEiga metaEiga,
-  }) {
+  Future<Vtt?> getSeekThumbnail(PropsGetSeekThumbnail props) {
+    throw UnimplementedError();
+  }
+
+  Future<OpeningEnding?> getOpeningEnding(PropsGetOpeningEnding props) {
     throw UnimplementedError();
   }
 
