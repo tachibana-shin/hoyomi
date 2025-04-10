@@ -438,7 +438,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     watch([_source], () {
       if (_source.value != null) {
-        _setupPlayer(_source.value!, uid);
+        _setupPlayer(_source.value!, uid, isMaster: true);
       }
     }, immediate: true);
 
@@ -629,8 +629,9 @@ class _PlayerEigaState extends State<PlayerEiga>
     });
   }
 
-  void _setupPlayer(SourceVideo source, String id) async {
-    _availableResolutions.value = [];
+  void _setupPlayer(SourceVideo source, String id,
+      {required bool isMaster}) async {
+    if (isMaster) _availableResolutions.value = [];
 
     _loading.value = true;
 
@@ -677,7 +678,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     content ??=
         await widget.service.fetch(url.toString(), headers: source.headers);
 
-    if (source.type == 'hls') {
+    if (isMaster && source.type == 'hls') {
       _initializeHls(
         content: content,
         url: url,
@@ -1756,13 +1757,15 @@ class _PlayerEigaState extends State<PlayerEiga>
     }, orElse: () => _availableResolutions.value.first);
 
     _setupPlayer(
-        SourceVideo(
-          src: resolution.variant.url.toString(),
-          type: 'hls',
-          headers: resolution.headers,
-          url: resolution.variant.url,
-        ),
-        _controllerId.value ?? uid);
+      SourceVideo(
+        src: resolution.variant.url.toString(),
+        type: 'hls',
+        headers: resolution.headers,
+        url: resolution.variant.url,
+      ),
+      _controllerId.value ?? uid,
+      isMaster: false,
+    );
   }
 
   void _showQualityOptions() {
