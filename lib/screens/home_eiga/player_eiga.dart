@@ -837,7 +837,7 @@ class _PlayerEigaState extends State<PlayerEiga>
               variant.format.height?.toString() ??
               variant.format.id ??
               variant.url.toString(),
-          headers: {...headers, 'referer': variant.url.toString()},
+          headers: headers,
         );
       }).toList();
 
