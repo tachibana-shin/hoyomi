@@ -24,7 +24,7 @@ mixin _$Subtitle {
   String get code => throw _privateConstructorUsedError;
   SubtitleType get type => throw _privateConstructorUsedError;
   String get url => throw _privateConstructorUsedError;
-  Map<String, String>? get headers => throw _privateConstructorUsedError;
+  Headers? get headers => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,7 +42,9 @@ abstract class $SubtitleCopyWith<$Res> {
       String code,
       SubtitleType type,
       String url,
-      Map<String, String>? headers});
+      Headers? headers});
+
+  $HeadersCopyWith<$Res>? get headers;
 }
 
 /// @nodoc
@@ -84,8 +86,20 @@ class _$SubtitleCopyWithImpl<$Res, $Val extends Subtitle>
       headers: freezed == headers
           ? _value.headers
           : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
+              as Headers?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $HeadersCopyWith<$Res>? get headers {
+    if (_value.headers == null) {
+      return null;
+    }
+
+    return $HeadersCopyWith<$Res>(_value.headers!, (value) {
+      return _then(_value.copyWith(headers: value) as $Val);
+    });
   }
 }
 
@@ -102,7 +116,10 @@ abstract class _$$SubtitleImplCopyWith<$Res>
       String code,
       SubtitleType type,
       String url,
-      Map<String, String>? headers});
+      Headers? headers});
+
+  @override
+  $HeadersCopyWith<$Res>? get headers;
 }
 
 /// @nodoc
@@ -140,9 +157,9 @@ class __$$SubtitleImplCopyWithImpl<$Res>
           : url // ignore: cast_nullable_to_non_nullable
               as String,
       headers: freezed == headers
-          ? _value._headers
+          ? _value.headers
           : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
+              as Headers?,
     ));
   }
 }
@@ -155,8 +172,7 @@ class _$SubtitleImpl implements _Subtitle {
       required this.code,
       required this.type,
       required this.url,
-      final Map<String, String>? headers})
-      : _headers = headers;
+      this.headers});
 
   factory _$SubtitleImpl.fromJson(Map<String, dynamic> json) =>
       _$$SubtitleImplFromJson(json);
@@ -169,15 +185,8 @@ class _$SubtitleImpl implements _Subtitle {
   final SubtitleType type;
   @override
   final String url;
-  final Map<String, String>? _headers;
   @override
-  Map<String, String>? get headers {
-    final value = _headers;
-    if (value == null) return null;
-    if (_headers is EqualUnmodifiableMapView) return _headers;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
+  final Headers? headers;
 
   @override
   String toString() {
@@ -194,13 +203,13 @@ class _$SubtitleImpl implements _Subtitle {
             (identical(other.code, code) || other.code == code) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.url, url) || other.url == url) &&
-            const DeepCollectionEquality().equals(other._headers, _headers));
+            (identical(other.headers, headers) || other.headers == headers));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, language, code, type, url,
-      const DeepCollectionEquality().hash(_headers));
+  int get hashCode =>
+      Object.hash(runtimeType, language, code, type, url, headers);
 
   @JsonKey(ignore: true)
   @override
@@ -222,7 +231,7 @@ abstract class _Subtitle implements Subtitle {
       required final String code,
       required final SubtitleType type,
       required final String url,
-      final Map<String, String>? headers}) = _$SubtitleImpl;
+      final Headers? headers}) = _$SubtitleImpl;
 
   factory _Subtitle.fromJson(Map<String, dynamic> json) =
       _$SubtitleImpl.fromJson;
@@ -236,7 +245,7 @@ abstract class _Subtitle implements Subtitle {
   @override
   String get url;
   @override
-  Map<String, String>? get headers;
+  Headers? get headers;
   @override
   @JsonKey(ignore: true)
   _$$SubtitleImplCopyWith<_$SubtitleImpl> get copyWith =>

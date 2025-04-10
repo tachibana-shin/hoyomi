@@ -11,10 +11,9 @@ _$SourceVideoImpl _$$SourceVideoImplFromJson(Map<String, dynamic> json) =>
       src: json['src'] as String,
       url: Uri.parse(json['url'] as String),
       type: json['type'] as String,
-      headers: (json['headers'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry(k, e as String),
-          ) ??
-          const {},
+      headers: json['headers'] == null
+          ? null
+          : Headers.fromJson(json['headers'] as Map<String, dynamic>),
       extra: json['extra'] as String?,
     );
 

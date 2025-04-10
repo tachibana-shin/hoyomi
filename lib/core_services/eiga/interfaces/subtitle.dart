@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:subtitle/subtitle.dart';
+
+import 'main.dart';
 
 export 'package:subtitle/subtitle.dart' show SubtitleType;
 
@@ -13,7 +14,7 @@ class Subtitle with _$Subtitle {
     required String code,
     required SubtitleType type,
     required String url,
-    Map<String, String>? headers,
+    Headers? headers,
   }) = _Subtitle;
 
   factory Subtitle.fromJson(Map<String, dynamic> json) =>

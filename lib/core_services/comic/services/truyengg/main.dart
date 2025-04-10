@@ -75,7 +75,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
     final $image = itemComic.queryOne('img');
     final OImage image = OImage(
       src: $image.attr('data-src'),
-      headers: {'referer': referer},
+      headers: Headers({'referer': referer}),
     );
     final String name = itemComic.queryOne('.comic_name').textRaw() ??
         itemComic.queryOne('img').attr('alt');
@@ -160,7 +160,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
     final String name = $('h1[itemprop=name]', single: true).text();
     final OImage image = OImage(
       src: $('.thumbblock > img', single: true).attr('src'),
-      headers: {'referer': baseUrl},
+      headers: Headers({'referer': baseUrl}),
     );
 
     final tales = $('.info_tale > .row');
@@ -279,7 +279,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
     return $('.content_detail_manga > img').map((img) {
       final src = img.attr('src');
 
-      return OImage(src: src, headers: {'referer': baseUrl});
+      return OImage(src: src, headers: Headers({'referer': baseUrl}));
     }).toList();
   }
 
@@ -342,7 +342,8 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
             chapterId: chapterId,
             userId: name,
             name: name,
-            photoUrl: OImage(src: photoUrl, headers: {'referer': baseUrl}),
+            photoUrl:
+                OImage(src: photoUrl, headers: Headers({'referer': baseUrl})),
             content: content,
             countLike: like,
             countDislike: dislike,
@@ -548,7 +549,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
 
     final data = await fetch(
       '$baseUrl/frontend/user/regiter-subscribe',
-      headers: {'x-requested-with': 'XMLHttpRequest'},
+      headers: Headers({'x-requested-with': 'XMLHttpRequest'}),
       body: {'id': id, 'token': csrf},
     );
 

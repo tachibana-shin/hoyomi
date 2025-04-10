@@ -274,7 +274,9 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final quality = pageData.movie.quality;
 
     // final status = pageData.movie.status;
-    final authors = [Genre(name: pageData.movie.director.first, genreId: Genre.noId)];
+    final authors = [
+      Genre(name: pageData.movie.director.first, genreId: Genre.noId)
+    ];
     final countries = pageData.movie.country
         .map((country) =>
             Genre(name: country.name, genreId: 'quoc-gia_${country.slug}'))
@@ -354,7 +356,7 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
       src: source.linkM3u8,
       url: Uri.parse(source.linkM3u8),
       type: 'hls',
-      headers: {'referer': baseUrl},
+      headers: Headers({'referer': baseUrl}),
     );
   }
 

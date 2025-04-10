@@ -84,7 +84,7 @@ class AnimeVietsubService extends ABEigaService
     final $ = await fetch$(
       '$baseUrl/account/info/',
       cookie: cookie,
-      headers: {'Referer': baseUrl},
+      headers: Headers({'Referer': baseUrl}),
     );
 
     if ($('.profile-userpic', single: true).isEmpty) {
@@ -190,7 +190,7 @@ class AnimeVietsubService extends ABEigaService
       src: $img.attr('data-cfsrc').isNotEmpty
           ? $img.attr('data-cfsrc')
           : $img.attr('src'),
-      headers: {'Referer': baseUrl},
+      headers: Headers({'Referer': baseUrl}),
     );
     final notice =
         '${originalName.isNotEmpty == true ? '$originalName ' : ''}${item.queryOne('.AAIco-access_time, .mli-eps').text()}';
@@ -409,12 +409,12 @@ class AnimeVietsubService extends ABEigaService
     final originalName = $('.SubTitle', single: true).text();
     final image = OImage(
       src: $('.Image img', single: true).attr('src'),
-      headers: {'referer': baseUrl},
+      headers: Headers({'Referer': baseUrl}),
     );
     final $img = $('.TPostBg img', single: true);
     final poster = $img.isEmpty
         ? null
-        : OImage(src: $img.attr('src'), headers: {'referer': baseUrl});
+        : OImage(src: $img.attr('src'), headers: Headers({'Referer': baseUrl}));
     final description = $('.Description', single: true).text();
 
     final rate = num.parse(
@@ -598,11 +598,11 @@ class AnimeVietsubService extends ABEigaService
     final image$ = $('.Image img', single: true).attrRaw('src');
     final image = image$ == null
         ? null
-        : OImage(src: image$, headers: {'referer': baseUrl});
+        : OImage(src: image$, headers: Headers({'Referer': baseUrl}));
     final poster$ = $('.TPostBg img', single: true).attrRaw('data-cfsrc');
     final poster = poster$ == null
         ? null
-        : OImage(src: poster$, headers: {'referer': baseUrl});
+        : OImage(src: poster$, headers: Headers({'Referer': baseUrl}));
 
     return EigaEpisodes(
       episodes: episodes,
@@ -627,7 +627,7 @@ class AnimeVietsubService extends ABEigaService
       src: json['link'][0]['file'],
       url: Uri.parse(baseUrl),
       type: json['playTech'] == 'api' ? 'hls' : 'embed',
-      headers: {'referer': baseUrl},
+      headers: Headers({'Referer': baseUrl}),
     );
   }
 

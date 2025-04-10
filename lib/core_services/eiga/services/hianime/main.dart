@@ -374,15 +374,17 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
             src: source['url'],
             url: Uri.parse(source['url']),
             type: source['type'] ?? 'hls',
-            headers: {
+            headers: Headers({
               'referer': 'https://megacloud.club/',
               'origin': 'https://megacloud.club/'
-            },
+            }),
             extra: json,
           );
         }
       } catch (e) {
         // optional: debug log
+
+        // ignore: avoid_print
         print('❌ Attempt ${attempt + 1} failed: $e');
       }
 

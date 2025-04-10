@@ -278,7 +278,9 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
     final quality = movie.quality;
 
     // final status = movie.status;
-    final authors = movie.director == null ? null : [Genre(name: movie.director!, genreId: Genre.noId)];
+    final authors = movie.director == null
+        ? null
+        : [Genre(name: movie.director!, genreId: Genre.noId)];
     final countries = _findGroup(movie, 'Quốc gia')
         ?.list
         .map((country) => Genre(
@@ -308,7 +310,8 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
       authors: authors,
       countries: countries,
       language: language,
-      studios:  studio == null ? null : [Genre(name: studio, genreId: Genre.noId)],
+      studios:
+          studio == null ? null : [Genre(name: studio, genreId: Genre.noId)],
       movieSeason: movieSeason,
       trailer: trailer,
     );
@@ -362,33 +365,35 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
       src: source.embed,
       url: Uri.parse(source.embed),
       type: 'hls',
-      headers: {'referer': baseUrl},
+      headers: Headers({'referer': baseUrl}),
     );
   }
 
   @override
   fetchSourceContent({required source}) async {
     final url = source.src.toString().replaceFirst('embed.php', 'get.php');
-    final content = await fetch(url, headers: {
-      'accept':
-          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-      'accept-language': 'vi-VN,vi;q=0.6',
-      'cache-control': 'no-cache',
-      'cookie': 'af30a30f-1d12-406e-ad01-d76d8b94da41=1',
-      'pragma': 'no-cache',
-      'priority': 'u=0, i',
-      'referer': source.src.toString(),
-      'sec-ch-ua': '"Chromium";v="130", "Brave";v="130", "Not?A_Brand";v="99"',
-      'sec-ch-ua-mobile': '?0',
-      'sec-ch-ua-platform': '"Windows"',
-      'sec-fetch-dest': 'document',
-      'sec-fetch-mode': 'navigate',
-      'sec-fetch-site': 'same-origin',
-      'sec-gpc': '1',
-      'upgrade-insecure-requests': '1',
-      'user-agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
-    });
+    final content = await fetch(url,
+        headers: Headers({
+          'accept':
+              'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+          'accept-language': 'vi-VN,vi;q=0.6',
+          'cache-control': 'no-cache',
+          'cookie': 'af30a30f-1d12-406e-ad01-d76d8b94da41=1',
+          'pragma': 'no-cache',
+          'priority': 'u=0, i',
+          'referer': source.src.toString(),
+          'sec-ch-ua':
+              '"Chromium";v="130", "Brave";v="130", "Not?A_Brand";v="99"',
+          'sec-ch-ua-mobile': '?0',
+          'sec-ch-ua-platform': '"Windows"',
+          'sec-fetch-dest': 'document',
+          'sec-fetch-mode': 'navigate',
+          'sec-fetch-site': 'same-origin',
+          'sec-gpc': '1',
+          'upgrade-insecure-requests': '1',
+          'user-agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
+        }));
 
     return SourceContent(
       content: content,

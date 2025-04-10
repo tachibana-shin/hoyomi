@@ -12,9 +12,9 @@ _$SubtitleImpl _$$SubtitleImplFromJson(Map<String, dynamic> json) =>
       code: json['code'] as String,
       type: $enumDecode(_$SubtitleTypeEnumMap, json['type']),
       url: json['url'] as String,
-      headers: (json['headers'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as String),
-      ),
+      headers: json['headers'] == null
+          ? null
+          : Headers.fromJson(json['headers'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$SubtitleImplToJson(_$SubtitleImpl instance) =>

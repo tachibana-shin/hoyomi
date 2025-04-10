@@ -9,7 +9,6 @@ part 'carousel_item.g.dart';
 class CarouselItem with _$CarouselItem {
   const factory CarouselItem({
     String? subText,
-
     required OImage image,
     required String eigaId,
     required String name,

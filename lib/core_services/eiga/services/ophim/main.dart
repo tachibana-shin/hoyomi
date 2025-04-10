@@ -288,7 +288,9 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final quality = pageData.data.item.quality;
 
     // final status = pageData.data.item.status;
-    final authors = [Genre(name: pageData.data.item.director.first, genreId: Genre.noId)];
+    final authors = [
+      Genre(name: pageData.data.item.director.first, genreId: Genre.noId)
+    ];
     final countries = pageData.data.item.country
         .map((country) =>
             Genre(name: country.name, genreId: 'quoc-gia_${country.slug}'))
@@ -315,7 +317,8 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
       authors: authors,
       countries: countries,
       language: language,
-      studios: studio == null ? null : [Genre(name: studio, genreId: Genre.noId)],
+      studios:
+          studio == null ? null : [Genre(name: studio, genreId: Genre.noId)],
       movieSeason: movieSeason,
       trailer: trailer,
     );
@@ -379,7 +382,7 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
       src: source.linkM3u8,
       url: Uri.parse(source.linkM3u8),
       type: 'hls',
-      headers: {'referer': baseUrl},
+      headers: Headers({'referer': baseUrl}),
     );
   }
 

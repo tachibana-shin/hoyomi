@@ -108,7 +108,7 @@ class _VariantMeta {
   final Variant variant;
   final String code;
   final String label;
-  final Map<String, String> headers;
+  final Headers? headers;
 
   _VariantMeta({
     required this.variant,
@@ -662,7 +662,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     _controller.value = VideoPlayerController.networkUrl(
       url,
-      httpHeaders: source.headers,
+      httpHeaders: source.headers?.toMap() ?? const <String, String>{},
       videoPlayerOptions: VideoPlayerOptions(
         allowBackgroundPlayback: true,
       ),
@@ -816,7 +816,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   Future<void> _initializeHls({
     required String content,
     required Uri url,
-    required Map<String, String> headers,
+    required Headers? headers,
   }) async {
     final playlist = await HlsPlaylistParser.create().parseString(url, content);
 

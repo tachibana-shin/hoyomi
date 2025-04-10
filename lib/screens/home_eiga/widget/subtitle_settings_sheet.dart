@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';                                             
+import 'package:flutter/material.dart';
 import 'package:hoyomi/database/scheme/subtitle_settings.dart';
 import 'package:hoyomi/controller/subtitle_settings_controller.dart';
 
@@ -58,7 +58,7 @@ class _SubtitleSettingsSheetState extends State<SubtitleSettingsSheet> {
       ),
       child: SizedBox(
         // constraints: BoxConstraints(
-          // maxHeight: 50.h(context),
+        // maxHeight: 50.h(context),
         // ),
         height: widget.height,
         child: Column(
