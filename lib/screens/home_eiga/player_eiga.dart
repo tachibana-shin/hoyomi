@@ -1431,6 +1431,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       }
 
       final visible = _visibleTooltipSkipOE.value;
+      if (visible != true) return SizedBox.shrink();
 
       final opening = _openingEnding.value!.opening;
       final ending = _openingEnding.value!.ending;
@@ -1445,115 +1446,106 @@ class _PlayerEigaState extends State<PlayerEiga>
         ),
       );
 
-      return AnimatedSwitcher(
-        duration: Duration(milliseconds: 444),
-        transitionBuilder: (child, animation) =>
-            FadeTransition(opacity: animation, child: child),
-        child: visible
-            ? Positioned(
-                right: 10,
-                bottom: 30,
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: XPlatform.isWindows ? 8.0 : 2.0,
+      return Positioned(
+        right: 10,
+        bottom: 30,
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 12.0,
+            vertical: XPlatform.isWindows ? 8.0 : 2.0,
+          ),
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(28, 28, 28, 0.9),
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Wrap(
+                alignment: WrapAlignment.center,
+                children: [
+                  Text(
+                    'Skip ',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.0,
+                    ),
                   ),
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(28, 28, 28, 0.9),
+                  Text(
+                    _stateOpeningEnding.value == _StateOpeningEnding.opening
+                        ? 'Opening'
+                        : 'Ending',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                ).copyWith(right: 0.0),
+                width: 1.0,
+                height: 30.0,
+                color: Color.fromRGBO(255, 255, 255, 0.28),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      if (_stateOpeningEnding.value ==
+                          _StateOpeningEnding.opening) {
+                        if (_controller.value != null) {
+                          _seekTo(
+                            _controller.value!,
+                            _openingEnding.value!.opening!.end,
+                          );
+                        }
+                      } else {
+                        if (_controller.value != null) {
+                          _seekTo(
+                            _controller.value!,
+                            _openingEnding.value!.ending!.end,
+                          );
+                        }
+                      }
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Skip (Enter)',
+                          style: TextStyle(
+                            color: Colors.white.withValues(
+                              alpha: 0.9,
+                            ),
+                            fontSize: 12.0,
+                          ),
+                        ),
+                        widgetTextSeconds,
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      _stateOpeningEnding.force(_StateOpeningEnding.skip);
+                    },
                     borderRadius: BorderRadius.circular(5.0),
+                    highlightColor: Colors.black,
+                    child: Icon(
+                      Icons.close,
+                      size: 16.0,
+                      color: Colors.white,
+                    ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        children: [
-                          Text(
-                            'Skip ',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                          Text(
-                            _stateOpeningEnding.value ==
-                                    _StateOpeningEnding.opening
-                                ? 'Opening'
-                                : 'Ending',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                        ).copyWith(right: 0.0),
-                        width: 1.0,
-                        height: 30.0,
-                        color: Color.fromRGBO(255, 255, 255, 0.28),
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              if (_stateOpeningEnding.value ==
-                                  _StateOpeningEnding.opening) {
-                                if (_controller.value != null) {
-                                  _seekTo(
-                                    _controller.value!,
-                                    _openingEnding.value!.opening!.end,
-                                  );
-                                }
-                              } else {
-                                if (_controller.value != null) {
-                                  _seekTo(
-                                    _controller.value!,
-                                    _openingEnding.value!.ending!.end,
-                                  );
-                                }
-                              }
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  'Skip (Enter)',
-                                  style: TextStyle(
-                                    color: Colors.white.withValues(
-                                      alpha: 0.9,
-                                    ),
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                                widgetTextSeconds,
-                              ],
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              _stateOpeningEnding
-                                  .force(_StateOpeningEnding.skip);
-                            },
-                            borderRadius: BorderRadius.circular(5.0),
-                            highlightColor: Colors.black,
-                            child: Icon(
-                              Icons.close,
-                              size: 16.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            : null,
+                ],
+              ),
+            ],
+          ),
+        ),
       );
     });
   }
