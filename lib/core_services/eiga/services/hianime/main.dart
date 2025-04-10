@@ -357,29 +357,39 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
 
   @override
   getSource({required eigaId, required episode, server}) async {
-    final json = await fetch(
-        '${Env.twoApi}?episodeId=$eigaId\$episode\$${episode.episodeId}\$${server!.serverId}');
-    final data = jsonDecode(json);
+    for (var attempt = 0; attempt < 3; attempt++) {
+      try {
+        final json = await fetch(
+            '${Env.twoApi}?episodeId=$eigaId\$episode\$${episode.episodeId}\$${server!.serverId}');
+        final data = jsonDecode(json);
 
-    final sources = data['sources'] as List<dynamic>;
-    // find first source type is hls or  m3u8
-    final source = sources.firstWhereOrNull((source) =>
-        source['type'] == 'hls' ||
-        source['isM3U8'] == true ||
-        source['url'].toString().endsWith('.m3u8'));
+        final sources = data['sources'] as List<dynamic>;
+        final source = sources.firstWhereOrNull((source) =>
+            source['type'] == 'hls' ||
+            source['isM3U8'] == true ||
+            source['url'].toString().endsWith('.m3u8'));
 
-    if (source == null) throw Exception('No source found');
+        if (source != null) {
+          return SourceVideo(
+            src: source['url'],
+            url: Uri.parse(source['url']),
+            type: source['type'] ?? 'hls',
+            headers: {
+              'Referer': 'https://megacloud.club/',
+              'Origin': 'https://megacloud.club/'
+            },
+            extra: json,
+          );
+        }
+      } catch (e) {
+        // optional: debug log
+        print('❌ Attempt ${attempt + 1} failed: $e');
+      }
 
-    return SourceVideo(
-      src: source['url'],
-      url: Uri.parse(source['url']),
-      type: source['type'] ?? 'hls',
-      headers: {
-        'Referer': 'https://megacloud.club/',
-        'Origin': 'https://megacloud.club/'
-      },
-      extra: json,
-    );
+      await Future.delayed(const Duration(milliseconds: 300));
+    }
+
+    throw Exception('No source found');
   }
 
   // @override
