@@ -77,8 +77,8 @@ class PlayerEiga extends StatefulWidget {
   final Function(WatchTimeData data) onWatchTimeChanged;
 
   /// ================= player expose =================
-  final Computed<Future<List<ServerSource>>?> serversFuture;
-  final Ref<int?> serverSelected;
+  final Computed<Future<List<ServerSource>?>?> serversFuture;
+  final Ref<String?> serverIdSelected;
 
   /// ================= /player expose =================
 
@@ -98,7 +98,7 @@ class PlayerEiga extends StatefulWidget {
     required this.onPrev,
     required this.onWatchTimeChanged,
     required this.serversFuture,
-    required this.serverSelected,
+    required this.serverIdSelected,
   });
   @override
   State<PlayerEiga> createState() => _PlayerEigaState();
@@ -186,6 +186,8 @@ class _PlayerEigaState extends State<PlayerEiga>
   late final _showBrightness = ref(false);
   late final _showVolume = ref(false);
 
+  late final AsyncComputed<List<ServerSource>?> _servers;
+  late final Computed<ServerSource?> _server;
   late final AsyncComputed<SourceVideo?> _source;
   late final AsyncComputed<List<type.Subtitle>?> _subtitles;
   late final Computed<type.Subtitle?> _subtitle;
@@ -210,31 +212,51 @@ class _PlayerEigaState extends State<PlayerEiga>
     /// =================== Core data ====================
     final metaIsFake = computed(() => widget.metaEiga.value.fake);
 
+    /// Servers
+    _servers = asyncComputed(() async {
+      return await widget.serversFuture.value;
+    });
+
+    /// Server
+    _server = computed(() {
+      if (metaIsFake.value || widget.episode.value == null) return null;
+
+      final servers = _servers.value;
+      if (servers == null || servers.isEmpty) return null;
+
+      final serverId = widget.serverIdSelected.value;
+      final server = serverId == null
+          ? servers.first
+          : servers.firstWhere((server) => server.serverId == serverId,
+              orElse: () => servers.first);
+
+      return server;
+    });
+
     /// Source
     _source = asyncComputed(
       () async {
         if (metaIsFake.value || widget.episode.value == null) return null;
         widget.eigaId.value;
-        widget.serverSelected.value;
+        _server.value;
 
-        late final List<ServerSource>? servers;
+        late final bool hasServers;
         try {
-          servers = await widget.serversFuture.value;
+          final servers = await widget.serversFuture.value;
+          hasServers = servers?.isNotEmpty == true;
         } on UnimplementedError {
-          servers = null;
+          hasServers = false;
         }
 
         final episode = widget.episode.value;
-        if (episode == null) return null;
-
-        final serverSelected =
-            servers == null ? null : widget.serverSelected.value;
+        if (episode == null || (hasServers ? _server.value == null : false)) {
+          return null;
+        }
 
         return widget.service.getSource(
           eigaId: widget.eigaId.value,
           episode: episode,
-          server: servers
-              ?.elementAt((serverSelected ?? 0).clamp(0, servers.length - 1)),
+          server: _server.value,
         );
       },
       onError: (error) {
@@ -1771,7 +1793,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     );
   }
 
-  void _showServerPickerBottomSheet() {
+  void _showServerOptions() {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -1790,21 +1812,21 @@ class _PlayerEigaState extends State<PlayerEiga>
             ),
             const Divider(height: 1),
             Expanded(
-              child: Watch(() => FutureBuilder(
-                    future: widget.serversFuture.value,
-                    builder: (context, snapshot) {
-                      return ListView(
-                        children: snapshot.data?.map((server) {
-                              return ListTile(
-                                title: Text(server.name),
-                                onTap: () => Navigator.pop(context, server),
-                              );
-                            }).toList() ??
-                            const <Widget>[],
-                      );
-                    },
-                  )),
-            ),
+                child: Watch(() => ListView(
+                      children: _servers.value?.map((server) {
+                            return ListTile(
+                              leading: server == _server.value
+                                  ? Icon(Icons.check)
+                                  : Text(''),
+                              title: Text(server.name),
+                              onTap: () {
+                                Navigator.pop(context, server);
+                                widget.serverIdSelected.value = server.serverId;
+                              },
+                            );
+                          }).toList() ??
+                          const <Widget>[],
+                    ))),
             const SizedBox(height: 8),
           ],
         );
@@ -1885,44 +1907,22 @@ class _PlayerEigaState extends State<PlayerEiga>
                     ),
                   ),
                 ),
-                Watch(
-                  () => FutureBuilder(
-                    future: widget.serversFuture.value,
-                    builder: (context, snapshot) =>
-                        snapshot.data?.isNotEmpty != true
-                            ? SizedBox.shrink()
-                            : Watch(
-                                () {
-                                  final servers = snapshot.data!;
-                                  final serverSelected =
-                                      widget.serverSelected.value;
-
-                                  final server = servers.elementAt(
-                                      (serverSelected ?? 0)
-                                          .clamp(0, servers.length - 1));
-
-                                  return ListTile(
-                                      leading: Icon(Icons.cloud),
-                                      title: Text(
-                                        'Server play',
-                                        style: TextStyle(fontSize: 14.0),
-                                      ),
-                                      trailing: Text(
-                                        server.name,
-                                        style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                        ),
-                                      ),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        _showServerPickerBottomSheet();
-                                      });
-                                },
-                              ),
-                  ),
-                ),
+                Watch(() => ListTile(
+                    leading: Icon(Icons.cloud_outlined),
+                    title: Text(
+                      'Server play',
+                      style: TextStyle(fontSize: 14.0),
+                    ),
+                    trailing: Text(
+                      _server.value?.name ?? '',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _showServerOptions();
+                    })),
                 ListTile(
                   leading: Icon(Icons.lock_outline),
                   title: Text(

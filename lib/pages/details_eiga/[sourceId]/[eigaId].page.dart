@@ -77,15 +77,17 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final _onNextNotifier = ref<VoidCallback?>(null);
 
   /// ================= player expose =================
-  late final _serversFuture = computed<Future<List<ServerSource>>?>(() {
+  late final _serversFuture = computed<Future<List<ServerSource>?>?>(() {
     if (_metaIsFake.value) return null;
 
     final episode = _episode.value;
     if (episode == null) return null;
 
-    return _service.getServers(eigaId: _eigaId.value, episode: episode);
+    return _service
+        .getServers(eigaId: _eigaId.value, episode: episode)
+        .then((servers) => servers.isEmpty ? null : servers);
   });
-  late final _serverSelected = ref<int?>(null);
+  late final _serverIdSelected = ref<String?>(null);
 
   /// ================= /player expose =================
 
@@ -282,7 +284,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
       /// ===============
       serversFuture: _serversFuture,
-      serverSelected: _serverSelected,
+      serverIdSelected: _serverIdSelected,
     );
   }
 
@@ -1097,12 +1099,15 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       child: Scrollbar(
                         child: ToggleSwitch(
                           minHeight: 30,
-                          initialLabelIndex: (_serverSelected.value ?? 0)
-                              .clamp(0, servers.length - 1),
+                          initialLabelIndex: max(
+                              servers.indexWhere((server) =>
+                                  server.serverId == _serverIdSelected.value),
+                              0),
                           totalSwitches: servers.length,
                           labels: servers.map((server) => server.name).toList(),
                           radiusStyle: true,
-                          onToggle: (index) => _serverSelected.value = index,
+                          onToggle: (index) => _serverIdSelected.value =
+                              servers.elementAt(index ?? 0).serverId,
                         ),
                       )),
                 ),
