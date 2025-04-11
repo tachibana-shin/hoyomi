@@ -861,7 +861,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                 padding: EdgeInsets.only(bottom: SliderEiga.thumbSize),
                 child: AspectRatio(
                   aspectRatio: widget.aspectRatio,
-                  child: _buildStack(context),
+                  child: _buildStack(context, isFullscreen: false),
                 ),
               ),
               _buildMobileSliderProgress(),
@@ -869,7 +869,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           ));
   }
 
-  Widget _buildStack(BuildContext context) {
+  Widget _buildStack(BuildContext context, {required bool isFullscreen}) {
     return Stack(
       children: [
         Positioned(
@@ -1284,6 +1284,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                 child: IgnorePointer(
                   ignoring: !(_fullscreen.value ? _showControls.value : true),
                   child: SliderEiga(
+                    key: Key(widget.key.hashCode.toString()),
                     progress: _position,
                     duration: _duration,
                     buffered: _buffered,
@@ -1609,10 +1610,15 @@ class _PlayerEigaState extends State<PlayerEiga>
             Animation<double> animation,
             Animation<double> secondaryAnimation,
           ) {
-            return Scaffold(
-              backgroundColor: Colors.transparent,
-              extendBodyBehindAppBar: true,
-              body: _buildStack(context),
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaler: TextScaler.linear(1.2),
+              ),
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                extendBodyBehindAppBar: true,
+                body: _buildStack(context, isFullscreen: true),
+              ),
             );
           }));
     } else {
