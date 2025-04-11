@@ -43,7 +43,7 @@ class VerticalEiga extends StatelessWidget {
         subtitle: eiga.lastEpisode?.name,
         timeAgo: eiga.timeAgo,
         extend: [
-          if (eiga.countDub != null)
+          if (eiga.countSub != null)
             Row(mainAxisSize: MainAxisSize.min, children: [
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 4.0),
