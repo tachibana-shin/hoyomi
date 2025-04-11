@@ -105,7 +105,7 @@ class OImage with _$OImage {
         'set-cookie': service.getSetting(key: 'cookie') ?? '',
         'user-agent': service.getSetting(key: 'user_agent') ?? '',
         ...headers?.toMap() ?? {},
-      }),
+      }).toMap(),
       cacheWidth: cacheWidth,
       cacheHeight: cacheHeight,
     );
