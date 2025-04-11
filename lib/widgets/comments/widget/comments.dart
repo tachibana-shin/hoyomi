@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comments.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comment.dart';
+import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/widgets/comments/widget/comment.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
@@ -163,7 +164,7 @@ class _CommentsState extends State<Comments> {
                 CircleAvatar(
                   backgroundImage: NetworkImage(
                     comment.photoUrl.src,
-                    headers: comment.photoUrl.headers,
+                    headers: comment.photoUrl.headers?.toMap(),
                   ),
                   radius: 12,
                 ),

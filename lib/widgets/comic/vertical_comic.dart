@@ -39,6 +39,7 @@ class VerticalComic extends StatelessWidget {
       title: comic.name,
       subtitle: comic.lastChap?.name,
       timeAgo: comic.timeAgo,
+      extend: const <Widget>[],
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'main.dart';
+
 part 'source_video.freezed.dart';
 part 'source_video.g.dart';
 
@@ -9,7 +11,8 @@ class SourceVideo with _$SourceVideo {
     required String src,
     required Uri url,
     required String type,
-    @Default({}) Map<String, String> headers,
+    Headers? headers,
+    String? extra,
   }) = _SourceVideo;
 
   factory SourceVideo.fromJson(Map<String, dynamic> json) =>

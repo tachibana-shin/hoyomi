@@ -23,6 +23,7 @@ class CardItem extends StatelessWidget {
   final String title;
   final String? subtitle;
   final DateTime? timeAgo;
+  final List<Widget> extend;
 
   const CardItem({
     super.key,
@@ -38,6 +39,7 @@ class CardItem extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.timeAgo,
+    required this.extend,
   });
 
   @override
@@ -101,37 +103,51 @@ class CardItem extends StatelessWidget {
                 ),
 
                 // top
-                if (notice != null)
+                if (notice != null && notice!.isNotEmpty)
                   Positioned(
                     top: 4,
                     left: 0,
                     right: 4,
-                    child: Wrap(
-                      alignment: WrapAlignment.end,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(
-                            left: 8.0,
-                            right: 8.0,
-                            top: 4.0,
-                            bottom: 4.0,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Wrap(
+                            alignment: WrapAlignment.end,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.only(
+                                  left: 8.0,
+                                  right: 8.0,
+                                  top: 4.0,
+                                  bottom: 4.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainer,
+                                  borderRadius: BorderRadius.circular(14.0),
+                                ),
+                                child: Text(
+                                  notice!,
+                                  style: Theme.of(
+                                    context,
+                                  )
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(fontSize: 10.0),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).colorScheme.surfaceContainer,
-                            borderRadius: BorderRadius.circular(14.0),
-                          ),
-                          child: Text(
-                            notice!,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodySmall?.copyWith(fontSize: 10.0),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
+                          if (extend.isNotEmpty)
+                            Wrap(
+                              alignment: WrapAlignment.end,
+                              spacing: 2,
+                              children: extend,
+                            ),
+                        ]),
                   ),
 
                 // bottom

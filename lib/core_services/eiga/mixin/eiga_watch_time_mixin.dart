@@ -7,7 +7,6 @@ mixin EigaWatchTimeMixin on AuthMixin {
   Future<WatchTime> getWatchTime({
     required String eigaId,
     required EigaEpisode episode,
-    required int episodeIndex,
     required MetaEiga metaEiga,
   });
 
@@ -21,7 +20,6 @@ mixin EigaWatchTimeMixin on AuthMixin {
   Future<void> setWatchTime({
     required String eigaId,
     required EigaEpisode episode,
-    required int episodeIndex,
     required MetaEiga metaEiga,
     required Season season,
     required WatchTime watchTime,

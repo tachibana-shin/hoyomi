@@ -22,7 +22,9 @@ Subtitle _$SubtitleFromJson(Map<String, dynamic> json) {
 mixin _$Subtitle {
   String get language => throw _privateConstructorUsedError;
   String get code => throw _privateConstructorUsedError;
+  SubtitleType get type => throw _privateConstructorUsedError;
   String get url => throw _privateConstructorUsedError;
+  Headers? get headers => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,7 +37,14 @@ abstract class $SubtitleCopyWith<$Res> {
   factory $SubtitleCopyWith(Subtitle value, $Res Function(Subtitle) then) =
       _$SubtitleCopyWithImpl<$Res, Subtitle>;
   @useResult
-  $Res call({String language, String code, String url});
+  $Res call(
+      {String language,
+      String code,
+      SubtitleType type,
+      String url,
+      Headers? headers});
+
+  $HeadersCopyWith<$Res>? get headers;
 }
 
 /// @nodoc
@@ -53,7 +62,9 @@ class _$SubtitleCopyWithImpl<$Res, $Val extends Subtitle>
   $Res call({
     Object? language = null,
     Object? code = null,
+    Object? type = null,
     Object? url = null,
+    Object? headers = freezed,
   }) {
     return _then(_value.copyWith(
       language: null == language
@@ -64,11 +75,31 @@ class _$SubtitleCopyWithImpl<$Res, $Val extends Subtitle>
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as String,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as SubtitleType,
       url: null == url
           ? _value.url
           : url // ignore: cast_nullable_to_non_nullable
               as String,
+      headers: freezed == headers
+          ? _value.headers
+          : headers // ignore: cast_nullable_to_non_nullable
+              as Headers?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $HeadersCopyWith<$Res>? get headers {
+    if (_value.headers == null) {
+      return null;
+    }
+
+    return $HeadersCopyWith<$Res>(_value.headers!, (value) {
+      return _then(_value.copyWith(headers: value) as $Val);
+    });
   }
 }
 
@@ -80,7 +111,15 @@ abstract class _$$SubtitleImplCopyWith<$Res>
       __$$SubtitleImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String language, String code, String url});
+  $Res call(
+      {String language,
+      String code,
+      SubtitleType type,
+      String url,
+      Headers? headers});
+
+  @override
+  $HeadersCopyWith<$Res>? get headers;
 }
 
 /// @nodoc
@@ -96,7 +135,9 @@ class __$$SubtitleImplCopyWithImpl<$Res>
   $Res call({
     Object? language = null,
     Object? code = null,
+    Object? type = null,
     Object? url = null,
+    Object? headers = freezed,
   }) {
     return _then(_$SubtitleImpl(
       language: null == language
@@ -107,10 +148,18 @@ class __$$SubtitleImplCopyWithImpl<$Res>
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as String,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as SubtitleType,
       url: null == url
           ? _value.url
           : url // ignore: cast_nullable_to_non_nullable
               as String,
+      headers: freezed == headers
+          ? _value.headers
+          : headers // ignore: cast_nullable_to_non_nullable
+              as Headers?,
     ));
   }
 }
@@ -119,7 +168,11 @@ class __$$SubtitleImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$SubtitleImpl implements _Subtitle {
   const _$SubtitleImpl(
-      {required this.language, required this.code, required this.url});
+      {required this.language,
+      required this.code,
+      required this.type,
+      required this.url,
+      this.headers});
 
   factory _$SubtitleImpl.fromJson(Map<String, dynamic> json) =>
       _$$SubtitleImplFromJson(json);
@@ -129,11 +182,15 @@ class _$SubtitleImpl implements _Subtitle {
   @override
   final String code;
   @override
+  final SubtitleType type;
+  @override
   final String url;
+  @override
+  final Headers? headers;
 
   @override
   String toString() {
-    return 'Subtitle(language: $language, code: $code, url: $url)';
+    return 'Subtitle(language: $language, code: $code, type: $type, url: $url, headers: $headers)';
   }
 
   @override
@@ -144,12 +201,15 @@ class _$SubtitleImpl implements _Subtitle {
             (identical(other.language, language) ||
                 other.language == language) &&
             (identical(other.code, code) || other.code == code) &&
-            (identical(other.url, url) || other.url == url));
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.url, url) || other.url == url) &&
+            (identical(other.headers, headers) || other.headers == headers));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, language, code, url);
+  int get hashCode =>
+      Object.hash(runtimeType, language, code, type, url, headers);
 
   @JsonKey(ignore: true)
   @override
@@ -169,7 +229,9 @@ abstract class _Subtitle implements Subtitle {
   const factory _Subtitle(
       {required final String language,
       required final String code,
-      required final String url}) = _$SubtitleImpl;
+      required final SubtitleType type,
+      required final String url,
+      final Headers? headers}) = _$SubtitleImpl;
 
   factory _Subtitle.fromJson(Map<String, dynamic> json) =
       _$SubtitleImpl.fromJson;
@@ -179,7 +241,11 @@ abstract class _Subtitle implements Subtitle {
   @override
   String get code;
   @override
+  SubtitleType get type;
+  @override
   String get url;
+  @override
+  Headers? get headers;
   @override
   @JsonKey(ignore: true)
   _$$SubtitleImplCopyWith<_$SubtitleImpl> get copyWith =>

@@ -5,9 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
 import 'package:hoyomi/core_services/interfaces/main.dart';
+import 'package:hoyomi/extensions/iterable_extension.dart';
+import 'package:hoyomi/extensions/list_extension.dart';
 import 'package:hoyomi/widgets/vertical_separator.dart';
 import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/bi.dart';
 import 'package:iconify_flutter/icons/eva.dart';
+import 'package:intl/intl.dart';
 
 class CarouselEiga extends StatefulWidget {
   final double aspectRatio;
@@ -42,15 +46,11 @@ class _CarouselEigaState extends State<CarouselEiga> {
         // scale: 0.9,
         itemBuilder: (BuildContext context, int index) {
           final item = widget.items.elementAt(index);
-          final headers = [
+          final List<List<Widget>> headers = [
             if (item.rate != null)
               [
                 Row(mainAxisSize: MainAxisSize.min, children: [
-                  Iconify(
-                    Eva.star_fill,
-                    color: Colors.blue.shade200,
-                    size: 12.0,
-                  ),
+                  const Iconify(Eva.star_fill, size: 14.0),
                   Text(
                     ' ${item.rate}',
                     style: const TextStyle(
@@ -60,15 +60,119 @@ class _CarouselEigaState extends State<CarouselEiga> {
                   ),
                 ])
               ],
-            if (item.year != null)
+            if (item.type != null)
               [
-                Text(
-                  item.year!,
-                  style: const TextStyle(
-                    fontSize: 12.0,
-                    color: Colors.white,
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Iconify(Eva.play_circle_fill, size: 14.0),
+                  Text(
+                    ' ${item.type}',
+                    style: const TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
+                ])
+              ],
+            if (item.episodeDuration != null)
+              [
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Iconify(Eva.clock_fill, size: 14.0),
+                  Text(
+                    ' ${item.episodeDuration}',
+                    style: const TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                ])
+              ],
+            if ((item.updatedAt ?? item.year) != null)
+              [
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Iconify(Eva.calendar_fill, size: 14.0),
+                  Text(
+                    ' ${item.updatedAt != null ? DateFormat('MMM d, y').format(item.updatedAt!) : item.year!}',
+                    style: const TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                ])
+              ],
+            if (item.quality != null)
+              [
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                    decoration: BoxDecoration(
+                      color: Colors.greenAccent.shade400,
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    child: Center(
+                      child: Text(
+                        item.quality!,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 12.0,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ])
+              ],
+            if (item.countSub != null)
+              [
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(176, 227, 175, 1.0),
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    child: Center(
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Iconify(
+                        Bi.badge_cc_fill,
+                        color: Colors.black,
+                        size: 12.0,
+                      ),
+                      Text(
+                        ' ${item.countSub}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 12.0,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ])),
+                  )
+                ])
+              ],
+            if (item.countDub != null)
+              [
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(185, 231, 255, 1.0),
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    child: Center(
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Iconify(
+                        Eva.mic_fill,
+                        color: Colors.black,
+                        size: 12.0,
+                      ),
+                      Text(
+                        ' ${item.countDub}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 12.0,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ])),
+                  )
+                ])
               ],
             if (item.notice != null)
               [
@@ -206,49 +310,57 @@ class _CarouselEigaState extends State<CarouselEiga> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text(
-                              item.name,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.headlineSmall?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 20.0,
-                                  ),
+                            if (item.subText != null)
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 3.0),
+                                child: Text(item.subText!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall
+                                        ?.copyWith(
+                                            color: const Color(0xFFFFBADE),
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14.0)),
+                              ),
+                            FractionallySizedBox(
+                              widthFactor: 0.8,
+                              child: Text(
+                                item.name,
+                                maxLines: height < 300 ? 1 : 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 20.0,
+                                    ),
+                              ),
                             ),
                             if (item.originalName?.isNotEmpty == true)
                               Text(
                                 item.originalName!,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.headlineSmall?.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      color: Colors.white.withValues(
+                                          alpha: height < 300 ? 0.8 : 1.0),
+                                      fontWeight:
+                                          height < 300 ? null : FontWeight.w600,
                                       fontSize: 16.0,
                                     ),
                               ),
                             SizedBox(height: 5.0),
                             // rate
                             Wrap(
-                              children: headers
-                                  .asMap()
-                                  .entries
-                                  .fold<List<Widget>>([], (arr, entry) {
-                                int index = entry.key;
-                                final item = entry.value;
-
-                                arr.addAll(item);
-
-                                if (index > 0 && index < headers.length - 1) {
-                                  arr.add(const VerticalSeparator());
-                                }
-
-                                return arr;
-                              }),
+                              children:
+                                  headers.joinWith(const VerticalSeparator()),
                             ),
                             // genres
                             if (item.genres?.isNotEmpty == true)
@@ -260,11 +372,8 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                       return GestureDetector(
                                         onTap: genre.genreId == Genre.noId
                                             ? null
-                                            : () {
-                                                context.push(
-                                                  '/category_eiga/${widget.sourceId}/${genre.genreId}',
-                                                );
-                                              },
+                                            : () => context.push(
+                                                '/category_eiga/${widget.sourceId}/${genre.genreId}'),
                                         child: Text('#${genre.name}',
                                             style: genre.genreId == Genre.noId
                                                 ? null
@@ -280,18 +389,17 @@ class _CarouselEigaState extends State<CarouselEiga> {
                               SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: Wrap(
-                                    spacing: 7.0,
-                                    children: item.actors!.map((genre) {
+                                    children: item.actors!.indexed
+                                        .mapWithIterable((entry, list) {
+                                      final (index, actor) = entry;
                                       return GestureDetector(
-                                        onTap: genre.genreId == Genre.noId
+                                        onTap: actor.genreId == Genre.noId
                                             ? null
-                                            : () {
-                                                context.push(
-                                                  '/category_eiga/${widget.sourceId}/${genre.genreId}',
-                                                );
-                                              },
-                                        child: Text('#${genre.name}',
-                                            style: genre.genreId == Genre.noId
+                                            : () => context.push(
+                                                '/category_eiga/${widget.sourceId}/${actor.genreId}'),
+                                        child: Text(
+                                            '${actor.name}${index < list.length - 1 ? ', ' : ''}',
+                                            style: actor.genreId == Genre.noId
                                                 ? null
                                                 : TextStyle(
                                                     color: Colors.white

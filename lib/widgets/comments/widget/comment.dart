@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comments.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comment.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:hoyomi/widgets/comments/widget/comments.dart';
@@ -66,7 +67,7 @@ class _CommentState extends State<Comment> {
             CircleAvatar(
               backgroundImage: NetworkImage(
                 widget.comment.photoUrl.src,
-                headers: widget.comment.photoUrl.headers,
+                headers: widget.comment.photoUrl.headers?.toMap(),
               ),
               radius: 24,
             ),
@@ -248,7 +249,7 @@ class _CommentState extends State<Comment> {
       setState(() {
         widget.onCommentChanged(widget.comment.copyWith(like: old));
       });
-      showSnackBar(Text('Error: $err'));
+      showSnackError('like', err);
       debugPrint('Error: $err (${StackTrace.current})');
     }
   }
@@ -294,9 +295,7 @@ class _CommentState extends State<Comment> {
                             setState(() {
                               isDeleting = false;
                             });
-
-                            showSnackBar(Text('Error: $e'));
-                            debugPrint('Error: $e');
+                            showSnackError('delete', e);
                           }
                         },
                   child: isDeleting

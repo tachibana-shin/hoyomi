@@ -8,9 +8,9 @@ part of 'vtt.dart';
 
 _$VttImpl _$$VttImplFromJson(Map<String, dynamic> json) => _$VttImpl(
       src: json['src'] as String,
-      headers: (json['headers'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as String),
-      ),
+      headers: json['headers'] == null
+          ? null
+          : Headers.fromJson(json['headers'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$VttImplToJson(_$VttImpl instance) => <String, dynamic>{

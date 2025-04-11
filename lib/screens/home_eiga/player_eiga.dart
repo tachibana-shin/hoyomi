@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
+import 'package:get/get.dart' hide Response;
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/controller/general_settings_controller.dart';
@@ -20,9 +21,11 @@ import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/database/scheme/general_settings.dart';
+import 'package:hoyomi/logic/search_language.dart';
 import 'package:hoyomi/plugins/fullscreen.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
+import 'package:hoyomi/widgets/eiga/html_subtitle_wrapper.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:hoyomi/widgets/iconify.dart';
@@ -31,13 +34,13 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart' as type;
 import 'package:hoyomi/utils/save_file_cache.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import 'widget/subtitle_settings_sheet.dart';
 import 'widget/animated_icon_forward.dart';
 import 'widget/animated_icon_rewind.dart';
 import 'widget/area_forward.dart';
@@ -59,7 +62,6 @@ class PlayerEiga extends StatefulWidget {
 
   final Ref<String?> episodeId;
   final Ref<EigaEpisode?> episode;
-  final Ref<int?> episodeIndex;
 
   final Ref<Season?> season;
 
@@ -74,6 +76,12 @@ class PlayerEiga extends StatefulWidget {
 
   final Function(WatchTimeData data) onWatchTimeChanged;
 
+  /// ================= player expose =================
+  final Computed<Future<List<ServerSource>?>?> serversFuture;
+  final Ref<String?> serverIdSelected;
+
+  /// ================= /player expose =================
+
   const PlayerEiga({
     super.key,
     required this.service,
@@ -81,7 +89,6 @@ class PlayerEiga extends StatefulWidget {
     required this.metaEiga,
     required this.episodeId,
     required this.episode,
-    required this.episodeIndex,
     required this.season,
     required this.title,
     required this.subtitle,
@@ -90,6 +97,8 @@ class PlayerEiga extends StatefulWidget {
     required this.onNext,
     required this.onPrev,
     required this.onWatchTimeChanged,
+    required this.serversFuture,
+    required this.serverIdSelected,
   });
   @override
   State<PlayerEiga> createState() => _PlayerEigaState();
@@ -99,7 +108,7 @@ class _VariantMeta {
   final Variant variant;
   final String code;
   final String label;
-  final Map<String, String> headers;
+  final Headers? headers;
 
   _VariantMeta({
     required this.variant,
@@ -136,7 +145,6 @@ class _PlayerEigaState extends State<PlayerEiga>
   /// Like <video>
   late final _controllerId = ref<String?>(null);
   late final _controller = ref<VideoPlayerController?>(null);
-  late final SubtitleController subtitleController = SubtitleController();
 
   final _durationAnimate = const Duration(milliseconds: 300);
   final _teenSeconds = const Duration(seconds: 10);
@@ -178,8 +186,11 @@ class _PlayerEigaState extends State<PlayerEiga>
   late final _showBrightness = ref(false);
   late final _showVolume = ref(false);
 
+  late final AsyncComputed<List<ServerSource>?> _servers;
+  late final Computed<ServerSource?> _server;
   late final AsyncComputed<SourceVideo?> _source;
-  late final AsyncComputed<List<type.Subtitle>> _subtitles;
+  late final AsyncComputed<List<type.Subtitle>?> _subtitles;
+  late final Computed<type.Subtitle?> _subtitle;
   late final AsyncComputed<WatchTimeData?> _watchTimeData;
   late final AsyncComputed<Vtt?> _thumbnailVtt;
   late final AsyncComputed<OpeningEnding?> _openingEnding;
@@ -199,33 +210,126 @@ class _PlayerEigaState extends State<PlayerEiga>
     super.initState();
 
     /// =================== Core data ====================
+    final metaIsFake = computed(() => widget.metaEiga.value.fake);
+
+    /// Servers
+    _servers = asyncComputed(() async {
+      return await widget.serversFuture.value;
+    });
+
+    /// Server
+    _server = computed(() {
+      if (metaIsFake.value || widget.episode.value == null) return null;
+
+      final servers = _servers.value;
+      if (servers == null || servers.isEmpty) return null;
+
+      final serverId = widget.serverIdSelected.value;
+      final server = serverId == null
+          ? servers.first
+          : servers.firstWhere((server) => server.serverId == serverId,
+              orElse: () => servers.first);
+
+      return server;
+    });
+
+    /// Source
     _source = asyncComputed(
-        () async => widget.episode.value == null
-            ? null
-            : widget.service.getSource(
-                eigaId: widget.eigaId.value, episode: widget.episode.value!),
-        onError: (error) => (error is Response)
-            ? debugPrint('[source]: ${error.body}')
-            : debugPrint('[source]: $error (${StackTrace.current})'),
-        beforeUpdate: () => null);
+      () async {
+        if (metaIsFake.value || widget.episode.value == null) return null;
+        widget.eigaId.value;
+        _server.value;
+
+        late final bool hasServers;
+        try {
+          final servers = await widget.serversFuture.value;
+          hasServers = servers?.isNotEmpty == true;
+        } on UnimplementedError {
+          hasServers = false;
+        }
+
+        final episode = widget.episode.value;
+        if (episode == null || (hasServers ? _server.value == null : false)) {
+          return null;
+        }
+
+        return widget.service.getSource(
+          eigaId: widget.eigaId.value,
+          episode: episode,
+          server: _server.value,
+        );
+      },
+      onError: (error) {
+        if (error is! UnimplementedError) showSnackError('source', error);
+      },
+      beforeUpdate: () => null,
+    );
 
     /// Subtitles language
     _subtitles = asyncComputed(
-        () async => widget.episode.value == null
-            ? []
-            : widget.service.getSubtitles(
-                eigaId: widget.eigaId.value, episode: widget.episode.value!),
-        onError: (error) => (error is Response)
-            ? debugPrint('[subtitles]: ${error.statusCode}')
-            : debugPrint('[subtitles]: $error (${StackTrace.current})'));
+      () async {
+        final episode = widget.episode.value;
+        if (metaIsFake.value || episode == null) return null;
+
+        final source = _source.value;
+        if (source == null) return null;
+
+        try {
+          return await widget.service.getSubtitles(
+            eigaId: widget.eigaId.value,
+            episode: episode,
+            source: source,
+          );
+        } on UnimplementedError {
+          return null;
+        }
+      },
+      onError: (error) {
+        if (error is! UnimplementedError) showSnackError('subtitle', error);
+      },
+    );
+
+    /// watch subtitles
+    watch([_subtitles], () {
+      final subtitles = _subtitles.value;
+      if (subtitles == null) return;
+
+      if (_subtitleCode.value == null) {
+        // detect user language
+        final locale =
+            PlatformDispatcher.instance.locale.languageCode.toUpperCase();
+        debugPrint('current lang=$locale');
+        final subtitle = subtitles.firstWhereOrNull((subtitle) =>
+                searchLanguage(subtitle.code)?.codeShort == locale) ??
+            subtitles.firstWhereOrNull(
+                (subtitle) => searchLanguage(subtitle.code)?.codeShort == 'EN');
+
+        _subtitleCode.value = subtitle?.code;
+      }
+    });
+
+    /// _subtitle
+    _subtitle = computed(() {
+      final subtitles = _subtitles.value;
+      if (subtitles == null || subtitles.isEmpty) {
+        return null;
+      }
+
+      final subtitleCode = _subtitleCode.value;
+      if (subtitleCode == null) {
+        return null;
+      }
+
+      return subtitles.firstWhereOrNull((item) => item.code == subtitleCode) ??
+          subtitles.first;
+    });
 
     /// Watch data position
     _watchTimeData = asyncComputed<WatchTimeData?>(() async {
-      if (widget.service is EigaWatchTimeMixin && !widget.metaEiga.value.fake) {
+      if (widget.service is EigaWatchTimeMixin && !metaIsFake.value) {
         final eigaId = widget.eigaId.value;
         final episode = widget.episode.value;
-        final episodeIndex = widget.episodeIndex.value;
-        if (episode == null || episodeIndex == null) return null;
+        if (episode == null) return null;
 
         final episodeId = episode.episodeId;
 
@@ -233,7 +337,6 @@ class _PlayerEigaState extends State<PlayerEiga>
             .getWatchTime(
               eigaId: eigaId,
               episode: episode,
-              episodeIndex: episodeIndex,
               metaEiga: widget.metaEiga.value,
             )
             .then((data) => WatchTimeData(
@@ -262,16 +365,19 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     /// Preview images
     _thumbnailVtt = asyncComputed(() async {
-      if (widget.service.getThumbnailPreview != null &&
-          widget.episode.value != null &&
-          widget.episodeIndex.value != null &&
-          !widget.metaEiga.value.fake) {
-        return widget.service.getThumbnailPreview!(
-          eigaId: widget.eigaId.value,
-          episode: widget.episode.value!,
-          episodeIndex: widget.episodeIndex.value!,
-          metaEiga: widget.metaEiga.value,
-        );
+      if (widget.episode.value != null &&
+          !metaIsFake.value &&
+          _source.value != null) {
+        try {
+          return await widget.service.getSeekThumbnail(PropsGetSeekThumbnail(
+            eigaId: widget.eigaId.value,
+            episode: widget.episode.value!,
+            metaEiga: widget.metaEiga.value,
+            source: _source.value!,
+          ));
+        } on UnimplementedError {
+          return null;
+        }
       }
       return null;
     },
@@ -282,15 +388,15 @@ class _PlayerEigaState extends State<PlayerEiga>
     /// Position opening / ending
     _openingEnding = asyncComputed(() async {
       if (widget.episode.value != null &&
-          widget.episodeIndex.value != null &&
-          !widget.metaEiga.value.fake) {
+          !metaIsFake.value &&
+          _source.value != null) {
         try {
-          return widget.service.getOpeningEnding(
+          return widget.service.getOpeningEnding(PropsGetOpeningEnding(
             eigaId: widget.eigaId.value,
-            episode: widget.episode.value!,
-            episodeIndex: widget.episodeIndex.value!,
             metaEiga: widget.metaEiga.value,
-          );
+            episode: widget.episode.value!,
+            source: _source.value!,
+          ));
         } on UnimplementedError {
           return null;
         }
@@ -332,7 +438,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     watch([_source], () {
       if (_source.value != null) {
-        _setupPlayer(_source.value!, uid);
+        _setupPlayer(_source.value!, uid, isMaster: true);
       }
     }, immediate: true);
 
@@ -476,14 +582,12 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     final episodeId = widget.episodeId.value;
     final episode = widget.episode.value;
-    final episodeIndex = widget.episodeIndex.value;
 
     final season = widget.season.value;
 
     if (metaEiga.fake ||
         episodeId == null ||
         episode == null ||
-        episodeIndex == null ||
         season == null) {
       return;
     }
@@ -514,7 +618,6 @@ class _PlayerEigaState extends State<PlayerEiga>
         .setWatchTime(
       eigaId: eigaId,
       episode: episode,
-      episodeIndex: episodeIndex,
       metaEiga: metaEiga,
       season: season,
       watchTime: watchTime,
@@ -526,8 +629,11 @@ class _PlayerEigaState extends State<PlayerEiga>
     });
   }
 
-  void _setupPlayer(SourceVideo source, String id) async {
-    _availableResolutions.value = [];
+  void _setupPlayer(SourceVideo source, String id,
+      {required bool isMaster}) async {
+    if (isMaster) _availableResolutions.value = [];
+
+    _loading.value = true;
 
     late final Uri url;
     String? content;
@@ -556,7 +662,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     _controller.value = VideoPlayerController.networkUrl(
       url,
-      httpHeaders: source.headers,
+      httpHeaders: source.headers?.toMap() ?? const <String, String>{},
       videoPlayerOptions: VideoPlayerOptions(
         allowBackgroundPlayback: true,
       ),
@@ -572,7 +678,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     content ??=
         await widget.service.fetch(url.toString(), headers: source.headers);
 
-    if (source.type == 'hls') {
+    if (isMaster && source.type == 'hls') {
       _initializeHls(
         content: content,
         url: url,
@@ -710,7 +816,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   Future<void> _initializeHls({
     required String content,
     required Uri url,
-    required Map<String, String> headers,
+    required Headers? headers,
   }) async {
     final playlist = await HlsPlaylistParser.create().parseString(url, content);
 
@@ -731,10 +837,12 @@ class _PlayerEigaState extends State<PlayerEiga>
               variant.format.height?.toString() ??
               variant.format.id ??
               variant.url.toString(),
-          headers: {...headers, 'referer': variant.url.toString()},
+          headers: headers,
         );
       }).toList();
-      _setQualityCode(_availableResolutions.value.first.code);
+
+      /// video_player always select media playlist first in master playlist
+      _qualityCode.value = _availableResolutions.value.first.code;
     } else if (playlist is HlsMediaPlaylist) {
       // media m3u8 file
       debugPrint("[initialize_hls]: no action because is media playlist");
@@ -753,7 +861,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                 padding: EdgeInsets.only(bottom: SliderEiga.thumbSize),
                 child: AspectRatio(
                   aspectRatio: widget.aspectRatio,
-                  child: _buildStack(context),
+                  child: _buildStack(context, isFullscreen: false),
                 ),
               ),
               _buildMobileSliderProgress(),
@@ -761,7 +869,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           ));
   }
 
-  Widget _buildStack(BuildContext context) {
+  Widget _buildStack(BuildContext context, {required bool isFullscreen}) {
     return Stack(
       children: [
         Positioned(
@@ -827,15 +935,13 @@ class _PlayerEigaState extends State<PlayerEiga>
                 child: VideoPlayer(controller),
               ),
             );
-            return SubtitleWrapper(
-                enabled: _qualityCode.value != null,
-                videoPlayerController: controller,
-                subtitleController: subtitleController,
-                subtitleStyle: SubtitleStyle(
-                  textColor: Colors.white,
-                  hasBorder: true,
-                ),
-                videoChild: videoChild);
+
+            return HtmlSubtitleWrapper(
+              service: widget.service,
+              subtitle: _subtitle,
+              videoController: controller,
+              child: videoChild,
+            );
           }),
         ),
         Watch(() {
@@ -951,7 +1057,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                 ),
                 // icon subtitle
                 Watch(() {
-                  final isEnabled = _availableResolutions.value.isNotEmpty;
+                  final isEnabled = _subtitles.value?.isNotEmpty == true;
                   return Opacity(
                     opacity: isEnabled ? 1.0 : 0.5,
                     child: IgnorePointer(
@@ -965,7 +1071,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                         color: Colors.white,
                         onPressed: () => _subtitleCode.value == null
                             ? _showSubtitleOptions()
-                            : _setSubtitleCode(null),
+                            : (_subtitleCode.value = null),
                       ),
                     ),
                   );
@@ -1178,6 +1284,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                 child: IgnorePointer(
                   ignoring: !(_fullscreen.value ? _showControls.value : true),
                   child: SliderEiga(
+                    key: Key(widget.key.hashCode.toString()),
                     progress: _position,
                     duration: _duration,
                     buffered: _buffered,
@@ -1362,6 +1469,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       }
 
       final visible = _visibleTooltipSkipOE.value;
+      if (visible != true) return SizedBox.shrink();
 
       final opening = _openingEnding.value!.opening;
       final ending = _openingEnding.value!.ending;
@@ -1376,115 +1484,106 @@ class _PlayerEigaState extends State<PlayerEiga>
         ),
       );
 
-      return AnimatedSwitcher(
-        duration: Duration(milliseconds: 444),
-        transitionBuilder: (child, animation) =>
-            FadeTransition(opacity: animation, child: child),
-        child: visible
-            ? Positioned(
-                right: 10,
-                bottom: 30,
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: XPlatform.isWindows ? 8.0 : 2.0,
+      return Positioned(
+        right: 10,
+        bottom: 30,
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 12.0,
+            vertical: XPlatform.isWindows ? 8.0 : 2.0,
+          ),
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(28, 28, 28, 0.9),
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Wrap(
+                alignment: WrapAlignment.center,
+                children: [
+                  Text(
+                    'Skip ',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.0,
+                    ),
                   ),
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(28, 28, 28, 0.9),
+                  Text(
+                    _stateOpeningEnding.value == _StateOpeningEnding.opening
+                        ? 'Opening'
+                        : 'Ending',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                ).copyWith(right: 0.0),
+                width: 1.0,
+                height: 30.0,
+                color: Color.fromRGBO(255, 255, 255, 0.28),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      if (_stateOpeningEnding.value ==
+                          _StateOpeningEnding.opening) {
+                        if (_controller.value != null) {
+                          _seekTo(
+                            _controller.value!,
+                            _openingEnding.value!.opening!.end,
+                          );
+                        }
+                      } else {
+                        if (_controller.value != null) {
+                          _seekTo(
+                            _controller.value!,
+                            _openingEnding.value!.ending!.end,
+                          );
+                        }
+                      }
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Skip (Enter)',
+                          style: TextStyle(
+                            color: Colors.white.withValues(
+                              alpha: 0.9,
+                            ),
+                            fontSize: 12.0,
+                          ),
+                        ),
+                        widgetTextSeconds,
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      _stateOpeningEnding.force(_StateOpeningEnding.skip);
+                    },
                     borderRadius: BorderRadius.circular(5.0),
+                    highlightColor: Colors.black,
+                    child: Icon(
+                      Icons.close,
+                      size: 16.0,
+                      color: Colors.white,
+                    ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        children: [
-                          Text(
-                            'Skip ',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                          Text(
-                            _stateOpeningEnding.value ==
-                                    _StateOpeningEnding.opening
-                                ? 'Opening'
-                                : 'Ending',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                        ).copyWith(right: 0.0),
-                        width: 1.0,
-                        height: 30.0,
-                        color: Color.fromRGBO(255, 255, 255, 0.28),
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              if (_stateOpeningEnding.value ==
-                                  _StateOpeningEnding.opening) {
-                                if (_controller.value != null) {
-                                  _seekTo(
-                                    _controller.value!,
-                                    _openingEnding.value!.opening!.end,
-                                  );
-                                }
-                              } else {
-                                if (_controller.value != null) {
-                                  _seekTo(
-                                    _controller.value!,
-                                    _openingEnding.value!.ending!.end,
-                                  );
-                                }
-                              }
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  'Skip (Enter)',
-                                  style: TextStyle(
-                                    color: Colors.white.withValues(
-                                      alpha: 0.9,
-                                    ),
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                                widgetTextSeconds,
-                              ],
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              _stateOpeningEnding
-                                  .force(_StateOpeningEnding.skip);
-                            },
-                            borderRadius: BorderRadius.circular(5.0),
-                            highlightColor: Colors.black,
-                            child: Icon(
-                              Icons.close,
-                              size: 16.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            : null,
+                ],
+              ),
+            ],
+          ),
+        ),
       );
     });
   }
@@ -1511,10 +1610,15 @@ class _PlayerEigaState extends State<PlayerEiga>
             Animation<double> animation,
             Animation<double> secondaryAnimation,
           ) {
-            return Scaffold(
-              backgroundColor: Colors.transparent,
-              extendBodyBehindAppBar: true,
-              body: _buildStack(context),
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaler: TextScaler.linear(1.2),
+              ),
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                extendBodyBehindAppBar: true,
+                body: _buildStack(context, isFullscreen: true),
+              ),
             );
           }));
     } else {
@@ -1544,26 +1648,79 @@ class _PlayerEigaState extends State<PlayerEiga>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      showDragHandle: true,
       builder: (context) {
-        return Watch(() => ListView.builder(
-              shrinkWrap: true,
-              itemCount: _subtitles.value?.length,
-              itemBuilder: (context, index) {
-                final item = _subtitles.value!.elementAt(index);
+        final theme = Theme.of(context);
+        final textTheme = theme.textTheme;
+        final colorScheme = theme.colorScheme;
 
-                return ListTile(
-                  leading: _subtitleCode.value == item.code
-                      ? Icon(Icons.check)
-                      : Text(''),
-                  title: Text(item.language),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _subtitleCode.value = item.code;
-                  },
-                );
-              },
-            ));
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            top: 16,
+          ),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 400),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Subtitles',
+                        style: textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.settings),
+                      onPressed: () {
+                        Navigator.pop(context);
+
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (context) =>
+                              SubtitleSettingsSheet(height: 50.h(context)),
+                        );
+                      },
+                    )
+                  ],
+                ),
+                const Divider(),
+                Expanded(
+                    child: Watch(() => ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: _subtitles.value?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final item = _subtitles.value!.elementAt(index);
+
+                            return ListTile(
+                              dense: true,
+                              visualDensity: VisualDensity.compact,
+                              leading: _subtitle.value == item
+                                  ? Icon(Icons.check,
+                                      color: colorScheme.primary)
+                                  : const SizedBox(width: 24), // for alignment
+                              title: Text(
+                                item.language,
+                                style: textTheme.bodyMedium,
+                              ),
+                              onTap: () {
+                                Navigator.pop(context);
+                                _subtitleCode.value = item.code;
+                              },
+                            );
+                          },
+                        ))),
+              ],
+            ),
+          ),
+        );
       },
     );
   }
@@ -1597,7 +1754,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   }
 
   void _setQualityCode(String? value) {
-    if (_availableResolutions.value.isNotEmpty) return;
+    if (_availableResolutions.value.isEmpty) return;
 
     _qualityCode.value = value;
 
@@ -1606,13 +1763,15 @@ class _PlayerEigaState extends State<PlayerEiga>
     }, orElse: () => _availableResolutions.value.first);
 
     _setupPlayer(
-        SourceVideo(
-          src: resolution.variant.url.toString(),
-          type: 'hls',
-          headers: resolution.headers,
-          url: resolution.variant.url,
-        ),
-        _controllerId.value ?? uid);
+      SourceVideo(
+        src: resolution.variant.url.toString(),
+        type: 'hls',
+        headers: resolution.headers,
+        url: resolution.variant.url,
+      ),
+      _controllerId.value ?? uid,
+      isMaster: false,
+    );
   }
 
   void _showQualityOptions() {
@@ -1634,7 +1793,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                   title: Text(item.label),
                   onTap: () {
                     Navigator.pop(context);
-                    _qualityCode.value = item.code;
+                    _setQualityCode(item.code);
                   },
                 );
               },
@@ -1643,15 +1802,45 @@ class _PlayerEigaState extends State<PlayerEiga>
     );
   }
 
-  void _setSubtitleCode(String? value) {
-    _subtitleCode.value = value;
-    if (value != null) {
-      subtitleController.updateSubtitleUrl(
-        url: _subtitles.value!.firstWhere((item) {
-          return item.code == value;
-        }).url,
-      );
-    }
+  void _showServerOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                'Server',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+                child: Watch(() => ListView(
+                      children: _servers.value?.map((server) {
+                            return ListTile(
+                              leading: server == _server.value
+                                  ? Icon(Icons.check)
+                                  : Text(''),
+                              title: Text(server.name),
+                              onTap: () {
+                                Navigator.pop(context, server);
+                                widget.serverIdSelected.value = server.serverId;
+                              },
+                            );
+                          }).toList() ??
+                          const <Widget>[],
+                    ))),
+            const SizedBox(height: 8),
+          ],
+        );
+      },
+    );
   }
 
   void _showSettingOptions() {
@@ -1703,23 +1892,19 @@ class _PlayerEigaState extends State<PlayerEiga>
                   },
                 ),
                 Opacity(
-                  opacity: _availableResolutions.value.isNotEmpty ? 1.0 : 0.5,
+                  opacity: _subtitles.value?.isNotEmpty == true ? 1.0 : 0.5,
                   child: IgnorePointer(
-                    ignoring: !_availableResolutions.value.isNotEmpty,
+                    ignoring: _subtitles.value?.isNotEmpty != true,
                     child: ListTile(
                       leading: Icon(Icons.subtitles_outlined),
                       title: Text(
                         'Subtitle',
                         style: TextStyle(fontSize: 14.0),
                       ),
-                      trailing: _subtitleCode.value == null ||
-                              _subtitles.value == null
+                      trailing: _subtitle.value == null
                           ? null
                           : Text(
-                              _subtitles.value!
-                                  .firstWhere((item) =>
-                                      item.code == _subtitleCode.value)
-                                  .language,
+                              _subtitle.value!.language,
                               style: TextStyle(
                                 color: Theme.of(context).colorScheme.secondary,
                               ),
@@ -1731,6 +1916,22 @@ class _PlayerEigaState extends State<PlayerEiga>
                     ),
                   ),
                 ),
+                Watch(() => ListTile(
+                    leading: Icon(Icons.cloud_outlined),
+                    title: Text(
+                      'Server play',
+                      style: TextStyle(fontSize: 14.0),
+                    ),
+                    trailing: Text(
+                      _server.value?.name ?? '',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _showServerOptions();
+                    })),
                 ListTile(
                   leading: Icon(Icons.lock_outline),
                   title: Text(

@@ -288,7 +288,9 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final quality = pageData.data.item.quality;
 
     // final status = pageData.data.item.status;
-    final author = pageData.data.item.director.first;
+    final authors = [
+      Genre(name: pageData.data.item.director.first, genreId: Genre.noId)
+    ];
     final countries = pageData.data.item.country
         .map((country) =>
             Genre(name: country.name, genreId: 'quoc-gia_${country.slug}'))
@@ -312,10 +314,11 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
       seasons: seasons,
       genres: genres,
       quality: quality,
-      author: author,
+      authors: authors,
       countries: countries,
       language: language,
-      studio: studio,
+      studios:
+          studio == null ? null : [Genre(name: studio, genreId: Genre.noId)],
       movieSeason: movieSeason,
       trailer: trailer,
     );
@@ -372,14 +375,14 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
   }
 
   @override
-  getSource({required eigaId, required episode}) async {
+  getSource({required eigaId, required episode, server}) async {
     final source = _ServerData.fromJson(jsonDecode(episode.extra!));
 
     return SourceVideo(
       src: source.linkM3u8,
       url: Uri.parse(source.linkM3u8),
       type: 'hls',
-      headers: {'referer': baseUrl},
+      headers: Headers({'referer': baseUrl}),
     );
   }
 
@@ -405,11 +408,6 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
         content: _removeAdsFromM3U8(urlMediaPlaylist, content),
         url: urlMediaPlaylist,
         headers: source.headers);
-  }
-
-  @override
-  getSubtitles({required eigaId, required episode}) async {
-    return [];
   }
 
   @override

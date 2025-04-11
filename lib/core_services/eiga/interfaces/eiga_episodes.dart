@@ -11,7 +11,7 @@ class EigaEpisodes with _$EigaEpisodes {
     required List<EigaEpisode> episodes,
     OImage? image,
     OImage? poster,
-    TimeAndDay? schedule,
+    DateTime? schedule,
   }) = _EigaEpisodes;
 
   factory EigaEpisodes.fromJson(Map<String, dynamic> json) =>
@@ -22,16 +22,4 @@ class EigaEpisodes with _$EigaEpisodes {
       episodes: List.generate(12, (index) => EigaEpisode.createFakeData()),
     );
   }
-}
-
-@freezed
-class TimeAndDay with _$TimeAndDay {
-  const factory TimeAndDay({
-    required int day,
-    required int hour,
-    required int minute,
-  }) = _TimeAndDay;
-
-  factory TimeAndDay.fromJson(Map<String, dynamic> json) =>
-      _$TimeAndDayFromJson(json);
 }

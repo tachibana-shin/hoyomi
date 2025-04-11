@@ -15,6 +15,8 @@ class Eiga with _$Eiga {
     EigaEpisode? lastEpisode,
     DateTime? timeAgo,
     String? notice,
+    int? countSub,
+    int? countDub,
     double? rate,
     @Default(false) bool pending,
     DateTime? preRelease,

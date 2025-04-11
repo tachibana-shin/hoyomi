@@ -10,10 +10,9 @@ _$SourceContentImpl _$$SourceContentImplFromJson(Map<String, dynamic> json) =>
     _$SourceContentImpl(
       content: json['content'] as String,
       url: Uri.parse(json['url'] as String),
-      headers: (json['headers'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry(k, e as String),
-          ) ??
-          const {},
+      headers: json['headers'] == null
+          ? null
+          : Headers.fromJson(json['headers'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$SourceContentImplToJson(_$SourceContentImpl instance) =>

@@ -18,6 +18,8 @@ _$EigaImpl _$$EigaImplFromJson(Map<String, dynamic> json) => _$EigaImpl(
           ? null
           : DateTime.parse(json['timeAgo'] as String),
       notice: json['notice'] as String?,
+      countSub: (json['countSub'] as num?)?.toInt(),
+      countDub: (json['countDub'] as num?)?.toInt(),
       rate: (json['rate'] as num?)?.toDouble(),
       pending: json['pending'] as bool? ?? false,
       preRelease: json['preRelease'] == null
@@ -35,6 +37,8 @@ Map<String, dynamic> _$$EigaImplToJson(_$EigaImpl instance) =>
       'lastEpisode': instance.lastEpisode,
       'timeAgo': instance.timeAgo?.toIso8601String(),
       'notice': instance.notice,
+      'countSub': instance.countSub,
+      'countDub': instance.countDub,
       'rate': instance.rate,
       'pending': instance.pending,
       'preRelease': instance.preRelease?.toIso8601String(),

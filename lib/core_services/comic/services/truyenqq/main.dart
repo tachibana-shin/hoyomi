@@ -55,7 +55,7 @@ class TruyenQQService extends TruyenGGService {
     final $image = itemComic.queryOne('img');
     final OImage image = OImage(
       src: $image.attr('src'),
-      headers: {'referer': referer},
+      headers: Headers({'referer': referer}),
     );
     final String name = (itemComic.queryOne('.book_name a').textRaw() ??
         itemComic.queryOne('img').attr('alt'));
@@ -121,7 +121,7 @@ class TruyenQQService extends TruyenGGService {
     final String name = $('h1[itemprop=name]', single: true).text();
     final OImage image = OImage(
       src: $('.book_avatar img', single: true).attr('src'),
-      headers: {'referer': baseUrl},
+      headers: Headers({'referer': baseUrl}),
     );
 
     final tales = $('.list-info > li');
@@ -210,7 +210,7 @@ class TruyenQQService extends TruyenGGService {
     return $('.chapter_content img').map((img) {
       final src = img.attr('src');
 
-      return OImage(src: src, headers: {'referer': baseUrl});
+      return OImage(src: src, headers: Headers({'referer': baseUrl}));
     }).toList();
   }
 

@@ -61,6 +61,11 @@ class DQuery {
   /// Returns `null` if the element doesn't exist or the property is missing.
   String? prop(String name) => attrRaw(name);
 
+  /// Gets the value of the specified `data-*` attribute for the *first* element in the collection.
+  /// For example, `data('id')` retrieves the value of the `data-id` attribute.
+  /// Returns an empty string (`''`) if the element doesn't exist or the attribute is missing.
+  String data(String name) => attr('data-$name');
+
   /// Gets the `value` attribute of the *first* element in the collection.
   /// Convenience method for `attr('value')`.
   String val() => attr('value');
@@ -176,6 +181,18 @@ class DQuery {
   /// Creates a new DQuery object with the elements in reverse order.
   DQuery reversed() {
     return DQuery(_elements.reversed.toList());
+  }
+
+  /// Filters the elements to only those whose text content includes the given [text].
+  /// This is case-sensitive. If you want case-insensitive, modify to `.contains(text.toLowerCase())` and use `.toLowerCase()` on both sides.
+  DQuery contains(String text) {
+    return where((el) => el.text().contains(text));
+  }
+
+  /// Returns the first element whose text content includes the given [text].
+  /// Returns an empty DQuery if no match is found.
+  DQuery containsOne(String text) {
+    return findOne((el) => el.text().contains(text));
   }
 
   // --- Iteration/Transformation ---

@@ -15,6 +15,7 @@ _$EigaEpisodeImpl _$$EigaEpisodeImplFromJson(Map<String, dynamic> json) =>
           : OImage.fromJson(json['image'] as Map<String, dynamic>),
       description: json['description'] as String?,
       extra: json['extra'] as String?,
+      index: (json['index'] as num?)?.toInt() ?? -1,
     );
 
 Map<String, dynamic> _$$EigaEpisodeImplToJson(_$EigaEpisodeImpl instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$$EigaEpisodeImplToJson(_$EigaEpisodeImpl instance) =>
       'image': instance.image,
       'description': instance.description,
       'extra': instance.extra,
+      'index': instance.index,
     };

@@ -39,7 +39,7 @@ class _TabViewEigaState extends State<TabViewEiga>
                 aspectRatio: data.carousel!.aspectRatio,
                 sourceId: widget.service.uid,
                 items: data.carousel!.items,
-                maxHeight: data.carousel!.maxHeightBuilder * 100.w(context),
+                maxHeight: data.carousel!.maxHeightBuilder * 100.h(context),
               );
             }
 

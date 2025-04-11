@@ -8,10 +8,19 @@ part of 'carousel_item.dart';
 
 _$CarouselItemImpl _$$CarouselItemImplFromJson(Map<String, dynamic> json) =>
     _$CarouselItemImpl(
+      subText: json['subText'] as String?,
       image: OImage.fromJson(json['image'] as Map<String, dynamic>),
       eigaId: json['eigaId'] as String,
       name: json['name'] as String,
       originalName: json['originalName'] as String?,
+      type: json['type'] as String?,
+      episodeDuration: json['episodeDuration'] as String?,
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
+      quality: json['quality'] as String?,
+      countSub: (json['countSub'] as num?)?.toInt(),
+      countDub: (json['countDub'] as num?)?.toInt(),
       rate: (json['rate'] as num?)?.toDouble(),
       notice: json['notice'] as String?,
       year: json['year'] as String?,
@@ -29,10 +38,17 @@ _$CarouselItemImpl _$$CarouselItemImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$CarouselItemImplToJson(_$CarouselItemImpl instance) =>
     <String, dynamic>{
+      'subText': instance.subText,
       'image': instance.image,
       'eigaId': instance.eigaId,
       'name': instance.name,
       'originalName': instance.originalName,
+      'type': instance.type,
+      'episodeDuration': instance.episodeDuration,
+      'updatedAt': instance.updatedAt?.toIso8601String(),
+      'quality': instance.quality,
+      'countSub': instance.countSub,
+      'countDub': instance.countDub,
       'rate': instance.rate,
       'notice': instance.notice,
       'year': instance.year,

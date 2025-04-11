@@ -68,6 +68,7 @@ dependencies:
   rss_feed_parser: ^1.0.6
   screen_brightness: ^2.1.2
   scrollable_positioned_list: ^0.3.8
+  sealed_languages: ^2.1.0
   share_plus: ^10.1.2
   shared_preferences: ^2.5.3
   # shirne_dialog: ^4.8.3
@@ -75,10 +76,7 @@ dependencies:
   speech_to_text: ^7.0.0
   speech_to_text_google_dialog: ^0.0.6
   subtitle: ^0.1.0-beta.3
-  subtitle_wrapper_package:
-    git:
-      url: https://github.com/tachibana-shin/flutter_subtitle_wrapper
-      ref: main
+  toggle_switch: ^2.3.0
   url_launcher: ^6.3.1
   very_good_infinite_list: ^0.9.0
   video_player: ^2.9.5
@@ -105,4 +103,3 @@ flutter:
   assets:
       - assets/ca/
       - assets/images/
-      - .env

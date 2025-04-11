@@ -21,7 +21,7 @@ Vtt _$VttFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Vtt {
   String get src => throw _privateConstructorUsedError;
-  Map<String, String>? get headers => throw _privateConstructorUsedError;
+  Headers? get headers => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -33,7 +33,9 @@ abstract class $VttCopyWith<$Res> {
   factory $VttCopyWith(Vtt value, $Res Function(Vtt) then) =
       _$VttCopyWithImpl<$Res, Vtt>;
   @useResult
-  $Res call({String src, Map<String, String>? headers});
+  $Res call({String src, Headers? headers});
+
+  $HeadersCopyWith<$Res>? get headers;
 }
 
 /// @nodoc
@@ -59,8 +61,20 @@ class _$VttCopyWithImpl<$Res, $Val extends Vtt> implements $VttCopyWith<$Res> {
       headers: freezed == headers
           ? _value.headers
           : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
+              as Headers?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $HeadersCopyWith<$Res>? get headers {
+    if (_value.headers == null) {
+      return null;
+    }
+
+    return $HeadersCopyWith<$Res>(_value.headers!, (value) {
+      return _then(_value.copyWith(headers: value) as $Val);
+    });
   }
 }
 
@@ -70,7 +84,10 @@ abstract class _$$VttImplCopyWith<$Res> implements $VttCopyWith<$Res> {
       __$$VttImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String src, Map<String, String>? headers});
+  $Res call({String src, Headers? headers});
+
+  @override
+  $HeadersCopyWith<$Res>? get headers;
 }
 
 /// @nodoc
@@ -91,9 +108,9 @@ class __$$VttImplCopyWithImpl<$Res> extends _$VttCopyWithImpl<$Res, _$VttImpl>
           : src // ignore: cast_nullable_to_non_nullable
               as String,
       headers: freezed == headers
-          ? _value._headers
+          ? _value.headers
           : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
+              as Headers?,
     ));
   }
 }
@@ -101,23 +118,15 @@ class __$$VttImplCopyWithImpl<$Res> extends _$VttCopyWithImpl<$Res, _$VttImpl>
 /// @nodoc
 @JsonSerializable()
 class _$VttImpl implements _Vtt {
-  const _$VttImpl({required this.src, final Map<String, String>? headers})
-      : _headers = headers;
+  const _$VttImpl({required this.src, this.headers});
 
   factory _$VttImpl.fromJson(Map<String, dynamic> json) =>
       _$$VttImplFromJson(json);
 
   @override
   final String src;
-  final Map<String, String>? _headers;
   @override
-  Map<String, String>? get headers {
-    final value = _headers;
-    if (value == null) return null;
-    if (_headers is EqualUnmodifiableMapView) return _headers;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
+  final Headers? headers;
 
   @override
   String toString() {
@@ -130,13 +139,12 @@ class _$VttImpl implements _Vtt {
         (other.runtimeType == runtimeType &&
             other is _$VttImpl &&
             (identical(other.src, src) || other.src == src) &&
-            const DeepCollectionEquality().equals(other._headers, _headers));
+            (identical(other.headers, headers) || other.headers == headers));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, src, const DeepCollectionEquality().hash(_headers));
+  int get hashCode => Object.hash(runtimeType, src, headers);
 
   @JsonKey(ignore: true)
   @override
@@ -153,16 +161,15 @@ class _$VttImpl implements _Vtt {
 }
 
 abstract class _Vtt implements Vtt {
-  const factory _Vtt(
-      {required final String src,
-      final Map<String, String>? headers}) = _$VttImpl;
+  const factory _Vtt({required final String src, final Headers? headers}) =
+      _$VttImpl;
 
   factory _Vtt.fromJson(Map<String, dynamic> json) = _$VttImpl.fromJson;
 
   @override
   String get src;
   @override
-  Map<String, String>? get headers;
+  Headers? get headers;
   @override
   @JsonKey(ignore: true)
   _$$VttImplCopyWith<_$VttImpl> get copyWith =>

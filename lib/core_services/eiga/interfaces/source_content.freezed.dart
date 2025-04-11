@@ -22,7 +22,7 @@ SourceContent _$SourceContentFromJson(Map<String, dynamic> json) {
 mixin _$SourceContent {
   String get content => throw _privateConstructorUsedError;
   Uri get url => throw _privateConstructorUsedError;
-  Map<String, String> get headers => throw _privateConstructorUsedError;
+  Headers? get headers => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,7 +36,9 @@ abstract class $SourceContentCopyWith<$Res> {
           SourceContent value, $Res Function(SourceContent) then) =
       _$SourceContentCopyWithImpl<$Res, SourceContent>;
   @useResult
-  $Res call({String content, Uri url, Map<String, String> headers});
+  $Res call({String content, Uri url, Headers? headers});
+
+  $HeadersCopyWith<$Res>? get headers;
 }
 
 /// @nodoc
@@ -54,7 +56,7 @@ class _$SourceContentCopyWithImpl<$Res, $Val extends SourceContent>
   $Res call({
     Object? content = null,
     Object? url = null,
-    Object? headers = null,
+    Object? headers = freezed,
   }) {
     return _then(_value.copyWith(
       content: null == content
@@ -65,11 +67,23 @@ class _$SourceContentCopyWithImpl<$Res, $Val extends SourceContent>
           ? _value.url
           : url // ignore: cast_nullable_to_non_nullable
               as Uri,
-      headers: null == headers
+      headers: freezed == headers
           ? _value.headers
           : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>,
+              as Headers?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $HeadersCopyWith<$Res>? get headers {
+    if (_value.headers == null) {
+      return null;
+    }
+
+    return $HeadersCopyWith<$Res>(_value.headers!, (value) {
+      return _then(_value.copyWith(headers: value) as $Val);
+    });
   }
 }
 
@@ -81,7 +95,10 @@ abstract class _$$SourceContentImplCopyWith<$Res>
       __$$SourceContentImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String content, Uri url, Map<String, String> headers});
+  $Res call({String content, Uri url, Headers? headers});
+
+  @override
+  $HeadersCopyWith<$Res>? get headers;
 }
 
 /// @nodoc
@@ -97,7 +114,7 @@ class __$$SourceContentImplCopyWithImpl<$Res>
   $Res call({
     Object? content = null,
     Object? url = null,
-    Object? headers = null,
+    Object? headers = freezed,
   }) {
     return _then(_$SourceContentImpl(
       content: null == content
@@ -108,10 +125,10 @@ class __$$SourceContentImplCopyWithImpl<$Res>
           ? _value.url
           : url // ignore: cast_nullable_to_non_nullable
               as Uri,
-      headers: null == headers
-          ? _value._headers
+      headers: freezed == headers
+          ? _value.headers
           : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>,
+              as Headers?,
     ));
   }
 }
@@ -120,10 +137,7 @@ class __$$SourceContentImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$SourceContentImpl implements _SourceContent {
   const _$SourceContentImpl(
-      {required this.content,
-      required this.url,
-      final Map<String, String> headers = const {}})
-      : _headers = headers;
+      {required this.content, required this.url, this.headers});
 
   factory _$SourceContentImpl.fromJson(Map<String, dynamic> json) =>
       _$$SourceContentImplFromJson(json);
@@ -132,14 +146,8 @@ class _$SourceContentImpl implements _SourceContent {
   final String content;
   @override
   final Uri url;
-  final Map<String, String> _headers;
   @override
-  @JsonKey()
-  Map<String, String> get headers {
-    if (_headers is EqualUnmodifiableMapView) return _headers;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_headers);
-  }
+  final Headers? headers;
 
   @override
   String toString() {
@@ -153,13 +161,12 @@ class _$SourceContentImpl implements _SourceContent {
             other is _$SourceContentImpl &&
             (identical(other.content, content) || other.content == content) &&
             (identical(other.url, url) || other.url == url) &&
-            const DeepCollectionEquality().equals(other._headers, _headers));
+            (identical(other.headers, headers) || other.headers == headers));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, content, url, const DeepCollectionEquality().hash(_headers));
+  int get hashCode => Object.hash(runtimeType, content, url, headers);
 
   @JsonKey(ignore: true)
   @override
@@ -179,7 +186,7 @@ abstract class _SourceContent implements SourceContent {
   const factory _SourceContent(
       {required final String content,
       required final Uri url,
-      final Map<String, String> headers}) = _$SourceContentImpl;
+      final Headers? headers}) = _$SourceContentImpl;
 
   factory _SourceContent.fromJson(Map<String, dynamic> json) =
       _$SourceContentImpl.fromJson;
@@ -189,7 +196,7 @@ abstract class _SourceContent implements SourceContent {
   @override
   Uri get url;
   @override
-  Map<String, String> get headers;
+  Headers? get headers;
   @override
   @JsonKey(ignore: true)
   _$$SourceContentImplCopyWith<_$SourceContentImpl> get copyWith =>

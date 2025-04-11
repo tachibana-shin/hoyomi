@@ -23,7 +23,7 @@ mixin _$EigaEpisodes {
   List<EigaEpisode> get episodes => throw _privateConstructorUsedError;
   OImage? get image => throw _privateConstructorUsedError;
   OImage? get poster => throw _privateConstructorUsedError;
-  TimeAndDay? get schedule => throw _privateConstructorUsedError;
+  DateTime? get schedule => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -41,11 +41,10 @@ abstract class $EigaEpisodesCopyWith<$Res> {
       {List<EigaEpisode> episodes,
       OImage? image,
       OImage? poster,
-      TimeAndDay? schedule});
+      DateTime? schedule});
 
   $OImageCopyWith<$Res>? get image;
   $OImageCopyWith<$Res>? get poster;
-  $TimeAndDayCopyWith<$Res>? get schedule;
 }
 
 /// @nodoc
@@ -82,7 +81,7 @@ class _$EigaEpisodesCopyWithImpl<$Res, $Val extends EigaEpisodes>
       schedule: freezed == schedule
           ? _value.schedule
           : schedule // ignore: cast_nullable_to_non_nullable
-              as TimeAndDay?,
+              as DateTime?,
     ) as $Val);
   }
 
@@ -109,18 +108,6 @@ class _$EigaEpisodesCopyWithImpl<$Res, $Val extends EigaEpisodes>
       return _then(_value.copyWith(poster: value) as $Val);
     });
   }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $TimeAndDayCopyWith<$Res>? get schedule {
-    if (_value.schedule == null) {
-      return null;
-    }
-
-    return $TimeAndDayCopyWith<$Res>(_value.schedule!, (value) {
-      return _then(_value.copyWith(schedule: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -135,14 +122,12 @@ abstract class _$$EigaEpisodesImplCopyWith<$Res>
       {List<EigaEpisode> episodes,
       OImage? image,
       OImage? poster,
-      TimeAndDay? schedule});
+      DateTime? schedule});
 
   @override
   $OImageCopyWith<$Res>? get image;
   @override
   $OImageCopyWith<$Res>? get poster;
-  @override
-  $TimeAndDayCopyWith<$Res>? get schedule;
 }
 
 /// @nodoc
@@ -177,7 +162,7 @@ class __$$EigaEpisodesImplCopyWithImpl<$Res>
       schedule: freezed == schedule
           ? _value.schedule
           : schedule // ignore: cast_nullable_to_non_nullable
-              as TimeAndDay?,
+              as DateTime?,
     ));
   }
 }
@@ -208,7 +193,7 @@ class _$EigaEpisodesImpl implements _EigaEpisodes {
   @override
   final OImage? poster;
   @override
-  final TimeAndDay? schedule;
+  final DateTime? schedule;
 
   @override
   String toString() {
@@ -251,7 +236,7 @@ abstract class _EigaEpisodes implements EigaEpisodes {
       {required final List<EigaEpisode> episodes,
       final OImage? image,
       final OImage? poster,
-      final TimeAndDay? schedule}) = _$EigaEpisodesImpl;
+      final DateTime? schedule}) = _$EigaEpisodesImpl;
 
   factory _EigaEpisodes.fromJson(Map<String, dynamic> json) =
       _$EigaEpisodesImpl.fromJson;
@@ -263,181 +248,9 @@ abstract class _EigaEpisodes implements EigaEpisodes {
   @override
   OImage? get poster;
   @override
-  TimeAndDay? get schedule;
+  DateTime? get schedule;
   @override
   @JsonKey(ignore: true)
   _$$EigaEpisodesImplCopyWith<_$EigaEpisodesImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-TimeAndDay _$TimeAndDayFromJson(Map<String, dynamic> json) {
-  return _TimeAndDay.fromJson(json);
-}
-
-/// @nodoc
-mixin _$TimeAndDay {
-  int get day => throw _privateConstructorUsedError;
-  int get hour => throw _privateConstructorUsedError;
-  int get minute => throw _privateConstructorUsedError;
-
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $TimeAndDayCopyWith<TimeAndDay> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $TimeAndDayCopyWith<$Res> {
-  factory $TimeAndDayCopyWith(
-          TimeAndDay value, $Res Function(TimeAndDay) then) =
-      _$TimeAndDayCopyWithImpl<$Res, TimeAndDay>;
-  @useResult
-  $Res call({int day, int hour, int minute});
-}
-
-/// @nodoc
-class _$TimeAndDayCopyWithImpl<$Res, $Val extends TimeAndDay>
-    implements $TimeAndDayCopyWith<$Res> {
-  _$TimeAndDayCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? day = null,
-    Object? hour = null,
-    Object? minute = null,
-  }) {
-    return _then(_value.copyWith(
-      day: null == day
-          ? _value.day
-          : day // ignore: cast_nullable_to_non_nullable
-              as int,
-      hour: null == hour
-          ? _value.hour
-          : hour // ignore: cast_nullable_to_non_nullable
-              as int,
-      minute: null == minute
-          ? _value.minute
-          : minute // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$TimeAndDayImplCopyWith<$Res>
-    implements $TimeAndDayCopyWith<$Res> {
-  factory _$$TimeAndDayImplCopyWith(
-          _$TimeAndDayImpl value, $Res Function(_$TimeAndDayImpl) then) =
-      __$$TimeAndDayImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int day, int hour, int minute});
-}
-
-/// @nodoc
-class __$$TimeAndDayImplCopyWithImpl<$Res>
-    extends _$TimeAndDayCopyWithImpl<$Res, _$TimeAndDayImpl>
-    implements _$$TimeAndDayImplCopyWith<$Res> {
-  __$$TimeAndDayImplCopyWithImpl(
-      _$TimeAndDayImpl _value, $Res Function(_$TimeAndDayImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? day = null,
-    Object? hour = null,
-    Object? minute = null,
-  }) {
-    return _then(_$TimeAndDayImpl(
-      day: null == day
-          ? _value.day
-          : day // ignore: cast_nullable_to_non_nullable
-              as int,
-      hour: null == hour
-          ? _value.hour
-          : hour // ignore: cast_nullable_to_non_nullable
-              as int,
-      minute: null == minute
-          ? _value.minute
-          : minute // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$TimeAndDayImpl implements _TimeAndDay {
-  const _$TimeAndDayImpl(
-      {required this.day, required this.hour, required this.minute});
-
-  factory _$TimeAndDayImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TimeAndDayImplFromJson(json);
-
-  @override
-  final int day;
-  @override
-  final int hour;
-  @override
-  final int minute;
-
-  @override
-  String toString() {
-    return 'TimeAndDay(day: $day, hour: $hour, minute: $minute)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$TimeAndDayImpl &&
-            (identical(other.day, day) || other.day == day) &&
-            (identical(other.hour, hour) || other.hour == hour) &&
-            (identical(other.minute, minute) || other.minute == minute));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, day, hour, minute);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$TimeAndDayImplCopyWith<_$TimeAndDayImpl> get copyWith =>
-      __$$TimeAndDayImplCopyWithImpl<_$TimeAndDayImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$TimeAndDayImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _TimeAndDay implements TimeAndDay {
-  const factory _TimeAndDay(
-      {required final int day,
-      required final int hour,
-      required final int minute}) = _$TimeAndDayImpl;
-
-  factory _TimeAndDay.fromJson(Map<String, dynamic> json) =
-      _$TimeAndDayImpl.fromJson;
-
-  @override
-  int get day;
-  @override
-  int get hour;
-  @override
-  int get minute;
-  @override
-  @JsonKey(ignore: true)
-  _$$TimeAndDayImplCopyWith<_$TimeAndDayImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

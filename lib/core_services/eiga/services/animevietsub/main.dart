@@ -84,7 +84,7 @@ class AnimeVietsubService extends ABEigaService
     final $ = await fetch$(
       '$baseUrl/account/info/',
       cookie: cookie,
-      headers: {'Referer': baseUrl},
+      headers: Headers({'Referer': baseUrl}),
     );
 
     if ($('.profile-userpic', single: true).isEmpty) {
@@ -190,7 +190,7 @@ class AnimeVietsubService extends ABEigaService
       src: $img.attr('data-cfsrc').isNotEmpty
           ? $img.attr('data-cfsrc')
           : $img.attr('src'),
-      headers: {'Referer': baseUrl},
+      headers: Headers({'Referer': baseUrl}),
     );
     final notice =
         '${originalName.isNotEmpty == true ? '$originalName ' : ''}${item.queryOne('.AAIco-access_time, .mli-eps').text()}';
@@ -409,12 +409,12 @@ class AnimeVietsubService extends ABEigaService
     final originalName = $('.SubTitle', single: true).text();
     final image = OImage(
       src: $('.Image img', single: true).attr('src'),
-      headers: {'referer': baseUrl},
+      headers: Headers({'Referer': baseUrl}),
     );
     final $img = $('.TPostBg img', single: true);
     final poster = $img.isEmpty
         ? null
-        : OImage(src: $img.attr('src'), headers: {'referer': baseUrl});
+        : OImage(src: $img.attr('src'), headers: Headers({'Referer': baseUrl}));
     final description = $('.Description', single: true).text();
 
     final rate = num.parse(
@@ -458,15 +458,18 @@ class AnimeVietsubService extends ABEigaService
 
     // final status =
     //     _findInfo(infoListLeft, 'trạng thái')?.text.split(':')[1];
-    final author = _findInfo(infoListLeft, 'đạo diễn')?.text().split(':')[1];
+    final authorName$ =
+        _findInfo(infoListLeft, 'đạo diễn')?.text().split(':')[1];
+    final authors = authorName$ == null
+        ? null
+        : [Genre(name: authorName$, genreId: Genre.noId)];
     final countries = _findInfo(
       infoListLeft,
       'quốc gia',
     )?.query('a').map((item) => _getInfoAnchor(item)).toList();
     final language = _findInfo(infoListRight, 'ngôn ngữ')?.text().split(':')[1];
-    final studio = _findInfo(infoListRight, 'studio') == null
-        ? null
-        : _getInfoAnchor(_findInfo(infoListRight, 'studio')!.queryOne('a'));
+    final studios =
+        _findInfo(infoListRight, 'studio')?.query('a').map(_getInfoAnchor);
     final trailer = $('#Opt1 iframe', single: true).attr('src');
     final movieSeason =
         _getInfoAnchor(_findInfo(infoListRight, 'season')!.queryOne('a'));
@@ -485,10 +488,10 @@ class AnimeVietsubService extends ABEigaService
       seasons: seasons,
       genres: genres,
       quality: quality,
-      author: author,
+      authors: authors,
       countries: countries,
       language: language,
-      studio: studio,
+      studios: studios,
       movieSeason: movieSeason,
       trailer: trailer,
     );
@@ -561,7 +564,7 @@ class AnimeVietsubService extends ABEigaService
     final hour = match?.group(2);
     final minute = match?.group(3);
 
-    final day = day$ == null
+    final dayIndex = day$ == null
         ? null
         : [
             'chủ nhật',
@@ -573,31 +576,44 @@ class AnimeVietsubService extends ABEigaService
             'thứ bảy',
           ].indexOf(day$.toLowerCase());
 
+    DateTime? nextScheduleDateTime;
+    if (dayIndex != null && hour != null && minute != null) {
+      final now = DateTime.now();
+      final todayIndex = now.weekday % 7;
+
+      int daysUntil = (dayIndex - todayIndex) % 7;
+      if (daysUntil == 0 &&
+          (now.hour > int.parse(hour) ||
+              (now.hour == int.parse(hour) &&
+                  now.minute >= int.parse(minute)))) {
+        daysUntil = 7;
+      }
+
+      final scheduledDay = now
+          .add(Duration(days: daysUntil))
+          .copyWith(hour: int.parse(hour), minute: int.parse(minute));
+      nextScheduleDateTime = scheduledDay;
+    }
+
     final image$ = $('.Image img', single: true).attrRaw('src');
     final image = image$ == null
         ? null
-        : OImage(src: image$, headers: {'referer': baseUrl});
+        : OImage(src: image$, headers: Headers({'Referer': baseUrl}));
     final poster$ = $('.TPostBg img', single: true).attrRaw('data-cfsrc');
     final poster = poster$ == null
         ? null
-        : OImage(src: poster$, headers: {'referer': baseUrl});
+        : OImage(src: poster$, headers: Headers({'Referer': baseUrl}));
 
     return EigaEpisodes(
       episodes: episodes,
       image: image,
       poster: poster,
-      schedule: day != null && hour != null && minute != null
-          ? TimeAndDay(
-              hour: int.parse(hour),
-              minute: int.parse(minute),
-              day: day,
-            )
-          : null,
+      schedule: nextScheduleDateTime,
     );
   }
 
   @override
-  getSource({required eigaId, required EigaEpisode episode}) async {
+  getSource({required eigaId, required episode, server}) async {
     await _fetchHtmlEpisodes(eigaId);
 
     final text = (await fetch(
@@ -611,7 +627,7 @@ class AnimeVietsubService extends ABEigaService
       src: json['link'][0]['file'],
       url: Uri.parse(baseUrl),
       type: json['playTech'] == 'api' ? 'hls' : 'embed',
-      headers: {'referer': baseUrl},
+      headers: Headers({'Referer': baseUrl}),
     );
   }
 
@@ -636,7 +652,6 @@ class AnimeVietsubService extends ABEigaService
   Future<String?> _getEpisodeIDApi({
     required String eigaId,
     required EigaEpisode episode,
-    required int episodeIndex,
     required MetaEiga metaEiga,
   }) async {
     final episodes = await _callApiAnimeVsub(
@@ -659,7 +674,7 @@ class AnimeVietsubService extends ABEigaService
 
           return num.parse(item['name']).toDouble() == epFloat;
         }) ??
-        (episodeIndex < list.length - 1 ? list[episodeIndex] : null);
+        list.elementAtOrNull(episode.index);
 
     if (episodeD == null) return null;
 
@@ -667,42 +682,27 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  get getThumbnailPreview => ({
-        required eigaId,
-        required episode,
-        required episodeIndex,
-        required metaEiga,
-      }) async {
-        final episodeId = await _getEpisodeIDApi(
-          eigaId: eigaId,
-          episode: episode,
-          episodeIndex: episodeIndex,
-          metaEiga: metaEiga,
-        );
-        final meta = jsonDecode(
-          await _callApiAnimeVsub('$_apiThumb/episode-skip/$episodeId'),
-        );
+  getSeekThumbnail(props) async {
+    final episodeId = await _getEpisodeIDApi(
+      eigaId: props.eigaId,
+      episode: props.episode,
+      metaEiga: props.metaEiga,
+    );
+    final meta = jsonDecode(
+      await _callApiAnimeVsub('$_apiThumb/episode-skip/$episodeId'),
+    );
 
-        final file = (meta['tracks'] as List<dynamic>).firstWhereOrNull(
-          (item) => item['kind'] == 'thumbnails',
-        );
-
-        if (file != null) return Vtt(src: file['file']);
-        return null;
-      };
+    final file = meta['thumbs'] as String?;
+    if (file != null) return Vtt(src: file);
+    return null;
+  }
 
   @override
-  getOpeningEnding({
-    required eigaId,
-    required episode,
-    required episodeIndex,
-    required metaEiga,
-  }) async {
+  getOpeningEnding(props) async {
     final episodeId = await _getEpisodeIDApi(
-      eigaId: eigaId,
-      episode: episode,
-      episodeIndex: episodeIndex,
-      metaEiga: metaEiga,
+      eigaId: props.eigaId,
+      episode: props.episode,
+      metaEiga: props.metaEiga,
     );
     final meta = jsonDecode(
       await _callApiAnimeVsub('$_apiThumb/episode-skip/$episodeId'),
@@ -725,11 +725,6 @@ class AnimeVietsubService extends ABEigaService
             )
           : null,
     );
-  }
-
-  @override
-  getSubtitles({required eigaId, required episode}) async {
-    return [];
   }
 
   @override
@@ -761,7 +756,6 @@ class AnimeVietsubService extends ABEigaService
   getWatchTime({
     required String eigaId,
     required EigaEpisode episode,
-    required int episodeIndex,
     required MetaEiga metaEiga,
   }) async {
     final userUid = await _getUidUser();
@@ -813,7 +807,6 @@ class AnimeVietsubService extends ABEigaService
   Future<void> setWatchTime({
     required eigaId,
     required episode,
-    required episodeIndex,
     required MetaEiga metaEiga,
     required season,
     required WatchTime watchTime,

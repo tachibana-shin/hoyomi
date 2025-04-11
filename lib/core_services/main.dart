@@ -4,6 +4,7 @@ import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'comic/services/truyengg/main.dart';
 import 'comic/services/truyenqq/main.dart';
 import 'eiga/services/animevietsub/main.dart';
+import 'eiga/services/hianime/main.dart';
 import 'eiga/services/kkphim/main.dart';
 import 'eiga/services/nguonc/main.dart';
 import 'eiga/services/ophim/main.dart';
@@ -25,6 +26,7 @@ List<ABEigaService> eigaServices = [
   OPhimService(),
   KKPhimService(),
   NguonCService(),
+  HiAnimeService(),
 ];
 
 ABEigaService getEigaService(String id) {

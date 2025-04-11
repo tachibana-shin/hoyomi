@@ -6,10 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/service_settings_controller.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
-import 'package:hoyomi/core_services/interfaces/setting/field_input.dart';
-import 'package:hoyomi/core_services/interfaces/setting/setting_field.dart';
-import 'package:hoyomi/core_services/interfaces/user.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/database/scheme/service_settings.dart';
@@ -22,6 +18,8 @@ import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
+
+import 'interfaces/main.dart';
 
 class ServiceInit {
   final String name;
@@ -274,16 +272,20 @@ abstract class Service with _SettingsMixin {
   Future<String> fetch(
     String url, {
     String? cookie,
+    Map<String, dynamic>? query,
     Map<String, dynamic>? body,
-    Map<String, String>? headers,
+    Headers? headers,
   }) async {
     final record = await ServiceSettingsController.instance.get(uid);
     String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;
 
     cookiesText = init.onBeforeInsertCookie?.call(cookiesText) ?? cookiesText;
 
-    final uri = Uri.parse(url);
-    final $headers = {
+    var uri = Uri.parse(url);
+    if (query != null) {
+      uri = uri.replace(queryParameters: {...uri.queryParametersAll, ...query});
+    }
+    final $headers = Headers({
       'accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
       'accept-language': 'vi',
@@ -309,14 +311,14 @@ abstract class Service with _SettingsMixin {
       'upgrade-insecure-requests': '1',
       'user-agent': record?.settings?['user_agent'] as String? ??
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-      if (headers != null) ...headers
-    };
+      if (headers != null) ...headers.toMap()
+    });
 
     final DateTime? startTime = kDebugMode ? DateTime.now() : null;
     if (kDebugMode) {
       print('🔵 [HTTP] Request Started');
       print('➡️ URL: $uri');
-      print('📩 Cookie: ${$headers['cookie']}');
+      print('📩 Cookie: ${$headers.get('cookie')}');
 
       if (body != null) {
         final filteredBody = Map.fromEntries(
@@ -336,10 +338,10 @@ abstract class Service with _SettingsMixin {
     late final Response response;
     try {
       response = body == null
-          ? await get(uri, headers: $headers)
+          ? await get(uri, headers: $headers.toMap())
           : await post(
               uri,
-              headers: $headers,
+              headers: $headers.toMap(),
               body: Map.fromEntries(
                 body.entries.where((entry) => entry.value != null).toList().map(
                   (entry) {
@@ -409,7 +411,7 @@ abstract class Service with _SettingsMixin {
       return utf8.decode(response.bodyBytes);
     } else {
       debugPrint('Error: ${response.statusCode} ${response.reasonPhrase}');
-      throw Exception('Failed to load data');
+      throw response;
     }
   }
 
@@ -417,12 +419,13 @@ abstract class Service with _SettingsMixin {
     String url, {
     Duration? expires,
     String? cookie,
+    Map<String, dynamic>? query,
     Map<String, dynamic>? body,
-    Map<String, String>? headers,
+    Headers? headers,
   }) async {
     final uid = sha256
         .convert(utf8.encode(
-            '$url|$cookie|${body == null ? '' : jsonEncode(body)}|${headers == null ? '' : jsonEncode(headers)}'))
+            '$url|$cookie|${jsonEncode(query)}|${body == null ? '' : jsonEncode(body)}|${headers == null ? '' : jsonEncode(headers)}'))
         .toString();
 
     final inStore = _cacheFetch[uid];
@@ -433,11 +436,12 @@ abstract class Service with _SettingsMixin {
     }
 
     final expiresIn = expires == null ? null : DateTime.now().add(expires);
-    final response = fetch(url, cookie: cookie, body: body, headers: headers)
-      ..catchError((error) {
-        _cacheFetch.remove(uid);
-        throw error;
-      });
+    final response =
+        fetch(url, cookie: cookie, query: query, body: body, headers: headers)
+          ..catchError((error) {
+            _cacheFetch.remove(uid);
+            throw error;
+          });
     _cacheFetch[uid] = (expire: expiresIn, response: response);
 
     return response;
@@ -450,10 +454,12 @@ abstract class Service with _SettingsMixin {
 
   Future<DollarFunction> fetch$(String url,
       {String? cookie,
+      Map<String, dynamic>? query,
       Map<String, dynamic>? body,
-      Map<String, String>? headers}) async {
+      Headers? headers}) async {
     return parse$(
-      await fetch(url, cookie: cookie, body: body, headers: headers),
+      await fetch(url,
+          cookie: cookie, query: query, body: body, headers: headers),
     );
   }
 

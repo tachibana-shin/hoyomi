@@ -8,9 +8,9 @@ part of 'o_image.dart';
 
 _$OImageImpl _$$OImageImplFromJson(Map<String, dynamic> json) => _$OImageImpl(
       src: json['src'] as String,
-      headers: (json['headers'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as String),
-      ),
+      headers: json['headers'] == null
+          ? null
+          : Headers.fromJson(json['headers'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$OImageImplToJson(_$OImageImpl instance) =>

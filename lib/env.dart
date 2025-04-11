@@ -14,4 +14,6 @@ abstract class Env {
   static const int googleRedirectPort = _Env.googleRedirectPort;
   @EnviedField(obfuscate: true)
   static final String baseApiGeneral = _Env.baseApiGeneral;
+  @EnviedField(obfuscate: true, defaultValue: '')
+  static final String twoApi = _Env.twoApi;
 }

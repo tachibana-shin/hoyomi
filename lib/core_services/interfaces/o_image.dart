@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'headers.dart';
+
 part 'o_image.freezed.dart';
 part 'o_image.g.dart';
 
@@ -9,10 +11,11 @@ part 'o_image.g.dart';
 class OImage with _$OImage {
   const factory OImage({
     required String src,
-    Map<String, String>? headers,
+    Headers? headers,
   }) = _OImage;
 
   factory OImage.fromJson(Map<String, dynamic> json) => _$OImageFromJson(json);
+  factory OImage.from(String src) => OImage(src: src);
 
   factory OImage.createFakeData() {
     return OImage(src: "fake:");
@@ -43,7 +46,7 @@ class OImage with _$OImage {
     bool gaplessPlayback = false,
     FilterQuality filterQuality = FilterQuality.medium,
     bool isAntiAlias = false,
-    Map<String, String>? headers,
+    Headers? headers,
     int? cacheWidth,
     int? cacheHeight,
   }) {
@@ -98,11 +101,11 @@ class OImage with _$OImage {
       gaplessPlayback: gaplessPlayback,
       filterQuality: filterQuality,
       isAntiAlias: isAntiAlias,
-      headers: {
+      headers: Headers({
         'set-cookie': service.getSetting(key: 'cookie') ?? '',
         'user-agent': service.getSetting(key: 'user_agent') ?? '',
-        ...headers ?? {},
-      },
+        ...headers?.toMap() ?? {},
+      }).toMap(),
       cacheWidth: cacheWidth,
       cacheHeight: cacheHeight,
     );
@@ -131,7 +134,7 @@ class OImage with _$OImage {
     bool gaplessPlayback = false,
     FilterQuality filterQuality = FilterQuality.medium,
     bool isAntiAlias = false,
-    Map<String, String>? headers,
+    Headers? headers,
     int? cacheWidth,
     int? cacheHeight,
   }) {

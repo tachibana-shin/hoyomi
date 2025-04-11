@@ -1,3 +1,5 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/server_source.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_category.dart';
@@ -14,6 +16,28 @@ import 'package:hoyomi/core_services/interfaces/vtt.dart';
 
 export 'package:hoyomi/core_services/service.dart';
 
+part 'ab_eiga_service.freezed.dart';
+
+@freezed
+class PropsGetSeekThumbnail with _$PropsGetSeekThumbnail {
+  const factory PropsGetSeekThumbnail({
+    required String eigaId,
+    required MetaEiga metaEiga,
+    required EigaEpisode episode,
+    required SourceVideo source,
+  }) = _PropsGetSeekThumbnail;
+}
+
+@freezed
+class PropsGetOpeningEnding with _$PropsGetOpeningEnding {
+  const factory PropsGetOpeningEnding({
+    required String eigaId,
+    required MetaEiga metaEiga,
+    required EigaEpisode episode,
+    required SourceVideo source,
+  }) = _PropsGetOpeningEnding;
+}
+
 abstract class ABEigaService extends Service {
   Future<EigaHome> home();
 
@@ -27,32 +51,35 @@ abstract class ABEigaService extends Service {
 
   Future<MetaEiga> getDetails(String eigaId);
   Future<EigaEpisodes> getEpisodes(String eigaId);
+  Future<List<ServerSource>> getServers({
+    required String eigaId,
+    required EigaEpisode episode,
+  }) {
+    throw UnimplementedError();
+  }
+
   Future<SourceVideo> getSource({
     required String eigaId,
     required EigaEpisode episode,
+    ServerSource? server,
   });
   Future<SourceContent> fetchSourceContent({required SourceVideo source}) {
     throw UnimplementedError();
   }
 
-  Future<Vtt?> Function({
-    required String eigaId,
-    required EigaEpisode episode,
-    required int episodeIndex,
-    required MetaEiga metaEiga,
-  })? getThumbnailPreview;
-
   Future<List<Subtitle>> getSubtitles({
     required String eigaId,
     required EigaEpisode episode,
-  });
-
-  Future<OpeningEnding?> getOpeningEnding({
-    required String eigaId,
-    required EigaEpisode episode,
-    required int episodeIndex,
-    required MetaEiga metaEiga,
+    required SourceVideo source,
   }) {
+    throw UnimplementedError();
+  }
+
+  Future<Vtt?> getSeekThumbnail(PropsGetSeekThumbnail props) {
+    throw UnimplementedError();
+  }
+
+  Future<OpeningEnding?> getOpeningEnding(PropsGetOpeningEnding props) {
     throw UnimplementedError();
   }
 

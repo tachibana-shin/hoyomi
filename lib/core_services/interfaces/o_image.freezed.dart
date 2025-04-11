@@ -21,7 +21,7 @@ OImage _$OImageFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$OImage {
   String get src => throw _privateConstructorUsedError;
-  Map<String, String>? get headers => throw _privateConstructorUsedError;
+  Headers? get headers => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -33,7 +33,9 @@ abstract class $OImageCopyWith<$Res> {
   factory $OImageCopyWith(OImage value, $Res Function(OImage) then) =
       _$OImageCopyWithImpl<$Res, OImage>;
   @useResult
-  $Res call({String src, Map<String, String>? headers});
+  $Res call({String src, Headers? headers});
+
+  $HeadersCopyWith<$Res>? get headers;
 }
 
 /// @nodoc
@@ -60,8 +62,20 @@ class _$OImageCopyWithImpl<$Res, $Val extends OImage>
       headers: freezed == headers
           ? _value.headers
           : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
+              as Headers?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $HeadersCopyWith<$Res>? get headers {
+    if (_value.headers == null) {
+      return null;
+    }
+
+    return $HeadersCopyWith<$Res>(_value.headers!, (value) {
+      return _then(_value.copyWith(headers: value) as $Val);
+    });
   }
 }
 
@@ -72,7 +86,10 @@ abstract class _$$OImageImplCopyWith<$Res> implements $OImageCopyWith<$Res> {
       __$$OImageImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String src, Map<String, String>? headers});
+  $Res call({String src, Headers? headers});
+
+  @override
+  $HeadersCopyWith<$Res>? get headers;
 }
 
 /// @nodoc
@@ -95,9 +112,9 @@ class __$$OImageImplCopyWithImpl<$Res>
           : src // ignore: cast_nullable_to_non_nullable
               as String,
       headers: freezed == headers
-          ? _value._headers
+          ? _value.headers
           : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
+              as Headers?,
     ));
   }
 }
@@ -105,23 +122,15 @@ class __$$OImageImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$OImageImpl implements _OImage {
-  const _$OImageImpl({required this.src, final Map<String, String>? headers})
-      : _headers = headers;
+  const _$OImageImpl({required this.src, this.headers});
 
   factory _$OImageImpl.fromJson(Map<String, dynamic> json) =>
       _$$OImageImplFromJson(json);
 
   @override
   final String src;
-  final Map<String, String>? _headers;
   @override
-  Map<String, String>? get headers {
-    final value = _headers;
-    if (value == null) return null;
-    if (_headers is EqualUnmodifiableMapView) return _headers;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
+  final Headers? headers;
 
   @override
   String toString() {
@@ -134,13 +143,12 @@ class _$OImageImpl implements _OImage {
         (other.runtimeType == runtimeType &&
             other is _$OImageImpl &&
             (identical(other.src, src) || other.src == src) &&
-            const DeepCollectionEquality().equals(other._headers, _headers));
+            (identical(other.headers, headers) || other.headers == headers));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, src, const DeepCollectionEquality().hash(_headers));
+  int get hashCode => Object.hash(runtimeType, src, headers);
 
   @JsonKey(ignore: true)
   @override
@@ -157,16 +165,15 @@ class _$OImageImpl implements _OImage {
 }
 
 abstract class _OImage implements OImage {
-  const factory _OImage(
-      {required final String src,
-      final Map<String, String>? headers}) = _$OImageImpl;
+  const factory _OImage({required final String src, final Headers? headers}) =
+      _$OImageImpl;
 
   factory _OImage.fromJson(Map<String, dynamic> json) = _$OImageImpl.fromJson;
 
   @override
   String get src;
   @override
-  Map<String, String>? get headers;
+  Headers? get headers;
   @override
   @JsonKey(ignore: true)
   _$$OImageImplCopyWith<_$OImageImpl> get copyWith =>
