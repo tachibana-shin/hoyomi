@@ -469,7 +469,7 @@ class AnimeVietsubService extends ABEigaService
     )?.query('a').map((item) => _getInfoAnchor(item)).toList();
     final language = _findInfo(infoListRight, 'ngôn ngữ')?.text().split(':')[1];
     final studios =
-        _findInfo(infoListRight, 'studio')?.queryOne('a').map(_getInfoAnchor);
+        _findInfo(infoListRight, 'studio')?.query('a').map(_getInfoAnchor);
     final trailer = $('#Opt1 iframe', single: true).attr('src');
     final movieSeason =
         _getInfoAnchor(_findInfo(infoListRight, 'season')!.queryOne('a'));
