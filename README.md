@@ -7,6 +7,8 @@ A new Flutter project.
 
 > [!TIP]
 > Multi-source, multi-platform manga reading and anime viewing application for free
+>
+> `English` / `Multiple` support by `HiAnime`
 
 ## Screenshot preview
 
