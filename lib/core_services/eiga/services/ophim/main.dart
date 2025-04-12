@@ -1048,7 +1048,9 @@ String _removeAdsFromM3U8(Uri url, String m3u8) {
         final duration = double.parse(durationMatch.group(1)!);
         final segmentLines = [line];
         i++;
-        while (i < lines.length && lines[i].trim().isEmpty) i++;
+        while (i < lines.length && lines[i].trim().isEmpty) {
+          i++;
+        }
         if (i < lines.length) segmentLines.add(lines[i].trim());
         segments.add({'duration': duration, 'lines': segmentLines});
       }
