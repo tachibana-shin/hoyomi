@@ -10,7 +10,10 @@ describe("jsonToResponse", () => {
         "Content-Type": "application/json",
         "X-Custom-Header": "CustomValue"
       },
-      body: '{"message":"Success"}'
+      body: '{"message":"Success"}',
+      type: "default",
+      redirected: true,
+      url: "http://example.com"
     }
 
     const response = jsonToResponse(responseJson)

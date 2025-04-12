@@ -5,6 +5,7 @@
  */
 export async function responseToJson(
   response: Response
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 ): Promise<Record<string, any>> {
   const headers = Object.fromEntries(response.headers.entries())
 
@@ -20,6 +21,9 @@ export async function responseToJson(
     status: response.status,
     statusText: response.statusText,
     headers,
-    body
+    body,
+    redirected: response.redirected,
+    type: response.type,
+    url: response.url
   }
 }

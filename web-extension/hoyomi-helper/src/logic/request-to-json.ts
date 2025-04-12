@@ -5,16 +5,18 @@
  */
 export async function requestToJson(
   request: Request
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 ): Promise<Record<string, any>> {
   const headers = Object.fromEntries(request.headers.entries())
 
   let body: string | null = null
-  try {
-    const clonedRequest = request.clone()
-    body = await clonedRequest.text()
-  } catch {
-    // If reading the body fails, leave it as null
-  }
+  if (request.method !== "GET" && request.method !== "HEAD")
+    try {
+      const clonedRequest = request.clone()
+      body = await clonedRequest.text()
+    } catch {
+      // If reading the body fails, leave it as null
+    }
 
   return {
     url: request.url,

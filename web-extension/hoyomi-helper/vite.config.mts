@@ -79,6 +79,7 @@ export default defineConfig(({ command }) => ({
   base: command === "serve" ? `http://localhost:${port}/` : "/dist/",
   server: {
     port,
+    cors: true,
     hmr: {
       host: "localhost"
     },
@@ -92,14 +93,14 @@ export default defineConfig(({ command }) => ({
     // https://developer.chrome.com/docs/webstore/program_policies/#:~:text=Code%20Readability%20Requirements
     terserOptions: {
       mangle: false
-    },
-    rollupOptions: {
-      input: {
-        options: r("src/options/index.html"),
-        popup: r("src/popup/index.html"),
-        sidepanel: r("src/sidepanel/index.html")
-      }
     }
+    // rollupOptions: {
+    //   input: {
+    // options: r("src/options/index.html"),
+    // popup: r("src/popup/index.html"),
+    // sidepanel: r("src/sidepanel/index.html")
+    // }
+    // }
   },
   test: {
     globals: true,

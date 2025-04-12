@@ -1,34 +1,48 @@
-import { onMessage, sendMessage } from "webext-bridge/content-script"
-import { jsonToResponse } from "~/logic/json-to-response"
-import { requestToJson } from "~/logic/request-to-json"
-;(() => {
-  console.info("[vitesse-webext] Hello world from content script")
+import { sendMessage } from "webext-bridge/content-script"
 
-  // communication example: send previous tab title from background page
-  onMessage("tab-prev", ({ data }) => {
-    console.log(`[vitesse-webext] Navigate from page "${data.title}"`)
-  })
+document.documentElement.addEventListener(
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  "_$fetch_rq_" as unknown as any,
+  async (event: CustomEvent<string>) => {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    // biome-ignore lint/style/useSingleVarDeclarator: <explanation>
+    let id: string, param: Record<string, any>
+    try {
+      const data = JSON.parse(event.detail)
+      id = data.id
+      param = data.param
+    } catch {
+      return
+    }
 
-  const script = document.createElement("script")
-  script.textContent =
-    "(" +
-    function () {
-      // Save the original fetch function.
-      const originalFetch = window.fetch
+    try {
+      const json = await sendMessage("fetch", param, "background")
 
-      window.fetch = async function (url, init) {
-        const json = await sendMessage(
-          "fetch",
-          await requestToJson(new Request(url, init).clone()),
-          "background"
-        )
+      document.documentElement.dispatchEvent(
+        new CustomEvent("_$fetch_rs_", {
+          detail: JSON.stringify({ id, ok: true, param: json })
+        })
+      )
+    } catch (error) {
+      document.documentElement.dispatchEvent(
+        new CustomEvent("_$fetch_rs_", {
+          detail: JSON.stringify({
+            id,
+            ok: false,
+            param: error?.toString ?? "unknown_error"
+          })
+        })
+      )
+    }
+  }
+)
 
-        return jsonToResponse(json as unknown as Map<String, String>)
-      }
-    } +
-    ")();"
+const script = document.createElement("script")
+script.type = "module"
+script.src = `http://localhost:${
+  import.meta.env.PORT ?? 3303
+}/contentScripts/inject.ts`
 
-  // Append the injected script into the document.
-  ;(document.head || document.documentElement).prepend(script)
-  script.remove()
-})()
+// Append the injected script into the document.
+;(document.head || document.documentElement).prepend(script)
+script.remove()
