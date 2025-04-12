@@ -997,7 +997,7 @@ const List<List<double>> _timeRanges = [
     3.336667,
     2.836167,
     3.336667,
-    1.534867
+    1.534867,
   ],
   [
     3.336667,
@@ -1009,7 +1009,7 @@ const List<List<double>> _timeRanges = [
     3.336667,
     2.836167,
     3.336667,
-    1.534867
+    1.534867,
   ],
   [2.0, 3.8, 1.76, 2.0, 2.16, 1.64, 1.68, 1.52, 1.84],
   [
@@ -1029,61 +1029,76 @@ const List<List<double>> _timeRanges = [
     1.36,
     2.0,
     2.0,
-    0.72
-  ]
+    0.72,
+  ],
 ];
 String _removeAdsFromM3U8(Uri url, String m3u8) {
   final lines = m3u8.split('\n');
-  final regex = RegExp(r'#EXTINF:([\d.]+),');
 
-  final List<({double duration, int index})> segments = [];
-  for (int i = 0; i < lines.length; i++) {
-    final line = lines.elementAt(i);
-    final match = regex.firstMatch(line);
-    if (match != null) {
-      final duration = double.parse(match.group(1)!);
-      i++;
+  final segments = <Map<String, dynamic>>[];
+  final result = <String>[];
 
-      segments.add((duration: duration, index: i));
+  int i = 0;
+  while (i < lines.length) {
+    final line = lines[i].trim();
+
+    if (line.startsWith('#EXTINF')) {
+      final durationMatch = RegExp(r'#EXTINF:([\d\.]+),').firstMatch(line);
+      if (durationMatch != null) {
+        final duration = double.parse(durationMatch.group(1)!);
+        final segmentLines = [line];
+        i++;
+        while (i < lines.length && lines[i].trim().isEmpty) i++;
+        if (i < lines.length) segmentLines.add(lines[i].trim());
+        segments.add({'duration': duration, 'lines': segmentLines});
+      }
+    } else {
+      result.add(line);
     }
+    i++;
   }
 
-  final Set<int> indexSegmentsRemove = {};
-  for (int i = 0; i < segments.length; i++) {
-    var good = true;
-    var adStart = -1;
-    var adStop = -1;
-    for (int j = 0; j < _timeRanges.length; j++) {
-      final rangeCase = _timeRanges.elementAt(j);
-      for (int k = 0; k < rangeCase.length; k++) {
-        if (segments[i + k].duration != rangeCase[k]) {
-          good = false;
+  final keep = List.generate(segments.length, (_) => true);
+
+  for (final range in _timeRanges) {
+    final len = range.length;
+    for (int i = 0; i <= segments.length - len; i++) {
+      bool matched = true;
+      for (int j = 0; j < len; j++) {
+        if (segments[i + j]['duration'].round() != range[j].round()) {
+          matched = false;
           break;
         }
       }
-
-      if (good) {
-        adStart = i;
-        adStop = i + rangeCase.length - 1;
-        for (int l = adStart; l <= adStop; l++) {
-          indexSegmentsRemove.add(segments.elementAt(l).index);
+      if (matched) {
+        for (int j = 0; j < len; j++) {
+          if (keep[i + j]) {
+            keep[i + j] = false;
+          }
         }
-        break;
+        i += len - 1;
       }
     }
   }
 
-  final output = <String>[];
-  for (int i = 0; i < lines.length; i++) {
-    if (indexSegmentsRemove.contains(i)) continue;
+  final finalResult = <String>[];
+  finalResult.addAll(result);
 
-    final line = lines.elementAt(i);
-    if (line.startsWith('#')) {
-      output.add(line);
-    } else {
-      output.add(url.resolve(line).toString());
+  for (int i = 0; i < segments.length; i++) {
+    if (keep[i]) {
+      finalResult.addAll(segments[i]['lines']);
     }
   }
 
-  return output.join('\n');
+  final cleaned = <String>[];
+  for (int i = 0; i < finalResult.length; i++) {
+    final line = finalResult[i];
+    if (line == '#EXT-X-DISCONTINUITY') {
+      final prev = i > 0 ? finalResult[i - 1] : '';
+      if (prev.startsWith('#E')) continue;
+    }
+    cleaned.add(url.resolve(line).toString());
+  }
+
+  return cleaned.join('\n');
 }
