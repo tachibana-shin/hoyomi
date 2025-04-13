@@ -14,7 +14,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/extensions/iterable_extension.dart';
 import 'package:hoyomi/extensions/list_extension.dart';
-import 'package:hoyomi/utils/cache_remember.dart';
+import 'package:hoyomi/utils/cache_remember/cache_remember.dart';
 import 'package:hoyomi/widgets/eiga/button_follow_eiga.dart';
 import 'package:hoyomi/widgets/eiga/button_share_eiga.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
