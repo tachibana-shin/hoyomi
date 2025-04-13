@@ -1,13 +1,12 @@
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 
-import 'volume_controller_stub.dart';
+@override
+Future<double?> getVolume() => FlutterVolumeController.getVolume();
 
-class VolumeController implements VolumeControllerStub {
-  @override
-  getVolume() => FlutterVolumeController.getVolume();
-  @override
-  setVolume(double value) => FlutterVolumeController.setVolume(value);
-  @override
-  updateShowSystemUI(bool state) =>
-      FlutterVolumeController.updateShowSystemUI(state);
-}
+@override
+Future<void> setVolume(double value) =>
+    FlutterVolumeController.setVolume(value);
+
+@override
+Future<void> updateShowSystemUI(bool state) =>
+    FlutterVolumeController.updateShowSystemUI(state);

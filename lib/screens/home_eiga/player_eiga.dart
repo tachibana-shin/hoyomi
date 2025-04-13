@@ -550,14 +550,13 @@ class _PlayerEigaState extends State<PlayerEiga>
       });
     });
     // Volume
-    final volumeController = VolumeController();
-    volumeController.getVolume().then((volume) {
+    getVolume().then((volume) {
       if (!mounted) return;
 
       _systemVolume.value = volume ?? 0;
-      volumeController.updateShowSystemUI(false);
+      updateShowSystemUI(false);
       watch([_systemVolume], () {
-        volumeController.setVolume(_systemVolume.value);
+        setVolume(_systemVolume.value);
       });
     });
 

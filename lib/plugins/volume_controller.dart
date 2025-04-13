@@ -1,3 +1,3 @@
-import 'package:flutter/foundation.dart';
-
-export 'volume_controller.io.dart' if (kIsWeb) 'volume_controller.web.dart';
+export 'volume_controller_stub.dart'
+    if (dart.library.js_interop) 'volume_controller.web.dart'
+    if (dart.library.io) 'volume_controller.io.dart';
