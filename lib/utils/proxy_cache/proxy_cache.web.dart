@@ -1,8 +1,4 @@
-import 'dart:async';
-import 'dart:io';
-import 'package:flutter/cupertino.dart';
-import 'package:hoyomi/env.dart';
-import 'package:path_provider/path_provider.dart';
+import 'dart:convert';
 
 class ProxyCache {
   static final ProxyCache _instance = ProxyCache._internal();
@@ -10,55 +6,26 @@ class ProxyCache {
 
   ProxyCache._internal();
 
-  HttpServer? _server;
-  final int _port = Env.proxyCachePort;
+  final Map<String, String> _cache = {};
 
-  Future<File> saveFile({
+  Future<String> saveFile({
     required String content,
     required String path,
   }) async {
-    final directory = await getTemporaryDirectory();
-
-    final file = File('${directory.path}/$path');
-    if (await file.exists() == false) await file.writeAsString(content);
-
-    return file;
+    _cache[path] = content;
+    return path;
   }
 
   Future<void> start() async {
-    if (_server != null) return;
-
-    final directory = await getTemporaryDirectory();
-    final String cachePath = directory.path;
-
-    _server = await HttpServer.bind(InternetAddress.loopbackIPv4, _port);
-    debugPrint('ProxyCache started on http://localhost:$_port/');
-
-    _server!.listen((HttpRequest request) async {
-      final String fileName = request.uri.path.substring(1);
-      final File file = File('$cachePath/$fileName');
-
-      if (await file.exists()) {
-        request.response.headers.contentType = ContentType.binary;
-        request.response.headers.add('Cache-Control', 'public, max-age=86400');
-
-        await file.openRead().pipe(request.response);
-      } else {
-        request.response.statusCode = HttpStatus.notFound;
-        request.response.write('404 Not Found: $fileName');
-      }
-
-      await request.response.close();
-    });
+    return;
   }
 
-  Uri getUrlHttp(File file) {
-    return Uri.parse('http://localhost:$_port/${file.path.split('/').last}');
+  Uri getUrlHttp(String file) {
+    final base64Content = base64Encode(utf8.encode(_cache[file] ?? ''));
+    return Uri.parse('http://localhost/?b64=$base64Content');
   }
 
   Future<void> stop() async {
-    await _server?.close();
-    _server = null;
-    debugPrint('ProxyCache stopped.');
+    _cache.clear();
   }
 }

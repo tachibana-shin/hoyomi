@@ -13,7 +13,7 @@ class ProxyCache {
   HttpServer? _server;
   final int _port = Env.proxyCachePort;
 
-  Future<File> saveFile({
+  Future<String> saveFile({
     required String content,
     required String path,
   }) async {
@@ -22,7 +22,7 @@ class ProxyCache {
     final file = File('${directory.path}/$path');
     if (await file.exists() == false) await file.writeAsString(content);
 
-    return file;
+    return file.path;
   }
 
   Future<void> start() async {
@@ -52,8 +52,8 @@ class ProxyCache {
     });
   }
 
-  Uri getUrlHttp(File file) {
-    return Uri.parse('http://localhost:$_port/${file.path.split('/').last}');
+  Uri getUrlHttp(String file) {
+    return Uri.parse('http://localhost:$_port/${file.split('/').last}');
   }
 
   Future<void> stop() async {

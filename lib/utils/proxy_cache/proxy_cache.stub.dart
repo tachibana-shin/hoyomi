@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 class ProxyCache {
   static final ProxyCache _instance = ProxyCache._internal();
@@ -7,7 +6,7 @@ class ProxyCache {
 
   ProxyCache._internal();
 
-  Future<File> saveFile({
+  Future<String> saveFile({
     required String content,
     required String path,
   }) async {
@@ -18,7 +17,7 @@ class ProxyCache {
     throw UnimplementedError();
   }
 
-  Uri getUrlHttp(File file) {
+  Uri getUrlHttp(String file) {
     throw UnimplementedError();
   }
 
