@@ -37,7 +37,6 @@ import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart' as type;
-import 'package:hoyomi/utils/save_file_cache.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'widget/subtitle_settings_sheet.dart';
@@ -640,7 +639,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           await widget.service.fetchSourceContent(source: source);
       content = sourceContent.content;
 
-      final fileCache = await saveFileCache(
+      final fileCache = await ProxyCache.instance.saveFile(
         content: sourceContent.content,
         path: "${sha256.convert(utf8.encode(sourceContent.content))}.m3u8",
       );

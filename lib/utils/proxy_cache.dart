@@ -12,7 +12,18 @@ class ProxyCache {
 
   HttpServer? _server;
   final int _port = Env.proxyCachePort;
-  Timer? _timeoutTimer;
+
+  Future<File> saveFile({
+    required String content,
+    required String path,
+  }) async {
+    final directory = await getTemporaryDirectory();
+
+    final file = File('${directory.path}/$path');
+    if (await file.exists() == false) await file.writeAsString(content);
+
+    return file;
+  }
 
   Future<void> start() async {
     if (_server != null) return;
@@ -48,7 +59,6 @@ class ProxyCache {
   Future<void> stop() async {
     await _server?.close();
     _server = null;
-    _timeoutTimer?.cancel();
     debugPrint('ProxyCache stopped.');
   }
 }
