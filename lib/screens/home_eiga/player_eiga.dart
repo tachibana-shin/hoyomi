@@ -10,7 +10,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
-import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
@@ -23,6 +22,7 @@ import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:hoyomi/logic/search_language.dart';
 import 'package:hoyomi/plugins/fullscreen.dart';
+import 'package:hoyomi/plugins/volume_controller.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/utils/proxy_cache.dart';
 import 'package:hoyomi/widgets/eiga/html_subtitle_wrapper.dart';
@@ -550,13 +550,14 @@ class _PlayerEigaState extends State<PlayerEiga>
       });
     });
     // Volume
-    FlutterVolumeController.getVolume().then((volume) {
+    final volumeController = VolumeController();
+    volumeController.getVolume().then((volume) {
       if (!mounted) return;
 
       _systemVolume.value = volume ?? 0;
-      FlutterVolumeController.updateShowSystemUI(false);
+      volumeController.updateShowSystemUI(false);
       watch([_systemVolume], () {
-        FlutterVolumeController.setVolume(_systemVolume.value);
+        volumeController.setVolume(_systemVolume.value);
       });
     });
 
