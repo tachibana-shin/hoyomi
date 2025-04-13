@@ -77,19 +77,21 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final _onNextNotifier = ref<VoidCallback?>(null);
 
   /// ================= player expose =================
-  late final _serversFuture = computed<Future<List<ServerSource>?>?>(() {
+  late final _serversFuture = computed<Future<List<ServerSource>?>?>(() async {
     if (_metaIsFake.value) return null;
 
     final episode = _episode.value;
     if (episode == null) return null;
 
-    return _service
-        .getServers(eigaId: _eigaId.value, episode: episode)
-        .then((servers) => servers.isEmpty ? null : servers)
-        .catchError((error) {
-      if (error is UnimplementedError) return null;
-      throw error;
-    });
+    try {
+      return await _service
+          .getServers(eigaId: _eigaId.value, episode: episode)
+          .then((servers) => servers.isEmpty ? null : servers);
+    } on UnimplementedError {
+      return null;
+    } catch (error) {
+      rethrow;
+    }
   });
   late final _serverIdSelected = ref<String?>(null);
 
