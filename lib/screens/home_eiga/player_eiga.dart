@@ -21,6 +21,7 @@ import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:hoyomi/logic/search_language.dart';
+import 'package:hoyomi/plugins/brightness_controller.dart';
 import 'package:hoyomi/plugins/fullscreen.dart';
 import 'package:hoyomi/plugins/volume_controller.dart';
 import 'package:hoyomi/utils/debouncer.dart';
@@ -33,7 +34,6 @@ import 'package:http/http.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
-import 'package:screen_brightness/screen_brightness.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart' as type;
@@ -531,10 +531,9 @@ class _PlayerEigaState extends State<PlayerEiga>
 
       var valueStore = settings.brightnessApp;
       if (valueStore != null) {
-        await ScreenBrightness.instance
-            .setApplicationScreenBrightness(valueStore);
+        await setApplicationScreenBrightness(valueStore);
       } else {
-        valueStore = await ScreenBrightness.instance.application;
+        valueStore = await getApplicationScreenBrightness();
       }
 
       if (!mounted) return;
@@ -542,8 +541,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       _appBrightness.value = valueStore;
 
       watch([_appBrightness], () {
-        ScreenBrightness.instance
-            .setApplicationScreenBrightness(_appBrightness.value);
+        setApplicationScreenBrightness(_appBrightness.value);
         settings = settings!.copyWith(brightnessApp: _appBrightness.value);
 
         GeneralSettingsController.instance.save(settings!);
@@ -1965,7 +1963,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   /// ============= system brightness and volume ===========
   Future<void> _resetAppBrightness() async {
     try {
-      await ScreenBrightness.instance.resetApplicationScreenBrightness();
+      await resetApplicationScreenBrightness();
     } catch (e) {
       debugPrint(e.toString());
     }
