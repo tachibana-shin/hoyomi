@@ -85,7 +85,11 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     return _service
         .getServers(eigaId: _eigaId.value, episode: episode)
-        .then((servers) => servers.isEmpty ? null : servers);
+        .then((servers) => servers.isEmpty ? null : servers)
+        .catchError((error) {
+      if (error is UnimplementedError) return null;
+      throw error;
+    });
   });
   late final _serverIdSelected = ref<String?>(null);
 
