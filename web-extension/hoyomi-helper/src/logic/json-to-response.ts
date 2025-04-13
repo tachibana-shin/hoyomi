@@ -4,11 +4,16 @@
  * @returns A new Response object constructed from the JSON data.
  */
 
+import { base64ToArrayBuffer } from "./buffer-to-b64"
+
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export  function jsonToResponse(json: Record<string, any>): Response {
+export function jsonToResponse(json: Record<string, any>): Response {
   const headers = new Headers(json.headers)
 
-  const response = new Response(json.body, {
+  // Decode the base64-encoded body before passing it to the Response
+  const body = json.body ? base64ToArrayBuffer(json.body) : null
+
+  const response = new Response(body, {
     status: json.status,
     statusText: json.statusText,
     headers

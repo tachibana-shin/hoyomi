@@ -3,6 +3,8 @@
  * @param json - The JSON object representing the Request.
  * @returns A new Request object constructed from the JSON data.
  */
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function jsonToRequest(json: Record<string, any>): Request {
   const headers = new Headers(json.headers)
 

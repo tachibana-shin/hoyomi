@@ -1,3 +1,5 @@
+import { arrayBufferToBase64 } from "./buffer-to-b64"
+
 /**
  * Converts a Response object into a JSON-serializable object.
  * @param response - The Response object to convert.
@@ -12,9 +14,11 @@ export async function responseToJson(
   let body: string | null = null
   try {
     const clonedResponse = response.clone()
-    body = await clonedResponse.text()
-  } catch {
+    const arrayBuffer = await clonedResponse.arrayBuffer()
+    body = arrayBufferToBase64(arrayBuffer)
+  } catch (error) {
     // If reading the body fails, leave it as null
+    console.warn(error)
   }
 
   return {
