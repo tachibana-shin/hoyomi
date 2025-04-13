@@ -25,7 +25,7 @@ import 'package:hoyomi/plugins/brightness_controller.dart';
 import 'package:hoyomi/plugins/fullscreen.dart';
 import 'package:hoyomi/plugins/volume_controller.dart';
 import 'package:hoyomi/utils/debouncer.dart';
-import 'package:hoyomi/utils/proxy_cache.dart';
+import 'package:hoyomi/utils/proxy_cache/proxy_cache.dart';
 import 'package:hoyomi/widgets/eiga/html_subtitle_wrapper.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:hoyomi/utils/format_duration.dart';
