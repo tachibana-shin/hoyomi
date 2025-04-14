@@ -152,7 +152,7 @@ window.XMLHttpRequest = class extends XMLHttpRequest {
 
   // イベントリスナーを追加
   addEventListener(type: string, listener: EventListenerOrEventListenerObject) {
-    this._eventTarget.addEventListener(type, listener)
+    if (type !== "progress") this._eventTarget.addEventListener(type, listener)
   }
 
   // イベントリスナーを削除
