@@ -47,20 +47,22 @@
           return originalSrcDescriptor.get.call(this)
         },
         set: function (value) {
-          if (typeof value === "string") {
+          if (typeof value === "string" && value.includes("b64")) {
             const b64 = new URL(value).searchParams.get("b64")
             const content = atob(b64)
 
             if (this.canPlayType("application/vnd.apple.mpegurl")) {
               originalSrcDescriptor.set.call(this, value)
-            } else if (window.Hls && Hls.isSupported()) {
+            } else if (Hls.isSupported() && content.includes("#EXT")) {
               if (this._hls) {
                 this._hls.destroy()
                 this._hls = null
               }
 
-              const hls = new Hls()
-              hls.loadSource(value)
+              const hls = new Hls({
+                progressive: true
+              })
+              hls.loadSource(`data:;base64,${b64}`)
               hls.attachMedia(this)
 
               this._hls = hls
