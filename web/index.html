@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <!--
+  <head>
+    <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
 
@@ -14,25 +14,68 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
-  <base href="$FLUTTER_BASE_HREF">
+    <base href="$FLUTTER_BASE_HREF" />
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <meta name="description" content="A new Flutter project." />
 
-  <!-- iOS meta tags & icons -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="hoyomi">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="hoyomi" />
+    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png" />
 
-  <title>hoyomi</title>
-  <link rel="manifest" href="manifest.json">
-</head>
-<body>
-  <script src="flutter_bootstrap.js" async></script>
-</body>
+    <title>hoyomi</title>
+    <link rel="manifest" href="manifest.json" />
+  </head>
+
+  <body>
+    <script type="module">
+      import Hls from "https://esm.run/hls.js@1.6.2"
+
+      const originalSrcDescriptor = Object.getOwnPropertyDescriptor(
+        HTMLMediaElement.prototype,
+        "src"
+      )
+
+      Object.defineProperty(HTMLMediaElement.prototype, "src", {
+        get: function () {
+          return originalSrcDescriptor.get.call(this)
+        },
+        set: function (value) {
+          if (typeof value === "string") {
+            const b64 = new URL(value).searchParams.get("b64")
+            const content = atob(b64)
+
+            if (this.canPlayType("application/vnd.apple.mpegurl")) {
+              originalSrcDescriptor.set.call(this, value)
+            } else if (window.Hls && Hls.isSupported()) {
+              if (this._hls) {
+                this._hls.destroy()
+                this._hls = null
+              }
+
+              const hls = new Hls()
+              hls.loadSource(value)
+              hls.attachMedia(this)
+
+              this._hls = hls
+            } else {
+              console.warn("HLS is not supported in this browser.")
+              originalSrcDescriptor.set.call(this, value)
+            }
+          } else {
+            originalSrcDescriptor.set.call(this, value)
+          }
+        },
+        configurable: true,
+        enumerable: true
+      })
+    </script>
+    <script src="flutter_bootstrap.js" async></script>
+  </body>
 </html>
