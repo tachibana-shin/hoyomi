@@ -26,7 +26,7 @@ export async function getManifest() {
       48: "./assets/icon-512.png",
       128: "./assets/icon-512.png"
     },
-    permissions: ["tabs", "storage", "activeTab", "sidePanel"],
+    permissions: ["tabs", "storage", "activeTab", "cookies", "declarativeNetRequest"],
     host_permissions: ["*://*/*"],
     content_scripts: [
       {
