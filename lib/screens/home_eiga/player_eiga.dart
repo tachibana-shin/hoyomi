@@ -981,6 +981,29 @@ class _PlayerEigaState extends State<PlayerEiga>
         _buildUISwipeView(),
         _buildUIDoubleTapView(),
         _buildPopupOpeningEnding(),
+        // Fix web can't tap show controls
+        if (XPlatform.isWeb)
+          Watch(() => switch (_showControls.value) {
+                true => SizedBox.shrink(),
+                false => Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: GestureDetector(
+                      onTap: _onTapToggleControls,
+                      onDoubleTapDown: _onDoubleTapPlayer,
+                      onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
+                      onVerticalDragEnd: (_) => _hideAllSlider(),
+                      onVerticalDragCancel: _hideAllSlider,
+                      onHorizontalDragStart: _onHorizontalDragStart,
+                      onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                      onHorizontalDragEnd: _onHorizontalDragEnd,
+                      onHorizontalDragCancel: _hideAllSlider,
+                      child: Container(color: Colors.transparent),
+                    ),
+                  ),
+              }),
       ],
     );
   }
