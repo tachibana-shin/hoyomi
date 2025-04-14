@@ -337,7 +337,7 @@ abstract class Service with _SettingsMixin {
 
     final client = Client();
     final request = Request(body == null ? 'GET' : 'POST', uri)
-      ..followRedirects = false;
+      ..followRedirects = true;
 
     if (headers != null) request.headers.addAll(headers.toMap());
     final Object? fBody = body == null
