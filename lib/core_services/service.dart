@@ -335,25 +335,39 @@ abstract class Service with _SettingsMixin {
       }
     }
 
+    final client = Client();
+    final request = Request(body == null ? 'GET' : 'POST', uri)
+      ..followRedirects = false;
+
+    if (headers != null) request.headers.addAll(headers.toMap());
+    final Object? fBody = body == null
+        ? null
+        : Map.fromEntries(
+            body.entries.where((entry) => entry.value != null).toList().map(
+              (entry) {
+                if (entry.value is String) {
+                  return entry;
+                } else {
+                  return MapEntry(entry.key, entry.value.toString());
+                }
+              },
+            ),
+          );
+    if (fBody != null) {
+      if (fBody is String) {
+        request.body = fBody;
+      } else if (fBody is List) {
+        request.bodyBytes = fBody.cast<int>();
+      } else if (fBody is Map) {
+        request.bodyFields = fBody.cast<String, String>();
+      } else {
+        throw ArgumentError('Invalid request body "$fBody".');
+      }
+    }
+
     late final Response response;
     try {
-      response = body == null
-          ? await get(uri, headers: $headers.toMap())
-          : await post(
-              uri,
-              headers: $headers.toMap(),
-              body: Map.fromEntries(
-                body.entries.where((entry) => entry.value != null).toList().map(
-                  (entry) {
-                    if (entry.value is String) {
-                      return entry;
-                    } else {
-                      return MapEntry(entry.key, entry.value.toString());
-                    }
-                  },
-                ),
-              ),
-            );
+      response = await Response.fromStream(await client.send(request));
 
       if (kDebugMode) {
         if (startTime != null) {
@@ -374,6 +388,8 @@ abstract class Service with _SettingsMixin {
       }
 
       rethrow;
+    } finally {
+      client.close();
     }
     // if (useCookie == true) {
     //   // update cookie
