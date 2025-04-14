@@ -599,7 +599,7 @@ class AnimeVietsubService extends ABEigaService
     final image = image$ == null
         ? null
         : OImage(src: image$, headers: Headers({'Referer': baseUrl}));
-    final poster$ = $('.TPostBg img', single: true).attrRaw('data-cfsrc');
+    final poster$ = $('.TPostBg img', single: true).attrRaw('src');
     final poster = poster$ == null
         ? null
         : OImage(src: poster$, headers: Headers({'Referer': baseUrl}));
