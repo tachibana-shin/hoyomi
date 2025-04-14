@@ -66,10 +66,23 @@ class AnimeVietsubService extends ABEigaService
   final hostCUrl = 'animevietsub.lol';
   @override
   late final init = ServiceInit(
-    name: 'AnimeVietsub',
-    faviconUrl: OImage(src: '/favicon.ico'),
-    rootUrl: 'https://$hostCUrl',
-  );
+      name: 'AnimeVietsub',
+      faviconUrl: OImage(src: '/favicon.ico'),
+      rootUrl: 'https://$hostCUrl',
+      webRules: [
+        WebRule(
+          regexFilter: 'animevietsub\\.lol',
+          referer: 'https://animevietsub.lol',
+        ),
+        WebRule(
+          regexFilter: 'sk-hianime\\.animevsub\\.eu\\.org',
+          referer: 'https://animevsub.eu.org',
+        ),
+        WebRule(
+          regexFilter: 'storage\\.googleapiscdn\\.com',
+          referer: 'https://storage.googleapiscdn.com',
+        ),
+      ]);
 
   final String _apiThumb = 'https://sk-hianime.animevsub.eu.org';
 
@@ -666,13 +679,15 @@ class AnimeVietsubService extends ABEigaService
     final list = jsonDecode(episodes)['list'] as List<dynamic>;
 
     final epFloat = num.tryParse(epName)?.toDouble();
-    final episodeD =(epFloat == null ? null : list.firstWhereOrNull((item) {
-          if (item['name'] == epName || item['name'] == rawName) {
-            return true;
-          }
+    final episodeD = (epFloat == null
+            ? null
+            : list.firstWhereOrNull((item) {
+                if (item['name'] == epName || item['name'] == rawName) {
+                  return true;
+                }
 
-          return num.tryParse(item['name'])?.toDouble() == epFloat;
-        })) ??
+                return num.tryParse(item['name'])?.toDouble() == epFloat;
+              })) ??
         list.elementAtOrNull(episode.index);
 
     if (episodeD == null) return null;

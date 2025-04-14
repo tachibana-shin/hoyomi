@@ -92,6 +92,13 @@
           this.dispatchEvent(new CustomEvent("pause"))
         }
       }
+
+      // @ts-ignore
+      if (!window._installWebRules)
+        // @ts-ignore
+        window._installWebRules = () => {
+          throw new Error("_installWebRules_not_ready")
+        }
     </script>
     <script src="flutter_bootstrap.js" async></script>
   </body>

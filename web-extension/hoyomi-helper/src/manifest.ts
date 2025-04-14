@@ -38,7 +38,7 @@ export async function getManifest() {
       {
         resources: [
           "dist/contentScripts/style.css",
-          "dist/contentScripts/index.global.js"
+          "dist/contentScripts/inject.global.js"
         ],
         matches: ["<all_urls>"]
       }

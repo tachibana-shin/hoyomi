@@ -28,6 +28,7 @@ class ServiceInit {
   final String rootUrl;
   final String? rss;
   final List<SettingField>? settings;
+  final List<WebRule>? webRules;
 
   /// Called before inserting the cookie to the insert request. Override this method to modify the cookie
   /// before it is inserted. The default implementation simply returns the original cookie.
@@ -36,6 +37,9 @@ class ServiceInit {
   ///
   /// Returns the modified cookie.
   final String? Function(String? oldCookie)? onBeforeInsertCookie;
+  Future<List<WebRule>> dynamicWebRules() {
+    throw UnimplementedError();
+  }
 
   const ServiceInit({
     required this.name,
@@ -45,6 +49,7 @@ class ServiceInit {
     this.rss,
     this.settings,
     this.onBeforeInsertCookie,
+    this.webRules,
   });
 }
 

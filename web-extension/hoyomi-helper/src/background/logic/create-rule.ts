@@ -6,14 +6,12 @@ export interface PropsCreateRule {
   sendFrom: string
 }
 
-let currentId = 1
-export function createRule({
-  regexFilter,
-  referer,
-  sendFrom
-}: PropsCreateRule): Browser.DeclarativeNetRequest.Rule {
+export function createRule(
+  id: number,
+  { regexFilter, referer, sendFrom }: PropsCreateRule
+): Browser.DeclarativeNetRequest.Rule {
   return {
-    id: currentId++,
+    id,
     priority: 1,
     action: {
       type: "modifyHeaders",

@@ -1,5 +1,8 @@
+import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
+import 'package:hoyomi/core_services/interfaces/main.dart';
+import 'package:hoyomi/plugins/install_web_rules.dart';
 
 import 'comic/services/truyengg/main.dart';
 import 'comic/services/truyenqq/main.dart';
@@ -51,4 +54,22 @@ List<Service> allServices = [...comicServices, ...eigaServices];
 
 Future<void> initializeServices() async {
   await Future.wait(allServices.map((service) => service.initState()));
+
+  if (XPlatform.isWeb) await installWebRules(await dynamicWebRules());
+}
+
+Future<List<WebRule>> dynamicWebRules() async {
+  final List<WebRule> rules = [];
+  for (final service in allServices) {
+    if (service.init.webRules?.isNotEmpty == true) {
+      rules.addAll(service.init.webRules!);
+    }
+    try {
+      rules.addAll(await service.init.dynamicWebRules());
+    } on UnimplementedError {
+      continue;
+    }
+  }
+
+  return rules;
 }
