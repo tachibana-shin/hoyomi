@@ -71,7 +71,6 @@ class AnimeVietsubService extends ABEigaService
     rootUrl: 'https://$hostCUrl',
   );
 
-  final String _apiOpEnd = 'https://opend-9animetv.animevsub.eu.org';
   final String _apiThumb = 'https://sk-hianime.animevsub.eu.org';
 
   final Map<String, Completer<Map<String, _ParamsEpisode>>>
@@ -655,25 +654,25 @@ class AnimeVietsubService extends ABEigaService
     required MetaEiga metaEiga,
   }) async {
     final episodes = await _callApiAnimeVsub(
-      '$_apiOpEnd/list-episodes?${[
+      '$_apiThumb/list-episodes?${[
         metaEiga.name,
         ...metaEiga.originalName?.split(',').map((name) => name) ?? []
       ].map((name) => 'name=$name').join('&')}',
     );
 
-    final rawName = episode.name;
-    final epName = rawName.replaceAll('^[^0-9.+_-]+', '');
+    final rawName = episode.name.trim();
+    final epName = rawName.replaceAll('^[^0-9.+_-]+', '').trim();
 
     final list = jsonDecode(episodes)['list'] as List<dynamic>;
 
-    final epFloat = num.parse(epName).toDouble();
-    final episodeD = list.firstWhereOrNull((item) {
+    final epFloat = num.tryParse(epName)?.toDouble();
+    final episodeD =(epFloat == null ? null : list.firstWhereOrNull((item) {
           if (item['name'] == epName || item['name'] == rawName) {
             return true;
           }
 
-          return num.parse(item['name']).toDouble() == epFloat;
-        }) ??
+          return num.tryParse(item['name'])?.toDouble() == epFloat;
+        })) ??
         list.elementAtOrNull(episode.index);
 
     if (episodeD == null) return null;
