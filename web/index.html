@@ -35,48 +35,63 @@
 
   <body>
     <script type="module">
+      // @ts-check
       import Hls from "https://esm.run/hls.js@1.6.2"
+      import canAutoPlay from "https://esm.run/can-autoplay@3.0.2"
 
       const originalSrcDescriptor = Object.getOwnPropertyDescriptor(
         HTMLMediaElement.prototype,
         "src"
       )
 
-      Object.defineProperty(HTMLMediaElement.prototype, "src", {
-        get: function () {
-          return originalSrcDescriptor.get.call(this)
-        },
-        set: function (value) {
-          if (typeof value === "string" && value.includes("b64")) {
-            const b64 = new URL(value).searchParams.get("b64")
-            const content = atob(b64)
+      if (originalSrcDescriptor)
+        Object.defineProperty(HTMLMediaElement.prototype, "src", {
+          get() {
+            return originalSrcDescriptor.get?.call(this)
+          },
+          set(value) {
+            if (typeof value === "string" && value.includes("b64")) {
+              const b64 = new URL(value).searchParams.get("b64")
+              if (!b64) return
+              const content = atob(b64)
 
-            if (this.canPlayType("application/vnd.apple.mpegurl")) {
-              originalSrcDescriptor.set.call(this, value)
-            } else if (Hls.isSupported() && content.includes("#EXT")) {
-              if (this._hls) {
-                this._hls.destroy()
-                this._hls = null
+              if (this.canPlayType("application/vnd.apple.mpegurl")) {
+                originalSrcDescriptor.set?.call(this, value)
+              } else if (Hls.isSupported() && content.includes("#EXT")) {
+                if (this._hls) {
+                  this._hls.destroy()
+                  this._hls = null
+                }
+
+                const hls = new Hls({
+                  progressive: true
+                })
+                hls.loadSource(`data:;base64,${b64}`)
+                hls.attachMedia(this)
+
+                this._hls = hls
+              } else {
+                console.warn("HLS is not supported in this browser.")
+                originalSrcDescriptor.set?.call(this, value)
               }
-
-              const hls = new Hls({
-                progressive: true
-              })
-              hls.loadSource(`data:;base64,${b64}`)
-              hls.attachMedia(this)
-
-              this._hls = hls
             } else {
-              console.warn("HLS is not supported in this browser.")
-              originalSrcDescriptor.set.call(this, value)
+              originalSrcDescriptor.set?.call(this, value)
             }
-          } else {
-            originalSrcDescriptor.set.call(this, value)
-          }
-        },
-        configurable: true,
-        enumerable: true
-      })
+          },
+          configurable: true,
+          enumerable: true
+        })
+
+      const originalPlayDescriptor = HTMLMediaElement.prototype.play
+
+      HTMLMediaElement.prototype.play = async function () {
+        try {
+          await originalPlayDescriptor.call(this)
+        } catch {
+          this.onpause?.(new Event("pause"))
+          this.dispatchEvent(new CustomEvent("pause"))
+        }
+      }
     </script>
     <script src="flutter_bootstrap.js" async></script>
   </body>
