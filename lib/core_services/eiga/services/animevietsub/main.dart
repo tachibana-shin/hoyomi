@@ -9,12 +9,12 @@ import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_follow_mixin.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
+import 'package:hoyomi/plugins/inflate_raw.dart';
 import 'package:hoyomi/utils/d_query.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
 import 'package:pointycastle/export.dart';
-import 'package:archive/archive.dart';
 
 mixin _SupabaseRPC {
   final String _supabaseUrl = 'https://ctwwltbkwksgnispcjmq.supabase.co';
@@ -959,7 +959,7 @@ String _decryptM3u8(
     );
 
   final decrypted = _processBlocks(cipher, body);
-  final decompressed = _Inflate.raw(decrypted); //.getBytes();
+  final decompressed = inflateRaw(decrypted); //.getBytes();
 
   return utf8.decode(decompressed);
 }
@@ -974,21 +974,6 @@ Uint8List _processBlocks(BlockCipher cipher, Uint8List input) {
   }
 
   return output;
-}
-
-class _Inflate {
-  final List<int> _input;
-  _Inflate(this._input);
-
-  Uint8List getBytes() {
-    final archive = ZLibDecoder().decodeBytes(_input, verify: true, raw: true);
-    return archive;
-  }
-
-  static Uint8List raw(List<int> input) {
-    final archive = ZLibDecoder().decodeBytes(input, verify: true, raw: true);
-    return archive;
-  }
 }
 
 class _WatchInfo {

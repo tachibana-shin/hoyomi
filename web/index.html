@@ -38,6 +38,7 @@
       // @ts-check
       import Hls from "https://esm.run/hls.js@1.6.2"
       import canAutoPlay from "https://esm.run/can-autoplay@3.0.2"
+      import { inflateRaw } from "https://esm.run/pako@2.1.0"
 
       const originalSrcDescriptor = Object.getOwnPropertyDescriptor(
         HTMLMediaElement.prototype,
@@ -99,6 +100,7 @@
         window._installWebRules = () => {
           throw new Error("_installWebRules_not_ready")
         }
+      Object.assign(window, { _inflateRaw: inflateRaw })
     </script>
     <script src="flutter_bootstrap.js" async></script>
   </body>
