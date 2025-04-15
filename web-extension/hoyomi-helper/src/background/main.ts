@@ -50,6 +50,8 @@ async function installRules(
 
     if (installed) removeRuleIds.push(installed.id)
 
+    addRules.push(newRule)
+
     return newRule
   })
 
