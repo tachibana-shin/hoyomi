@@ -1,7 +1,7 @@
 import Browser from "webextension-polyfill"
 import { onMessage } from "webext-bridge/background"
 
-import { createRule } from "./logic/create-rule"
+import { createCorsRule, createRule } from "./logic/create-rule"
 import { hashToInt } from "./logic/hash-to-int"
 
 // only on dev mode
@@ -25,7 +25,12 @@ onMessage("install_web_rules", async ({ data: { json, origin } }) => {
     ])
   )
 
-  await installRules(rules, origin, rulesInstalled)
+  try {
+    await installRules(rules, origin, rulesInstalled)
+  } catch (err) {
+    console.warn(err)
+    throw err
+  }
 })
 
 async function installRules(
@@ -36,6 +41,7 @@ async function installRules(
   const addRules: Browser.DeclarativeNetRequest.Rule[] = []
   const removeRuleIds: number[] = []
 
+  // biome-ignore lint/complexity/noForEach: <explanation>
   rules.forEach((rawRule) => {
     const id = hashToInt(`${rawRule.regexFilter}@${rawRule.referer}`)
     const installed = rulesInstalled.get(id)
@@ -54,6 +60,20 @@ async function installRules(
 
     return newRule
   })
+
+  const idCors = hashToInt(`${origin}`)
+  const corsRule = createCorsRule(idCors, origin)
+
+  if (rulesInstalled.has(idCors)) {
+    if (
+      JSON.stringify(rulesInstalled.get(idCors)) !== JSON.stringify(corsRule)
+    ) {
+      removeRuleIds.push(idCors)
+      addRules.push(corsRule)
+    }
+  } else {
+    addRules.push(corsRule)
+  }
 
   await Browser.declarativeNetRequest.updateDynamicRules({
     removeRuleIds,
