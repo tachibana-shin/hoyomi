@@ -2,13 +2,14 @@ import type Browser from "webextension-polyfill"
 
 export interface PropsCreateRule {
   regexFilter: string
+  shortRegex: boolean,
   referer: string
   sendFrom: string
 }
 
 export function createRule(
   id: number,
-  { regexFilter, referer, sendFrom }: PropsCreateRule
+  { regexFilter, shortRegex, referer, sendFrom }: PropsCreateRule
 ): Browser.DeclarativeNetRequest.Rule {
   return {
     id,
@@ -45,7 +46,7 @@ export function createRule(
     },
     condition: {
       // Only target requests going to foo.com or bar.com
-      regexFilter: `^(https?:\\/\\/(.+\\.)?(${regexFilter}))(.+)?`,
+      regexFilter: shortRegex ? `^(https?:\\/\\/(.+\\.)?(${regexFilter}))(.+)?`  : regexFilter,
       // urlFilter: `||${new URL(url).hostname}`,
       resourceTypes: [
         "csp_report",

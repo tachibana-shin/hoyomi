@@ -8,9 +8,12 @@ class WebRule with _$WebRule {
   const factory WebRule({
     /// Example: example\\.com
     required String regexFilter,
+    @Default(true) bool shortRegex,
+
     /// Example: https://example.com
     required String referer,
   }) = _WebRule;
 
-  factory WebRule.fromJson(Map<String, dynamic> json) => _$WebRuleFromJson(json);
+  factory WebRule.fromJson(Map<String, dynamic> json) =>
+      _$WebRuleFromJson(json);
 }

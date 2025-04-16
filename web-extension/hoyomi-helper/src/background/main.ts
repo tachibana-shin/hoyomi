@@ -14,6 +14,7 @@ if (import.meta.hot) {
 
 interface WebRule {
   readonly regexFilter: string
+  readonly shortRegex: boolean
   readonly referer: string
 }
 onMessage("install_web_rules", async ({ data: { json, origin } }) => {

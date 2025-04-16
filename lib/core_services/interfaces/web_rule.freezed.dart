@@ -22,6 +22,7 @@ WebRule _$WebRuleFromJson(Map<String, dynamic> json) {
 mixin _$WebRule {
   /// Example: example\\.com
   String get regexFilter => throw _privateConstructorUsedError;
+  bool get shortRegex => throw _privateConstructorUsedError;
 
   /// Example: https://example.com
   String get referer => throw _privateConstructorUsedError;
@@ -36,7 +37,7 @@ abstract class $WebRuleCopyWith<$Res> {
   factory $WebRuleCopyWith(WebRule value, $Res Function(WebRule) then) =
       _$WebRuleCopyWithImpl<$Res, WebRule>;
   @useResult
-  $Res call({String regexFilter, String referer});
+  $Res call({String regexFilter, bool shortRegex, String referer});
 }
 
 /// @nodoc
@@ -53,6 +54,7 @@ class _$WebRuleCopyWithImpl<$Res, $Val extends WebRule>
   @override
   $Res call({
     Object? regexFilter = null,
+    Object? shortRegex = null,
     Object? referer = null,
   }) {
     return _then(_value.copyWith(
@@ -60,6 +62,10 @@ class _$WebRuleCopyWithImpl<$Res, $Val extends WebRule>
           ? _value.regexFilter
           : regexFilter // ignore: cast_nullable_to_non_nullable
               as String,
+      shortRegex: null == shortRegex
+          ? _value.shortRegex
+          : shortRegex // ignore: cast_nullable_to_non_nullable
+              as bool,
       referer: null == referer
           ? _value.referer
           : referer // ignore: cast_nullable_to_non_nullable
@@ -75,7 +81,7 @@ abstract class _$$WebRuleImplCopyWith<$Res> implements $WebRuleCopyWith<$Res> {
       __$$WebRuleImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String regexFilter, String referer});
+  $Res call({String regexFilter, bool shortRegex, String referer});
 }
 
 /// @nodoc
@@ -90,6 +96,7 @@ class __$$WebRuleImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? regexFilter = null,
+    Object? shortRegex = null,
     Object? referer = null,
   }) {
     return _then(_$WebRuleImpl(
@@ -97,6 +104,10 @@ class __$$WebRuleImplCopyWithImpl<$Res>
           ? _value.regexFilter
           : regexFilter // ignore: cast_nullable_to_non_nullable
               as String,
+      shortRegex: null == shortRegex
+          ? _value.shortRegex
+          : shortRegex // ignore: cast_nullable_to_non_nullable
+              as bool,
       referer: null == referer
           ? _value.referer
           : referer // ignore: cast_nullable_to_non_nullable
@@ -108,7 +119,10 @@ class __$$WebRuleImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$WebRuleImpl implements _WebRule {
-  const _$WebRuleImpl({required this.regexFilter, required this.referer});
+  const _$WebRuleImpl(
+      {required this.regexFilter,
+      this.shortRegex = true,
+      required this.referer});
 
   factory _$WebRuleImpl.fromJson(Map<String, dynamic> json) =>
       _$$WebRuleImplFromJson(json);
@@ -116,6 +130,9 @@ class _$WebRuleImpl implements _WebRule {
   /// Example: example\\.com
   @override
   final String regexFilter;
+  @override
+  @JsonKey()
+  final bool shortRegex;
 
   /// Example: https://example.com
   @override
@@ -123,7 +140,7 @@ class _$WebRuleImpl implements _WebRule {
 
   @override
   String toString() {
-    return 'WebRule(regexFilter: $regexFilter, referer: $referer)';
+    return 'WebRule(regexFilter: $regexFilter, shortRegex: $shortRegex, referer: $referer)';
   }
 
   @override
@@ -133,12 +150,15 @@ class _$WebRuleImpl implements _WebRule {
             other is _$WebRuleImpl &&
             (identical(other.regexFilter, regexFilter) ||
                 other.regexFilter == regexFilter) &&
+            (identical(other.shortRegex, shortRegex) ||
+                other.shortRegex == shortRegex) &&
             (identical(other.referer, referer) || other.referer == referer));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, regexFilter, referer);
+  int get hashCode =>
+      Object.hash(runtimeType, regexFilter, shortRegex, referer);
 
   @JsonKey(ignore: true)
   @override
@@ -157,6 +177,7 @@ class _$WebRuleImpl implements _WebRule {
 abstract class _WebRule implements WebRule {
   const factory _WebRule(
       {required final String regexFilter,
+      final bool shortRegex,
       required final String referer}) = _$WebRuleImpl;
 
   factory _WebRule.fromJson(Map<String, dynamic> json) = _$WebRuleImpl.fromJson;
@@ -165,6 +186,8 @@ abstract class _WebRule implements WebRule {
 
   /// Example: example\\.com
   String get regexFilter;
+  @override
+  bool get shortRegex;
   @override
 
   /// Example: https://example.com
