@@ -71,15 +71,15 @@ class AnimeVietsubService extends ABEigaService
       rootUrl: 'https://$hostCUrl',
       webRules: [
         WebRule(
-          regexFilter: 'animevietsub\\.lol',
+          shortRegexFilter: 'animevietsub\\.lol',
           referer: 'https://$hostCUrl',
         ),
         WebRule(
-          regexFilter: 'sk-hianime\\.animevsub\\.eu\\.org',
+          shortRegexFilter: 'sk-hianime\\.animevsub\\.eu\\.org',
           referer: 'https://animevsub.eu.org',
         ),
         WebRule(
-          regexFilter: 'storage\\.googleapiscdn\\.com',
+          shortRegexFilter: 'storage\\.googleapiscdn\\.com',
           referer: 'https://storage.googleapiscdn.com',
         ),
       ]);

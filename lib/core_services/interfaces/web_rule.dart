@@ -7,8 +7,9 @@ part 'web_rule.g.dart';
 class WebRule with _$WebRule {
   const factory WebRule({
     /// Example: example\\.com
-    required String regexFilter,
-    @Default(true) bool shortRegex,
+    String? regexFilter,
+    String? shortRegexFilter,
+    String? urlFilter,
 
     /// Example: https://example.com
     required String referer,
@@ -16,4 +17,12 @@ class WebRule with _$WebRule {
 
   factory WebRule.fromJson(Map<String, dynamic> json) =>
       _$WebRuleFromJson(json);
+
+  // Custom assert in unnamed constructor
+  WebRule._() {
+    assert(
+      regexFilter != null || shortRegexFilter != null || urlFilter != null,
+      'At least one of regexFilter, shortRegexFilter, or urlFilter must be provided.',
+    );
+  }
 }

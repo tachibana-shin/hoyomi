@@ -27,12 +27,10 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
     webRules: [
       WebRule(
         regexFilter: '^(https?:\\/\\/(.+\\.)?hianime(.+)?',
-        shortRegex: false,
         referer: 'https://$hostCUrl',
       ),
       WebRule(
-        regexFilter: '#megacloud|',
-        shortRegex: false,
+        urlFilter: '#megacloud|',
         referer: 'https://megacloud.club/',
       ),
     ],
