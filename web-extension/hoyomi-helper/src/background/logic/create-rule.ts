@@ -55,9 +55,9 @@ export function createRule(
       // Only target requests going to foo.com or bar.com
       ...(!urlFilter
         ? {
-            regexFilter: regexFilter
-              ? `^(https?:\\/\\/(.+\\.)?(${regexFilter}))(.+)?`
-              : shortRegexFilter
+            regexFilter: shortRegexFilter
+              ? `^(https?:\\/\\/(.+\\.)?(${shortRegexFilter}))(.+)?`
+              : regexFilter
           }
         : undefined),
       ...(urlFilter ? { urlFilter } : undefined),
