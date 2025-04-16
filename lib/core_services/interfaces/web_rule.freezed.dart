@@ -138,7 +138,7 @@ class __$$WebRuleImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$WebRuleImpl extends _WebRule {
-  const _$WebRuleImpl(
+  _$WebRuleImpl(
       {this.regexFilter,
       this.shortRegexFilter,
       this.urlFilter,
@@ -199,12 +199,12 @@ class _$WebRuleImpl extends _WebRule {
 }
 
 abstract class _WebRule extends WebRule {
-  const factory _WebRule(
+  factory _WebRule(
       {final String? regexFilter,
       final String? shortRegexFilter,
       final String? urlFilter,
       required final String referer}) = _$WebRuleImpl;
-  const _WebRule._() : super._();
+  _WebRule._() : super._();
 
   factory _WebRule.fromJson(Map<String, dynamic> json) = _$WebRuleImpl.fromJson;
 

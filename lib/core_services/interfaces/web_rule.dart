@@ -5,7 +5,7 @@ part 'web_rule.g.dart';
 
 @freezed
 class WebRule with _$WebRule {
-  const factory WebRule({
+  factory WebRule({
     /// Example: example\\.com
     String? regexFilter,
     String? shortRegexFilter,
