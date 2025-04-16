@@ -42,6 +42,9 @@ jobs:
       - name: Create .env file
         run: echo -e "${{ secrets.ENV_CONTENT }}" > .env
 
+      - name: Create .env.web file
+        run: echo -e "${{ secrets.ENV_WEB_CONTENT }}" > .env.web
+
       - name: Build runner
         run: sh build_bunner.sh
 
@@ -82,6 +85,9 @@ jobs:
 
       - name: Create .env file
         run: echo -e "${{ secrets.ENV_CONTENT }}" > .env
+
+      - name: Create .env.web file
+        run: echo -e "${{ secrets.ENV_WEB_CONTENT }}" > .env.web
 
       - name: Build runner
         run: sh build_bunner.sh
