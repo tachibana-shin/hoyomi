@@ -651,7 +651,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
       url = ProxyCache.instance.getUrlHttp(fileCache);
     } on UnimplementedError {
-      url = source.url;// Uri.parse(source.url);
+      url = source.url; // Uri.parse(source.url);
     }
 
     _controller.value?.dispose();

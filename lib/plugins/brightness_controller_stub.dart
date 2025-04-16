@@ -6,8 +6,6 @@ Future<double> getApplicationScreenBrightness() {
   throw UnimplementedError();
 }
 
-
 Future<double> resetApplicationScreenBrightness() {
   throw UnimplementedError();
 }
-
