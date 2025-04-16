@@ -1,7 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hoyomi/constraints/x_platform.dart';
 
 part 'headers.freezed.dart';
 part 'headers.g.dart';
+
+const _headersIgnoreWeb = ['set-cookie', 'user-agent', 'referer'];
 
 @freezed
 class Headers with _$Headers {
@@ -68,7 +71,9 @@ extension HeadersExtension on Headers {
   /// ヘッダをシリアライズ
   Map<String, String> toMap() {
     return {
-      for (final entry in headers.entries) entry.key: entry.value.join(', '),
+      for (final entry in headers.entries)
+        if (XPlatform.isWeb ? !_headersIgnoreWeb.contains(entry.key) : true)
+          entry.key: entry.value.join(', '),
     };
   }
 

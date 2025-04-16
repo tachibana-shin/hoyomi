@@ -24,6 +24,16 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
     name: 'HiAnime',
     faviconUrl: OImage(src: '/favicon.ico'),
     rootUrl: 'https://$hostCUrl',
+    webRules: [
+      WebRule(
+        regexFilter: '^(https?:\\/\\/(.+\\.)?hianime(.+)?',
+        referer: 'https://$hostCUrl',
+      ),
+      WebRule(
+        urlFilter: '#megacloud|',
+        referer: 'https://megacloud.club/',
+      ),
+    ],
   );
 
   final Map<String, Future<DollarFunction>> _cacheDetails = {};
@@ -371,8 +381,8 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
 
         if (source != null) {
           return SourceVideo(
-            src: source['url'],
-            url: Uri.parse(source['url']),
+            src: source['url'] + '#megacloud',
+            url: Uri.parse(source['url'] + '#megacloud'),
             type: source['type'] ?? 'hls',
             headers: Headers({
               'referer': 'https://megacloud.club/',

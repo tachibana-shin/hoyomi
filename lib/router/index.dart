@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
+import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/controller/update_available.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 
@@ -41,7 +42,8 @@ final List<String> routeIgnoreLayoutDefault = [
 
 /// 日本語のコメント: ルートナビゲーターのためのグローバルキー。
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
-final pageBuilder = (androidSdkInt != null && androidSdkInt! < 29)
+final pageBuilder = (!XPlatform.isAndroid && !XPlatform.isIOS) ||
+        (androidSdkInt != null && androidSdkInt! < 29)
     ? GoTransitions.zoom.call
     : null;
 final router = GoRouter(

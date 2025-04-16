@@ -14,7 +14,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/extensions/iterable_extension.dart';
 import 'package:hoyomi/extensions/list_extension.dart';
-import 'package:hoyomi/utils/cache_remember.dart';
+import 'package:hoyomi/utils/cache_remember/cache_remember.dart';
 import 'package:hoyomi/widgets/eiga/button_follow_eiga.dart';
 import 'package:hoyomi/widgets/eiga/button_share_eiga.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
@@ -77,15 +77,21 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final _onNextNotifier = ref<VoidCallback?>(null);
 
   /// ================= player expose =================
-  late final _serversFuture = computed<Future<List<ServerSource>?>?>(() {
+  late final _serversFuture = computed<Future<List<ServerSource>?>?>(() async {
     if (_metaIsFake.value) return null;
 
     final episode = _episode.value;
     if (episode == null) return null;
 
-    return _service
-        .getServers(eigaId: _eigaId.value, episode: episode)
-        .then((servers) => servers.isEmpty ? null : servers);
+    try {
+      return await _service
+          .getServers(eigaId: _eigaId.value, episode: episode)
+          .then((servers) => servers.isEmpty ? null : servers);
+    } on UnimplementedError {
+      return null;
+    } catch (error) {
+      rethrow;
+    }
   });
   late final _serverIdSelected = ref<String?>(null);
 
@@ -1012,7 +1018,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     if (episodes.image != metaEiga.image && episodes.image != null) {
       _metaEiga.value = metaEiga.copyWith(image: episodes.image!);
     }
-    if (episodes.poster != metaEiga.poster) {
+    if (episodes.poster != metaEiga.poster && episodes.poster != null) {
       _metaEiga.value = metaEiga.copyWith(poster: episodes.poster);
     }
     if (_schedule.value != episodes.schedule) {

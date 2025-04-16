@@ -9,12 +9,12 @@ import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_follow_mixin.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
+import 'package:hoyomi/plugins/inflate_raw.dart';
 import 'package:hoyomi/utils/d_query.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
 import 'package:pointycastle/export.dart';
-import 'package:archive/archive.dart';
 
 mixin _SupabaseRPC {
   final String _supabaseUrl = 'https://ctwwltbkwksgnispcjmq.supabase.co';
@@ -66,12 +66,24 @@ class AnimeVietsubService extends ABEigaService
   final hostCUrl = 'animevietsub.lol';
   @override
   late final init = ServiceInit(
-    name: 'AnimeVietsub',
-    faviconUrl: OImage(src: '/favicon.ico'),
-    rootUrl: 'https://$hostCUrl',
-  );
+      name: 'AnimeVietsub',
+      faviconUrl: OImage(src: '/favicon.ico'),
+      rootUrl: 'https://$hostCUrl',
+      webRules: [
+        WebRule(
+          shortRegexFilter: 'animevietsub\\.lol',
+          referer: 'https://$hostCUrl',
+        ),
+        WebRule(
+          shortRegexFilter: 'sk-hianime\\.animevsub\\.eu\\.org',
+          referer: 'https://animevsub.eu.org',
+        ),
+        WebRule(
+          shortRegexFilter: 'storage\\.googleapiscdn\\.com',
+          referer: 'https://storage.googleapiscdn.com',
+        ),
+      ]);
 
-  final String _apiOpEnd = 'https://opend-9animetv.animevsub.eu.org';
   final String _apiThumb = 'https://sk-hianime.animevsub.eu.org';
 
   final Map<String, Completer<Map<String, _ParamsEpisode>>>
@@ -599,7 +611,7 @@ class AnimeVietsubService extends ABEigaService
     final image = image$ == null
         ? null
         : OImage(src: image$, headers: Headers({'Referer': baseUrl}));
-    final poster$ = $('.TPostBg img', single: true).attrRaw('data-cfsrc');
+    final poster$ = $('.TPostBg img', single: true).attrRaw('src');
     final poster = poster$ == null
         ? null
         : OImage(src: poster$, headers: Headers({'Referer': baseUrl}));
@@ -655,25 +667,27 @@ class AnimeVietsubService extends ABEigaService
     required MetaEiga metaEiga,
   }) async {
     final episodes = await _callApiAnimeVsub(
-      '$_apiOpEnd/list-episodes?${[
+      '$_apiThumb/list-episodes?${[
         metaEiga.name,
         ...metaEiga.originalName?.split(',').map((name) => name) ?? []
       ].map((name) => 'name=$name').join('&')}',
     );
 
-    final rawName = episode.name;
-    final epName = rawName.replaceAll('^[^0-9.+_-]+', '');
+    final rawName = episode.name.trim();
+    final epName = rawName.replaceAll(RegExp('^[^0-9.+_-]+'), '').trim();
 
     final list = jsonDecode(episodes)['list'] as List<dynamic>;
 
-    final epFloat = num.parse(epName).toDouble();
-    final episodeD = list.firstWhereOrNull((item) {
-          if (item['name'] == epName || item['name'] == rawName) {
-            return true;
-          }
+    final epFloat = num.tryParse(epName)?.toDouble();
+    final episodeD = (epFloat == null
+            ? null
+            : list.firstWhereOrNull((item) {
+                if (item['name'] == epName || item['name'] == rawName) {
+                  return true;
+                }
 
-          return num.parse(item['name']).toDouble() == epFloat;
-        }) ??
+                return num.tryParse(item['name'])?.toDouble() == epFloat;
+              })) ??
         list.elementAtOrNull(episode.index);
 
     if (episodeD == null) return null;
@@ -945,7 +959,7 @@ String _decryptM3u8(
     );
 
   final decrypted = _processBlocks(cipher, body);
-  final decompressed = _Inflate.raw(decrypted); //.getBytes();
+  final decompressed = inflateRaw(decrypted); //.getBytes();
 
   return utf8.decode(decompressed);
 }
@@ -960,21 +974,6 @@ Uint8List _processBlocks(BlockCipher cipher, Uint8List input) {
   }
 
   return output;
-}
-
-class _Inflate {
-  final List<int> _input;
-  _Inflate(this._input);
-
-  Uint8List getBytes() {
-    final archive = ZLibDecoder().decodeBytes(_input, verify: true, raw: true);
-    return archive;
-  }
-
-  static Uint8List raw(List<int> input) {
-    final archive = ZLibDecoder().decodeBytes(input, verify: true, raw: true);
-    return archive;
-  }
 }
 
 class _WatchInfo {

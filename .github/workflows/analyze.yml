@@ -24,6 +24,9 @@ jobs:
       - name: Create .env file
         run: echo -e "${{ secrets.ENV_CONTENT }}" > .env
 
+      - name: Create .env.web file
+        run: echo -e "${{ secrets.ENV_WEB_CONTENT }}" > .env.web
+
       - name: Install dependencies
         run: flutter pub get
 

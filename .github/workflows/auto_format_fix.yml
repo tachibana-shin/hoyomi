@@ -27,6 +27,9 @@ jobs:
 
       - name: Touch file .env
         run: touch .env
+
+      - name: Touch file .env.web
+        run: touch .env.web
   
       - name: Dart format
         run: dart format .

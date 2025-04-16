@@ -24,4 +24,4 @@ targets:
           - lib/general_api/**/*.dart
       envied_generator|envied:
         generate_for:
-          - lib/env.dart
+          - lib/env.*.dart

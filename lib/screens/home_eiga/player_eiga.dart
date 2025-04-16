@@ -10,7 +10,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hls_parser/flutter_hls_parser.dart';
-import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
@@ -22,9 +21,11 @@ import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:hoyomi/logic/search_language.dart';
+import 'package:hoyomi/plugins/brightness_controller.dart';
 import 'package:hoyomi/plugins/fullscreen.dart';
+import 'package:hoyomi/plugins/volume_controller.dart';
 import 'package:hoyomi/utils/debouncer.dart';
-import 'package:hoyomi/utils/proxy_cache.dart';
+import 'package:hoyomi/utils/proxy_cache/proxy_cache.dart';
 import 'package:hoyomi/widgets/eiga/html_subtitle_wrapper.dart';
 import 'package:hoyomi/widgets/eiga/slider_eiga.dart';
 import 'package:hoyomi/utils/format_duration.dart';
@@ -33,11 +34,9 @@ import 'package:http/http.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
-import 'package:screen_brightness/screen_brightness.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart' as type;
-import 'package:hoyomi/utils/save_file_cache.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'widget/subtitle_settings_sheet.dart';
@@ -531,10 +530,9 @@ class _PlayerEigaState extends State<PlayerEiga>
 
       var valueStore = settings.brightnessApp;
       if (valueStore != null) {
-        await ScreenBrightness.instance
-            .setApplicationScreenBrightness(valueStore);
+        await setApplicationScreenBrightness(valueStore);
       } else {
-        valueStore = await ScreenBrightness.instance.application;
+        valueStore = await getApplicationScreenBrightness();
       }
 
       if (!mounted) return;
@@ -542,21 +540,20 @@ class _PlayerEigaState extends State<PlayerEiga>
       _appBrightness.value = valueStore;
 
       watch([_appBrightness], () {
-        ScreenBrightness.instance
-            .setApplicationScreenBrightness(_appBrightness.value);
+        setApplicationScreenBrightness(_appBrightness.value);
         settings = settings!.copyWith(brightnessApp: _appBrightness.value);
 
         GeneralSettingsController.instance.save(settings!);
       });
     });
     // Volume
-    FlutterVolumeController.getVolume().then((volume) {
+    getVolume().then((volume) {
       if (!mounted) return;
 
       _systemVolume.value = volume ?? 0;
-      FlutterVolumeController.updateShowSystemUI(false);
+      updateShowSystemUI(false);
       watch([_systemVolume], () {
-        FlutterVolumeController.setVolume(_systemVolume.value);
+        setVolume(_systemVolume.value);
       });
     });
 
@@ -642,7 +639,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           await widget.service.fetchSourceContent(source: source);
       content = sourceContent.content;
 
-      final fileCache = await saveFileCache(
+      final fileCache = await ProxyCache.instance.saveFile(
         content: sourceContent.content,
         path: "${sha256.convert(utf8.encode(sourceContent.content))}.m3u8",
       );
@@ -654,7 +651,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
       url = ProxyCache.instance.getUrlHttp(fileCache);
     } on UnimplementedError {
-      url = Uri.parse(source.src);
+      url = source.url; // Uri.parse(source.url);
     }
 
     _controller.value?.dispose();
@@ -984,6 +981,29 @@ class _PlayerEigaState extends State<PlayerEiga>
         _buildUISwipeView(),
         _buildUIDoubleTapView(),
         _buildPopupOpeningEnding(),
+        // Fix web can't tap show controls
+        if (XPlatform.isWeb)
+          Watch(() => switch (_showControls.value) {
+                true => SizedBox.shrink(),
+                false => Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: GestureDetector(
+                      onTap: _onTapToggleControls,
+                      onDoubleTapDown: _onDoubleTapPlayer,
+                      onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
+                      onVerticalDragEnd: (_) => _hideAllSlider(),
+                      onVerticalDragCancel: _hideAllSlider,
+                      onHorizontalDragStart: _onHorizontalDragStart,
+                      onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                      onHorizontalDragEnd: _onHorizontalDragEnd,
+                      onHorizontalDragCancel: _hideAllSlider,
+                      child: Container(color: Colors.transparent),
+                    ),
+                  ),
+              }),
       ],
     );
   }
@@ -1965,7 +1985,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   /// ============= system brightness and volume ===========
   Future<void> _resetAppBrightness() async {
     try {
-      await ScreenBrightness.instance.resetApplicationScreenBrightness();
+      await resetApplicationScreenBrightness();
     } catch (e) {
       debugPrint(e.toString());
     }
