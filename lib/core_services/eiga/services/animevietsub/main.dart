@@ -674,7 +674,7 @@ class AnimeVietsubService extends ABEigaService
     );
 
     final rawName = episode.name.trim();
-    final epName = rawName.replaceAll('^[^0-9.+_-]+', '').trim();
+    final epName = rawName.replaceAll(RegExp('^[^0-9.+_-]+'), '').trim();
 
     final list = jsonDecode(episodes)['list'] as List<dynamic>;
 
