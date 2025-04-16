@@ -72,7 +72,7 @@ class AnimeVietsubService extends ABEigaService
       webRules: [
         WebRule(
           regexFilter: 'animevietsub\\.lol',
-          referer: 'https://animevietsub.lol',
+          referer: 'https://$hostCUrl',
         ),
         WebRule(
           regexFilter: 'sk-hianime\\.animevsub\\.eu\\.org',

@@ -24,6 +24,16 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
     name: 'HiAnime',
     faviconUrl: OImage(src: '/favicon.ico'),
     rootUrl: 'https://$hostCUrl',
+     webRules: [
+        WebRule(
+          regexFilter: 'hianime\\.bz',
+          referer: 'https://$hostCUrl',
+        ),
+        WebRule(
+          regexFilter: 'frostywinds57\\.live',
+          referer: 'https://megacloud.club/',
+        ),
+      ],
   );
 
   final Map<String, Future<DollarFunction>> _cacheDetails = {};

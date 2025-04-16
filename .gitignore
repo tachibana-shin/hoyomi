@@ -43,6 +43,7 @@ app.*.map.json
 /android/app/release
 
 /.env
+/.env.*
 .qodo
 
 /android/app/google-services.json
@@ -50,4 +51,4 @@ app.*.map.json
 
 /firebase.json
 
-/lib/env.g.dart
+/lib/env.*.g.dart
