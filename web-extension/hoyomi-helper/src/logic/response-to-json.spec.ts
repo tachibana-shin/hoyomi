@@ -19,6 +19,9 @@ describe("responseToJson", () => {
     expect(json.headers["content-type"]).toBe("application/json")
     expect(json.headers["x-custom-header"]).toBe("CustomValue")
     expect(json.body).toBe(bodyContent)
+    expect(json.redirected).toBe(false)
+    expect(json.type).toBe("basic")
+    expect(json.url).toBe("")
   })
 
   it("should handle a response without body", async () => {
