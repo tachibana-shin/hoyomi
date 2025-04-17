@@ -144,7 +144,7 @@ class _ListEpisodesState extends State<ListEpisodes>
             final isVertical = widget.scrollDirection == Axis.vertical;
 
             Widget child = Watch(() {
-              if (showListEpisodeWithGrid.value) {
+              if (isVertical && showListEpisodeWithGrid.value) {
                 return ResponsiveGridList(
                   horizontalGridSpacing: 16,
                   verticalGridSpacing: 16,
@@ -163,6 +163,7 @@ class _ListEpisodesState extends State<ListEpisodes>
                       waiting: waiting,
                       isVertical: false,
                       height: height,
+                      inGridMode: true,
                     );
                   }).toList(),
                 );
@@ -180,6 +181,7 @@ class _ListEpisodesState extends State<ListEpisodes>
                   waiting: waiting,
                   isVertical: isVertical,
                   height: height,
+                  inGridMode: false,
                 ),
               );
             });
@@ -232,6 +234,7 @@ class _ListEpisodesState extends State<ListEpisodes>
     required bool waiting,
     required bool isVertical,
     required double height,
+    required bool inGridMode,
   }) {
     return Watch(() {
       final episode = episodesEiga.episodes[index];
@@ -390,6 +393,15 @@ class _ListEpisodesState extends State<ListEpisodes>
             );
           }
 
+          final text = Container(
+            height: height * 0.9,
+            constraints: const BoxConstraints(minWidth: 40),
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: Align(
+              widthFactor: 1.0,
+              child: Text(episode.name, textAlign: TextAlign.center),
+            ),
+          );
           return Padding(
             padding: EdgeInsets.only(right: 8.0),
             child: InkWell(
@@ -413,16 +425,7 @@ class _ListEpisodesState extends State<ListEpisodes>
                 clipBehavior: Clip.antiAlias,
                 child: Stack(
                   children: [
-                    Center(
-                        child: Container(
-                      height: height * 0.9,
-                      constraints: const BoxConstraints(minWidth: 40),
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Align(
-                        widthFactor: 1.0,
-                        child: Text(episode.name, textAlign: TextAlign.center),
-                      ),
-                    )),
+                    if (inGridMode) Center(child: text) else text,
                     if (watchTime != null)
                       Positioned(
                         bottom: 0,
