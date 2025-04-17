@@ -10,8 +10,12 @@ import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/pages/details_eiga/[sourceId]/[eigaId].page.dart';
+import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/utils/format_duration.dart';
+import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/majesticons.dart';
 import 'package:kaeru/kaeru.dart';
+import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ListEpisodes extends StatefulWidget {
@@ -139,20 +143,46 @@ class _ListEpisodesState extends State<ListEpisodes>
 
             final isVertical = widget.scrollDirection == Axis.vertical;
 
-            Widget child = ListView.builder(
-              scrollDirection: widget.scrollDirection,
-              itemCount: episodesEiga.episodes.length,
-              shrinkWrap: true,
-              controller: widget.controller,
-              itemBuilder: (context, index) => _itemBuilder(
-                context,
-                index: index,
-                episodesEiga: episodesEiga,
-                waiting: waiting,
-                isVertical: isVertical,
-                height: height,
-              ),
-            );
+            Widget child = Watch(() {
+              if (showListEpisodeWithGrid.value) {
+                return ResponsiveGridList(
+                  horizontalGridSpacing: 16,
+                  verticalGridSpacing: 16,
+                  horizontalGridMargin: 0,
+                  verticalGridMargin: 0,
+                  minItemWidth: 16.0 * 5,
+                  minItemsPerRow: 2,
+                  maxItemsPerRow: 12,
+                  listViewBuilderOptions:
+                      ListViewBuilderOptions(controller: widget.controller),
+                  children: episodesEiga.episodes.indexed.map((entry) {
+                    return _itemBuilder(
+                      context,
+                      index: entry.$1,
+                      episodesEiga: episodesEiga,
+                      waiting: waiting,
+                      isVertical: false,
+                      height: height,
+                    );
+                  }).toList(),
+                );
+              }
+
+              return ListView.builder(
+                scrollDirection: widget.scrollDirection,
+                itemCount: episodesEiga.episodes.length,
+                shrinkWrap: true,
+                controller: widget.controller,
+                itemBuilder: (context, index) => _itemBuilder(
+                  context,
+                  index: index,
+                  episodesEiga: episodesEiga,
+                  waiting: waiting,
+                  isVertical: isVertical,
+                  height: height,
+                ),
+              );
+            });
 
             if (waiting) {
               child = Skeletonizer(
@@ -161,7 +191,29 @@ class _ListEpisodesState extends State<ListEpisodes>
                 child: child,
               );
             }
-            return isVertical ? child : SizedBox(height: height, child: child);
+            return switch (isVertical) {
+              true => Column(children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Episodes'),
+                        Watch(() => IconButton(
+                              onPressed: () {
+                                showListEpisodeWithGrid.value =
+                                    !showListEpisodeWithGrid.value;
+                              },
+                              icon: Iconify(
+                                showListEpisodeWithGrid.value
+                                    ? Majesticons.checkbox_list_detail_line
+                                    : Majesticons.applications_line,
+                                // Mingcute.grid_line
+                              ),
+                            )),
+                      ]),
+                  Expanded(child: child),
+                ]),
+              false => SizedBox(height: height, child: child),
+            };
           });
     });
   }
@@ -375,18 +427,15 @@ class _ListEpisodesState extends State<ListEpisodes>
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        child: Transform.translate(
-                          offset: Offset(0, 1),
-                          child: LinearProgressIndicator(
-                            value: watchTime.position.inMilliseconds /
-                                watchTime.duration.inMilliseconds,
-                            backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              active ? Color(0xFF2196F3) : Color(0xFF00C234),
-                            ),
-                            minHeight: 3.0,
-                            borderRadius: BorderRadius.circular(10.0),
+                        child: LinearProgressIndicator(
+                          value: watchTime.position.inMilliseconds /
+                              watchTime.duration.inMilliseconds,
+                          backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            active ? Color(0xFF2196F3) : Color(0xFF00C234),
                           ),
+                          minHeight: 3.0,
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
                   ],

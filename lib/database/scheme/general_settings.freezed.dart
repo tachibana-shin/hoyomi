@@ -24,6 +24,7 @@ mixin _$GeneralSettings {
   DateTime? get lastCheckUpdateApp => throw _privateConstructorUsedError;
   double? get brightnessApp => throw _privateConstructorUsedError;
   int get pollingIntervalComic => throw _privateConstructorUsedError;
+  bool get showListEpisodeWithGrid => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -41,7 +42,8 @@ abstract class $GeneralSettingsCopyWith<$Res> {
       {bool mangaReadLazyPage,
       DateTime? lastCheckUpdateApp,
       double? brightnessApp,
-      int pollingIntervalComic});
+      int pollingIntervalComic,
+      bool showListEpisodeWithGrid});
 }
 
 /// @nodoc
@@ -61,6 +63,7 @@ class _$GeneralSettingsCopyWithImpl<$Res, $Val extends GeneralSettings>
     Object? lastCheckUpdateApp = freezed,
     Object? brightnessApp = freezed,
     Object? pollingIntervalComic = null,
+    Object? showListEpisodeWithGrid = null,
   }) {
     return _then(_value.copyWith(
       mangaReadLazyPage: null == mangaReadLazyPage
@@ -79,6 +82,10 @@ class _$GeneralSettingsCopyWithImpl<$Res, $Val extends GeneralSettings>
           ? _value.pollingIntervalComic
           : pollingIntervalComic // ignore: cast_nullable_to_non_nullable
               as int,
+      showListEpisodeWithGrid: null == showListEpisodeWithGrid
+          ? _value.showListEpisodeWithGrid
+          : showListEpisodeWithGrid // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -95,7 +102,8 @@ abstract class _$$GeneralSettingsImplCopyWith<$Res>
       {bool mangaReadLazyPage,
       DateTime? lastCheckUpdateApp,
       double? brightnessApp,
-      int pollingIntervalComic});
+      int pollingIntervalComic,
+      bool showListEpisodeWithGrid});
 }
 
 /// @nodoc
@@ -113,6 +121,7 @@ class __$$GeneralSettingsImplCopyWithImpl<$Res>
     Object? lastCheckUpdateApp = freezed,
     Object? brightnessApp = freezed,
     Object? pollingIntervalComic = null,
+    Object? showListEpisodeWithGrid = null,
   }) {
     return _then(_$GeneralSettingsImpl(
       mangaReadLazyPage: null == mangaReadLazyPage
@@ -131,6 +140,10 @@ class __$$GeneralSettingsImplCopyWithImpl<$Res>
           ? _value.pollingIntervalComic
           : pollingIntervalComic // ignore: cast_nullable_to_non_nullable
               as int,
+      showListEpisodeWithGrid: null == showListEpisodeWithGrid
+          ? _value.showListEpisodeWithGrid
+          : showListEpisodeWithGrid // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -142,7 +155,8 @@ class _$GeneralSettingsImpl implements _GeneralSettings {
       {this.mangaReadLazyPage = false,
       this.lastCheckUpdateApp = null,
       this.brightnessApp = null,
-      this.pollingIntervalComic = 60 * 60 * 3});
+      this.pollingIntervalComic = 60 * 60 * 3,
+      this.showListEpisodeWithGrid = false});
 
   factory _$GeneralSettingsImpl.fromJson(Map<String, dynamic> json) =>
       _$$GeneralSettingsImplFromJson(json);
@@ -159,10 +173,13 @@ class _$GeneralSettingsImpl implements _GeneralSettings {
   @override
   @JsonKey()
   final int pollingIntervalComic;
+  @override
+  @JsonKey()
+  final bool showListEpisodeWithGrid;
 
   @override
   String toString() {
-    return 'GeneralSettings(mangaReadLazyPage: $mangaReadLazyPage, lastCheckUpdateApp: $lastCheckUpdateApp, brightnessApp: $brightnessApp, pollingIntervalComic: $pollingIntervalComic)';
+    return 'GeneralSettings(mangaReadLazyPage: $mangaReadLazyPage, lastCheckUpdateApp: $lastCheckUpdateApp, brightnessApp: $brightnessApp, pollingIntervalComic: $pollingIntervalComic, showListEpisodeWithGrid: $showListEpisodeWithGrid)';
   }
 
   @override
@@ -177,13 +194,21 @@ class _$GeneralSettingsImpl implements _GeneralSettings {
             (identical(other.brightnessApp, brightnessApp) ||
                 other.brightnessApp == brightnessApp) &&
             (identical(other.pollingIntervalComic, pollingIntervalComic) ||
-                other.pollingIntervalComic == pollingIntervalComic));
+                other.pollingIntervalComic == pollingIntervalComic) &&
+            (identical(
+                    other.showListEpisodeWithGrid, showListEpisodeWithGrid) ||
+                other.showListEpisodeWithGrid == showListEpisodeWithGrid));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, mangaReadLazyPage,
-      lastCheckUpdateApp, brightnessApp, pollingIntervalComic);
+  int get hashCode => Object.hash(
+      runtimeType,
+      mangaReadLazyPage,
+      lastCheckUpdateApp,
+      brightnessApp,
+      pollingIntervalComic,
+      showListEpisodeWithGrid);
 
   @JsonKey(ignore: true)
   @override
@@ -205,7 +230,8 @@ abstract class _GeneralSettings implements GeneralSettings {
       {final bool mangaReadLazyPage,
       final DateTime? lastCheckUpdateApp,
       final double? brightnessApp,
-      final int pollingIntervalComic}) = _$GeneralSettingsImpl;
+      final int pollingIntervalComic,
+      final bool showListEpisodeWithGrid}) = _$GeneralSettingsImpl;
 
   factory _GeneralSettings.fromJson(Map<String, dynamic> json) =
       _$GeneralSettingsImpl.fromJson;
@@ -218,6 +244,8 @@ abstract class _GeneralSettings implements GeneralSettings {
   double? get brightnessApp;
   @override
   int get pollingIntervalComic;
+  @override
+  bool get showListEpisodeWithGrid;
   @override
   @JsonKey(ignore: true)
   _$$GeneralSettingsImplCopyWith<_$GeneralSettingsImpl> get copyWith =>

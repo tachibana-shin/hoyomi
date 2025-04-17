@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_web_plugins/url_strategy.dart';
 
+import 'stores.dart';
+
 // import 'package:go_transitions/go_transitions.dart';
 
 Future<void> main() async {
@@ -26,6 +28,7 @@ Future<void> main() async {
   await initializeFirebase();
   await initializeServices();
   await initializeFullscreen();
+  await initializeStore();
 
   runApp(MainApp());
 
