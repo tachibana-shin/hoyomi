@@ -1511,7 +1511,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   Widget _buildPopupOpeningEnding() {
     return Watch(() {
-      if (_openingEnding.value == null) {
+      if (_openingEnding.value == null || _controller.value == null) {
         return SizedBox.shrink();
       }
 
