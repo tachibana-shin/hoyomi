@@ -720,6 +720,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         }
       }
       _aspectRatio.value = controller.value.aspectRatio;
+      if (controller.value.isCompleted) widget.onNext.value?.call();
 
       _emitWatchTimeUpdate();
     }
