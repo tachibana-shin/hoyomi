@@ -162,7 +162,7 @@ class _ListEpisodesState extends State<ListEpisodes>
 
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 Timer(Duration(milliseconds: 70), () {
-                  if (activeKey.currentContext != null) {
+                  if (widget.controller != null && activeKey.currentContext != null) {
                     Scrollable.ensureVisible(
                       activeKey.currentContext!,
                       duration: Duration(milliseconds: 200),
