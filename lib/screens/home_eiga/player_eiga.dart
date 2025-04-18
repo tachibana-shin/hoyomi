@@ -1528,7 +1528,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       if (time <= 0) return SizedBox.shrink();
 
       final widgetTextSeconds = Text(
-        visible && time > 0 ? '$time seconds' : '0 seconds',
+        '$time seconds',
         style: TextStyle(
           color: Color.fromRGBO(209, 213, 219, 1.0),
           fontSize: 11.0,
