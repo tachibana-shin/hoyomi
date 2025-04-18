@@ -685,11 +685,10 @@ class _PlayerEigaState extends State<PlayerEiga>
         if (controller == null) return;
         _initializeStore[controller] = true;
 
-        controller.play();
-
         if (uid != id) return;
 
         if (position > Duration.zero) controller.seekTo(position);
+        controller.play();
       }).catchError((err) {
         debugPrint('Error: $err (${StackTrace.current})');
         _error.value = '$err';
