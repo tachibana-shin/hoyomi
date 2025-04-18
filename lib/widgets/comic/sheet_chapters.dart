@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
@@ -43,6 +45,19 @@ class _SheetChaptersState extends State<SheetChapters> {
       minChildSize: .15,
       maxChildSize: 0.9,
       builder: (context2, scrollController) {
+        final activeKey = GlobalKey();
+
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          Timer(Duration(milliseconds: 70), () {
+            if (activeKey.currentContext != null) {
+              Scrollable.ensureVisible(
+                activeKey.currentContext!,
+                duration: Duration(milliseconds: 200),
+              );
+            }
+          });
+        });
+
         return Column(
           children: [
             // Header
@@ -71,6 +86,7 @@ class _SheetChaptersState extends State<SheetChapters> {
                   final bool selected = chapter.chapterId == currentChapterId;
 
                   return ListTile(
+                    key: selected ? activeKey : null,
                     enableFeedback: true,
                     selected: selected,
                     autofocus: selected,
