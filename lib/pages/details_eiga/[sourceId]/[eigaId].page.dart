@@ -1139,8 +1139,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               season: season,
               thumbnail: metaEiga$.poster ?? metaEiga$.image,
               sourceId: widget.sourceId,
-              eigaIdNotifier: _eigaId,
-              episodeIdNotifier: _episodeId,
+              eigaId: _eigaId,
+              episodeId: _episodeId,
               eventBus: _eventBus,
               getData: (update) async =>
                   _cacheEpisodesStore[eigaId] ??= await _getEpisodes(
@@ -1204,8 +1204,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     season: season,
                     sourceId: widget.sourceId,
                     thumbnail: metaEiga$.poster ?? metaEiga$.image,
-                    eigaIdNotifier: _eigaId,
-                    episodeIdNotifier: _episodeId,
+                    eigaId: _eigaId,
+                    episodeId: _episodeId,
                     eventBus: _eventBus,
                     getData: (update) async =>
                         _cacheEpisodesStore[season.eigaId] ??=

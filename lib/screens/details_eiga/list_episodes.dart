@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:math';
 
+import 'package:awesome_extensions/awesome_extensions_flutter.dart';
+import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
@@ -22,8 +25,8 @@ class ListEpisodes extends StatefulWidget {
   final String sourceId;
   final Season season;
   final OImage thumbnail;
-  final Ref<String> eigaIdNotifier;
-  final Ref<String?> episodeIdNotifier;
+  final Ref<String> eigaId;
+  final Ref<String?> episodeId;
   final Axis scrollDirection;
   final ScrollController? controller;
   final Future<EigaEpisodes> Function(void Function(EigaEpisodes newValue))
@@ -42,8 +45,8 @@ class ListEpisodes extends StatefulWidget {
     required this.sourceId,
     required this.season,
     required this.thumbnail,
-    required this.eigaIdNotifier,
-    required this.episodeIdNotifier,
+    required this.eigaId,
+    required this.episodeId,
     required this.onTapEpisode,
     required this.getData,
     required this.getWatchTimeEpisodes,
@@ -58,7 +61,7 @@ class ListEpisodes extends StatefulWidget {
 }
 
 class _ListEpisodesState extends State<ListEpisodes>
-    with KaeruMixin, AutomaticKeepAliveClientMixin {
+    with KaeruMixin, AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -143,62 +146,124 @@ class _ListEpisodesState extends State<ListEpisodes>
 
             final isVertical = widget.scrollDirection == Axis.vertical;
 
-            Widget child = Watch(() {
-              if (isVertical && showListEpisodeWithGrid.value) {
-                return ResponsiveGridList(
-                  horizontalGridSpacing: 16,
-                  verticalGridSpacing: 16,
-                  horizontalGridMargin: 0,
-                  verticalGridMargin: 0,
-                  minItemWidth: 16.0 * 5,
-                  minItemsPerRow: 2,
-                  maxItemsPerRow: 12,
-                  listViewBuilderOptions:
-                      ListViewBuilderOptions(controller: widget.controller),
-                  children: episodesEiga.episodes.indexed.map((entry) {
-                    return _itemBuilder(
+            Widget generateGroup(int start, [int? stop]) {
+              stop ??= episodesEiga.episodes.length;
+              final itemCount = stop - start;
+
+              final indexActive = switch (
+                  widget.eigaId.value == widget.season.eigaId &&
+                      widget.episodeId.value != null) {
+                true => episodesEiga.episodes.indexWhere(
+                    (episode) => episode.episodeId == widget.episodeId.value),
+                false => 0,
+              };
+
+              final activeKey = GlobalKey();
+
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                Timer(Duration(milliseconds: 70), () {
+                  if (activeKey.currentContext != null) {
+                    Scrollable.ensureVisible(
+                      activeKey.currentContext!,
+                      duration: Duration(milliseconds: 200),
+                    );
+                  }
+                });
+              });
+
+              return Skeletonizer(
+                enabled: waiting,
+                enableSwitchAnimation: true,
+                child: Watch(() {
+                  if (isVertical && showListEpisodeWithGrid.value) {
+                    return ResponsiveGridList(
+                      horizontalGridSpacing: 16,
+                      verticalGridSpacing: 16,
+                      horizontalGridMargin: 0,
+                      verticalGridMargin: 0,
+                      minItemWidth: 16.0 * 5,
+                      minItemsPerRow: 2,
+                      maxItemsPerRow: 12,
+                      listViewBuilderOptions: ListViewBuilderOptions(
+                        controller: widget.controller,
+                      ),
+                      children: List.generate(
+                        itemCount,
+                        (index) => _itemBuilder(
+                          context,
+                          key: indexActive == index + start ? activeKey : null,
+                          index: index + start,
+                          episodesEiga: episodesEiga,
+                          waiting: waiting,
+                          isVertical: false,
+                          height: height,
+                          inGridMode: true,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    scrollDirection: widget.scrollDirection,
+                    itemCount: itemCount,
+                    shrinkWrap: true,
+                    controller: widget.controller,
+                    itemBuilder: (context, index) => _itemBuilder(
                       context,
-                      index: entry.$1,
+                      key: indexActive == index + start ? activeKey : null,
+                      index: index + start,
                       episodesEiga: episodesEiga,
                       waiting: waiting,
-                      isVertical: false,
+                      isVertical: isVertical,
                       height: height,
-                      inGridMode: true,
-                    );
-                  }).toList(),
-                );
-              }
-
-              return ListView.builder(
-                scrollDirection: widget.scrollDirection,
-                itemCount: episodesEiga.episodes.length,
-                shrinkWrap: true,
-                controller: widget.controller,
-                itemBuilder: (context, index) => _itemBuilder(
-                  context,
-                  index: index,
-                  episodesEiga: episodesEiga,
-                  waiting: waiting,
-                  isVertical: isVertical,
-                  height: height,
-                  inGridMode: false,
-                ),
-              );
-            });
-
-            if (waiting) {
-              child = Skeletonizer(
-                enabled: true,
-                enableSwitchAnimation: true,
-                child: child,
+                      inGridMode: false,
+                    ),
+                  );
+                }),
               );
             }
+
+            const sizeGroup = 50;
+            final lengthGroup =
+                (episodesEiga.episodes.length / sizeGroup).ceil();
+
+            final initialIndex = switch (
+                widget.eigaId.value == widget.season.eigaId &&
+                    widget.episodeId.value != null) {
+              true => max(
+                  0,
+                  (episodesEiga.episodes.indexWhere((episode) =>
+                              episode.episodeId == widget.episodeId.value) /
+                          sizeGroup)
+                      .floor(),
+                ),
+              false => 0,
+            };
+            final tabController = TabController(
+                initialIndex: initialIndex, length: lengthGroup, vsync: this);
+
+            // Watch(() {
+            //   final index = switch (
+            //       widget.eigaId.value == widget.season.eigaId &&
+            //           widget.episodeId.value != null) {
+            //     true => episodesEiga.episodes.indexWhere(
+            //         (episode) => episode.episodeId == widget.episodeId.value),
+            //     false => 0,
+            //   };
+
+            //   if (tabController.index != index) {
+            //     tabController.animateTo(index);
+            //   }
+
+            //   return nil;
+            // });
+
             return switch (isVertical) {
               true => Column(children: [
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Episodes'),
+                        Text('Episodes').fontSize(16.0),
                         Watch(() => IconButton(
                               onPressed: () {
                                 showListEpisodeWithGrid.value =
@@ -212,23 +277,61 @@ class _ListEpisodesState extends State<ListEpisodes>
                               ),
                             )),
                       ]),
-                  Expanded(child: child),
+                  if (lengthGroup > 1)
+                    ButtonsTabBar(
+                      controller: tabController,
+                      height: 40,
+                      backgroundColor: Colors.green[600],
+                      unselectedBackgroundColor: Colors.transparent,
+                      labelStyle: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      unselectedLabelStyle: TextStyle(
+                        color: Colors.green[600],
+                        fontWeight: FontWeight.bold,
+                      ),
+                      borderWidth: 1,
+                      unselectedBorderColor: Colors.green.shade600,
+                      radius: 100,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 4.0),
+                      tabs: List.generate(lengthGroup, (index) {
+                        return Tab(
+                          child: Text(
+                                  'EP.${index * sizeGroup + 1}-${min((index + 1) * sizeGroup, episodesEiga.episodes.length)}')
+                              .fontSize(12.0),
+                        );
+                      }),
+                    ),
+                  if (lengthGroup > 1)
+                    TabBarView(
+                      controller: tabController,
+                      children: List.generate(lengthGroup, (indexGroup) {
+                        return generateGroup(
+                            indexGroup * sizeGroup,
+                            min(episodesEiga.episodes.length,
+                                (indexGroup + 1) * sizeGroup));
+                      }),
+                    ).expanded()
+                  else
+                    generateGroup(0).expanded(),
                 ]),
-              false => SizedBox(height: height, child: child),
+              false => SizedBox(height: height, child: generateGroup(0)),
             };
           });
     });
   }
 
   bool _checkEpisodeActive(EigaEpisode episode, EigaEpisodes episodesEiga) {
-    return widget.eigaIdNotifier.value == widget.season.eigaId &&
-        (widget.episodeIdNotifier.value ??
-                episodesEiga.episodes.first.episodeId) ==
+    return widget.eigaId.value == widget.season.eigaId &&
+        (widget.episodeId.value ?? episodesEiga.episodes.first.episodeId) ==
             episode.episodeId;
   }
 
   Widget _itemBuilder(
     BuildContext context, {
+    Key? key,
     required int index,
     required EigaEpisodes episodesEiga,
     required bool waiting,
@@ -236,7 +339,7 @@ class _ListEpisodesState extends State<ListEpisodes>
     required double height,
     required bool inGridMode,
   }) {
-    return Watch(() {
+    return Watch(key: key, () {
       final episode = episodesEiga.episodes[index];
       final active = !waiting && _checkEpisodeActive(episode, episodesEiga);
 
