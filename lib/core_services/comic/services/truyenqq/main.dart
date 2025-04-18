@@ -215,7 +215,9 @@ class TruyenQQService extends TruyenGGService {
   }
 
   DQuery? _getInfoTale(DQuery tales, String name) {
-    return tales.findOne(($el) => $el.queryOne('.name').text().contains(name)).queryOne('.name');
+    return tales
+        .findOne(($el) => $el.queryOne('.name').text().contains(name))
+        .queryOne('.name');
   }
 
   @override
