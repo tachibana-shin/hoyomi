@@ -66,7 +66,7 @@ class _SheetChaptersState extends State<SheetChapters> {
                 itemCount: widget.comic.chapters.length,
                 itemBuilder: (context2, index) {
                   final chapter = widget.comic.chapters.elementAt(
-                    index,
+                    widget.comic.chapters.length - 1 - index,
                   ); //[index];
                   final bool selected = chapter.chapterId == currentChapterId;
 

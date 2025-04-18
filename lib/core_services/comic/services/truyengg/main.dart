@@ -251,8 +251,10 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
   }
 
   DQuery? _getInfoTale(DQuery tales, String name) {
-    return tales.findOne(
-        (element) => element.queryOne('.name-title').text().contains(name));
+    return tales
+        .findOne(
+            (element) => element.queryOne('.name-title').text().contains(name))
+        .queryOne('p:last-child');
   }
 
   @override

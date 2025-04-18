@@ -20,6 +20,7 @@ import 'package:hoyomi/widgets/image_picker.dart';
 import 'package:hoyomi/widgets/comic/sheet_chapters.dart';
 import 'package:hoyomi/widgets/tap_listener.dart';
 import 'package:hoyomi/widgets/iconify.dart';
+import 'package:iconify_flutter/icons/eva.dart';
 import 'package:iconify_flutter/icons/ic.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
@@ -872,14 +873,14 @@ class _MangaReaderState extends State<MangaReader>
                                 children: [
                                   Expanded(
                                     child: ButtonInset(
-                                      icon: Ion.heart_outline,
+                                      icon: Eva.heart_outline,
                                       text: 'Like',
                                       onPressed: () {},
                                     ),
                                   ),
                                   Expanded(
                                     child: ButtonInset(
-                                      icon: Ion.chatbox_ellipses_outline,
+                                      icon: Eva.message_square_outline,
                                       text: 'Comments',
                                       disabled:
                                           widget.service is! ComicAuthMixin ||
@@ -891,14 +892,14 @@ class _MangaReaderState extends State<MangaReader>
                                   ),
                                   Expanded(
                                       child: Watch(() => ButtonInset(
-                                            icon: Ion.list,
+                                            icon: Eva.list_outline,
                                             text:
                                                 '${_realCurrentPage.value.toInt() + 1} / ${_realLength.value}',
                                             onPressed: _showPanelListChapters,
                                           ))),
                                   Expanded(
                                     child: ButtonInset(
-                                      icon: Ion.settings_outline,
+                                      icon: Eva.settings_2_outline,
                                       text: 'Settings',
                                       onPressed: _showPanelSettings,
                                     ),

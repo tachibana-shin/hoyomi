@@ -524,7 +524,7 @@ class _DetailsComicState extends State<DetailsComic>
             );
           } else {
             context.push(
-              "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${comic.chapters.last.chapterId}",
+              "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${comic.chapters.first.chapterId}",
               extra: {'comic': comic},
             );
           }
