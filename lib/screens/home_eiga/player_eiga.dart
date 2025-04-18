@@ -1521,8 +1521,8 @@ class _PlayerEigaState extends State<PlayerEiga>
       final ending = _openingEnding.value!.ending;
 
       final time = _stateOpeningEnding.value == _StateOpeningEnding.opening
-          ? (opening!.end.inSeconds - _position.value.inSeconds).round()
-          : (ending!.end.inSeconds - _position.value.inSeconds).round();
+          ? (opening?.end.inSeconds ?? 0) - _position.value.inSeconds
+          : (ending?.end.inSeconds ?? 0) - _position.value.inSeconds;
 
       if (time <= 0) return SizedBox.shrink();
 
