@@ -12,7 +12,6 @@ import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/widgets/blurred_part_background.dart';
 import 'package:hoyomi/widgets/speech_to_text.dart';
@@ -621,9 +620,6 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         if (value == 'settings') {
           // Handle settings
         }
-        if (value == 'grid_view') {
-          isGridViewEnabled.value = !isGridViewEnabled.value;
-        }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
         const PopupMenuItem<String>(
@@ -633,26 +629,6 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         const PopupMenuItem<String>(
           value: 'settings',
           child: Text("Settings"),
-        ),
-        PopupMenuItem<String>(
-          value: 'grid_view',
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text("Grid View"),
-              ValueListenableBuilder<bool>(
-                valueListenable: isGridViewEnabled,
-                builder: (context, value, _) {
-                  return Switch(
-                    value: value,
-                    onChanged: (newValue) {
-                      isGridViewEnabled.value = newValue;
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
         ),
       ],
     );

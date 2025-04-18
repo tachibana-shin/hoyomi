@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 
@@ -16,7 +18,7 @@ class HomeComicCategory with _$HomeComicCategory {
     return HomeComicCategory(
       name: "Popular Manga",
       categoryId: "sec1",
-      gridView: true,
+      gridView: Random().nextBool(),
       items: List.generate(5, (index) => Comic.createFakeData()),
     );
   }

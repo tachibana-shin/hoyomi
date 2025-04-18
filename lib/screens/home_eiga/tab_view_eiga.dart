@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
-import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/widgets/eiga/carousel_eiga.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/eiga/vertical_eiga_list.dart';
@@ -46,49 +45,41 @@ class _TabViewEigaState extends State<TabViewEiga>
             final category = data.categories.elementAt(
               categoryIndex - (data.carousel != null ? 1 : 0),
             );
-            return ValueListenableBuilder<bool>(
-              valueListenable: isGridViewEnabled,
-              builder: (context, value, _) {
-                if (category.gridView != null) {
-                  value = category.gridView!;
-                }
 
-                if (value == false) {
-                  return HorizontalEigaList(
-                    itemsFuture: Future.value(
-                      category.items
-                          .map(
-                            (item) => EigaExtend(
-                              eiga: item,
-                              sourceId: widget.service.uid,
-                            ),
-                          )
-                          .toList(),
-                    ),
-                    title: category.name,
-                    more: category.categoryId != null
-                        ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
-                        : null,
-                  );
-                }
+            if (category.gridView == true) {
+              return HorizontalEigaList(
+                itemsFuture: Future.value(
+                  category.items
+                      .map(
+                        (item) => EigaExtend(
+                          eiga: item,
+                          sourceId: widget.service.uid,
+                        ),
+                      )
+                      .toList(),
+                ),
+                title: category.name,
+                more: category.categoryId != null
+                    ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
+                    : null,
+              );
+            }
 
-                return VerticalEigaList(
-                  itemsFuture: Future.value(
-                    category.items
-                        .map(
-                          (item) => EigaExtend(
-                            eiga: item,
-                            sourceId: widget.service.uid,
-                          ),
-                        )
-                        .toList(),
-                  ),
-                  title: category.name,
-                  more: category.categoryId != null
-                      ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
-                      : null,
-                );
-              },
+            return VerticalEigaList(
+              itemsFuture: Future.value(
+                category.items
+                    .map(
+                      (item) => EigaExtend(
+                        eiga: item,
+                        sourceId: widget.service.uid,
+                      ),
+                    )
+                    .toList(),
+              ),
+              title: category.name,
+              more: category.categoryId != null
+                  ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
+                  : null,
             );
           },
         );
