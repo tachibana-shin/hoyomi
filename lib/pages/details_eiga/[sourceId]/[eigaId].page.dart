@@ -949,6 +949,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           child: _buildSeasonArea(
                         scrollDirection: Axis.vertical,
                         inModal: true,
+                        controller: ScrollController(),
                       )),
                     ],
                   ),
