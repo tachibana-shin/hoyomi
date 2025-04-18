@@ -675,6 +675,7 @@ class _DetailsComicState extends State<DetailsComic>
           comic: _comic!,
           sourceId: widget.sourceId,
           comicId: widget.comicId,
+          reverse: true,
           // histories: _historyChapters.value,
           initialChildSize: 0.15,
         ));

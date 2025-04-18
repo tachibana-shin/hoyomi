@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
-import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/core_services/comic/interfaces/home_comic_category.dart';
 import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
 import 'package:hoyomi/widgets/comic/vertical_comic_list.dart';
@@ -34,49 +33,40 @@ class _TabViewComicState extends State<TabViewComic>
         itemBuilder: (context, categoryIndex) {
           final category = data.elementAt(categoryIndex);
 
-          return ValueListenableBuilder<bool>(
-            valueListenable: isGridViewEnabled,
-            builder: (context, value, _) {
-              if (category.gridView != null) {
-                value = category.gridView!;
-              }
+          if (category.gridView == true) {
+            return HorizontalComicList(
+              itemsFuture: Future.value(
+                category.items
+                    .map(
+                      (item) => ComicExtend(
+                        comic: item,
+                        sourceId: widget.service.uid,
+                      ),
+                    )
+                    .toList(),
+              ),
+              title: category.name,
+              more: category.categoryId != null
+                  ? '/category_comic/${widget.service.uid}/${category.categoryId}'
+                  : null,
+            );
+          }
 
-              if (value == false) {
-                return HorizontalComicList(
-                  itemsFuture: Future.value(
-                    category.items
-                        .map(
-                          (item) => ComicExtend(
-                            comic: item,
-                            sourceId: widget.service.uid,
-                          ),
-                        )
-                        .toList(),
-                  ),
-                  title: category.name,
-                  more: category.categoryId != null
-                      ? '/category_comic/${widget.service.uid}/${category.categoryId}'
-                      : null,
-                );
-              }
-
-              return VerticalComicList(
-                itemsFuture: Future.value(
-                  category.items
-                      .map(
-                        (item) => ComicExtend(
-                          comic: item,
-                          sourceId: widget.service.uid,
-                        ),
-                      )
-                      .toList(),
-                ),
-                title: category.name,
-                more: category.categoryId != null
-                    ? '/category_comic/${widget.service.uid}/${category.categoryId}'
-                    : null,
-              );
-            },
+          return VerticalComicList(
+            itemsFuture: Future.value(
+              category.items
+                  .map(
+                    (item) => ComicExtend(
+                      comic: item,
+                      sourceId: widget.service.uid,
+                    ),
+                  )
+                  .toList(),
+            ),
+            title: category.name,
+            more: category.categoryId != null
+                ? '/category_comic/${widget.service.uid}/${category.categoryId}'
+                : null,
           );
         },
       ),

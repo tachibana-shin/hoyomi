@@ -1,10 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/general_settings_controller.dart';
 import 'package:kaeru/kaeru.dart';
 
 import 'database/scheme/general_settings.dart';
 
-final ValueNotifier<bool> isGridViewEnabled = ValueNotifier<bool>(false);
 final showListEpisodeWithGrid = Ref(false);
 
 Future<void> initializeStore() async {

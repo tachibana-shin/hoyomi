@@ -13,6 +13,7 @@ class SheetChapters extends StatefulWidget {
   final String comicId;
   final String? currentChapterId;
   final bool replace;
+  final bool reverse;
 
   final double initialChildSize;
 
@@ -23,6 +24,7 @@ class SheetChapters extends StatefulWidget {
     required this.comicId,
     this.currentChapterId,
     this.replace = false,
+    this.reverse = false,
     required this.initialChildSize,
   });
 
@@ -81,7 +83,9 @@ class _SheetChaptersState extends State<SheetChapters> {
                 itemCount: widget.comic.chapters.length,
                 itemBuilder: (context2, index) {
                   final chapter = widget.comic.chapters.elementAt(
-                    widget.comic.chapters.length - 1 - index,
+                    widget.reverse
+                        ? index
+                        : (widget.comic.chapters.length - 1 - index),
                   ); //[index];
                   final bool selected = chapter.chapterId == currentChapterId;
 
