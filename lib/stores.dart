@@ -12,7 +12,7 @@ Future<void> initializeStore() async {
       await GeneralSettingsController.instance.get() ?? GeneralSettings();
   showListEpisodeWithGrid.value = settings.showListEpisodeWithGrid;
 
-  watch([showListEpisodeWithGrid], () {
+  watch$([showListEpisodeWithGrid], () {
     GeneralSettingsController.instance.save(settings.copyWith(
       showListEpisodeWithGrid: showListEpisodeWithGrid.value,
     ));
