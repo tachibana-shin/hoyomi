@@ -222,6 +222,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
       _position.value = Duration.zero;
       _duration.value = Duration.zero;
+      _buffered.value = [];
     });
 
     /// Servers
