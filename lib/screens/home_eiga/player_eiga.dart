@@ -196,6 +196,8 @@ class _PlayerEigaState extends State<PlayerEiga>
   late final Computed<_StateOpeningEnding> _stateOpeningEnding;
   late final Computed<bool> _visibleTooltipSkipOE;
 
+  late final Map<VideoPlayerController, bool> _initializeStore = {};
+
   String get uid => '${widget.episodeId.value}@${widget.eigaId.value}';
 
   bool _positionChangedByUser = false;
@@ -210,6 +212,18 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     /// =================== Core data ====================
     final metaIsFake = computed(() => widget.metaEiga.value.fake);
+
+    watch([metaIsFake, widget.episodeId, widget.eigaId], () {
+      if (metaIsFake.value) return;
+
+      _controller.value?.dispose();
+      _initializeStore.remove(_controller.value);
+      _controller.value = null;
+
+      _position.value = Duration.zero;
+      _duration.value = Duration.zero;
+      _buffered.value = Duration.zero;
+    });
 
     /// Servers
     _servers = asyncComputed(() async {
@@ -415,7 +429,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
       final inOpening = opening == null
           ? false
-          : opening.start <= _position.value && opening.end >= _position.value;
+          : opening.start <= _position.value && opening.end > _position.value;
       if (inOpening) {
         if (_stateOpeningEnding.value == _StateOpeningEnding.opening ||
             _stateOpeningEnding.value == _StateOpeningEnding.skip) {
@@ -424,7 +438,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         return _StateOpeningEnding.opening;
       } else if (ending == null
           ? false
-          : ending.start <= _position.value && ending.end >= _position.value) {
+          : ending.start <= _position.value && ending.end > _position.value) {
         if (_stateOpeningEnding.value == _StateOpeningEnding.ending ||
             _stateOpeningEnding.value == _StateOpeningEnding.skip) {
           return _stateOpeningEnding.value;
@@ -655,6 +669,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     }
 
     _controller.value?.dispose();
+    _initializeStore.remove(_controller.value);
     _controllerId.value = id;
 
     _controller.value = VideoPlayerController.networkUrl(
@@ -664,13 +679,22 @@ class _PlayerEigaState extends State<PlayerEiga>
         allowBackgroundPlayback: true,
       ),
     )
-      ..addListener(_onPlayerValueChanged)
       ..initialize().then((_) {
-        if (!_playing.value) _controller.value?.play();
+        final position = _position.value;
+        final controller = _controller.value;
+
+        if (controller == null) return;
+        _initializeStore[controller] = true;
+
+        if (uid != id) return;
+
+        if (position > Duration.zero) controller.seekTo(position);
+        controller.play();
       }).catchError((err) {
         debugPrint('Error: $err (${StackTrace.current})');
         _error.value = '$err';
-      });
+      })
+      ..addListener(_onPlayerValueChanged);
 
     content ??=
         await widget.service.fetch(url.toString(), headers: source.headers);
@@ -688,6 +712,8 @@ class _PlayerEigaState extends State<PlayerEiga>
   void _onPlayerValueChanged() {
     final controller = _controller.value;
 
+    if (_initializeStore[controller] != true) return;
+
     if (controller?.value.hasError == true) {
       WakelockPlus.disable();
       debugPrint(
@@ -697,7 +723,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       _error.value = null;
     }
 
-    if (controller != null) {
+    if (controller != null && controller.value.isInitialized) {
       final positionChanged = _position.value != controller.value.position;
       _position.value = controller.value.position;
       _duration.value = controller.value.duration;
@@ -1485,7 +1511,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   Widget _buildPopupOpeningEnding() {
     return Watch(() {
-      if (_openingEnding.value == null) {
+      if (_openingEnding.value == null || _controller.value == null) {
         return SizedBox.shrink();
       }
 
@@ -1495,10 +1521,14 @@ class _PlayerEigaState extends State<PlayerEiga>
       final opening = _openingEnding.value!.opening;
       final ending = _openingEnding.value!.ending;
 
+      final time = _stateOpeningEnding.value == _StateOpeningEnding.opening
+          ? (opening?.end.inSeconds ?? 0) - _position.value.inSeconds
+          : (ending?.end.inSeconds ?? 0) - _position.value.inSeconds;
+
+      if (time <= 0) return SizedBox.shrink();
+
       final widgetTextSeconds = Text(
-        visible
-            ? '${_stateOpeningEnding.value == _StateOpeningEnding.opening ? (opening!.end.inSeconds - _position.value.inSeconds).round() : (ending!.end.inSeconds - _position.value.inSeconds).round()} seconds'
-            : '0 seconds',
+        '$time seconds',
         style: TextStyle(
           color: Color.fromRGBO(209, 213, 219, 1.0),
           fontSize: 11.0,
