@@ -162,7 +162,8 @@ class _ListEpisodesState extends State<ListEpisodes>
 
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 Timer(Duration(milliseconds: 70), () {
-                  if (widget.controller != null && activeKey.currentContext != null) {
+                  if (widget.controller != null &&
+                      activeKey.currentContext != null) {
                     Scrollable.ensureVisible(
                       activeKey.currentContext!,
                       duration: Duration(milliseconds: 200),
@@ -171,56 +172,59 @@ class _ListEpisodesState extends State<ListEpisodes>
                 });
               });
 
-              return Skeletonizer(
-                enabled: waiting,
-                enableSwitchAnimation: true,
-                child: Watch(() {
-                  if (isVertical && showListEpisodeWithGrid.value) {
-                    return ResponsiveGridList(
-                      horizontalGridSpacing: 16,
-                      verticalGridSpacing: 16,
-                      horizontalGridMargin: 0,
-                      verticalGridMargin: 0,
-                      minItemWidth: 16.0 * 5,
-                      minItemsPerRow: 2,
-                      maxItemsPerRow: 12,
-                      listViewBuilderOptions: ListViewBuilderOptions(
-                        controller: widget.controller,
+              final child = Watch(() {
+                if (isVertical && showListEpisodeWithGrid.value) {
+                  return ResponsiveGridList(
+                    horizontalGridSpacing: 16,
+                    verticalGridSpacing: 16,
+                    horizontalGridMargin: 0,
+                    verticalGridMargin: 0,
+                    minItemWidth: 16.0 * 5,
+                    minItemsPerRow: 2,
+                    maxItemsPerRow: 12,
+                    listViewBuilderOptions: ListViewBuilderOptions(
+                      controller: widget.controller,
+                    ),
+                    children: List.generate(
+                      itemCount,
+                      (index) => _itemBuilder(
+                        context,
+                        key: indexActive == index + start ? activeKey : null,
+                        index: index + start,
+                        episodesEiga: episodesEiga,
+                        waiting: waiting,
+                        isVertical: false,
+                        height: height,
+                        inGridMode: true,
                       ),
-                      children: List.generate(
-                        itemCount,
-                        (index) => _itemBuilder(
-                          context,
-                          key: indexActive == index + start ? activeKey : null,
-                          index: index + start,
-                          episodesEiga: episodesEiga,
-                          waiting: waiting,
-                          isVertical: false,
-                          height: height,
-                          inGridMode: true,
-                        ),
-                      ),
-                    );
-                  }
-
-                  return ListView.builder(
-                    scrollDirection: widget.scrollDirection,
-                    itemCount: itemCount,
-                    shrinkWrap: true,
-                    controller: widget.controller,
-                    itemBuilder: (context, index) => _itemBuilder(
-                      context,
-                      key: indexActive == index + start ? activeKey : null,
-                      index: index + start,
-                      episodesEiga: episodesEiga,
-                      waiting: waiting,
-                      isVertical: isVertical,
-                      height: height,
-                      inGridMode: false,
                     ),
                   );
-                }),
-              );
+                }
+
+                return ListView.builder(
+                  scrollDirection: widget.scrollDirection,
+                  itemCount: itemCount,
+                  shrinkWrap: true,
+                  controller: widget.controller,
+                  itemBuilder: (context, index) => _itemBuilder(
+                    context,
+                    key: indexActive == index + start ? activeKey : null,
+                    index: index + start,
+                    episodesEiga: episodesEiga,
+                    waiting: waiting,
+                    isVertical: isVertical,
+                    height: height,
+                    inGridMode: false,
+                  ),
+                );
+              });
+              return waiting
+                  ? Skeletonizer(
+                      enabled: true,
+                      enableSwitchAnimation: true,
+                      child: child,
+                    )
+                  : child;
             }
 
             const sizeGroup = 50;
