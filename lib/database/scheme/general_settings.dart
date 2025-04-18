@@ -10,6 +10,7 @@ class GeneralSettings with _$GeneralSettings {
     @Default(null) DateTime? lastCheckUpdateApp,
     @Default(null) double? brightnessApp,
     @Default(60 * 60 * 3) int pollingIntervalComic,
+    @Default(false) bool showListEpisodeWithGrid,
   }) = _GeneralSettings;
 
   factory GeneralSettings.fromJson(Map<String, Object?> json) =>

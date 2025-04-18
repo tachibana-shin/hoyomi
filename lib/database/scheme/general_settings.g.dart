@@ -16,6 +16,8 @@ _$GeneralSettingsImpl _$$GeneralSettingsImplFromJson(
       brightnessApp: (json['brightnessApp'] as num?)?.toDouble() ?? null,
       pollingIntervalComic:
           (json['pollingIntervalComic'] as num?)?.toInt() ?? 60 * 60 * 3,
+      showListEpisodeWithGrid:
+          json['showListEpisodeWithGrid'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$GeneralSettingsImplToJson(
@@ -25,4 +27,5 @@ Map<String, dynamic> _$$GeneralSettingsImplToJson(
       'lastCheckUpdateApp': instance.lastCheckUpdateApp?.toIso8601String(),
       'brightnessApp': instance.brightnessApp,
       'pollingIntervalComic': instance.pollingIntervalComic,
+      'showListEpisodeWithGrid': instance.showListEpisodeWithGrid,
     };
