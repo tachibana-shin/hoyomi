@@ -161,13 +161,16 @@ class _CommentsState extends State<Comments> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    comment.photoUrl.src,
-                    headers: comment.photoUrl.headers?.toMap(),
-                  ),
-                  radius: 12,
-                ),
+                Skeleton.replace(
+                    width: 24,
+                    height: 24,
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                        comment.photoUrl.src,
+                        headers: comment.photoUrl.headers?.toMap(),
+                      ),
+                      radius: 12,
+                    )),
                 const SizedBox(width: 8),
                 Expanded(
                   child: HtmlWidget(

@@ -10,6 +10,7 @@ import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/ic.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class Comment extends StatefulWidget {
   final ComicComment comment;
@@ -64,13 +65,16 @@ class _CommentState extends State<Comment> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(
-                widget.comment.photoUrl.src,
-                headers: widget.comment.photoUrl.headers?.toMap(),
-              ),
-              radius: 24,
-            ),
+            Skeleton.replace(
+                width: 48,
+                height: 48,
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    widget.comment.photoUrl.src,
+                    headers: widget.comment.photoUrl.headers?.toMap(),
+                  ),
+                  radius: 24,
+                )),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
