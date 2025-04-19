@@ -458,7 +458,7 @@ class _MangaReaderState extends State<MangaReader>
             rows: 3,
             columns: 3,
             onTap: _onTapGrid,
-            child: Watch(() => _buildReader(_pages.value, _mode.value)),
+            child: _buildReader(),
           ),
           Positioned(left: 0, right: 0, bottom: 0, child: _buildTinyStatus()),
           Positioned(left: 0, right: 0, bottom: 0, child: _buildBottomBar()),
@@ -726,72 +726,77 @@ class _MangaReaderState extends State<MangaReader>
     );
   }
 
-  Widget _buildReader(List<ImageWithGroup> pages, ComicModes mode) {
-    if (mode == ComicModes.webToon) {
-      return WebToonReader(
-        itemCount: pages.length,
-        itemBuilder: (BuildContext context, int index) {
-          // final currPage = pages.elementAt(index);
+  Widget _buildReader() {
+    return Watch(() {
+      final mode = _mode.value;
 
-          final page = _buildPage(index);
+      if (mode == ComicModes.webToon) {
+        return WebToonReader(
+          // itemCount: pages.length,
+          pages: _pages,
+          itemBuilder: (BuildContext context, int index) {
+            // final currPage = pages.elementAt(index);
 
-          // if (index < pages.length - 1) {
-          //   final nextPage = pages.elementAtOrNull(index + 1);
+            final page = _buildPage(index);
 
-          //   if (nextPage != null &&
-          //       nextPage.chapter.chapterId != currPage.chapter.chapterId) {
-          //     final splash = _buildPlacePage(
-          //         chapter: currPage.chapter, nextChapter: nextPage.chapter);
+            // if (index < pages.length - 1) {
+            //   final nextPage = pages.elementAtOrNull(index + 1);
 
-          //     return Column(children: [page, splash]);
-          //   }
-          // }
+            //   if (nextPage != null &&
+            //       nextPage.chapter.chapterId != currPage.chapter.chapterId) {
+            //     final splash = _buildPlacePage(
+            //         chapter: currPage.chapter, nextChapter: nextPage.chapter);
 
-          // if (index > 0) {
-          //   final prevPage = pages.elementAtOrNull(index - 1);
+            //     return Column(children: [page, splash]);
+            //   }
+            // }
 
-          //   if (prevPage != null &&
-          //       prevPage.chapter.chapterId != currPage.chapter.chapterId) {
-          //     final splash = _buildPlacePage(
-          //         chapter: currPage.chapter, prevChapter: prevPage.chapter);
+            // if (index > 0) {
+            //   final prevPage = pages.elementAtOrNull(index - 1);
 
-          //     return Column(children: [splash, page]);
-          //   }
-          // }
+            //   if (prevPage != null &&
+            //       prevPage.chapter.chapterId != currPage.chapter.chapterId) {
+            //     final splash = _buildPlacePage(
+            //         chapter: currPage.chapter, prevChapter: prevPage.chapter);
 
-          return page;
-        },
-        currentPage: _currentPage,
-      );
-    }
-    if (mode == ComicModes.topToBottom) {
-      return VerticalReader(
-        itemCount: pages.length,
-        itemBuilder: (BuildContext context, int index) {
-          return _buildPage(index);
-        },
-        currentPage: _currentPage,
-      );
-    }
+            //     return Column(children: [splash, page]);
+            //   }
+            // }
 
-    return Watch(() => HorizonReader(
-          itemCount: pages.length,
+            return page;
+          },
+          currentPage: _currentPage,
+        );
+      }
+      if (mode == ComicModes.topToBottom) {
+        return VerticalReader(
+          pages: _pages,
           itemBuilder: (BuildContext context, int index) {
             return _buildPage(index);
           },
           currentPage: _currentPage,
-          builderImage: (int index) {
-            final item = pages.elementAt(index);
+        );
+      }
 
-            return OImage.oNetwork(
-              item.image,
-              sourceId: widget.service.uid,
-              fit: BoxFit.contain,
-            );
-          },
-          rtl: mode == ComicModes.rightToLeft,
-          twoPage: _useTwoPage.value,
-        ));
+      return HorizonReader(
+        pages: _pages,
+        itemBuilder: (BuildContext context, int index) {
+          return _buildPage(index);
+        },
+        currentPage: _currentPage,
+        builderImage: (int index) {
+          final item = _pages.value.elementAt(index);
+
+          return OImage.oNetwork(
+            item.image,
+            sourceId: widget.service.uid,
+            fit: BoxFit.contain,
+          );
+        },
+        rtl: mode == ComicModes.rightToLeft,
+        twoPage: _useTwoPage.value,
+      );
+    });
   }
 
   Widget _buildPageLoading(ImageChunkEvent? loadingProgress) {

@@ -1,75 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:hoyomi/screens/home_comic/manga_reader.dart';
 import 'package:kaeru/kaeru.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class WebToonReader extends StatefulWidget {
-  final int itemCount;
+  // final int itemCount;
+  final Ref<List<ImageWithGroup>> pages;
   final Widget Function(BuildContext context, int index) itemBuilder;
   final Ref<double> currentPage;
 
-  const WebToonReader(
-      {super.key,
-      required this.itemCount,
-      required this.itemBuilder,
-      required this.currentPage});
+  const WebToonReader({
+    super.key,
+    // required this.itemCount,
+    required this.pages,
+    required this.itemBuilder,
+    required this.currentPage,
+  });
 
   @override
   State<WebToonReader> createState() => _WebToonReaderState();
 }
 
-class _WebToonReaderState extends State<WebToonReader> {
-  final _itemScrollController = ItemScrollController();
-  // final _scrollOffsetController = ScrollOffsetController();
-  final _itemPositionsListener = ItemPositionsListener.create();
-  // final _scrollOffsetListener = ScrollOffsetListener.create();
+class _WebToonReaderState extends State<WebToonReader>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  final _scrollController = ScrollController();
+
+  final Map<int, GlobalKey> _itemKeys = {};
+
+  GlobalKey _getKey(int index) {
+    return _itemKeys.putIfAbsent(index, () => GlobalKey());
+  }
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
+  }
 
-    // _controller = PageController(initialPage: widget.currentPage.value.toInt());
+  void _onScroll() {
+    for (var entry in _itemKeys.entries) {
+      final ctx = entry.value.currentContext;
+      if (ctx == null) continue;
 
-    bool jumping = false;
-    _itemPositionsListener.itemPositions.addListener(() {
-      if (!jumping) {
-        final positions = _itemPositionsListener.itemPositions.value;
-        final visibleItem =
-            positions.where((pos) => pos.itemLeadingEdge >= 0).lastOrNull;
+      final box = ctx.findRenderObject();
+      if (box is! RenderBox) continue;
 
-        if (visibleItem != null) {
-          widget.currentPage.value = visibleItem.index.toDouble();
-        }
+      final offset = box.localToGlobal(Offset.zero);
+
+      if (offset.dy >= 0 && offset.dy < MediaQuery.of(context).size.height) {
+        widget.currentPage.value = entry.key.toDouble();
+        break;
       }
-    });
-    // listenerNotifier(widget.currentPage, () {
-    //   jumping = true;
-
-    //   _itemScrollController.scrollTo(
-    //       index: widget.currentPage.value.toInt(),
-    //       duration: Duration(milliseconds: 200),
-    //       curve: Curves.easeInOut);
-    //   Timer(Duration(milliseconds: 50), () {
-    //     jumping = false;
-    //   });
-    // });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScrollablePositionedList.builder(
-      itemCount: widget.itemCount,
-      itemBuilder: widget.itemBuilder,
-      itemScrollController: _itemScrollController,
-      // scrollOffsetController: _scrollOffsetController,
-      itemPositionsListener: _itemPositionsListener,
-      // scrollOffsetListener: _scrollOffsetListener,
-      initialScrollIndex: widget.currentPage.value.toInt(),
-    );
+    super.build(context);
+    
+    return Watch(() {
+      return ListView.builder(
+        controller: _scrollController,
+        itemCount: widget.pages.value.length,
+        itemBuilder: (context, index) {
+          return Container(
+            key: _getKey(index),
+            child: widget.itemBuilder(context, index),
+          );
+        },
+      );
+    });
   }
 
-  // @override
-  // void dispose() {
-  //   _controller.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 }
