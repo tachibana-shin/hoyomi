@@ -16,6 +16,7 @@ import 'package:hoyomi/widgets/comic/icon_button_share.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:kaeru/kaeru.dart';
+import 'package:kaeru/kaeru.dart';
 
 class DetailsComicReader extends StatefulWidget {
   final String sourceId;
@@ -37,10 +38,14 @@ class DetailsComicReader extends StatefulWidget {
 
 class _DetailsComicReaderState extends State<DetailsComicReader>
     with KaeruMixin {
+class _DetailsComicReaderState extends State<DetailsComicReader>
+    with KaeruMixin {
   late Future<List<OImage>> _pagesFuture;
   late Future<MetaComic> _metaComicFuture;
   late final _metaComic = ref<MetaComic?>(null);
   late final ABComicService _service;
+  late final _chapter = ref<ComicChapter?>(null);
+  late final _showToolbar = ref<bool>(true);
   late final _chapter = ref<ComicChapter?>(null);
   late final _showToolbar = ref<bool>(true);
 
@@ -150,8 +155,11 @@ class _AppBar extends StatefulWidget {
 }
 
 class _AppBarState extends State<_AppBar> with KaeruMixin {
+class _AppBarState extends State<_AppBar> with KaeruMixin {
   @override
   Widget build(BuildContext context) {
+    return Watch(
+      () {
     return Watch(
       () {
         return AnimatedSwitcher(
@@ -170,12 +178,14 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
             return SlideTransition(position: offsetAnimation, child: child);
           },
           child: widget.enabled.value
+          child: widget.enabled.value
               ? ClipRRect(
                   child: SizedBox(
                     height: 53.0,
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                       child: AppBar(
+                        toolbarHeight: 56,
                         toolbarHeight: 56,
                         backgroundColor: Theme.of(
                           context,
@@ -187,6 +197,9 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                             context.pop();
                           },
                         ),
+                        title: Watch(() {
+                          return Column(
+                              mainAxisSize: MainAxisSize.min,
                         title: Watch(() {
                           return Column(
                               mainAxisSize: MainAxisSize.min,

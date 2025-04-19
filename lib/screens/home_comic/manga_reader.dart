@@ -131,8 +131,14 @@ class _MangaReaderState extends State<MangaReader>
           page.image.src != OImage.fake);
     });
 
-    _mode =
-        ref(widget.service.getComicModes(widget.comic) ?? ComicModes.webToon);
+    late final ComicModes mode;
+    try {
+      mode = widget.service.getComicModes(widget.comic);
+    } catch (error) {
+      mode = ComicModes.webToon;
+    }
+
+    _mode = ref(mode);
     _realCurrentPage = computed(() {
       final pages = _pages.value;
       final currentPage = _currentPage.value.round();

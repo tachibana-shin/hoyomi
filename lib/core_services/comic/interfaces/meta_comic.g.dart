@@ -27,6 +27,7 @@ _$MetaComicImpl _$$MetaComicImplFromJson(Map<String, dynamic> json) =>
           .map((e) => ComicChapter.fromJson(e as Map<String, dynamic>))
           .toList(),
       lastModified: DateTime.parse(json['lastModified'] as String),
+      fake: json['fake'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$MetaComicImplToJson(_$MetaComicImpl instance) =>
@@ -44,6 +45,7 @@ Map<String, dynamic> _$$MetaComicImplToJson(_$MetaComicImpl instance) =>
       'description': instance.description,
       'chapters': instance.chapters,
       'lastModified': instance.lastModified.toIso8601String(),
+      'fake': instance.fake,
     };
 
 const _$StatusEnumEnumMap = {

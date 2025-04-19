@@ -24,6 +24,7 @@ class MetaComic with _$MetaComic {
     required String description,
     required List<ComicChapter> chapters,
     required DateTime lastModified,
+    @Default(false) bool fake,
   }) = _MetaComic;
 
   factory MetaComic.fromJson(Map<String, dynamic> json) =>
@@ -44,6 +45,7 @@ class MetaComic with _$MetaComic {
       description: "これはダミーの説明です。",
       chapters: [ComicChapter.createFakeData(), ComicChapter.createFakeData()],
       lastModified: DateTime.now(),
+      fake: true,
     );
   }
 }

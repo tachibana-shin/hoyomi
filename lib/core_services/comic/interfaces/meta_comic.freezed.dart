@@ -33,6 +33,7 @@ mixin _$MetaComic {
   String get description => throw _privateConstructorUsedError;
   List<ComicChapter> get chapters => throw _privateConstructorUsedError;
   DateTime get lastModified => throw _privateConstructorUsedError;
+  bool get fake => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -58,7 +59,8 @@ abstract class $MetaComicCopyWith<$Res> {
       List<Genre> genres,
       String description,
       List<ComicChapter> chapters,
-      DateTime lastModified});
+      DateTime lastModified,
+      bool fake});
 
   $OImageCopyWith<$Res> get image;
   $RateValueCopyWith<$Res>? get rate;
@@ -90,6 +92,7 @@ class _$MetaComicCopyWithImpl<$Res, $Val extends MetaComic>
     Object? description = null,
     Object? chapters = null,
     Object? lastModified = null,
+    Object? fake = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -144,6 +147,10 @@ class _$MetaComicCopyWithImpl<$Res, $Val extends MetaComic>
           ? _value.lastModified
           : lastModified // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      fake: null == fake
+          ? _value.fake
+          : fake // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 
@@ -189,7 +196,8 @@ abstract class _$$MetaComicImplCopyWith<$Res>
       List<Genre> genres,
       String description,
       List<ComicChapter> chapters,
-      DateTime lastModified});
+      DateTime lastModified,
+      bool fake});
 
   @override
   $OImageCopyWith<$Res> get image;
@@ -221,6 +229,7 @@ class __$$MetaComicImplCopyWithImpl<$Res>
     Object? description = null,
     Object? chapters = null,
     Object? lastModified = null,
+    Object? fake = null,
   }) {
     return _then(_$MetaComicImpl(
       name: null == name
@@ -275,6 +284,10 @@ class __$$MetaComicImplCopyWithImpl<$Res>
           ? _value.lastModified
           : lastModified // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      fake: null == fake
+          ? _value.fake
+          : fake // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -295,7 +308,8 @@ class _$MetaComicImpl implements _MetaComic {
       required final List<Genre> genres,
       required this.description,
       required final List<ComicChapter> chapters,
-      required this.lastModified})
+      required this.lastModified,
+      this.fake = false})
       : _genres = genres,
         _chapters = chapters;
 
@@ -340,10 +354,13 @@ class _$MetaComicImpl implements _MetaComic {
 
   @override
   final DateTime lastModified;
+  @override
+  @JsonKey()
+  final bool fake;
 
   @override
   String toString() {
-    return 'MetaComic(name: $name, originalName: $originalName, image: $image, author: $author, translator: $translator, status: $status, views: $views, likes: $likes, rate: $rate, genres: $genres, description: $description, chapters: $chapters, lastModified: $lastModified)';
+    return 'MetaComic(name: $name, originalName: $originalName, image: $image, author: $author, translator: $translator, status: $status, views: $views, likes: $likes, rate: $rate, genres: $genres, description: $description, chapters: $chapters, lastModified: $lastModified, fake: $fake)';
   }
 
   @override
@@ -367,7 +384,8 @@ class _$MetaComicImpl implements _MetaComic {
                 other.description == description) &&
             const DeepCollectionEquality().equals(other._chapters, _chapters) &&
             (identical(other.lastModified, lastModified) ||
-                other.lastModified == lastModified));
+                other.lastModified == lastModified) &&
+            (identical(other.fake, fake) || other.fake == fake));
   }
 
   @JsonKey(ignore: true)
@@ -386,7 +404,8 @@ class _$MetaComicImpl implements _MetaComic {
       const DeepCollectionEquality().hash(_genres),
       description,
       const DeepCollectionEquality().hash(_chapters),
-      lastModified);
+      lastModified,
+      fake);
 
   @JsonKey(ignore: true)
   @override
@@ -416,7 +435,8 @@ abstract class _MetaComic implements MetaComic {
       required final List<Genre> genres,
       required final String description,
       required final List<ComicChapter> chapters,
-      required final DateTime lastModified}) = _$MetaComicImpl;
+      required final DateTime lastModified,
+      final bool fake}) = _$MetaComicImpl;
 
   factory _MetaComic.fromJson(Map<String, dynamic> json) =
       _$MetaComicImpl.fromJson;
@@ -447,6 +467,8 @@ abstract class _MetaComic implements MetaComic {
   List<ComicChapter> get chapters;
   @override
   DateTime get lastModified;
+  @override
+  bool get fake;
   @override
   @JsonKey(ignore: true)
   _$$MetaComicImplCopyWith<_$MetaComicImpl> get copyWith =>
