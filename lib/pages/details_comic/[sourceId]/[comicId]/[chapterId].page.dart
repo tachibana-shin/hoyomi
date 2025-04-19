@@ -177,6 +177,7 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                       child: AppBar(
+                        toolbarHeight: 56,
                         backgroundColor: Theme.of(
                           context,
                         ).scaffoldBackgroundColor.withValues(alpha: 0.8),
@@ -187,33 +188,29 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                             context.pop();
                           },
                         ),
-                        title: Watch(
-                          () {
-                            return Column(
+                        title: Watch(() {
+                          return Column(
+                              mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: (widget.comic != null)
-                                  ? [
-                                      Text(
-                                        widget.comic!.name,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(height: 2),
-                                      if (widget.chapter.value != null)
-                                        Text(
-                                          widget.chapter.value!.name,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.white70,
-                                          ),
-                                        ),
-                                    ]
-                                  : [],
-                            );
-                          },
-                        ),
+                              children: [
+                                Text(
+                                  widget.comic?.name ?? '',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 2),
+                                if (widget.chapter.value != null)
+                                  Text(
+                                    widget.chapter.value!.name,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white70,
+                                    ),
+                                  ),
+                              ]);
+                        }),
                         actions: [
                           IconButtonFollow(
                             sourceId: widget.service.uid,
