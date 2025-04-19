@@ -1,16 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:hoyomi/screens/home_comic/manga_reader.dart';
 import 'package:kaeru/kaeru.dart';
 
 class VerticalReader extends StatefulWidget {
-  final int itemCount;
+  final Ref<List<ImageWithGroup>> pages;
   final Widget Function(BuildContext context, int index) itemBuilder;
   final Ref<double> currentPage;
 
   const VerticalReader(
       {super.key,
-      required this.itemCount,
+      required this.pages,
       required this.itemBuilder,
       required this.currentPage});
 
@@ -43,7 +44,7 @@ class _VerticalReaderState extends State<VerticalReader> with KaeruListenMixin {
 
   @override
   Widget build(BuildContext context) {
-    return PageView.builder(
+    return Watch(() => PageView.builder(
         controller: _controller,
         scrollDirection: Axis.vertical,
         allowImplicitScrolling: true,
@@ -52,8 +53,8 @@ class _VerticalReaderState extends State<VerticalReader> with KaeruListenMixin {
 
           widget.currentPage.value = page.toDouble();
         },
-        itemCount: widget.itemCount,
-        itemBuilder: widget.itemBuilder);
+        itemCount: widget.pages.value.length,
+        itemBuilder: widget.itemBuilder));
   }
 
   @override

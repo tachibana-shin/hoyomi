@@ -15,6 +15,7 @@ import 'package:hoyomi/widgets/comic/icon_button_open_browser.dart';
 import 'package:hoyomi/widgets/comic/icon_button_share.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/ion.dart';
+import 'package:kaeru/kaeru.dart';
 
 class DetailsComicReader extends StatefulWidget {
   final String sourceId;
@@ -34,13 +35,14 @@ class DetailsComicReader extends StatefulWidget {
   createState() => _DetailsComicReaderState();
 }
 
-class _DetailsComicReaderState extends State<DetailsComicReader> {
+class _DetailsComicReaderState extends State<DetailsComicReader>
+    with KaeruMixin {
   late Future<List<OImage>> _pagesFuture;
   late Future<MetaComic> _metaComicFuture;
   MetaComic? _metaComic;
   late final ABComicService _service;
-  final ValueNotifier<ComicChapter?> _chapter = ValueNotifier(null);
-  final ValueNotifier<bool> _showToolbar = ValueNotifier(true);
+  late final _chapter = ref<ComicChapter?>(null);
+  late final _showToolbar = ref<bool>(true);
 
   @override
   void initState() {
@@ -131,8 +133,8 @@ class _DetailsComicReaderState extends State<DetailsComicReader> {
 
 class _AppBar extends StatefulWidget {
   final MetaComic? comic;
-  final ValueNotifier<ComicChapter?> chapter;
-  final ValueNotifier<bool> enabled;
+  final Ref<ComicChapter?> chapter;
+  final Ref<bool> enabled;
   final ABComicService service;
   final String comicId;
 
@@ -148,12 +150,11 @@ class _AppBar extends StatefulWidget {
   createState() => _AppBarState();
 }
 
-class _AppBarState extends State<_AppBar> {
+class _AppBarState extends State<_AppBar> with KaeruMixin {
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: widget.enabled,
-      builder: (context, value, child) {
+    return Watch(
+      () {
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
           transitionBuilder: (child, animation) {
@@ -169,7 +170,7 @@ class _AppBarState extends State<_AppBar> {
 
             return SlideTransition(position: offsetAnimation, child: child);
           },
-          child: value
+          child: widget.enabled.value
               ? ClipRRect(
                   child: SizedBox(
                     height: 53.0,
@@ -186,9 +187,8 @@ class _AppBarState extends State<_AppBar> {
                             context.pop();
                           },
                         ),
-                        title: ValueListenableBuilder(
-                          valueListenable: widget.chapter,
-                          builder: (context, value, child) {
+                        title: Watch(
+                          () {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: (widget.comic != null)
@@ -201,9 +201,9 @@ class _AppBarState extends State<_AppBar> {
                                         ),
                                       ),
                                       SizedBox(height: 2),
-                                      if (value != null)
+                                      if (widget.chapter.value != null)
                                         Text(
-                                          value.name,
+                                          widget.chapter.value!.name,
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.white70,

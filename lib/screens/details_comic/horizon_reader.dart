@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:hoyomi/screens/home_comic/manga_reader.dart';
 import 'package:kaeru/kaeru.dart';
 
 class HorizonReader extends StatefulWidget {
-  final int itemCount;
+  final Ref<List<ImageWithGroup>> pages;
   final Widget Function(BuildContext context, int index) itemBuilder;
   final Ref<double> currentPage;
 
@@ -14,7 +15,7 @@ class HorizonReader extends StatefulWidget {
 
   const HorizonReader(
       {super.key,
-      required this.itemCount,
+      required this.pages,
       required this.itemBuilder,
       required this.currentPage,
       required this.builderImage,
@@ -39,7 +40,7 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
     Map<int, List<int>> map = {};
 
     double currentPage = 0;
-    for (int i = 0; i < widget.itemCount; i++) {
+    for (int i = 0; i < widget.pages.value.length; i++) {
       final size = _getSizePage(i);
 
       final key = currentPage.floor();
@@ -56,7 +57,7 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
   }
 
   int get _itemCount {
-    if (!widget.twoPage) return widget.itemCount;
+    if (!widget.twoPage) return widget.pages.value.length;
     return _mapPage.length;
   }
 
@@ -80,7 +81,7 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
 
   @override
   Widget build(BuildContext context) {
-    return PageView.builder(
+    return Watch(() => PageView.builder(
         controller: _controller,
         reverse: widget.rtl,
         // allowImplicitScrolling: true,
@@ -89,7 +90,7 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
 
           widget.currentPage.value = page.toDouble();
           for (int i = 0; i < 5; i++) {
-            if (page + i >= widget.itemCount) break;
+            if (page + i >= widget.pages.value.length) break;
             if (_imagesLoaded.containsKey(page + i)) continue;
 
             _fetchAspectRatio(page + i);
@@ -120,7 +121,7 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
             trackpadScrollCausesScale: true,
             child: widget.itemBuilder(context, index),
           );
-        });
+        }));
   }
 
   @override
