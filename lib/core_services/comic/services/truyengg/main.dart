@@ -247,7 +247,7 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
       return ComicModes.rightToLeft;
     }
 
-    return null;
+    return ComicModes.webToon;
   }
 
   DQuery? _getInfoTale(DQuery tales, String name) {
@@ -424,19 +424,20 @@ class TruyenGGService extends ABComicService with ComicAuthMixin {
       };
 
   @override
-  get getSuggest => (comic, {page = 1}) async {
-        return getCategory(
-          categoryId: 'tim-kiem-nang-cao',
-          page: page!,
-          filters: {
-            'category': comic.genres
-                .toList()
-                .sublist(0, min(3, comic.genres.length))
-                .map((e) => RegExp(r'\d+').allMatches(e.genreId).last.group(0)!)
-                .toList(),
-          },
-        );
-      };
+  getSuggest(comic, {page = 1}) async {
+    return (await getCategory(
+      categoryId: 'tim-kiem-nang-cao',
+      page: page!,
+      filters: {
+        'category': comic.genres
+            .toList()
+            .sublist(0, min(3, comic.genres.length))
+            .map((e) => RegExp(r'\d+').allMatches(e.genreId).last.group(0)!)
+            .toList(),
+      },
+    ))
+        .items;
+  }
 
   @override
   search(

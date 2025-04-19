@@ -1,10 +1,5 @@
+import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/core_services/service.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_category.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
-import 'package:hoyomi/core_services/comic/interfaces/home_comic_category.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_param.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_modes.dart';
-import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 
 export 'package:hoyomi/core_services/service.dart';
 
@@ -23,7 +18,9 @@ abstract class ABComicService extends Service {
   Future<MetaComic> getDetails(String comicId);
   Future<List<OImage>> getPages(String manga, String chap);
 
-  Future<ComicCategory> Function(MetaComic comic, {int? page})? getSuggest;
+  Future<List<Comic>> getSuggest(MetaComic comic, {int? page}) {
+    throw UnimplementedError();
+  }
 
   Future<ComicCategory> search({
     required String keyword,
@@ -33,5 +30,7 @@ abstract class ABComicService extends Service {
   });
 
   // Utils
-  ComicModes? getComicModes(MetaComic comic);
+  ComicModes getComicModes(MetaComic comic) {
+    throw UnimplementedError();
+  }
 }

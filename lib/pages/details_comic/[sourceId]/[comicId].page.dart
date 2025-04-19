@@ -1,15 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user_async.dart';
+import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_category.dart';
-import 'package:hoyomi/core_services/interfaces/user.dart';
-
-import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
-import 'package:hoyomi/core_services/comic/interfaces/status_enum.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
@@ -47,58 +44,52 @@ class DetailsComic extends StatefulWidget {
 
 class _DetailsComicState extends State<DetailsComic>
     with SingleTickerProviderStateMixin, KaeruMixin {
-  Future<ComicCategory>? _suggestFuture;
-  late final ABComicService _service;
+  late final ABComicService _service = getComicService(widget.sourceId);
 
   late final AnimationController _bottomSheetAnimationController;
 
   final ScrollController _scrollController = ScrollController();
 
   late final _isTitleVisible = ref(false);
-  String _title = "";
-  MetaComic? _comic;
+  late final _comic = ref<MetaComic>(MetaComic.createFakeData());
+  late final _comicIsFake = _comic.select((value) => value.fake);
+  late final _title =
+      computed(() => _comic.value.fake ? '' : _comic.value.name);
+  late final _suggest = computed<Future<List<Comic>?>>(() async {
+    if (_comicIsFake.value) {
+      return Completer<List<Comic>>().future;
+    }
+
+    try {
+      return await _service.getSuggest(_comic.value);
+    } on UnimplementedError {
+      return null;
+    }
+  });
 
   @override
   void initState() {
     super.initState();
 
     _bottomSheetAnimationController = AnimationController(vsync: this);
+    _scrollController.addListener(() {
+      final isTitleVisible = _scrollController.offset > 50;
 
-    _service = getComicService(widget.sourceId);
-
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-
-    super.dispose();
-  }
-
-  void _onScroll() {
-    final isTitleVisible = _scrollController.offset > 50;
-
-    if (_isTitleVisible.value != isTitleVisible && mounted) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _isTitleVisible.value = isTitleVisible;
-      });
-    }
+      if (_isTitleVisible.value != isTitleVisible && mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          _isTitleVisible.value = isTitleVisible;
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context2) {
     return PullRefreshPage(
-      onLoadData: () => _service.getDetails(widget.comicId)
-        ..then((comic) {
-          _title = comic.name;
-          _comic = comic;
-          _suggestFuture = _service.getSuggest == null
-              ? null
-              : _service.getSuggest!(_comic!);
-        }),
-      onLoadFake: () => MetaComic.createFakeData(),
+      onLoadData: () => _service
+          .getDetails(widget.comicId)
+          .then((comic) => _comic.value = comic),
+      onLoadFake: () => _comic.value = MetaComic.createFakeData(),
       builderError: (body) => Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -125,17 +116,17 @@ class _DetailsComicState extends State<DetailsComic>
           title: Watch(() => AnimatedOpacity(
                 duration: const Duration(milliseconds: 200),
                 opacity: _isTitleVisible.value ? 1.0 : 0.0,
-                child: Text(_title),
+                child: Text(_title.value),
               )),
           actions: [
             if (_service is ComicAuthMixin && AuthMixin.support(_service))
               _AvatarUser(service: _service),
             IconButtonShare(),
-            IconButtonFollow(
-              sourceId: widget.sourceId,
-              comicId: widget.comicId,
-              comic: _comic,
-            ),
+            Watch(() => IconButtonFollow(
+                  sourceId: widget.sourceId,
+                  comicId: widget.comicId,
+                  comic: _comic.value,
+                )),
             PopupMenuButton<String>(
               onSelected: (value) {
                 _handleMenuSelection(context, value);
@@ -158,14 +149,12 @@ class _DetailsComicState extends State<DetailsComic>
           controller: _scrollController,
           child: _buildContainer(comic),
         ),
-        bottomSheet: _comic == null
-            ? null
-            : BottomSheet(
-                animationController: _bottomSheetAnimationController,
-                showDragHandle: true,
-                builder: (context) => _buildSheetChapters()!,
-                onClosing: () {},
-              ),
+        bottomSheet: BottomSheet(
+          animationController: _bottomSheetAnimationController,
+          showDragHandle: true,
+          builder: (context) => _buildSheetChapters(),
+          onClosing: () {},
+        ),
       ),
     );
   }
@@ -629,19 +618,18 @@ class _DetailsComicState extends State<DetailsComic>
   }
 
   Widget _buildSuggest(MetaComic comic) {
-    if (_suggestFuture == null) return SizedBox.shrink();
-
-    return HorizontalComicList(
-      itemsFuture: _suggestFuture!.then(
-        (value) => value.items
-            .map(
-              (comic) => ComicExtend(comic: comic, sourceId: _service.uid),
-            )
-            .toList(),
-      ),
-      // totalItems: _suggestFuture!.then((value) => value.totalItems),
-      title: 'Suggest',
-    );
+    return Watch(() => HorizontalComicList(
+          itemsFuture: _suggest.value.then(
+            (value) =>
+                value
+                    ?.map((comic) =>
+                        ComicExtend(comic: comic, sourceId: _service.uid))
+                    .toList() ??
+                const <ComicExtend>[],
+          ),
+          // totalItems: _suggestFuture!.then((value) => value.totalItems),
+          title: 'Suggest',
+        ));
   }
 
   PopupMenuItem<String> _buildMenuItem(String id, String text) {
@@ -669,10 +657,9 @@ class _DetailsComicState extends State<DetailsComic>
     }
   }
 
-  Widget? _buildSheetChapters() {
-    if (_comic == null) return null;
+  Widget _buildSheetChapters() {
     return Watch(() => SheetChapters(
-          comic: _comic!,
+          comic: _comic.value,
           sourceId: widget.sourceId,
           comicId: widget.comicId,
           reverse: true,

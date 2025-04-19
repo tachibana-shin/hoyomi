@@ -102,7 +102,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final _schedule = ref<DateTime?>(null);
   late final _episode = ref<EigaEpisode?>(null);
   late final _currentSeason = ref<Season?>(null);
-  late final _suggestNotifier = computed<Future<List<Eiga>>?>(() {
+  late final _suggest = computed<Future<List<Eiga>?>>(() async {
     if (_metaIsFake.value) {
       return Completer<List<Eiga>>().future;
     }
@@ -1298,13 +1298,14 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   Widget _buildSuggest() {
     return Watch(() {
-      final suggest = _suggestNotifier.value;
-      if (suggest == null) return SizedBox.shrink();
+      final suggest = _suggest.value;
 
       return VerticalEigaList(
-        itemsFuture: suggest.then((data) => data
-            .map((item) => EigaExtend(eiga: item, sourceId: _service.uid))
-            .toList()),
+        itemsFuture: suggest.then((data) =>
+            data
+                ?.map((item) => EigaExtend(eiga: item, sourceId: _service.uid))
+                .toList() ??
+            []),
         title: 'Suggest',
         disableScroll: true,
         goMode: true,
