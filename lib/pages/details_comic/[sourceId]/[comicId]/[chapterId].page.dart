@@ -39,7 +39,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
     with KaeruMixin {
   late Future<List<OImage>> _pagesFuture;
   late Future<MetaComic> _metaComicFuture;
-  MetaComic? _metaComic;
+  late final _metaComic = ref<MetaComic?>(null);
   late final ABComicService _service;
   late final _chapter = ref<ComicChapter?>(null);
   late final _showToolbar = ref<bool>(true);
@@ -48,7 +48,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
   void initState() {
     _service = getComicService(widget.sourceId);
     _pagesFuture = _service.getPages(widget.comicId, widget.chapterId);
-    _metaComic = null;
+
     _metaComicFuture = widget.comic != null
         ? Future.value(widget.comic)
         : _service.getDetails(widget.comicId);
@@ -56,16 +56,15 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
       _chapter.value = comic.chapters.firstWhere(
         (element) => element.chapterId == widget.chapterId,
       );
-      setState(() {
-        _metaComic = comic;
-      });
+
+      _metaComic.value = comic;
     });
 
     super.initState();
   }
 
   void _updateChapter(String chapterId) {
-    _chapter.value = _metaComic!.chapters.firstWhere(
+    _chapter.value = _metaComic.value!.chapters.firstWhere(
       (element) => element.chapterId == chapterId,
     );
   }
@@ -132,7 +131,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
 }
 
 class _AppBar extends StatefulWidget {
-  final MetaComic? comic;
+  final Ref<MetaComic?> comic;
   final Ref<ComicChapter?> chapter;
   final Ref<bool> enabled;
   final ABComicService service;
@@ -194,7 +193,7 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  widget.comic?.name ?? '',
+                                  widget.comic.value?.name ?? '',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -212,17 +211,17 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                               ]);
                         }),
                         actions: [
-                          IconButtonFollow(
-                            sourceId: widget.service.uid,
-                            comicId: widget.comicId,
-                            comic: widget.comic,
-                          ),
-                          IconButtonOpenBrowser(
-                            url: widget.service.getURL(
-                              widget.comicId,
-                              chapterId: widget.chapter.value?.chapterId,
-                            ),
-                          ),
+                          Watch(() => IconButtonFollow(
+                                sourceId: widget.service.uid,
+                                comicId: widget.comicId,
+                                comic: widget.comic.value,
+                              )),
+                          Watch(() => IconButtonOpenBrowser(
+                                url: widget.service.getURL(
+                                  widget.comicId,
+                                  chapterId: widget.chapter.value?.chapterId,
+                                ),
+                              )),
                           IconButtonShare(),
                         ],
                       ),
