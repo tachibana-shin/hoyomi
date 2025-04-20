@@ -149,7 +149,7 @@ class _ClientClient implements ClientClient {
   @override
   Future<PostApiComicSetWatchPageResponse> postApiComicSetWatchPage({
     required String authorization,
-    required QuerySchema body,
+    required SetWatchPageBodySchema body,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -294,13 +294,14 @@ class _ClientClient implements ClientClient {
   @override
   Future<PostApiEigaSetWatchTimeResponse> postApiEigaSetWatchTime({
     required String authorization,
-    required dynamic body,
+    required SetWatchTimeBodySchema body,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': authorization};
     _headers.removeWhere((k, v) => v == null);
-    final _data = body;
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
     final _options = _setStreamType<PostApiEigaSetWatchTimeResponse>(Options(
       method: 'POST',
       headers: _headers,

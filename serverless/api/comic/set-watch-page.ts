@@ -3,7 +3,7 @@ import { Comic } from "../../services/comic.ts"
 import { useUser } from "../../logic/use-user.ts"
 import { AuthorizationSchema } from "../../schema/authorization.ts"
 
-const BodySchema = z
+const SetWatchPageBodySchema = z
   .object({
     sourceId: z.string().min(1).openapi({
       description:
@@ -43,7 +43,7 @@ const BodySchema = z
       example: "episode-001"
     })
   })
-  .openapi("QuerySchema")
+  .openapi("SetWatchPageBodySchema")
 
 const SuccessResponseSchema = z.object({
   success: z.boolean().openapi({
@@ -60,7 +60,7 @@ const route = createRoute({
       required: true,
       content: {
         "application/json": {
-          schema: BodySchema
+          schema: SetWatchPageBodySchema
         }
       }
     },

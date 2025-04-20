@@ -3,7 +3,7 @@ import { Eiga } from "../../services/eiga.ts"
 import { useUser } from "../../logic/use-user.ts"
 import { AuthorizationSchema } from "../../schema/authorization.ts"
 
-const QuerySchema = z
+const GetWatchTimeEpisodesQuerySchema = z
   .object({
     sourceId: z.string().min(1).openapi({
       example: "tonikaku-kawaii-season-2",
@@ -16,7 +16,7 @@ const QuerySchema = z
         "The unique identifier for the eiga (movie/show) text. This helps identify the specific content."
     })
   })
-  .openapi("QuerySchema")
+  .openapi("GetWatchTimeEpisodesQuerySchema")
 
 const ListWatchTimeSchema = z
   .object({
@@ -61,7 +61,7 @@ const route = createRoute({
   method: "get",
   path: "/eiga/get-watch-time-episodes",
   request: {
-    query: QuerySchema,
+    query: GetWatchTimeEpisodesQuerySchema,
     headers: AuthorizationSchema
   },
   responses: {

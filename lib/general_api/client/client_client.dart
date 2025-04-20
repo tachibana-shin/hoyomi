@@ -9,7 +9,8 @@ import '../models/list_watch_history.dart';
 import '../models/list_watch_time_schema.dart';
 import '../models/post_api_comic_set_watch_page_response.dart';
 import '../models/post_api_eiga_set_watch_time_response.dart';
-import '../models/query_schema.dart';
+import '../models/set_watch_page_body_schema.dart';
+import '../models/set_watch_time_body_schema.dart';
 import '../models/watch_time_schema.dart';
 
 part 'client_client.g.dart';
@@ -43,7 +44,7 @@ abstract class ClientClient {
   @POST('/api/comic/set-watch-page')
   Future<PostApiComicSetWatchPageResponse> postApiComicSetWatchPage({
     @Header('Authorization') required String authorization,
-    @Body() required QuerySchema body,
+    @Body() required SetWatchPageBodySchema body,
   });
 
   @GET('/api/eiga/get-watch-history')
@@ -71,6 +72,6 @@ abstract class ClientClient {
   @POST('/api/eiga/set-watch-time')
   Future<PostApiEigaSetWatchTimeResponse> postApiEigaSetWatchTime({
     @Header('Authorization') required String authorization,
-    @Body() required dynamic body,
+    @Body() required SetWatchTimeBodySchema body,
   });
 }

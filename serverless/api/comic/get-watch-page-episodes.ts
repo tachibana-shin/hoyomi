@@ -3,7 +3,7 @@ import { Comic } from "../../services/comic.ts"
 import { useUser } from "../../logic/use-user.ts"
 import { AuthorizationSchema } from "../../schema/authorization.ts"
 
-const QuerySchema = z
+const GetWatchPageEpisodesQuerySchema = z
   .object({
     sourceId: z.string().min(1).openapi({
       example: "tonikaku-kawaii-season-2",
@@ -16,7 +16,7 @@ const QuerySchema = z
         "The unique identifier for the comic (movie/show) text. This helps identify the specific content."
     })
   })
-  .openapi("QuerySchema")
+  .openapi("GetWatchPageEpisodesQuerySchema")
 
 const ListWatchTimeSchema = z
   .object({
@@ -61,7 +61,7 @@ const route = createRoute({
   method: "get",
   path: "/comic/get-watch-page-episodes",
   request: {
-    query: QuerySchema,
+    query: GetWatchPageEpisodesQuerySchema,
     headers: AuthorizationSchema
   },
   responses: {

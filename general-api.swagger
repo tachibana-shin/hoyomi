@@ -182,7 +182,7 @@
                 ],
                 "description": "The watch page object, which can be null if no data is available."
             },
-            "QuerySchema": {
+            "SetWatchPageBodySchema": {
                 "type": "object",
                 "properties": {
                     "sourceId": {
@@ -243,6 +243,74 @@
                     "name",
                     "poster",
                     "comic_text_id",
+                    "season_name",
+                    "cur",
+                    "dur",
+                    "episode_name",
+                    "episode_id"
+                ]
+            },
+            "SetWatchTimeBodySchema": {
+                "type": "object",
+                "properties": {
+                    "sourceId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The unique identifier for the source (e.g., series or season).",
+                        "example": "tonikaku-kawaii-season-2"
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The name of the episode.",
+                        "example": "Episode 1"
+                    },
+                    "poster": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "URL to the poster image for the episode.",
+                        "example": "https://example.com/poster.jpg"
+                    },
+                    "eiga_text_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Unique identifier for the eiga (movie/show) text.",
+                        "example": "eiga-001"
+                    },
+                    "season_name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The name of the season.",
+                        "example": "Season 1"
+                    },
+                    "cur": {
+                        "type": "number",
+                        "description": "The current watch time in seconds.",
+                        "example": 120
+                    },
+                    "dur": {
+                        "type": "number",
+                        "description": "The total duration of the episode in seconds.",
+                        "example": 1500
+                    },
+                    "episode_name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The name of the episode.",
+                        "example": "Episode 1"
+                    },
+                    "episode_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Unique identifier for the episode.",
+                        "example": "episode-001"
+                    }
+                },
+                "required": [
+                    "sourceId",
+                    "name",
+                    "poster",
+                    "eiga_text_id",
                     "season_name",
                     "cur",
                     "dur",
@@ -442,7 +510,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/QuerySchema"
+                                "$ref": "#/components/schemas/SetWatchPageBodySchema"
                             }
                         }
                     }
@@ -834,78 +902,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/QuerySchema"
-                                    },
-                                    {
-                                        "properties": {
-                                            "sourceId": {
-                                                "type": "string",
-                                                "minLength": 1,
-                                                "description": "The unique identifier for the source (e.g., series or season).",
-                                                "example": "tonikaku-kawaii-season-2"
-                                            },
-                                            "name": {
-                                                "type": "string",
-                                                "minLength": 1,
-                                                "description": "The name of the episode.",
-                                                "example": "Episode 1"
-                                            },
-                                            "poster": {
-                                                "type": "string",
-                                                "minLength": 1,
-                                                "description": "URL to the poster image for the episode.",
-                                                "example": "https://example.com/poster.jpg"
-                                            },
-                                            "eiga_text_id": {
-                                                "type": "string",
-                                                "minLength": 1,
-                                                "description": "Unique identifier for the eiga (movie/show) text.",
-                                                "example": "eiga-001"
-                                            },
-                                            "season_name": {
-                                                "type": "string",
-                                                "minLength": 1,
-                                                "description": "The name of the season.",
-                                                "example": "Season 1"
-                                            },
-                                            "cur": {
-                                                "type": "number",
-                                                "description": "The current watch time in seconds.",
-                                                "example": 120
-                                            },
-                                            "dur": {
-                                                "type": "number",
-                                                "description": "The total duration of the episode in seconds.",
-                                                "example": 1500
-                                            },
-                                            "episode_name": {
-                                                "type": "string",
-                                                "minLength": 1,
-                                                "description": "The name of the episode.",
-                                                "example": "Episode 1"
-                                            },
-                                            "episode_id": {
-                                                "type": "string",
-                                                "minLength": 1,
-                                                "description": "Unique identifier for the episode.",
-                                                "example": "episode-001"
-                                            }
-                                        },
-                                        "required": [
-                                            "sourceId",
-                                            "name",
-                                            "poster",
-                                            "eiga_text_id",
-                                            "season_name",
-                                            "cur",
-                                            "dur",
-                                            "episode_name",
-                                            "episode_id"
-                                        ]
-                                    }
-                                ]
+                                "$ref": "#/components/schemas/SetWatchTimeBodySchema"
                             }
                         }
                     }

@@ -3,7 +3,7 @@ import { Eiga } from "../../services/eiga.ts"
 import { useUser } from "../../logic/use-user.ts"
 import { AuthorizationSchema } from "../../schema/authorization.ts"
 
-const QuerySchema = z
+const GetWatchHistoryQuerySchema = z
   .object({
     sourceId: z.string().min(1).openapi({
       example: "tonikaku-kawaii-season-2",
@@ -15,7 +15,7 @@ const QuerySchema = z
       description: "The page number for paginated results."
     })
   })
-  .openapi("QuerySchema")
+  .openapi("GetWatchHistoryQuerySchema")
 
 const ListWatchHistorySchema = z
   .object({
@@ -68,7 +68,7 @@ const route = createRoute({
   method: "get",
   path: "/eiga/get-watch-history",
   request: {
-    query: QuerySchema,
+    query: GetWatchHistoryQuerySchema,
     headers: AuthorizationSchema
   },
   responses: {
