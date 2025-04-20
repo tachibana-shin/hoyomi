@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'history_item.dart';
+part of 'eiga_history.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,37 +15,38 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$HistoryItem<T> {
-  T get item => throw _privateConstructorUsedError;
+mixin _$EigaHistory {
+  Eiga get item => throw _privateConstructorUsedError;
   DateTime get watchUpdatedAt => throw _privateConstructorUsedError;
   EigaEpisode get lastEpisode => throw _privateConstructorUsedError;
   WatchTime get watchTime => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $HistoryItemCopyWith<T, HistoryItem<T>> get copyWith =>
+  $EigaHistoryCopyWith<EigaHistory> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $HistoryItemCopyWith<T, $Res> {
-  factory $HistoryItemCopyWith(
-          HistoryItem<T> value, $Res Function(HistoryItem<T>) then) =
-      _$HistoryItemCopyWithImpl<T, $Res, HistoryItem<T>>;
+abstract class $EigaHistoryCopyWith<$Res> {
+  factory $EigaHistoryCopyWith(
+          EigaHistory value, $Res Function(EigaHistory) then) =
+      _$EigaHistoryCopyWithImpl<$Res, EigaHistory>;
   @useResult
   $Res call(
-      {T item,
+      {Eiga item,
       DateTime watchUpdatedAt,
       EigaEpisode lastEpisode,
       WatchTime watchTime});
 
+  $EigaCopyWith<$Res> get item;
   $EigaEpisodeCopyWith<$Res> get lastEpisode;
   $WatchTimeCopyWith<$Res> get watchTime;
 }
 
 /// @nodoc
-class _$HistoryItemCopyWithImpl<T, $Res, $Val extends HistoryItem<T>>
-    implements $HistoryItemCopyWith<T, $Res> {
-  _$HistoryItemCopyWithImpl(this._value, this._then);
+class _$EigaHistoryCopyWithImpl<$Res, $Val extends EigaHistory>
+    implements $EigaHistoryCopyWith<$Res> {
+  _$EigaHistoryCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -55,16 +56,16 @@ class _$HistoryItemCopyWithImpl<T, $Res, $Val extends HistoryItem<T>>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? item = freezed,
+    Object? item = null,
     Object? watchUpdatedAt = null,
     Object? lastEpisode = null,
     Object? watchTime = null,
   }) {
     return _then(_value.copyWith(
-      item: freezed == item
+      item: null == item
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
-              as T,
+              as Eiga,
       watchUpdatedAt: null == watchUpdatedAt
           ? _value.watchUpdatedAt
           : watchUpdatedAt // ignore: cast_nullable_to_non_nullable
@@ -78,6 +79,14 @@ class _$HistoryItemCopyWithImpl<T, $Res, $Val extends HistoryItem<T>>
           : watchTime // ignore: cast_nullable_to_non_nullable
               as WatchTime,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $EigaCopyWith<$Res> get item {
+    return $EigaCopyWith<$Res>(_value.item, (value) {
+      return _then(_value.copyWith(item: value) as $Val);
+    });
   }
 
   @override
@@ -98,19 +107,21 @@ class _$HistoryItemCopyWithImpl<T, $Res, $Val extends HistoryItem<T>>
 }
 
 /// @nodoc
-abstract class _$$HistoryItemImplCopyWith<T, $Res>
-    implements $HistoryItemCopyWith<T, $Res> {
-  factory _$$HistoryItemImplCopyWith(_$HistoryItemImpl<T> value,
-          $Res Function(_$HistoryItemImpl<T>) then) =
-      __$$HistoryItemImplCopyWithImpl<T, $Res>;
+abstract class _$$EigaHistoryImplCopyWith<$Res>
+    implements $EigaHistoryCopyWith<$Res> {
+  factory _$$EigaHistoryImplCopyWith(
+          _$EigaHistoryImpl value, $Res Function(_$EigaHistoryImpl) then) =
+      __$$EigaHistoryImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {T item,
+      {Eiga item,
       DateTime watchUpdatedAt,
       EigaEpisode lastEpisode,
       WatchTime watchTime});
 
+  @override
+  $EigaCopyWith<$Res> get item;
   @override
   $EigaEpisodeCopyWith<$Res> get lastEpisode;
   @override
@@ -118,26 +129,26 @@ abstract class _$$HistoryItemImplCopyWith<T, $Res>
 }
 
 /// @nodoc
-class __$$HistoryItemImplCopyWithImpl<T, $Res>
-    extends _$HistoryItemCopyWithImpl<T, $Res, _$HistoryItemImpl<T>>
-    implements _$$HistoryItemImplCopyWith<T, $Res> {
-  __$$HistoryItemImplCopyWithImpl(
-      _$HistoryItemImpl<T> _value, $Res Function(_$HistoryItemImpl<T>) _then)
+class __$$EigaHistoryImplCopyWithImpl<$Res>
+    extends _$EigaHistoryCopyWithImpl<$Res, _$EigaHistoryImpl>
+    implements _$$EigaHistoryImplCopyWith<$Res> {
+  __$$EigaHistoryImplCopyWithImpl(
+      _$EigaHistoryImpl _value, $Res Function(_$EigaHistoryImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? item = freezed,
+    Object? item = null,
     Object? watchUpdatedAt = null,
     Object? lastEpisode = null,
     Object? watchTime = null,
   }) {
-    return _then(_$HistoryItemImpl<T>(
-      item: freezed == item
+    return _then(_$EigaHistoryImpl(
+      item: null == item
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
-              as T,
+              as Eiga,
       watchUpdatedAt: null == watchUpdatedAt
           ? _value.watchUpdatedAt
           : watchUpdatedAt // ignore: cast_nullable_to_non_nullable
@@ -156,15 +167,15 @@ class __$$HistoryItemImplCopyWithImpl<T, $Res>
 
 /// @nodoc
 
-class _$HistoryItemImpl<T> implements _HistoryItem<T> {
-  const _$HistoryItemImpl(
+class _$EigaHistoryImpl implements _EigaHistory {
+  const _$EigaHistoryImpl(
       {required this.item,
       required this.watchUpdatedAt,
       required this.lastEpisode,
       required this.watchTime});
 
   @override
-  final T item;
+  final Eiga item;
   @override
   final DateTime watchUpdatedAt;
   @override
@@ -174,15 +185,15 @@ class _$HistoryItemImpl<T> implements _HistoryItem<T> {
 
   @override
   String toString() {
-    return 'HistoryItem<$T>(item: $item, watchUpdatedAt: $watchUpdatedAt, lastEpisode: $lastEpisode, watchTime: $watchTime)';
+    return 'EigaHistory(item: $item, watchUpdatedAt: $watchUpdatedAt, lastEpisode: $lastEpisode, watchTime: $watchTime)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$HistoryItemImpl<T> &&
-            const DeepCollectionEquality().equals(other.item, item) &&
+            other is _$EigaHistoryImpl &&
+            (identical(other.item, item) || other.item == item) &&
             (identical(other.watchUpdatedAt, watchUpdatedAt) ||
                 other.watchUpdatedAt == watchUpdatedAt) &&
             (identical(other.lastEpisode, lastEpisode) ||
@@ -192,30 +203,25 @@ class _$HistoryItemImpl<T> implements _HistoryItem<T> {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(item),
-      watchUpdatedAt,
-      lastEpisode,
-      watchTime);
+  int get hashCode =>
+      Object.hash(runtimeType, item, watchUpdatedAt, lastEpisode, watchTime);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$HistoryItemImplCopyWith<T, _$HistoryItemImpl<T>> get copyWith =>
-      __$$HistoryItemImplCopyWithImpl<T, _$HistoryItemImpl<T>>(
-          this, _$identity);
+  _$$EigaHistoryImplCopyWith<_$EigaHistoryImpl> get copyWith =>
+      __$$EigaHistoryImplCopyWithImpl<_$EigaHistoryImpl>(this, _$identity);
 }
 
-abstract class _HistoryItem<T> implements HistoryItem<T> {
-  const factory _HistoryItem(
-      {required final T item,
+abstract class _EigaHistory implements EigaHistory {
+  const factory _EigaHistory(
+      {required final Eiga item,
       required final DateTime watchUpdatedAt,
       required final EigaEpisode lastEpisode,
-      required final WatchTime watchTime}) = _$HistoryItemImpl<T>;
+      required final WatchTime watchTime}) = _$EigaHistoryImpl;
 
   @override
-  T get item;
+  Eiga get item;
   @override
   DateTime get watchUpdatedAt;
   @override
@@ -224,6 +230,6 @@ abstract class _HistoryItem<T> implements HistoryItem<T> {
   WatchTime get watchTime;
   @override
   @JsonKey(ignore: true)
-  _$$HistoryItemImplCopyWith<T, _$HistoryItemImpl<T>> get copyWith =>
+  _$$EigaHistoryImplCopyWith<_$EigaHistoryImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

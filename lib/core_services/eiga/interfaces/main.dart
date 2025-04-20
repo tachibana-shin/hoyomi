@@ -2,6 +2,7 @@ export 'carousel_item.dart';
 export 'eiga_category.dart';
 export 'eiga_episode.dart';
 export 'eiga_episodes.dart';
+export 'eiga_history.dart';
 export 'eiga_home.dart';
 export 'eiga_param.dart';
 export 'eiga.dart';

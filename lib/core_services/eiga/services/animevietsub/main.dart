@@ -858,7 +858,7 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  Future<List<HistoryItem<Eiga>>> getWatchHistory({required int page}) async {
+  Future<List<EigaHistory>> getWatchHistory({required int page}) async {
     final userUid = await _getUidUser();
 
     final data = (await rpc('query_history', {
@@ -869,7 +869,7 @@ class AnimeVietsubService extends ABEigaService
         .map((item) => _WatchInfo.fromJson(item));
 
     return data.map((item) {
-      return HistoryItem<Eiga>(
+      return EigaHistory(
         item: Eiga(
           name: item.name,
           eigaId: item.season,

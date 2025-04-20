@@ -1,21 +1,21 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
 
-part 'history_item.freezed.dart';
+import 'main.dart';
+
+part 'eiga_history.freezed.dart';
 
 @freezed
-class HistoryItem<T> with _$HistoryItem<T> {
-  const factory HistoryItem({
-    required T item,
+class EigaHistory with _$EigaHistory {
+  const factory EigaHistory({
+    required Eiga item,
     required DateTime watchUpdatedAt,
     required EigaEpisode lastEpisode,
     required WatchTime watchTime,
-  }) = _HistoryItem<T>;
+  }) = _EigaHistory;
 
-  factory HistoryItem.createFakeData(T item) {
-    return HistoryItem(
-      item: item,
+  factory EigaHistory.createFakeData() {
+    return EigaHistory(
+      item: Eiga.createFakeData(),
       watchUpdatedAt: DateTime.now(),
       lastEpisode: EigaEpisode(
         episodeId: 'fake_episode_id',
