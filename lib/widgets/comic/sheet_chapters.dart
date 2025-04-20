@@ -48,6 +48,7 @@ class _SheetChaptersState extends State<SheetChapters> {
       maxChildSize: 0.9,
       builder: (context2, scrollController) {
         final activeKey = GlobalKey();
+        bool notSelected = true;
 
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           Timer(Duration(milliseconds: 70), () {
@@ -88,9 +89,12 @@ class _SheetChaptersState extends State<SheetChapters> {
                         : (widget.comic.chapters.length - 1 - index),
                   ); //[index];
                   final bool selected = chapter.chapterId == currentChapterId;
+                  if (selected && notSelected) {
+                    notSelected = false;
+                  }
 
                   return ListTile(
-                    key: selected ? activeKey : null,
+                    key: selected && notSelected ? activeKey : null,
                     enableFeedback: true,
                     selected: selected,
                     autofocus: selected,
