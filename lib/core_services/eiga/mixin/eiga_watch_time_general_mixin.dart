@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/env.dart';
 import 'package:hoyomi/general_api/export.dart';
 import 'package:hoyomi/utils/authentication.dart';
-import 'package:http/http.dart';
 
 import '../interfaces/main.dart';
 import 'eiga_watch_time_mixin.dart';
@@ -133,17 +130,5 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
           episodeId: episode.episodeId,
         ),
         authorization: 'Bearer ${idToken.token}');
-
-    final response = await post(
-        Uri.parse(_baseApiGeneral).resolve('/api/eiga/set-watch-time'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${idToken.token}'
-        },
-        body: jsonEncode({}));
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to set watch time: ${response.statusCode}');
-    }
   }
 }
