@@ -15,7 +15,6 @@ class ListWatchHistory with _$ListWatchHistory {
   const factory ListWatchHistory({
     required List<Data> data,
   }) = _ListWatchHistory;
-
-  factory ListWatchHistory.fromJson(Map<String, Object?> json) =>
-      _$ListWatchHistoryFromJson(json);
+  
+  factory ListWatchHistory.fromJson(Map<String, Object?> json) => _$ListWatchHistoryFromJson(json);
 }

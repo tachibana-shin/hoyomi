@@ -7,10 +7,15 @@ import { swaggerUI } from "@hono/swagger-ui"
 import { getUser } from "./logic/get-user.ts"
 import pkg from "./package.json" with {type: "json"}
 
-import { app as appGetWatchHistory } from "./api/eiga/get-watch-history.ts"
-import { app as appGetWatchTimeEpisodes } from "./api/eiga/get-watch-time-episodes.ts"
-import { app as appGetWatchTime } from "./api/eiga/get-watch-time.ts"
-import { app as appSetWatchTime } from "./api/eiga/set-watch-time.ts"
+import { app as comicGetWatchHistory } from "./api/comic/get-watch-history.ts"
+import { app as comicGetWatchTimeEpisodes } from "./api/comic/get-watch-page-episodes.ts"
+import { app as comicGetWatchTime } from "./api/comic/get-watch-page.ts"
+import { app as comicSetWatchTime } from "./api/comic/set-watch-page.ts"
+
+import { app as eigaGetWatchHistory } from "./api/eiga/get-watch-history.ts"
+import { app as eigaGetWatchTimeEpisodes } from "./api/eiga/get-watch-time-episodes.ts"
+import { app as eigaGetWatchTime } from "./api/eiga/get-watch-time.ts"
+import { app as eigaSetWatchTime } from "./api/eiga/set-watch-time.ts"
 
 const app = new OpenAPIHono()
 
@@ -34,10 +39,15 @@ app.use(
   })
 )
 
-app.route("/api", appGetWatchHistory)
-app.route("/api", appGetWatchTimeEpisodes)
-app.route("/api", appGetWatchTime)
-app.route("/api", appSetWatchTime)
+app.route("/api", comicGetWatchHistory)
+app.route("/api", comicGetWatchTimeEpisodes)
+app.route("/api", comicGetWatchTime)
+app.route("/api", comicSetWatchTime)
+
+app.route("/api", eigaGetWatchHistory)
+app.route("/api", eigaGetWatchTimeEpisodes)
+app.route("/api", eigaGetWatchTime)
+app.route("/api", eigaSetWatchTime)
 
 app.get("/ui", swaggerUI({ url: "/general-api.swagger" }))
 

@@ -19,25 +19,28 @@ class QuerySchema with _$QuerySchema {
     /// URL to the poster image for the episode.
     required String poster,
 
-    /// Unique identifier for the eiga (movie/show) text.
-    @JsonKey(name: 'eiga_text_id') required String eigaTextId,
+    /// Unique identifier for the comic (movie/show) text.
+    @JsonKey(name: 'comic_text_id')
+    required String comicTextId,
 
     /// The name of the season.
-    @JsonKey(name: 'season_name') required String seasonName,
+    @JsonKey(name: 'season_name')
+    required String seasonName,
 
-    /// The current watch time in seconds.
+    /// The current watch page in seconds.
     required num cur,
 
-    /// The total duration of the episode in seconds.
+    /// The total page of the episode in seconds.
     required num dur,
 
     /// The name of the episode.
-    @JsonKey(name: 'episode_name') required String episodeName,
+    @JsonKey(name: 'episode_name')
+    required String episodeName,
 
     /// Unique identifier for the episode.
-    @JsonKey(name: 'episode_id') required String episodeId,
+    @JsonKey(name: 'episode_id')
+    required String episodeId,
   }) = _QuerySchema;
-
-  factory QuerySchema.fromJson(Map<String, Object?> json) =>
-      _$QuerySchemaFromJson(json);
+  
+  factory QuerySchema.fromJson(Map<String, Object?> json) => _$QuerySchemaFromJson(json);
 }

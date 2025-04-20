@@ -8,7 +8,7 @@ part of 'data.dart';
 
 _$DataImpl _$$DataImplFromJson(Map<String, dynamic> json) => _$DataImpl(
       createdAt: json['created_at'] as String,
-      eigaTextId: json['eiga_text_id'] as String,
+      comicTextId: json['comic_text_id'] as String,
       name: json['name'] as String,
       poster: json['poster'] as String,
       seasonName: json['season_name'] as String,
@@ -23,7 +23,7 @@ _$DataImpl _$$DataImplFromJson(Map<String, dynamic> json) => _$DataImpl(
 Map<String, dynamic> _$$DataImplToJson(_$DataImpl instance) =>
     <String, dynamic>{
       'created_at': instance.createdAt,
-      'eiga_text_id': instance.eigaTextId,
+      'comic_text_id': instance.comicTextId,
       'name': instance.name,
       'poster': instance.poster,
       'season_name': instance.seasonName,

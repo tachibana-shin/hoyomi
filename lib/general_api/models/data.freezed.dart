@@ -25,8 +25,8 @@ mixin _$Data {
   String get createdAt => throw _privateConstructorUsedError;
 
   /// The identifier for the specific episode of the text.
-  @JsonKey(name: 'eiga_text_id')
-  String get eigaTextId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'comic_text_id')
+  String get comicTextId => throw _privateConstructorUsedError;
 
   /// The name of the watch history item (e.g., the episode title).
   String get name => throw _privateConstructorUsedError;
@@ -42,11 +42,11 @@ mixin _$Data {
   @JsonKey(name: 'source_id')
   String get sourceId => throw _privateConstructorUsedError;
 
-  /// The current watch position in seconds.
+  /// The current watch page in seconds.
   @JsonKey(name: 'watch_cur')
   num get watchCur => throw _privateConstructorUsedError;
 
-  /// The total duration of the episode in seconds.
+  /// The total page of the episode in seconds.
   @JsonKey(name: 'watch_dur')
   num get watchDur => throw _privateConstructorUsedError;
 
@@ -74,7 +74,7 @@ abstract class $DataCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'eiga_text_id') String eigaTextId,
+      @JsonKey(name: 'comic_text_id') String comicTextId,
       String name,
       String poster,
       @JsonKey(name: 'season_name') String seasonName,
@@ -100,7 +100,7 @@ class _$DataCopyWithImpl<$Res, $Val extends Data>
   @override
   $Res call({
     Object? createdAt = null,
-    Object? eigaTextId = null,
+    Object? comicTextId = null,
     Object? name = null,
     Object? poster = null,
     Object? seasonName = null,
@@ -116,9 +116,9 @@ class _$DataCopyWithImpl<$Res, $Val extends Data>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
-      eigaTextId: null == eigaTextId
-          ? _value.eigaTextId
-          : eigaTextId // ignore: cast_nullable_to_non_nullable
+      comicTextId: null == comicTextId
+          ? _value.comicTextId
+          : comicTextId // ignore: cast_nullable_to_non_nullable
               as String,
       name: null == name
           ? _value.name
@@ -169,7 +169,7 @@ abstract class _$$DataImplCopyWith<$Res> implements $DataCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'eiga_text_id') String eigaTextId,
+      @JsonKey(name: 'comic_text_id') String comicTextId,
       String name,
       String poster,
       @JsonKey(name: 'season_name') String seasonName,
@@ -192,7 +192,7 @@ class __$$DataImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? createdAt = null,
-    Object? eigaTextId = null,
+    Object? comicTextId = null,
     Object? name = null,
     Object? poster = null,
     Object? seasonName = null,
@@ -208,9 +208,9 @@ class __$$DataImplCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
-      eigaTextId: null == eigaTextId
-          ? _value.eigaTextId
-          : eigaTextId // ignore: cast_nullable_to_non_nullable
+      comicTextId: null == comicTextId
+          ? _value.comicTextId
+          : comicTextId // ignore: cast_nullable_to_non_nullable
               as String,
       name: null == name
           ? _value.name
@@ -257,7 +257,7 @@ class __$$DataImplCopyWithImpl<$Res>
 class _$DataImpl implements _Data {
   const _$DataImpl(
       {@JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'eiga_text_id') required this.eigaTextId,
+      @JsonKey(name: 'comic_text_id') required this.comicTextId,
       required this.name,
       required this.poster,
       @JsonKey(name: 'season_name') required this.seasonName,
@@ -278,8 +278,8 @@ class _$DataImpl implements _Data {
 
   /// The identifier for the specific episode of the text.
   @override
-  @JsonKey(name: 'eiga_text_id')
-  final String eigaTextId;
+  @JsonKey(name: 'comic_text_id')
+  final String comicTextId;
 
   /// The name of the watch history item (e.g., the episode title).
   @override
@@ -299,12 +299,12 @@ class _$DataImpl implements _Data {
   @JsonKey(name: 'source_id')
   final String sourceId;
 
-  /// The current watch position in seconds.
+  /// The current watch page in seconds.
   @override
   @JsonKey(name: 'watch_cur')
   final num watchCur;
 
-  /// The total duration of the episode in seconds.
+  /// The total page of the episode in seconds.
   @override
   @JsonKey(name: 'watch_dur')
   final num watchDur;
@@ -326,7 +326,7 @@ class _$DataImpl implements _Data {
 
   @override
   String toString() {
-    return 'Data(createdAt: $createdAt, eigaTextId: $eigaTextId, name: $name, poster: $poster, seasonName: $seasonName, sourceId: $sourceId, watchCur: $watchCur, watchDur: $watchDur, watchId: $watchId, watchName: $watchName, watchUpdatedAt: $watchUpdatedAt)';
+    return 'Data(createdAt: $createdAt, comicTextId: $comicTextId, name: $name, poster: $poster, seasonName: $seasonName, sourceId: $sourceId, watchCur: $watchCur, watchDur: $watchDur, watchId: $watchId, watchName: $watchName, watchUpdatedAt: $watchUpdatedAt)';
   }
 
   @override
@@ -336,8 +336,8 @@ class _$DataImpl implements _Data {
             other is _$DataImpl &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
-            (identical(other.eigaTextId, eigaTextId) ||
-                other.eigaTextId == eigaTextId) &&
+            (identical(other.comicTextId, comicTextId) ||
+                other.comicTextId == comicTextId) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.poster, poster) || other.poster == poster) &&
             (identical(other.seasonName, seasonName) ||
@@ -360,7 +360,7 @@ class _$DataImpl implements _Data {
   int get hashCode => Object.hash(
       runtimeType,
       createdAt,
-      eigaTextId,
+      comicTextId,
       name,
       poster,
       seasonName,
@@ -388,7 +388,7 @@ class _$DataImpl implements _Data {
 abstract class _Data implements Data {
   const factory _Data(
       {@JsonKey(name: 'created_at') required final String createdAt,
-      @JsonKey(name: 'eiga_text_id') required final String eigaTextId,
+      @JsonKey(name: 'comic_text_id') required final String comicTextId,
       required final String name,
       required final String poster,
       @JsonKey(name: 'season_name') required final String seasonName,
@@ -410,8 +410,8 @@ abstract class _Data implements Data {
   @override
 
   /// The identifier for the specific episode of the text.
-  @JsonKey(name: 'eiga_text_id')
-  String get eigaTextId;
+  @JsonKey(name: 'comic_text_id')
+  String get comicTextId;
   @override
 
   /// The name of the watch history item (e.g., the episode title).
@@ -432,12 +432,12 @@ abstract class _Data implements Data {
   String get sourceId;
   @override
 
-  /// The current watch position in seconds.
+  /// The current watch page in seconds.
   @JsonKey(name: 'watch_cur')
   num get watchCur;
   @override
 
-  /// The total duration of the episode in seconds.
+  /// The total page of the episode in seconds.
   @JsonKey(name: 'watch_dur')
   num get watchDur;
   @override

@@ -36,6 +36,13 @@
       "when": 1743874617266,
       "tag": "0004_woozy_ender_wiggin",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1745148644680,
+      "tag": "0005_wild_proemial_gods",
+      "breakpoints": true
     }
   ]
 }

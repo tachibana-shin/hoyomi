@@ -20,19 +20,19 @@ Data2 _$Data2FromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Data2 {
-  /// The current position in the episode in seconds.
+  /// The current page in the episode in seconds.
   num get cur => throw _privateConstructorUsedError;
 
-  /// The total duration of the episode in seconds.
+  /// The total page of the episode in seconds.
   num get dur => throw _privateConstructorUsedError;
 
   /// The name of the episode.
   String get name => throw _privateConstructorUsedError;
 
-  /// Timestamp when the watch time was recorded, in ISO 8601 format.
+  /// Timestamp when the watch page was recorded, in ISO 8601 format.
   String get createdAt => throw _privateConstructorUsedError;
 
-  /// Timestamp when the watch time was last updated, in ISO 8601 format.
+  /// Timestamp when the watch page was last updated, in ISO 8601 format.
   String get updatedAt => throw _privateConstructorUsedError;
 
   /// The unique identifier for the chapter within the episode or series.
@@ -183,11 +183,11 @@ class _$Data2Impl implements _Data2 {
   factory _$Data2Impl.fromJson(Map<String, dynamic> json) =>
       _$$Data2ImplFromJson(json);
 
-  /// The current position in the episode in seconds.
+  /// The current page in the episode in seconds.
   @override
   final num cur;
 
-  /// The total duration of the episode in seconds.
+  /// The total page of the episode in seconds.
   @override
   final num dur;
 
@@ -195,11 +195,11 @@ class _$Data2Impl implements _Data2 {
   @override
   final String name;
 
-  /// Timestamp when the watch time was recorded, in ISO 8601 format.
+  /// Timestamp when the watch page was recorded, in ISO 8601 format.
   @override
   final String createdAt;
 
-  /// Timestamp when the watch time was last updated, in ISO 8601 format.
+  /// Timestamp when the watch page was last updated, in ISO 8601 format.
   @override
   final String updatedAt;
 
@@ -259,11 +259,11 @@ abstract class _Data2 implements Data2 {
 
   @override
 
-  /// The current position in the episode in seconds.
+  /// The current page in the episode in seconds.
   num get cur;
   @override
 
-  /// The total duration of the episode in seconds.
+  /// The total page of the episode in seconds.
   num get dur;
   @override
 
@@ -271,11 +271,11 @@ abstract class _Data2 implements Data2 {
   String get name;
   @override
 
-  /// Timestamp when the watch time was recorded, in ISO 8601 format.
+  /// Timestamp when the watch page was recorded, in ISO 8601 format.
   String get createdAt;
   @override
 
-  /// Timestamp when the watch time was last updated, in ISO 8601 format.
+  /// Timestamp when the watch page was last updated, in ISO 8601 format.
   String get updatedAt;
   @override
 

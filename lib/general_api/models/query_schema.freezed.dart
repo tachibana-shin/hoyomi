@@ -29,18 +29,18 @@ mixin _$QuerySchema {
   /// URL to the poster image for the episode.
   String get poster => throw _privateConstructorUsedError;
 
-  /// Unique identifier for the eiga (movie/show) text.
-  @JsonKey(name: 'eiga_text_id')
-  String get eigaTextId => throw _privateConstructorUsedError;
+  /// Unique identifier for the comic (movie/show) text.
+  @JsonKey(name: 'comic_text_id')
+  String get comicTextId => throw _privateConstructorUsedError;
 
   /// The name of the season.
   @JsonKey(name: 'season_name')
   String get seasonName => throw _privateConstructorUsedError;
 
-  /// The current watch time in seconds.
+  /// The current watch page in seconds.
   num get cur => throw _privateConstructorUsedError;
 
-  /// The total duration of the episode in seconds.
+  /// The total page of the episode in seconds.
   num get dur => throw _privateConstructorUsedError;
 
   /// The name of the episode.
@@ -67,7 +67,7 @@ abstract class $QuerySchemaCopyWith<$Res> {
       {String sourceId,
       String name,
       String poster,
-      @JsonKey(name: 'eiga_text_id') String eigaTextId,
+      @JsonKey(name: 'comic_text_id') String comicTextId,
       @JsonKey(name: 'season_name') String seasonName,
       num cur,
       num dur,
@@ -91,7 +91,7 @@ class _$QuerySchemaCopyWithImpl<$Res, $Val extends QuerySchema>
     Object? sourceId = null,
     Object? name = null,
     Object? poster = null,
-    Object? eigaTextId = null,
+    Object? comicTextId = null,
     Object? seasonName = null,
     Object? cur = null,
     Object? dur = null,
@@ -111,9 +111,9 @@ class _$QuerySchemaCopyWithImpl<$Res, $Val extends QuerySchema>
           ? _value.poster
           : poster // ignore: cast_nullable_to_non_nullable
               as String,
-      eigaTextId: null == eigaTextId
-          ? _value.eigaTextId
-          : eigaTextId // ignore: cast_nullable_to_non_nullable
+      comicTextId: null == comicTextId
+          ? _value.comicTextId
+          : comicTextId // ignore: cast_nullable_to_non_nullable
               as String,
       seasonName: null == seasonName
           ? _value.seasonName
@@ -151,7 +151,7 @@ abstract class _$$QuerySchemaImplCopyWith<$Res>
       {String sourceId,
       String name,
       String poster,
-      @JsonKey(name: 'eiga_text_id') String eigaTextId,
+      @JsonKey(name: 'comic_text_id') String comicTextId,
       @JsonKey(name: 'season_name') String seasonName,
       num cur,
       num dur,
@@ -173,7 +173,7 @@ class __$$QuerySchemaImplCopyWithImpl<$Res>
     Object? sourceId = null,
     Object? name = null,
     Object? poster = null,
-    Object? eigaTextId = null,
+    Object? comicTextId = null,
     Object? seasonName = null,
     Object? cur = null,
     Object? dur = null,
@@ -193,9 +193,9 @@ class __$$QuerySchemaImplCopyWithImpl<$Res>
           ? _value.poster
           : poster // ignore: cast_nullable_to_non_nullable
               as String,
-      eigaTextId: null == eigaTextId
-          ? _value.eigaTextId
-          : eigaTextId // ignore: cast_nullable_to_non_nullable
+      comicTextId: null == comicTextId
+          ? _value.comicTextId
+          : comicTextId // ignore: cast_nullable_to_non_nullable
               as String,
       seasonName: null == seasonName
           ? _value.seasonName
@@ -228,7 +228,7 @@ class _$QuerySchemaImpl implements _QuerySchema {
       {required this.sourceId,
       required this.name,
       required this.poster,
-      @JsonKey(name: 'eiga_text_id') required this.eigaTextId,
+      @JsonKey(name: 'comic_text_id') required this.comicTextId,
       @JsonKey(name: 'season_name') required this.seasonName,
       required this.cur,
       required this.dur,
@@ -250,21 +250,21 @@ class _$QuerySchemaImpl implements _QuerySchema {
   @override
   final String poster;
 
-  /// Unique identifier for the eiga (movie/show) text.
+  /// Unique identifier for the comic (movie/show) text.
   @override
-  @JsonKey(name: 'eiga_text_id')
-  final String eigaTextId;
+  @JsonKey(name: 'comic_text_id')
+  final String comicTextId;
 
   /// The name of the season.
   @override
   @JsonKey(name: 'season_name')
   final String seasonName;
 
-  /// The current watch time in seconds.
+  /// The current watch page in seconds.
   @override
   final num cur;
 
-  /// The total duration of the episode in seconds.
+  /// The total page of the episode in seconds.
   @override
   final num dur;
 
@@ -280,7 +280,7 @@ class _$QuerySchemaImpl implements _QuerySchema {
 
   @override
   String toString() {
-    return 'QuerySchema(sourceId: $sourceId, name: $name, poster: $poster, eigaTextId: $eigaTextId, seasonName: $seasonName, cur: $cur, dur: $dur, episodeName: $episodeName, episodeId: $episodeId)';
+    return 'QuerySchema(sourceId: $sourceId, name: $name, poster: $poster, comicTextId: $comicTextId, seasonName: $seasonName, cur: $cur, dur: $dur, episodeName: $episodeName, episodeId: $episodeId)';
   }
 
   @override
@@ -292,8 +292,8 @@ class _$QuerySchemaImpl implements _QuerySchema {
                 other.sourceId == sourceId) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.poster, poster) || other.poster == poster) &&
-            (identical(other.eigaTextId, eigaTextId) ||
-                other.eigaTextId == eigaTextId) &&
+            (identical(other.comicTextId, comicTextId) ||
+                other.comicTextId == comicTextId) &&
             (identical(other.seasonName, seasonName) ||
                 other.seasonName == seasonName) &&
             (identical(other.cur, cur) || other.cur == cur) &&
@@ -307,7 +307,7 @@ class _$QuerySchemaImpl implements _QuerySchema {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, sourceId, name, poster,
-      eigaTextId, seasonName, cur, dur, episodeName, episodeId);
+      comicTextId, seasonName, cur, dur, episodeName, episodeId);
 
   @JsonKey(ignore: true)
   @override
@@ -328,7 +328,7 @@ abstract class _QuerySchema implements QuerySchema {
           {required final String sourceId,
           required final String name,
           required final String poster,
-          @JsonKey(name: 'eiga_text_id') required final String eigaTextId,
+          @JsonKey(name: 'comic_text_id') required final String comicTextId,
           @JsonKey(name: 'season_name') required final String seasonName,
           required final num cur,
           required final num dur,
@@ -353,9 +353,9 @@ abstract class _QuerySchema implements QuerySchema {
   String get poster;
   @override
 
-  /// Unique identifier for the eiga (movie/show) text.
-  @JsonKey(name: 'eiga_text_id')
-  String get eigaTextId;
+  /// Unique identifier for the comic (movie/show) text.
+  @JsonKey(name: 'comic_text_id')
+  String get comicTextId;
   @override
 
   /// The name of the season.
@@ -363,11 +363,11 @@ abstract class _QuerySchema implements QuerySchema {
   String get seasonName;
   @override
 
-  /// The current watch time in seconds.
+  /// The current watch page in seconds.
   num get cur;
   @override
 
-  /// The total duration of the episode in seconds.
+  /// The total page of the episode in seconds.
   num get dur;
   @override
 

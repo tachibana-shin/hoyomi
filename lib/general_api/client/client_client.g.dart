@@ -22,7 +22,7 @@ class _ClientClient implements ClientClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<ListWatchHistory> getApiEigaGetWatchHistory({
+  Future<ListWatchHistory> getApiComicGetWatchHistory({
     required String sourceId,
     required num page,
     required String authorization,
@@ -42,7 +42,7 @@ class _ClientClient implements ClientClient {
     )
         .compose(
           _dio.options,
-          '/api/eiga/get-watch-history',
+          '/api/comic/get-watch-history',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -63,15 +63,15 @@ class _ClientClient implements ClientClient {
   }
 
   @override
-  Future<ListWatchTimeSchema> getApiEigaGetWatchTimeEpisodes({
+  Future<ListWatchTimeSchema> getApiComicGetWatchPageEpisodes({
     required String sourceId,
-    required String eigaTextId,
+    required String comicTextId,
     required String authorization,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'sourceId': sourceId,
-      r'eiga_text_id': eigaTextId,
+      r'comic_text_id': comicTextId,
     };
     final _headers = <String, dynamic>{r'Authorization': authorization};
     _headers.removeWhere((k, v) => v == null);
@@ -83,7 +83,7 @@ class _ClientClient implements ClientClient {
     )
         .compose(
           _dio.options,
-          '/api/eiga/get-watch-time-episodes',
+          '/api/comic/get-watch-page-episodes',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -104,16 +104,16 @@ class _ClientClient implements ClientClient {
   }
 
   @override
-  Future<WatchTimeSchema> getApiEigaGetWatchTime({
+  Future<WatchTimeSchema> getApiComicGetWatchPage({
     required String sourceId,
-    required String eigaTextId,
+    required String comicTextId,
     required String chapId,
     required String authorization,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'sourceId': sourceId,
-      r'eiga_text_id': eigaTextId,
+      r'comic_text_id': comicTextId,
       r'chap_id': chapId,
     };
     final _headers = <String, dynamic>{r'Authorization': authorization};
@@ -126,7 +126,7 @@ class _ClientClient implements ClientClient {
     )
         .compose(
           _dio.options,
-          '/api/eiga/get-watch-time',
+          '/api/comic/get-watch-page',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -147,7 +147,7 @@ class _ClientClient implements ClientClient {
   }
 
   @override
-  Future<PostApiEigaSetWatchTimeResponse> postApiEigaSetWatchTime({
+  Future<PostApiComicSetWatchPageResponse> postApiComicSetWatchPage({
     required String authorization,
     required QuerySchema body,
   }) async {
@@ -157,6 +157,150 @@ class _ClientClient implements ClientClient {
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
+    final _options = _setStreamType<PostApiComicSetWatchPageResponse>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/api/comic/set-watch-page',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late PostApiComicSetWatchPageResponse _value;
+    try {
+      _value = PostApiComicSetWatchPageResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<dynamic> getApiEigaGetWatchHistory({
+    required String sourceId,
+    required num page,
+    required String authorization,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'sourceId': sourceId,
+      r'page': page,
+    };
+    final _headers = <String, dynamic>{r'Authorization': authorization};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<dynamic>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/api/eiga/get-watch-history',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    return _value;
+  }
+
+  @override
+  Future<dynamic> getApiEigaGetWatchTimeEpisodes({
+    required String sourceId,
+    required String eigaTextId,
+    required String authorization,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'sourceId': sourceId,
+      r'eiga_text_id': eigaTextId,
+    };
+    final _headers = <String, dynamic>{r'Authorization': authorization};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<dynamic>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/api/eiga/get-watch-time-episodes',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    return _value;
+  }
+
+  @override
+  Future<dynamic> getApiEigaGetWatchTime({
+    required String sourceId,
+    required String eigaTextId,
+    required String chapId,
+    required String authorization,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'sourceId': sourceId,
+      r'eiga_text_id': eigaTextId,
+      r'chap_id': chapId,
+    };
+    final _headers = <String, dynamic>{r'Authorization': authorization};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<dynamic>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/api/eiga/get-watch-time',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    return _value;
+  }
+
+  @override
+  Future<PostApiEigaSetWatchTimeResponse> postApiEigaSetWatchTime({
+    required String authorization,
+    required dynamic body,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': authorization};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = body;
     final _options = _setStreamType<PostApiEigaSetWatchTimeResponse>(Options(
       method: 'POST',
       headers: _headers,

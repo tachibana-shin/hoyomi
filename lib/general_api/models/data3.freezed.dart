@@ -20,19 +20,19 @@ Data3 _$Data3FromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Data3 {
-  /// The current time in seconds for the episode.
+  /// The current page in seconds for the episode.
   num get cur => throw _privateConstructorUsedError;
 
-  /// The total duration of the episode in seconds.
+  /// The total page of the episode in seconds.
   num get dur => throw _privateConstructorUsedError;
 
   /// The name of the episode.
   String get name => throw _privateConstructorUsedError;
 
-  /// ISO 8601 format timestamp when the watch time was recorded.
+  /// ISO 8601 format pagestamp when the watch page was recorded.
   String get createdAt => throw _privateConstructorUsedError;
 
-  /// ISO 8601 format timestamp when the watch time was last updated.
+  /// ISO 8601 format pagestamp when the watch page was last updated.
   String get updatedAt => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -159,11 +159,11 @@ class _$Data3Impl implements _Data3 {
   factory _$Data3Impl.fromJson(Map<String, dynamic> json) =>
       _$$Data3ImplFromJson(json);
 
-  /// The current time in seconds for the episode.
+  /// The current page in seconds for the episode.
   @override
   final num cur;
 
-  /// The total duration of the episode in seconds.
+  /// The total page of the episode in seconds.
   @override
   final num dur;
 
@@ -171,11 +171,11 @@ class _$Data3Impl implements _Data3 {
   @override
   final String name;
 
-  /// ISO 8601 format timestamp when the watch time was recorded.
+  /// ISO 8601 format pagestamp when the watch page was recorded.
   @override
   final String createdAt;
 
-  /// ISO 8601 format timestamp when the watch time was last updated.
+  /// ISO 8601 format pagestamp when the watch page was last updated.
   @override
   final String updatedAt;
 
@@ -229,11 +229,11 @@ abstract class _Data3 implements Data3 {
 
   @override
 
-  /// The current time in seconds for the episode.
+  /// The current page in seconds for the episode.
   num get cur;
   @override
 
-  /// The total duration of the episode in seconds.
+  /// The total page of the episode in seconds.
   num get dur;
   @override
 
@@ -241,11 +241,11 @@ abstract class _Data3 implements Data3 {
   String get name;
   @override
 
-  /// ISO 8601 format timestamp when the watch time was recorded.
+  /// ISO 8601 format pagestamp when the watch page was recorded.
   String get createdAt;
   @override
 
-  /// ISO 8601 format timestamp when the watch time was last updated.
+  /// ISO 8601 format pagestamp when the watch page was last updated.
   String get updatedAt;
   @override
   @JsonKey(ignore: true)

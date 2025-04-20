@@ -18,7 +18,7 @@
                                     "type": "string",
                                     "description": "The timestamp when the watch history entry was created."
                                 },
-                                "eiga_text_id": {
+                                "comic_text_id": {
                                     "type": "string",
                                     "description": "The identifier for the specific episode of the text."
                                 },
@@ -40,11 +40,11 @@
                                 },
                                 "watch_cur": {
                                     "type": "number",
-                                    "description": "The current watch position in seconds."
+                                    "description": "The current watch page in seconds."
                                 },
                                 "watch_dur": {
                                     "type": "number",
-                                    "description": "The total duration of the episode in seconds."
+                                    "description": "The total page of the episode in seconds."
                                 },
                                 "watch_id": {
                                     "type": "string",
@@ -61,7 +61,7 @@
                             },
                             "required": [
                                 "created_at",
-                                "eiga_text_id",
+                                "comic_text_id",
                                 "name",
                                 "poster",
                                 "season_name",
@@ -90,12 +90,12 @@
                             "properties": {
                                 "cur": {
                                     "type": "number",
-                                    "description": "The current position in the episode in seconds.",
+                                    "description": "The current page in the episode in seconds.",
                                     "example": 120
                                 },
                                 "dur": {
                                     "type": "number",
-                                    "description": "The total duration of the episode in seconds.",
+                                    "description": "The total page of the episode in seconds.",
                                     "example": 1500
                                 },
                                 "name": {
@@ -105,12 +105,12 @@
                                 },
                                 "createdAt": {
                                     "type": "string",
-                                    "description": "Timestamp when the watch time was recorded, in ISO 8601 format.",
+                                    "description": "Timestamp when the watch page was recorded, in ISO 8601 format.",
                                     "example": "2025-04-06T12:34:56Z"
                                 },
                                 "updatedAt": {
                                     "type": "string",
-                                    "description": "Timestamp when the watch time was last updated, in ISO 8601 format.",
+                                    "description": "Timestamp when the watch page was last updated, in ISO 8601 format.",
                                     "example": "2025-04-06T13:00:00Z"
                                 },
                                 "chapId": {
@@ -133,7 +133,7 @@
                 "required": [
                     "data"
                 ],
-                "description": "A list of watch time entries, each representing the time watched for a specific episode."
+                "description": "A list of watch page entries, each representing the page watched for a specific episode."
             },
             "WatchTimeSchema": {
                 "type": "object",
@@ -144,12 +144,12 @@
                         "properties": {
                             "cur": {
                                 "type": "number",
-                                "description": "The current time in seconds for the episode.",
+                                "description": "The current page in seconds for the episode.",
                                 "example": 120
                             },
                             "dur": {
                                 "type": "number",
-                                "description": "The total duration of the episode in seconds.",
+                                "description": "The total page of the episode in seconds.",
                                 "example": 1500
                             },
                             "name": {
@@ -159,12 +159,12 @@
                             },
                             "createdAt": {
                                 "type": "string",
-                                "description": "ISO 8601 format timestamp when the watch time was recorded.",
+                                "description": "ISO 8601 format pagestamp when the watch page was recorded.",
                                 "example": "2025-04-06T12:34:56Z"
                             },
                             "updatedAt": {
                                 "type": "string",
-                                "description": "ISO 8601 format timestamp when the watch time was last updated.",
+                                "description": "ISO 8601 format pagestamp when the watch page was last updated.",
                                 "example": "2025-04-06T13:00:00Z"
                             }
                         },
@@ -180,7 +180,7 @@
                 "required": [
                     "data"
                 ],
-                "description": "The watch time object, which can be null if no data is available."
+                "description": "The watch page object, which can be null if no data is available."
             },
             "QuerySchema": {
                 "type": "object",
@@ -203,11 +203,11 @@
                         "description": "URL to the poster image for the episode.",
                         "example": "https://example.com/poster.jpg"
                     },
-                    "eiga_text_id": {
+                    "comic_text_id": {
                         "type": "string",
                         "minLength": 1,
-                        "description": "Unique identifier for the eiga (movie/show) text.",
-                        "example": "eiga-001"
+                        "description": "Unique identifier for the comic (movie/show) text.",
+                        "example": "comic-001"
                     },
                     "season_name": {
                         "type": "string",
@@ -217,12 +217,12 @@
                     },
                     "cur": {
                         "type": "number",
-                        "description": "The current watch time in seconds.",
+                        "description": "The current watch page in seconds.",
                         "example": 120
                     },
                     "dur": {
                         "type": "number",
-                        "description": "The total duration of the episode in seconds.",
+                        "description": "The total page of the episode in seconds.",
                         "example": 1500
                     },
                     "episode_name": {
@@ -242,7 +242,7 @@
                     "sourceId",
                     "name",
                     "poster",
-                    "eiga_text_id",
+                    "comic_text_id",
                     "season_name",
                     "cur",
                     "dur",
@@ -254,7 +254,7 @@
         "parameters": {}
     },
     "paths": {
-        "/api/eiga/get-watch-history": {
+        "/api/comic/get-watch-history": {
             "get": {
                 "parameters": [
                     {
@@ -306,6 +306,296 @@
                 }
             }
         },
+        "/api/comic/get-watch-page-episodes": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the source, typically a string representing the season.",
+                            "example": "tonikaku-kawaii-season-2"
+                        },
+                        "required": true,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the comic (movie/show) text. This helps identify the specific content.",
+                            "example": "comic-001"
+                        },
+                        "required": true,
+                        "name": "comic_text_id",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieve the list of watch page episodes based on the provided sourceId and comic_text_id.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListWatchTimeSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comic/get-watch-page": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the source, such as the season name or series ID.",
+                            "example": "tonikaku-kawaii-season-2"
+                        },
+                        "required": true,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the comic (movie/show) text, used to specify the content.",
+                            "example": "comic-001"
+                        },
+                        "required": true,
+                        "name": "comic_text_id",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the specific chapter within the episode or series.",
+                            "example": "chap-001"
+                        },
+                        "required": true,
+                        "name": "chap_id",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The watch page object, which can be null if no data is available for the requested episode.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WatchTimeSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comic/set-watch-page": {
+            "post": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/QuerySchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The response indicating the success status of setting the watch page.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Indicates whether the watch page was successfully set.",
+                                            "example": true
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/eiga/get-watch-history": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "The unique identifier for the source (e.g., the series or season).",
+                            "example": "tonikaku-kawaii-season-2"
+                        },
+                        "required": true,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "number",
+                            "minimum": 1,
+                            "description": "The page number for paginated results.",
+                            "example": 1
+                        },
+                        "required": true,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieve the list of watch history entries for the specified source.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ListWatchHistory"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "description": "The timestamp when the watch history entry was created."
+                                                            },
+                                                            "eiga_text_id": {
+                                                                "type": "string",
+                                                                "description": "The identifier for the specific episode of the text."
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "description": "The name of the watch history item (e.g., the episode title)."
+                                                            },
+                                                            "poster": {
+                                                                "type": "string",
+                                                                "description": "The URL for the poster image of the episode."
+                                                            },
+                                                            "season_name": {
+                                                                "type": "string",
+                                                                "description": "The name of the season the episode belongs to."
+                                                            },
+                                                            "source_id": {
+                                                                "type": "string",
+                                                                "description": "The source ID associated with the episode."
+                                                            },
+                                                            "watch_cur": {
+                                                                "type": "number",
+                                                                "description": "The current watch position in seconds."
+                                                            },
+                                                            "watch_dur": {
+                                                                "type": "number",
+                                                                "description": "The total duration of the episode in seconds."
+                                                            },
+                                                            "watch_id": {
+                                                                "type": "string",
+                                                                "description": "The unique identifier for the watch session."
+                                                            },
+                                                            "watch_name": {
+                                                                "type": "string",
+                                                                "description": "The name associated with the watch session."
+                                                            },
+                                                            "watch_updated_at": {
+                                                                "type": "string",
+                                                                "description": "The timestamp when the watch history entry was last updated."
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "created_at",
+                                                            "eiga_text_id",
+                                                            "name",
+                                                            "poster",
+                                                            "season_name",
+                                                            "source_id",
+                                                            "watch_cur",
+                                                            "watch_dur",
+                                                            "watch_id",
+                                                            "watch_name",
+                                                            "watch_updated_at"
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/eiga/get-watch-time-episodes": {
             "get": {
                 "parameters": [
@@ -350,7 +640,62 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ListWatchTimeSchema"
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ListWatchTimeSchema"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "cur": {
+                                                                "type": "number",
+                                                                "description": "The current position in the episode in seconds.",
+                                                                "example": 120
+                                                            },
+                                                            "dur": {
+                                                                "type": "number",
+                                                                "description": "The total duration of the episode in seconds.",
+                                                                "example": 1500
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "description": "The name of the episode.",
+                                                                "example": "Episode 1"
+                                                            },
+                                                            "createdAt": {
+                                                                "type": "string",
+                                                                "description": "Timestamp when the watch time was recorded, in ISO 8601 format.",
+                                                                "example": "2025-04-06T12:34:56Z"
+                                                            },
+                                                            "updatedAt": {
+                                                                "type": "string",
+                                                                "description": "Timestamp when the watch time was last updated, in ISO 8601 format.",
+                                                                "example": "2025-04-06T13:00:00Z"
+                                                            },
+                                                            "chapId": {
+                                                                "type": "string",
+                                                                "description": "The unique identifier for the chapter within the episode or series.",
+                                                                "example": "chap-001"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "cur",
+                                                            "dur",
+                                                            "name",
+                                                            "createdAt",
+                                                            "updatedAt",
+                                                            "chapId"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "description": "A list of watch time entries, each representing the time watched for a specific episode."
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -413,7 +758,54 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WatchTimeSchema"
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/WatchTimeSchema"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "object",
+                                                    "nullable": true,
+                                                    "properties": {
+                                                        "cur": {
+                                                            "type": "number",
+                                                            "description": "The current time in seconds for the episode.",
+                                                            "example": 120
+                                                        },
+                                                        "dur": {
+                                                            "type": "number",
+                                                            "description": "The total duration of the episode in seconds.",
+                                                            "example": 1500
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "description": "The name of the episode.",
+                                                            "example": "Episode 1"
+                                                        },
+                                                        "createdAt": {
+                                                            "type": "string",
+                                                            "description": "ISO 8601 format timestamp when the watch time was recorded.",
+                                                            "example": "2025-04-06T12:34:56Z"
+                                                        },
+                                                        "updatedAt": {
+                                                            "type": "string",
+                                                            "description": "ISO 8601 format timestamp when the watch time was last updated.",
+                                                            "example": "2025-04-06T13:00:00Z"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "cur",
+                                                        "dur",
+                                                        "name",
+                                                        "createdAt",
+                                                        "updatedAt"
+                                                    ]
+                                                }
+                                            },
+                                            "description": "The watch time object, which can be null if no data is available."
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -442,7 +834,78 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/QuerySchema"
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/QuerySchema"
+                                    },
+                                    {
+                                        "properties": {
+                                            "sourceId": {
+                                                "type": "string",
+                                                "minLength": 1,
+                                                "description": "The unique identifier for the source (e.g., series or season).",
+                                                "example": "tonikaku-kawaii-season-2"
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "minLength": 1,
+                                                "description": "The name of the episode.",
+                                                "example": "Episode 1"
+                                            },
+                                            "poster": {
+                                                "type": "string",
+                                                "minLength": 1,
+                                                "description": "URL to the poster image for the episode.",
+                                                "example": "https://example.com/poster.jpg"
+                                            },
+                                            "eiga_text_id": {
+                                                "type": "string",
+                                                "minLength": 1,
+                                                "description": "Unique identifier for the eiga (movie/show) text.",
+                                                "example": "eiga-001"
+                                            },
+                                            "season_name": {
+                                                "type": "string",
+                                                "minLength": 1,
+                                                "description": "The name of the season.",
+                                                "example": "Season 1"
+                                            },
+                                            "cur": {
+                                                "type": "number",
+                                                "description": "The current watch time in seconds.",
+                                                "example": 120
+                                            },
+                                            "dur": {
+                                                "type": "number",
+                                                "description": "The total duration of the episode in seconds.",
+                                                "example": 1500
+                                            },
+                                            "episode_name": {
+                                                "type": "string",
+                                                "minLength": 1,
+                                                "description": "The name of the episode.",
+                                                "example": "Episode 1"
+                                            },
+                                            "episode_id": {
+                                                "type": "string",
+                                                "minLength": 1,
+                                                "description": "Unique identifier for the episode.",
+                                                "example": "episode-001"
+                                            }
+                                        },
+                                        "required": [
+                                            "sourceId",
+                                            "name",
+                                            "poster",
+                                            "eiga_text_id",
+                                            "season_name",
+                                            "cur",
+                                            "dur",
+                                            "episode_name",
+                                            "episode_id"
+                                        ]
+                                    }
+                                ]
                             }
                         }
                     }
