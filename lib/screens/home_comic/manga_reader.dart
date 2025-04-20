@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:battery_plus/battery_plus.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +12,7 @@ import 'package:hoyomi/constraints/fluent.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_chapter.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_modes.dart';
 import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
 import 'package:hoyomi/screens/details_comic/horizon_reader.dart';
@@ -358,10 +359,8 @@ class _MangaReaderState extends State<MangaReader>
       ComicChapter? prevChapter,
       ComicChapter? nextChapter}) {
     return SizedBox(
-      width: double.infinity,
-      height: _usingPageView
-          ? double.infinity
-          : MediaQuery.of(context).size.height / 2,
+      width: 100.w(context),
+      height: _usingPageView ? 100.h(context) : 50.h(context),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -416,7 +415,7 @@ class _MangaReaderState extends State<MangaReader>
     );
   }
 
-  Widget _buildPage(int index) {
+  Widget _buildPage(int index, {Key? key}) {
     final item = _pages.value.elementAt(index);
     if (item.image.src == OImage.fake) {
       final prevPage = index < 1 ? null : _pages.value.elementAt(index - 1);
@@ -432,21 +431,35 @@ class _MangaReaderState extends State<MangaReader>
       }
     }
 
-    return OImage.oNetwork(
-      item.image,
-      sourceId: widget.service.uid,
-      fit: BoxFit.contain,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) {
-          return child;
-        }
-
-        return SizedBox(
-          height: 100.h(context),
-          child: _buildPageLoading(loadingProgress),
-        );
-      },
+    return CachedNetworkImage(
+      key: key,
+      imageUrl: item.image.src,
+      httpHeaders: Headers({
+        'set-cookie': widget.service.getSetting(key: 'cookie') ?? '',
+        'user-agent': widget.service.getSetting(key: 'user_agent') ?? '',
+        ...item.image.headers?.toMap() ?? {},
+      }).toMap(),
+      placeholder: (context, url) =>
+          SizedBox(height: 100.h(context), child: _buildPageLoading(null)),
+      errorWidget: (context, url, error) => Icon(Icons.error),
+      fit: BoxFit.cover,
     );
+
+    // return OImage.oNetwork(
+    //   item.image,
+    //   sourceId: widget.service.uid,
+    //   fit: BoxFit.contain,
+    //   loadingBuilder: (context, child, loadingProgress) {
+    //     if (loadingProgress == null) {
+    //       return child;
+    //     }
+
+    //     return SizedBox(
+    //       height: 100.h(context),
+    //       child: _buildPageLoading(loadingProgress),
+    //     );
+    //   },
+    // );
   }
 
   @override
@@ -740,10 +753,10 @@ class _MangaReaderState extends State<MangaReader>
         return WebToonReader(
           // itemCount: pages.length,
           pages: _pages,
-          itemBuilder: (BuildContext context, int index) {
+          itemBuilder: (BuildContext context, int index, key) {
             // final currPage = pages.elementAt(index);
 
-            final page = _buildPage(index);
+            final page = _buildPage(index, key: key);
 
             // if (index < pages.length - 1) {
             //   final nextPage = pages.elementAtOrNull(index + 1);
@@ -777,8 +790,8 @@ class _MangaReaderState extends State<MangaReader>
       if (mode == ComicModes.topToBottom) {
         return VerticalReader(
           pages: _pages,
-          itemBuilder: (BuildContext context, int index) {
-            return _buildPage(index);
+          itemBuilder: (BuildContext context, int index, key) {
+            return _buildPage(index, key: key);
           },
           currentPage: _currentPage,
         );
@@ -786,14 +799,15 @@ class _MangaReaderState extends State<MangaReader>
 
       return HorizonReader(
         pages: _pages,
-        itemBuilder: (BuildContext context, int index) {
-          return _buildPage(index);
+        itemBuilder: (BuildContext context, int index, key) {
+          return _buildPage(index, key: key);
         },
         currentPage: _currentPage,
-        builderImage: (int index) {
+        builderImage: (int index, key) {
           final item = _pages.value.elementAt(index);
 
           return OImage.oNetwork(
+            key: key,
             item.image,
             sourceId: widget.service.uid,
             fit: BoxFit.contain,

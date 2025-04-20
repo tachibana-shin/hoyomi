@@ -6,7 +6,8 @@ import 'package:kaeru/kaeru.dart';
 
 class VerticalReader extends StatefulWidget {
   final Ref<List<ImageWithGroup>> pages;
-  final Widget Function(BuildContext context, int index) itemBuilder;
+  final Widget Function(BuildContext context, int index, ValueKey key)
+      itemBuilder;
   final Ref<double> currentPage;
 
   const VerticalReader(
@@ -54,7 +55,8 @@ class _VerticalReaderState extends State<VerticalReader> with KaeruListenMixin {
           widget.currentPage.value = page.toDouble();
         },
         itemCount: widget.pages.value.length,
-        itemBuilder: widget.itemBuilder));
+        itemBuilder: (context, index) => widget.itemBuilder(context, index,
+            ValueKey(widget.pages.value.elementAt(index).image.src))));
   }
 
   @override

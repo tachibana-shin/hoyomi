@@ -6,10 +6,10 @@ import 'package:kaeru/kaeru.dart';
 
 class HorizonReader extends StatefulWidget {
   final Ref<List<ImageWithGroup>> pages;
-  final Widget Function(BuildContext context, int index) itemBuilder;
+  final Widget Function(BuildContext context, int index, ValueKey key) itemBuilder;
   final Ref<double> currentPage;
 
-  final Image Function(int page) builderImage;
+  final Image Function(int page, ValueKey key) builderImage;
   final bool rtl;
   final bool twoPage;
 
@@ -100,7 +100,7 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
         itemBuilder: (context, index) {
           if (widget.twoPage) {
             final children = _mapPage[index]!.map((i) {
-              return Expanded(child: widget.itemBuilder(context, i));
+              return Expanded(child: widget.itemBuilder(context, i, ValueKey(widget.pages.value.elementAt(i).image.src)));
             }).toList();
 
             return InteractiveViewer(
@@ -119,7 +119,7 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
             minScale: 1.0,
             maxScale: 2.0,
             trackpadScrollCausesScale: true,
-            child: widget.itemBuilder(context, index),
+            child: widget.itemBuilder(context, index, ValueKey(widget.pages.value.elementAt(index).image.src)),
           );
         }));
   }
@@ -161,7 +161,7 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
     }
 
     try {
-      final image = widget.builderImage(index);
+      final image = widget.builderImage(index, ValueKey(widget.pages.value.elementAt(index).image.src));
 
       final imageStream = image.image.resolve(const ImageConfiguration());
       final completer = Completer<double>();

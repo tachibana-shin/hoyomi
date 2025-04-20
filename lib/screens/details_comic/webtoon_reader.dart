@@ -5,7 +5,7 @@ import 'package:kaeru/kaeru.dart';
 class WebToonReader extends StatefulWidget {
   // final int itemCount;
   final Ref<List<ImageWithGroup>> pages;
-  final Widget Function(BuildContext context, int index) itemBuilder;
+  final Widget Function(BuildContext context, int index, ValueKey key) itemBuilder;
   final Ref<double> currentPage;
 
   const WebToonReader({
@@ -21,7 +21,7 @@ class WebToonReader extends StatefulWidget {
 }
 
 class _WebToonReaderState extends State<WebToonReader>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, KaeruMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -37,6 +37,8 @@ class _WebToonReaderState extends State<WebToonReader>
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+
+    watch([widget.pages], () => _itemKeys.clear());
   }
 
   void _onScroll() {
@@ -65,18 +67,14 @@ class _WebToonReaderState extends State<WebToonReader>
         controller: _scrollController,
         itemCount: widget.pages.value.length,
         itemBuilder: (context, index) {
+          final key = widget.pages.value.elementAt(index).image.src;
+          
           return Container(
             key: _getKey(index),
-            child: widget.itemBuilder(context, index),
+            child: widget.itemBuilder(context, index, ValueKey(key)),
           );
         },
       );
     });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 }
