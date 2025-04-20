@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide TimeOfDay;
-import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
-import 'package:hoyomi/core_services/interfaces/history_item.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_history.dart'
+    as types;
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/format_watch_update_at.dart';
@@ -45,7 +45,7 @@ class _HistoryEigaPageState extends State<HistoryEigaPage> {
       onLoadData: () => _service.getWatchHistory(page: 1),
       onLoadFake: () => List.generate(
         30,
-        (_) => HistoryItem.createFakeData(Eiga.createFakeData()),
+        (_) => types.EigaHistory.createFakeData(),
       ),
       builder: (data, _) => Padding(
         padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),

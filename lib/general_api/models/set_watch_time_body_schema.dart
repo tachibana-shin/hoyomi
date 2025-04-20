@@ -20,12 +20,10 @@ class SetWatchTimeBodySchema with _$SetWatchTimeBodySchema {
     required String poster,
 
     /// Unique identifier for the eiga (movie/show) text.
-    @JsonKey(name: 'eiga_text_id')
-    required String eigaTextId,
+    @JsonKey(name: 'eiga_text_id') required String eigaTextId,
 
     /// The name of the season.
-    @JsonKey(name: 'season_name')
-    required String seasonName,
+    @JsonKey(name: 'season_name') required String seasonName,
 
     /// The current watch time in seconds.
     required num cur,
@@ -34,13 +32,12 @@ class SetWatchTimeBodySchema with _$SetWatchTimeBodySchema {
     required num dur,
 
     /// The name of the episode.
-    @JsonKey(name: 'episode_name')
-    required String episodeName,
+    @JsonKey(name: 'episode_name') required String episodeName,
 
     /// Unique identifier for the episode.
-    @JsonKey(name: 'episode_id')
-    required String episodeId,
+    @JsonKey(name: 'episode_id') required String episodeId,
   }) = _SetWatchTimeBodySchema;
-  
-  factory SetWatchTimeBodySchema.fromJson(Map<String, Object?> json) => _$SetWatchTimeBodySchemaFromJson(json);
+
+  factory SetWatchTimeBodySchema.fromJson(Map<String, Object?> json) =>
+      _$SetWatchTimeBodySchemaFromJson(json);
 }

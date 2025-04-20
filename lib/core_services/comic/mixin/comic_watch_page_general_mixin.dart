@@ -9,13 +9,13 @@ import 'package:hoyomi/utils/authentication.dart';
 import 'package:http/http.dart';
 
 import '../interfaces/main.dart';
-import 'eiga_watch_time_mixin.dart';
+import 'comic_watch_page_mixin.dart';
 
-mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
+mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
   final _baseApiGeneral = Env.baseApiGeneral;
   GeneralApiClient? _client;
 
-  /// General watch time support but service not auth
+  /// General watch page support but service not auth
   @override
   final bool $noAuth = true;
   @override
@@ -28,114 +28,113 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
   }
 
   @override
-  Future<List<EigaHistory>> getWatchHistory({required int page}) async {
+  Future<List<ComicHistory>> getWatchHistory({required int page}) async {
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
     final idToken = await user.getIdTokenResult();
 
-    final body = await _getClient().client.getApiEigaGetWatchHistory(
+    final body = await _getClient().client.getApiComicGetWatchHistory(
         sourceId: uid, page: page, authorization: 'Bearer ${idToken.token}');
 
     return body.data.map((history) {
-      return EigaHistory(
-        item: Eiga(
+      return ComicHistory(
+        item: Comic(
           name: history.name,
-          eigaId: history.eigaTextId,
+          comicId: history.comicTextId,
           originalName: history.seasonName,
           image: OImage(src: history.poster),
         ),
         watchUpdatedAt: DateTime.parse(history.createdAt),
         lastEpisode:
-            EigaEpisode(name: history.watchName, episodeId: history.watchId),
-        watchTime: WatchTime(
-          position: Duration(seconds: history.watchCur.round()),
-          duration: Duration(seconds: history.watchDur.round()),
+            ComicChapter(name: history.watchName, chapterId: history.watchId),
+        watchPage: WatchPage(
+          currentPage: history.watchCur.toInt(),
+          totalPage: history.watchDur.toInt(),
         ),
       );
     }).toList();
   }
 
   @override
-  Future<WatchTime> getWatchTime({
-    required String eigaId,
-    required EigaEpisode episode,
-    required MetaEiga metaEiga,
+  Future<WatchPage> getWatchPage({
+    required String comicId,
+    required ComicChapter chapter,
+    required MetaComic metaComic,
   }) async {
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
     final idToken = await user.getIdTokenResult();
 
-    final body = await _getClient().client.getApiEigaGetWatchTime(
+    final body = await _getClient().client.getApiComicGetWatchPage(
         sourceId: uid,
-        eigaTextId: eigaId,
-        chapId: episode.episodeId,
+        comicTextId: comicId,
+        chapId: chapter.chapterId,
         authorization: 'Bearer ${idToken.token}');
     final data = body.data;
 
-    if (data == null) throw Exception('No watch time found');
+    if (data == null) throw Exception('No watch page found');
 
-    return WatchTime(
-      position: Duration(seconds: data.cur.round()),
-      duration: Duration(seconds: data.dur.round()),
+    return WatchPage(
+      currentPage: data.cur.toInt(),
+      totalPage: data.dur.toInt(),
     );
   }
 
   @override
-  Future<Map<String, WatchTime>> getWatchTimeEpisodes({
-    required String eigaId,
-    required List<EigaEpisode> episodes,
+  Future<Map<String, WatchPage>> getWatchPageEpisodes({
+    required String comicId,
+    required List<ComicChapter> chapters,
   }) async {
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
     final idToken = await user.getIdTokenResult();
 
-    final body = await _getClient().client.getApiEigaGetWatchTimeEpisodes(
+    final body = await _getClient().client.getApiComicGetWatchPageEpisodes(
         sourceId: uid,
-        eigaTextId: eigaId,
+        comicTextId: comicId,
         authorization: 'Bearer ${idToken.token}');
 
     return {
       for (final item in body.data)
-        item.chapId: WatchTime(
-          position: Duration(seconds: item.cur.round()),
-          duration: Duration(seconds: item.dur.round()),
+        item.chapId: WatchPage(
+          currentPage: item.cur.toInt(),
+          totalPage: item.dur.toInt(),
         )
     };
   }
 
   @override
-  Future<void> setWatchTime({
-    required String eigaId,
-    required EigaEpisode episode,
-    required MetaEiga metaEiga,
-    required Season season,
-    required WatchTime watchTime,
+  Future<void> setWatchPage({
+    required String comicId,
+    required ComicChapter chapter,
+    required MetaComic metaComic,
+    required WatchPage watchPage,
   }) async {
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
     final idToken = await user.getIdTokenResult();
 
-    await _getClient().client.postApiEigaSetWatchTime(
-        body: SetWatchTimeBodySchema(
+    await _getClient().client.postApiComicSetWatchPage(
+        body: SetWatchPageBodySchema(
           sourceId: uid,
           // data
-          name: metaEiga.name,
-          poster: metaEiga.poster?.src ?? metaEiga.image.src,
-          eigaTextId: eigaId,
-          seasonName: season.name,
-          cur: watchTime.position.inMilliseconds / 1e3,
-          dur: watchTime.duration.inMilliseconds / 1e3,
-          episodeName: episode.name,
-          episodeId: episode.episodeId,
+          name: metaComic.name,
+          poster: metaComic.image.src,
+          comicTextId: comicId,
+          seasonName: '',
+          cur: watchPage.currentPage,
+          dur: watchPage.totalPage,
+          episodeName: chapter.name,
+          episodeId: chapter.chapterId,
         ),
         authorization: 'Bearer ${idToken.token}');
 
     final response = await post(
-        Uri.parse(_baseApiGeneral).resolve('/api/eiga/set-watch-time'),
+        Uri.parse(_baseApiGeneral).resolve('/api/comic/set-watch-page'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${idToken.token}'
@@ -143,7 +142,7 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
         body: jsonEncode({}));
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to set watch time: ${response.statusCode}');
+      throw Exception('Failed to set watch page: ${response.statusCode}');
     }
   }
 }

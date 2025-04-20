@@ -3,6 +3,7 @@ export 'comic_category.dart';
 export 'comic.dart';
 export 'comic_chapter.dart';
 export 'comic_comment.dart';
+export 'comic_history.dart';
 export '../../interfaces/filter.dart';
 export '../../interfaces/genre.dart';
 export 'home_comic_category.dart';

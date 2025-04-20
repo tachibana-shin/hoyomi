@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
-import 'package:hoyomi/core_services/interfaces/history_item.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_history.dart'
+    as types;
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/format_watch_update_at.dart';
@@ -22,7 +22,7 @@ class HorizontalEigaHistoryList extends StatefulWidget {
 
 class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
   late final EigaWatchTimeMixin _service;
-  late final Future<List<HistoryItem<Eiga>>> _historyFuture;
+  late final Future<List<types.EigaHistory>> _historyFuture;
 
   @override
   void initState() {
@@ -136,10 +136,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
         }
 
         final data = loading
-            ? List.generate(
-                30,
-                (_) => HistoryItem.createFakeData(Eiga.createFakeData()),
-              )
+            ? List.generate(30, (_) => types.EigaHistory.createFakeData())
             : snapshot.data!;
 
         final subtitle = data.isEmpty

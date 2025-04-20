@@ -59,7 +59,7 @@ class _WebToonReaderState extends State<WebToonReader>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    
+
     return Watch(() {
       return ListView.builder(
         controller: _scrollController,

@@ -2,7 +2,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 
 mixin EigaWatchTimeMixin on AuthMixin {
-  Future<List<HistoryItem<Eiga>>> getWatchHistory({required int page});
+  Future<List<EigaHistory>> getWatchHistory({required int page});
 
   Future<WatchTime> getWatchTime({
     required String eigaId,

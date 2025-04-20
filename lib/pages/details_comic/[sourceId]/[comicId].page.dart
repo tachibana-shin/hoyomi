@@ -20,7 +20,6 @@ import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
 import 'package:hoyomi/widgets/comic/sheet_chapters.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:hoyomi/widgets/iconify.dart';
-import 'package:iconify_flutter/icons/eva.dart';
 import 'package:iconify_flutter/icons/ic.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
@@ -322,94 +321,7 @@ class _DetailsComicState extends State<DetailsComic>
           ],
         ),
         const SizedBox(height: 16.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Iconify(
-                      Mdi.television,
-                      size: 20.0,
-                      color: Colors.blueGrey.shade100,
-                    ),
-                    const SizedBox(height: 4.0),
-                    Text(
-                      comic.views != null ? formatNumber(comic.views!) : '?',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.blueGrey.shade100,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: _ButtonLike(
-                comic: comic,
-                comicId: widget.comicId,
-                service: _service,
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Iconify(
-                      MaterialSymbols.tips_and_updates_outline,
-                      size: 20.0,
-                      color: Colors.blueGrey.shade100,
-                    ),
-                    const SizedBox(height: 4.0),
-                    Text(
-                      formatTimeAgo(comic.lastModified),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.blueGrey.shade100,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Iconify(
-                      Eva.star_outline,
-                      size: 20.0,
-                      color: Colors.blueGrey.shade100,
-                    ),
-                    const SizedBox(height: 4.0),
-                    Text(
-                      (comic.rate != null)
-                          ? "${comic.rate!.value} / ${comic.rate!.best}"
-                          : "?", // 星星評分
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.blueGrey.shade100,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+        _buildInfoScreen(),
         const SizedBox(height: 16.0),
         Row(
           children: [
@@ -481,6 +393,123 @@ class _DetailsComicState extends State<DetailsComic>
         ),
         SizedBox(height: 24.0),
         _buildSuggest(comic),
+      ],
+    );
+  }
+
+  Widget _buildInfoScreen() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.onSecondary,
+        borderRadius: const BorderRadius.all(Radius.circular(30)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Watch(() {
+            final comic = _comic.value;
+            return Table(
+              columnWidths: const {
+                0: FixedColumnWidth(100),
+                1: FlexColumnWidth(),
+              },
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: [
+                _buildTableRow(
+                    'Source',
+                    null,
+                    Row(mainAxisSize: MainAxisSize.min, children: [
+                      SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircleAvatar(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.onSecondary,
+                            child: OImage.oNetwork(
+                              _service.faviconUrl,
+                              sourceId: _service.uid,
+                              fit: BoxFit.cover,
+                            ),
+                          )),
+                      Text(
+                        _service.name,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.start,
+                      )
+                    ])),
+                if (comic.author != null)
+                  _buildTableRow('Author', comic.author!),
+                if (comic.translator != null)
+                  _buildTableRow('Translate', comic.translator!),
+                _buildTableRow(
+                    'Status',
+                    switch (comic.status) {
+                      StatusEnum.ongoing => "On going",
+                      StatusEnum.completed => "Completed",
+                      StatusEnum.canceled => "Canceled",
+                      StatusEnum.unknown => "Unknown",
+                      StatusEnum.onHiatus => "On hiatus",
+                      StatusEnum.publishingFinished => "Publishing finished",
+                    }),
+                if (comic.views != null)
+                  _buildTableRow('Views', formatNumber(comic.views!)),
+                _buildTableRow(
+                    'Last Updated', formatTimeAgo(comic.lastModified)),
+                _buildTableRow('Chương', 'Chương 16 trên 45 (1 giờ 39 phút)'),
+                TableRow(children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Text(
+                      'Progress',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  Text('33%',
+                      style: TextStyle(
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500)),
+                ]),
+              ],
+            );
+          }),
+        ]),
+      ),
+    );
+  }
+
+  TableRow _buildTableRow(String label, [String? value, Widget? child]) {
+    assert(child != null || value != null);
+
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+        ),
+        child ??
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Text(
+                value!,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
+                  fontSize: 14,
+                ),
+                textAlign: TextAlign.start,
+              ),
+            ),
       ],
     );
   }
