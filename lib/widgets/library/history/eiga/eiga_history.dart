@@ -1,7 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_history.dart' as types;
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_history.dart'
+    as types;
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:hoyomi/widgets/blurred_part_background.dart';

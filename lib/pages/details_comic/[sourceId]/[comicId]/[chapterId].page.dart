@@ -43,7 +43,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
   late final ABComicService _service;
   late final _chapter = ref<ComicChapter?>(null);
   late final _showToolbar = ref<bool>(true);
-  
+
   @override
   void initState() {
     _service = getComicService(widget.sourceId);

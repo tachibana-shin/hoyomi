@@ -1,4 +1,3 @@
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'watch_page.freezed.dart';
@@ -10,7 +9,7 @@ class WatchPage with _$WatchPage {
     required int currentPage,
     required int totalPage,
   }) = _WatchPage;
-	
+
   factory WatchPage.fromJson(Map<String, dynamic> json) =>
-			_$WatchPageFromJson(json);
+      _$WatchPageFromJson(json);
 }

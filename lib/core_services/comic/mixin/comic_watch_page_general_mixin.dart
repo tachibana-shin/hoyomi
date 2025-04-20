@@ -119,13 +119,13 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
     final idToken = await user.getIdTokenResult();
 
     await _getClient().client.postApiComicSetWatchPage(
-        body: SetWatchPageBodySchema (
+        body: SetWatchPageBodySchema(
           sourceId: uid,
           // data
           name: metaComic.name,
           poster: metaComic.image.src,
           comicTextId: comicId,
-          seasonName:'',
+          seasonName: '',
           cur: watchPage.currentPage,
           dur: watchPage.totalPage,
           episodeName: chapter.name,
