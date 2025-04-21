@@ -71,7 +71,7 @@ class _WebToonReaderState extends State<WebToonReader>
   void _scrollToPage(int index) async {
     double bef = 0;
     int befIndex = -1;
-    for (int i = 0; i < widget.pages.value.length; i++) {
+    for (int i = 0; i <= index; i++) {
       final RenderBox? box =
           _getKey(i).currentContext?.findRenderObject() as RenderBox?;
       if (box != null) {
