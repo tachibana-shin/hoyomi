@@ -74,8 +74,10 @@ class _WebToonReaderState extends State<WebToonReader>
     for (int i = 0; i < widget.pages.value.length; i++) {
       final RenderBox? box =
           _getKey(i).currentContext?.findRenderObject() as RenderBox?;
-      if (box != null) {bef += box.size.height;
-      befIndex++;}
+      if (box != null) {
+        bef += box.size.height;
+        befIndex++;
+      }
     }
 
     _scrollController.jumpTo(100.h(context) * (index - (befIndex + 1)) + bef);

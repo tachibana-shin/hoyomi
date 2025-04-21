@@ -13,6 +13,7 @@ class PostApiEigaSetWatchTimeResponse with _$PostApiEigaSetWatchTimeResponse {
     /// Indicates whether the watch time was successfully set.
     required bool success,
   }) = _PostApiEigaSetWatchTimeResponse;
-  
-  factory PostApiEigaSetWatchTimeResponse.fromJson(Map<String, Object?> json) => _$PostApiEigaSetWatchTimeResponseFromJson(json);
+
+  factory PostApiEigaSetWatchTimeResponse.fromJson(Map<String, Object?> json) =>
+      _$PostApiEigaSetWatchTimeResponseFromJson(json);
 }

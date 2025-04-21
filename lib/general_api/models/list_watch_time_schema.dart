@@ -15,6 +15,7 @@ class ListWatchTimeSchema with _$ListWatchTimeSchema {
   const factory ListWatchTimeSchema({
     required List<Data2> data,
   }) = _ListWatchTimeSchema;
-  
-  factory ListWatchTimeSchema.fromJson(Map<String, Object?> json) => _$ListWatchTimeSchemaFromJson(json);
+
+  factory ListWatchTimeSchema.fromJson(Map<String, Object?> json) =>
+      _$ListWatchTimeSchemaFromJson(json);
 }
