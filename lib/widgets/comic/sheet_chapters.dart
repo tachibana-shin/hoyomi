@@ -141,9 +141,9 @@ class _SheetChaptersState extends State<SheetChapters> {
                         widget.watchPageChapters[chapter.chapterId]) {
                       null => null,
                       final watchPage => CircularProgress(
-                          value:
-                              ((watchPage.currentPage + 1) / watchPage.totalPage)
-                                  .clamp(0, 1),
+                          value: ((watchPage.currentPage + 1) /
+                                  watchPage.totalPage)
+                              .clamp(0, 1),
                           strokeWidth: 3.0,
                           textStyle: TextStyle(
                             fontSize: 10,

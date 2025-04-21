@@ -843,7 +843,8 @@ class _MangaReaderState extends State<MangaReader>
             comicId: widget.comicId,
             currentChapterId: _chapterId.value,
             initialChildSize: 0.6,
-            watchPageChapters: _watchPageChapters.value ?? const <String, WatchPageUpdated>{},
+            watchPageChapters:
+                _watchPageChapters.value ?? const <String, WatchPageUpdated>{},
           )),
     );
   }

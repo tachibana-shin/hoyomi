@@ -737,7 +737,8 @@ class _DetailsComicState extends State<DetailsComic>
           comic: _comic.value,
           sourceId: widget.sourceId,
           comicId: widget.comicId,
-          watchPageChapters: _watchPageChapters.value ?? const <String, WatchPageUpdated>{},
+          watchPageChapters:
+              _watchPageChapters.value ?? const <String, WatchPageUpdated>{},
           reverse: true,
           // histories: _historyChapters.value,
           initialChildSize: 0.15,

@@ -56,7 +56,7 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
   }
 
   @override
- getWatchPage({
+  getWatchPage({
     required String comicId,
     required ComicChapter chapter,
     required MetaComic metaComic,
