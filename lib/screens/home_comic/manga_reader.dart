@@ -6,15 +6,12 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/constraints/fluent.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_chapter.dart';
+import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
-import 'package:hoyomi/core_services/interfaces/main.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_modes.dart';
-import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
+import 'package:hoyomi/core_services/comic/mixin/comic_watch_page_mixin.dart';
 import 'package:hoyomi/screens/details_comic/horizon_reader.dart';
 import 'package:hoyomi/screens/details_comic/vertical_reader.dart';
 import 'package:hoyomi/screens/details_comic/webtoon_reader.dart';
@@ -88,7 +85,7 @@ class _MangaReaderState extends State<MangaReader>
 
   final Set<int> _skipImages = {};
 
-  late final Ref<String> _chapterId;
+  late final Ref<String> _chapterId = ref(widget.chapterId);
   late final Ref<List<ImageWithGroup>> _pages;
   late final Ref<ComicModes> _mode;
 
@@ -108,18 +105,29 @@ class _MangaReaderState extends State<MangaReader>
 
   @override
   void initState() {
-    _chapterId = ref(widget.chapterId);
+    _currChapter = computed(() {
+      final index = widget.comic.chapters
+          .indexWhere((chapter) => chapter.chapterId == _chapterId.value);
 
-    final chapter = _getChapterObject(chapterId: _chapterId.value)!;
-    _pages = ref(widget.pages.indexed.map((params) {
-      final (index, page) = params;
+      if (index == -1) return null;
 
-      return ImageWithGroup(
-        chapter: chapter,
-        index: index,
-        image: OImage(src: page.src, headers: page.headers),
-      );
-    }).toList());
+      return widget.comic.chapters.elementAtOrNull(index);
+    });
+
+    _pages = ref(widget.pages.indexed
+        .map((params) {
+          if (_currChapter.value == null) return null;
+
+          final (index, page) = params;
+
+          return ImageWithGroup(
+            chapter: _currChapter.value!,
+            index: index,
+            image: OImage(src: page.src, headers: page.headers),
+          );
+        })
+        .whereType<ImageWithGroup>()
+        .toList());
 
     final startPage = computed(() {
       return _pages.value.indexWhere((page) =>
@@ -161,14 +169,6 @@ class _MangaReaderState extends State<MangaReader>
       return stop - start + 1;
     });
 
-    _currChapter = computed(() {
-      final index = widget.comic.chapters
-          .indexWhere((chapter) => chapter.chapterId == _chapterId.value);
-
-      if (index == -1) return null;
-
-      return widget.comic.chapters.elementAtOrNull(index);
-    });
     _prevChapter = computed(() {
       final current = _currChapter.value;
       if (current == null) return null;
@@ -314,7 +314,82 @@ class _MangaReaderState extends State<MangaReader>
       _currentTime.value = format.format(now);
     }).cancel);
 
+    /// history read
+    watch([_realCurrentPage], () {
+      final service = widget.service;
+      if (service is ComicWatchPageMixin && _currChapter.value != null) {
+        _saveWatchPage(
+          comicId: widget.comicId,
+          chapter: _currChapter.value!,
+          metaComic: widget.comic,
+          watchPage: WatchPage(
+            currentPage: _realCurrentPage.value.toInt(),
+            totalPage: _realLength.value,
+          ),
+          force: false,
+        );
+      }
+    });
+    watch([_currChapter], () {
+      _saveWatchPage(
+        comicId: widget.comicId,
+        chapter: _currChapter.value!,
+        metaComic: widget.comic,
+        watchPage: WatchPage(
+          currentPage: _realCurrentPage.value.toInt(),
+          totalPage: _realLength.value,
+        ),
+        force: true,
+      );
+      debugPrint('save watch page because redirect chapter');
+    });
+    // save watch page if exit reader
+    onBeforeUnmount(() {
+      _saveWatchPage(
+        comicId: widget.comicId,
+        chapter: _currChapter.value!,
+        metaComic: widget.comic,
+        watchPage: WatchPage(
+          currentPage: _realCurrentPage.value.toInt(),
+          totalPage: _realLength.value,
+        ),
+        force: true,
+      );
+      debugPrint('save watch page because exit reader');
+    });
+
     super.initState();
+  }
+
+  Timer? _timer;
+  void _saveWatchPage({
+    required String comicId,
+    required ComicChapter chapter,
+    required MetaComic metaComic,
+    required WatchPage watchPage,
+    required bool force,
+  }) {
+    if (force) {
+      _timer?.cancel();
+      _timer = null;
+    }
+
+    if (_timer != null) return;
+    if (watchPage.currentPage.toInt() == 0 ||
+        watchPage.totalPage.toInt() == 0 ||
+        watchPage.currentPage > watchPage.totalPage) {
+      return;
+    }
+
+    _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+      _timer = null;
+      (widget.service as ComicWatchPageMixin).setWatchPage(
+        comicId: comicId,
+        chapter: chapter,
+        metaComic: metaComic,
+        watchPage: watchPage,
+      );
+    });
   }
 
   void _updateRoute() {
@@ -348,11 +423,6 @@ class _MangaReaderState extends State<MangaReader>
   //     }
   //   });
   // }
-
-  ComicChapter? _getChapterObject({required String chapterId}) {
-    return widget.comic.chapters
-        .firstWhereOrNull((chapter) => chapter.chapterId == chapterId);
-  }
 
   Widget _buildPlacePage(
       {required ComicChapter chapter,
