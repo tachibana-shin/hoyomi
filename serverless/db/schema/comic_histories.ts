@@ -23,7 +23,7 @@ export const comicHistories = pgTable(
     comicTextId: text("comic_text_id").notNull(),
     name: text("name").notNull(),
     poster: text("poster").notNull(),
-    seasonName: text("season_name").notNull(),
+    seasonName: text("season_name"),
     forTo: integer("for_to"),
     vChap: integer("v_chap").references(() => comicHistoryChapters.id),
     dateCreated: date("date_created").notNull().defaultNow(),

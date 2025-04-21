@@ -22,7 +22,7 @@ const SetWatchPageBodySchema = z
       description: "Unique identifier for the comic (movie/show) text.",
       example: "comic-001"
     }),
-    season_name: z.string().min(1).openapi({
+    season_name: z.string().min(1).optional().openapi({
       description: "The name of the season.",
       example: "Season 1"
     }),

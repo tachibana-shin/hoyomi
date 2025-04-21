@@ -43,6 +43,13 @@
       "when": 1745148644680,
       "tag": "0005_wild_proemial_gods",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1745223466667,
+      "tag": "0006_glorious_puppet_master",
+      "breakpoints": true
     }
   ]
 }

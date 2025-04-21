@@ -89,7 +89,7 @@ limit
       name: string
       poster: string
       eiga_text_id: string
-      season_name: string
+      season_name?: string
       cur: number
       dur: number
       episode_name: string
