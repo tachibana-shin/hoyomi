@@ -5,8 +5,10 @@ import 'dart:ui';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/fluent.dart';
 import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
@@ -358,6 +360,32 @@ class _MangaReaderState extends State<MangaReader>
       debugPrint('save watch page because exit reader');
     });
 
+    watchEffect(() async {
+      if (widget.service is ComicWatchPageMixin && _currChapter.value != null) {
+        try {
+          final watchPage =
+              await (widget.service as ComicWatchPageMixin).getWatchPage(
+            comicId: widget.comicId,
+            chapter: _currChapter.value!,
+            metaComic: widget.comic,
+          );
+
+          if (kDebugMode) {
+            print(watchPage);
+          }
+
+          // pages always ready
+          _currentPage.value = watchPage.currentPage.toDouble();
+          showSnackBar(Text(
+              'Read page restored ${((_currentPage.value + 1) / watchPage.totalPage * 100).round()}%'));
+        } catch (error) {
+          if (error is! UnimplementedError) {
+            debugPrint('Error: $error (${StackTrace.current})');
+          }
+        }
+      }
+    });
+
     super.initState();
   }
 
@@ -381,7 +409,7 @@ class _MangaReaderState extends State<MangaReader>
       return;
     }
 
-    _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+    _timer = Timer(Duration(seconds: 10), () {
       _timer = null;
       (widget.service as ComicWatchPageMixin).setWatchPage(
         comicId: comicId,
