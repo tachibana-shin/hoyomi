@@ -210,8 +210,18 @@
                         "example": "comic-001"
                     },
                     "season_name": {
-                        "type": "string",
-                        "minLength": 1,
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            {
+                                "type": "string",
+                                "enum": [
+                                    ""
+                                ]
+                            }
+                        ],
                         "description": "The name of the season.",
                         "example": "Season 1"
                     },
@@ -277,8 +287,18 @@
                         "example": "eiga-001"
                     },
                     "season_name": {
-                        "type": "string",
-                        "minLength": 1,
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            {
+                                "type": "string",
+                                "enum": [
+                                    ""
+                                ]
+                            }
+                        ],
                         "description": "The name of the season.",
                         "example": "Season 1"
                     },

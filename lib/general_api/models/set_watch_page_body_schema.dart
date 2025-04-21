@@ -25,7 +25,7 @@ class SetWatchPageBodySchema with _$SetWatchPageBodySchema {
 
     /// The name of the season.
     @JsonKey(name: 'season_name')
-    required String seasonName,
+    required dynamic seasonName,
 
     /// The current watch page in seconds.
     required num cur,

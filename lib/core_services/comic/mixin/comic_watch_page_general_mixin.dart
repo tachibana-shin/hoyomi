@@ -21,7 +21,9 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
   }
 
   GeneralApiClient _getClient() {
-    return _client ??= GeneralApiClient(Dio(), baseUrl: _baseApiGeneral);
+    return _client ??= GeneralApiClient(
+        Dio(BaseOptions(contentType: 'application/json')),
+        baseUrl: _baseApiGeneral);
   }
 
   @override

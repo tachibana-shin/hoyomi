@@ -13,7 +13,7 @@ _$SetWatchTimeBodySchemaImpl _$$SetWatchTimeBodySchemaImplFromJson(
       name: json['name'] as String,
       poster: json['poster'] as String,
       eigaTextId: json['eiga_text_id'] as String,
-      seasonName: json['season_name'] as String,
+      seasonName: json['season_name'],
       cur: json['cur'] as num,
       dur: json['dur'] as num,
       episodeName: json['episode_name'] as String,

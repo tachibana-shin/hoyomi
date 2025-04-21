@@ -21,7 +21,9 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
   }
 
   GeneralApiClient _getClient() {
-    return _client ??= GeneralApiClient(Dio(), baseUrl: _baseApiGeneral);
+    return _client ??= GeneralApiClient(
+        Dio(BaseOptions(headers: {'content-type': 'application/json'})),
+        baseUrl: _baseApiGeneral);
   }
 
   @override

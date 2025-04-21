@@ -121,7 +121,7 @@ limit
     // if lastHistory is current history
     if (
       lastHistory?.eigaTextId === params.eiga_text_id &&
-      lastHistory.seasonName === params.season_name
+      (lastHistory.seasonName ?? "") === (params.season_name ?? "")
     ) {
       const values = {
         eigaHistoryId: lastHistory.forTo ?? lastHistory.id,
@@ -153,7 +153,7 @@ limit
           .set({
             name: params.name,
             poster: params.poster,
-            seasonName: params.season_name,
+            seasonName: params.season_name || null,
             // forTo not update
             vChap: id,
             createdAt: new Date()
@@ -167,7 +167,7 @@ limit
           eigaTextId: params.eiga_text_id,
           name: params.name,
           poster: params.poster,
-          seasonName: params.season_name,
+          seasonName: params.season_name || null,
           forTo: lastHistory.forTo ?? lastHistory.id,
           vChap: id
         })
@@ -217,7 +217,7 @@ limit
           eigaTextId: params.eiga_text_id,
           name: params.name,
           poster: params.poster,
-          seasonName: params.season_name,
+          seasonName: params.season_name || null,
           forTo: existsHistory.forTo ?? existsHistory.id,
           vChap: id
         })
@@ -230,7 +230,7 @@ limit
             eigaTextId: params.eiga_text_id,
             name: params.name,
             poster: params.poster,
-            seasonName: params.season_name,
+            seasonName: params.season_name || null,
             forTo: null, // this is parent
             vChap: null
           })

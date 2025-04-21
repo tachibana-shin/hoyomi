@@ -25,7 +25,7 @@ class SetWatchTimeBodySchema with _$SetWatchTimeBodySchema {
 
     /// The name of the season.
     @JsonKey(name: 'season_name')
-    required String seasonName,
+    required dynamic seasonName,
 
     /// The current watch time in seconds.
     required num cur,

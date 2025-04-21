@@ -36,7 +36,7 @@ mixin _$SetWatchPageBodySchema {
 
   /// The name of the season.
   @JsonKey(name: 'season_name')
-  String get seasonName => throw _privateConstructorUsedError;
+  dynamic get seasonName => throw _privateConstructorUsedError;
 
   /// The current watch page in seconds.
   num get cur => throw _privateConstructorUsedError;
@@ -69,7 +69,7 @@ abstract class $SetWatchPageBodySchemaCopyWith<$Res> {
       String name,
       String poster,
       @JsonKey(name: 'comic_text_id') String comicTextId,
-      @JsonKey(name: 'season_name') String seasonName,
+      @JsonKey(name: 'season_name') dynamic seasonName,
       num cur,
       num dur,
       @JsonKey(name: 'episode_name') String episodeName,
@@ -94,7 +94,7 @@ class _$SetWatchPageBodySchemaCopyWithImpl<$Res,
     Object? name = null,
     Object? poster = null,
     Object? comicTextId = null,
-    Object? seasonName = null,
+    Object? seasonName = freezed,
     Object? cur = null,
     Object? dur = null,
     Object? episodeName = null,
@@ -117,10 +117,10 @@ class _$SetWatchPageBodySchemaCopyWithImpl<$Res,
           ? _value.comicTextId
           : comicTextId // ignore: cast_nullable_to_non_nullable
               as String,
-      seasonName: null == seasonName
+      seasonName: freezed == seasonName
           ? _value.seasonName
           : seasonName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as dynamic,
       cur: null == cur
           ? _value.cur
           : cur // ignore: cast_nullable_to_non_nullable
@@ -155,7 +155,7 @@ abstract class _$$SetWatchPageBodySchemaImplCopyWith<$Res>
       String name,
       String poster,
       @JsonKey(name: 'comic_text_id') String comicTextId,
-      @JsonKey(name: 'season_name') String seasonName,
+      @JsonKey(name: 'season_name') dynamic seasonName,
       num cur,
       num dur,
       @JsonKey(name: 'episode_name') String episodeName,
@@ -179,7 +179,7 @@ class __$$SetWatchPageBodySchemaImplCopyWithImpl<$Res>
     Object? name = null,
     Object? poster = null,
     Object? comicTextId = null,
-    Object? seasonName = null,
+    Object? seasonName = freezed,
     Object? cur = null,
     Object? dur = null,
     Object? episodeName = null,
@@ -202,10 +202,10 @@ class __$$SetWatchPageBodySchemaImplCopyWithImpl<$Res>
           ? _value.comicTextId
           : comicTextId // ignore: cast_nullable_to_non_nullable
               as String,
-      seasonName: null == seasonName
+      seasonName: freezed == seasonName
           ? _value.seasonName
           : seasonName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as dynamic,
       cur: null == cur
           ? _value.cur
           : cur // ignore: cast_nullable_to_non_nullable
@@ -263,7 +263,7 @@ class _$SetWatchPageBodySchemaImpl implements _SetWatchPageBodySchema {
   /// The name of the season.
   @override
   @JsonKey(name: 'season_name')
-  final String seasonName;
+  final dynamic seasonName;
 
   /// The current watch page in seconds.
   @override
@@ -299,8 +299,8 @@ class _$SetWatchPageBodySchemaImpl implements _SetWatchPageBodySchema {
             (identical(other.poster, poster) || other.poster == poster) &&
             (identical(other.comicTextId, comicTextId) ||
                 other.comicTextId == comicTextId) &&
-            (identical(other.seasonName, seasonName) ||
-                other.seasonName == seasonName) &&
+            const DeepCollectionEquality()
+                .equals(other.seasonName, seasonName) &&
             (identical(other.cur, cur) || other.cur == cur) &&
             (identical(other.dur, dur) || other.dur == dur) &&
             (identical(other.episodeName, episodeName) ||
@@ -311,8 +311,17 @@ class _$SetWatchPageBodySchemaImpl implements _SetWatchPageBodySchema {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, sourceId, name, poster,
-      comicTextId, seasonName, cur, dur, episodeName, episodeId);
+  int get hashCode => Object.hash(
+      runtimeType,
+      sourceId,
+      name,
+      poster,
+      comicTextId,
+      const DeepCollectionEquality().hash(seasonName),
+      cur,
+      dur,
+      episodeName,
+      episodeId);
 
   @JsonKey(ignore: true)
   @override
@@ -335,7 +344,7 @@ abstract class _SetWatchPageBodySchema implements SetWatchPageBodySchema {
           required final String name,
           required final String poster,
           @JsonKey(name: 'comic_text_id') required final String comicTextId,
-          @JsonKey(name: 'season_name') required final String seasonName,
+          @JsonKey(name: 'season_name') required final dynamic seasonName,
           required final num cur,
           required final num dur,
           @JsonKey(name: 'episode_name') required final String episodeName,
@@ -366,7 +375,7 @@ abstract class _SetWatchPageBodySchema implements SetWatchPageBodySchema {
 
   /// The name of the season.
   @JsonKey(name: 'season_name')
-  String get seasonName;
+  dynamic get seasonName;
   @override
 
   /// The current watch page in seconds.

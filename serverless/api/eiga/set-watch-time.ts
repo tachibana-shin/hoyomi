@@ -22,7 +22,7 @@ const SetWatchTimeBodySchema = z
       description: "Unique identifier for the eiga (movie/show) text.",
       example: "eiga-001"
     }),
-    season_name: z.string().min(1).optional().openapi({
+    season_name: z.string().min(1).or(z.literal("")).optional().openapi({
       description: "The name of the season.",
       example: "Season 1"
     }),
