@@ -82,7 +82,7 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
   }
 
   @override
-  Future<Map<String, WatchTime>> getWatchTimeEpisodes({
+  getWatchTimeEpisodes({
     required String eigaId,
     required List<EigaEpisode> episodes,
   }) async {
@@ -98,9 +98,10 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
 
     return {
       for (final item in body.data)
-        item.chapId: WatchTime(
+        item.chapId: WatchTimeUpdated(
           position: Duration(seconds: item.cur.round()),
           duration: Duration(seconds: item.dur.round()),
+          updatedAt: DateTime.parse(item.updatedAt),
         )
     };
   }

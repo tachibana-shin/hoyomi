@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user_async.dart';
 import 'package:hoyomi/core_services/comic/interfaces/main.dart';
+import 'package:hoyomi/core_services/comic/mixin/comic_watch_page_mixin.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
@@ -64,6 +66,46 @@ class _DetailsComicState extends State<DetailsComic>
     } on UnimplementedError {
       return null;
     }
+  });
+  late final _watchPageChapters =
+      asyncComputed<Map<String, WatchPageUpdated>?>(() async {
+    if (_comicIsFake.value) return null;
+
+    if (_service is ComicWatchPageMixin) {
+      final chapters = _comic.value.chapters;
+
+      try {
+        return await (_service as ComicWatchPageMixin).getWatchPageEpisodes(
+          comicId: widget.comicId,
+          chapters: chapters,
+        );
+      } on UnimplementedError {
+        return null;
+      }
+    }
+
+    return null;
+  }, beforeUpdate: () => null);
+  late final _lastReadChapter =
+      computed<({ComicChapter chapter, WatchPageUpdated watchPage})?>(() {
+    final watchPage = _watchPageChapters.value?.entries
+        .fold<MapEntry<String, WatchPageUpdated>?>(
+      null,
+      (prev, element) {
+        if (prev == null) return element;
+        return element.value.updatedAt.isAfter(prev.value.updatedAt)
+            ? element
+            : prev;
+      },
+    );
+
+    if (watchPage == null) return null;
+
+    final chapter = _comic.value.chapters
+        .firstWhereOrNull((chapter) => chapter.chapterId == watchPage.key);
+    if (chapter == null) return null;
+
+    return (chapter: chapter, watchPage: watchPage.value);
   });
 
   @override
@@ -408,6 +450,8 @@ class _DetailsComicState extends State<DetailsComic>
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Watch(() {
             final comic = _comic.value;
+            final lastReadChapter = _lastReadChapter.value;
+
             return Table(
               columnWidths: const {
                 0: FixedColumnWidth(100),
@@ -458,7 +502,9 @@ class _DetailsComicState extends State<DetailsComic>
                   _buildTableRow('Views', formatNumber(comic.views!)),
                 _buildTableRow(
                     'Last Updated', formatTimeAgo(comic.lastModified)),
-                _buildTableRow('Chương', 'Chương 16 trên 45 (1 giờ 39 phút)'),
+                if (lastReadChapter != null)
+                  _buildTableRow('Chapter',
+                      '${lastReadChapter.chapter.name} of ${comic.chapters.length}'),
                 TableRow(children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -691,6 +737,7 @@ class _DetailsComicState extends State<DetailsComic>
           comic: _comic.value,
           sourceId: widget.sourceId,
           comicId: widget.comicId,
+          watchPageChapters: _watchPageChapters.value ?? const <String, WatchPageUpdated>{},
           reverse: true,
           // histories: _historyChapters.value,
           initialChildSize: 0.15,

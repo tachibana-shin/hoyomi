@@ -14,5 +14,6 @@ export 'source_content.dart';
 export 'source_video.dart';
 export 'subtitle.dart';
 export 'watch_time_data.dart';
+export 'watch_time_updated.dart';
 export 'watch_time.dart';
 export '../../interfaces/main.dart';

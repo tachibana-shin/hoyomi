@@ -98,6 +98,25 @@ class _MangaReaderState extends State<MangaReader>
   late final Computed<double> _realCurrentPage;
   late final Computed<int> _realLength;
 
+  late final _watchPageChapters =
+      asyncComputed<Map<String, WatchPageUpdated>?>(() async {
+    if (widget.service is ComicWatchPageMixin) {
+      final chapters = widget.comic.chapters;
+
+      try {
+        return await (widget.service as ComicWatchPageMixin)
+            .getWatchPageEpisodes(
+          comicId: widget.comicId,
+          chapters: chapters,
+        );
+      } on UnimplementedError {
+        return null;
+      }
+    }
+
+    return null;
+  }, beforeUpdate: () => null);
+
   // tiny status system
   late final _batteryLevel = ref<int?>(null);
   late final _batteryState = ref<BatteryState?>(null);
@@ -818,13 +837,14 @@ class _MangaReaderState extends State<MangaReader>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (context) => SheetChapters(
-        comic: widget.comic,
-        sourceId: widget.service.uid,
-        comicId: widget.comicId,
-        currentChapterId: _chapterId.value,
-        initialChildSize: 0.6,
-      ),
+      builder: (context) => Watch(() => SheetChapters(
+            comic: widget.comic,
+            sourceId: widget.service.uid,
+            comicId: widget.comicId,
+            currentChapterId: _chapterId.value,
+            initialChildSize: 0.6,
+            watchPageChapters: _watchPageChapters.value ?? const <String, WatchPageUpdated>{},
+          )),
     );
   }
 

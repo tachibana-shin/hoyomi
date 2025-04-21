@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
+import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
+import 'package:hoyomi/widgets/circular_progress.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 
@@ -11,6 +12,7 @@ class SheetChapters extends StatefulWidget {
   final MetaComic comic;
   final String sourceId;
   final String comicId;
+  final Map<String, WatchPageUpdated> watchPageChapters;
   final String? currentChapterId;
   final bool replace;
   final bool reverse;
@@ -22,6 +24,7 @@ class SheetChapters extends StatefulWidget {
     required this.comic,
     required this.sourceId,
     required this.comicId,
+    required this.watchPageChapters,
     this.currentChapterId,
     this.replace = false,
     this.reverse = false,
@@ -134,25 +137,26 @@ class _SheetChaptersState extends State<SheetChapters> {
                         fontSize: 12.0,
                       ),
                     ),
-                    // trailing: history == null
-                    //     ? null
-                    //     : CircularProgress(
-                    //         value: min(
-                    //           1,
-                    //           (history.currentPage + 1) / history.maxPage,
-                    //         ),
-                    //         strokeWidth: 3.0,
-                    //         textStyle: TextStyle(
-                    //           fontSize: 10,
-                    //           fontWeight: FontWeight.w600,
-                    //           color: Theme.of(context).colorScheme.onSurface,
-                    //         ),
-                    //         borderColor: AlwaysStoppedAnimation<Color>(
-                    //           Colors.green,
-                    //         ),
-                    //         backgroundBorder: Colors.grey[300],
-                    //         size: 25,
-                    //       ),
+                    trailing: switch (
+                        widget.watchPageChapters[chapter.chapterId]) {
+                      null => null,
+                      final watchPage => CircularProgress(
+                          value:
+                              ((watchPage.currentPage + 1) / watchPage.totalPage)
+                                  .clamp(0, 1),
+                          strokeWidth: 3.0,
+                          textStyle: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                          borderColor: AlwaysStoppedAnimation<Color>(
+                            Colors.green,
+                          ),
+                          backgroundBorder: Colors.grey[300],
+                          size: 25,
+                        ),
+                    },
                     onTap: () {
                       final url =
                           "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${chapter.chapterId}";

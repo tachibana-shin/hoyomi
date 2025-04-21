@@ -4,13 +4,13 @@ import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 mixin ComicWatchPageMixin on AuthMixin {
   Future<List<ComicHistory>> getWatchHistory({required int page});
 
-  Future<WatchPage> getWatchPage({
+  Future<WatchPageUpdated> getWatchPage({
     required String comicId,
     required ComicChapter chapter,
     required MetaComic metaComic,
   });
 
-  Future<Map<String, WatchPage>> getWatchPageEpisodes({
+  Future<Map<String, WatchPageUpdated>> getWatchPageEpisodes({
     required String comicId,
     required List<ComicChapter> chapters,
   }) async {

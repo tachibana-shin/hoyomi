@@ -14,6 +14,7 @@ export 'meta_comic.dart';
 export '../../interfaces/paginate.dart';
 export 'rate_value.dart';
 export 'status_enum.dart';
+export 'watch_page_updated.dart';
 export 'watch_page.dart';
 
 export '../../interfaces/main.dart';

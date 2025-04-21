@@ -788,7 +788,7 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  Future<Map<String, WatchTime>> getWatchTimeEpisodes({
+  getWatchTimeEpisodes({
     required eigaId,
     required episodes,
   }) async {
@@ -810,9 +810,10 @@ class AnimeVietsubService extends ABEigaService
     return {
       for (final item in json)
         if (chapIdToEpisodeKey.containsKey(item['chap_id']))
-          chapIdToEpisodeKey[item['chap_id']]!: WatchTime(
+          chapIdToEpisodeKey[item['chap_id']]!: WatchTimeUpdated(
             position: Duration(seconds: (item['cur'] as num).round()),
             duration: Duration(seconds: (item['dur'] as num).round()),
+            updatedAt: DateTime.tryParse(item['updated_at']) ?? DateTime.now(),
           ),
     };
   }

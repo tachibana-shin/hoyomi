@@ -56,7 +56,7 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
   }
 
   @override
-  Future<WatchPage> getWatchPage({
+ getWatchPage({
     required String comicId,
     required ComicChapter chapter,
     required MetaComic metaComic,
@@ -75,14 +75,15 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
 
     if (data == null) throw Exception('No watch page found');
 
-    return WatchPage(
+    return WatchPageUpdated(
       currentPage: data.cur.toInt(),
       totalPage: data.dur.toInt(),
+      updatedAt: DateTime.parse(data.updatedAt),
     );
   }
 
   @override
-  Future<Map<String, WatchPage>> getWatchPageEpisodes({
+  getWatchPageEpisodes({
     required String comicId,
     required List<ComicChapter> chapters,
   }) async {
@@ -98,9 +99,10 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
 
     return {
       for (final item in body.data)
-        item.chapId: WatchPage(
+        item.chapId: WatchPageUpdated(
           currentPage: item.cur.toInt(),
           totalPage: item.dur.toInt(),
+          updatedAt: DateTime.parse(item.updatedAt),
         )
     };
   }

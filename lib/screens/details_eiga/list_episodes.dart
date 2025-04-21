@@ -5,12 +5,8 @@ import 'package:awesome_extensions/awesome_extensions_flutter.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/watch_time.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/pages/details_eiga/[sourceId]/[eigaId].page.dart';
 import 'package:hoyomi/stores.dart';
@@ -35,8 +31,8 @@ class ListEpisodes extends StatefulWidget {
     required int indexEpisode,
     required EigaEpisodes episodesEiga,
   }) onTapEpisode;
-  final Future<Map<String, WatchTime>> Function(EigaEpisodes episodesEiga)
-      getWatchTimeEpisodes;
+  final Future<Map<String, WatchTimeUpdated>> Function(
+      EigaEpisodes episodesEiga) getWatchTimeEpisodes;
   final EventBus eventBus;
   final bool eager;
 
@@ -97,7 +93,7 @@ class _ListEpisodesState extends State<ListEpisodes>
       rethrow;
     }
   });
-  late final _watchTimeEpisodes = ref<Map<String, WatchTime>?>(null);
+  late final _watchTimeEpisodes = ref<Map<String, WatchTimeUpdated>?>(null);
 
   final Map<int, void Function()> _disposes = {};
 
@@ -362,8 +358,11 @@ class _ListEpisodesState extends State<ListEpisodes>
                 event.watchTimeData.episodeId == episode.episodeId &&
                 event.watchTimeData.watchTime != null) {
               _watchTimeEpisodes.value ??= {};
-              _watchTimeEpisodes.value![episode.episodeId] =
-                  event.watchTimeData.watchTime!;
+              _watchTimeEpisodes.value![episode.episodeId] = WatchTimeUpdated(
+                position: event.watchTimeData.watchTime!.position,
+                duration: event.watchTimeData.watchTime!.duration,
+                updatedAt: DateTime.now(),
+              );
 
               setState2(() {});
             }

@@ -10,7 +10,7 @@ mixin EigaWatchTimeMixin on AuthMixin {
     required MetaEiga metaEiga,
   });
 
-  Future<Map<String, WatchTime>> getWatchTimeEpisodes({
+  Future<Map<String, WatchTimeUpdated>> getWatchTimeEpisodes({
     required String eigaId,
     required List<EigaEpisode> episodes,
   }) async {

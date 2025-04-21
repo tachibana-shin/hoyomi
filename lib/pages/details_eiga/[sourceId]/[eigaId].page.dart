@@ -68,7 +68,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   double _aspectRatio = 16 / 9;
 
   final Map<String, EigaEpisodes> _cacheEpisodesStore = {};
-  final Map<String, Map<String, WatchTime>> _cacheWatchTimeStore = {};
+  final Map<String, Map<String, WatchTimeUpdated>> _cacheWatchTimeStore = {};
   late final _title =
       computed(() => _metaIsFake.value ? '' : _metaEiga.value.name);
   late final _subtitle = computed(
