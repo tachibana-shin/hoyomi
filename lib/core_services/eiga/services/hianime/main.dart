@@ -213,12 +213,12 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
 
   @override
   getCategory({required categoryId, required page, required filters}) async {
-    final url = '$baseUrl/$categoryId';
+    final url = '$baseUrl/${categoryId.replaceAll(r'_', '/')}';
     final Map<String, List<String>> query = Map.from(filters);
 
     query['page'] = [page.toString()];
 
-    final $ = await fetch$('$baseUrl/$categoryId', query: query);
+    final $ = await fetch$(url, query: query);
 
     final name = $('.cat-heading').text();
     final items = $('.flw-item').map(_parseItem);
@@ -483,10 +483,14 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
   @override
   search({required keyword, required page, required filters, required quick}) {
     return getCategory(
-      categoryId: 'search_$keyword',
+      categoryId: 'search',
       page: page,
       // /_next/data/YjU3ELa3ICaBELMtMHUHj/tim-kiem.json?keyword=%C4%91%E1%BA%A1o+l%C3%A0m+ch%E1%BB%93ng+%C4%91%E1%BA%A3m
-      filters: filters,
+      filters: {
+        ...filters,
+        'keyword': [keyword],
+        'page': [page.toString()]
+      },
     );
   }
 }
