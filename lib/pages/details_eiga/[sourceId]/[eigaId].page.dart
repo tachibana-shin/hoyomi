@@ -303,96 +303,116 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         children: [
           InkWell(
             onTap: _showModalMetadata,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // name
-                Text(
-                  metaEiga.name,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 18.0,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (metaEiga.views != null)
-                  Text(
-                    '${formatNumber(metaEiga.views!)} views',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.secondary,
-                          fontSize: 14.0,
-                        ),
-                  ),
-
-                SizedBox(height: 2.0),
-
-                // authors
-                if (metaEiga.authors != null && metaEiga.authors!.isNotEmpty)
-                  Wrap(
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // name
                       Text(
-                        'Author ',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.secondary,
-                              fontSize: 14.0,
-                            ),
+                        metaEiga.name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18.0,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      ...metaEiga.authors!.indexed
-                          .mapWithIterable((entry, list) {
-                        final (index, author) = entry;
-                        return GestureDetector(
-                          onTap: author.genreId == Genre.noId
-                              ? null
-                              : () => context.push(
-                                  '/category_eiga/${widget.sourceId}/${author.genreId}'),
-                          child: Text(
-                            '${author.name}${index < list.length - 1 ? ', ' : ''}',
+                      if (metaEiga.views != null)
+                        Text(
+                          '${formatNumber(metaEiga.views!)} views',
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.secondary,
+                                    fontSize: 14.0,
+                                  ),
+                        ),
+
+                      SizedBox(height: 2.0),
+
+                      // authors
+                      if (metaEiga.authors != null &&
+                          metaEiga.authors!.isNotEmpty)
+                        Wrap(
+                          children: [
+                            Text(
+                              'Author ',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: colorScheme.secondary,
+                                    fontSize: 14.0,
+                                  ),
+                            ),
+                            ...metaEiga.authors!.indexed
+                                .mapWithIterable((entry, list) {
+                              final (index, author) = entry;
+                              return GestureDetector(
+                                onTap: author.genreId == Genre.noId
+                                    ? null
+                                    : () => context.push(
+                                        '/category_eiga/${widget.sourceId}/${author.genreId}'),
+                                child: Text(
+                                  '${author.name}${index < list.length - 1 ? ', ' : ''}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        fontSize: 14.0,
+                                        color: colorScheme.tertiary,
+                                      ),
+                                ),
+                              );
+                            })
+                          ],
+                        ),
+
+                      // studios
+                      if (metaEiga.studios != null &&
+                          metaEiga.studios!.isNotEmpty)
+                        Wrap(children: [
+                          Text(
+                            'Studio ',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
                                 ?.copyWith(
+                                  color: colorScheme.secondary,
                                   fontSize: 14.0,
-                                  color: colorScheme.tertiary,
                                 ),
                           ),
-                        );
-                      })
+                          ...metaEiga.studios!.indexed
+                              .mapWithIterable((entry, list) {
+                            final (index, author) = entry;
+                            return GestureDetector(
+                              onTap: author.genreId == Genre.noId
+                                  ? null
+                                  : () => context.push(
+                                      '/category_eiga/${widget.sourceId}/${author.genreId}'),
+                              child: Text(
+                                '${author.name}${index < list.length - 1 ? ', ' : ''}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      fontSize: 14.0,
+                                      color: colorScheme.tertiary,
+                                    ),
+                              ),
+                            );
+                          }),
+                        ]),
+
+                      SizedBox(height: 2.0),
                     ],
                   ),
-
-                // studios
-                if (metaEiga.studios != null && metaEiga.studios!.isNotEmpty)
-                  Wrap(children: [
-                    Text(
-                      'Studio ',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.secondary,
-                            fontSize: 14.0,
-                          ),
-                    ),
-                    ...metaEiga.studios!.indexed.mapWithIterable((entry, list) {
-                      final (index, author) = entry;
-                      return GestureDetector(
-                        onTap: author.genreId == Genre.noId
-                            ? null
-                            : () => context.push(
-                                '/category_eiga/${widget.sourceId}/${author.genreId}'),
-                        child: Text(
-                          '${author.name}${index < list.length - 1 ? ', ' : ''}',
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontSize: 14.0,
-                                    color: colorScheme.tertiary,
-                                  ),
-                        ),
-                      );
-                    }),
-                  ]),
-
-                SizedBox(height: 2.0),
-              ],
-            ),
+                  Opacity(
+                      opacity: 0.8,
+                      child: Iconify(Ion.chevron_right, size: 16).marginOnly(top: 8.0, right: 8.0)),
+                ]),
           ),
           SizedBox(height: 2.0),
 
