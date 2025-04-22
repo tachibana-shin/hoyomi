@@ -13,6 +13,8 @@ class PostApiComicSetWatchPageResponse with _$PostApiComicSetWatchPageResponse {
     /// Indicates whether the watch page was successfully set.
     required bool success,
   }) = _PostApiComicSetWatchPageResponse;
-  
-  factory PostApiComicSetWatchPageResponse.fromJson(Map<String, Object?> json) => _$PostApiComicSetWatchPageResponseFromJson(json);
+
+  factory PostApiComicSetWatchPageResponse.fromJson(
+          Map<String, Object?> json) =>
+      _$PostApiComicSetWatchPageResponseFromJson(json);
 }

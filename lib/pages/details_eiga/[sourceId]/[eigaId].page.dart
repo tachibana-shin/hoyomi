@@ -411,7 +411,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   ),
                   Opacity(
                       opacity: 0.8,
-                      child: Iconify(Ion.chevron_right, size: 16).marginOnly(top: 8.0, right: 8.0)),
+                      child: Iconify(Ion.chevron_right, size: 16)
+                          .marginOnly(top: 8.0, right: 8.0)),
                 ]),
           ),
           SizedBox(height: 2.0),

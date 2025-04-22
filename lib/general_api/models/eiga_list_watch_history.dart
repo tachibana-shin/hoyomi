@@ -15,6 +15,7 @@ class EigaListWatchHistory with _$EigaListWatchHistory {
   const factory EigaListWatchHistory({
     required List<Data4> data,
   }) = _EigaListWatchHistory;
-  
-  factory EigaListWatchHistory.fromJson(Map<String, Object?> json) => _$EigaListWatchHistoryFromJson(json);
+
+  factory EigaListWatchHistory.fromJson(Map<String, Object?> json) =>
+      _$EigaListWatchHistoryFromJson(json);
 }

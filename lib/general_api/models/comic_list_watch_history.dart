@@ -15,6 +15,7 @@ class ComicListWatchHistory with _$ComicListWatchHistory {
   const factory ComicListWatchHistory({
     required List<Data> data,
   }) = _ComicListWatchHistory;
-  
-  factory ComicListWatchHistory.fromJson(Map<String, Object?> json) => _$ComicListWatchHistoryFromJson(json);
+
+  factory ComicListWatchHistory.fromJson(Map<String, Object?> json) =>
+      _$ComicListWatchHistoryFromJson(json);
 }
