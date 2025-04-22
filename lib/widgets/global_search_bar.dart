@@ -501,7 +501,9 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                   color: theme.colorScheme.secondaryFixedDim
                       .withValues(alpha: 0.7),
                 ),
-                onPressed: () => context.canPop() ? context.pop() : context.replace('/search'),
+                onPressed: () => context.canPop()
+                    ? context.pop()
+                    : context.replace('/search'),
               ),
             if (focusing || widget.pageIsSearch && widget.keyword.isNotEmpty)
               _buildServiceSelector()

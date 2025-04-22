@@ -845,7 +845,7 @@ class _MangaReaderState extends State<MangaReader>
             initialChildSize: 0.6,
             watchPageChapters:
                 _watchPageChapters.value ?? const <String, WatchPageUpdated>{},
-                lastReadChapter: null,
+            lastReadChapter: null,
           )),
     );
   }
