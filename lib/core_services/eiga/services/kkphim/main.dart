@@ -17,6 +17,9 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
 // EigaHistoryMixin,
 // EigaFollowMixin,
 {
+  @override
+  bool? get $isAuth => false;
+
   final hostCUrl = 'phimapi.com';
   final _homeCms = 'https://kkphim.com/duyet-tim';
   @override

@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:math';
 
+import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -24,7 +26,6 @@ import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/ic.dart';
 import 'package:iconify_flutter/icons/ion.dart';
-import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
@@ -208,8 +209,8 @@ class _DetailsComicState extends State<DetailsComic>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Left Column: Comic Image
-            Expanded(
-              flex: 1,
+            SizedBox(
+              width: min((1 / 3 * 100).w(context), 120),
               child: AspectRatio(
                 aspectRatio: 2 / 3,
                 child: ClipRRect(
@@ -225,154 +226,108 @@ class _DetailsComicState extends State<DetailsComic>
             ),
             const SizedBox(width: 16.0),
             // Right Column: Comic Information
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  comic.name,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (comic.originalName != null) ...[
+                  SizedBox(height: 4.0),
                   Text(
-                    comic.name,
-                    style: const TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
+                    comic.originalName!,
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: Theme.of(context).colorScheme.secondary,
+                      height: 1.2,
                     ),
-                    maxLines: 3,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  if (comic.originalName != null) ...[
-                    SizedBox(height: 4.0),
-                    Text(
-                      comic.originalName!,
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Theme.of(context).colorScheme.secondary,
-                        height: 1.2,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                  const SizedBox(height: 8.0),
-                  if (comic.author != null)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Iconify(Ic.round_account_circle, size: 18.0),
-                        SizedBox(width: 8.0),
-                        Expanded(
-                          child: Text(
-                            comic.author!,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w500,
-                            ),
+                ],
+                const SizedBox(height: 8.0),
+                if (comic.author != null)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Iconify(Ic.round_account_circle, size: 18.0),
+                      SizedBox(width: 8.0),
+                      Expanded(
+                        child: Text(
+                          comic.author!,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ],
-                    ),
-                  if (comic.translator != null)
-                    Padding(
-                      padding: EdgeInsets.only(top: 8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Iconify(Mdi.translate_variant, size: 18.0),
-                          SizedBox(width: 8.0),
-                          Text(
-                            comic.translator!,
-                            style: const TextStyle(fontSize: 14.0),
-                          ),
-                        ],
                       ),
-                    ),
+                    ],
+                  ),
+                if (comic.translator != null)
                   Padding(
-                    padding: EdgeInsets.only(
-                      top: comic.translator != null ? 2.0 : 8.0,
-                    ),
+                    padding: EdgeInsets.only(top: 8.0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Iconify(Ion.play_outline, size: 18.0),
+                        const Iconify(Mdi.translate_variant, size: 18.0),
                         SizedBox(width: 8.0),
                         Text(
-                          {
-                                StatusEnum.ongoing: "On going",
-                                StatusEnum.completed: "Completed",
-                                StatusEnum.canceled: "Canceled",
-                                StatusEnum.unknown: "Unknown",
-                                StatusEnum.onHiatus: "On hiatus",
-                                StatusEnum.publishingFinished:
-                                    "Publishing finished",
-                              }[comic.status] ??
-                              comic.status.toString(),
-                          style: const TextStyle(
-                            fontSize: 14.0,
-                            color: Colors.lightGreen,
-                          ),
+                          comic.translator!,
+                          style: const TextStyle(fontSize: 14.0),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 8.0),
-                  if (comic.rate != null)
-                    Row(
-                      children: [
-                        ...List.generate(
-                          comic.rate!.value.floor(),
-                          (index) => Icon(
-                            Icons.star,
-                            size: 16.0,
-                            color: Colors.blue
-                                .shade200 /* Theme.of(context)
-                                            .colorScheme
-                                            .onPrimaryContainer,*/
-                            ,
-                          ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: comic.translator != null ? 2.0 : 8.0,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Iconify(Ion.play_outline, size: 18.0),
+                      SizedBox(width: 8.0),
+                      Text(
+                        {
+                              StatusEnum.ongoing: "On going",
+                              StatusEnum.completed: "Completed",
+                              StatusEnum.canceled: "Canceled",
+                              StatusEnum.unknown: "Unknown",
+                              StatusEnum.onHiatus: "On hiatus",
+                              StatusEnum.publishingFinished:
+                                  "Publishing finished",
+                            }[comic.status] ??
+                            comic.status.toString(),
+                        style: const TextStyle(
+                          fontSize: 14.0,
+                          color: Colors.lightGreen,
                         ),
-                        if (comic.rate!.value % 1 != 0)
-                          Icon(
-                            Icons.star_half,
-                            size: 16.0,
-                            color: Colors.blue.shade200,
-                          ),
-                        ...List.generate(
-                          (comic.rate!.best - comic.rate!.value).floor(),
-                          (index) => Icon(
-                            Icons.star,
-                            size: 16.0,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurfaceVariant
-                                .withValues(alpha: 0.5),
-                          ),
-                        ),
-                        const SizedBox(width: 4.0),
-                        Text(
-                          "(${comic.rate!.count})",
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            color: Theme.of(context).colorScheme.inverseSurface,
-                          ),
-                        ),
-                      ],
-                    ),
-                ],
-              ),
-            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ).expanded(),
           ],
         ),
         const SizedBox(height: 16.0),
         _buildInfoScreen(),
         const SizedBox(height: 16.0),
-        Row(
-          children: [
-            Watch(() => Expanded(child: _buildButtonRead(comic))),
-            const SizedBox(width: 8.0),
-            _buildButtonDownload(),
-          ],
-        ),
-        const SizedBox(height: 20.0),
+        // Row(
+        //   children: [
+        //     Watch(() => Expanded(child: _buildButtonRead(comic))),
+        //     const SizedBox(width: 8.0),
+        //     _buildButtonDownload(),
+        //   ],
+        // ),
+        // const SizedBox(height: 20.0),
 
         // Comment
         if (_service is ComicAuthMixin &&
@@ -489,6 +444,48 @@ class _DetailsComicState extends State<DetailsComic>
                 //   _buildTableRow('Author', comic.author!),
                 if (comic.translator != null)
                   _buildTableRow('Translate', comic.translator!),
+                if (comic.rate != null)
+                  _buildTableRow(
+                    'Rate',
+                    null,
+                    Row(
+                      children: [
+                        ...List.generate(
+                          comic.rate!.value.floor(),
+                          (index) => Icon(
+                            Icons.star,
+                            size: 16.0,
+                            color: Colors.blue.shade200,
+                          ),
+                        ),
+                        if (comic.rate!.value % 1 != 0)
+                          Icon(
+                            Icons.star_half,
+                            size: 16.0,
+                            color: Colors.blue.shade200,
+                          ),
+                        ...List.generate(
+                          (comic.rate!.best - comic.rate!.value).floor(),
+                          (index) => Icon(
+                            Icons.star,
+                            size: 16.0,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant
+                                .withValues(alpha: 0.5),
+                          ),
+                        ),
+                        const SizedBox(width: 4.0),
+                        Text(
+                          "(${comic.rate!.count})",
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Theme.of(context).colorScheme.inverseSurface,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 // _buildTableRow(
                 //     'Status',
                 //     switch (comic.status) {
@@ -565,137 +562,137 @@ class _DetailsComicState extends State<DetailsComic>
     );
   }
 
-  Widget _buildButtonRead(MetaComic comic) {
-    //    _historyChapters
+  // Widget _buildButtonRead(MetaComic comic) {
+  //   //    _historyChapters
 
-    // final current = _historyChapters.value?.entries.isNotEmpty == true
-    //     ? _historyChapters.value?.entries.reduce(
-    //         (a, b) => a.value.updatedAt.isAfter(b.value.updatedAt) ? a : b,
-    //       )
-    //     : null;
-    final current = null;
-    final currentEpisodeIndex = current == null
-        ? null
-        : comic.chapters.toList().lastIndexWhere((chapter) {
-            return current.key == chapter.chapterId;
-          });
-    final totalEpisodes = comic.chapters.length;
+  //   // final current = _historyChapters.value?.entries.isNotEmpty == true
+  //   //     ? _historyChapters.value?.entries.reduce(
+  //   //         (a, b) => a.value.updatedAt.isAfter(b.value.updatedAt) ? a : b,
+  //   //       )
+  //   //     : null;
+  //   final current = null;
+  //   final currentEpisodeIndex = current == null
+  //       ? null
+  //       : comic.chapters.toList().lastIndexWhere((chapter) {
+  //           return current.key == chapter.chapterId;
+  //         });
+  //   final totalEpisodes = comic.chapters.length;
 
-    return ClipRRect(
-      clipBehavior: Clip.antiAlias,
-      borderRadius: BorderRadius.circular(35),
-      child: InkWell(
-        onTap: () {
-          if (currentEpisodeIndex != null) {
-            context.push(
-              "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${comic.chapters.elementAt(currentEpisodeIndex).chapterId}",
-              extra: {'comic': comic},
-            );
-          } else {
-            context.push(
-              "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${comic.chapters.first.chapterId}",
-              extra: {'comic': comic},
-            );
-          }
-        },
-        borderRadius: BorderRadius.circular(35),
-        child: Stack(
-          children: [
-            Container(
-              height: 48,
-              decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.tertiaryFixed.withValues(alpha: 0.3),
-                //.tertiaryContainer,
-                borderRadius: BorderRadius.circular(35),
-              ),
-            ),
-            Container(
-              height: 48,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(35),
-                  bottomLeft: Radius.circular(35),
-                ),
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: AnimatedFractionallySizedBox(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                alignment: Alignment.centerLeft,
-                widthFactor: currentEpisodeIndex == null
-                    ? 0
-                    : (totalEpisodes - currentEpisodeIndex) / totalEpisodes,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.tertiaryFixedDim.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(35),
-                      bottomLeft: Radius.circular(35),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            // Text content
-            Container(
-              height: 48,
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    currentEpisodeIndex == null ? 'Read now' : 'Continue',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface, //.withValues(alpha: 0.6),
-                    ),
-                  ),
-                  Text(
-                    currentEpisodeIndex == null
-                        ? '$totalEpisodes chapters'
-                        : '${comic.chapters.elementAt(currentEpisodeIndex).name} of $totalEpisodes',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withValues(alpha: 0.9),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  //   return ClipRRect(
+  //     clipBehavior: Clip.antiAlias,
+  //     borderRadius: BorderRadius.circular(35),
+  //     child: InkWell(
+  //       onTap: () {
+  //         if (currentEpisodeIndex != null) {
+  //           context.push(
+  //             "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${comic.chapters.elementAt(currentEpisodeIndex).chapterId}",
+  //             extra: {'comic': comic},
+  //           );
+  //         } else {
+  //           context.push(
+  //             "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${comic.chapters.first.chapterId}",
+  //             extra: {'comic': comic},
+  //           );
+  //         }
+  //       },
+  //       borderRadius: BorderRadius.circular(35),
+  //       child: Stack(
+  //         children: [
+  //           Container(
+  //             height: 48,
+  //             decoration: BoxDecoration(
+  //               color: Theme.of(
+  //                 context,
+  //               ).colorScheme.tertiaryFixed.withValues(alpha: 0.3),
+  //               //.tertiaryContainer,
+  //               borderRadius: BorderRadius.circular(35),
+  //             ),
+  //           ),
+  //           Container(
+  //             height: 48,
+  //             decoration: BoxDecoration(
+  //               borderRadius: BorderRadius.only(
+  //                 topLeft: Radius.circular(35),
+  //                 bottomLeft: Radius.circular(35),
+  //               ),
+  //             ),
+  //             clipBehavior: Clip.antiAlias,
+  //             child: AnimatedFractionallySizedBox(
+  //               duration: const Duration(milliseconds: 300),
+  //               curve: Curves.easeInOut,
+  //               alignment: Alignment.centerLeft,
+  //               widthFactor: currentEpisodeIndex == null
+  //                   ? 0
+  //                   : (totalEpisodes - currentEpisodeIndex) / totalEpisodes,
+  //               child: Container(
+  //                 decoration: BoxDecoration(
+  //                   color: Theme.of(
+  //                     context,
+  //                   ).colorScheme.tertiaryFixedDim.withValues(alpha: 0.6),
+  //                   borderRadius: BorderRadius.only(
+  //                     topLeft: Radius.circular(35),
+  //                     bottomLeft: Radius.circular(35),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //           // Text content
+  //           Container(
+  //             height: 48,
+  //             alignment: Alignment.center,
+  //             child: Column(
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               children: [
+  //                 Text(
+  //                   currentEpisodeIndex == null ? 'Read now' : 'Continue',
+  //                   style: TextStyle(
+  //                     fontSize: 16,
+  //                     fontWeight: FontWeight.w500,
+  //                     color: Theme.of(
+  //                       context,
+  //                     ).colorScheme.onSurface, //.withValues(alpha: 0.6),
+  //                   ),
+  //                 ),
+  //                 Text(
+  //                   currentEpisodeIndex == null
+  //                       ? '$totalEpisodes chapters'
+  //                       : '${comic.chapters.elementAt(currentEpisodeIndex).name} of $totalEpisodes',
+  //                   style: TextStyle(
+  //                     fontSize: 12,
+  //                     color: Theme.of(
+  //                       context,
+  //                     ).colorScheme.onSurface.withValues(alpha: 0.9),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _buildButtonDownload() {
-    return Container(
-      width: 48,
-      height: 48,
-      decoration: BoxDecoration(
-        color: Theme.of(
-          context,
-        ).colorScheme.tertiaryFixedDim.withValues(alpha: 0.44),
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: IconButton(
-          onPressed: () {},
-          icon: Iconify(MaterialSymbols.download),
-          iconSize: 48 / 2,
-        ),
-      ),
-    );
-  }
+  // Widget _buildButtonDownload() {
+  //   return Container(
+  //     width: 48,
+  //     height: 48,
+  //     decoration: BoxDecoration(
+  //       color: Theme.of(
+  //         context,
+  //       ).colorScheme.tertiaryFixedDim.withValues(alpha: 0.44),
+  //       shape: BoxShape.circle,
+  //     ),
+  //     child: Center(
+  //       child: IconButton(
+  //         onPressed: () {},
+  //         icon: Iconify(MaterialSymbols.download),
+  //         iconSize: 48 / 2,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildSuggest(MetaComic comic) {
     return Watch(() => HorizontalComicList(
@@ -744,6 +741,7 @@ class _DetailsComicState extends State<DetailsComic>
           comicId: widget.comicId,
           watchPageChapters:
               _watchPageChapters.value ?? const <String, WatchPageUpdated>{},
+          lastReadChapter: _lastReadChapter.value,
           reverse: true,
           // histories: _historyChapters.value,
           initialChildSize: 0.15,

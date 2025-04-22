@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:dashed_circular_progress_bar/dashed_circular_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
@@ -14,6 +15,7 @@ class SheetChapters extends StatefulWidget {
   final String sourceId;
   final String comicId;
   final Map<String, WatchPageUpdated> watchPageChapters;
+  final ({ComicChapter chapter, WatchPageUpdated watchPage})? lastReadChapter;
   final String? currentChapterId;
   final bool replace;
   final bool reverse;
@@ -26,6 +28,7 @@ class SheetChapters extends StatefulWidget {
     required this.sourceId,
     required this.comicId,
     required this.watchPageChapters,
+    required this.lastReadChapter,
     this.currentChapterId,
     this.replace = false,
     this.reverse = false,
@@ -51,6 +54,8 @@ class _SheetChaptersState extends State<SheetChapters> {
       minChildSize: .15,
       maxChildSize: 0.9,
       builder: (context2, scrollController) {
+        final lastReadChapter = widget.lastReadChapter;
+
         final activeKey = GlobalKey();
         bool notSelected = true;
 
@@ -68,20 +73,32 @@ class _SheetChaptersState extends State<SheetChapters> {
         return Column(
           children: [
             // Header
-            // Padding(
-            //   padding: const EdgeInsets.only(bottom: 8.0),
-            //   child: Text(
-            //     "List chapters",
-            //     style: TextStyle(
-            //       color: Colors.white,
-            //       fontSize: 160,
-            //       fontWeight: FontWeight.bold,
-            //     ),
-            //   ),
-            // ),
-            // Divider(height: 1.0),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text(lastReadChapter == null
+                      ? 'Get start'
+                      : 'Continue ${lastReadChapter.chapter.name}')
+                  .fontSize(20.0),
+              GFButton(
+                onPressed: () {
+                  final url =
+                      "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${lastReadChapter?.chapter.chapterId ?? widget.comic.chapters.first.chapterId}";
+                  final extra = {'comic': widget.comic};
+
+                  if (widget.replace) {
+                    context.replace(url, extra: extra);
+                  } else {
+                    context.push(url, extra: extra);
+                  }
+                },
+                text: widget.lastReadChapter == null ? 'Start' : 'Continue',
+                shape: GFButtonShape.pills,
+                textStyle:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+              )
+            ]).paddingHorizontal(16.0),
             // Chapters List
-            Expanded(
+            FractionallySizedBox(
+              heightFactor: 1.0,
               child: ListView.builder(
                 controller: scrollController,
                 // reverse
@@ -186,7 +203,7 @@ class _SheetChaptersState extends State<SheetChapters> {
                   );
                 },
               ),
-            ),
+            ).expanded(),
           ],
         );
       },

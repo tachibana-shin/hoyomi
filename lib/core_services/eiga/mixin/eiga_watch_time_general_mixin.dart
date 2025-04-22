@@ -12,9 +12,10 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
   final _baseApiGeneral = Env.baseApiGeneral;
   GeneralApiClient? _client;
 
-  /// General watch time support but service not auth
+  /// General watch page support but service not auth
   @override
-  final bool $noAuth = true;
+  bool get $noAuth => !($isAuth ?? false);
+
   @override
   Future<User> getUser({required String cookie}) {
     throw UnimplementedError();

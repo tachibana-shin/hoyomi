@@ -51,6 +51,9 @@ final List<Filter> globalFilters = [
 class TruyenGGService extends ABComicService
     with ComicAuthMixin, ComicWatchPageGeneralMixin {
   @override
+  bool? get $isAuth => true;
+
+  @override
   final init = ServiceInit(
     name: 'TruyenGGP',
     faviconUrl: OImage(src: '/favicon.ico'),

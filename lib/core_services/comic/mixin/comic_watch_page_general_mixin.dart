@@ -14,7 +14,8 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
 
   /// General watch page support but service not auth
   @override
-  final bool $noAuth = true;
+  bool get $noAuth => !($isAuth ?? false);
+
   @override
   Future<User> getUser({required String cookie}) {
     throw UnimplementedError();

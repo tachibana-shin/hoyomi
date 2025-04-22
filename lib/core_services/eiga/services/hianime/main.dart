@@ -18,6 +18,9 @@ import 'package:hoyomi/utils/d_query.dart';
 import 'package:intl/intl.dart';
 
 class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
+  @override
+  bool? get $isAuth => false;
+
   final hostCUrl = 'hianime.bz';
   @override
   late final init = ServiceInit(

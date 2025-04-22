@@ -17,6 +17,9 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
 // EigaHistoryMixin,
 // EigaFollowMixin,
 {
+  @override
+  bool? get $isAuth => false;
+
   final hostCUrl = 'ophim17.cc';
   final _buildId = 'YjU3ELa3ICaBELMtMHUHj';
   @override

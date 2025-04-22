@@ -5,6 +5,8 @@ mixin AuthMixin {
     return $mixin is AuthMixin && $mixin.$noAuth == false;
   }
 
-  final bool $noAuth = false;
+  bool get $noAuth => false;
+  final bool? $isAuth = true;
+
   Future<User> getUser({required String cookie});
 }

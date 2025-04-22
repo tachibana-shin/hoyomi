@@ -15,6 +15,9 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
 // EigaHistoryMixin,
 // EigaFollowMixin,
 {
+  @override
+  bool? get $isAuth => false;
+
   final hostCUrl = 'phim.nguonc.com';
   @override
   late final init = ServiceInit(
