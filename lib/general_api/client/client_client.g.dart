@@ -22,7 +22,7 @@ class _ClientClient implements ClientClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<ListWatchHistory> getApiComicGetWatchHistory({
+  Future<ComicListWatchHistory> getApiComicGetWatchHistory({
     required String sourceId,
     required num page,
     required String authorization,
@@ -35,7 +35,7 @@ class _ClientClient implements ClientClient {
     final _headers = <String, dynamic>{r'Authorization': authorization};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ListWatchHistory>(Options(
+    final _options = _setStreamType<ComicListWatchHistory>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -52,9 +52,9 @@ class _ClientClient implements ClientClient {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ListWatchHistory _value;
+    late ComicListWatchHistory _value;
     try {
-      _value = ListWatchHistory.fromJson(_result.data!);
+      _value = ComicListWatchHistory.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -185,7 +185,7 @@ class _ClientClient implements ClientClient {
   }
 
   @override
-  Future<dynamic> getApiEigaGetWatchHistory({
+  Future<EigaListWatchHistory> getApiEigaGetWatchHistory({
     required String sourceId,
     required num page,
     required String authorization,
@@ -198,7 +198,7 @@ class _ClientClient implements ClientClient {
     final _headers = <String, dynamic>{r'Authorization': authorization};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<dynamic>(Options(
+    final _options = _setStreamType<EigaListWatchHistory>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -214,8 +214,14 @@ class _ClientClient implements ClientClient {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch(_options);
-    final _value = _result.data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late EigaListWatchHistory _value;
+    try {
+      _value = EigaListWatchHistory.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
     return _value;
   }
 

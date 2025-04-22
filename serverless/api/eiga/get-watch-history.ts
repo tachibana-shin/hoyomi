@@ -17,7 +17,7 @@ const GetWatchHistoryQuerySchema = z
   })
   .openapi("GetWatchHistoryQuerySchema")
 
-const ListWatchHistorySchema = z
+const EigaListWatchHistorySchema = z
   .object({
     data: z.array(
       z.object({
@@ -59,7 +59,7 @@ const ListWatchHistorySchema = z
       })
     )
   })
-  .openapi("ListWatchHistory", {
+  .openapi("EigaListWatchHistory", {
     description:
       "An array of watch history items. Schema representing an individual watch history item."
   })
@@ -75,7 +75,7 @@ const route = createRoute({
     200: {
       content: {
         "application/json": {
-          schema: ListWatchHistorySchema
+          schema: EigaListWatchHistorySchema
         }
       },
       description:

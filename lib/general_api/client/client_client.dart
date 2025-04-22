@@ -5,7 +5,8 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
-import '../models/list_watch_history.dart';
+import '../models/comic_list_watch_history.dart';
+import '../models/eiga_list_watch_history.dart';
 import '../models/list_watch_time_schema.dart';
 import '../models/post_api_comic_set_watch_page_response.dart';
 import '../models/post_api_eiga_set_watch_time_response.dart';
@@ -20,7 +21,7 @@ abstract class ClientClient {
   factory ClientClient(Dio dio, {String? baseUrl}) = _ClientClient;
 
   @GET('/api/comic/get-watch-history')
-  Future<ListWatchHistory> getApiComicGetWatchHistory({
+  Future<ComicListWatchHistory> getApiComicGetWatchHistory({
     @Query('sourceId') required String sourceId,
     @Query('page') required num page,
     @Header('Authorization') required String authorization,
@@ -48,7 +49,7 @@ abstract class ClientClient {
   });
 
   @GET('/api/eiga/get-watch-history')
-  Future<dynamic> getApiEigaGetWatchHistory({
+  Future<EigaListWatchHistory> getApiEigaGetWatchHistory({
     @Query('sourceId') required String sourceId,
     @Query('page') required num page,
     @Header('Authorization') required String authorization,

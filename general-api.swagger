@@ -6,7 +6,7 @@
     },
     "components": {
         "schemas": {
-            "ListWatchHistory": {
+            "ComicListWatchHistory": {
                 "type": "object",
                 "properties": {
                     "data": {
@@ -259,6 +259,80 @@
                     "episode_id"
                 ]
             },
+            "EigaListWatchHistory": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "created_at": {
+                                    "type": "string",
+                                    "description": "The timestamp when the watch history entry was created."
+                                },
+                                "eiga_text_id": {
+                                    "type": "string",
+                                    "description": "The identifier for the specific episode of the text."
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "The name of the watch history item (e.g., the episode title)."
+                                },
+                                "poster": {
+                                    "type": "string",
+                                    "description": "The URL for the poster image of the episode."
+                                },
+                                "season_name": {
+                                    "type": "string",
+                                    "description": "The name of the season the episode belongs to."
+                                },
+                                "source_id": {
+                                    "type": "string",
+                                    "description": "The source ID associated with the episode."
+                                },
+                                "watch_cur": {
+                                    "type": "number",
+                                    "description": "The current watch position in seconds."
+                                },
+                                "watch_dur": {
+                                    "type": "number",
+                                    "description": "The total duration of the episode in seconds."
+                                },
+                                "watch_id": {
+                                    "type": "string",
+                                    "description": "The unique identifier for the watch session."
+                                },
+                                "watch_name": {
+                                    "type": "string",
+                                    "description": "The name associated with the watch session."
+                                },
+                                "watch_updated_at": {
+                                    "type": "string",
+                                    "description": "The timestamp when the watch history entry was last updated."
+                                }
+                            },
+                            "required": [
+                                "created_at",
+                                "eiga_text_id",
+                                "name",
+                                "poster",
+                                "season_name",
+                                "source_id",
+                                "watch_cur",
+                                "watch_dur",
+                                "watch_id",
+                                "watch_name",
+                                "watch_updated_at"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "data"
+                ],
+                "description": "An array of watch history items. Schema representing an individual watch history item."
+            },
             "SetWatchTimeBodySchema": {
                 "type": "object",
                 "properties": {
@@ -384,7 +458,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ListWatchHistory"
+                                    "$ref": "#/components/schemas/ComicListWatchHistory"
                                 }
                             }
                         }
@@ -601,80 +675,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/ListWatchHistory"
-                                        },
-                                        {
-                                            "properties": {
-                                                "data": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "created_at": {
-                                                                "type": "string",
-                                                                "description": "The timestamp when the watch history entry was created."
-                                                            },
-                                                            "eiga_text_id": {
-                                                                "type": "string",
-                                                                "description": "The identifier for the specific episode of the text."
-                                                            },
-                                                            "name": {
-                                                                "type": "string",
-                                                                "description": "The name of the watch history item (e.g., the episode title)."
-                                                            },
-                                                            "poster": {
-                                                                "type": "string",
-                                                                "description": "The URL for the poster image of the episode."
-                                                            },
-                                                            "season_name": {
-                                                                "type": "string",
-                                                                "description": "The name of the season the episode belongs to."
-                                                            },
-                                                            "source_id": {
-                                                                "type": "string",
-                                                                "description": "The source ID associated with the episode."
-                                                            },
-                                                            "watch_cur": {
-                                                                "type": "number",
-                                                                "description": "The current watch position in seconds."
-                                                            },
-                                                            "watch_dur": {
-                                                                "type": "number",
-                                                                "description": "The total duration of the episode in seconds."
-                                                            },
-                                                            "watch_id": {
-                                                                "type": "string",
-                                                                "description": "The unique identifier for the watch session."
-                                                            },
-                                                            "watch_name": {
-                                                                "type": "string",
-                                                                "description": "The name associated with the watch session."
-                                                            },
-                                                            "watch_updated_at": {
-                                                                "type": "string",
-                                                                "description": "The timestamp when the watch history entry was last updated."
-                                                            }
-                                                        },
-                                                        "required": [
-                                                            "created_at",
-                                                            "eiga_text_id",
-                                                            "name",
-                                                            "poster",
-                                                            "season_name",
-                                                            "source_id",
-                                                            "watch_cur",
-                                                            "watch_dur",
-                                                            "watch_id",
-                                                            "watch_name",
-                                                            "watch_updated_at"
-                                                        ]
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
+                                    "$ref": "#/components/schemas/EigaListWatchHistory"
                                 }
                             }
                         }

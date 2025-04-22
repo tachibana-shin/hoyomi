@@ -4,19 +4,19 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'data.freezed.dart';
-part 'data.g.dart';
+part 'data4.freezed.dart';
+part 'data4.g.dart';
 
 @Freezed()
-class Data with _$Data {
-  const factory Data({
+class Data4 with _$Data4 {
+  const factory Data4({
     /// The timestamp when the watch history entry was created.
     @JsonKey(name: 'created_at')
     required String createdAt,
 
     /// The identifier for the specific episode of the text.
-    @JsonKey(name: 'comic_text_id')
-    required String comicTextId,
+    @JsonKey(name: 'eiga_text_id')
+    required String eigaTextId,
 
     /// The name of the watch history item (e.g., the episode title).
     required String name,
@@ -32,11 +32,11 @@ class Data with _$Data {
     @JsonKey(name: 'source_id')
     required String sourceId,
 
-    /// The current watch page in seconds.
+    /// The current watch position in seconds.
     @JsonKey(name: 'watch_cur')
     required num watchCur,
 
-    /// The total page of the episode in seconds.
+    /// The total duration of the episode in seconds.
     @JsonKey(name: 'watch_dur')
     required num watchDur,
 
@@ -51,7 +51,7 @@ class Data with _$Data {
     /// The timestamp when the watch history entry was last updated.
     @JsonKey(name: 'watch_updated_at')
     required String watchUpdatedAt,
-  }) = _Data;
+  }) = _Data4;
   
-  factory Data.fromJson(Map<String, Object?> json) => _$DataFromJson(json);
+  factory Data4.fromJson(Map<String, Object?> json) => _$Data4FromJson(json);
 }
