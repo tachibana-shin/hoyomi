@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
+import 'package:dashed_circular_progress_bar/dashed_circular_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
-import 'package:hoyomi/widgets/circular_progress.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 
@@ -96,6 +97,8 @@ class _SheetChaptersState extends State<SheetChapters> {
                     notSelected = false;
                   }
 
+                  final watchPage = widget.watchPageChapters[chapter.chapterId];
+
                   return ListTile(
                     key: selected && notSelected ? activeKey : null,
                     enableFeedback: true,
@@ -137,24 +140,36 @@ class _SheetChaptersState extends State<SheetChapters> {
                         fontSize: 12.0,
                       ),
                     ),
-                    trailing: switch (
-                        widget.watchPageChapters[chapter.chapterId]) {
+                    trailing: switch (watchPage) {
                       null => null,
-                      final watchPage => CircularProgress(
-                          value: ((watchPage.currentPage + 1) /
-                                  watchPage.totalPage)
-                              .clamp(0, 1),
-                          strokeWidth: 3.0,
-                          textStyle: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.onSurface,
+                      final watchPage => SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: DashedCircularProgressBar.aspectRatio(
+                            aspectRatio: 1,
+                            progress: (watchPage.currentPage + 1) /
+                                watchPage.totalPage *
+                                100,
+                            startAngle: 225,
+                            sweepAngle: 270,
+                            foregroundColor: Colors.green,
+                            backgroundColor: const Color(0xffeeeeee),
+                            foregroundStrokeWidth: 3,
+                            backgroundStrokeWidth: 3,
+                            animation: true,
+                            seekSize: 3,
+                            seekColor: const Color(0xffeeeeee),
+                            child: Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    '${((watchPage.currentPage + 1) / watchPage.totalPage * 100).toInt()}',
+                                  ).fontSize(12.0),
+                                ],
+                              ),
+                            ),
                           ),
-                          borderColor: AlwaysStoppedAnimation<Color>(
-                            Colors.green,
-                          ),
-                          backgroundBorder: Colors.grey[300],
-                          size: 25,
                         ),
                     },
                     onTap: () {

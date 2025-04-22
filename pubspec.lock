@@ -241,6 +241,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.1"
+  circular_seek_bar:
+    dependency: "direct main"
+    description:
+      name: circular_seek_bar
+      sha256: "567ef808513a398045cfb5b4767838270440ef4da07310ca75bf0c89ec678aba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   clock:
     dependency: transitive
     description:
@@ -329,6 +337,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  dashed_circular_progress_bar:
+    dependency: "direct main"
+    description:
+      name: dashed_circular_progress_bar
+      sha256: "65f72cedcfa4250a45af63d8e98af827dc24f965ef453c3ea4c7fc7bfba40ae1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   dbus:
     dependency: transitive
     description:

@@ -451,6 +451,7 @@ class _DetailsComicState extends State<DetailsComic>
           Watch(() {
             final comic = _comic.value;
             final lastReadChapter = _lastReadChapter.value;
+            final watchPageChapters = _watchPageChapters.value;
 
             return Table(
               columnWidths: const {
@@ -484,43 +485,47 @@ class _DetailsComicState extends State<DetailsComic>
                         textAlign: TextAlign.start,
                       )
                     ])),
-                if (comic.author != null)
-                  _buildTableRow('Author', comic.author!),
+                // if (comic.author != null)
+                //   _buildTableRow('Author', comic.author!),
                 if (comic.translator != null)
                   _buildTableRow('Translate', comic.translator!),
-                _buildTableRow(
-                    'Status',
-                    switch (comic.status) {
-                      StatusEnum.ongoing => "On going",
-                      StatusEnum.completed => "Completed",
-                      StatusEnum.canceled => "Canceled",
-                      StatusEnum.unknown => "Unknown",
-                      StatusEnum.onHiatus => "On hiatus",
-                      StatusEnum.publishingFinished => "Publishing finished",
-                    }),
+                // _buildTableRow(
+                //     'Status',
+                //     switch (comic.status) {
+                //       StatusEnum.ongoing => "On going",
+                //       StatusEnum.completed => "Completed",
+                //       StatusEnum.canceled => "Canceled",
+                //       StatusEnum.unknown => "Unknown",
+                //       StatusEnum.onHiatus => "On hiatus",
+                //       StatusEnum.publishingFinished => "Publishing finished",
+                //     }),
                 if (comic.views != null)
                   _buildTableRow('Views', formatNumber(comic.views!)),
                 _buildTableRow(
                     'Last Updated', formatTimeAgo(comic.lastModified)),
                 if (lastReadChapter != null)
-                  _buildTableRow('Chapter',
+                  _buildTableRow('Last Read',
                       '${lastReadChapter.chapter.name} of ${comic.chapters.length}'),
-                TableRow(children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text(
-                      'Progress',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Theme.of(context).colorScheme.onSurface,
+                if (watchPageChapters != null)
+                  TableRow(children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Text(
+                        'Read Progress',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
                       ),
                     ),
-                  ),
-                  Text('33%',
+                    Text(
+                      '${((watchPageChapters.values.fold(0.0, (prev, item) => prev + item.currentPage / item.totalPage) / comic.chapters.length) * 100).round()}%',
                       style: TextStyle(
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w500)),
-                ]),
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ]),
               ],
             );
           }),
