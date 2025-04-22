@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:flutter/material.dart';
+import 'package:get/get.dart' hide WidgetPaddingX;
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
@@ -176,7 +178,6 @@ class GlobalSearchBar extends StatefulWidget {
 class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
   late final TextEditingController _controller;
 
-  final _focusNode = FocusNode();
   bool _showingSearchLayer = false;
 
   @override
@@ -190,7 +191,6 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
   }
 
   void _showSearchLayer() {
-    Future.microtask(() => _focusNode.requestFocus());
     if (_showingSearchLayer) _closeSearchLayer();
     _showingSearchLayer = true;
     showGeneralDialog(
@@ -201,6 +201,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
           return GestureDetector(
               onTap: () {
                 Navigator.of(context, rootNavigator: true).pop();
+                _showingSearchLayer = false;
               },
               child: Material(
                   color: Colors.transparent,
@@ -244,15 +245,16 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
   }
 
   void _closeSearchLayer({bool changeMode = false}) {
-    _focusNode.unfocus();
-
-    if (_showingSearchLayer) {
-      Navigator.of(context, rootNavigator: true).pop();
-      _showingSearchLayer = false;
-    }
-    if (changeMode && widget.pageIsSearch) {
-      context.pop();
-    }
+    try {
+      if (_showingSearchLayer) {
+        Navigator.of(context, rootNavigator: true).pop();
+        _showingSearchLayer = false;
+      }
+      if (changeMode && widget.pageIsSearch) {
+        context.pop();
+      }
+      // ignore: empty_catches
+    } catch (error) {}
   }
 
   Widget _buildKeywordSuggest(String keyword) {
@@ -306,7 +308,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
               color: Colors.grey.withValues(alpha: 0.5),
               thickness: 1,
               height: 1,
-            ),
+            ).marginAll(2.0),
           ]);
         });
   }
@@ -492,16 +494,17 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         ),
         child: Row(
           children: [
+            if (widget.pageIsSearch && !focusing && widget.keyword.isNotEmpty)
+              IconButton(
+                icon: Iconify(
+                  Mdi.arrow_back,
+                  color: theme.colorScheme.secondaryFixedDim
+                      .withValues(alpha: 0.7),
+                ),
+                onPressed: () => context.canPop() ? context.pop() : context.replace('/search'),
+              ),
             if (focusing || widget.pageIsSearch && widget.keyword.isNotEmpty)
               _buildServiceSelector()
-            // IconButton(
-            //   icon: Icon(
-            //     MaterialCommunityIcons.arrow_left,
-            //     color: theme.colorScheme.seconda ryFixedDim
-            //         .withValues(alpha: 0.7),
-            //   ),
-            //   onPressed: () => _closeSearchLayer(changeMode: true),
-            // )
             else
               IconButton(
                 icon: Iconify(
@@ -513,41 +516,57 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
               ),
             const SizedBox(width: 8),
             Expanded(
-              child: GestureDetector(
-                  onTap: () => _showSearchLayer(),
-                  child: TextField(
-                    // autofocus: focusing,
-                    enabled: focusing,
-                    controller: _controller,
-                    // readOnly: _readonly,
-                    focusNode: _focusNode,
-                    decoration: InputDecoration(
-                      hintText: "Search...",
-                      border: InputBorder.none,
+              child: focusing
+                  ? TextField(
+                      // autofocus: focusing,
+                      enabled: focusing,
+                      autofocus: true,
+                      controller: _controller,
+                      // readOnly: _readonly,
+                      decoration: InputDecoration(
+                        hintText: "Search...",
+                        border: InputBorder.none,
+                      ),
+                      onChanged: (value) {
+                        _setKeyword(value);
+                      },
+                      onSubmitted: (value) {
+                        _closeSearchLayer();
+                        switch (GoRouter.of(context).state.name) {
+                          case 'search':
+                          case 'search_comic':
+                          case 'search_eiga':
+                            context.replace("/search?q=$value");
+                            break;
+                          case 'home_comic':
+                            context.push("/search?q=$value&from=comic");
+                            break;
+                          case 'home_eiga':
+                            context.push("/search?q=$value&from=eiga");
+                            break;
+                          default:
+                            context.push("/search?q=$value");
+                            break;
+                        }
+                      },
+                    )
+                  : GestureDetector(
+                      onTap: () => _showSearchLayer(),
+                      child: Container(
+                        height: 45,
+                        color: theme.colorScheme.surfaceContainerHigh,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Watch(() => Text(widget.keyword.isNotEmpty
+                                    ? widget.keyword
+                                    : 'Search')
+                                .fontSize(16.0)
+                                .paddingAll(4.0))
+                          ],
+                        ).toCenter(),
+                      ),
                     ),
-                    onChanged: (value) {
-                      _setKeyword(value);
-                    },
-                    onSubmitted: (value) {
-                      _closeSearchLayer();
-                      switch (GoRouter.of(context).state.name) {
-                        case 'search':
-                        case 'search_comic':
-                        case 'search_eiga':
-                          context.replace("/search?q=$value");
-                          break;
-                        case 'home_comic':
-                          context.push("/search?q=$value&from=comic");
-                          break;
-                        case 'home_eiga':
-                          context.push("/search?q=$value&from=eiga");
-                          break;
-                        default:
-                          context.push("/search?q=$value");
-                          break;
-                      }
-                    },
-                  )),
             ),
             Watch(() => AnimatedSwitcher(
                 duration: Duration(milliseconds: 300),
