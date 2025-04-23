@@ -23,7 +23,7 @@ class TruyenQQService extends TruyenGGService {
   final init = ServiceInit(
     name: 'TruyenQQ',
     faviconUrl: OImage(src: 'https://i.imgur.com/yX8CCPe.png'),
-    rootUrl: 'https://truyenqqto.com',
+    rootUrl: 'https://truyenqqgo.com',
     rss: '/rss.html',
     settings: [
       FieldInput(
