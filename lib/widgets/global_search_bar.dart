@@ -635,9 +635,21 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
     return [
       IconButton(
         onPressed: () {
-          showServiceManagerDialog(context,
+          final router = GoRouter.of(context);
+
+          if (router.state.name?.contains('comic') == true) {
+            showServiceManagerDialog(
+              context,
+              items: comicServices.value,
+              onDone: (newValue) => comicServices.value = newValue,
+            );
+          } else {
+            showServiceManagerDialog(
+              context,
               items: eigaServices.value,
-              onDone: (newValue) => eigaServices.value = newValue);
+              onDone: (newValue) => eigaServices.value = newValue,
+            );
+          }
         },
         icon: Iconify(Fluent.extension20),
       ),
