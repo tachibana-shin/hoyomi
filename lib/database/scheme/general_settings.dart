@@ -11,6 +11,8 @@ class GeneralSettings with _$GeneralSettings {
     @Default(null) double? brightnessApp,
     @Default(60 * 60 * 3) int pollingIntervalComic,
     @Default(false) bool showListEpisodeWithGrid,
+    @Default(null) List<String>? sortComicService,
+    @Default(null) List<String>? sortEigaService,
   }) = _GeneralSettings;
 
   factory GeneralSettings.fromJson(Map<String, Object?> json) =>

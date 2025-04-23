@@ -57,8 +57,12 @@ mixin _SettingsMixin {
   String get uid;
   ServiceInit get init;
   late final ServiceSettings? _serviceSettings;
+  bool _stateReady = false;
 
   Future<void> initState() async {
+    if (_stateReady) return;
+    _stateReady = true;
+
     _serviceSettings = await ServiceSettingsController.instance.get(uid);
     _initSettings();
   }

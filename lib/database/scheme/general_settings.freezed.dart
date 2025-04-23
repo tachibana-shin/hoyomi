@@ -25,6 +25,8 @@ mixin _$GeneralSettings {
   double? get brightnessApp => throw _privateConstructorUsedError;
   int get pollingIntervalComic => throw _privateConstructorUsedError;
   bool get showListEpisodeWithGrid => throw _privateConstructorUsedError;
+  List<String>? get sortComicService => throw _privateConstructorUsedError;
+  List<String>? get sortEigaService => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -43,7 +45,9 @@ abstract class $GeneralSettingsCopyWith<$Res> {
       DateTime? lastCheckUpdateApp,
       double? brightnessApp,
       int pollingIntervalComic,
-      bool showListEpisodeWithGrid});
+      bool showListEpisodeWithGrid,
+      List<String>? sortComicService,
+      List<String>? sortEigaService});
 }
 
 /// @nodoc
@@ -64,6 +68,8 @@ class _$GeneralSettingsCopyWithImpl<$Res, $Val extends GeneralSettings>
     Object? brightnessApp = freezed,
     Object? pollingIntervalComic = null,
     Object? showListEpisodeWithGrid = null,
+    Object? sortComicService = freezed,
+    Object? sortEigaService = freezed,
   }) {
     return _then(_value.copyWith(
       mangaReadLazyPage: null == mangaReadLazyPage
@@ -86,6 +92,14 @@ class _$GeneralSettingsCopyWithImpl<$Res, $Val extends GeneralSettings>
           ? _value.showListEpisodeWithGrid
           : showListEpisodeWithGrid // ignore: cast_nullable_to_non_nullable
               as bool,
+      sortComicService: freezed == sortComicService
+          ? _value.sortComicService
+          : sortComicService // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      sortEigaService: freezed == sortEigaService
+          ? _value.sortEigaService
+          : sortEigaService // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ) as $Val);
   }
 }
@@ -103,7 +117,9 @@ abstract class _$$GeneralSettingsImplCopyWith<$Res>
       DateTime? lastCheckUpdateApp,
       double? brightnessApp,
       int pollingIntervalComic,
-      bool showListEpisodeWithGrid});
+      bool showListEpisodeWithGrid,
+      List<String>? sortComicService,
+      List<String>? sortEigaService});
 }
 
 /// @nodoc
@@ -122,6 +138,8 @@ class __$$GeneralSettingsImplCopyWithImpl<$Res>
     Object? brightnessApp = freezed,
     Object? pollingIntervalComic = null,
     Object? showListEpisodeWithGrid = null,
+    Object? sortComicService = freezed,
+    Object? sortEigaService = freezed,
   }) {
     return _then(_$GeneralSettingsImpl(
       mangaReadLazyPage: null == mangaReadLazyPage
@@ -144,6 +162,14 @@ class __$$GeneralSettingsImplCopyWithImpl<$Res>
           ? _value.showListEpisodeWithGrid
           : showListEpisodeWithGrid // ignore: cast_nullable_to_non_nullable
               as bool,
+      sortComicService: freezed == sortComicService
+          ? _value._sortComicService
+          : sortComicService // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      sortEigaService: freezed == sortEigaService
+          ? _value._sortEigaService
+          : sortEigaService // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -156,7 +182,11 @@ class _$GeneralSettingsImpl implements _GeneralSettings {
       this.lastCheckUpdateApp = null,
       this.brightnessApp = null,
       this.pollingIntervalComic = 60 * 60 * 3,
-      this.showListEpisodeWithGrid = false});
+      this.showListEpisodeWithGrid = false,
+      final List<String>? sortComicService = null,
+      final List<String>? sortEigaService = null})
+      : _sortComicService = sortComicService,
+        _sortEigaService = sortEigaService;
 
   factory _$GeneralSettingsImpl.fromJson(Map<String, dynamic> json) =>
       _$$GeneralSettingsImplFromJson(json);
@@ -176,10 +206,32 @@ class _$GeneralSettingsImpl implements _GeneralSettings {
   @override
   @JsonKey()
   final bool showListEpisodeWithGrid;
+  final List<String>? _sortComicService;
+  @override
+  @JsonKey()
+  List<String>? get sortComicService {
+    final value = _sortComicService;
+    if (value == null) return null;
+    if (_sortComicService is EqualUnmodifiableListView)
+      return _sortComicService;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<String>? _sortEigaService;
+  @override
+  @JsonKey()
+  List<String>? get sortEigaService {
+    final value = _sortEigaService;
+    if (value == null) return null;
+    if (_sortEigaService is EqualUnmodifiableListView) return _sortEigaService;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'GeneralSettings(mangaReadLazyPage: $mangaReadLazyPage, lastCheckUpdateApp: $lastCheckUpdateApp, brightnessApp: $brightnessApp, pollingIntervalComic: $pollingIntervalComic, showListEpisodeWithGrid: $showListEpisodeWithGrid)';
+    return 'GeneralSettings(mangaReadLazyPage: $mangaReadLazyPage, lastCheckUpdateApp: $lastCheckUpdateApp, brightnessApp: $brightnessApp, pollingIntervalComic: $pollingIntervalComic, showListEpisodeWithGrid: $showListEpisodeWithGrid, sortComicService: $sortComicService, sortEigaService: $sortEigaService)';
   }
 
   @override
@@ -197,7 +249,11 @@ class _$GeneralSettingsImpl implements _GeneralSettings {
                 other.pollingIntervalComic == pollingIntervalComic) &&
             (identical(
                     other.showListEpisodeWithGrid, showListEpisodeWithGrid) ||
-                other.showListEpisodeWithGrid == showListEpisodeWithGrid));
+                other.showListEpisodeWithGrid == showListEpisodeWithGrid) &&
+            const DeepCollectionEquality()
+                .equals(other._sortComicService, _sortComicService) &&
+            const DeepCollectionEquality()
+                .equals(other._sortEigaService, _sortEigaService));
   }
 
   @JsonKey(ignore: true)
@@ -208,7 +264,9 @@ class _$GeneralSettingsImpl implements _GeneralSettings {
       lastCheckUpdateApp,
       brightnessApp,
       pollingIntervalComic,
-      showListEpisodeWithGrid);
+      showListEpisodeWithGrid,
+      const DeepCollectionEquality().hash(_sortComicService),
+      const DeepCollectionEquality().hash(_sortEigaService));
 
   @JsonKey(ignore: true)
   @override
@@ -231,7 +289,9 @@ abstract class _GeneralSettings implements GeneralSettings {
       final DateTime? lastCheckUpdateApp,
       final double? brightnessApp,
       final int pollingIntervalComic,
-      final bool showListEpisodeWithGrid}) = _$GeneralSettingsImpl;
+      final bool showListEpisodeWithGrid,
+      final List<String>? sortComicService,
+      final List<String>? sortEigaService}) = _$GeneralSettingsImpl;
 
   factory _GeneralSettings.fromJson(Map<String, dynamic> json) =
       _$GeneralSettingsImpl.fromJson;
@@ -246,6 +306,10 @@ abstract class _GeneralSettings implements GeneralSettings {
   int get pollingIntervalComic;
   @override
   bool get showListEpisodeWithGrid;
+  @override
+  List<String>? get sortComicService;
+  @override
+  List<String>? get sortEigaService;
   @override
   @JsonKey(ignore: true)
   _$$GeneralSettingsImplCopyWith<_$GeneralSettingsImpl> get copyWith =>

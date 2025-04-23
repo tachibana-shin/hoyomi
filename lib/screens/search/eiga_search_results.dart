@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:kaeru/kaeru.dart';
 
 class EigaSearchResults extends StatefulWidget {
   final String keyword;
@@ -22,14 +24,12 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
   @override
   bool get wantKeepAlive => true;
 
-  final Map<int, Widget> _itemsStore = {};
+  final Map<ABEigaService, Widget> _itemsStore = {};
 
   Widget? _widgetMain;
 
-  Widget _itemBuilderCache(int index) {
-    if (_itemsStore[index] != null) return _itemsStore[index]!;
-
-    final service = eigaServices.elementAt(index);
+  Widget _itemBuilderCache(ABEigaService service) {
+    if (_itemsStore[service] != null) return _itemsStore[service]!;
 
     final searchResult = service.search(
         keyword: widget.keyword, page: 1, filters: {}, quick: false);
@@ -46,7 +46,7 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
 
     String subtitle = '';
 
-    return _itemsStore[index] = StatefulBuilder(
+    return _itemsStore[service] = StatefulBuilder(
       builder: (context, setState) {
         if (subtitle == '') {
           searchResult.then((data) {
@@ -71,12 +71,15 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
   }
 
   void _buildWidgetMain() {
-    _widgetMain = ListView.builder(
-      itemCount: eigaServices.length,
+    _widgetMain = Watch(()  {
+      _itemsStore.clear();
+      
+      return ListView.builder(
+      itemCount: eigaServices.value.length,
       itemBuilder: (context, index) {
-        return _itemBuilderCache(index);
+        return _itemBuilderCache(eigaServices.value.elementAt(index));
       },
-    );
+    );});
   }
 
   @override

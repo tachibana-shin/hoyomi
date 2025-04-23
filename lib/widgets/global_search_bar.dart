@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide WidgetPaddingX;
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/constraints/fluent.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
@@ -23,6 +24,8 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:speech_to_text_google_dialog/speech_to_text_google_dialog.dart';
+
+import 'service_manager_dialog.dart';
 
 final Ref<String> _keyword = Ref('');
 final Ref<String?> _serviceSelect = Ref(null);
@@ -417,13 +420,13 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
     if (_serviceSelect.value == null) {
       switch (routeName) {
         case 'home_comic':
-          service = comicServices.first;
+          service = comicServices.value.first;
           break;
         case 'home_eiga':
-          service = eigaServices.first;
+          service = eigaServices.value.first;
           break;
         default:
-          service = allServices.first;
+          service = allServices.value.first;
       }
     } else {
       service = getService(_serviceSelect.value!);
@@ -433,45 +436,47 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
   }
 
   Widget _buildServiceSelector() {
-    return PopupMenuButton<String>(
-      padding: EdgeInsets.all(3.0),
-      menuPadding: EdgeInsets.all(5.0),
-      offset: Offset(0, 18.0 * 2),
-      icon: Watch(() {
-        final service = _getCurrentService(context);
+    return Watch(() {
+      final services = allServices.value;
+      final service = _getCurrentService(context);
 
-        return SizedBox(
+      return PopupMenuButton<String>(
+        padding: EdgeInsets.all(3.0),
+        menuPadding: EdgeInsets.all(5.0),
+        offset: Offset(0, 18.0 * 2),
+        icon: SizedBox(
           width: 2 * 12.0,
           height: 2 * 12.0,
           child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: OImage.oNetwork(service.faviconUrl,
                   sourceId: service.uid, fit: BoxFit.cover)),
-        );
-      }),
-      onSelected: (value) {
-        _serviceSelect.value = value;
-      },
-      itemBuilder: (BuildContext context) => allServices.map((service) {
-        return PopupMenuItem<String>(
-          value: service.uid,
-          height: 40.0,
-          child: Row(children: [
-            SizedBox(
-              width: 2 * 12.0,
-              height: 2 * 12.0,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: OImage.oNetwork(service.faviconUrl,
-                      sourceId: service.uid, fit: BoxFit.cover)),
-            ),
-            SizedBox(width: 12.0),
-            Text(service.name,
-                style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400)),
-          ]),
-        );
-      }).toList(),
-    );
+        ),
+        onSelected: (value) {
+          _serviceSelect.value = value;
+        },
+        itemBuilder: (BuildContext context) => services.map((service) {
+          return PopupMenuItem<String>(
+            value: service.uid,
+            height: 40.0,
+            child: Row(children: [
+              SizedBox(
+                width: 2 * 12.0,
+                height: 2 * 12.0,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: OImage.oNetwork(service.faviconUrl,
+                        sourceId: service.uid, fit: BoxFit.cover)),
+              ),
+              SizedBox(width: 12.0),
+              Text(service.name,
+                  style:
+                      TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400)),
+            ]),
+          );
+        }).toList(),
+      );
+    });
   }
 
   _AppBarExtended _buildGlobalSearchBar(bool focusing) {
@@ -619,40 +624,43 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                           _controller.clear();
                           _keyword.value = '';
                         }))),
-            if (!focusing) _buildButtonMore(),
+            if (!focusing) ..._buildButtonsMore(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildButtonMore() {
-    return PopupMenuButton<String>(
-      icon: Iconify(
-        Mdi.dots_vertical,
-        color: Theme.of(
-          context,
-        ).colorScheme.secondaryFixedDim.withValues(alpha: 0.7),
+  List<Widget> _buildButtonsMore() {
+    return [
+      IconButton(
+        onPressed: () {
+          showServiceManagerDialog(context,
+              items: eigaServices.value,
+              onDone: (newValue) => eigaServices.value = newValue);
+        },
+        icon: Iconify(Fluent.extension20),
       ),
-      onSelected: (String value) {
-        if (value == 'clear_history') {
-          // Handle clear history
-        }
-        if (value == 'settings') {
-          // Handle settings
-        }
-      },
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        const PopupMenuItem<String>(
-          value: 'clear_history',
-          child: Text("Clear History"),
+      PopupMenuButton<String>(
+        icon: Iconify(
+          Mdi.dots_vertical,
+          color: Theme.of(
+            context,
+          ).colorScheme.secondaryFixedDim.withValues(alpha: 0.7),
         ),
-        const PopupMenuItem<String>(
-          value: 'settings',
-          child: Text("Settings"),
-        ),
-      ],
-    );
+        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+          const PopupMenuItem<String>(
+            value: 'clear_history',
+            child: Text("Clear History"),
+          ),
+          PopupMenuItem<String>(
+            value: 'settings',
+            child: const Text("Settings"),
+            onTap: () => {},
+          ),
+        ],
+      ),
+    ];
   }
 
   @override

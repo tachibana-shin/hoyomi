@@ -18,6 +18,14 @@ _$GeneralSettingsImpl _$$GeneralSettingsImplFromJson(
           (json['pollingIntervalComic'] as num?)?.toInt() ?? 60 * 60 * 3,
       showListEpisodeWithGrid:
           json['showListEpisodeWithGrid'] as bool? ?? false,
+      sortComicService: (json['sortComicService'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          null,
+      sortEigaService: (json['sortEigaService'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          null,
     );
 
 Map<String, dynamic> _$$GeneralSettingsImplToJson(
@@ -28,4 +36,6 @@ Map<String, dynamic> _$$GeneralSettingsImplToJson(
       'brightnessApp': instance.brightnessApp,
       'pollingIntervalComic': instance.pollingIntervalComic,
       'showListEpisodeWithGrid': instance.showListEpisodeWithGrid,
+      'sortComicService': instance.sortComicService,
+      'sortEigaService': instance.sortEigaService,
     };

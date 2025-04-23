@@ -4,6 +4,7 @@ import 'package:hoyomi/screens/rss/news_feed.dart';
 import 'package:hoyomi/screens/search/comic_search_results.dart';
 import 'package:hoyomi/screens/search/eiga_search_results.dart';
 import 'package:hoyomi/widgets/global_search_bar.dart';
+import 'package:kaeru/kaeru.dart';
 
 class SearchPage extends StatefulWidget {
   final String keyword;
@@ -93,8 +94,8 @@ class _SearchPageState extends State<SearchPage>
       child: TabBarView(
         controller: _tabController,
         children: [
-          NewsFeedScreen(services: comicServices),
-          NewsFeedScreen(services: eigaServices),
+          Watch(() => NewsFeedScreen(services: comicServices.value)),
+          Watch(() => NewsFeedScreen(services: eigaServices.value)),
         ],
       ),
     );

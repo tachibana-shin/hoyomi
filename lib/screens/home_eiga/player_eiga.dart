@@ -555,9 +555,8 @@ class _PlayerEigaState extends State<PlayerEiga>
 
       watch([_appBrightness], () {
         setApplicationScreenBrightness(_appBrightness.value);
-        settings = settings!.copyWith(brightnessApp: _appBrightness.value);
 
-        GeneralSettingsController.instance.save(settings!);
+        GeneralSettingsController.instance.save((settings) => settings.copyWith(brightnessApp: _appBrightness.value));
       });
     });
     // Volume

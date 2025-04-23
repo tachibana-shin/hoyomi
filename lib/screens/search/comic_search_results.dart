@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:kaeru/kaeru.dart';
 
 class ComicSearchResults extends StatefulWidget {
   final String keyword;
@@ -22,14 +24,12 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
   @override
   bool get wantKeepAlive => true;
 
-  final Map<int, Widget> _itemsStore = {};
+  final Map<ABComicService, Widget> _itemsStore = {};
 
   Widget? _widgetMain;
 
-  Widget _itemBuilderCache(int index) {
-    if (_itemsStore[index] != null) return _itemsStore[index]!;
-
-    final service = comicServices.elementAt(index);
+  Widget _itemBuilderCache(ABComicService service) {
+    if (_itemsStore[service] != null) return _itemsStore[service]!;
 
     final searchResult = service.search(
         keyword: widget.keyword, page: 1, filters: {}, quick: false);
@@ -46,7 +46,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
 
     String subtitle = '';
 
-    return _itemsStore[index] = StatefulBuilder(
+    return _itemsStore[service] = StatefulBuilder(
       builder: (context, setState) {
         if (subtitle == '') {
           searchResult.then((data) {
@@ -71,11 +71,11 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
   }
 
   void _buildWidgetMain() {
-    _widgetMain = ListView.builder(
-        itemCount: comicServices.length,
+    _widgetMain = Watch(() => ListView.builder(
+        itemCount: comicServices.value.length,
         itemBuilder: (context, index) {
-          return _itemBuilderCache(index);
-        });
+          return _itemBuilderCache(comicServices.value.elementAt(index));
+        }));
   }
 
   @override

@@ -13,6 +13,7 @@ import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/authentication.dart';
 import 'package:hoyomi/widgets/manager/account_service.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:kaeru/kaeru.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class ManagerPage extends StatelessWidget {
@@ -60,39 +61,43 @@ class ManagerPage extends StatelessWidget {
         const Divider(),
 
         const ListTile(title: Text('Comic services')),
-        DynamicHeightGridView(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          // padding: const EdgeInsets.all(8.0),
-          // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 0.0,
-          mainAxisSpacing: 10.0,
-          //   childAspectRatio: 1/3,
-          // ),
-          itemCount: comicServices.length,
-          builder: (context, index) {
-            return _buildCard(comicServices[index]);
-          },
+        Watch(
+          () => DynamicHeightGridView(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            // padding: const EdgeInsets.all(8.0),
+            // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 0.0,
+            mainAxisSpacing: 10.0,
+            //   childAspectRatio: 1/3,
+            // ),
+            itemCount: comicServices.value.length,
+            builder: (context, index) {
+              return _buildCard(comicServices.value[index]);
+            },
+          ),
         ),
 
         const SizedBox(height: 15.0),
 
         const ListTile(title: Text('Eiga services')),
-        DynamicHeightGridView(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          // padding: const EdgeInsets.all(8.0),
-          // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 0.0,
-          mainAxisSpacing: 10.0,
-          //   childAspectRatio: 1/3,
-          // ),
-          itemCount: eigaServices.length,
-          builder: (context, index) {
-            return _buildCard(eigaServices[index]);
-          },
+        Watch(
+          () => DynamicHeightGridView(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            // padding: const EdgeInsets.all(8.0),
+            // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 0.0,
+            mainAxisSpacing: 10.0,
+            //   childAspectRatio: 1/3,
+            // ),
+            itemCount: eigaServices.value.length,
+            builder: (context, index) {
+              return _buildCard(eigaServices.value[index]);
+            },
+          ),
         ),
 
         const Divider(),
