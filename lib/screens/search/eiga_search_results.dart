@@ -71,15 +71,16 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
   }
 
   void _buildWidgetMain() {
-    _widgetMain = Watch(()  {
+    _widgetMain = Watch(() {
       _itemsStore.clear();
-      
+
       return ListView.builder(
-      itemCount: eigaServices.value.length,
-      itemBuilder: (context, index) {
-        return _itemBuilderCache(eigaServices.value.elementAt(index));
-      },
-    );});
+        itemCount: eigaServices.value.length,
+        itemBuilder: (context, index) {
+          return _itemBuilderCache(eigaServices.value.elementAt(index));
+        },
+      );
+    });
   }
 
   @override

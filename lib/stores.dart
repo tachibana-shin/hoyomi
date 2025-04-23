@@ -12,7 +12,7 @@ Future<void> initializeStore() async {
 
   watch$([showListEpisodeWithGrid], () {
     GeneralSettingsController.instance.save((settings) => settings.copyWith(
-      showListEpisodeWithGrid: showListEpisodeWithGrid.value,
-    ));
+          showListEpisodeWithGrid: showListEpisodeWithGrid.value,
+        ));
   });
 }

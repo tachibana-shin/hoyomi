@@ -251,8 +251,8 @@ class UpdateAvailableController {
   }
 
   void _pauseUpdate() async {
-    await GeneralSettingsController.instance
-        .save((settings) => settings.copyWith(lastCheckUpdateApp: DateTime.now()));
+    await GeneralSettingsController.instance.save(
+        (settings) => settings.copyWith(lastCheckUpdateApp: DateTime.now()));
   }
 
   Future<bool> _checkPauseUpdate() async {

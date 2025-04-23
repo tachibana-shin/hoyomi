@@ -23,7 +23,8 @@ class GeneralSettingsController {
     return _cacheDefault = GeneralSettings.fromJson(jsonDecode(json));
   }
 
-  Future<void> save(GeneralSettings Function(GeneralSettings data) saveFn) async {
+  Future<void> save(
+      GeneralSettings Function(GeneralSettings data) saveFn) async {
     final settings = saveFn(await get() ?? GeneralSettings());
 
     await asyncPrefs.setString(
