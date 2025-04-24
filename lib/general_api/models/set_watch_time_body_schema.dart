@@ -8,7 +8,7 @@ part 'set_watch_time_body_schema.freezed.dart';
 part 'set_watch_time_body_schema.g.dart';
 
 @Freezed()
-sealed class SetWatchTimeBodySchema with _$SetWatchTimeBodySchema {
+abstract class SetWatchTimeBodySchema with _$SetWatchTimeBodySchema {
   const factory SetWatchTimeBodySchema({
     /// The unique identifier for the source (e.g., series or season).
     required String sourceId,
@@ -20,10 +20,12 @@ sealed class SetWatchTimeBodySchema with _$SetWatchTimeBodySchema {
     required String poster,
 
     /// Unique identifier for the eiga (movie/show) text.
-    @JsonKey(name: 'eiga_text_id') required String eigaTextId,
+    @JsonKey(name: 'eiga_text_id')
+    required String eigaTextId,
 
     /// The name of the season.
-    @JsonKey(name: 'season_name') required dynamic seasonName,
+    @JsonKey(name: 'season_name')
+    required dynamic seasonName,
 
     /// The current watch time in seconds.
     required num cur,
@@ -32,12 +34,13 @@ sealed class SetWatchTimeBodySchema with _$SetWatchTimeBodySchema {
     required num dur,
 
     /// The name of the episode.
-    @JsonKey(name: 'episode_name') required String episodeName,
+    @JsonKey(name: 'episode_name')
+    required String episodeName,
 
     /// Unique identifier for the episode.
-    @JsonKey(name: 'episode_id') required String episodeId,
+    @JsonKey(name: 'episode_id')
+    required String episodeId,
   }) = _SetWatchTimeBodySchema;
-
-  factory SetWatchTimeBodySchema.fromJson(Map<String, Object?> json) =>
-      _$SetWatchTimeBodySchemaFromJson(json);
+  
+  factory SetWatchTimeBodySchema.fromJson(Map<String, Object?> json) => _$SetWatchTimeBodySchemaFromJson(json);
 }

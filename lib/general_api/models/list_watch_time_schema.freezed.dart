@@ -15,47 +15,47 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$ListWatchTimeSchema {
-  List<Data2> get data;
 
-  /// Create a copy of ListWatchTimeSchema
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $ListWatchTimeSchemaCopyWith<ListWatchTimeSchema> get copyWith =>
-      _$ListWatchTimeSchemaCopyWithImpl<ListWatchTimeSchema>(
-          this as ListWatchTimeSchema, _$identity);
+ List<Data2> get data;
+/// Create a copy of ListWatchTimeSchema
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ListWatchTimeSchemaCopyWith<ListWatchTimeSchema> get copyWith => _$ListWatchTimeSchemaCopyWithImpl<ListWatchTimeSchema>(this as ListWatchTimeSchema, _$identity);
 
   /// Serializes this ListWatchTimeSchema to a JSON map.
   Map<String, dynamic> toJson();
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is ListWatchTimeSchema &&
-            const DeepCollectionEquality().equals(other.data, data));
-  }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(data));
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ListWatchTimeSchema&&const DeepCollectionEquality().equals(other.data, data));
+}
 
-  @override
-  String toString() {
-    return 'ListWatchTimeSchema(data: $data)';
-  }
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(data));
+
+@override
+String toString() {
+  return 'ListWatchTimeSchema(data: $data)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class $ListWatchTimeSchemaCopyWith<$Res> {
-  factory $ListWatchTimeSchemaCopyWith(
-          ListWatchTimeSchema value, $Res Function(ListWatchTimeSchema) _then) =
-      _$ListWatchTimeSchemaCopyWithImpl;
-  @useResult
-  $Res call({List<Data2> data});
-}
+abstract mixin class $ListWatchTimeSchemaCopyWith<$Res>  {
+  factory $ListWatchTimeSchemaCopyWith(ListWatchTimeSchema value, $Res Function(ListWatchTimeSchema) _then) = _$ListWatchTimeSchemaCopyWithImpl;
+@useResult
+$Res call({
+ List<Data2> data
+});
 
+
+
+
+}
 /// @nodoc
 class _$ListWatchTimeSchemaCopyWithImpl<$Res>
     implements $ListWatchTimeSchemaCopyWith<$Res> {
@@ -64,83 +64,73 @@ class _$ListWatchTimeSchemaCopyWithImpl<$Res>
   final ListWatchTimeSchema _self;
   final $Res Function(ListWatchTimeSchema) _then;
 
-  /// Create a copy of ListWatchTimeSchema
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? data = null,
-  }) {
-    return _then(_self.copyWith(
-      data: null == data
-          ? _self.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as List<Data2>,
-    ));
-  }
+/// Create a copy of ListWatchTimeSchema
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? data = null,}) {
+  return _then(_self.copyWith(
+data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as List<Data2>,
+  ));
 }
+
+}
+
 
 /// @nodoc
 @JsonSerializable()
+
 class _ListWatchTimeSchema implements ListWatchTimeSchema {
-  const _ListWatchTimeSchema({required final List<Data2> data}) : _data = data;
-  factory _ListWatchTimeSchema.fromJson(Map<String, dynamic> json) =>
-      _$ListWatchTimeSchemaFromJson(json);
+  const _ListWatchTimeSchema({required final  List<Data2> data}): _data = data;
+  factory _ListWatchTimeSchema.fromJson(Map<String, dynamic> json) => _$ListWatchTimeSchemaFromJson(json);
 
-  final List<Data2> _data;
-  @override
-  List<Data2> get data {
-    if (_data is EqualUnmodifiableListView) return _data;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_data);
-  }
+ final  List<Data2> _data;
+@override List<Data2> get data {
+  if (_data is EqualUnmodifiableListView) return _data;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_data);
+}
 
-  /// Create a copy of ListWatchTimeSchema
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$ListWatchTimeSchemaCopyWith<_ListWatchTimeSchema> get copyWith =>
-      __$ListWatchTimeSchemaCopyWithImpl<_ListWatchTimeSchema>(
-          this, _$identity);
 
-  @override
-  Map<String, dynamic> toJson() {
-    return _$ListWatchTimeSchemaToJson(
-      this,
-    );
-  }
+/// Create a copy of ListWatchTimeSchema
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ListWatchTimeSchemaCopyWith<_ListWatchTimeSchema> get copyWith => __$ListWatchTimeSchemaCopyWithImpl<_ListWatchTimeSchema>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _ListWatchTimeSchema &&
-            const DeepCollectionEquality().equals(other._data, _data));
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$ListWatchTimeSchemaToJson(this, );
+}
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ListWatchTimeSchema&&const DeepCollectionEquality().equals(other._data, _data));
+}
 
-  @override
-  String toString() {
-    return 'ListWatchTimeSchema(data: $data)';
-  }
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_data));
+
+@override
+String toString() {
+  return 'ListWatchTimeSchema(data: $data)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class _$ListWatchTimeSchemaCopyWith<$Res>
-    implements $ListWatchTimeSchemaCopyWith<$Res> {
-  factory _$ListWatchTimeSchemaCopyWith(_ListWatchTimeSchema value,
-          $Res Function(_ListWatchTimeSchema) _then) =
-      __$ListWatchTimeSchemaCopyWithImpl;
-  @override
-  @useResult
-  $Res call({List<Data2> data});
-}
+abstract mixin class _$ListWatchTimeSchemaCopyWith<$Res> implements $ListWatchTimeSchemaCopyWith<$Res> {
+  factory _$ListWatchTimeSchemaCopyWith(_ListWatchTimeSchema value, $Res Function(_ListWatchTimeSchema) _then) = __$ListWatchTimeSchemaCopyWithImpl;
+@override @useResult
+$Res call({
+ List<Data2> data
+});
 
+
+
+
+}
 /// @nodoc
 class __$ListWatchTimeSchemaCopyWithImpl<$Res>
     implements _$ListWatchTimeSchemaCopyWith<$Res> {
@@ -149,20 +139,16 @@ class __$ListWatchTimeSchemaCopyWithImpl<$Res>
   final _ListWatchTimeSchema _self;
   final $Res Function(_ListWatchTimeSchema) _then;
 
-  /// Create a copy of ListWatchTimeSchema
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? data = null,
-  }) {
-    return _then(_ListWatchTimeSchema(
-      data: null == data
-          ? _self._data
-          : data // ignore: cast_nullable_to_non_nullable
-              as List<Data2>,
-    ));
-  }
+/// Create a copy of ListWatchTimeSchema
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? data = null,}) {
+  return _then(_ListWatchTimeSchema(
+data: null == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
+as List<Data2>,
+  ));
+}
+
+
 }
 
 // dart format on

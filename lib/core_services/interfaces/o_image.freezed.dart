@@ -15,187 +15,161 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$OImage {
-  String get src;
-  Headers? get headers;
 
-  /// Create a copy of OImage
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $OImageCopyWith<OImage> get copyWith =>
-      _$OImageCopyWithImpl<OImage>(this as OImage, _$identity);
+ String get src; Headers? get headers;
+/// Create a copy of OImage
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$OImageCopyWith<OImage> get copyWith => _$OImageCopyWithImpl<OImage>(this as OImage, _$identity);
 
   /// Serializes this OImage to a JSON map.
   Map<String, dynamic> toJson();
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is OImage &&
-            (identical(other.src, src) || other.src == src) &&
-            (identical(other.headers, headers) || other.headers == headers));
-  }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, src, headers);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OImage&&(identical(other.src, src) || other.src == src)&&(identical(other.headers, headers) || other.headers == headers));
+}
 
-  @override
-  String toString() {
-    return 'OImage(src: $src, headers: $headers)';
-  }
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,src,headers);
+
+@override
+String toString() {
+  return 'OImage(src: $src, headers: $headers)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class $OImageCopyWith<$Res> {
-  factory $OImageCopyWith(OImage value, $Res Function(OImage) _then) =
-      _$OImageCopyWithImpl;
-  @useResult
-  $Res call({String src, Headers? headers});
+abstract mixin class $OImageCopyWith<$Res>  {
+  factory $OImageCopyWith(OImage value, $Res Function(OImage) _then) = _$OImageCopyWithImpl;
+@useResult
+$Res call({
+ String src, Headers? headers
+});
 
-  $HeadersCopyWith<$Res>? get headers;
+
+$HeadersCopyWith<$Res>? get headers;
+
 }
-
 /// @nodoc
-class _$OImageCopyWithImpl<$Res> implements $OImageCopyWith<$Res> {
+class _$OImageCopyWithImpl<$Res>
+    implements $OImageCopyWith<$Res> {
   _$OImageCopyWithImpl(this._self, this._then);
 
   final OImage _self;
   final $Res Function(OImage) _then;
 
-  /// Create a copy of OImage
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? src = null,
-    Object? headers = freezed,
-  }) {
-    return _then(_self.copyWith(
-      src: null == src
-          ? _self.src
-          : src // ignore: cast_nullable_to_non_nullable
-              as String,
-      headers: freezed == headers
-          ? _self.headers
-          : headers // ignore: cast_nullable_to_non_nullable
-              as Headers?,
-    ));
-  }
-
-  /// Create a copy of OImage
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $HeadersCopyWith<$Res>? get headers {
-    if (_self.headers == null) {
-      return null;
-    }
-
-    return $HeadersCopyWith<$Res>(_self.headers!, (value) {
-      return _then(_self.copyWith(headers: value));
-    });
-  }
+/// Create a copy of OImage
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? src = null,Object? headers = freezed,}) {
+  return _then(_self.copyWith(
+src: null == src ? _self.src : src // ignore: cast_nullable_to_non_nullable
+as String,headers: freezed == headers ? _self.headers : headers // ignore: cast_nullable_to_non_nullable
+as Headers?,
+  ));
 }
+/// Create a copy of OImage
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$HeadersCopyWith<$Res>? get headers {
+    if (_self.headers == null) {
+    return null;
+  }
+
+  return $HeadersCopyWith<$Res>(_self.headers!, (value) {
+    return _then(_self.copyWith(headers: value));
+  });
+}
+}
+
 
 /// @nodoc
 @JsonSerializable()
+
 class _OImage implements OImage {
   const _OImage({required this.src, this.headers});
   factory _OImage.fromJson(Map<String, dynamic> json) => _$OImageFromJson(json);
 
-  @override
-  final String src;
-  @override
-  final Headers? headers;
+@override final  String src;
+@override final  Headers? headers;
 
-  /// Create a copy of OImage
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$OImageCopyWith<_OImage> get copyWith =>
-      __$OImageCopyWithImpl<_OImage>(this, _$identity);
+/// Create a copy of OImage
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$OImageCopyWith<_OImage> get copyWith => __$OImageCopyWithImpl<_OImage>(this, _$identity);
 
-  @override
-  Map<String, dynamic> toJson() {
-    return _$OImageToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$OImageToJson(this, );
+}
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _OImage &&
-            (identical(other.src, src) || other.src == src) &&
-            (identical(other.headers, headers) || other.headers == headers));
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OImage&&(identical(other.src, src) || other.src == src)&&(identical(other.headers, headers) || other.headers == headers));
+}
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, src, headers);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,src,headers);
 
-  @override
-  String toString() {
-    return 'OImage(src: $src, headers: $headers)';
-  }
+@override
+String toString() {
+  return 'OImage(src: $src, headers: $headers)';
+}
+
+
 }
 
 /// @nodoc
 abstract mixin class _$OImageCopyWith<$Res> implements $OImageCopyWith<$Res> {
-  factory _$OImageCopyWith(_OImage value, $Res Function(_OImage) _then) =
-      __$OImageCopyWithImpl;
-  @override
-  @useResult
-  $Res call({String src, Headers? headers});
+  factory _$OImageCopyWith(_OImage value, $Res Function(_OImage) _then) = __$OImageCopyWithImpl;
+@override @useResult
+$Res call({
+ String src, Headers? headers
+});
 
-  @override
-  $HeadersCopyWith<$Res>? get headers;
+
+@override $HeadersCopyWith<$Res>? get headers;
+
 }
-
 /// @nodoc
-class __$OImageCopyWithImpl<$Res> implements _$OImageCopyWith<$Res> {
+class __$OImageCopyWithImpl<$Res>
+    implements _$OImageCopyWith<$Res> {
   __$OImageCopyWithImpl(this._self, this._then);
 
   final _OImage _self;
   final $Res Function(_OImage) _then;
 
-  /// Create a copy of OImage
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? src = null,
-    Object? headers = freezed,
-  }) {
-    return _then(_OImage(
-      src: null == src
-          ? _self.src
-          : src // ignore: cast_nullable_to_non_nullable
-              as String,
-      headers: freezed == headers
-          ? _self.headers
-          : headers // ignore: cast_nullable_to_non_nullable
-              as Headers?,
-    ));
-  }
+/// Create a copy of OImage
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? src = null,Object? headers = freezed,}) {
+  return _then(_OImage(
+src: null == src ? _self.src : src // ignore: cast_nullable_to_non_nullable
+as String,headers: freezed == headers ? _self.headers : headers // ignore: cast_nullable_to_non_nullable
+as Headers?,
+  ));
+}
 
-  /// Create a copy of OImage
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $HeadersCopyWith<$Res>? get headers {
+/// Create a copy of OImage
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$HeadersCopyWith<$Res>? get headers {
     if (_self.headers == null) {
-      return null;
-    }
-
-    return $HeadersCopyWith<$Res>(_self.headers!, (value) {
-      return _then(_self.copyWith(headers: value));
-    });
+    return null;
   }
+
+  return $HeadersCopyWith<$Res>(_self.headers!, (value) {
+    return _then(_self.copyWith(headers: value));
+  });
+}
 }
 
 // dart format on

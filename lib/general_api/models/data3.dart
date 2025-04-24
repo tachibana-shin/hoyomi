@@ -8,7 +8,7 @@ part 'data3.freezed.dart';
 part 'data3.g.dart';
 
 @Freezed()
-sealed class Data3 with _$Data3 {
+abstract class Data3 with _$Data3 {
   const factory Data3({
     /// The current page in seconds for the episode.
     required num cur,
@@ -25,6 +25,6 @@ sealed class Data3 with _$Data3 {
     /// ISO 8601 format pagestamp when the watch page was last updated.
     required String updatedAt,
   }) = _Data3;
-
+  
   factory Data3.fromJson(Map<String, Object?> json) => _$Data3FromJson(json);
 }

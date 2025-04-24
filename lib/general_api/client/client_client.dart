@@ -18,11 +18,7 @@ part 'client_client.g.dart';
 
 @RestApi()
 abstract class ClientClient {
-  factory ClientClient(
-    Dio dio, {
-    String? baseUrl,
-    ParseErrorLogger? errorLogger,
-  }) = _ClientClient;
+  factory ClientClient(Dio dio, {String? baseUrl}) = _ClientClient;
 
   @GET('/api/comic/get-watch-history')
   Future<ComicListWatchHistory> getApiComicGetWatchHistory({

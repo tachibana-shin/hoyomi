@@ -8,7 +8,7 @@ part 'set_watch_page_body_schema.freezed.dart';
 part 'set_watch_page_body_schema.g.dart';
 
 @Freezed()
-sealed class SetWatchPageBodySchema with _$SetWatchPageBodySchema {
+abstract class SetWatchPageBodySchema with _$SetWatchPageBodySchema {
   const factory SetWatchPageBodySchema({
     /// The unique identifier for the source (e.g., series or season).
     required String sourceId,
@@ -20,10 +20,12 @@ sealed class SetWatchPageBodySchema with _$SetWatchPageBodySchema {
     required String poster,
 
     /// Unique identifier for the comic (movie/show) text.
-    @JsonKey(name: 'comic_text_id') required String comicTextId,
+    @JsonKey(name: 'comic_text_id')
+    required String comicTextId,
 
     /// The name of the season.
-    @JsonKey(name: 'season_name') required dynamic seasonName,
+    @JsonKey(name: 'season_name')
+    required dynamic seasonName,
 
     /// The current watch page in seconds.
     required num cur,
@@ -32,12 +34,13 @@ sealed class SetWatchPageBodySchema with _$SetWatchPageBodySchema {
     required num dur,
 
     /// The name of the episode.
-    @JsonKey(name: 'episode_name') required String episodeName,
+    @JsonKey(name: 'episode_name')
+    required String episodeName,
 
     /// Unique identifier for the episode.
-    @JsonKey(name: 'episode_id') required String episodeId,
+    @JsonKey(name: 'episode_id')
+    required String episodeId,
   }) = _SetWatchPageBodySchema;
-
-  factory SetWatchPageBodySchema.fromJson(Map<String, Object?> json) =>
-      _$SetWatchPageBodySchemaFromJson(json);
+  
+  factory SetWatchPageBodySchema.fromJson(Map<String, Object?> json) => _$SetWatchPageBodySchemaFromJson(json);
 }

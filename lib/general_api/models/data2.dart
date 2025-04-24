@@ -8,7 +8,7 @@ part 'data2.freezed.dart';
 part 'data2.g.dart';
 
 @Freezed()
-sealed class Data2 with _$Data2 {
+abstract class Data2 with _$Data2 {
   const factory Data2({
     /// The current page in the episode in seconds.
     required num cur,
@@ -28,6 +28,6 @@ sealed class Data2 with _$Data2 {
     /// The unique identifier for the chapter within the episode or series.
     required String chapId,
   }) = _Data2;
-
+  
   factory Data2.fromJson(Map<String, Object?> json) => _$Data2FromJson(json);
 }

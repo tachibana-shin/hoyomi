@@ -32,7 +32,12 @@ jobs:
         run: touch .env.web
   
       - name: Dart format
-        run: dart format .
+        run: find . -name "*.dart" \
+            ! -name "*.g.dart" \
+            ! -name "*.freezed.dart" \
+            ! -path "./lib/general_api/*" \
+            ! -path "./.dart_tool/*" \
+            -print0 | xargs -0 dart format
 
       - name: Dart fix
         run: dart fix --apply
