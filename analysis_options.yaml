@@ -1,6 +1,6 @@
 include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
-    - lib/database/scheme/general_settings.g.dart
+    - lib/**.g.dart
   errors:
     invalid_annotation_target: ignore
