@@ -30,18 +30,13 @@ jobs:
 
       - name: Touch file .env.web
         run: touch .env.web
-  
+
       - name: Dart format
-        run: find . -name "*.dart" \
-            ! -name "*.g.dart" \
-            ! -name "*.freezed.dart" \
-            ! -path "./lib/general_api/*" \
-            ! -path "./.dart_tool/*" \
-            -print0 | xargs -0 dart format
+        run: find . -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -path "./lib/general_api/*" ! -path "./.dart_tool/*" -print0 | xargs -0 dart format
 
       - name: Dart fix
         run: dart fix --apply
 
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: 'chore: auto format and fix code'
+          commit_message: "chore: auto format and fix code"
