@@ -6,8 +6,8 @@ part of 'source_content.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SourceContentImpl _$$SourceContentImplFromJson(Map<String, dynamic> json) =>
-    _$SourceContentImpl(
+_SourceContent _$SourceContentFromJson(Map<String, dynamic> json) =>
+    _SourceContent(
       content: json['content'] as String,
       url: Uri.parse(json['url'] as String),
       headers: json['headers'] == null
@@ -15,7 +15,7 @@ _$SourceContentImpl _$$SourceContentImplFromJson(Map<String, dynamic> json) =>
           : Headers.fromJson(json['headers'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$SourceContentImplToJson(_$SourceContentImpl instance) =>
+Map<String, dynamic> _$SourceContentToJson(_SourceContent instance) =>
     <String, dynamic>{
       'content': instance.content,
       'url': instance.url.toString(),

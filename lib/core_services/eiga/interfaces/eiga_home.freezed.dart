@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,30 +10,50 @@ part of 'eiga_home.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-EigaHome _$EigaHomeFromJson(Map<String, dynamic> json) {
-  return _EigaHome.fromJson(json);
-}
 
 /// @nodoc
 mixin _$EigaHome {
-  Carousel? get carousel => throw _privateConstructorUsedError;
-  List<HomeEigaCategory> get categories => throw _privateConstructorUsedError;
+  Carousel? get carousel;
+  List<HomeEigaCategory> get categories;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+  /// Create a copy of EigaHome
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $EigaHomeCopyWith<EigaHome> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$EigaHomeCopyWithImpl<EigaHome>(this as EigaHome, _$identity);
+
+  /// Serializes this EigaHome to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is EigaHome &&
+            (identical(other.carousel, carousel) ||
+                other.carousel == carousel) &&
+            const DeepCollectionEquality()
+                .equals(other.categories, categories));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, carousel, const DeepCollectionEquality().hash(categories));
+
+  @override
+  String toString() {
+    return 'EigaHome(carousel: $carousel, categories: $categories)';
+  }
 }
 
 /// @nodoc
-abstract class $EigaHomeCopyWith<$Res> {
-  factory $EigaHomeCopyWith(EigaHome value, $Res Function(EigaHome) then) =
-      _$EigaHomeCopyWithImpl<$Res, EigaHome>;
+abstract mixin class $EigaHomeCopyWith<$Res> {
+  factory $EigaHomeCopyWith(EigaHome value, $Res Function(EigaHome) _then) =
+      _$EigaHomeCopyWithImpl;
   @useResult
   $Res call({Carousel? carousel, List<HomeEigaCategory> categories});
 
@@ -40,96 +61,55 @@ abstract class $EigaHomeCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$EigaHomeCopyWithImpl<$Res, $Val extends EigaHome>
-    implements $EigaHomeCopyWith<$Res> {
-  _$EigaHomeCopyWithImpl(this._value, this._then);
+class _$EigaHomeCopyWithImpl<$Res> implements $EigaHomeCopyWith<$Res> {
+  _$EigaHomeCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final EigaHome _self;
+  final $Res Function(EigaHome) _then;
 
+  /// Create a copy of EigaHome
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? carousel = freezed,
     Object? categories = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       carousel: freezed == carousel
-          ? _value.carousel
+          ? _self.carousel
           : carousel // ignore: cast_nullable_to_non_nullable
               as Carousel?,
       categories: null == categories
-          ? _value.categories
+          ? _self.categories
           : categories // ignore: cast_nullable_to_non_nullable
               as List<HomeEigaCategory>,
-    ) as $Val);
+    ));
   }
 
+  /// Create a copy of EigaHome
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $CarouselCopyWith<$Res>? get carousel {
-    if (_value.carousel == null) {
+    if (_self.carousel == null) {
       return null;
     }
 
-    return $CarouselCopyWith<$Res>(_value.carousel!, (value) {
-      return _then(_value.copyWith(carousel: value) as $Val);
+    return $CarouselCopyWith<$Res>(_self.carousel!, (value) {
+      return _then(_self.copyWith(carousel: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$EigaHomeImplCopyWith<$Res>
-    implements $EigaHomeCopyWith<$Res> {
-  factory _$$EigaHomeImplCopyWith(
-          _$EigaHomeImpl value, $Res Function(_$EigaHomeImpl) then) =
-      __$$EigaHomeImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({Carousel? carousel, List<HomeEigaCategory> categories});
-
-  @override
-  $CarouselCopyWith<$Res>? get carousel;
-}
-
-/// @nodoc
-class __$$EigaHomeImplCopyWithImpl<$Res>
-    extends _$EigaHomeCopyWithImpl<$Res, _$EigaHomeImpl>
-    implements _$$EigaHomeImplCopyWith<$Res> {
-  __$$EigaHomeImplCopyWithImpl(
-      _$EigaHomeImpl _value, $Res Function(_$EigaHomeImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? carousel = freezed,
-    Object? categories = null,
-  }) {
-    return _then(_$EigaHomeImpl(
-      carousel: freezed == carousel
-          ? _value.carousel
-          : carousel // ignore: cast_nullable_to_non_nullable
-              as Carousel?,
-      categories: null == categories
-          ? _value._categories
-          : categories // ignore: cast_nullable_to_non_nullable
-              as List<HomeEigaCategory>,
-    ));
-  }
-}
-
-/// @nodoc
 @JsonSerializable()
-class _$EigaHomeImpl implements _EigaHome {
-  const _$EigaHomeImpl(
+class _EigaHome implements EigaHome {
+  const _EigaHome(
       {this.carousel, required final List<HomeEigaCategory> categories})
       : _categories = categories;
-
-  factory _$EigaHomeImpl.fromJson(Map<String, dynamic> json) =>
-      _$$EigaHomeImplFromJson(json);
+  factory _EigaHome.fromJson(Map<String, dynamic> json) =>
+      _$EigaHomeFromJson(json);
 
   @override
   final Carousel? carousel;
@@ -141,55 +121,96 @@ class _$EigaHomeImpl implements _EigaHome {
     return EqualUnmodifiableListView(_categories);
   }
 
+  /// Create a copy of EigaHome
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'EigaHome(carousel: $carousel, categories: $categories)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$EigaHomeCopyWith<_EigaHome> get copyWith =>
+      __$EigaHomeCopyWithImpl<_EigaHome>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$EigaHomeToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$EigaHomeImpl &&
+            other is _EigaHome &&
             (identical(other.carousel, carousel) ||
                 other.carousel == carousel) &&
             const DeepCollectionEquality()
                 .equals(other._categories, _categories));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, carousel, const DeepCollectionEquality().hash(_categories));
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$EigaHomeImplCopyWith<_$EigaHomeImpl> get copyWith =>
-      __$$EigaHomeImplCopyWithImpl<_$EigaHomeImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$EigaHomeImplToJson(
-      this,
-    );
+  String toString() {
+    return 'EigaHome(carousel: $carousel, categories: $categories)';
   }
 }
 
-abstract class _EigaHome implements EigaHome {
-  const factory _EigaHome(
-      {final Carousel? carousel,
-      required final List<HomeEigaCategory> categories}) = _$EigaHomeImpl;
+/// @nodoc
+abstract mixin class _$EigaHomeCopyWith<$Res>
+    implements $EigaHomeCopyWith<$Res> {
+  factory _$EigaHomeCopyWith(_EigaHome value, $Res Function(_EigaHome) _then) =
+      __$EigaHomeCopyWithImpl;
+  @override
+  @useResult
+  $Res call({Carousel? carousel, List<HomeEigaCategory> categories});
 
-  factory _EigaHome.fromJson(Map<String, dynamic> json) =
-      _$EigaHomeImpl.fromJson;
-
   @override
-  Carousel? get carousel;
-  @override
-  List<HomeEigaCategory> get categories;
-  @override
-  @JsonKey(ignore: true)
-  _$$EigaHomeImplCopyWith<_$EigaHomeImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  $CarouselCopyWith<$Res>? get carousel;
 }
+
+/// @nodoc
+class __$EigaHomeCopyWithImpl<$Res> implements _$EigaHomeCopyWith<$Res> {
+  __$EigaHomeCopyWithImpl(this._self, this._then);
+
+  final _EigaHome _self;
+  final $Res Function(_EigaHome) _then;
+
+  /// Create a copy of EigaHome
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? carousel = freezed,
+    Object? categories = null,
+  }) {
+    return _then(_EigaHome(
+      carousel: freezed == carousel
+          ? _self.carousel
+          : carousel // ignore: cast_nullable_to_non_nullable
+              as Carousel?,
+      categories: null == categories
+          ? _self._categories
+          : categories // ignore: cast_nullable_to_non_nullable
+              as List<HomeEigaCategory>,
+    ));
+  }
+
+  /// Create a copy of EigaHome
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CarouselCopyWith<$Res>? get carousel {
+    if (_self.carousel == null) {
+      return null;
+    }
+
+    return $CarouselCopyWith<$Res>(_self.carousel!, (value) {
+      return _then(_self.copyWith(carousel: value));
+    });
+  }
+}
+
+// dart format on

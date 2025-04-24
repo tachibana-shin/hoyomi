@@ -5,7 +5,7 @@ part 'comic_comment.freezed.dart';
 part 'comic_comment.g.dart';
 
 @freezed
-class ComicComment with _$ComicComment {
+sealed class ComicComment with _$ComicComment {
   const factory ComicComment({
     required String id,
     required String comicId,

@@ -6,8 +6,7 @@ part of 'meta_comic.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$MetaComicImpl _$$MetaComicImplFromJson(Map<String, dynamic> json) =>
-    _$MetaComicImpl(
+_MetaComic _$MetaComicFromJson(Map<String, dynamic> json) => _MetaComic(
       name: json['name'] as String,
       originalName: json['originalName'] as String?,
       image: OImage.fromJson(json['image'] as Map<String, dynamic>),
@@ -30,7 +29,7 @@ _$MetaComicImpl _$$MetaComicImplFromJson(Map<String, dynamic> json) =>
       fake: json['fake'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$$MetaComicImplToJson(_$MetaComicImpl instance) =>
+Map<String, dynamic> _$MetaComicToJson(_MetaComic instance) =>
     <String, dynamic>{
       'name': instance.name,
       'originalName': instance.originalName,

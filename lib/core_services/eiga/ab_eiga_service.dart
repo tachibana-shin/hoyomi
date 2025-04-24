@@ -19,7 +19,7 @@ export 'package:hoyomi/core_services/service.dart';
 part 'ab_eiga_service.freezed.dart';
 
 @freezed
-class PropsGetSeekThumbnail with _$PropsGetSeekThumbnail {
+sealed class PropsGetSeekThumbnail with _$PropsGetSeekThumbnail {
   const factory PropsGetSeekThumbnail({
     required String eigaId,
     required MetaEiga metaEiga,
@@ -29,7 +29,7 @@ class PropsGetSeekThumbnail with _$PropsGetSeekThumbnail {
 }
 
 @freezed
-class PropsGetOpeningEnding with _$PropsGetOpeningEnding {
+sealed class PropsGetOpeningEnding with _$PropsGetOpeningEnding {
   const factory PropsGetOpeningEnding({
     required String eigaId,
     required MetaEiga metaEiga,

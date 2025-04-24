@@ -11,7 +11,7 @@ part 'eiga_list_watch_history.g.dart';
 
 /// An array of watch history items. Schema representing an individual watch history item.
 @Freezed()
-class EigaListWatchHistory with _$EigaListWatchHistory {
+sealed class EigaListWatchHistory with _$EigaListWatchHistory {
   const factory EigaListWatchHistory({
     required List<Data4> data,
   }) = _EigaListWatchHistory;

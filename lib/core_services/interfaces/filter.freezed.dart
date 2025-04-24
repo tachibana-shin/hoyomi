@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,86 +10,63 @@ part of 'filter.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-Option _$OptionFromJson(Map<String, dynamic> json) {
-  return _Option.fromJson(json);
-}
 
 /// @nodoc
 mixin _$Option {
-  String get name => throw _privateConstructorUsedError;
-  String get value => throw _privateConstructorUsedError;
-  bool get selected => throw _privateConstructorUsedError;
+  String get name;
+  String get value;
+  bool get selected;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $OptionCopyWith<Option> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $OptionCopyWith<$Res> {
-  factory $OptionCopyWith(Option value, $Res Function(Option) then) =
-      _$OptionCopyWithImpl<$Res, Option>;
-  @useResult
-  $Res call({String name, String value, bool selected});
-}
-
-/// @nodoc
-class _$OptionCopyWithImpl<$Res, $Val extends Option>
-    implements $OptionCopyWith<$Res> {
-  _$OptionCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of Option
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $OptionCopyWith<Option> get copyWith =>
+      _$OptionCopyWithImpl<Option>(this as Option, _$identity);
+
+  /// Serializes this Option to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? name = null,
-    Object? value = null,
-    Object? selected = null,
-  }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as String,
-      selected: null == selected
-          ? _value.selected
-          : selected // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is Option &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.value, value) || other.value == value) &&
+            (identical(other.selected, selected) ||
+                other.selected == selected));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, value, selected);
+
+  @override
+  String toString() {
+    return 'Option(name: $name, value: $value, selected: $selected)';
   }
 }
 
 /// @nodoc
-abstract class _$$OptionImplCopyWith<$Res> implements $OptionCopyWith<$Res> {
-  factory _$$OptionImplCopyWith(
-          _$OptionImpl value, $Res Function(_$OptionImpl) then) =
-      __$$OptionImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $OptionCopyWith<$Res> {
+  factory $OptionCopyWith(Option value, $Res Function(Option) _then) =
+      _$OptionCopyWithImpl;
   @useResult
   $Res call({String name, String value, bool selected});
 }
 
 /// @nodoc
-class __$$OptionImplCopyWithImpl<$Res>
-    extends _$OptionCopyWithImpl<$Res, _$OptionImpl>
-    implements _$$OptionImplCopyWith<$Res> {
-  __$$OptionImplCopyWithImpl(
-      _$OptionImpl _value, $Res Function(_$OptionImpl) _then)
-      : super(_value, _then);
+class _$OptionCopyWithImpl<$Res> implements $OptionCopyWith<$Res> {
+  _$OptionCopyWithImpl(this._self, this._then);
 
+  final Option _self;
+  final $Res Function(Option) _then;
+
+  /// Create a copy of Option
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -96,17 +74,17 @@ class __$$OptionImplCopyWithImpl<$Res>
     Object? value = null,
     Object? selected = null,
   }) {
-    return _then(_$OptionImpl(
+    return _then(_self.copyWith(
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       value: null == value
-          ? _value.value
+          ? _self.value
           : value // ignore: cast_nullable_to_non_nullable
               as String,
       selected: null == selected
-          ? _value.selected
+          ? _self.selected
           : selected // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
@@ -115,12 +93,10 @@ class __$$OptionImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$OptionImpl implements _Option {
-  const _$OptionImpl(
+class _Option implements Option {
+  const _Option(
       {required this.name, required this.value, this.selected = false});
-
-  factory _$OptionImpl.fromJson(Map<String, dynamic> json) =>
-      _$$OptionImplFromJson(json);
+  factory _Option.fromJson(Map<String, dynamic> json) => _$OptionFromJson(json);
 
   @override
   final String name;
@@ -130,141 +106,141 @@ class _$OptionImpl implements _Option {
   @JsonKey()
   final bool selected;
 
+  /// Create a copy of Option
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'Option(name: $name, value: $value, selected: $selected)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$OptionCopyWith<_Option> get copyWith =>
+      __$OptionCopyWithImpl<_Option>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$OptionToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OptionImpl &&
+            other is _Option &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.value, value) || other.value == value) &&
             (identical(other.selected, selected) ||
                 other.selected == selected));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, name, value, selected);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$OptionImplCopyWith<_$OptionImpl> get copyWith =>
-      __$$OptionImplCopyWithImpl<_$OptionImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$OptionImplToJson(
-      this,
-    );
+  String toString() {
+    return 'Option(name: $name, value: $value, selected: $selected)';
   }
 }
 
-abstract class _Option implements Option {
-  const factory _Option(
-      {required final String name,
-      required final String value,
-      final bool selected}) = _$OptionImpl;
-
-  factory _Option.fromJson(Map<String, dynamic> json) = _$OptionImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$OptionCopyWith<$Res> implements $OptionCopyWith<$Res> {
+  factory _$OptionCopyWith(_Option value, $Res Function(_Option) _then) =
+      __$OptionCopyWithImpl;
   @override
-  String get name;
-  @override
-  String get value;
-  @override
-  bool get selected;
-  @override
-  @JsonKey(ignore: true)
-  _$$OptionImplCopyWith<_$OptionImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({String name, String value, bool selected});
 }
 
-Filter _$FilterFromJson(Map<String, dynamic> json) {
-  return _Filter.fromJson(json);
+/// @nodoc
+class __$OptionCopyWithImpl<$Res> implements _$OptionCopyWith<$Res> {
+  __$OptionCopyWithImpl(this._self, this._then);
+
+  final _Option _self;
+  final $Res Function(_Option) _then;
+
+  /// Create a copy of Option
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? name = null,
+    Object? value = null,
+    Object? selected = null,
+  }) {
+    return _then(_Option(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      value: null == value
+          ? _self.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as String,
+      selected: null == selected
+          ? _self.selected
+          : selected // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$Filter {
-  String get name => throw _privateConstructorUsedError;
-  String get key => throw _privateConstructorUsedError;
-  bool get multiple => throw _privateConstructorUsedError;
-  List<Option> get options => throw _privateConstructorUsedError;
+  String get name;
+  String get key;
+  bool get multiple;
+  List<Option> get options;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $FilterCopyWith<Filter> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $FilterCopyWith<$Res> {
-  factory $FilterCopyWith(Filter value, $Res Function(Filter) then) =
-      _$FilterCopyWithImpl<$Res, Filter>;
-  @useResult
-  $Res call({String name, String key, bool multiple, List<Option> options});
-}
-
-/// @nodoc
-class _$FilterCopyWithImpl<$Res, $Val extends Filter>
-    implements $FilterCopyWith<$Res> {
-  _$FilterCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of Filter
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $FilterCopyWith<Filter> get copyWith =>
+      _$FilterCopyWithImpl<Filter>(this as Filter, _$identity);
+
+  /// Serializes this Filter to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? name = null,
-    Object? key = null,
-    Object? multiple = null,
-    Object? options = null,
-  }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      key: null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
-              as String,
-      multiple: null == multiple
-          ? _value.multiple
-          : multiple // ignore: cast_nullable_to_non_nullable
-              as bool,
-      options: null == options
-          ? _value.options
-          : options // ignore: cast_nullable_to_non_nullable
-              as List<Option>,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is Filter &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.key, key) || other.key == key) &&
+            (identical(other.multiple, multiple) ||
+                other.multiple == multiple) &&
+            const DeepCollectionEquality().equals(other.options, options));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, key, multiple,
+      const DeepCollectionEquality().hash(options));
+
+  @override
+  String toString() {
+    return 'Filter(name: $name, key: $key, multiple: $multiple, options: $options)';
   }
 }
 
 /// @nodoc
-abstract class _$$FilterImplCopyWith<$Res> implements $FilterCopyWith<$Res> {
-  factory _$$FilterImplCopyWith(
-          _$FilterImpl value, $Res Function(_$FilterImpl) then) =
-      __$$FilterImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $FilterCopyWith<$Res> {
+  factory $FilterCopyWith(Filter value, $Res Function(Filter) _then) =
+      _$FilterCopyWithImpl;
   @useResult
   $Res call({String name, String key, bool multiple, List<Option> options});
 }
 
 /// @nodoc
-class __$$FilterImplCopyWithImpl<$Res>
-    extends _$FilterCopyWithImpl<$Res, _$FilterImpl>
-    implements _$$FilterImplCopyWith<$Res> {
-  __$$FilterImplCopyWithImpl(
-      _$FilterImpl _value, $Res Function(_$FilterImpl) _then)
-      : super(_value, _then);
+class _$FilterCopyWithImpl<$Res> implements $FilterCopyWith<$Res> {
+  _$FilterCopyWithImpl(this._self, this._then);
 
+  final Filter _self;
+  final $Res Function(Filter) _then;
+
+  /// Create a copy of Filter
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -273,21 +249,21 @@ class __$$FilterImplCopyWithImpl<$Res>
     Object? multiple = null,
     Object? options = null,
   }) {
-    return _then(_$FilterImpl(
+    return _then(_self.copyWith(
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       key: null == key
-          ? _value.key
+          ? _self.key
           : key // ignore: cast_nullable_to_non_nullable
               as String,
       multiple: null == multiple
-          ? _value.multiple
+          ? _self.multiple
           : multiple // ignore: cast_nullable_to_non_nullable
               as bool,
       options: null == options
-          ? _value._options
+          ? _self.options
           : options // ignore: cast_nullable_to_non_nullable
               as List<Option>,
     ));
@@ -296,16 +272,14 @@ class __$$FilterImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$FilterImpl implements _Filter {
-  const _$FilterImpl(
+class _Filter implements Filter {
+  const _Filter(
       {required this.name,
       required this.key,
       required this.multiple,
       required final List<Option> options})
       : _options = options;
-
-  factory _$FilterImpl.fromJson(Map<String, dynamic> json) =>
-      _$$FilterImplFromJson(json);
+  factory _Filter.fromJson(Map<String, dynamic> json) => _$FilterFromJson(json);
 
   @override
   final String name;
@@ -321,16 +295,26 @@ class _$FilterImpl implements _Filter {
     return EqualUnmodifiableListView(_options);
   }
 
+  /// Create a copy of Filter
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'Filter(name: $name, key: $key, multiple: $multiple, options: $options)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$FilterCopyWith<_Filter> get copyWith =>
+      __$FilterCopyWithImpl<_Filter>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$FilterToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FilterImpl &&
+            other is _Filter &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.key, key) || other.key == key) &&
             (identical(other.multiple, multiple) ||
@@ -338,44 +322,62 @@ class _$FilterImpl implements _Filter {
             const DeepCollectionEquality().equals(other._options, _options));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, name, key, multiple,
       const DeepCollectionEquality().hash(_options));
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$FilterImplCopyWith<_$FilterImpl> get copyWith =>
-      __$$FilterImplCopyWithImpl<_$FilterImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$FilterImplToJson(
-      this,
-    );
+  String toString() {
+    return 'Filter(name: $name, key: $key, multiple: $multiple, options: $options)';
   }
 }
 
-abstract class _Filter implements Filter {
-  const factory _Filter(
-      {required final String name,
-      required final String key,
-      required final bool multiple,
-      required final List<Option> options}) = _$FilterImpl;
-
-  factory _Filter.fromJson(Map<String, dynamic> json) = _$FilterImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$FilterCopyWith<$Res> implements $FilterCopyWith<$Res> {
+  factory _$FilterCopyWith(_Filter value, $Res Function(_Filter) _then) =
+      __$FilterCopyWithImpl;
   @override
-  String get name;
-  @override
-  String get key;
-  @override
-  bool get multiple;
-  @override
-  List<Option> get options;
-  @override
-  @JsonKey(ignore: true)
-  _$$FilterImplCopyWith<_$FilterImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({String name, String key, bool multiple, List<Option> options});
 }
+
+/// @nodoc
+class __$FilterCopyWithImpl<$Res> implements _$FilterCopyWith<$Res> {
+  __$FilterCopyWithImpl(this._self, this._then);
+
+  final _Filter _self;
+  final $Res Function(_Filter) _then;
+
+  /// Create a copy of Filter
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? name = null,
+    Object? key = null,
+    Object? multiple = null,
+    Object? options = null,
+  }) {
+    return _then(_Filter(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      key: null == key
+          ? _self.key
+          : key // ignore: cast_nullable_to_non_nullable
+              as String,
+      multiple: null == multiple
+          ? _self.multiple
+          : multiple // ignore: cast_nullable_to_non_nullable
+              as bool,
+      options: null == options
+          ? _self._options
+          : options // ignore: cast_nullable_to_non_nullable
+              as List<Option>,
+    ));
+  }
+}
+
+// dart format on

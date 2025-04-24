@@ -6,7 +6,7 @@ part 'eiga_home.freezed.dart';
 part 'eiga_home.g.dart';
 
 @freezed
-class EigaHome with _$EigaHome {
+sealed class EigaHome with _$EigaHome {
   const factory EigaHome({
     Carousel? carousel,
     required List<HomeEigaCategory> categories,

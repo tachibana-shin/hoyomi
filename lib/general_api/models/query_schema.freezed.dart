@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,143 +10,89 @@ part of 'query_schema.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-QuerySchema _$QuerySchemaFromJson(Map<String, dynamic> json) {
-  return _QuerySchema.fromJson(json);
-}
 
 /// @nodoc
 mixin _$QuerySchema {
   /// The unique identifier for the source (e.g., series or season).
-  String get sourceId => throw _privateConstructorUsedError;
+  String get sourceId;
 
   /// The name of the episode.
-  String get name => throw _privateConstructorUsedError;
+  String get name;
 
   /// URL to the poster image for the episode.
-  String get poster => throw _privateConstructorUsedError;
+  String get poster;
 
   /// Unique identifier for the comic (movie/show) text.
   @JsonKey(name: 'comic_text_id')
-  String get comicTextId => throw _privateConstructorUsedError;
+  String get comicTextId;
 
   /// The name of the season.
   @JsonKey(name: 'season_name')
-  String get seasonName => throw _privateConstructorUsedError;
+  String get seasonName;
 
   /// The current watch page in seconds.
-  num get cur => throw _privateConstructorUsedError;
+  num get cur;
 
   /// The total page of the episode in seconds.
-  num get dur => throw _privateConstructorUsedError;
+  num get dur;
 
   /// The name of the episode.
   @JsonKey(name: 'episode_name')
-  String get episodeName => throw _privateConstructorUsedError;
+  String get episodeName;
 
   /// Unique identifier for the episode.
   @JsonKey(name: 'episode_id')
-  String get episodeId => throw _privateConstructorUsedError;
+  String get episodeId;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $QuerySchemaCopyWith<QuerySchema> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $QuerySchemaCopyWith<$Res> {
-  factory $QuerySchemaCopyWith(
-          QuerySchema value, $Res Function(QuerySchema) then) =
-      _$QuerySchemaCopyWithImpl<$Res, QuerySchema>;
-  @useResult
-  $Res call(
-      {String sourceId,
-      String name,
-      String poster,
-      @JsonKey(name: 'comic_text_id') String comicTextId,
-      @JsonKey(name: 'season_name') String seasonName,
-      num cur,
-      num dur,
-      @JsonKey(name: 'episode_name') String episodeName,
-      @JsonKey(name: 'episode_id') String episodeId});
-}
-
-/// @nodoc
-class _$QuerySchemaCopyWithImpl<$Res, $Val extends QuerySchema>
-    implements $QuerySchemaCopyWith<$Res> {
-  _$QuerySchemaCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of QuerySchema
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $QuerySchemaCopyWith<QuerySchema> get copyWith =>
+      _$QuerySchemaCopyWithImpl<QuerySchema>(this as QuerySchema, _$identity);
+
+  /// Serializes this QuerySchema to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? sourceId = null,
-    Object? name = null,
-    Object? poster = null,
-    Object? comicTextId = null,
-    Object? seasonName = null,
-    Object? cur = null,
-    Object? dur = null,
-    Object? episodeName = null,
-    Object? episodeId = null,
-  }) {
-    return _then(_value.copyWith(
-      sourceId: null == sourceId
-          ? _value.sourceId
-          : sourceId // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      poster: null == poster
-          ? _value.poster
-          : poster // ignore: cast_nullable_to_non_nullable
-              as String,
-      comicTextId: null == comicTextId
-          ? _value.comicTextId
-          : comicTextId // ignore: cast_nullable_to_non_nullable
-              as String,
-      seasonName: null == seasonName
-          ? _value.seasonName
-          : seasonName // ignore: cast_nullable_to_non_nullable
-              as String,
-      cur: null == cur
-          ? _value.cur
-          : cur // ignore: cast_nullable_to_non_nullable
-              as num,
-      dur: null == dur
-          ? _value.dur
-          : dur // ignore: cast_nullable_to_non_nullable
-              as num,
-      episodeName: null == episodeName
-          ? _value.episodeName
-          : episodeName // ignore: cast_nullable_to_non_nullable
-              as String,
-      episodeId: null == episodeId
-          ? _value.episodeId
-          : episodeId // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is QuerySchema &&
+            (identical(other.sourceId, sourceId) ||
+                other.sourceId == sourceId) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.poster, poster) || other.poster == poster) &&
+            (identical(other.comicTextId, comicTextId) ||
+                other.comicTextId == comicTextId) &&
+            (identical(other.seasonName, seasonName) ||
+                other.seasonName == seasonName) &&
+            (identical(other.cur, cur) || other.cur == cur) &&
+            (identical(other.dur, dur) || other.dur == dur) &&
+            (identical(other.episodeName, episodeName) ||
+                other.episodeName == episodeName) &&
+            (identical(other.episodeId, episodeId) ||
+                other.episodeId == episodeId));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, sourceId, name, poster,
+      comicTextId, seasonName, cur, dur, episodeName, episodeId);
+
+  @override
+  String toString() {
+    return 'QuerySchema(sourceId: $sourceId, name: $name, poster: $poster, comicTextId: $comicTextId, seasonName: $seasonName, cur: $cur, dur: $dur, episodeName: $episodeName, episodeId: $episodeId)';
   }
 }
 
 /// @nodoc
-abstract class _$$QuerySchemaImplCopyWith<$Res>
-    implements $QuerySchemaCopyWith<$Res> {
-  factory _$$QuerySchemaImplCopyWith(
-          _$QuerySchemaImpl value, $Res Function(_$QuerySchemaImpl) then) =
-      __$$QuerySchemaImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $QuerySchemaCopyWith<$Res> {
+  factory $QuerySchemaCopyWith(
+          QuerySchema value, $Res Function(QuerySchema) _then) =
+      _$QuerySchemaCopyWithImpl;
   @useResult
   $Res call(
       {String sourceId,
@@ -160,13 +107,14 @@ abstract class _$$QuerySchemaImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$QuerySchemaImplCopyWithImpl<$Res>
-    extends _$QuerySchemaCopyWithImpl<$Res, _$QuerySchemaImpl>
-    implements _$$QuerySchemaImplCopyWith<$Res> {
-  __$$QuerySchemaImplCopyWithImpl(
-      _$QuerySchemaImpl _value, $Res Function(_$QuerySchemaImpl) _then)
-      : super(_value, _then);
+class _$QuerySchemaCopyWithImpl<$Res> implements $QuerySchemaCopyWith<$Res> {
+  _$QuerySchemaCopyWithImpl(this._self, this._then);
 
+  final QuerySchema _self;
+  final $Res Function(QuerySchema) _then;
+
+  /// Create a copy of QuerySchema
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -180,41 +128,41 @@ class __$$QuerySchemaImplCopyWithImpl<$Res>
     Object? episodeName = null,
     Object? episodeId = null,
   }) {
-    return _then(_$QuerySchemaImpl(
+    return _then(_self.copyWith(
       sourceId: null == sourceId
-          ? _value.sourceId
+          ? _self.sourceId
           : sourceId // ignore: cast_nullable_to_non_nullable
               as String,
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       poster: null == poster
-          ? _value.poster
+          ? _self.poster
           : poster // ignore: cast_nullable_to_non_nullable
               as String,
       comicTextId: null == comicTextId
-          ? _value.comicTextId
+          ? _self.comicTextId
           : comicTextId // ignore: cast_nullable_to_non_nullable
               as String,
       seasonName: null == seasonName
-          ? _value.seasonName
+          ? _self.seasonName
           : seasonName // ignore: cast_nullable_to_non_nullable
               as String,
       cur: null == cur
-          ? _value.cur
+          ? _self.cur
           : cur // ignore: cast_nullable_to_non_nullable
               as num,
       dur: null == dur
-          ? _value.dur
+          ? _self.dur
           : dur // ignore: cast_nullable_to_non_nullable
               as num,
       episodeName: null == episodeName
-          ? _value.episodeName
+          ? _self.episodeName
           : episodeName // ignore: cast_nullable_to_non_nullable
               as String,
       episodeId: null == episodeId
-          ? _value.episodeId
+          ? _self.episodeId
           : episodeId // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -223,8 +171,8 @@ class __$$QuerySchemaImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$QuerySchemaImpl implements _QuerySchema {
-  const _$QuerySchemaImpl(
+class _QuerySchema implements QuerySchema {
+  const _QuerySchema(
       {required this.sourceId,
       required this.name,
       required this.poster,
@@ -234,9 +182,8 @@ class _$QuerySchemaImpl implements _QuerySchema {
       required this.dur,
       @JsonKey(name: 'episode_name') required this.episodeName,
       @JsonKey(name: 'episode_id') required this.episodeId});
-
-  factory _$QuerySchemaImpl.fromJson(Map<String, dynamic> json) =>
-      _$$QuerySchemaImplFromJson(json);
+  factory _QuerySchema.fromJson(Map<String, dynamic> json) =>
+      _$QuerySchemaFromJson(json);
 
   /// The unique identifier for the source (e.g., series or season).
   @override
@@ -278,16 +225,26 @@ class _$QuerySchemaImpl implements _QuerySchema {
   @JsonKey(name: 'episode_id')
   final String episodeId;
 
+  /// Create a copy of QuerySchema
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'QuerySchema(sourceId: $sourceId, name: $name, poster: $poster, comicTextId: $comicTextId, seasonName: $seasonName, cur: $cur, dur: $dur, episodeName: $episodeName, episodeId: $episodeId)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$QuerySchemaCopyWith<_QuerySchema> get copyWith =>
+      __$QuerySchemaCopyWithImpl<_QuerySchema>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$QuerySchemaToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$QuerySchemaImpl &&
+            other is _QuerySchema &&
             (identical(other.sourceId, sourceId) ||
                 other.sourceId == sourceId) &&
             (identical(other.name, name) || other.name == name) &&
@@ -304,83 +261,98 @@ class _$QuerySchemaImpl implements _QuerySchema {
                 other.episodeId == episodeId));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, sourceId, name, poster,
       comicTextId, seasonName, cur, dur, episodeName, episodeId);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$QuerySchemaImplCopyWith<_$QuerySchemaImpl> get copyWith =>
-      __$$QuerySchemaImplCopyWithImpl<_$QuerySchemaImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$QuerySchemaImplToJson(
-      this,
-    );
+  String toString() {
+    return 'QuerySchema(sourceId: $sourceId, name: $name, poster: $poster, comicTextId: $comicTextId, seasonName: $seasonName, cur: $cur, dur: $dur, episodeName: $episodeName, episodeId: $episodeId)';
   }
 }
 
-abstract class _QuerySchema implements QuerySchema {
-  const factory _QuerySchema(
-          {required final String sourceId,
-          required final String name,
-          required final String poster,
-          @JsonKey(name: 'comic_text_id') required final String comicTextId,
-          @JsonKey(name: 'season_name') required final String seasonName,
-          required final num cur,
-          required final num dur,
-          @JsonKey(name: 'episode_name') required final String episodeName,
-          @JsonKey(name: 'episode_id') required final String episodeId}) =
-      _$QuerySchemaImpl;
-
-  factory _QuerySchema.fromJson(Map<String, dynamic> json) =
-      _$QuerySchemaImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$QuerySchemaCopyWith<$Res>
+    implements $QuerySchemaCopyWith<$Res> {
+  factory _$QuerySchemaCopyWith(
+          _QuerySchema value, $Res Function(_QuerySchema) _then) =
+      __$QuerySchemaCopyWithImpl;
   @override
-
-  /// The unique identifier for the source (e.g., series or season).
-  String get sourceId;
-  @override
-
-  /// The name of the episode.
-  String get name;
-  @override
-
-  /// URL to the poster image for the episode.
-  String get poster;
-  @override
-
-  /// Unique identifier for the comic (movie/show) text.
-  @JsonKey(name: 'comic_text_id')
-  String get comicTextId;
-  @override
-
-  /// The name of the season.
-  @JsonKey(name: 'season_name')
-  String get seasonName;
-  @override
-
-  /// The current watch page in seconds.
-  num get cur;
-  @override
-
-  /// The total page of the episode in seconds.
-  num get dur;
-  @override
-
-  /// The name of the episode.
-  @JsonKey(name: 'episode_name')
-  String get episodeName;
-  @override
-
-  /// Unique identifier for the episode.
-  @JsonKey(name: 'episode_id')
-  String get episodeId;
-  @override
-  @JsonKey(ignore: true)
-  _$$QuerySchemaImplCopyWith<_$QuerySchemaImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call(
+      {String sourceId,
+      String name,
+      String poster,
+      @JsonKey(name: 'comic_text_id') String comicTextId,
+      @JsonKey(name: 'season_name') String seasonName,
+      num cur,
+      num dur,
+      @JsonKey(name: 'episode_name') String episodeName,
+      @JsonKey(name: 'episode_id') String episodeId});
 }
+
+/// @nodoc
+class __$QuerySchemaCopyWithImpl<$Res> implements _$QuerySchemaCopyWith<$Res> {
+  __$QuerySchemaCopyWithImpl(this._self, this._then);
+
+  final _QuerySchema _self;
+  final $Res Function(_QuerySchema) _then;
+
+  /// Create a copy of QuerySchema
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? sourceId = null,
+    Object? name = null,
+    Object? poster = null,
+    Object? comicTextId = null,
+    Object? seasonName = null,
+    Object? cur = null,
+    Object? dur = null,
+    Object? episodeName = null,
+    Object? episodeId = null,
+  }) {
+    return _then(_QuerySchema(
+      sourceId: null == sourceId
+          ? _self.sourceId
+          : sourceId // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      poster: null == poster
+          ? _self.poster
+          : poster // ignore: cast_nullable_to_non_nullable
+              as String,
+      comicTextId: null == comicTextId
+          ? _self.comicTextId
+          : comicTextId // ignore: cast_nullable_to_non_nullable
+              as String,
+      seasonName: null == seasonName
+          ? _self.seasonName
+          : seasonName // ignore: cast_nullable_to_non_nullable
+              as String,
+      cur: null == cur
+          ? _self.cur
+          : cur // ignore: cast_nullable_to_non_nullable
+              as num,
+      dur: null == dur
+          ? _self.dur
+          : dur // ignore: cast_nullable_to_non_nullable
+              as num,
+      episodeName: null == episodeName
+          ? _self.episodeName
+          : episodeName // ignore: cast_nullable_to_non_nullable
+              as String,
+      episodeId: null == episodeId
+          ? _self.episodeId
+          : episodeId // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+// dart format on

@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,86 +10,70 @@ part of 'eiga_list_watch_history.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-EigaListWatchHistory _$EigaListWatchHistoryFromJson(Map<String, dynamic> json) {
-  return _EigaListWatchHistory.fromJson(json);
-}
 
 /// @nodoc
 mixin _$EigaListWatchHistory {
-  List<Data4> get data => throw _privateConstructorUsedError;
+  List<Data4> get data;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $EigaListWatchHistoryCopyWith<EigaListWatchHistory> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $EigaListWatchHistoryCopyWith<$Res> {
-  factory $EigaListWatchHistoryCopyWith(EigaListWatchHistory value,
-          $Res Function(EigaListWatchHistory) then) =
-      _$EigaListWatchHistoryCopyWithImpl<$Res, EigaListWatchHistory>;
-  @useResult
-  $Res call({List<Data4> data});
-}
-
-/// @nodoc
-class _$EigaListWatchHistoryCopyWithImpl<$Res,
-        $Val extends EigaListWatchHistory>
-    implements $EigaListWatchHistoryCopyWith<$Res> {
-  _$EigaListWatchHistoryCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of EigaListWatchHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $EigaListWatchHistoryCopyWith<EigaListWatchHistory> get copyWith =>
+      _$EigaListWatchHistoryCopyWithImpl<EigaListWatchHistory>(
+          this as EigaListWatchHistory, _$identity);
+
+  /// Serializes this EigaListWatchHistory to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? data = null,
-  }) {
-    return _then(_value.copyWith(
-      data: null == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as List<Data4>,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is EigaListWatchHistory &&
+            const DeepCollectionEquality().equals(other.data, data));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(data));
+
+  @override
+  String toString() {
+    return 'EigaListWatchHistory(data: $data)';
   }
 }
 
 /// @nodoc
-abstract class _$$EigaListWatchHistoryImplCopyWith<$Res>
-    implements $EigaListWatchHistoryCopyWith<$Res> {
-  factory _$$EigaListWatchHistoryImplCopyWith(_$EigaListWatchHistoryImpl value,
-          $Res Function(_$EigaListWatchHistoryImpl) then) =
-      __$$EigaListWatchHistoryImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $EigaListWatchHistoryCopyWith<$Res> {
+  factory $EigaListWatchHistoryCopyWith(EigaListWatchHistory value,
+          $Res Function(EigaListWatchHistory) _then) =
+      _$EigaListWatchHistoryCopyWithImpl;
   @useResult
   $Res call({List<Data4> data});
 }
 
 /// @nodoc
-class __$$EigaListWatchHistoryImplCopyWithImpl<$Res>
-    extends _$EigaListWatchHistoryCopyWithImpl<$Res, _$EigaListWatchHistoryImpl>
-    implements _$$EigaListWatchHistoryImplCopyWith<$Res> {
-  __$$EigaListWatchHistoryImplCopyWithImpl(_$EigaListWatchHistoryImpl _value,
-      $Res Function(_$EigaListWatchHistoryImpl) _then)
-      : super(_value, _then);
+class _$EigaListWatchHistoryCopyWithImpl<$Res>
+    implements $EigaListWatchHistoryCopyWith<$Res> {
+  _$EigaListWatchHistoryCopyWithImpl(this._self, this._then);
 
+  final EigaListWatchHistory _self;
+  final $Res Function(EigaListWatchHistory) _then;
+
+  /// Create a copy of EigaListWatchHistory
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? data = null,
   }) {
-    return _then(_$EigaListWatchHistoryImpl(
+    return _then(_self.copyWith(
       data: null == data
-          ? _value._data
+          ? _self.data
           : data // ignore: cast_nullable_to_non_nullable
               as List<Data4>,
     ));
@@ -97,12 +82,10 @@ class __$$EigaListWatchHistoryImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$EigaListWatchHistoryImpl implements _EigaListWatchHistory {
-  const _$EigaListWatchHistoryImpl({required final List<Data4> data})
-      : _data = data;
-
-  factory _$EigaListWatchHistoryImpl.fromJson(Map<String, dynamic> json) =>
-      _$$EigaListWatchHistoryImplFromJson(json);
+class _EigaListWatchHistory implements EigaListWatchHistory {
+  const _EigaListWatchHistory({required final List<Data4> data}) : _data = data;
+  factory _EigaListWatchHistory.fromJson(Map<String, dynamic> json) =>
+      _$EigaListWatchHistoryFromJson(json);
 
   final List<Data4> _data;
   @override
@@ -112,51 +95,74 @@ class _$EigaListWatchHistoryImpl implements _EigaListWatchHistory {
     return EqualUnmodifiableListView(_data);
   }
 
+  /// Create a copy of EigaListWatchHistory
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'EigaListWatchHistory(data: $data)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$EigaListWatchHistoryCopyWith<_EigaListWatchHistory> get copyWith =>
+      __$EigaListWatchHistoryCopyWithImpl<_EigaListWatchHistory>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$EigaListWatchHistoryToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$EigaListWatchHistoryImpl &&
+            other is _EigaListWatchHistory &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$EigaListWatchHistoryImplCopyWith<_$EigaListWatchHistoryImpl>
-      get copyWith =>
-          __$$EigaListWatchHistoryImplCopyWithImpl<_$EigaListWatchHistoryImpl>(
-              this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$EigaListWatchHistoryImplToJson(
-      this,
-    );
+  String toString() {
+    return 'EigaListWatchHistory(data: $data)';
   }
 }
 
-abstract class _EigaListWatchHistory implements EigaListWatchHistory {
-  const factory _EigaListWatchHistory({required final List<Data4> data}) =
-      _$EigaListWatchHistoryImpl;
-
-  factory _EigaListWatchHistory.fromJson(Map<String, dynamic> json) =
-      _$EigaListWatchHistoryImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$EigaListWatchHistoryCopyWith<$Res>
+    implements $EigaListWatchHistoryCopyWith<$Res> {
+  factory _$EigaListWatchHistoryCopyWith(_EigaListWatchHistory value,
+          $Res Function(_EigaListWatchHistory) _then) =
+      __$EigaListWatchHistoryCopyWithImpl;
   @override
-  List<Data4> get data;
-  @override
-  @JsonKey(ignore: true)
-  _$$EigaListWatchHistoryImplCopyWith<_$EigaListWatchHistoryImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @useResult
+  $Res call({List<Data4> data});
 }
+
+/// @nodoc
+class __$EigaListWatchHistoryCopyWithImpl<$Res>
+    implements _$EigaListWatchHistoryCopyWith<$Res> {
+  __$EigaListWatchHistoryCopyWithImpl(this._self, this._then);
+
+  final _EigaListWatchHistory _self;
+  final $Res Function(_EigaListWatchHistory) _then;
+
+  /// Create a copy of EigaListWatchHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? data = null,
+  }) {
+    return _then(_EigaListWatchHistory(
+      data: null == data
+          ? _self._data
+          : data // ignore: cast_nullable_to_non_nullable
+              as List<Data4>,
+    ));
+  }
+}
+
+// dart format on

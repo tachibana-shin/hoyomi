@@ -4,7 +4,7 @@ part 'comic_param.freezed.dart';
 part 'comic_param.g.dart';
 
 @freezed
-class ComicParam with _$ComicParam {
+sealed class ComicParam with _$ComicParam {
   const factory ComicParam({
     required String comicId,
     String? chapterId,

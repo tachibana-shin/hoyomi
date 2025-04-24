@@ -6,7 +6,7 @@ part 'eiga.freezed.dart';
 part 'eiga.g.dart';
 
 @freezed
-class Eiga with _$Eiga {
+sealed class Eiga with _$Eiga {
   const factory Eiga({
     required String name,
     required String eigaId,

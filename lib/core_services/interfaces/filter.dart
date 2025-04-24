@@ -4,7 +4,7 @@ part 'filter.freezed.dart';
 part 'filter.g.dart';
 
 @freezed
-class Option with _$Option {
+sealed class Option with _$Option {
   const factory Option({
     required String name,
     required String value,
@@ -15,7 +15,7 @@ class Option with _$Option {
 }
 
 @freezed
-class Filter with _$Filter {
+sealed class Filter with _$Filter {
   const factory Filter({
     required String name,
     required String key,

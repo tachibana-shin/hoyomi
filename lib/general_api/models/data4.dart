@@ -8,7 +8,7 @@ part 'data4.freezed.dart';
 part 'data4.g.dart';
 
 @Freezed()
-class Data4 with _$Data4 {
+sealed class Data4 with _$Data4 {
   const factory Data4({
     /// The timestamp when the watch history entry was created.
     @JsonKey(name: 'created_at') required String createdAt,

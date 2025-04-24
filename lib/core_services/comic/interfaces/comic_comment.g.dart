@@ -6,8 +6,8 @@ part of 'comic_comment.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ComicCommentImpl _$$ComicCommentImplFromJson(Map<String, dynamic> json) =>
-    _$ComicCommentImpl(
+_ComicComment _$ComicCommentFromJson(Map<String, dynamic> json) =>
+    _ComicComment(
       id: json['id'] as String,
       comicId: json['comicId'] as String,
       chapterId: json['chapterId'] as String?,
@@ -23,7 +23,7 @@ _$ComicCommentImpl _$$ComicCommentImplFromJson(Map<String, dynamic> json) =>
       like: json['like'] as bool?,
     );
 
-Map<String, dynamic> _$$ComicCommentImplToJson(_$ComicCommentImpl instance) =>
+Map<String, dynamic> _$ComicCommentToJson(_ComicComment instance) =>
     <String, dynamic>{
       'id': instance.id,
       'comicId': instance.comicId,

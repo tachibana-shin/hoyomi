@@ -4,7 +4,7 @@ part 'rate_value.freezed.dart';
 part 'rate_value.g.dart';
 
 @freezed
-class RateValue with _$RateValue {
+sealed class RateValue with _$RateValue {
   const factory RateValue({
     required int best,
     required int count,

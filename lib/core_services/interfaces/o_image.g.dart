@@ -6,15 +6,14 @@ part of 'o_image.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$OImageImpl _$$OImageImplFromJson(Map<String, dynamic> json) => _$OImageImpl(
+_OImage _$OImageFromJson(Map<String, dynamic> json) => _OImage(
       src: json['src'] as String,
       headers: json['headers'] == null
           ? null
           : Headers.fromJson(json['headers'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$OImageImplToJson(_$OImageImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$OImageToJson(_OImage instance) => <String, dynamic>{
       'src': instance.src,
       'headers': instance.headers,
     };

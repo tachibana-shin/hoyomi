@@ -6,8 +6,8 @@ part of 'watch_time_data.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$WatchTimeDataImpl _$$WatchTimeDataImplFromJson(Map<String, dynamic> json) =>
-    _$WatchTimeDataImpl(
+_WatchTimeData _$WatchTimeDataFromJson(Map<String, dynamic> json) =>
+    _WatchTimeData(
       eigaId: json['eigaId'] as String,
       episodeId: json['episodeId'] as String,
       watchTime: json['watchTime'] == null
@@ -15,7 +15,7 @@ _$WatchTimeDataImpl _$$WatchTimeDataImplFromJson(Map<String, dynamic> json) =>
           : WatchTime.fromJson(json['watchTime'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$WatchTimeDataImplToJson(_$WatchTimeDataImpl instance) =>
+Map<String, dynamic> _$WatchTimeDataToJson(_WatchTimeData instance) =>
     <String, dynamic>{
       'eigaId': instance.eigaId,
       'episodeId': instance.episodeId,

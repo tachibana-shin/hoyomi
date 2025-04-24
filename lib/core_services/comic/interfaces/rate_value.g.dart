@@ -6,14 +6,13 @@ part of 'rate_value.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$RateValueImpl _$$RateValueImplFromJson(Map<String, dynamic> json) =>
-    _$RateValueImpl(
+_RateValue _$RateValueFromJson(Map<String, dynamic> json) => _RateValue(
       best: (json['best'] as num).toInt(),
       count: (json['count'] as num).toInt(),
       value: (json['value'] as num).toDouble(),
     );
 
-Map<String, dynamic> _$$RateValueImplToJson(_$RateValueImpl instance) =>
+Map<String, dynamic> _$RateValueToJson(_RateValue instance) =>
     <String, dynamic>{
       'best': instance.best,
       'count': instance.count,

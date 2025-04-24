@@ -6,8 +6,8 @@ part of 'carousel_item.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$CarouselItemImpl _$$CarouselItemImplFromJson(Map<String, dynamic> json) =>
-    _$CarouselItemImpl(
+_CarouselItem _$CarouselItemFromJson(Map<String, dynamic> json) =>
+    _CarouselItem(
       subText: json['subText'] as String?,
       image: OImage.fromJson(json['image'] as Map<String, dynamic>),
       eigaId: json['eigaId'] as String,
@@ -36,7 +36,7 @@ _$CarouselItemImpl _$$CarouselItemImplFromJson(Map<String, dynamic> json) =>
           .toList(),
     );
 
-Map<String, dynamic> _$$CarouselItemImplToJson(_$CarouselItemImpl instance) =>
+Map<String, dynamic> _$CarouselItemToJson(_CarouselItem instance) =>
     <String, dynamic>{
       'subText': instance.subText,
       'image': instance.image,

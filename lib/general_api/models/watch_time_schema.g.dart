@@ -6,16 +6,14 @@ part of 'watch_time_schema.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$WatchTimeSchemaImpl _$$WatchTimeSchemaImplFromJson(
-        Map<String, dynamic> json) =>
-    _$WatchTimeSchemaImpl(
+_WatchTimeSchema _$WatchTimeSchemaFromJson(Map<String, dynamic> json) =>
+    _WatchTimeSchema(
       data: json['data'] == null
           ? null
           : Data3.fromJson(json['data'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$WatchTimeSchemaImplToJson(
-        _$WatchTimeSchemaImpl instance) =>
+Map<String, dynamic> _$WatchTimeSchemaToJson(_WatchTimeSchema instance) =>
     <String, dynamic>{
       'data': instance.data,
     };

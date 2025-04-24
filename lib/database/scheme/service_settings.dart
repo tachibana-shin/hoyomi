@@ -4,7 +4,7 @@ part 'service_settings.freezed.dart';
 part 'service_settings.g.dart';
 
 @freezed
-class ServiceSettings with _$ServiceSettings {
+sealed class ServiceSettings with _$ServiceSettings {
   const factory ServiceSettings({
     required String sourceId,
 

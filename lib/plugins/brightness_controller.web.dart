@@ -1,14 +1,12 @@
 // brightness_overlay_web.dart
+import 'package:web/web.dart';
 
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html';
-
-DivElement? _overlayDiv;
+HTMLDivElement? _overlayDiv;
 
 void _ensureOverlay() {
   if (_overlayDiv != null) return;
 
-  _overlayDiv = DivElement()
+  _overlayDiv = HTMLDivElement()
     ..style.position = 'fixed'
     ..style.top = '0'
     ..style.left = '0'

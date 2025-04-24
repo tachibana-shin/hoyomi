@@ -8,7 +8,7 @@ part 'set_watch_time_body_schema.freezed.dart';
 part 'set_watch_time_body_schema.g.dart';
 
 @Freezed()
-class SetWatchTimeBodySchema with _$SetWatchTimeBodySchema {
+sealed class SetWatchTimeBodySchema with _$SetWatchTimeBodySchema {
   const factory SetWatchTimeBodySchema({
     /// The unique identifier for the source (e.g., series or season).
     required String sourceId,

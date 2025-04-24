@@ -6,7 +6,7 @@ part 'source_video.freezed.dart';
 part 'source_video.g.dart';
 
 @freezed
-class SourceVideo with _$SourceVideo {
+sealed class SourceVideo with _$SourceVideo {
   const factory SourceVideo({
     required String src,
     required Uri url,

@@ -6,16 +6,16 @@ part of 'comic_list_watch_history.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ComicListWatchHistoryImpl _$$ComicListWatchHistoryImplFromJson(
+_ComicListWatchHistory _$ComicListWatchHistoryFromJson(
         Map<String, dynamic> json) =>
-    _$ComicListWatchHistoryImpl(
+    _ComicListWatchHistory(
       data: (json['data'] as List<dynamic>)
           .map((e) => Data.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$$ComicListWatchHistoryImplToJson(
-        _$ComicListWatchHistoryImpl instance) =>
+Map<String, dynamic> _$ComicListWatchHistoryToJson(
+        _ComicListWatchHistory instance) =>
     <String, dynamic>{
       'data': instance.data,
     };

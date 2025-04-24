@@ -35,7 +35,7 @@ const subtitleOptions = {
 };
 
 @freezed
-class SubtitleSettings with _$SubtitleSettings {
+sealed class SubtitleSettings with _$SubtitleSettings {
   const factory SubtitleSettings({
     @Default('Normal') String fontFamily,
     @Default('White') String fontColor,

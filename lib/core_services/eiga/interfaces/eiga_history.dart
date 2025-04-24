@@ -5,7 +5,7 @@ import 'main.dart';
 part 'eiga_history.freezed.dart';
 
 @freezed
-class EigaHistory with _$EigaHistory {
+sealed class EigaHistory with _$EigaHistory {
   const factory EigaHistory({
     required Eiga item,
     required DateTime watchUpdatedAt,

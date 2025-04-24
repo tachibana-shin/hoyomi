@@ -1,14 +1,11 @@
-// ignore_for_file: avoid_web_libraries_in_flutter
-
 import 'dart:typed_data';
-// ignore: depend_on_referenced_packages
-import 'package:js/js.dart';
+import 'dart:js_interop';
 
 /// External JS function from pako
 @JS('_inflateRaw')
-external dynamic _inflateRaw(Uint8List data);
+external JSUint8Array _inflateRaw(JSUint8Array data);
 
 Uint8List inflateRaw(Uint8List data) {
-  final result = _inflateRaw(data);
-  return result;
+  final result = _inflateRaw(data.toJS);
+  return result.toDart;
 }

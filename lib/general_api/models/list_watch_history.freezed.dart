@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,85 +10,70 @@ part of 'list_watch_history.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-ListWatchHistory _$ListWatchHistoryFromJson(Map<String, dynamic> json) {
-  return _ListWatchHistory.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ListWatchHistory {
-  List<Data> get data => throw _privateConstructorUsedError;
+  List<Data> get data;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $ListWatchHistoryCopyWith<ListWatchHistory> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ListWatchHistoryCopyWith<$Res> {
-  factory $ListWatchHistoryCopyWith(
-          ListWatchHistory value, $Res Function(ListWatchHistory) then) =
-      _$ListWatchHistoryCopyWithImpl<$Res, ListWatchHistory>;
-  @useResult
-  $Res call({List<Data> data});
-}
-
-/// @nodoc
-class _$ListWatchHistoryCopyWithImpl<$Res, $Val extends ListWatchHistory>
-    implements $ListWatchHistoryCopyWith<$Res> {
-  _$ListWatchHistoryCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of ListWatchHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $ListWatchHistoryCopyWith<ListWatchHistory> get copyWith =>
+      _$ListWatchHistoryCopyWithImpl<ListWatchHistory>(
+          this as ListWatchHistory, _$identity);
+
+  /// Serializes this ListWatchHistory to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? data = null,
-  }) {
-    return _then(_value.copyWith(
-      data: null == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as List<Data>,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ListWatchHistory &&
+            const DeepCollectionEquality().equals(other.data, data));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(data));
+
+  @override
+  String toString() {
+    return 'ListWatchHistory(data: $data)';
   }
 }
 
 /// @nodoc
-abstract class _$$ListWatchHistoryImplCopyWith<$Res>
-    implements $ListWatchHistoryCopyWith<$Res> {
-  factory _$$ListWatchHistoryImplCopyWith(_$ListWatchHistoryImpl value,
-          $Res Function(_$ListWatchHistoryImpl) then) =
-      __$$ListWatchHistoryImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $ListWatchHistoryCopyWith<$Res> {
+  factory $ListWatchHistoryCopyWith(
+          ListWatchHistory value, $Res Function(ListWatchHistory) _then) =
+      _$ListWatchHistoryCopyWithImpl;
   @useResult
   $Res call({List<Data> data});
 }
 
 /// @nodoc
-class __$$ListWatchHistoryImplCopyWithImpl<$Res>
-    extends _$ListWatchHistoryCopyWithImpl<$Res, _$ListWatchHistoryImpl>
-    implements _$$ListWatchHistoryImplCopyWith<$Res> {
-  __$$ListWatchHistoryImplCopyWithImpl(_$ListWatchHistoryImpl _value,
-      $Res Function(_$ListWatchHistoryImpl) _then)
-      : super(_value, _then);
+class _$ListWatchHistoryCopyWithImpl<$Res>
+    implements $ListWatchHistoryCopyWith<$Res> {
+  _$ListWatchHistoryCopyWithImpl(this._self, this._then);
 
+  final ListWatchHistory _self;
+  final $Res Function(ListWatchHistory) _then;
+
+  /// Create a copy of ListWatchHistory
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? data = null,
   }) {
-    return _then(_$ListWatchHistoryImpl(
+    return _then(_self.copyWith(
       data: null == data
-          ? _value._data
+          ? _self.data
           : data // ignore: cast_nullable_to_non_nullable
               as List<Data>,
     ));
@@ -96,11 +82,10 @@ class __$$ListWatchHistoryImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ListWatchHistoryImpl implements _ListWatchHistory {
-  const _$ListWatchHistoryImpl({required final List<Data> data}) : _data = data;
-
-  factory _$ListWatchHistoryImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ListWatchHistoryImplFromJson(json);
+class _ListWatchHistory implements ListWatchHistory {
+  const _ListWatchHistory({required final List<Data> data}) : _data = data;
+  factory _ListWatchHistory.fromJson(Map<String, dynamic> json) =>
+      _$ListWatchHistoryFromJson(json);
 
   final List<Data> _data;
   @override
@@ -110,50 +95,73 @@ class _$ListWatchHistoryImpl implements _ListWatchHistory {
     return EqualUnmodifiableListView(_data);
   }
 
+  /// Create a copy of ListWatchHistory
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'ListWatchHistory(data: $data)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ListWatchHistoryCopyWith<_ListWatchHistory> get copyWith =>
+      __$ListWatchHistoryCopyWithImpl<_ListWatchHistory>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ListWatchHistoryToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ListWatchHistoryImpl &&
+            other is _ListWatchHistory &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$ListWatchHistoryImplCopyWith<_$ListWatchHistoryImpl> get copyWith =>
-      __$$ListWatchHistoryImplCopyWithImpl<_$ListWatchHistoryImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ListWatchHistoryImplToJson(
-      this,
-    );
+  String toString() {
+    return 'ListWatchHistory(data: $data)';
   }
 }
 
-abstract class _ListWatchHistory implements ListWatchHistory {
-  const factory _ListWatchHistory({required final List<Data> data}) =
-      _$ListWatchHistoryImpl;
-
-  factory _ListWatchHistory.fromJson(Map<String, dynamic> json) =
-      _$ListWatchHistoryImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$ListWatchHistoryCopyWith<$Res>
+    implements $ListWatchHistoryCopyWith<$Res> {
+  factory _$ListWatchHistoryCopyWith(
+          _ListWatchHistory value, $Res Function(_ListWatchHistory) _then) =
+      __$ListWatchHistoryCopyWithImpl;
   @override
-  List<Data> get data;
-  @override
-  @JsonKey(ignore: true)
-  _$$ListWatchHistoryImplCopyWith<_$ListWatchHistoryImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({List<Data> data});
 }
+
+/// @nodoc
+class __$ListWatchHistoryCopyWithImpl<$Res>
+    implements _$ListWatchHistoryCopyWith<$Res> {
+  __$ListWatchHistoryCopyWithImpl(this._self, this._then);
+
+  final _ListWatchHistory _self;
+  final $Res Function(_ListWatchHistory) _then;
+
+  /// Create a copy of ListWatchHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? data = null,
+  }) {
+    return _then(_ListWatchHistory(
+      data: null == data
+          ? _self._data
+          : data // ignore: cast_nullable_to_non_nullable
+              as List<Data>,
+    ));
+  }
+}
+
+// dart format on

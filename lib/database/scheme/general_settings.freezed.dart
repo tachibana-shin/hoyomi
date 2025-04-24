@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,108 +10,75 @@ part of 'general_settings.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-GeneralSettings _$GeneralSettingsFromJson(Map<String, dynamic> json) {
-  return _GeneralSettings.fromJson(json);
-}
 
 /// @nodoc
 mixin _$GeneralSettings {
-  bool get mangaReadLazyPage => throw _privateConstructorUsedError;
-  DateTime? get lastCheckUpdateApp => throw _privateConstructorUsedError;
-  double? get brightnessApp => throw _privateConstructorUsedError;
-  int get pollingIntervalComic => throw _privateConstructorUsedError;
-  bool get showListEpisodeWithGrid => throw _privateConstructorUsedError;
-  List<String>? get sortComicService => throw _privateConstructorUsedError;
-  List<String>? get sortEigaService => throw _privateConstructorUsedError;
+  bool get mangaReadLazyPage;
+  DateTime? get lastCheckUpdateApp;
+  double? get brightnessApp;
+  int get pollingIntervalComic;
+  bool get showListEpisodeWithGrid;
+  List<String>? get sortComicService;
+  List<String>? get sortEigaService;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $GeneralSettingsCopyWith<GeneralSettings> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $GeneralSettingsCopyWith<$Res> {
-  factory $GeneralSettingsCopyWith(
-          GeneralSettings value, $Res Function(GeneralSettings) then) =
-      _$GeneralSettingsCopyWithImpl<$Res, GeneralSettings>;
-  @useResult
-  $Res call(
-      {bool mangaReadLazyPage,
-      DateTime? lastCheckUpdateApp,
-      double? brightnessApp,
-      int pollingIntervalComic,
-      bool showListEpisodeWithGrid,
-      List<String>? sortComicService,
-      List<String>? sortEigaService});
-}
-
-/// @nodoc
-class _$GeneralSettingsCopyWithImpl<$Res, $Val extends GeneralSettings>
-    implements $GeneralSettingsCopyWith<$Res> {
-  _$GeneralSettingsCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of GeneralSettings
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $GeneralSettingsCopyWith<GeneralSettings> get copyWith =>
+      _$GeneralSettingsCopyWithImpl<GeneralSettings>(
+          this as GeneralSettings, _$identity);
+
+  /// Serializes this GeneralSettings to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? mangaReadLazyPage = null,
-    Object? lastCheckUpdateApp = freezed,
-    Object? brightnessApp = freezed,
-    Object? pollingIntervalComic = null,
-    Object? showListEpisodeWithGrid = null,
-    Object? sortComicService = freezed,
-    Object? sortEigaService = freezed,
-  }) {
-    return _then(_value.copyWith(
-      mangaReadLazyPage: null == mangaReadLazyPage
-          ? _value.mangaReadLazyPage
-          : mangaReadLazyPage // ignore: cast_nullable_to_non_nullable
-              as bool,
-      lastCheckUpdateApp: freezed == lastCheckUpdateApp
-          ? _value.lastCheckUpdateApp
-          : lastCheckUpdateApp // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      brightnessApp: freezed == brightnessApp
-          ? _value.brightnessApp
-          : brightnessApp // ignore: cast_nullable_to_non_nullable
-              as double?,
-      pollingIntervalComic: null == pollingIntervalComic
-          ? _value.pollingIntervalComic
-          : pollingIntervalComic // ignore: cast_nullable_to_non_nullable
-              as int,
-      showListEpisodeWithGrid: null == showListEpisodeWithGrid
-          ? _value.showListEpisodeWithGrid
-          : showListEpisodeWithGrid // ignore: cast_nullable_to_non_nullable
-              as bool,
-      sortComicService: freezed == sortComicService
-          ? _value.sortComicService
-          : sortComicService // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-      sortEigaService: freezed == sortEigaService
-          ? _value.sortEigaService
-          : sortEigaService // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is GeneralSettings &&
+            (identical(other.mangaReadLazyPage, mangaReadLazyPage) ||
+                other.mangaReadLazyPage == mangaReadLazyPage) &&
+            (identical(other.lastCheckUpdateApp, lastCheckUpdateApp) ||
+                other.lastCheckUpdateApp == lastCheckUpdateApp) &&
+            (identical(other.brightnessApp, brightnessApp) ||
+                other.brightnessApp == brightnessApp) &&
+            (identical(other.pollingIntervalComic, pollingIntervalComic) ||
+                other.pollingIntervalComic == pollingIntervalComic) &&
+            (identical(
+                    other.showListEpisodeWithGrid, showListEpisodeWithGrid) ||
+                other.showListEpisodeWithGrid == showListEpisodeWithGrid) &&
+            const DeepCollectionEquality()
+                .equals(other.sortComicService, sortComicService) &&
+            const DeepCollectionEquality()
+                .equals(other.sortEigaService, sortEigaService));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      mangaReadLazyPage,
+      lastCheckUpdateApp,
+      brightnessApp,
+      pollingIntervalComic,
+      showListEpisodeWithGrid,
+      const DeepCollectionEquality().hash(sortComicService),
+      const DeepCollectionEquality().hash(sortEigaService));
+
+  @override
+  String toString() {
+    return 'GeneralSettings(mangaReadLazyPage: $mangaReadLazyPage, lastCheckUpdateApp: $lastCheckUpdateApp, brightnessApp: $brightnessApp, pollingIntervalComic: $pollingIntervalComic, showListEpisodeWithGrid: $showListEpisodeWithGrid, sortComicService: $sortComicService, sortEigaService: $sortEigaService)';
   }
 }
 
 /// @nodoc
-abstract class _$$GeneralSettingsImplCopyWith<$Res>
-    implements $GeneralSettingsCopyWith<$Res> {
-  factory _$$GeneralSettingsImplCopyWith(_$GeneralSettingsImpl value,
-          $Res Function(_$GeneralSettingsImpl) then) =
-      __$$GeneralSettingsImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $GeneralSettingsCopyWith<$Res> {
+  factory $GeneralSettingsCopyWith(
+          GeneralSettings value, $Res Function(GeneralSettings) _then) =
+      _$GeneralSettingsCopyWithImpl;
   @useResult
   $Res call(
       {bool mangaReadLazyPage,
@@ -123,13 +91,15 @@ abstract class _$$GeneralSettingsImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$GeneralSettingsImplCopyWithImpl<$Res>
-    extends _$GeneralSettingsCopyWithImpl<$Res, _$GeneralSettingsImpl>
-    implements _$$GeneralSettingsImplCopyWith<$Res> {
-  __$$GeneralSettingsImplCopyWithImpl(
-      _$GeneralSettingsImpl _value, $Res Function(_$GeneralSettingsImpl) _then)
-      : super(_value, _then);
+class _$GeneralSettingsCopyWithImpl<$Res>
+    implements $GeneralSettingsCopyWith<$Res> {
+  _$GeneralSettingsCopyWithImpl(this._self, this._then);
 
+  final GeneralSettings _self;
+  final $Res Function(GeneralSettings) _then;
+
+  /// Create a copy of GeneralSettings
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -141,33 +111,33 @@ class __$$GeneralSettingsImplCopyWithImpl<$Res>
     Object? sortComicService = freezed,
     Object? sortEigaService = freezed,
   }) {
-    return _then(_$GeneralSettingsImpl(
+    return _then(_self.copyWith(
       mangaReadLazyPage: null == mangaReadLazyPage
-          ? _value.mangaReadLazyPage
+          ? _self.mangaReadLazyPage
           : mangaReadLazyPage // ignore: cast_nullable_to_non_nullable
               as bool,
       lastCheckUpdateApp: freezed == lastCheckUpdateApp
-          ? _value.lastCheckUpdateApp
+          ? _self.lastCheckUpdateApp
           : lastCheckUpdateApp // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       brightnessApp: freezed == brightnessApp
-          ? _value.brightnessApp
+          ? _self.brightnessApp
           : brightnessApp // ignore: cast_nullable_to_non_nullable
               as double?,
       pollingIntervalComic: null == pollingIntervalComic
-          ? _value.pollingIntervalComic
+          ? _self.pollingIntervalComic
           : pollingIntervalComic // ignore: cast_nullable_to_non_nullable
               as int,
       showListEpisodeWithGrid: null == showListEpisodeWithGrid
-          ? _value.showListEpisodeWithGrid
+          ? _self.showListEpisodeWithGrid
           : showListEpisodeWithGrid // ignore: cast_nullable_to_non_nullable
               as bool,
       sortComicService: freezed == sortComicService
-          ? _value._sortComicService
+          ? _self.sortComicService
           : sortComicService // ignore: cast_nullable_to_non_nullable
               as List<String>?,
       sortEigaService: freezed == sortEigaService
-          ? _value._sortEigaService
+          ? _self.sortEigaService
           : sortEigaService // ignore: cast_nullable_to_non_nullable
               as List<String>?,
     ));
@@ -176,8 +146,8 @@ class __$$GeneralSettingsImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$GeneralSettingsImpl implements _GeneralSettings {
-  const _$GeneralSettingsImpl(
+class _GeneralSettings implements GeneralSettings {
+  const _GeneralSettings(
       {this.mangaReadLazyPage = false,
       this.lastCheckUpdateApp = null,
       this.brightnessApp = null,
@@ -187,9 +157,8 @@ class _$GeneralSettingsImpl implements _GeneralSettings {
       final List<String>? sortEigaService = null})
       : _sortComicService = sortComicService,
         _sortEigaService = sortEigaService;
-
-  factory _$GeneralSettingsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$GeneralSettingsImplFromJson(json);
+  factory _GeneralSettings.fromJson(Map<String, dynamic> json) =>
+      _$GeneralSettingsFromJson(json);
 
   @override
   @JsonKey()
@@ -229,16 +198,26 @@ class _$GeneralSettingsImpl implements _GeneralSettings {
     return EqualUnmodifiableListView(value);
   }
 
+  /// Create a copy of GeneralSettings
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'GeneralSettings(mangaReadLazyPage: $mangaReadLazyPage, lastCheckUpdateApp: $lastCheckUpdateApp, brightnessApp: $brightnessApp, pollingIntervalComic: $pollingIntervalComic, showListEpisodeWithGrid: $showListEpisodeWithGrid, sortComicService: $sortComicService, sortEigaService: $sortEigaService)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$GeneralSettingsCopyWith<_GeneralSettings> get copyWith =>
+      __$GeneralSettingsCopyWithImpl<_GeneralSettings>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$GeneralSettingsToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$GeneralSettingsImpl &&
+            other is _GeneralSettings &&
             (identical(other.mangaReadLazyPage, mangaReadLazyPage) ||
                 other.mangaReadLazyPage == mangaReadLazyPage) &&
             (identical(other.lastCheckUpdateApp, lastCheckUpdateApp) ||
@@ -256,7 +235,7 @@ class _$GeneralSettingsImpl implements _GeneralSettings {
                 .equals(other._sortEigaService, _sortEigaService));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -268,50 +247,82 @@ class _$GeneralSettingsImpl implements _GeneralSettings {
       const DeepCollectionEquality().hash(_sortComicService),
       const DeepCollectionEquality().hash(_sortEigaService));
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$GeneralSettingsImplCopyWith<_$GeneralSettingsImpl> get copyWith =>
-      __$$GeneralSettingsImplCopyWithImpl<_$GeneralSettingsImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$GeneralSettingsImplToJson(
-      this,
-    );
+  String toString() {
+    return 'GeneralSettings(mangaReadLazyPage: $mangaReadLazyPage, lastCheckUpdateApp: $lastCheckUpdateApp, brightnessApp: $brightnessApp, pollingIntervalComic: $pollingIntervalComic, showListEpisodeWithGrid: $showListEpisodeWithGrid, sortComicService: $sortComicService, sortEigaService: $sortEigaService)';
   }
 }
 
-abstract class _GeneralSettings implements GeneralSettings {
-  const factory _GeneralSettings(
-      {final bool mangaReadLazyPage,
-      final DateTime? lastCheckUpdateApp,
-      final double? brightnessApp,
-      final int pollingIntervalComic,
-      final bool showListEpisodeWithGrid,
-      final List<String>? sortComicService,
-      final List<String>? sortEigaService}) = _$GeneralSettingsImpl;
-
-  factory _GeneralSettings.fromJson(Map<String, dynamic> json) =
-      _$GeneralSettingsImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$GeneralSettingsCopyWith<$Res>
+    implements $GeneralSettingsCopyWith<$Res> {
+  factory _$GeneralSettingsCopyWith(
+          _GeneralSettings value, $Res Function(_GeneralSettings) _then) =
+      __$GeneralSettingsCopyWithImpl;
   @override
-  bool get mangaReadLazyPage;
-  @override
-  DateTime? get lastCheckUpdateApp;
-  @override
-  double? get brightnessApp;
-  @override
-  int get pollingIntervalComic;
-  @override
-  bool get showListEpisodeWithGrid;
-  @override
-  List<String>? get sortComicService;
-  @override
-  List<String>? get sortEigaService;
-  @override
-  @JsonKey(ignore: true)
-  _$$GeneralSettingsImplCopyWith<_$GeneralSettingsImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call(
+      {bool mangaReadLazyPage,
+      DateTime? lastCheckUpdateApp,
+      double? brightnessApp,
+      int pollingIntervalComic,
+      bool showListEpisodeWithGrid,
+      List<String>? sortComicService,
+      List<String>? sortEigaService});
 }
+
+/// @nodoc
+class __$GeneralSettingsCopyWithImpl<$Res>
+    implements _$GeneralSettingsCopyWith<$Res> {
+  __$GeneralSettingsCopyWithImpl(this._self, this._then);
+
+  final _GeneralSettings _self;
+  final $Res Function(_GeneralSettings) _then;
+
+  /// Create a copy of GeneralSettings
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? mangaReadLazyPage = null,
+    Object? lastCheckUpdateApp = freezed,
+    Object? brightnessApp = freezed,
+    Object? pollingIntervalComic = null,
+    Object? showListEpisodeWithGrid = null,
+    Object? sortComicService = freezed,
+    Object? sortEigaService = freezed,
+  }) {
+    return _then(_GeneralSettings(
+      mangaReadLazyPage: null == mangaReadLazyPage
+          ? _self.mangaReadLazyPage
+          : mangaReadLazyPage // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lastCheckUpdateApp: freezed == lastCheckUpdateApp
+          ? _self.lastCheckUpdateApp
+          : lastCheckUpdateApp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      brightnessApp: freezed == brightnessApp
+          ? _self.brightnessApp
+          : brightnessApp // ignore: cast_nullable_to_non_nullable
+              as double?,
+      pollingIntervalComic: null == pollingIntervalComic
+          ? _self.pollingIntervalComic
+          : pollingIntervalComic // ignore: cast_nullable_to_non_nullable
+              as int,
+      showListEpisodeWithGrid: null == showListEpisodeWithGrid
+          ? _self.showListEpisodeWithGrid
+          : showListEpisodeWithGrid // ignore: cast_nullable_to_non_nullable
+              as bool,
+      sortComicService: freezed == sortComicService
+          ? _self._sortComicService
+          : sortComicService // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      sortEigaService: freezed == sortEigaService
+          ? _self._sortEigaService
+          : sortEigaService // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+    ));
+  }
+}
+
+// dart format on

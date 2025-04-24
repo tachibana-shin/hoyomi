@@ -6,16 +6,14 @@ part of 'list_watch_history.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ListWatchHistoryImpl _$$ListWatchHistoryImplFromJson(
-        Map<String, dynamic> json) =>
-    _$ListWatchHistoryImpl(
+_ListWatchHistory _$ListWatchHistoryFromJson(Map<String, dynamic> json) =>
+    _ListWatchHistory(
       data: (json['data'] as List<dynamic>)
           .map((e) => Data.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$$ListWatchHistoryImplToJson(
-        _$ListWatchHistoryImpl instance) =>
+Map<String, dynamic> _$ListWatchHistoryToJson(_ListWatchHistory instance) =>
     <String, dynamic>{
       'data': instance.data,
     };

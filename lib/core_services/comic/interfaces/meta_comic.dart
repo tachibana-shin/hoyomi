@@ -9,7 +9,7 @@ part 'meta_comic.freezed.dart';
 part 'meta_comic.g.dart';
 
 @freezed
-class MetaComic with _$MetaComic {
+sealed class MetaComic with _$MetaComic {
   const factory MetaComic({
     required String name,
     String? originalName,

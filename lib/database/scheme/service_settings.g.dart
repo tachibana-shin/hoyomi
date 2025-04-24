@@ -6,9 +6,8 @@ part of 'service_settings.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ServiceSettingsImpl _$$ServiceSettingsImplFromJson(
-        Map<String, dynamic> json) =>
-    _$ServiceSettingsImpl(
+_ServiceSettings _$ServiceSettingsFromJson(Map<String, dynamic> json) =>
+    _ServiceSettings(
       sourceId: json['sourceId'] as String,
       settings: json['settings'] as Map<String, dynamic>?,
       userDataCache: json['userDataCache'] as String?,
@@ -16,8 +15,7 @@ _$ServiceSettingsImpl _$$ServiceSettingsImplFromJson(
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
 
-Map<String, dynamic> _$$ServiceSettingsImplToJson(
-        _$ServiceSettingsImpl instance) =>
+Map<String, dynamic> _$ServiceSettingsToJson(_ServiceSettings instance) =>
     <String, dynamic>{
       'sourceId': instance.sourceId,
       'settings': instance.settings,

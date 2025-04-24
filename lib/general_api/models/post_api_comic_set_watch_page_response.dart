@@ -8,7 +8,8 @@ part 'post_api_comic_set_watch_page_response.freezed.dart';
 part 'post_api_comic_set_watch_page_response.g.dart';
 
 @Freezed()
-class PostApiComicSetWatchPageResponse with _$PostApiComicSetWatchPageResponse {
+sealed class PostApiComicSetWatchPageResponse
+    with _$PostApiComicSetWatchPageResponse {
   const factory PostApiComicSetWatchPageResponse({
     /// Indicates whether the watch page was successfully set.
     required bool success,

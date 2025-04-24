@@ -21,7 +21,7 @@ jobs:
       - uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
-          version: 3.27.4
+          version: 3.29.3
 
       - run: flutter pub get
 
@@ -73,7 +73,7 @@ jobs:
       - uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
-          version: 3.27.4
+          version: 3.29.3
 
       - run: flutter pub get
 

@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,109 +10,69 @@ part of 'data2.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-Data2 _$Data2FromJson(Map<String, dynamic> json) {
-  return _Data2.fromJson(json);
-}
 
 /// @nodoc
 mixin _$Data2 {
   /// The current page in the episode in seconds.
-  num get cur => throw _privateConstructorUsedError;
+  num get cur;
 
   /// The total page of the episode in seconds.
-  num get dur => throw _privateConstructorUsedError;
+  num get dur;
 
   /// The name of the episode.
-  String get name => throw _privateConstructorUsedError;
+  String get name;
 
   /// Timestamp when the watch page was recorded, in ISO 8601 format.
-  String get createdAt => throw _privateConstructorUsedError;
+  String get createdAt;
 
   /// Timestamp when the watch page was last updated, in ISO 8601 format.
-  String get updatedAt => throw _privateConstructorUsedError;
+  String get updatedAt;
 
   /// The unique identifier for the chapter within the episode or series.
-  String get chapId => throw _privateConstructorUsedError;
+  String get chapId;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $Data2CopyWith<Data2> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $Data2CopyWith<$Res> {
-  factory $Data2CopyWith(Data2 value, $Res Function(Data2) then) =
-      _$Data2CopyWithImpl<$Res, Data2>;
-  @useResult
-  $Res call(
-      {num cur,
-      num dur,
-      String name,
-      String createdAt,
-      String updatedAt,
-      String chapId});
-}
-
-/// @nodoc
-class _$Data2CopyWithImpl<$Res, $Val extends Data2>
-    implements $Data2CopyWith<$Res> {
-  _$Data2CopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of Data2
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $Data2CopyWith<Data2> get copyWith =>
+      _$Data2CopyWithImpl<Data2>(this as Data2, _$identity);
+
+  /// Serializes this Data2 to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? cur = null,
-    Object? dur = null,
-    Object? name = null,
-    Object? createdAt = null,
-    Object? updatedAt = null,
-    Object? chapId = null,
-  }) {
-    return _then(_value.copyWith(
-      cur: null == cur
-          ? _value.cur
-          : cur // ignore: cast_nullable_to_non_nullable
-              as num,
-      dur: null == dur
-          ? _value.dur
-          : dur // ignore: cast_nullable_to_non_nullable
-              as num,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      chapId: null == chapId
-          ? _value.chapId
-          : chapId // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is Data2 &&
+            (identical(other.cur, cur) || other.cur == cur) &&
+            (identical(other.dur, dur) || other.dur == dur) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
+            (identical(other.chapId, chapId) || other.chapId == chapId));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, cur, dur, name, createdAt, updatedAt, chapId);
+
+  @override
+  String toString() {
+    return 'Data2(cur: $cur, dur: $dur, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, chapId: $chapId)';
   }
 }
 
 /// @nodoc
-abstract class _$$Data2ImplCopyWith<$Res> implements $Data2CopyWith<$Res> {
-  factory _$$Data2ImplCopyWith(
-          _$Data2Impl value, $Res Function(_$Data2Impl) then) =
-      __$$Data2ImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $Data2CopyWith<$Res> {
+  factory $Data2CopyWith(Data2 value, $Res Function(Data2) _then) =
+      _$Data2CopyWithImpl;
   @useResult
   $Res call(
       {num cur,
@@ -123,13 +84,14 @@ abstract class _$$Data2ImplCopyWith<$Res> implements $Data2CopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$Data2ImplCopyWithImpl<$Res>
-    extends _$Data2CopyWithImpl<$Res, _$Data2Impl>
-    implements _$$Data2ImplCopyWith<$Res> {
-  __$$Data2ImplCopyWithImpl(
-      _$Data2Impl _value, $Res Function(_$Data2Impl) _then)
-      : super(_value, _then);
+class _$Data2CopyWithImpl<$Res> implements $Data2CopyWith<$Res> {
+  _$Data2CopyWithImpl(this._self, this._then);
 
+  final Data2 _self;
+  final $Res Function(Data2) _then;
+
+  /// Create a copy of Data2
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -140,29 +102,29 @@ class __$$Data2ImplCopyWithImpl<$Res>
     Object? updatedAt = null,
     Object? chapId = null,
   }) {
-    return _then(_$Data2Impl(
+    return _then(_self.copyWith(
       cur: null == cur
-          ? _value.cur
+          ? _self.cur
           : cur // ignore: cast_nullable_to_non_nullable
               as num,
       dur: null == dur
-          ? _value.dur
+          ? _self.dur
           : dur // ignore: cast_nullable_to_non_nullable
               as num,
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       createdAt: null == createdAt
-          ? _value.createdAt
+          ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
       updatedAt: null == updatedAt
-          ? _value.updatedAt
+          ? _self.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String,
       chapId: null == chapId
-          ? _value.chapId
+          ? _self.chapId
           : chapId // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -171,17 +133,15 @@ class __$$Data2ImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$Data2Impl implements _Data2 {
-  const _$Data2Impl(
+class _Data2 implements Data2 {
+  const _Data2(
       {required this.cur,
       required this.dur,
       required this.name,
       required this.createdAt,
       required this.updatedAt,
       required this.chapId});
-
-  factory _$Data2Impl.fromJson(Map<String, dynamic> json) =>
-      _$$Data2ImplFromJson(json);
+  factory _Data2.fromJson(Map<String, dynamic> json) => _$Data2FromJson(json);
 
   /// The current page in the episode in seconds.
   @override
@@ -207,16 +167,26 @@ class _$Data2Impl implements _Data2 {
   @override
   final String chapId;
 
+  /// Create a copy of Data2
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'Data2(cur: $cur, dur: $dur, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, chapId: $chapId)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$Data2CopyWith<_Data2> get copyWith =>
+      __$Data2CopyWithImpl<_Data2>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$Data2ToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$Data2Impl &&
+            other is _Data2 &&
             (identical(other.cur, cur) || other.cur == cur) &&
             (identical(other.dur, dur) || other.dur == dur) &&
             (identical(other.name, name) || other.name == name) &&
@@ -227,62 +197,78 @@ class _$Data2Impl implements _Data2 {
             (identical(other.chapId, chapId) || other.chapId == chapId));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, cur, dur, name, createdAt, updatedAt, chapId);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$Data2ImplCopyWith<_$Data2Impl> get copyWith =>
-      __$$Data2ImplCopyWithImpl<_$Data2Impl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$Data2ImplToJson(
-      this,
-    );
+  String toString() {
+    return 'Data2(cur: $cur, dur: $dur, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, chapId: $chapId)';
   }
 }
 
-abstract class _Data2 implements Data2 {
-  const factory _Data2(
-      {required final num cur,
-      required final num dur,
-      required final String name,
-      required final String createdAt,
-      required final String updatedAt,
-      required final String chapId}) = _$Data2Impl;
-
-  factory _Data2.fromJson(Map<String, dynamic> json) = _$Data2Impl.fromJson;
-
+/// @nodoc
+abstract mixin class _$Data2CopyWith<$Res> implements $Data2CopyWith<$Res> {
+  factory _$Data2CopyWith(_Data2 value, $Res Function(_Data2) _then) =
+      __$Data2CopyWithImpl;
   @override
-
-  /// The current page in the episode in seconds.
-  num get cur;
-  @override
-
-  /// The total page of the episode in seconds.
-  num get dur;
-  @override
-
-  /// The name of the episode.
-  String get name;
-  @override
-
-  /// Timestamp when the watch page was recorded, in ISO 8601 format.
-  String get createdAt;
-  @override
-
-  /// Timestamp when the watch page was last updated, in ISO 8601 format.
-  String get updatedAt;
-  @override
-
-  /// The unique identifier for the chapter within the episode or series.
-  String get chapId;
-  @override
-  @JsonKey(ignore: true)
-  _$$Data2ImplCopyWith<_$Data2Impl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call(
+      {num cur,
+      num dur,
+      String name,
+      String createdAt,
+      String updatedAt,
+      String chapId});
 }
+
+/// @nodoc
+class __$Data2CopyWithImpl<$Res> implements _$Data2CopyWith<$Res> {
+  __$Data2CopyWithImpl(this._self, this._then);
+
+  final _Data2 _self;
+  final $Res Function(_Data2) _then;
+
+  /// Create a copy of Data2
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? cur = null,
+    Object? dur = null,
+    Object? name = null,
+    Object? createdAt = null,
+    Object? updatedAt = null,
+    Object? chapId = null,
+  }) {
+    return _then(_Data2(
+      cur: null == cur
+          ? _self.cur
+          : cur // ignore: cast_nullable_to_non_nullable
+              as num,
+      dur: null == dur
+          ? _self.dur
+          : dur // ignore: cast_nullable_to_non_nullable
+              as num,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: null == createdAt
+          ? _self.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as String,
+      updatedAt: null == updatedAt
+          ? _self.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as String,
+      chapId: null == chapId
+          ? _self.chapId
+          : chapId // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+// dart format on

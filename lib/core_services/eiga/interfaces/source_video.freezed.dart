@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,34 +10,54 @@ part of 'source_video.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-SourceVideo _$SourceVideoFromJson(Map<String, dynamic> json) {
-  return _SourceVideo.fromJson(json);
-}
 
 /// @nodoc
 mixin _$SourceVideo {
-  String get src => throw _privateConstructorUsedError;
-  Uri get url => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
-  Headers? get headers => throw _privateConstructorUsedError;
-  String? get extra => throw _privateConstructorUsedError;
+  String get src;
+  Uri get url;
+  String get type;
+  Headers? get headers;
+  String? get extra;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+  /// Create a copy of SourceVideo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $SourceVideoCopyWith<SourceVideo> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$SourceVideoCopyWithImpl<SourceVideo>(this as SourceVideo, _$identity);
+
+  /// Serializes this SourceVideo to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is SourceVideo &&
+            (identical(other.src, src) || other.src == src) &&
+            (identical(other.url, url) || other.url == url) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.headers, headers) || other.headers == headers) &&
+            (identical(other.extra, extra) || other.extra == extra));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, src, url, type, headers, extra);
+
+  @override
+  String toString() {
+    return 'SourceVideo(src: $src, url: $url, type: $type, headers: $headers, extra: $extra)';
+  }
 }
 
 /// @nodoc
-abstract class $SourceVideoCopyWith<$Res> {
+abstract mixin class $SourceVideoCopyWith<$Res> {
   factory $SourceVideoCopyWith(
-          SourceVideo value, $Res Function(SourceVideo) then) =
-      _$SourceVideoCopyWithImpl<$Res, SourceVideo>;
+          SourceVideo value, $Res Function(SourceVideo) _then) =
+      _$SourceVideoCopyWithImpl;
   @useResult
   $Res call(
       {String src, Uri url, String type, Headers? headers, String? extra});
@@ -45,15 +66,14 @@ abstract class $SourceVideoCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$SourceVideoCopyWithImpl<$Res, $Val extends SourceVideo>
-    implements $SourceVideoCopyWith<$Res> {
-  _$SourceVideoCopyWithImpl(this._value, this._then);
+class _$SourceVideoCopyWithImpl<$Res> implements $SourceVideoCopyWith<$Res> {
+  _$SourceVideoCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SourceVideo _self;
+  final $Res Function(SourceVideo) _then;
 
+  /// Create a copy of SourceVideo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -63,112 +83,56 @@ class _$SourceVideoCopyWithImpl<$Res, $Val extends SourceVideo>
     Object? headers = freezed,
     Object? extra = freezed,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       src: null == src
-          ? _value.src
+          ? _self.src
           : src // ignore: cast_nullable_to_non_nullable
               as String,
       url: null == url
-          ? _value.url
+          ? _self.url
           : url // ignore: cast_nullable_to_non_nullable
               as Uri,
       type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
       headers: freezed == headers
-          ? _value.headers
+          ? _self.headers
           : headers // ignore: cast_nullable_to_non_nullable
               as Headers?,
       extra: freezed == extra
-          ? _value.extra
+          ? _self.extra
           : extra // ignore: cast_nullable_to_non_nullable
               as String?,
-    ) as $Val);
+    ));
   }
 
+  /// Create a copy of SourceVideo
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $HeadersCopyWith<$Res>? get headers {
-    if (_value.headers == null) {
+    if (_self.headers == null) {
       return null;
     }
 
-    return $HeadersCopyWith<$Res>(_value.headers!, (value) {
-      return _then(_value.copyWith(headers: value) as $Val);
+    return $HeadersCopyWith<$Res>(_self.headers!, (value) {
+      return _then(_self.copyWith(headers: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$SourceVideoImplCopyWith<$Res>
-    implements $SourceVideoCopyWith<$Res> {
-  factory _$$SourceVideoImplCopyWith(
-          _$SourceVideoImpl value, $Res Function(_$SourceVideoImpl) then) =
-      __$$SourceVideoImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String src, Uri url, String type, Headers? headers, String? extra});
-
-  @override
-  $HeadersCopyWith<$Res>? get headers;
-}
-
-/// @nodoc
-class __$$SourceVideoImplCopyWithImpl<$Res>
-    extends _$SourceVideoCopyWithImpl<$Res, _$SourceVideoImpl>
-    implements _$$SourceVideoImplCopyWith<$Res> {
-  __$$SourceVideoImplCopyWithImpl(
-      _$SourceVideoImpl _value, $Res Function(_$SourceVideoImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? src = null,
-    Object? url = null,
-    Object? type = null,
-    Object? headers = freezed,
-    Object? extra = freezed,
-  }) {
-    return _then(_$SourceVideoImpl(
-      src: null == src
-          ? _value.src
-          : src // ignore: cast_nullable_to_non_nullable
-              as String,
-      url: null == url
-          ? _value.url
-          : url // ignore: cast_nullable_to_non_nullable
-              as Uri,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-      headers: freezed == headers
-          ? _value.headers
-          : headers // ignore: cast_nullable_to_non_nullable
-              as Headers?,
-      extra: freezed == extra
-          ? _value.extra
-          : extra // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
-}
-
-/// @nodoc
 @JsonSerializable()
-class _$SourceVideoImpl implements _SourceVideo {
-  const _$SourceVideoImpl(
+class _SourceVideo implements SourceVideo {
+  const _SourceVideo(
       {required this.src,
       required this.url,
       required this.type,
       this.headers,
       this.extra});
-
-  factory _$SourceVideoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SourceVideoImplFromJson(json);
+  factory _SourceVideo.fromJson(Map<String, dynamic> json) =>
+      _$SourceVideoFromJson(json);
 
   @override
   final String src;
@@ -181,16 +145,26 @@ class _$SourceVideoImpl implements _SourceVideo {
   @override
   final String? extra;
 
+  /// Create a copy of SourceVideo
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'SourceVideo(src: $src, url: $url, type: $type, headers: $headers, extra: $extra)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$SourceVideoCopyWith<_SourceVideo> get copyWith =>
+      __$SourceVideoCopyWithImpl<_SourceVideo>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$SourceVideoToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SourceVideoImpl &&
+            other is _SourceVideo &&
             (identical(other.src, src) || other.src == src) &&
             (identical(other.url, url) || other.url == url) &&
             (identical(other.type, type) || other.type == type) &&
@@ -198,47 +172,86 @@ class _$SourceVideoImpl implements _SourceVideo {
             (identical(other.extra, extra) || other.extra == extra));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, src, url, type, headers, extra);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$SourceVideoImplCopyWith<_$SourceVideoImpl> get copyWith =>
-      __$$SourceVideoImplCopyWithImpl<_$SourceVideoImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SourceVideoImplToJson(
-      this,
-    );
+  String toString() {
+    return 'SourceVideo(src: $src, url: $url, type: $type, headers: $headers, extra: $extra)';
   }
 }
 
-abstract class _SourceVideo implements SourceVideo {
-  const factory _SourceVideo(
-      {required final String src,
-      required final Uri url,
-      required final String type,
-      final Headers? headers,
-      final String? extra}) = _$SourceVideoImpl;
+/// @nodoc
+abstract mixin class _$SourceVideoCopyWith<$Res>
+    implements $SourceVideoCopyWith<$Res> {
+  factory _$SourceVideoCopyWith(
+          _SourceVideo value, $Res Function(_SourceVideo) _then) =
+      __$SourceVideoCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {String src, Uri url, String type, Headers? headers, String? extra});
 
-  factory _SourceVideo.fromJson(Map<String, dynamic> json) =
-      _$SourceVideoImpl.fromJson;
-
   @override
-  String get src;
-  @override
-  Uri get url;
-  @override
-  String get type;
-  @override
-  Headers? get headers;
-  @override
-  String? get extra;
-  @override
-  @JsonKey(ignore: true)
-  _$$SourceVideoImplCopyWith<_$SourceVideoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  $HeadersCopyWith<$Res>? get headers;
 }
+
+/// @nodoc
+class __$SourceVideoCopyWithImpl<$Res> implements _$SourceVideoCopyWith<$Res> {
+  __$SourceVideoCopyWithImpl(this._self, this._then);
+
+  final _SourceVideo _self;
+  final $Res Function(_SourceVideo) _then;
+
+  /// Create a copy of SourceVideo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? src = null,
+    Object? url = null,
+    Object? type = null,
+    Object? headers = freezed,
+    Object? extra = freezed,
+  }) {
+    return _then(_SourceVideo(
+      src: null == src
+          ? _self.src
+          : src // ignore: cast_nullable_to_non_nullable
+              as String,
+      url: null == url
+          ? _self.url
+          : url // ignore: cast_nullable_to_non_nullable
+              as Uri,
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+      headers: freezed == headers
+          ? _self.headers
+          : headers // ignore: cast_nullable_to_non_nullable
+              as Headers?,
+      extra: freezed == extra
+          ? _self.extra
+          : extra // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+
+  /// Create a copy of SourceVideo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $HeadersCopyWith<$Res>? get headers {
+    if (_self.headers == null) {
+      return null;
+    }
+
+    return $HeadersCopyWith<$Res>(_self.headers!, (value) {
+      return _then(_self.copyWith(headers: value));
+    });
+  }
+}
+
+// dart format on

@@ -6,8 +6,7 @@ part of 'subtitle.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SubtitleImpl _$$SubtitleImplFromJson(Map<String, dynamic> json) =>
-    _$SubtitleImpl(
+_Subtitle _$SubtitleFromJson(Map<String, dynamic> json) => _Subtitle(
       language: json['language'] as String,
       code: json['code'] as String,
       type: $enumDecode(_$SubtitleTypeEnumMap, json['type']),
@@ -17,8 +16,7 @@ _$SubtitleImpl _$$SubtitleImplFromJson(Map<String, dynamic> json) =>
           : Headers.fromJson(json['headers'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$SubtitleImplToJson(_$SubtitleImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$SubtitleToJson(_Subtitle instance) => <String, dynamic>{
       'language': instance.language,
       'code': instance.code,
       'type': _$SubtitleTypeEnumMap[instance.type]!,

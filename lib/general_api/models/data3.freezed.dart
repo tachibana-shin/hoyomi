@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,109 +10,79 @@ part of 'data3.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-Data3 _$Data3FromJson(Map<String, dynamic> json) {
-  return _Data3.fromJson(json);
-}
 
 /// @nodoc
 mixin _$Data3 {
   /// The current page in seconds for the episode.
-  num get cur => throw _privateConstructorUsedError;
+  num get cur;
 
   /// The total page of the episode in seconds.
-  num get dur => throw _privateConstructorUsedError;
+  num get dur;
 
   /// The name of the episode.
-  String get name => throw _privateConstructorUsedError;
+  String get name;
 
   /// ISO 8601 format pagestamp when the watch page was recorded.
-  String get createdAt => throw _privateConstructorUsedError;
+  String get createdAt;
 
   /// ISO 8601 format pagestamp when the watch page was last updated.
-  String get updatedAt => throw _privateConstructorUsedError;
+  String get updatedAt;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $Data3CopyWith<Data3> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $Data3CopyWith<$Res> {
-  factory $Data3CopyWith(Data3 value, $Res Function(Data3) then) =
-      _$Data3CopyWithImpl<$Res, Data3>;
-  @useResult
-  $Res call(
-      {num cur, num dur, String name, String createdAt, String updatedAt});
-}
-
-/// @nodoc
-class _$Data3CopyWithImpl<$Res, $Val extends Data3>
-    implements $Data3CopyWith<$Res> {
-  _$Data3CopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of Data3
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $Data3CopyWith<Data3> get copyWith =>
+      _$Data3CopyWithImpl<Data3>(this as Data3, _$identity);
+
+  /// Serializes this Data3 to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? cur = null,
-    Object? dur = null,
-    Object? name = null,
-    Object? createdAt = null,
-    Object? updatedAt = null,
-  }) {
-    return _then(_value.copyWith(
-      cur: null == cur
-          ? _value.cur
-          : cur // ignore: cast_nullable_to_non_nullable
-              as num,
-      dur: null == dur
-          ? _value.dur
-          : dur // ignore: cast_nullable_to_non_nullable
-              as num,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is Data3 &&
+            (identical(other.cur, cur) || other.cur == cur) &&
+            (identical(other.dur, dur) || other.dur == dur) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, cur, dur, name, createdAt, updatedAt);
+
+  @override
+  String toString() {
+    return 'Data3(cur: $cur, dur: $dur, name: $name, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
 /// @nodoc
-abstract class _$$Data3ImplCopyWith<$Res> implements $Data3CopyWith<$Res> {
-  factory _$$Data3ImplCopyWith(
-          _$Data3Impl value, $Res Function(_$Data3Impl) then) =
-      __$$Data3ImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $Data3CopyWith<$Res> {
+  factory $Data3CopyWith(Data3 value, $Res Function(Data3) _then) =
+      _$Data3CopyWithImpl;
   @useResult
   $Res call(
       {num cur, num dur, String name, String createdAt, String updatedAt});
 }
 
 /// @nodoc
-class __$$Data3ImplCopyWithImpl<$Res>
-    extends _$Data3CopyWithImpl<$Res, _$Data3Impl>
-    implements _$$Data3ImplCopyWith<$Res> {
-  __$$Data3ImplCopyWithImpl(
-      _$Data3Impl _value, $Res Function(_$Data3Impl) _then)
-      : super(_value, _then);
+class _$Data3CopyWithImpl<$Res> implements $Data3CopyWith<$Res> {
+  _$Data3CopyWithImpl(this._self, this._then);
 
+  final Data3 _self;
+  final $Res Function(Data3) _then;
+
+  /// Create a copy of Data3
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -121,25 +92,25 @@ class __$$Data3ImplCopyWithImpl<$Res>
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
-    return _then(_$Data3Impl(
+    return _then(_self.copyWith(
       cur: null == cur
-          ? _value.cur
+          ? _self.cur
           : cur // ignore: cast_nullable_to_non_nullable
               as num,
       dur: null == dur
-          ? _value.dur
+          ? _self.dur
           : dur // ignore: cast_nullable_to_non_nullable
               as num,
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       createdAt: null == createdAt
-          ? _value.createdAt
+          ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
       updatedAt: null == updatedAt
-          ? _value.updatedAt
+          ? _self.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -148,16 +119,14 @@ class __$$Data3ImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$Data3Impl implements _Data3 {
-  const _$Data3Impl(
+class _Data3 implements Data3 {
+  const _Data3(
       {required this.cur,
       required this.dur,
       required this.name,
       required this.createdAt,
       required this.updatedAt});
-
-  factory _$Data3Impl.fromJson(Map<String, dynamic> json) =>
-      _$$Data3ImplFromJson(json);
+  factory _Data3.fromJson(Map<String, dynamic> json) => _$Data3FromJson(json);
 
   /// The current page in seconds for the episode.
   @override
@@ -179,16 +148,26 @@ class _$Data3Impl implements _Data3 {
   @override
   final String updatedAt;
 
+  /// Create a copy of Data3
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'Data3(cur: $cur, dur: $dur, name: $name, createdAt: $createdAt, updatedAt: $updatedAt)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$Data3CopyWith<_Data3> get copyWith =>
+      __$Data3CopyWithImpl<_Data3>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$Data3ToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$Data3Impl &&
+            other is _Data3 &&
             (identical(other.cur, cur) || other.cur == cur) &&
             (identical(other.dur, dur) || other.dur == dur) &&
             (identical(other.name, name) || other.name == name) &&
@@ -198,57 +177,68 @@ class _$Data3Impl implements _Data3 {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, cur, dur, name, createdAt, updatedAt);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$Data3ImplCopyWith<_$Data3Impl> get copyWith =>
-      __$$Data3ImplCopyWithImpl<_$Data3Impl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$Data3ImplToJson(
-      this,
-    );
+  String toString() {
+    return 'Data3(cur: $cur, dur: $dur, name: $name, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
-abstract class _Data3 implements Data3 {
-  const factory _Data3(
-      {required final num cur,
-      required final num dur,
-      required final String name,
-      required final String createdAt,
-      required final String updatedAt}) = _$Data3Impl;
-
-  factory _Data3.fromJson(Map<String, dynamic> json) = _$Data3Impl.fromJson;
-
+/// @nodoc
+abstract mixin class _$Data3CopyWith<$Res> implements $Data3CopyWith<$Res> {
+  factory _$Data3CopyWith(_Data3 value, $Res Function(_Data3) _then) =
+      __$Data3CopyWithImpl;
   @override
-
-  /// The current page in seconds for the episode.
-  num get cur;
-  @override
-
-  /// The total page of the episode in seconds.
-  num get dur;
-  @override
-
-  /// The name of the episode.
-  String get name;
-  @override
-
-  /// ISO 8601 format pagestamp when the watch page was recorded.
-  String get createdAt;
-  @override
-
-  /// ISO 8601 format pagestamp when the watch page was last updated.
-  String get updatedAt;
-  @override
-  @JsonKey(ignore: true)
-  _$$Data3ImplCopyWith<_$Data3Impl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call(
+      {num cur, num dur, String name, String createdAt, String updatedAt});
 }
+
+/// @nodoc
+class __$Data3CopyWithImpl<$Res> implements _$Data3CopyWith<$Res> {
+  __$Data3CopyWithImpl(this._self, this._then);
+
+  final _Data3 _self;
+  final $Res Function(_Data3) _then;
+
+  /// Create a copy of Data3
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? cur = null,
+    Object? dur = null,
+    Object? name = null,
+    Object? createdAt = null,
+    Object? updatedAt = null,
+  }) {
+    return _then(_Data3(
+      cur: null == cur
+          ? _self.cur
+          : cur // ignore: cast_nullable_to_non_nullable
+              as num,
+      dur: null == dur
+          ? _self.dur
+          : dur // ignore: cast_nullable_to_non_nullable
+              as num,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: null == createdAt
+          ? _self.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as String,
+      updatedAt: null == updatedAt
+          ? _self.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+// dart format on

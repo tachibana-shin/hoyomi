@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,89 +10,70 @@ part of 'comic_list_watch_history.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-ComicListWatchHistory _$ComicListWatchHistoryFromJson(
-    Map<String, dynamic> json) {
-  return _ComicListWatchHistory.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ComicListWatchHistory {
-  List<Data> get data => throw _privateConstructorUsedError;
+  List<Data> get data;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $ComicListWatchHistoryCopyWith<ComicListWatchHistory> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ComicListWatchHistoryCopyWith<$Res> {
-  factory $ComicListWatchHistoryCopyWith(ComicListWatchHistory value,
-          $Res Function(ComicListWatchHistory) then) =
-      _$ComicListWatchHistoryCopyWithImpl<$Res, ComicListWatchHistory>;
-  @useResult
-  $Res call({List<Data> data});
-}
-
-/// @nodoc
-class _$ComicListWatchHistoryCopyWithImpl<$Res,
-        $Val extends ComicListWatchHistory>
-    implements $ComicListWatchHistoryCopyWith<$Res> {
-  _$ComicListWatchHistoryCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of ComicListWatchHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $ComicListWatchHistoryCopyWith<ComicListWatchHistory> get copyWith =>
+      _$ComicListWatchHistoryCopyWithImpl<ComicListWatchHistory>(
+          this as ComicListWatchHistory, _$identity);
+
+  /// Serializes this ComicListWatchHistory to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? data = null,
-  }) {
-    return _then(_value.copyWith(
-      data: null == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as List<Data>,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ComicListWatchHistory &&
+            const DeepCollectionEquality().equals(other.data, data));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(data));
+
+  @override
+  String toString() {
+    return 'ComicListWatchHistory(data: $data)';
   }
 }
 
 /// @nodoc
-abstract class _$$ComicListWatchHistoryImplCopyWith<$Res>
-    implements $ComicListWatchHistoryCopyWith<$Res> {
-  factory _$$ComicListWatchHistoryImplCopyWith(
-          _$ComicListWatchHistoryImpl value,
-          $Res Function(_$ComicListWatchHistoryImpl) then) =
-      __$$ComicListWatchHistoryImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $ComicListWatchHistoryCopyWith<$Res> {
+  factory $ComicListWatchHistoryCopyWith(ComicListWatchHistory value,
+          $Res Function(ComicListWatchHistory) _then) =
+      _$ComicListWatchHistoryCopyWithImpl;
   @useResult
   $Res call({List<Data> data});
 }
 
 /// @nodoc
-class __$$ComicListWatchHistoryImplCopyWithImpl<$Res>
-    extends _$ComicListWatchHistoryCopyWithImpl<$Res,
-        _$ComicListWatchHistoryImpl>
-    implements _$$ComicListWatchHistoryImplCopyWith<$Res> {
-  __$$ComicListWatchHistoryImplCopyWithImpl(_$ComicListWatchHistoryImpl _value,
-      $Res Function(_$ComicListWatchHistoryImpl) _then)
-      : super(_value, _then);
+class _$ComicListWatchHistoryCopyWithImpl<$Res>
+    implements $ComicListWatchHistoryCopyWith<$Res> {
+  _$ComicListWatchHistoryCopyWithImpl(this._self, this._then);
 
+  final ComicListWatchHistory _self;
+  final $Res Function(ComicListWatchHistory) _then;
+
+  /// Create a copy of ComicListWatchHistory
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? data = null,
   }) {
-    return _then(_$ComicListWatchHistoryImpl(
+    return _then(_self.copyWith(
       data: null == data
-          ? _value._data
+          ? _self.data
           : data // ignore: cast_nullable_to_non_nullable
               as List<Data>,
     ));
@@ -100,12 +82,10 @@ class __$$ComicListWatchHistoryImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ComicListWatchHistoryImpl implements _ComicListWatchHistory {
-  const _$ComicListWatchHistoryImpl({required final List<Data> data})
-      : _data = data;
-
-  factory _$ComicListWatchHistoryImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ComicListWatchHistoryImplFromJson(json);
+class _ComicListWatchHistory implements ComicListWatchHistory {
+  const _ComicListWatchHistory({required final List<Data> data}) : _data = data;
+  factory _ComicListWatchHistory.fromJson(Map<String, dynamic> json) =>
+      _$ComicListWatchHistoryFromJson(json);
 
   final List<Data> _data;
   @override
@@ -115,50 +95,74 @@ class _$ComicListWatchHistoryImpl implements _ComicListWatchHistory {
     return EqualUnmodifiableListView(_data);
   }
 
+  /// Create a copy of ComicListWatchHistory
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'ComicListWatchHistory(data: $data)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ComicListWatchHistoryCopyWith<_ComicListWatchHistory> get copyWith =>
+      __$ComicListWatchHistoryCopyWithImpl<_ComicListWatchHistory>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ComicListWatchHistoryToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ComicListWatchHistoryImpl &&
+            other is _ComicListWatchHistory &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$ComicListWatchHistoryImplCopyWith<_$ComicListWatchHistoryImpl>
-      get copyWith => __$$ComicListWatchHistoryImplCopyWithImpl<
-          _$ComicListWatchHistoryImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ComicListWatchHistoryImplToJson(
-      this,
-    );
+  String toString() {
+    return 'ComicListWatchHistory(data: $data)';
   }
 }
 
-abstract class _ComicListWatchHistory implements ComicListWatchHistory {
-  const factory _ComicListWatchHistory({required final List<Data> data}) =
-      _$ComicListWatchHistoryImpl;
-
-  factory _ComicListWatchHistory.fromJson(Map<String, dynamic> json) =
-      _$ComicListWatchHistoryImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$ComicListWatchHistoryCopyWith<$Res>
+    implements $ComicListWatchHistoryCopyWith<$Res> {
+  factory _$ComicListWatchHistoryCopyWith(_ComicListWatchHistory value,
+          $Res Function(_ComicListWatchHistory) _then) =
+      __$ComicListWatchHistoryCopyWithImpl;
   @override
-  List<Data> get data;
-  @override
-  @JsonKey(ignore: true)
-  _$$ComicListWatchHistoryImplCopyWith<_$ComicListWatchHistoryImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @useResult
+  $Res call({List<Data> data});
 }
+
+/// @nodoc
+class __$ComicListWatchHistoryCopyWithImpl<$Res>
+    implements _$ComicListWatchHistoryCopyWith<$Res> {
+  __$ComicListWatchHistoryCopyWithImpl(this._self, this._then);
+
+  final _ComicListWatchHistory _self;
+  final $Res Function(_ComicListWatchHistory) _then;
+
+  /// Create a copy of ComicListWatchHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? data = null,
+  }) {
+    return _then(_ComicListWatchHistory(
+      data: null == data
+          ? _self._data
+          : data // ignore: cast_nullable_to_non_nullable
+              as List<Data>,
+    ));
+  }
+}
+
+// dart format on

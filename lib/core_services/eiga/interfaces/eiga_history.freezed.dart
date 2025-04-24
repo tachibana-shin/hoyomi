@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,28 +10,52 @@ part of 'eiga_history.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$EigaHistory {
-  Eiga get item => throw _privateConstructorUsedError;
-  DateTime get watchUpdatedAt => throw _privateConstructorUsedError;
-  EigaEpisode get lastEpisode => throw _privateConstructorUsedError;
-  WatchTime get watchTime => throw _privateConstructorUsedError;
+  Eiga get item;
+  DateTime get watchUpdatedAt;
+  EigaEpisode get lastEpisode;
+  WatchTime get watchTime;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of EigaHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $EigaHistoryCopyWith<EigaHistory> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$EigaHistoryCopyWithImpl<EigaHistory>(this as EigaHistory, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is EigaHistory &&
+            (identical(other.item, item) || other.item == item) &&
+            (identical(other.watchUpdatedAt, watchUpdatedAt) ||
+                other.watchUpdatedAt == watchUpdatedAt) &&
+            (identical(other.lastEpisode, lastEpisode) ||
+                other.lastEpisode == lastEpisode) &&
+            (identical(other.watchTime, watchTime) ||
+                other.watchTime == watchTime));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, item, watchUpdatedAt, lastEpisode, watchTime);
+
+  @override
+  String toString() {
+    return 'EigaHistory(item: $item, watchUpdatedAt: $watchUpdatedAt, lastEpisode: $lastEpisode, watchTime: $watchTime)';
+  }
 }
 
 /// @nodoc
-abstract class $EigaHistoryCopyWith<$Res> {
+abstract mixin class $EigaHistoryCopyWith<$Res> {
   factory $EigaHistoryCopyWith(
-          EigaHistory value, $Res Function(EigaHistory) then) =
-      _$EigaHistoryCopyWithImpl<$Res, EigaHistory>;
+          EigaHistory value, $Res Function(EigaHistory) _then) =
+      _$EigaHistoryCopyWithImpl;
   @useResult
   $Res call(
       {Eiga item,
@@ -44,15 +69,14 @@ abstract class $EigaHistoryCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$EigaHistoryCopyWithImpl<$Res, $Val extends EigaHistory>
-    implements $EigaHistoryCopyWith<$Res> {
-  _$EigaHistoryCopyWithImpl(this._value, this._then);
+class _$EigaHistoryCopyWithImpl<$Res> implements $EigaHistoryCopyWith<$Res> {
+  _$EigaHistoryCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final EigaHistory _self;
+  final $Res Function(EigaHistory) _then;
 
+  /// Create a copy of EigaHistory
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -61,114 +85,61 @@ class _$EigaHistoryCopyWithImpl<$Res, $Val extends EigaHistory>
     Object? lastEpisode = null,
     Object? watchTime = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       item: null == item
-          ? _value.item
+          ? _self.item
           : item // ignore: cast_nullable_to_non_nullable
               as Eiga,
       watchUpdatedAt: null == watchUpdatedAt
-          ? _value.watchUpdatedAt
+          ? _self.watchUpdatedAt
           : watchUpdatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
       lastEpisode: null == lastEpisode
-          ? _value.lastEpisode
+          ? _self.lastEpisode
           : lastEpisode // ignore: cast_nullable_to_non_nullable
               as EigaEpisode,
       watchTime: null == watchTime
-          ? _value.watchTime
-          : watchTime // ignore: cast_nullable_to_non_nullable
-              as WatchTime,
-    ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $EigaCopyWith<$Res> get item {
-    return $EigaCopyWith<$Res>(_value.item, (value) {
-      return _then(_value.copyWith(item: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $EigaEpisodeCopyWith<$Res> get lastEpisode {
-    return $EigaEpisodeCopyWith<$Res>(_value.lastEpisode, (value) {
-      return _then(_value.copyWith(lastEpisode: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $WatchTimeCopyWith<$Res> get watchTime {
-    return $WatchTimeCopyWith<$Res>(_value.watchTime, (value) {
-      return _then(_value.copyWith(watchTime: value) as $Val);
-    });
-  }
-}
-
-/// @nodoc
-abstract class _$$EigaHistoryImplCopyWith<$Res>
-    implements $EigaHistoryCopyWith<$Res> {
-  factory _$$EigaHistoryImplCopyWith(
-          _$EigaHistoryImpl value, $Res Function(_$EigaHistoryImpl) then) =
-      __$$EigaHistoryImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {Eiga item,
-      DateTime watchUpdatedAt,
-      EigaEpisode lastEpisode,
-      WatchTime watchTime});
-
-  @override
-  $EigaCopyWith<$Res> get item;
-  @override
-  $EigaEpisodeCopyWith<$Res> get lastEpisode;
-  @override
-  $WatchTimeCopyWith<$Res> get watchTime;
-}
-
-/// @nodoc
-class __$$EigaHistoryImplCopyWithImpl<$Res>
-    extends _$EigaHistoryCopyWithImpl<$Res, _$EigaHistoryImpl>
-    implements _$$EigaHistoryImplCopyWith<$Res> {
-  __$$EigaHistoryImplCopyWithImpl(
-      _$EigaHistoryImpl _value, $Res Function(_$EigaHistoryImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? item = null,
-    Object? watchUpdatedAt = null,
-    Object? lastEpisode = null,
-    Object? watchTime = null,
-  }) {
-    return _then(_$EigaHistoryImpl(
-      item: null == item
-          ? _value.item
-          : item // ignore: cast_nullable_to_non_nullable
-              as Eiga,
-      watchUpdatedAt: null == watchUpdatedAt
-          ? _value.watchUpdatedAt
-          : watchUpdatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      lastEpisode: null == lastEpisode
-          ? _value.lastEpisode
-          : lastEpisode // ignore: cast_nullable_to_non_nullable
-              as EigaEpisode,
-      watchTime: null == watchTime
-          ? _value.watchTime
+          ? _self.watchTime
           : watchTime // ignore: cast_nullable_to_non_nullable
               as WatchTime,
     ));
   }
+
+  /// Create a copy of EigaHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $EigaCopyWith<$Res> get item {
+    return $EigaCopyWith<$Res>(_self.item, (value) {
+      return _then(_self.copyWith(item: value));
+    });
+  }
+
+  /// Create a copy of EigaHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $EigaEpisodeCopyWith<$Res> get lastEpisode {
+    return $EigaEpisodeCopyWith<$Res>(_self.lastEpisode, (value) {
+      return _then(_self.copyWith(lastEpisode: value));
+    });
+  }
+
+  /// Create a copy of EigaHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $WatchTimeCopyWith<$Res> get watchTime {
+    return $WatchTimeCopyWith<$Res>(_self.watchTime, (value) {
+      return _then(_self.copyWith(watchTime: value));
+    });
+  }
 }
 
 /// @nodoc
 
-class _$EigaHistoryImpl implements _EigaHistory {
-  const _$EigaHistoryImpl(
+class _EigaHistory implements EigaHistory {
+  const _EigaHistory(
       {required this.item,
       required this.watchUpdatedAt,
       required this.lastEpisode,
@@ -183,16 +154,19 @@ class _$EigaHistoryImpl implements _EigaHistory {
   @override
   final WatchTime watchTime;
 
+  /// Create a copy of EigaHistory
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'EigaHistory(item: $item, watchUpdatedAt: $watchUpdatedAt, lastEpisode: $lastEpisode, watchTime: $watchTime)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$EigaHistoryCopyWith<_EigaHistory> get copyWith =>
+      __$EigaHistoryCopyWithImpl<_EigaHistory>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$EigaHistoryImpl &&
+            other is _EigaHistory &&
             (identical(other.item, item) || other.item == item) &&
             (identical(other.watchUpdatedAt, watchUpdatedAt) ||
                 other.watchUpdatedAt == watchUpdatedAt) &&
@@ -206,30 +180,100 @@ class _$EigaHistoryImpl implements _EigaHistory {
   int get hashCode =>
       Object.hash(runtimeType, item, watchUpdatedAt, lastEpisode, watchTime);
 
-  @JsonKey(ignore: true)
+  @override
+  String toString() {
+    return 'EigaHistory(item: $item, watchUpdatedAt: $watchUpdatedAt, lastEpisode: $lastEpisode, watchTime: $watchTime)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$EigaHistoryCopyWith<$Res>
+    implements $EigaHistoryCopyWith<$Res> {
+  factory _$EigaHistoryCopyWith(
+          _EigaHistory value, $Res Function(_EigaHistory) _then) =
+      __$EigaHistoryCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {Eiga item,
+      DateTime watchUpdatedAt,
+      EigaEpisode lastEpisode,
+      WatchTime watchTime});
+
+  @override
+  $EigaCopyWith<$Res> get item;
+  @override
+  $EigaEpisodeCopyWith<$Res> get lastEpisode;
+  @override
+  $WatchTimeCopyWith<$Res> get watchTime;
+}
+
+/// @nodoc
+class __$EigaHistoryCopyWithImpl<$Res> implements _$EigaHistoryCopyWith<$Res> {
+  __$EigaHistoryCopyWithImpl(this._self, this._then);
+
+  final _EigaHistory _self;
+  final $Res Function(_EigaHistory) _then;
+
+  /// Create a copy of EigaHistory
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  _$$EigaHistoryImplCopyWith<_$EigaHistoryImpl> get copyWith =>
-      __$$EigaHistoryImplCopyWithImpl<_$EigaHistoryImpl>(this, _$identity);
+  $Res call({
+    Object? item = null,
+    Object? watchUpdatedAt = null,
+    Object? lastEpisode = null,
+    Object? watchTime = null,
+  }) {
+    return _then(_EigaHistory(
+      item: null == item
+          ? _self.item
+          : item // ignore: cast_nullable_to_non_nullable
+              as Eiga,
+      watchUpdatedAt: null == watchUpdatedAt
+          ? _self.watchUpdatedAt
+          : watchUpdatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      lastEpisode: null == lastEpisode
+          ? _self.lastEpisode
+          : lastEpisode // ignore: cast_nullable_to_non_nullable
+              as EigaEpisode,
+      watchTime: null == watchTime
+          ? _self.watchTime
+          : watchTime // ignore: cast_nullable_to_non_nullable
+              as WatchTime,
+    ));
+  }
+
+  /// Create a copy of EigaHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $EigaCopyWith<$Res> get item {
+    return $EigaCopyWith<$Res>(_self.item, (value) {
+      return _then(_self.copyWith(item: value));
+    });
+  }
+
+  /// Create a copy of EigaHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $EigaEpisodeCopyWith<$Res> get lastEpisode {
+    return $EigaEpisodeCopyWith<$Res>(_self.lastEpisode, (value) {
+      return _then(_self.copyWith(lastEpisode: value));
+    });
+  }
+
+  /// Create a copy of EigaHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $WatchTimeCopyWith<$Res> get watchTime {
+    return $WatchTimeCopyWith<$Res>(_self.watchTime, (value) {
+      return _then(_self.copyWith(watchTime: value));
+    });
+  }
 }
 
-abstract class _EigaHistory implements EigaHistory {
-  const factory _EigaHistory(
-      {required final Eiga item,
-      required final DateTime watchUpdatedAt,
-      required final EigaEpisode lastEpisode,
-      required final WatchTime watchTime}) = _$EigaHistoryImpl;
-
-  @override
-  Eiga get item;
-  @override
-  DateTime get watchUpdatedAt;
-  @override
-  EigaEpisode get lastEpisode;
-  @override
-  WatchTime get watchTime;
-  @override
-  @JsonKey(ignore: true)
-  _$$EigaHistoryImplCopyWith<_$EigaHistoryImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

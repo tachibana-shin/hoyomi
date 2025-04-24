@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,88 +10,62 @@ part of 'rate_value.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-RateValue _$RateValueFromJson(Map<String, dynamic> json) {
-  return _RateValue.fromJson(json);
-}
 
 /// @nodoc
 mixin _$RateValue {
-  int get best => throw _privateConstructorUsedError;
-  int get count => throw _privateConstructorUsedError;
-  double get value => throw _privateConstructorUsedError;
+  int get best;
+  int get count;
+  double get value;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $RateValueCopyWith<RateValue> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $RateValueCopyWith<$Res> {
-  factory $RateValueCopyWith(RateValue value, $Res Function(RateValue) then) =
-      _$RateValueCopyWithImpl<$Res, RateValue>;
-  @useResult
-  $Res call({int best, int count, double value});
-}
-
-/// @nodoc
-class _$RateValueCopyWithImpl<$Res, $Val extends RateValue>
-    implements $RateValueCopyWith<$Res> {
-  _$RateValueCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of RateValue
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $RateValueCopyWith<RateValue> get copyWith =>
+      _$RateValueCopyWithImpl<RateValue>(this as RateValue, _$identity);
+
+  /// Serializes this RateValue to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? best = null,
-    Object? count = null,
-    Object? value = null,
-  }) {
-    return _then(_value.copyWith(
-      best: null == best
-          ? _value.best
-          : best // ignore: cast_nullable_to_non_nullable
-              as int,
-      count: null == count
-          ? _value.count
-          : count // ignore: cast_nullable_to_non_nullable
-              as int,
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as double,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is RateValue &&
+            (identical(other.best, best) || other.best == best) &&
+            (identical(other.count, count) || other.count == count) &&
+            (identical(other.value, value) || other.value == value));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, best, count, value);
+
+  @override
+  String toString() {
+    return 'RateValue(best: $best, count: $count, value: $value)';
   }
 }
 
 /// @nodoc
-abstract class _$$RateValueImplCopyWith<$Res>
-    implements $RateValueCopyWith<$Res> {
-  factory _$$RateValueImplCopyWith(
-          _$RateValueImpl value, $Res Function(_$RateValueImpl) then) =
-      __$$RateValueImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $RateValueCopyWith<$Res> {
+  factory $RateValueCopyWith(RateValue value, $Res Function(RateValue) _then) =
+      _$RateValueCopyWithImpl;
   @useResult
   $Res call({int best, int count, double value});
 }
 
 /// @nodoc
-class __$$RateValueImplCopyWithImpl<$Res>
-    extends _$RateValueCopyWithImpl<$Res, _$RateValueImpl>
-    implements _$$RateValueImplCopyWith<$Res> {
-  __$$RateValueImplCopyWithImpl(
-      _$RateValueImpl _value, $Res Function(_$RateValueImpl) _then)
-      : super(_value, _then);
+class _$RateValueCopyWithImpl<$Res> implements $RateValueCopyWith<$Res> {
+  _$RateValueCopyWithImpl(this._self, this._then);
 
+  final RateValue _self;
+  final $Res Function(RateValue) _then;
+
+  /// Create a copy of RateValue
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -98,17 +73,17 @@ class __$$RateValueImplCopyWithImpl<$Res>
     Object? count = null,
     Object? value = null,
   }) {
-    return _then(_$RateValueImpl(
+    return _then(_self.copyWith(
       best: null == best
-          ? _value.best
+          ? _self.best
           : best // ignore: cast_nullable_to_non_nullable
               as int,
       count: null == count
-          ? _value.count
+          ? _self.count
           : count // ignore: cast_nullable_to_non_nullable
               as int,
       value: null == value
-          ? _value.value
+          ? _self.value
           : value // ignore: cast_nullable_to_non_nullable
               as double,
     ));
@@ -117,12 +92,11 @@ class __$$RateValueImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$RateValueImpl implements _RateValue {
-  const _$RateValueImpl(
+class _RateValue implements RateValue {
+  const _RateValue(
       {required this.best, required this.count, required this.value});
-
-  factory _$RateValueImpl.fromJson(Map<String, dynamic> json) =>
-      _$$RateValueImplFromJson(json);
+  factory _RateValue.fromJson(Map<String, dynamic> json) =>
+      _$RateValueFromJson(json);
 
   @override
   final int best;
@@ -131,56 +105,83 @@ class _$RateValueImpl implements _RateValue {
   @override
   final double value;
 
+  /// Create a copy of RateValue
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'RateValue(best: $best, count: $count, value: $value)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$RateValueCopyWith<_RateValue> get copyWith =>
+      __$RateValueCopyWithImpl<_RateValue>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$RateValueToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$RateValueImpl &&
+            other is _RateValue &&
             (identical(other.best, best) || other.best == best) &&
             (identical(other.count, count) || other.count == count) &&
             (identical(other.value, value) || other.value == value));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, best, count, value);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$RateValueImplCopyWith<_$RateValueImpl> get copyWith =>
-      __$$RateValueImplCopyWithImpl<_$RateValueImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$RateValueImplToJson(
-      this,
-    );
+  String toString() {
+    return 'RateValue(best: $best, count: $count, value: $value)';
   }
 }
 
-abstract class _RateValue implements RateValue {
-  const factory _RateValue(
-      {required final int best,
-      required final int count,
-      required final double value}) = _$RateValueImpl;
-
-  factory _RateValue.fromJson(Map<String, dynamic> json) =
-      _$RateValueImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$RateValueCopyWith<$Res>
+    implements $RateValueCopyWith<$Res> {
+  factory _$RateValueCopyWith(
+          _RateValue value, $Res Function(_RateValue) _then) =
+      __$RateValueCopyWithImpl;
   @override
-  int get best;
-  @override
-  int get count;
-  @override
-  double get value;
-  @override
-  @JsonKey(ignore: true)
-  _$$RateValueImplCopyWith<_$RateValueImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({int best, int count, double value});
 }
+
+/// @nodoc
+class __$RateValueCopyWithImpl<$Res> implements _$RateValueCopyWith<$Res> {
+  __$RateValueCopyWithImpl(this._self, this._then);
+
+  final _RateValue _self;
+  final $Res Function(_RateValue) _then;
+
+  /// Create a copy of RateValue
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? best = null,
+    Object? count = null,
+    Object? value = null,
+  }) {
+    return _then(_RateValue(
+      best: null == best
+          ? _self.best
+          : best // ignore: cast_nullable_to_non_nullable
+              as int,
+      count: null == count
+          ? _self.count
+          : count // ignore: cast_nullable_to_non_nullable
+              as int,
+      value: null == value
+          ? _self.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+// dart format on

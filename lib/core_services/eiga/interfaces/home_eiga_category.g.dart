@@ -6,9 +6,8 @@ part of 'home_eiga_category.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$HomeEigaCategoryImpl _$$HomeEigaCategoryImplFromJson(
-        Map<String, dynamic> json) =>
-    _$HomeEigaCategoryImpl(
+_HomeEigaCategory _$HomeEigaCategoryFromJson(Map<String, dynamic> json) =>
+    _HomeEigaCategory(
       name: json['name'] as String,
       categoryId: json['categoryId'] as String?,
       gridView: json['gridView'] as bool?,
@@ -17,8 +16,7 @@ _$HomeEigaCategoryImpl _$$HomeEigaCategoryImplFromJson(
           .toList(),
     );
 
-Map<String, dynamic> _$$HomeEigaCategoryImplToJson(
-        _$HomeEigaCategoryImpl instance) =>
+Map<String, dynamic> _$HomeEigaCategoryToJson(_HomeEigaCategory instance) =>
     <String, dynamic>{
       'name': instance.name,
       'categoryId': instance.categoryId,

@@ -8,7 +8,8 @@ part 'post_api_eiga_set_watch_time_response.freezed.dart';
 part 'post_api_eiga_set_watch_time_response.g.dart';
 
 @Freezed()
-class PostApiEigaSetWatchTimeResponse with _$PostApiEigaSetWatchTimeResponse {
+sealed class PostApiEigaSetWatchTimeResponse
+    with _$PostApiEigaSetWatchTimeResponse {
   const factory PostApiEigaSetWatchTimeResponse({
     /// Indicates whether the watch time was successfully set.
     required bool success,

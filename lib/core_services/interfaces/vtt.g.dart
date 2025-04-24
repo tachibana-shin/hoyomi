@@ -6,14 +6,14 @@ part of 'vtt.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$VttImpl _$$VttImplFromJson(Map<String, dynamic> json) => _$VttImpl(
+_Vtt _$VttFromJson(Map<String, dynamic> json) => _Vtt(
       src: json['src'] as String,
       headers: json['headers'] == null
           ? null
           : Headers.fromJson(json['headers'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$VttImplToJson(_$VttImpl instance) => <String, dynamic>{
+Map<String, dynamic> _$VttToJson(_Vtt instance) => <String, dynamic>{
       'src': instance.src,
       'headers': instance.headers,
     };

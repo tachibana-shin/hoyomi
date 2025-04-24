@@ -8,7 +8,7 @@ part 'data3.freezed.dart';
 part 'data3.g.dart';
 
 @Freezed()
-class Data3 with _$Data3 {
+sealed class Data3 with _$Data3 {
   const factory Data3({
     /// The current page in seconds for the episode.
     required num cur,

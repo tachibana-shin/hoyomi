@@ -6,13 +6,12 @@ part of 'comic_param.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ComicParamImpl _$$ComicParamImplFromJson(Map<String, dynamic> json) =>
-    _$ComicParamImpl(
+_ComicParam _$ComicParamFromJson(Map<String, dynamic> json) => _ComicParam(
       comicId: json['comicId'] as String,
       chapterId: json['chapterId'] as String?,
     );
 
-Map<String, dynamic> _$$ComicParamImplToJson(_$ComicParamImpl instance) =>
+Map<String, dynamic> _$ComicParamToJson(_ComicParam instance) =>
     <String, dynamic>{
       'comicId': instance.comicId,
       'chapterId': instance.chapterId,

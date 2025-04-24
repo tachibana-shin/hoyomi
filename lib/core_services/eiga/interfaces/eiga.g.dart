@@ -6,7 +6,7 @@ part of 'eiga.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$EigaImpl _$$EigaImplFromJson(Map<String, dynamic> json) => _$EigaImpl(
+_Eiga _$EigaFromJson(Map<String, dynamic> json) => _Eiga(
       name: json['name'] as String,
       eigaId: json['eigaId'] as String,
       originalName: json['originalName'] as String?,
@@ -28,8 +28,7 @@ _$EigaImpl _$$EigaImplFromJson(Map<String, dynamic> json) => _$EigaImpl(
       description: json['description'] as String?,
     );
 
-Map<String, dynamic> _$$EigaImplToJson(_$EigaImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$EigaToJson(_Eiga instance) => <String, dynamic>{
       'name': instance.name,
       'eigaId': instance.eigaId,
       'originalName': instance.originalName,

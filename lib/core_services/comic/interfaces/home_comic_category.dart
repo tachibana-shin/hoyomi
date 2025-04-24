@@ -6,7 +6,7 @@ import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 part 'home_comic_category.freezed.dart';
 
 @freezed
-class HomeComicCategory with _$HomeComicCategory {
+sealed class HomeComicCategory with _$HomeComicCategory {
   const factory HomeComicCategory({
     required String name,
     String? categoryId,

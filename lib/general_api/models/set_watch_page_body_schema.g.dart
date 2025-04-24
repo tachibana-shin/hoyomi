@@ -6,9 +6,9 @@ part of 'set_watch_page_body_schema.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SetWatchPageBodySchemaImpl _$$SetWatchPageBodySchemaImplFromJson(
+_SetWatchPageBodySchema _$SetWatchPageBodySchemaFromJson(
         Map<String, dynamic> json) =>
-    _$SetWatchPageBodySchemaImpl(
+    _SetWatchPageBodySchema(
       sourceId: json['sourceId'] as String,
       name: json['name'] as String,
       poster: json['poster'] as String,
@@ -20,8 +20,8 @@ _$SetWatchPageBodySchemaImpl _$$SetWatchPageBodySchemaImplFromJson(
       episodeId: json['episode_id'] as String,
     );
 
-Map<String, dynamic> _$$SetWatchPageBodySchemaImplToJson(
-        _$SetWatchPageBodySchemaImpl instance) =>
+Map<String, dynamic> _$SetWatchPageBodySchemaToJson(
+        _SetWatchPageBodySchema instance) =>
     <String, dynamic>{
       'sourceId': instance.sourceId,
       'name': instance.name,

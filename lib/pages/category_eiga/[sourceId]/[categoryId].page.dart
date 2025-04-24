@@ -151,7 +151,7 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
                         child: InkWell(
                           onTap: () {
                             DropDownState(
-                              DropDown(
+                              dropDown: DropDown(
                                 bottomSheetTitle: Text(
                                   filter.name,
                                   style: const TextStyle(
@@ -167,22 +167,22 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                                listItemBuilder: (index, selected) => Text(
+                                  selected.data.name,
+                                ),
                                 data: options
                                     .map(
                                       (option) => SelectedListItem(
-                                        name: option.name,
-                                        value: option.value,
+                                        data: option,
                                         isSelected: _selectFilters[filter.key]
-                                                ?.contains(
-                                              option.value,
-                                            ) ??
+                                                ?.contains(option.value) ??
                                             option.selected,
                                       ),
                                     )
                                     .toList(),
                                 onSelected: (selectedList) {
                                   _selectFilters[filter.key] = selectedList
-                                      .map((option) => option.value!)
+                                      .map((option) => option.data.value)
                                       .toList();
                                   _pageKey = 1;
 

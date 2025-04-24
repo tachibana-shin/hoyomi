@@ -6,7 +6,7 @@ part 'vtt.freezed.dart';
 part 'vtt.g.dart';
 
 @freezed
-class Vtt with _$Vtt {
+sealed class Vtt with _$Vtt {
   const factory Vtt({
     required String src,
     Headers? headers,

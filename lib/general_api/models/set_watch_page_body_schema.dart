@@ -8,7 +8,7 @@ part 'set_watch_page_body_schema.freezed.dart';
 part 'set_watch_page_body_schema.g.dart';
 
 @Freezed()
-class SetWatchPageBodySchema with _$SetWatchPageBodySchema {
+sealed class SetWatchPageBodySchema with _$SetWatchPageBodySchema {
   const factory SetWatchPageBodySchema({
     /// The unique identifier for the source (e.g., series or season).
     required String sourceId,

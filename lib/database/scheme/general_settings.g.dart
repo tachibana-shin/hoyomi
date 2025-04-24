@@ -6,9 +6,8 @@ part of 'general_settings.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$GeneralSettingsImpl _$$GeneralSettingsImplFromJson(
-        Map<String, dynamic> json) =>
-    _$GeneralSettingsImpl(
+_GeneralSettings _$GeneralSettingsFromJson(Map<String, dynamic> json) =>
+    _GeneralSettings(
       mangaReadLazyPage: json['mangaReadLazyPage'] as bool? ?? false,
       lastCheckUpdateApp: json['lastCheckUpdateApp'] == null
           ? null
@@ -28,8 +27,7 @@ _$GeneralSettingsImpl _$$GeneralSettingsImplFromJson(
           null,
     );
 
-Map<String, dynamic> _$$GeneralSettingsImplToJson(
-        _$GeneralSettingsImpl instance) =>
+Map<String, dynamic> _$GeneralSettingsToJson(_GeneralSettings instance) =>
     <String, dynamic>{
       'mangaReadLazyPage': instance.mangaReadLazyPage,
       'lastCheckUpdateApp': instance.lastCheckUpdateApp?.toIso8601String(),

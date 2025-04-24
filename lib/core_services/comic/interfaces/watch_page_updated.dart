@@ -4,7 +4,7 @@ part 'watch_page_updated.freezed.dart';
 part 'watch_page_updated.g.dart';
 
 @freezed
-class WatchPageUpdated with _$WatchPageUpdated {
+sealed class WatchPageUpdated with _$WatchPageUpdated {
   factory WatchPageUpdated({
     required int currentPage,
     required int totalPage,

@@ -6,8 +6,7 @@ part of 'source_video.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SourceVideoImpl _$$SourceVideoImplFromJson(Map<String, dynamic> json) =>
-    _$SourceVideoImpl(
+_SourceVideo _$SourceVideoFromJson(Map<String, dynamic> json) => _SourceVideo(
       src: json['src'] as String,
       url: Uri.parse(json['url'] as String),
       type: json['type'] as String,
@@ -17,7 +16,7 @@ _$SourceVideoImpl _$$SourceVideoImplFromJson(Map<String, dynamic> json) =>
       extra: json['extra'] as String?,
     );
 
-Map<String, dynamic> _$$SourceVideoImplToJson(_$SourceVideoImpl instance) =>
+Map<String, dynamic> _$SourceVideoToJson(_SourceVideo instance) =>
     <String, dynamic>{
       'src': instance.src,
       'url': instance.url.toString(),

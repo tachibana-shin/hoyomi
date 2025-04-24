@@ -6,13 +6,12 @@ part of 'watch_page.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$WatchPageImpl _$$WatchPageImplFromJson(Map<String, dynamic> json) =>
-    _$WatchPageImpl(
+_WatchPage _$WatchPageFromJson(Map<String, dynamic> json) => _WatchPage(
       currentPage: (json['currentPage'] as num).toInt(),
       totalPage: (json['totalPage'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$WatchPageImplToJson(_$WatchPageImpl instance) =>
+Map<String, dynamic> _$WatchPageToJson(_WatchPage instance) =>
     <String, dynamic>{
       'currentPage': instance.currentPage,
       'totalPage': instance.totalPage,

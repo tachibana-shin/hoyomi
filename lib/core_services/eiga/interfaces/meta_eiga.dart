@@ -6,7 +6,7 @@ part 'meta_eiga.freezed.dart';
 part 'meta_eiga.g.dart';
 
 @freezed
-class Season with _$Season {
+sealed class Season with _$Season {
   const factory Season({
     required String name,
     required String eigaId,
@@ -16,7 +16,7 @@ class Season with _$Season {
 }
 
 @freezed
-class MetaEiga with _$MetaEiga {
+sealed class MetaEiga with _$MetaEiga {
   const factory MetaEiga({
     required String name,
     String? originalName,

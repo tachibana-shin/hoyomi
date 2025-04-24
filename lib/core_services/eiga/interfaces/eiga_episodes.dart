@@ -6,7 +6,7 @@ part 'eiga_episodes.freezed.dart';
 part 'eiga_episodes.g.dart';
 
 @freezed
-class EigaEpisodes with _$EigaEpisodes {
+sealed class EigaEpisodes with _$EigaEpisodes {
   const factory EigaEpisodes({
     required List<EigaEpisode> episodes,
     OImage? image,

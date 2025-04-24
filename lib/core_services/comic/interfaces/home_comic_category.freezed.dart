@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,92 +10,67 @@ part of 'home_comic_category.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$HomeComicCategory {
-  String get name => throw _privateConstructorUsedError;
-  String? get categoryId => throw _privateConstructorUsedError;
-  bool? get gridView => throw _privateConstructorUsedError;
-  List<Comic> get items => throw _privateConstructorUsedError;
+  String get name;
+  String? get categoryId;
+  bool? get gridView;
+  List<Comic> get items;
 
-  @JsonKey(ignore: true)
-  $HomeComicCategoryCopyWith<HomeComicCategory> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $HomeComicCategoryCopyWith<$Res> {
-  factory $HomeComicCategoryCopyWith(
-          HomeComicCategory value, $Res Function(HomeComicCategory) then) =
-      _$HomeComicCategoryCopyWithImpl<$Res, HomeComicCategory>;
-  @useResult
-  $Res call(
-      {String name, String? categoryId, bool? gridView, List<Comic> items});
-}
-
-/// @nodoc
-class _$HomeComicCategoryCopyWithImpl<$Res, $Val extends HomeComicCategory>
-    implements $HomeComicCategoryCopyWith<$Res> {
-  _$HomeComicCategoryCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of HomeComicCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $HomeComicCategoryCopyWith<HomeComicCategory> get copyWith =>
+      _$HomeComicCategoryCopyWithImpl<HomeComicCategory>(
+          this as HomeComicCategory, _$identity);
+
   @override
-  $Res call({
-    Object? name = null,
-    Object? categoryId = freezed,
-    Object? gridView = freezed,
-    Object? items = null,
-  }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      categoryId: freezed == categoryId
-          ? _value.categoryId
-          : categoryId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      gridView: freezed == gridView
-          ? _value.gridView
-          : gridView // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      items: null == items
-          ? _value.items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<Comic>,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is HomeComicCategory &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.categoryId, categoryId) ||
+                other.categoryId == categoryId) &&
+            (identical(other.gridView, gridView) ||
+                other.gridView == gridView) &&
+            const DeepCollectionEquality().equals(other.items, items));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, name, categoryId, gridView,
+      const DeepCollectionEquality().hash(items));
+
+  @override
+  String toString() {
+    return 'HomeComicCategory(name: $name, categoryId: $categoryId, gridView: $gridView, items: $items)';
   }
 }
 
 /// @nodoc
-abstract class _$$HomeComicCategoryImplCopyWith<$Res>
-    implements $HomeComicCategoryCopyWith<$Res> {
-  factory _$$HomeComicCategoryImplCopyWith(_$HomeComicCategoryImpl value,
-          $Res Function(_$HomeComicCategoryImpl) then) =
-      __$$HomeComicCategoryImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $HomeComicCategoryCopyWith<$Res> {
+  factory $HomeComicCategoryCopyWith(
+          HomeComicCategory value, $Res Function(HomeComicCategory) _then) =
+      _$HomeComicCategoryCopyWithImpl;
   @useResult
   $Res call(
       {String name, String? categoryId, bool? gridView, List<Comic> items});
 }
 
 /// @nodoc
-class __$$HomeComicCategoryImplCopyWithImpl<$Res>
-    extends _$HomeComicCategoryCopyWithImpl<$Res, _$HomeComicCategoryImpl>
-    implements _$$HomeComicCategoryImplCopyWith<$Res> {
-  __$$HomeComicCategoryImplCopyWithImpl(_$HomeComicCategoryImpl _value,
-      $Res Function(_$HomeComicCategoryImpl) _then)
-      : super(_value, _then);
+class _$HomeComicCategoryCopyWithImpl<$Res>
+    implements $HomeComicCategoryCopyWith<$Res> {
+  _$HomeComicCategoryCopyWithImpl(this._self, this._then);
 
+  final HomeComicCategory _self;
+  final $Res Function(HomeComicCategory) _then;
+
+  /// Create a copy of HomeComicCategory
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -103,21 +79,21 @@ class __$$HomeComicCategoryImplCopyWithImpl<$Res>
     Object? gridView = freezed,
     Object? items = null,
   }) {
-    return _then(_$HomeComicCategoryImpl(
+    return _then(_self.copyWith(
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       categoryId: freezed == categoryId
-          ? _value.categoryId
+          ? _self.categoryId
           : categoryId // ignore: cast_nullable_to_non_nullable
               as String?,
       gridView: freezed == gridView
-          ? _value.gridView
+          ? _self.gridView
           : gridView // ignore: cast_nullable_to_non_nullable
               as bool?,
       items: null == items
-          ? _value._items
+          ? _self.items
           : items // ignore: cast_nullable_to_non_nullable
               as List<Comic>,
     ));
@@ -126,8 +102,8 @@ class __$$HomeComicCategoryImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$HomeComicCategoryImpl implements _HomeComicCategory {
-  const _$HomeComicCategoryImpl(
+class _HomeComicCategory implements HomeComicCategory {
+  const _HomeComicCategory(
       {required this.name,
       this.categoryId,
       this.gridView,
@@ -148,16 +124,19 @@ class _$HomeComicCategoryImpl implements _HomeComicCategory {
     return EqualUnmodifiableListView(_items);
   }
 
+  /// Create a copy of HomeComicCategory
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'HomeComicCategory(name: $name, categoryId: $categoryId, gridView: $gridView, items: $items)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$HomeComicCategoryCopyWith<_HomeComicCategory> get copyWith =>
+      __$HomeComicCategoryCopyWithImpl<_HomeComicCategory>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$HomeComicCategoryImpl &&
+            other is _HomeComicCategory &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.categoryId, categoryId) ||
                 other.categoryId == categoryId) &&
@@ -170,31 +149,61 @@ class _$HomeComicCategoryImpl implements _HomeComicCategory {
   int get hashCode => Object.hash(runtimeType, name, categoryId, gridView,
       const DeepCollectionEquality().hash(_items));
 
-  @JsonKey(ignore: true)
+  @override
+  String toString() {
+    return 'HomeComicCategory(name: $name, categoryId: $categoryId, gridView: $gridView, items: $items)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$HomeComicCategoryCopyWith<$Res>
+    implements $HomeComicCategoryCopyWith<$Res> {
+  factory _$HomeComicCategoryCopyWith(
+          _HomeComicCategory value, $Res Function(_HomeComicCategory) _then) =
+      __$HomeComicCategoryCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {String name, String? categoryId, bool? gridView, List<Comic> items});
+}
+
+/// @nodoc
+class __$HomeComicCategoryCopyWithImpl<$Res>
+    implements _$HomeComicCategoryCopyWith<$Res> {
+  __$HomeComicCategoryCopyWithImpl(this._self, this._then);
+
+  final _HomeComicCategory _self;
+  final $Res Function(_HomeComicCategory) _then;
+
+  /// Create a copy of HomeComicCategory
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  _$$HomeComicCategoryImplCopyWith<_$HomeComicCategoryImpl> get copyWith =>
-      __$$HomeComicCategoryImplCopyWithImpl<_$HomeComicCategoryImpl>(
-          this, _$identity);
+  $Res call({
+    Object? name = null,
+    Object? categoryId = freezed,
+    Object? gridView = freezed,
+    Object? items = null,
+  }) {
+    return _then(_HomeComicCategory(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      categoryId: freezed == categoryId
+          ? _self.categoryId
+          : categoryId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      gridView: freezed == gridView
+          ? _self.gridView
+          : gridView // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      items: null == items
+          ? _self._items
+          : items // ignore: cast_nullable_to_non_nullable
+              as List<Comic>,
+    ));
+  }
 }
 
-abstract class _HomeComicCategory implements HomeComicCategory {
-  const factory _HomeComicCategory(
-      {required final String name,
-      final String? categoryId,
-      final bool? gridView,
-      required final List<Comic> items}) = _$HomeComicCategoryImpl;
-
-  @override
-  String get name;
-  @override
-  String? get categoryId;
-  @override
-  bool? get gridView;
-  @override
-  List<Comic> get items;
-  @override
-  @JsonKey(ignore: true)
-  _$$HomeComicCategoryImplCopyWith<_$HomeComicCategoryImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

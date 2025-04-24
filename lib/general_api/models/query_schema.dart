@@ -8,7 +8,7 @@ part 'query_schema.freezed.dart';
 part 'query_schema.g.dart';
 
 @Freezed()
-class QuerySchema with _$QuerySchema {
+sealed class QuerySchema with _$QuerySchema {
   const factory QuerySchema({
     /// The unique identifier for the source (e.g., series or season).
     required String sourceId,

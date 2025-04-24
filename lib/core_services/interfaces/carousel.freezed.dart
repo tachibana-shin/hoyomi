@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,90 +10,69 @@ part of 'carousel.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-Carousel _$CarouselFromJson(Map<String, dynamic> json) {
-  return _Carousel.fromJson(json);
-}
 
 /// @nodoc
 mixin _$Carousel {
-  List<CarouselItem> get items => throw _privateConstructorUsedError;
-  double get aspectRatio => throw _privateConstructorUsedError;
-  double get maxHeightBuilder => throw _privateConstructorUsedError;
+  List<CarouselItem> get items;
+  double get aspectRatio;
+  double get maxHeightBuilder;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $CarouselCopyWith<Carousel> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $CarouselCopyWith<$Res> {
-  factory $CarouselCopyWith(Carousel value, $Res Function(Carousel) then) =
-      _$CarouselCopyWithImpl<$Res, Carousel>;
-  @useResult
-  $Res call(
-      {List<CarouselItem> items, double aspectRatio, double maxHeightBuilder});
-}
-
-/// @nodoc
-class _$CarouselCopyWithImpl<$Res, $Val extends Carousel>
-    implements $CarouselCopyWith<$Res> {
-  _$CarouselCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of Carousel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $CarouselCopyWith<Carousel> get copyWith =>
+      _$CarouselCopyWithImpl<Carousel>(this as Carousel, _$identity);
+
+  /// Serializes this Carousel to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? items = null,
-    Object? aspectRatio = null,
-    Object? maxHeightBuilder = null,
-  }) {
-    return _then(_value.copyWith(
-      items: null == items
-          ? _value.items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<CarouselItem>,
-      aspectRatio: null == aspectRatio
-          ? _value.aspectRatio
-          : aspectRatio // ignore: cast_nullable_to_non_nullable
-              as double,
-      maxHeightBuilder: null == maxHeightBuilder
-          ? _value.maxHeightBuilder
-          : maxHeightBuilder // ignore: cast_nullable_to_non_nullable
-              as double,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is Carousel &&
+            const DeepCollectionEquality().equals(other.items, items) &&
+            (identical(other.aspectRatio, aspectRatio) ||
+                other.aspectRatio == aspectRatio) &&
+            (identical(other.maxHeightBuilder, maxHeightBuilder) ||
+                other.maxHeightBuilder == maxHeightBuilder));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(items),
+      aspectRatio,
+      maxHeightBuilder);
+
+  @override
+  String toString() {
+    return 'Carousel(items: $items, aspectRatio: $aspectRatio, maxHeightBuilder: $maxHeightBuilder)';
   }
 }
 
 /// @nodoc
-abstract class _$$CarouselImplCopyWith<$Res>
-    implements $CarouselCopyWith<$Res> {
-  factory _$$CarouselImplCopyWith(
-          _$CarouselImpl value, $Res Function(_$CarouselImpl) then) =
-      __$$CarouselImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $CarouselCopyWith<$Res> {
+  factory $CarouselCopyWith(Carousel value, $Res Function(Carousel) _then) =
+      _$CarouselCopyWithImpl;
   @useResult
   $Res call(
       {List<CarouselItem> items, double aspectRatio, double maxHeightBuilder});
 }
 
 /// @nodoc
-class __$$CarouselImplCopyWithImpl<$Res>
-    extends _$CarouselCopyWithImpl<$Res, _$CarouselImpl>
-    implements _$$CarouselImplCopyWith<$Res> {
-  __$$CarouselImplCopyWithImpl(
-      _$CarouselImpl _value, $Res Function(_$CarouselImpl) _then)
-      : super(_value, _then);
+class _$CarouselCopyWithImpl<$Res> implements $CarouselCopyWith<$Res> {
+  _$CarouselCopyWithImpl(this._self, this._then);
 
+  final Carousel _self;
+  final $Res Function(Carousel) _then;
+
+  /// Create a copy of Carousel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -100,17 +80,17 @@ class __$$CarouselImplCopyWithImpl<$Res>
     Object? aspectRatio = null,
     Object? maxHeightBuilder = null,
   }) {
-    return _then(_$CarouselImpl(
+    return _then(_self.copyWith(
       items: null == items
-          ? _value._items
+          ? _self.items
           : items // ignore: cast_nullable_to_non_nullable
               as List<CarouselItem>,
       aspectRatio: null == aspectRatio
-          ? _value.aspectRatio
+          ? _self.aspectRatio
           : aspectRatio // ignore: cast_nullable_to_non_nullable
               as double,
       maxHeightBuilder: null == maxHeightBuilder
-          ? _value.maxHeightBuilder
+          ? _self.maxHeightBuilder
           : maxHeightBuilder // ignore: cast_nullable_to_non_nullable
               as double,
     ));
@@ -119,15 +99,14 @@ class __$$CarouselImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$CarouselImpl implements _Carousel {
-  const _$CarouselImpl(
+class _Carousel implements Carousel {
+  const _Carousel(
       {required final List<CarouselItem> items,
       required this.aspectRatio,
       required this.maxHeightBuilder})
       : _items = items;
-
-  factory _$CarouselImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CarouselImplFromJson(json);
+  factory _Carousel.fromJson(Map<String, dynamic> json) =>
+      _$CarouselFromJson(json);
 
   final List<CarouselItem> _items;
   @override
@@ -142,16 +121,26 @@ class _$CarouselImpl implements _Carousel {
   @override
   final double maxHeightBuilder;
 
+  /// Create a copy of Carousel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'Carousel(items: $items, aspectRatio: $aspectRatio, maxHeightBuilder: $maxHeightBuilder)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$CarouselCopyWith<_Carousel> get copyWith =>
+      __$CarouselCopyWithImpl<_Carousel>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$CarouselToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CarouselImpl &&
+            other is _Carousel &&
             const DeepCollectionEquality().equals(other._items, _items) &&
             (identical(other.aspectRatio, aspectRatio) ||
                 other.aspectRatio == aspectRatio) &&
@@ -159,7 +148,7 @@ class _$CarouselImpl implements _Carousel {
                 other.maxHeightBuilder == maxHeightBuilder));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -167,37 +156,54 @@ class _$CarouselImpl implements _Carousel {
       aspectRatio,
       maxHeightBuilder);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$CarouselImplCopyWith<_$CarouselImpl> get copyWith =>
-      __$$CarouselImplCopyWithImpl<_$CarouselImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CarouselImplToJson(
-      this,
-    );
+  String toString() {
+    return 'Carousel(items: $items, aspectRatio: $aspectRatio, maxHeightBuilder: $maxHeightBuilder)';
   }
 }
 
-abstract class _Carousel implements Carousel {
-  const factory _Carousel(
-      {required final List<CarouselItem> items,
-      required final double aspectRatio,
-      required final double maxHeightBuilder}) = _$CarouselImpl;
-
-  factory _Carousel.fromJson(Map<String, dynamic> json) =
-      _$CarouselImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$CarouselCopyWith<$Res>
+    implements $CarouselCopyWith<$Res> {
+  factory _$CarouselCopyWith(_Carousel value, $Res Function(_Carousel) _then) =
+      __$CarouselCopyWithImpl;
   @override
-  List<CarouselItem> get items;
-  @override
-  double get aspectRatio;
-  @override
-  double get maxHeightBuilder;
-  @override
-  @JsonKey(ignore: true)
-  _$$CarouselImplCopyWith<_$CarouselImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call(
+      {List<CarouselItem> items, double aspectRatio, double maxHeightBuilder});
 }
+
+/// @nodoc
+class __$CarouselCopyWithImpl<$Res> implements _$CarouselCopyWith<$Res> {
+  __$CarouselCopyWithImpl(this._self, this._then);
+
+  final _Carousel _self;
+  final $Res Function(_Carousel) _then;
+
+  /// Create a copy of Carousel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? items = null,
+    Object? aspectRatio = null,
+    Object? maxHeightBuilder = null,
+  }) {
+    return _then(_Carousel(
+      items: null == items
+          ? _self._items
+          : items // ignore: cast_nullable_to_non_nullable
+              as List<CarouselItem>,
+      aspectRatio: null == aspectRatio
+          ? _self.aspectRatio
+          : aspectRatio // ignore: cast_nullable_to_non_nullable
+              as double,
+      maxHeightBuilder: null == maxHeightBuilder
+          ? _self.maxHeightBuilder
+          : maxHeightBuilder // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+// dart format on

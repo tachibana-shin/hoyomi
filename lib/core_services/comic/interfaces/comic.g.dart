@@ -6,7 +6,7 @@ part of 'comic.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ComicImpl _$$ComicImplFromJson(Map<String, dynamic> json) => _$ComicImpl(
+_Comic _$ComicFromJson(Map<String, dynamic> json) => _Comic(
       name: json['name'] as String,
       comicId: json['comicId'] as String,
       originalName: json['originalName'] as String?,
@@ -26,8 +26,7 @@ _$ComicImpl _$$ComicImplFromJson(Map<String, dynamic> json) => _$ComicImpl(
       description: json['description'] as String?,
     );
 
-Map<String, dynamic> _$$ComicImplToJson(_$ComicImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ComicToJson(_Comic instance) => <String, dynamic>{
       'name': instance.name,
       'comicId': instance.comicId,
       'originalName': instance.originalName,

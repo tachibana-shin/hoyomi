@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,93 +10,72 @@ part of 'post_api_comic_set_watch_page_response.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-PostApiComicSetWatchPageResponse _$PostApiComicSetWatchPageResponseFromJson(
-    Map<String, dynamic> json) {
-  return _PostApiComicSetWatchPageResponse.fromJson(json);
-}
 
 /// @nodoc
 mixin _$PostApiComicSetWatchPageResponse {
   /// Indicates whether the watch page was successfully set.
-  bool get success => throw _privateConstructorUsedError;
+  bool get success;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $PostApiComicSetWatchPageResponseCopyWith<PostApiComicSetWatchPageResponse>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $PostApiComicSetWatchPageResponseCopyWith<$Res> {
-  factory $PostApiComicSetWatchPageResponseCopyWith(
-          PostApiComicSetWatchPageResponse value,
-          $Res Function(PostApiComicSetWatchPageResponse) then) =
-      _$PostApiComicSetWatchPageResponseCopyWithImpl<$Res,
-          PostApiComicSetWatchPageResponse>;
-  @useResult
-  $Res call({bool success});
-}
-
-/// @nodoc
-class _$PostApiComicSetWatchPageResponseCopyWithImpl<$Res,
-        $Val extends PostApiComicSetWatchPageResponse>
-    implements $PostApiComicSetWatchPageResponseCopyWith<$Res> {
-  _$PostApiComicSetWatchPageResponseCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of PostApiComicSetWatchPageResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $PostApiComicSetWatchPageResponseCopyWith<PostApiComicSetWatchPageResponse>
+      get copyWith => _$PostApiComicSetWatchPageResponseCopyWithImpl<
+              PostApiComicSetWatchPageResponse>(
+          this as PostApiComicSetWatchPageResponse, _$identity);
+
+  /// Serializes this PostApiComicSetWatchPageResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? success = null,
-  }) {
-    return _then(_value.copyWith(
-      success: null == success
-          ? _value.success
-          : success // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is PostApiComicSetWatchPageResponse &&
+            (identical(other.success, success) || other.success == success));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, success);
+
+  @override
+  String toString() {
+    return 'PostApiComicSetWatchPageResponse(success: $success)';
   }
 }
 
 /// @nodoc
-abstract class _$$PostApiComicSetWatchPageResponseImplCopyWith<$Res>
-    implements $PostApiComicSetWatchPageResponseCopyWith<$Res> {
-  factory _$$PostApiComicSetWatchPageResponseImplCopyWith(
-          _$PostApiComicSetWatchPageResponseImpl value,
-          $Res Function(_$PostApiComicSetWatchPageResponseImpl) then) =
-      __$$PostApiComicSetWatchPageResponseImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $PostApiComicSetWatchPageResponseCopyWith<$Res> {
+  factory $PostApiComicSetWatchPageResponseCopyWith(
+          PostApiComicSetWatchPageResponse value,
+          $Res Function(PostApiComicSetWatchPageResponse) _then) =
+      _$PostApiComicSetWatchPageResponseCopyWithImpl;
   @useResult
   $Res call({bool success});
 }
 
 /// @nodoc
-class __$$PostApiComicSetWatchPageResponseImplCopyWithImpl<$Res>
-    extends _$PostApiComicSetWatchPageResponseCopyWithImpl<$Res,
-        _$PostApiComicSetWatchPageResponseImpl>
-    implements _$$PostApiComicSetWatchPageResponseImplCopyWith<$Res> {
-  __$$PostApiComicSetWatchPageResponseImplCopyWithImpl(
-      _$PostApiComicSetWatchPageResponseImpl _value,
-      $Res Function(_$PostApiComicSetWatchPageResponseImpl) _then)
-      : super(_value, _then);
+class _$PostApiComicSetWatchPageResponseCopyWithImpl<$Res>
+    implements $PostApiComicSetWatchPageResponseCopyWith<$Res> {
+  _$PostApiComicSetWatchPageResponseCopyWithImpl(this._self, this._then);
 
+  final PostApiComicSetWatchPageResponse _self;
+  final $Res Function(PostApiComicSetWatchPageResponse) _then;
+
+  /// Create a copy of PostApiComicSetWatchPageResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? success = null,
   }) {
-    return _then(_$PostApiComicSetWatchPageResponseImpl(
+    return _then(_self.copyWith(
       success: null == success
-          ? _value.success
+          ? _self.success
           : success // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
@@ -104,67 +84,85 @@ class __$$PostApiComicSetWatchPageResponseImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$PostApiComicSetWatchPageResponseImpl
-    implements _PostApiComicSetWatchPageResponse {
-  const _$PostApiComicSetWatchPageResponseImpl({required this.success});
-
-  factory _$PostApiComicSetWatchPageResponseImpl.fromJson(
+class _PostApiComicSetWatchPageResponse
+    implements PostApiComicSetWatchPageResponse {
+  const _PostApiComicSetWatchPageResponse({required this.success});
+  factory _PostApiComicSetWatchPageResponse.fromJson(
           Map<String, dynamic> json) =>
-      _$$PostApiComicSetWatchPageResponseImplFromJson(json);
+      _$PostApiComicSetWatchPageResponseFromJson(json);
 
   /// Indicates whether the watch page was successfully set.
   @override
   final bool success;
 
+  /// Create a copy of PostApiComicSetWatchPageResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'PostApiComicSetWatchPageResponse(success: $success)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$PostApiComicSetWatchPageResponseCopyWith<_PostApiComicSetWatchPageResponse>
+      get copyWith => __$PostApiComicSetWatchPageResponseCopyWithImpl<
+          _PostApiComicSetWatchPageResponse>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$PostApiComicSetWatchPageResponseToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$PostApiComicSetWatchPageResponseImpl &&
+            other is _PostApiComicSetWatchPageResponse &&
             (identical(other.success, success) || other.success == success));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, success);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$PostApiComicSetWatchPageResponseImplCopyWith<
-          _$PostApiComicSetWatchPageResponseImpl>
-      get copyWith => __$$PostApiComicSetWatchPageResponseImplCopyWithImpl<
-          _$PostApiComicSetWatchPageResponseImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PostApiComicSetWatchPageResponseImplToJson(
-      this,
-    );
+  String toString() {
+    return 'PostApiComicSetWatchPageResponse(success: $success)';
   }
 }
 
-abstract class _PostApiComicSetWatchPageResponse
-    implements PostApiComicSetWatchPageResponse {
-  const factory _PostApiComicSetWatchPageResponse(
-      {required final bool success}) = _$PostApiComicSetWatchPageResponseImpl;
-
-  factory _PostApiComicSetWatchPageResponse.fromJson(
-          Map<String, dynamic> json) =
-      _$PostApiComicSetWatchPageResponseImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$PostApiComicSetWatchPageResponseCopyWith<$Res>
+    implements $PostApiComicSetWatchPageResponseCopyWith<$Res> {
+  factory _$PostApiComicSetWatchPageResponseCopyWith(
+          _PostApiComicSetWatchPageResponse value,
+          $Res Function(_PostApiComicSetWatchPageResponse) _then) =
+      __$PostApiComicSetWatchPageResponseCopyWithImpl;
   @override
-
-  /// Indicates whether the watch page was successfully set.
-  bool get success;
-  @override
-  @JsonKey(ignore: true)
-  _$$PostApiComicSetWatchPageResponseImplCopyWith<
-          _$PostApiComicSetWatchPageResponseImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @useResult
+  $Res call({bool success});
 }
+
+/// @nodoc
+class __$PostApiComicSetWatchPageResponseCopyWithImpl<$Res>
+    implements _$PostApiComicSetWatchPageResponseCopyWith<$Res> {
+  __$PostApiComicSetWatchPageResponseCopyWithImpl(this._self, this._then);
+
+  final _PostApiComicSetWatchPageResponse _self;
+  final $Res Function(_PostApiComicSetWatchPageResponse) _then;
+
+  /// Create a copy of PostApiComicSetWatchPageResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? success = null,
+  }) {
+    return _then(_PostApiComicSetWatchPageResponse(
+      success: null == success
+          ? _self.success
+          : success // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+}
+
+// dart format on

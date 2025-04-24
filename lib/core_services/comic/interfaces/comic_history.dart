@@ -5,7 +5,7 @@ import 'main.dart';
 part 'comic_history.freezed.dart';
 
 @freezed
-class ComicHistory with _$ComicHistory {
+sealed class ComicHistory with _$ComicHistory {
   const factory ComicHistory({
     required Comic item,
     required DateTime watchUpdatedAt,

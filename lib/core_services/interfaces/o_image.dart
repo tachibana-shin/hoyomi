@@ -8,7 +8,7 @@ part 'o_image.freezed.dart';
 part 'o_image.g.dart';
 
 @freezed
-class OImage with _$OImage {
+sealed class OImage with _$OImage {
   const factory OImage({
     required String src,
     Headers? headers,

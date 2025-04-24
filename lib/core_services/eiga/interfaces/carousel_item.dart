@@ -6,7 +6,7 @@ part 'carousel_item.freezed.dart';
 part 'carousel_item.g.dart';
 
 @freezed
-class CarouselItem with _$CarouselItem {
+sealed class CarouselItem with _$CarouselItem {
   const factory CarouselItem({
     String? subText,
     required OImage image,

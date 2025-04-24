@@ -6,9 +6,8 @@ part of 'subtitle_settings.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SubtitleSettingsImpl _$$SubtitleSettingsImplFromJson(
-        Map<String, dynamic> json) =>
-    _$SubtitleSettingsImpl(
+_SubtitleSettings _$SubtitleSettingsFromJson(Map<String, dynamic> json) =>
+    _SubtitleSettings(
       fontFamily: json['fontFamily'] as String? ?? 'Normal',
       fontColor: json['fontColor'] as String? ?? 'White',
       fontSize: json['fontSize'] as String? ?? '100%',
@@ -20,8 +19,7 @@ _$SubtitleSettingsImpl _$$SubtitleSettingsImplFromJson(
       edgeStyle: json['edgeStyle'] as String? ?? 'None',
     );
 
-Map<String, dynamic> _$$SubtitleSettingsImplToJson(
-        _$SubtitleSettingsImpl instance) =>
+Map<String, dynamic> _$SubtitleSettingsToJson(_SubtitleSettings instance) =>
     <String, dynamic>{
       'fontFamily': instance.fontFamily,
       'fontColor': instance.fontColor,

@@ -6,8 +6,7 @@ part of 'eiga_episode.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$EigaEpisodeImpl _$$EigaEpisodeImplFromJson(Map<String, dynamic> json) =>
-    _$EigaEpisodeImpl(
+_EigaEpisode _$EigaEpisodeFromJson(Map<String, dynamic> json) => _EigaEpisode(
       name: json['name'] as String,
       episodeId: json['episodeId'] as String,
       image: json['image'] == null
@@ -18,7 +17,7 @@ _$EigaEpisodeImpl _$$EigaEpisodeImplFromJson(Map<String, dynamic> json) =>
       index: (json['index'] as num?)?.toInt() ?? -1,
     );
 
-Map<String, dynamic> _$$EigaEpisodeImplToJson(_$EigaEpisodeImpl instance) =>
+Map<String, dynamic> _$EigaEpisodeToJson(_EigaEpisode instance) =>
     <String, dynamic>{
       'name': instance.name,
       'episodeId': instance.episodeId,

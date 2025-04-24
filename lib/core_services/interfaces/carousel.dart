@@ -7,7 +7,7 @@ part 'carousel.freezed.dart';
 part 'carousel.g.dart';
 
 @freezed
-class Carousel with _$Carousel {
+sealed class Carousel with _$Carousel {
   const factory Carousel({
     required List<CarouselItem> items,
     required double aspectRatio,

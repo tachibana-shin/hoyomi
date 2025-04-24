@@ -6,7 +6,7 @@ part of 'data4.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$Data4Impl _$$Data4ImplFromJson(Map<String, dynamic> json) => _$Data4Impl(
+_Data4 _$Data4FromJson(Map<String, dynamic> json) => _Data4(
       createdAt: json['created_at'] as String,
       eigaTextId: json['eiga_text_id'] as String,
       name: json['name'] as String,
@@ -20,8 +20,7 @@ _$Data4Impl _$$Data4ImplFromJson(Map<String, dynamic> json) => _$Data4Impl(
       watchUpdatedAt: json['watch_updated_at'] as String,
     );
 
-Map<String, dynamic> _$$Data4ImplToJson(_$Data4Impl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$Data4ToJson(_Data4 instance) => <String, dynamic>{
       'created_at': instance.createdAt,
       'eiga_text_id': instance.eigaTextId,
       'name': instance.name,

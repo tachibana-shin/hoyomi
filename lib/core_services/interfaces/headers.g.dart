@@ -6,8 +6,7 @@ part of 'headers.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$HeadersImpl _$$HeadersImplFromJson(Map<String, dynamic> json) =>
-    _$HeadersImpl(
+_Headers _$HeadersFromJson(Map<String, dynamic> json) => _Headers(
       headers: (json['headers'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(
                 k, (e as List<dynamic>).map((e) => e as String).toList()),
@@ -15,7 +14,6 @@ _$HeadersImpl _$$HeadersImplFromJson(Map<String, dynamic> json) =>
           const {},
     );
 
-Map<String, dynamic> _$$HeadersImplToJson(_$HeadersImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$HeadersToJson(_Headers instance) => <String, dynamic>{
       'headers': instance.headers,
     };

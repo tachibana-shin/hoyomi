@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,87 +10,58 @@ part of 'web_rule.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-WebRule _$WebRuleFromJson(Map<String, dynamic> json) {
-  return _WebRule.fromJson(json);
-}
 
 /// @nodoc
 mixin _$WebRule {
   /// Example: example\\.com
-  String? get regexFilter => throw _privateConstructorUsedError;
-  String? get shortRegexFilter => throw _privateConstructorUsedError;
-  String? get urlFilter => throw _privateConstructorUsedError;
+  String? get regexFilter;
+  String? get shortRegexFilter;
+  String? get urlFilter;
 
   /// Example: https://example.com
-  String get referer => throw _privateConstructorUsedError;
+  String get referer;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $WebRuleCopyWith<WebRule> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $WebRuleCopyWith<$Res> {
-  factory $WebRuleCopyWith(WebRule value, $Res Function(WebRule) then) =
-      _$WebRuleCopyWithImpl<$Res, WebRule>;
-  @useResult
-  $Res call(
-      {String? regexFilter,
-      String? shortRegexFilter,
-      String? urlFilter,
-      String referer});
-}
-
-/// @nodoc
-class _$WebRuleCopyWithImpl<$Res, $Val extends WebRule>
-    implements $WebRuleCopyWith<$Res> {
-  _$WebRuleCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of WebRule
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $WebRuleCopyWith<WebRule> get copyWith =>
+      _$WebRuleCopyWithImpl<WebRule>(this as WebRule, _$identity);
+
+  /// Serializes this WebRule to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? regexFilter = freezed,
-    Object? shortRegexFilter = freezed,
-    Object? urlFilter = freezed,
-    Object? referer = null,
-  }) {
-    return _then(_value.copyWith(
-      regexFilter: freezed == regexFilter
-          ? _value.regexFilter
-          : regexFilter // ignore: cast_nullable_to_non_nullable
-              as String?,
-      shortRegexFilter: freezed == shortRegexFilter
-          ? _value.shortRegexFilter
-          : shortRegexFilter // ignore: cast_nullable_to_non_nullable
-              as String?,
-      urlFilter: freezed == urlFilter
-          ? _value.urlFilter
-          : urlFilter // ignore: cast_nullable_to_non_nullable
-              as String?,
-      referer: null == referer
-          ? _value.referer
-          : referer // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WebRule &&
+            (identical(other.regexFilter, regexFilter) ||
+                other.regexFilter == regexFilter) &&
+            (identical(other.shortRegexFilter, shortRegexFilter) ||
+                other.shortRegexFilter == shortRegexFilter) &&
+            (identical(other.urlFilter, urlFilter) ||
+                other.urlFilter == urlFilter) &&
+            (identical(other.referer, referer) || other.referer == referer));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, regexFilter, shortRegexFilter, urlFilter, referer);
+
+  @override
+  String toString() {
+    return 'WebRule(regexFilter: $regexFilter, shortRegexFilter: $shortRegexFilter, urlFilter: $urlFilter, referer: $referer)';
   }
 }
 
 /// @nodoc
-abstract class _$$WebRuleImplCopyWith<$Res> implements $WebRuleCopyWith<$Res> {
-  factory _$$WebRuleImplCopyWith(
-          _$WebRuleImpl value, $Res Function(_$WebRuleImpl) then) =
-      __$$WebRuleImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $WebRuleCopyWith<$Res> {
+  factory $WebRuleCopyWith(WebRule value, $Res Function(WebRule) _then) =
+      _$WebRuleCopyWithImpl;
   @useResult
   $Res call(
       {String? regexFilter,
@@ -99,13 +71,14 @@ abstract class _$$WebRuleImplCopyWith<$Res> implements $WebRuleCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$WebRuleImplCopyWithImpl<$Res>
-    extends _$WebRuleCopyWithImpl<$Res, _$WebRuleImpl>
-    implements _$$WebRuleImplCopyWith<$Res> {
-  __$$WebRuleImplCopyWithImpl(
-      _$WebRuleImpl _value, $Res Function(_$WebRuleImpl) _then)
-      : super(_value, _then);
+class _$WebRuleCopyWithImpl<$Res> implements $WebRuleCopyWith<$Res> {
+  _$WebRuleCopyWithImpl(this._self, this._then);
 
+  final WebRule _self;
+  final $Res Function(WebRule) _then;
+
+  /// Create a copy of WebRule
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -114,21 +87,21 @@ class __$$WebRuleImplCopyWithImpl<$Res>
     Object? urlFilter = freezed,
     Object? referer = null,
   }) {
-    return _then(_$WebRuleImpl(
+    return _then(_self.copyWith(
       regexFilter: freezed == regexFilter
-          ? _value.regexFilter
+          ? _self.regexFilter
           : regexFilter // ignore: cast_nullable_to_non_nullable
               as String?,
       shortRegexFilter: freezed == shortRegexFilter
-          ? _value.shortRegexFilter
+          ? _self.shortRegexFilter
           : shortRegexFilter // ignore: cast_nullable_to_non_nullable
               as String?,
       urlFilter: freezed == urlFilter
-          ? _value.urlFilter
+          ? _self.urlFilter
           : urlFilter // ignore: cast_nullable_to_non_nullable
               as String?,
       referer: null == referer
-          ? _value.referer
+          ? _self.referer
           : referer // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -137,16 +110,15 @@ class __$$WebRuleImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$WebRuleImpl extends _WebRule {
-  _$WebRuleImpl(
+class _WebRule extends WebRule {
+  _WebRule(
       {this.regexFilter,
       this.shortRegexFilter,
       this.urlFilter,
       required this.referer})
       : super._();
-
-  factory _$WebRuleImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WebRuleImplFromJson(json);
+  factory _WebRule.fromJson(Map<String, dynamic> json) =>
+      _$WebRuleFromJson(json);
 
   /// Example: example\\.com
   @override
@@ -160,16 +132,26 @@ class _$WebRuleImpl extends _WebRule {
   @override
   final String referer;
 
+  /// Create a copy of WebRule
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'WebRule(regexFilter: $regexFilter, shortRegexFilter: $shortRegexFilter, urlFilter: $urlFilter, referer: $referer)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WebRuleCopyWith<_WebRule> get copyWith =>
+      __$WebRuleCopyWithImpl<_WebRule>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WebRuleToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WebRuleImpl &&
+            other is _WebRule &&
             (identical(other.regexFilter, regexFilter) ||
                 other.regexFilter == regexFilter) &&
             (identical(other.shortRegexFilter, shortRegexFilter) ||
@@ -179,49 +161,66 @@ class _$WebRuleImpl extends _WebRule {
             (identical(other.referer, referer) || other.referer == referer));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, regexFilter, shortRegexFilter, urlFilter, referer);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WebRuleImplCopyWith<_$WebRuleImpl> get copyWith =>
-      __$$WebRuleImplCopyWithImpl<_$WebRuleImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WebRuleImplToJson(
-      this,
-    );
+  String toString() {
+    return 'WebRule(regexFilter: $regexFilter, shortRegexFilter: $shortRegexFilter, urlFilter: $urlFilter, referer: $referer)';
   }
 }
 
-abstract class _WebRule extends WebRule {
-  factory _WebRule(
-      {final String? regexFilter,
-      final String? shortRegexFilter,
-      final String? urlFilter,
-      required final String referer}) = _$WebRuleImpl;
-  _WebRule._() : super._();
-
-  factory _WebRule.fromJson(Map<String, dynamic> json) = _$WebRuleImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$WebRuleCopyWith<$Res> implements $WebRuleCopyWith<$Res> {
+  factory _$WebRuleCopyWith(_WebRule value, $Res Function(_WebRule) _then) =
+      __$WebRuleCopyWithImpl;
   @override
-
-  /// Example: example\\.com
-  String? get regexFilter;
-  @override
-  String? get shortRegexFilter;
-  @override
-  String? get urlFilter;
-  @override
-
-  /// Example: https://example.com
-  String get referer;
-  @override
-  @JsonKey(ignore: true)
-  _$$WebRuleImplCopyWith<_$WebRuleImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call(
+      {String? regexFilter,
+      String? shortRegexFilter,
+      String? urlFilter,
+      String referer});
 }
+
+/// @nodoc
+class __$WebRuleCopyWithImpl<$Res> implements _$WebRuleCopyWith<$Res> {
+  __$WebRuleCopyWithImpl(this._self, this._then);
+
+  final _WebRule _self;
+  final $Res Function(_WebRule) _then;
+
+  /// Create a copy of WebRule
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? regexFilter = freezed,
+    Object? shortRegexFilter = freezed,
+    Object? urlFilter = freezed,
+    Object? referer = null,
+  }) {
+    return _then(_WebRule(
+      regexFilter: freezed == regexFilter
+          ? _self.regexFilter
+          : regexFilter // ignore: cast_nullable_to_non_nullable
+              as String?,
+      shortRegexFilter: freezed == shortRegexFilter
+          ? _self.shortRegexFilter
+          : shortRegexFilter // ignore: cast_nullable_to_non_nullable
+              as String?,
+      urlFilter: freezed == urlFilter
+          ? _self.urlFilter
+          : urlFilter // ignore: cast_nullable_to_non_nullable
+              as String?,
+      referer: null == referer
+          ? _self.referer
+          : referer // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+// dart format on

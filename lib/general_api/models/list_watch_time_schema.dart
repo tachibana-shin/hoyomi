@@ -11,7 +11,7 @@ part 'list_watch_time_schema.g.dart';
 
 /// A list of watch page entries, each representing the page watched for a specific episode.
 @Freezed()
-class ListWatchTimeSchema with _$ListWatchTimeSchema {
+sealed class ListWatchTimeSchema with _$ListWatchTimeSchema {
   const factory ListWatchTimeSchema({
     required List<Data2> data,
   }) = _ListWatchTimeSchema;

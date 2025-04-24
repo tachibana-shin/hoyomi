@@ -4,7 +4,7 @@ part 'opening_ending.freezed.dart';
 part 'opening_ending.g.dart';
 
 @freezed
-class DurationRange with _$DurationRange {
+sealed class DurationRange with _$DurationRange {
   const factory DurationRange({
     required Duration start,
     required Duration end,
@@ -15,7 +15,7 @@ class DurationRange with _$DurationRange {
 }
 
 @freezed
-class OpeningEnding with _$OpeningEnding {
+sealed class OpeningEnding with _$OpeningEnding {
   const factory OpeningEnding({
     DurationRange? opening,
     DurationRange? ending,

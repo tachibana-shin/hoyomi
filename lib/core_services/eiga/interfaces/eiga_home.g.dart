@@ -6,8 +6,7 @@ part of 'eiga_home.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$EigaHomeImpl _$$EigaHomeImplFromJson(Map<String, dynamic> json) =>
-    _$EigaHomeImpl(
+_EigaHome _$EigaHomeFromJson(Map<String, dynamic> json) => _EigaHome(
       carousel: json['carousel'] == null
           ? null
           : Carousel.fromJson(json['carousel'] as Map<String, dynamic>),
@@ -16,8 +15,7 @@ _$EigaHomeImpl _$$EigaHomeImplFromJson(Map<String, dynamic> json) =>
           .toList(),
     );
 
-Map<String, dynamic> _$$EigaHomeImplToJson(_$EigaHomeImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$EigaHomeToJson(_EigaHome instance) => <String, dynamic>{
       'carousel': instance.carousel,
       'categories': instance.categories,
     };

@@ -6,7 +6,7 @@ part of 'user.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
+_User _$UserFromJson(Map<String, dynamic> json) => _User(
       user: json['user'] as String,
       email: json['email'] as String?,
       photoUrl: json['photoUrl'] as String,
@@ -14,8 +14,7 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       sex: $enumDecodeNullable(_$SexEnumMap, json['sex']) ?? Sex.other,
     );
 
-Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
       'user': instance.user,
       'email': instance.email,
       'photoUrl': instance.photoUrl,

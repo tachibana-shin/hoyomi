@@ -4,7 +4,7 @@ part 'eiga_param.freezed.dart';
 part 'eiga_param.g.dart';
 
 @freezed
-class EigaParam with _$EigaParam {
+sealed class EigaParam with _$EigaParam {
   const factory EigaParam({
     required String eigaId,
     String? episodeId,

@@ -6,8 +6,7 @@ part of 'query_schema.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$QuerySchemaImpl _$$QuerySchemaImplFromJson(Map<String, dynamic> json) =>
-    _$QuerySchemaImpl(
+_QuerySchema _$QuerySchemaFromJson(Map<String, dynamic> json) => _QuerySchema(
       sourceId: json['sourceId'] as String,
       name: json['name'] as String,
       poster: json['poster'] as String,
@@ -19,7 +18,7 @@ _$QuerySchemaImpl _$$QuerySchemaImplFromJson(Map<String, dynamic> json) =>
       episodeId: json['episode_id'] as String,
     );
 
-Map<String, dynamic> _$$QuerySchemaImplToJson(_$QuerySchemaImpl instance) =>
+Map<String, dynamic> _$QuerySchemaToJson(_QuerySchema instance) =>
     <String, dynamic>{
       'sourceId': instance.sourceId,
       'name': instance.name,

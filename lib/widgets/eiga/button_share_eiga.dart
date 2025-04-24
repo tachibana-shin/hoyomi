@@ -33,7 +33,9 @@ class _ButtonShareEigaState extends State<ButtonShareEiga> {
         onPressed: () {
           final title =
               '${widget.episodeName.value} ${widget.metaEiga.value.name}, ${widget.metaEiga.value.originalName}';
-          Share.share('Watch $title on Hoyomi: ', subject: title);
+          SharePlus.instance.share(
+            ShareParams(title: 'Watch $title on Hoyomi: ', subject: title),
+          );
         },
         icon: Iconify(
           Mdi.share_outline,

@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,28 +10,53 @@ part of 'comic_history.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$ComicHistory {
-  Comic get item => throw _privateConstructorUsedError;
-  DateTime get watchUpdatedAt => throw _privateConstructorUsedError;
-  ComicChapter get lastEpisode => throw _privateConstructorUsedError;
-  WatchPage get watchPage => throw _privateConstructorUsedError;
+  Comic get item;
+  DateTime get watchUpdatedAt;
+  ComicChapter get lastEpisode;
+  WatchPage get watchPage;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ComicHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $ComicHistoryCopyWith<ComicHistory> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$ComicHistoryCopyWithImpl<ComicHistory>(
+          this as ComicHistory, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ComicHistory &&
+            (identical(other.item, item) || other.item == item) &&
+            (identical(other.watchUpdatedAt, watchUpdatedAt) ||
+                other.watchUpdatedAt == watchUpdatedAt) &&
+            (identical(other.lastEpisode, lastEpisode) ||
+                other.lastEpisode == lastEpisode) &&
+            (identical(other.watchPage, watchPage) ||
+                other.watchPage == watchPage));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, item, watchUpdatedAt, lastEpisode, watchPage);
+
+  @override
+  String toString() {
+    return 'ComicHistory(item: $item, watchUpdatedAt: $watchUpdatedAt, lastEpisode: $lastEpisode, watchPage: $watchPage)';
+  }
 }
 
 /// @nodoc
-abstract class $ComicHistoryCopyWith<$Res> {
+abstract mixin class $ComicHistoryCopyWith<$Res> {
   factory $ComicHistoryCopyWith(
-          ComicHistory value, $Res Function(ComicHistory) then) =
-      _$ComicHistoryCopyWithImpl<$Res, ComicHistory>;
+          ComicHistory value, $Res Function(ComicHistory) _then) =
+      _$ComicHistoryCopyWithImpl;
   @useResult
   $Res call(
       {Comic item,
@@ -43,15 +69,14 @@ abstract class $ComicHistoryCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ComicHistoryCopyWithImpl<$Res, $Val extends ComicHistory>
-    implements $ComicHistoryCopyWith<$Res> {
-  _$ComicHistoryCopyWithImpl(this._value, this._then);
+class _$ComicHistoryCopyWithImpl<$Res> implements $ComicHistoryCopyWith<$Res> {
+  _$ComicHistoryCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ComicHistory _self;
+  final $Res Function(ComicHistory) _then;
 
+  /// Create a copy of ComicHistory
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -60,104 +85,51 @@ class _$ComicHistoryCopyWithImpl<$Res, $Val extends ComicHistory>
     Object? lastEpisode = null,
     Object? watchPage = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       item: null == item
-          ? _value.item
+          ? _self.item
           : item // ignore: cast_nullable_to_non_nullable
               as Comic,
       watchUpdatedAt: null == watchUpdatedAt
-          ? _value.watchUpdatedAt
+          ? _self.watchUpdatedAt
           : watchUpdatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
       lastEpisode: null == lastEpisode
-          ? _value.lastEpisode
+          ? _self.lastEpisode
           : lastEpisode // ignore: cast_nullable_to_non_nullable
               as ComicChapter,
       watchPage: null == watchPage
-          ? _value.watchPage
-          : watchPage // ignore: cast_nullable_to_non_nullable
-              as WatchPage,
-    ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $ComicCopyWith<$Res> get item {
-    return $ComicCopyWith<$Res>(_value.item, (value) {
-      return _then(_value.copyWith(item: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $WatchPageCopyWith<$Res> get watchPage {
-    return $WatchPageCopyWith<$Res>(_value.watchPage, (value) {
-      return _then(_value.copyWith(watchPage: value) as $Val);
-    });
-  }
-}
-
-/// @nodoc
-abstract class _$$ComicHistoryImplCopyWith<$Res>
-    implements $ComicHistoryCopyWith<$Res> {
-  factory _$$ComicHistoryImplCopyWith(
-          _$ComicHistoryImpl value, $Res Function(_$ComicHistoryImpl) then) =
-      __$$ComicHistoryImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {Comic item,
-      DateTime watchUpdatedAt,
-      ComicChapter lastEpisode,
-      WatchPage watchPage});
-
-  @override
-  $ComicCopyWith<$Res> get item;
-  @override
-  $WatchPageCopyWith<$Res> get watchPage;
-}
-
-/// @nodoc
-class __$$ComicHistoryImplCopyWithImpl<$Res>
-    extends _$ComicHistoryCopyWithImpl<$Res, _$ComicHistoryImpl>
-    implements _$$ComicHistoryImplCopyWith<$Res> {
-  __$$ComicHistoryImplCopyWithImpl(
-      _$ComicHistoryImpl _value, $Res Function(_$ComicHistoryImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? item = null,
-    Object? watchUpdatedAt = null,
-    Object? lastEpisode = null,
-    Object? watchPage = null,
-  }) {
-    return _then(_$ComicHistoryImpl(
-      item: null == item
-          ? _value.item
-          : item // ignore: cast_nullable_to_non_nullable
-              as Comic,
-      watchUpdatedAt: null == watchUpdatedAt
-          ? _value.watchUpdatedAt
-          : watchUpdatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      lastEpisode: null == lastEpisode
-          ? _value.lastEpisode
-          : lastEpisode // ignore: cast_nullable_to_non_nullable
-              as ComicChapter,
-      watchPage: null == watchPage
-          ? _value.watchPage
+          ? _self.watchPage
           : watchPage // ignore: cast_nullable_to_non_nullable
               as WatchPage,
     ));
   }
+
+  /// Create a copy of ComicHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ComicCopyWith<$Res> get item {
+    return $ComicCopyWith<$Res>(_self.item, (value) {
+      return _then(_self.copyWith(item: value));
+    });
+  }
+
+  /// Create a copy of ComicHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $WatchPageCopyWith<$Res> get watchPage {
+    return $WatchPageCopyWith<$Res>(_self.watchPage, (value) {
+      return _then(_self.copyWith(watchPage: value));
+    });
+  }
 }
 
 /// @nodoc
 
-class _$ComicHistoryImpl implements _ComicHistory {
-  const _$ComicHistoryImpl(
+class _ComicHistory implements ComicHistory {
+  const _ComicHistory(
       {required this.item,
       required this.watchUpdatedAt,
       required this.lastEpisode,
@@ -172,16 +144,19 @@ class _$ComicHistoryImpl implements _ComicHistory {
   @override
   final WatchPage watchPage;
 
+  /// Create a copy of ComicHistory
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'ComicHistory(item: $item, watchUpdatedAt: $watchUpdatedAt, lastEpisode: $lastEpisode, watchPage: $watchPage)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ComicHistoryCopyWith<_ComicHistory> get copyWith =>
+      __$ComicHistoryCopyWithImpl<_ComicHistory>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ComicHistoryImpl &&
+            other is _ComicHistory &&
             (identical(other.item, item) || other.item == item) &&
             (identical(other.watchUpdatedAt, watchUpdatedAt) ||
                 other.watchUpdatedAt == watchUpdatedAt) &&
@@ -195,30 +170,89 @@ class _$ComicHistoryImpl implements _ComicHistory {
   int get hashCode =>
       Object.hash(runtimeType, item, watchUpdatedAt, lastEpisode, watchPage);
 
-  @JsonKey(ignore: true)
+  @override
+  String toString() {
+    return 'ComicHistory(item: $item, watchUpdatedAt: $watchUpdatedAt, lastEpisode: $lastEpisode, watchPage: $watchPage)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$ComicHistoryCopyWith<$Res>
+    implements $ComicHistoryCopyWith<$Res> {
+  factory _$ComicHistoryCopyWith(
+          _ComicHistory value, $Res Function(_ComicHistory) _then) =
+      __$ComicHistoryCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {Comic item,
+      DateTime watchUpdatedAt,
+      ComicChapter lastEpisode,
+      WatchPage watchPage});
+
+  @override
+  $ComicCopyWith<$Res> get item;
+  @override
+  $WatchPageCopyWith<$Res> get watchPage;
+}
+
+/// @nodoc
+class __$ComicHistoryCopyWithImpl<$Res>
+    implements _$ComicHistoryCopyWith<$Res> {
+  __$ComicHistoryCopyWithImpl(this._self, this._then);
+
+  final _ComicHistory _self;
+  final $Res Function(_ComicHistory) _then;
+
+  /// Create a copy of ComicHistory
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  _$$ComicHistoryImplCopyWith<_$ComicHistoryImpl> get copyWith =>
-      __$$ComicHistoryImplCopyWithImpl<_$ComicHistoryImpl>(this, _$identity);
+  $Res call({
+    Object? item = null,
+    Object? watchUpdatedAt = null,
+    Object? lastEpisode = null,
+    Object? watchPage = null,
+  }) {
+    return _then(_ComicHistory(
+      item: null == item
+          ? _self.item
+          : item // ignore: cast_nullable_to_non_nullable
+              as Comic,
+      watchUpdatedAt: null == watchUpdatedAt
+          ? _self.watchUpdatedAt
+          : watchUpdatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      lastEpisode: null == lastEpisode
+          ? _self.lastEpisode
+          : lastEpisode // ignore: cast_nullable_to_non_nullable
+              as ComicChapter,
+      watchPage: null == watchPage
+          ? _self.watchPage
+          : watchPage // ignore: cast_nullable_to_non_nullable
+              as WatchPage,
+    ));
+  }
+
+  /// Create a copy of ComicHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ComicCopyWith<$Res> get item {
+    return $ComicCopyWith<$Res>(_self.item, (value) {
+      return _then(_self.copyWith(item: value));
+    });
+  }
+
+  /// Create a copy of ComicHistory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $WatchPageCopyWith<$Res> get watchPage {
+    return $WatchPageCopyWith<$Res>(_self.watchPage, (value) {
+      return _then(_self.copyWith(watchPage: value));
+    });
+  }
 }
 
-abstract class _ComicHistory implements ComicHistory {
-  const factory _ComicHistory(
-      {required final Comic item,
-      required final DateTime watchUpdatedAt,
-      required final ComicChapter lastEpisode,
-      required final WatchPage watchPage}) = _$ComicHistoryImpl;
-
-  @override
-  Comic get item;
-  @override
-  DateTime get watchUpdatedAt;
-  @override
-  ComicChapter get lastEpisode;
-  @override
-  WatchPage get watchPage;
-  @override
-  @JsonKey(ignore: true)
-  _$$ComicHistoryImplCopyWith<_$ComicHistoryImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

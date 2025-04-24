@@ -8,7 +8,7 @@ part 'subtitle.freezed.dart';
 part 'subtitle.g.dart';
 
 @freezed
-class Subtitle with _$Subtitle {
+sealed class Subtitle with _$Subtitle {
   const factory Subtitle({
     required String language,
     required String code,

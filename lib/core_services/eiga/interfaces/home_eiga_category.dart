@@ -5,7 +5,7 @@ part 'home_eiga_category.freezed.dart';
 part 'home_eiga_category.g.dart';
 
 @freezed
-class HomeEigaCategory with _$HomeEigaCategory {
+sealed class HomeEigaCategory with _$HomeEigaCategory {
   const factory HomeEigaCategory({
     required String name,
     String? categoryId,

@@ -6,19 +6,17 @@ part of 'meta_eiga.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SeasonImpl _$$SeasonImplFromJson(Map<String, dynamic> json) => _$SeasonImpl(
+_Season _$SeasonFromJson(Map<String, dynamic> json) => _Season(
       name: json['name'] as String,
       eigaId: json['eigaId'] as String,
     );
 
-Map<String, dynamic> _$$SeasonImplToJson(_$SeasonImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$SeasonToJson(_Season instance) => <String, dynamic>{
       'name': instance.name,
       'eigaId': instance.eigaId,
     };
 
-_$MetaEigaImpl _$$MetaEigaImplFromJson(Map<String, dynamic> json) =>
-    _$MetaEigaImpl(
+_MetaEiga _$MetaEigaFromJson(Map<String, dynamic> json) => _MetaEiga(
       name: json['name'] as String,
       originalName: json['originalName'] as String?,
       image: OImage.fromJson(json['image'] as Map<String, dynamic>),
@@ -57,8 +55,7 @@ _$MetaEigaImpl _$$MetaEigaImplFromJson(Map<String, dynamic> json) =>
       fake: json['fake'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$$MetaEigaImplToJson(_$MetaEigaImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$MetaEigaToJson(_MetaEiga instance) => <String, dynamic>{
       'name': instance.name,
       'originalName': instance.originalName,
       'image': instance.image,

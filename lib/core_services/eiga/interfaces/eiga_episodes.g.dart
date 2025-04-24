@@ -6,8 +6,8 @@ part of 'eiga_episodes.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$EigaEpisodesImpl _$$EigaEpisodesImplFromJson(Map<String, dynamic> json) =>
-    _$EigaEpisodesImpl(
+_EigaEpisodes _$EigaEpisodesFromJson(Map<String, dynamic> json) =>
+    _EigaEpisodes(
       episodes: (json['episodes'] as List<dynamic>)
           .map((e) => EigaEpisode.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -22,7 +22,7 @@ _$EigaEpisodesImpl _$$EigaEpisodesImplFromJson(Map<String, dynamic> json) =>
           : DateTime.parse(json['schedule'] as String),
     );
 
-Map<String, dynamic> _$$EigaEpisodesImplToJson(_$EigaEpisodesImpl instance) =>
+Map<String, dynamic> _$EigaEpisodesToJson(_EigaEpisodes instance) =>
     <String, dynamic>{
       'episodes': instance.episodes,
       'image': instance.image,

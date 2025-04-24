@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,93 +10,72 @@ part of 'post_api_eiga_set_watch_time_response.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-PostApiEigaSetWatchTimeResponse _$PostApiEigaSetWatchTimeResponseFromJson(
-    Map<String, dynamic> json) {
-  return _PostApiEigaSetWatchTimeResponse.fromJson(json);
-}
 
 /// @nodoc
 mixin _$PostApiEigaSetWatchTimeResponse {
   /// Indicates whether the watch time was successfully set.
-  bool get success => throw _privateConstructorUsedError;
+  bool get success;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $PostApiEigaSetWatchTimeResponseCopyWith<PostApiEigaSetWatchTimeResponse>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $PostApiEigaSetWatchTimeResponseCopyWith<$Res> {
-  factory $PostApiEigaSetWatchTimeResponseCopyWith(
-          PostApiEigaSetWatchTimeResponse value,
-          $Res Function(PostApiEigaSetWatchTimeResponse) then) =
-      _$PostApiEigaSetWatchTimeResponseCopyWithImpl<$Res,
-          PostApiEigaSetWatchTimeResponse>;
-  @useResult
-  $Res call({bool success});
-}
-
-/// @nodoc
-class _$PostApiEigaSetWatchTimeResponseCopyWithImpl<$Res,
-        $Val extends PostApiEigaSetWatchTimeResponse>
-    implements $PostApiEigaSetWatchTimeResponseCopyWith<$Res> {
-  _$PostApiEigaSetWatchTimeResponseCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of PostApiEigaSetWatchTimeResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $PostApiEigaSetWatchTimeResponseCopyWith<PostApiEigaSetWatchTimeResponse>
+      get copyWith => _$PostApiEigaSetWatchTimeResponseCopyWithImpl<
+              PostApiEigaSetWatchTimeResponse>(
+          this as PostApiEigaSetWatchTimeResponse, _$identity);
+
+  /// Serializes this PostApiEigaSetWatchTimeResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? success = null,
-  }) {
-    return _then(_value.copyWith(
-      success: null == success
-          ? _value.success
-          : success // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is PostApiEigaSetWatchTimeResponse &&
+            (identical(other.success, success) || other.success == success));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, success);
+
+  @override
+  String toString() {
+    return 'PostApiEigaSetWatchTimeResponse(success: $success)';
   }
 }
 
 /// @nodoc
-abstract class _$$PostApiEigaSetWatchTimeResponseImplCopyWith<$Res>
-    implements $PostApiEigaSetWatchTimeResponseCopyWith<$Res> {
-  factory _$$PostApiEigaSetWatchTimeResponseImplCopyWith(
-          _$PostApiEigaSetWatchTimeResponseImpl value,
-          $Res Function(_$PostApiEigaSetWatchTimeResponseImpl) then) =
-      __$$PostApiEigaSetWatchTimeResponseImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $PostApiEigaSetWatchTimeResponseCopyWith<$Res> {
+  factory $PostApiEigaSetWatchTimeResponseCopyWith(
+          PostApiEigaSetWatchTimeResponse value,
+          $Res Function(PostApiEigaSetWatchTimeResponse) _then) =
+      _$PostApiEigaSetWatchTimeResponseCopyWithImpl;
   @useResult
   $Res call({bool success});
 }
 
 /// @nodoc
-class __$$PostApiEigaSetWatchTimeResponseImplCopyWithImpl<$Res>
-    extends _$PostApiEigaSetWatchTimeResponseCopyWithImpl<$Res,
-        _$PostApiEigaSetWatchTimeResponseImpl>
-    implements _$$PostApiEigaSetWatchTimeResponseImplCopyWith<$Res> {
-  __$$PostApiEigaSetWatchTimeResponseImplCopyWithImpl(
-      _$PostApiEigaSetWatchTimeResponseImpl _value,
-      $Res Function(_$PostApiEigaSetWatchTimeResponseImpl) _then)
-      : super(_value, _then);
+class _$PostApiEigaSetWatchTimeResponseCopyWithImpl<$Res>
+    implements $PostApiEigaSetWatchTimeResponseCopyWith<$Res> {
+  _$PostApiEigaSetWatchTimeResponseCopyWithImpl(this._self, this._then);
 
+  final PostApiEigaSetWatchTimeResponse _self;
+  final $Res Function(PostApiEigaSetWatchTimeResponse) _then;
+
+  /// Create a copy of PostApiEigaSetWatchTimeResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? success = null,
   }) {
-    return _then(_$PostApiEigaSetWatchTimeResponseImpl(
+    return _then(_self.copyWith(
       success: null == success
-          ? _value.success
+          ? _self.success
           : success // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
@@ -104,66 +84,85 @@ class __$$PostApiEigaSetWatchTimeResponseImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$PostApiEigaSetWatchTimeResponseImpl
-    implements _PostApiEigaSetWatchTimeResponse {
-  const _$PostApiEigaSetWatchTimeResponseImpl({required this.success});
-
-  factory _$PostApiEigaSetWatchTimeResponseImpl.fromJson(
+class _PostApiEigaSetWatchTimeResponse
+    implements PostApiEigaSetWatchTimeResponse {
+  const _PostApiEigaSetWatchTimeResponse({required this.success});
+  factory _PostApiEigaSetWatchTimeResponse.fromJson(
           Map<String, dynamic> json) =>
-      _$$PostApiEigaSetWatchTimeResponseImplFromJson(json);
+      _$PostApiEigaSetWatchTimeResponseFromJson(json);
 
   /// Indicates whether the watch time was successfully set.
   @override
   final bool success;
 
+  /// Create a copy of PostApiEigaSetWatchTimeResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'PostApiEigaSetWatchTimeResponse(success: $success)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$PostApiEigaSetWatchTimeResponseCopyWith<_PostApiEigaSetWatchTimeResponse>
+      get copyWith => __$PostApiEigaSetWatchTimeResponseCopyWithImpl<
+          _PostApiEigaSetWatchTimeResponse>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$PostApiEigaSetWatchTimeResponseToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$PostApiEigaSetWatchTimeResponseImpl &&
+            other is _PostApiEigaSetWatchTimeResponse &&
             (identical(other.success, success) || other.success == success));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, success);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$PostApiEigaSetWatchTimeResponseImplCopyWith<
-          _$PostApiEigaSetWatchTimeResponseImpl>
-      get copyWith => __$$PostApiEigaSetWatchTimeResponseImplCopyWithImpl<
-          _$PostApiEigaSetWatchTimeResponseImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PostApiEigaSetWatchTimeResponseImplToJson(
-      this,
-    );
+  String toString() {
+    return 'PostApiEigaSetWatchTimeResponse(success: $success)';
   }
 }
 
-abstract class _PostApiEigaSetWatchTimeResponse
-    implements PostApiEigaSetWatchTimeResponse {
-  const factory _PostApiEigaSetWatchTimeResponse(
-      {required final bool success}) = _$PostApiEigaSetWatchTimeResponseImpl;
-
-  factory _PostApiEigaSetWatchTimeResponse.fromJson(Map<String, dynamic> json) =
-      _$PostApiEigaSetWatchTimeResponseImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$PostApiEigaSetWatchTimeResponseCopyWith<$Res>
+    implements $PostApiEigaSetWatchTimeResponseCopyWith<$Res> {
+  factory _$PostApiEigaSetWatchTimeResponseCopyWith(
+          _PostApiEigaSetWatchTimeResponse value,
+          $Res Function(_PostApiEigaSetWatchTimeResponse) _then) =
+      __$PostApiEigaSetWatchTimeResponseCopyWithImpl;
   @override
-
-  /// Indicates whether the watch time was successfully set.
-  bool get success;
-  @override
-  @JsonKey(ignore: true)
-  _$$PostApiEigaSetWatchTimeResponseImplCopyWith<
-          _$PostApiEigaSetWatchTimeResponseImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @useResult
+  $Res call({bool success});
 }
+
+/// @nodoc
+class __$PostApiEigaSetWatchTimeResponseCopyWithImpl<$Res>
+    implements _$PostApiEigaSetWatchTimeResponseCopyWith<$Res> {
+  __$PostApiEigaSetWatchTimeResponseCopyWithImpl(this._self, this._then);
+
+  final _PostApiEigaSetWatchTimeResponse _self;
+  final $Res Function(_PostApiEigaSetWatchTimeResponse) _then;
+
+  /// Create a copy of PostApiEigaSetWatchTimeResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? success = null,
+  }) {
+    return _then(_PostApiEigaSetWatchTimeResponse(
+      success: null == success
+          ? _self.success
+          : success // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+}
+
+// dart format on

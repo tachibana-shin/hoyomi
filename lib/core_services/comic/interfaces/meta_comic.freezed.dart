@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,42 +10,90 @@ part of 'meta_comic.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-MetaComic _$MetaComicFromJson(Map<String, dynamic> json) {
-  return _MetaComic.fromJson(json);
-}
 
 /// @nodoc
 mixin _$MetaComic {
-  String get name => throw _privateConstructorUsedError;
-  String? get originalName => throw _privateConstructorUsedError;
-  OImage get image => throw _privateConstructorUsedError;
-  String? get author => throw _privateConstructorUsedError;
-  String? get translator => throw _privateConstructorUsedError;
-  StatusEnum get status => throw _privateConstructorUsedError;
-  int? get views => throw _privateConstructorUsedError;
-  int? get likes => throw _privateConstructorUsedError;
-  RateValue? get rate => throw _privateConstructorUsedError;
-  List<Genre> get genres => throw _privateConstructorUsedError;
-  String get description => throw _privateConstructorUsedError;
-  List<ComicChapter> get chapters => throw _privateConstructorUsedError;
-  DateTime get lastModified => throw _privateConstructorUsedError;
-  bool get fake => throw _privateConstructorUsedError;
+  String get name;
+  String? get originalName;
+  OImage get image;
+  String? get author;
+  String? get translator;
+  StatusEnum get status;
+  int? get views;
+  int? get likes;
+  RateValue? get rate;
+  List<Genre> get genres;
+  String get description;
+  List<ComicChapter> get chapters;
+  DateTime get lastModified;
+  bool get fake;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+  /// Create a copy of MetaComic
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $MetaComicCopyWith<MetaComic> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$MetaComicCopyWithImpl<MetaComic>(this as MetaComic, _$identity);
+
+  /// Serializes this MetaComic to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is MetaComic &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.originalName, originalName) ||
+                other.originalName == originalName) &&
+            (identical(other.image, image) || other.image == image) &&
+            (identical(other.author, author) || other.author == author) &&
+            (identical(other.translator, translator) ||
+                other.translator == translator) &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.views, views) || other.views == views) &&
+            (identical(other.likes, likes) || other.likes == likes) &&
+            (identical(other.rate, rate) || other.rate == rate) &&
+            const DeepCollectionEquality().equals(other.genres, genres) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            const DeepCollectionEquality().equals(other.chapters, chapters) &&
+            (identical(other.lastModified, lastModified) ||
+                other.lastModified == lastModified) &&
+            (identical(other.fake, fake) || other.fake == fake));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      name,
+      originalName,
+      image,
+      author,
+      translator,
+      status,
+      views,
+      likes,
+      rate,
+      const DeepCollectionEquality().hash(genres),
+      description,
+      const DeepCollectionEquality().hash(chapters),
+      lastModified,
+      fake);
+
+  @override
+  String toString() {
+    return 'MetaComic(name: $name, originalName: $originalName, image: $image, author: $author, translator: $translator, status: $status, views: $views, likes: $likes, rate: $rate, genres: $genres, description: $description, chapters: $chapters, lastModified: $lastModified, fake: $fake)';
+  }
 }
 
 /// @nodoc
-abstract class $MetaComicCopyWith<$Res> {
-  factory $MetaComicCopyWith(MetaComic value, $Res Function(MetaComic) then) =
-      _$MetaComicCopyWithImpl<$Res, MetaComic>;
+abstract mixin class $MetaComicCopyWith<$Res> {
+  factory $MetaComicCopyWith(MetaComic value, $Res Function(MetaComic) _then) =
+      _$MetaComicCopyWithImpl;
   @useResult
   $Res call(
       {String name,
@@ -67,15 +116,14 @@ abstract class $MetaComicCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$MetaComicCopyWithImpl<$Res, $Val extends MetaComic>
-    implements $MetaComicCopyWith<$Res> {
-  _$MetaComicCopyWithImpl(this._value, this._then);
+class _$MetaComicCopyWithImpl<$Res> implements $MetaComicCopyWith<$Res> {
+  _$MetaComicCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final MetaComic _self;
+  final $Res Function(MetaComic) _then;
 
+  /// Create a copy of MetaComic
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -94,208 +142,95 @@ class _$MetaComicCopyWithImpl<$Res, $Val extends MetaComic>
     Object? lastModified = null,
     Object? fake = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       originalName: freezed == originalName
-          ? _value.originalName
+          ? _self.originalName
           : originalName // ignore: cast_nullable_to_non_nullable
               as String?,
       image: null == image
-          ? _value.image
+          ? _self.image
           : image // ignore: cast_nullable_to_non_nullable
               as OImage,
       author: freezed == author
-          ? _value.author
+          ? _self.author
           : author // ignore: cast_nullable_to_non_nullable
               as String?,
       translator: freezed == translator
-          ? _value.translator
+          ? _self.translator
           : translator // ignore: cast_nullable_to_non_nullable
               as String?,
       status: null == status
-          ? _value.status
+          ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as StatusEnum,
       views: freezed == views
-          ? _value.views
+          ? _self.views
           : views // ignore: cast_nullable_to_non_nullable
               as int?,
       likes: freezed == likes
-          ? _value.likes
+          ? _self.likes
           : likes // ignore: cast_nullable_to_non_nullable
               as int?,
       rate: freezed == rate
-          ? _value.rate
+          ? _self.rate
           : rate // ignore: cast_nullable_to_non_nullable
               as RateValue?,
       genres: null == genres
-          ? _value.genres
+          ? _self.genres
           : genres // ignore: cast_nullable_to_non_nullable
               as List<Genre>,
       description: null == description
-          ? _value.description
+          ? _self.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
       chapters: null == chapters
-          ? _value.chapters
+          ? _self.chapters
           : chapters // ignore: cast_nullable_to_non_nullable
               as List<ComicChapter>,
       lastModified: null == lastModified
-          ? _value.lastModified
+          ? _self.lastModified
           : lastModified // ignore: cast_nullable_to_non_nullable
               as DateTime,
       fake: null == fake
-          ? _value.fake
-          : fake // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $OImageCopyWith<$Res> get image {
-    return $OImageCopyWith<$Res>(_value.image, (value) {
-      return _then(_value.copyWith(image: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $RateValueCopyWith<$Res>? get rate {
-    if (_value.rate == null) {
-      return null;
-    }
-
-    return $RateValueCopyWith<$Res>(_value.rate!, (value) {
-      return _then(_value.copyWith(rate: value) as $Val);
-    });
-  }
-}
-
-/// @nodoc
-abstract class _$$MetaComicImplCopyWith<$Res>
-    implements $MetaComicCopyWith<$Res> {
-  factory _$$MetaComicImplCopyWith(
-          _$MetaComicImpl value, $Res Function(_$MetaComicImpl) then) =
-      __$$MetaComicImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String name,
-      String? originalName,
-      OImage image,
-      String? author,
-      String? translator,
-      StatusEnum status,
-      int? views,
-      int? likes,
-      RateValue? rate,
-      List<Genre> genres,
-      String description,
-      List<ComicChapter> chapters,
-      DateTime lastModified,
-      bool fake});
-
-  @override
-  $OImageCopyWith<$Res> get image;
-  @override
-  $RateValueCopyWith<$Res>? get rate;
-}
-
-/// @nodoc
-class __$$MetaComicImplCopyWithImpl<$Res>
-    extends _$MetaComicCopyWithImpl<$Res, _$MetaComicImpl>
-    implements _$$MetaComicImplCopyWith<$Res> {
-  __$$MetaComicImplCopyWithImpl(
-      _$MetaComicImpl _value, $Res Function(_$MetaComicImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? name = null,
-    Object? originalName = freezed,
-    Object? image = null,
-    Object? author = freezed,
-    Object? translator = freezed,
-    Object? status = null,
-    Object? views = freezed,
-    Object? likes = freezed,
-    Object? rate = freezed,
-    Object? genres = null,
-    Object? description = null,
-    Object? chapters = null,
-    Object? lastModified = null,
-    Object? fake = null,
-  }) {
-    return _then(_$MetaComicImpl(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      originalName: freezed == originalName
-          ? _value.originalName
-          : originalName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      image: null == image
-          ? _value.image
-          : image // ignore: cast_nullable_to_non_nullable
-              as OImage,
-      author: freezed == author
-          ? _value.author
-          : author // ignore: cast_nullable_to_non_nullable
-              as String?,
-      translator: freezed == translator
-          ? _value.translator
-          : translator // ignore: cast_nullable_to_non_nullable
-              as String?,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as StatusEnum,
-      views: freezed == views
-          ? _value.views
-          : views // ignore: cast_nullable_to_non_nullable
-              as int?,
-      likes: freezed == likes
-          ? _value.likes
-          : likes // ignore: cast_nullable_to_non_nullable
-              as int?,
-      rate: freezed == rate
-          ? _value.rate
-          : rate // ignore: cast_nullable_to_non_nullable
-              as RateValue?,
-      genres: null == genres
-          ? _value._genres
-          : genres // ignore: cast_nullable_to_non_nullable
-              as List<Genre>,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      chapters: null == chapters
-          ? _value._chapters
-          : chapters // ignore: cast_nullable_to_non_nullable
-              as List<ComicChapter>,
-      lastModified: null == lastModified
-          ? _value.lastModified
-          : lastModified // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      fake: null == fake
-          ? _value.fake
+          ? _self.fake
           : fake // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
+  }
+
+  /// Create a copy of MetaComic
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $OImageCopyWith<$Res> get image {
+    return $OImageCopyWith<$Res>(_self.image, (value) {
+      return _then(_self.copyWith(image: value));
+    });
+  }
+
+  /// Create a copy of MetaComic
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $RateValueCopyWith<$Res>? get rate {
+    if (_self.rate == null) {
+      return null;
+    }
+
+    return $RateValueCopyWith<$Res>(_self.rate!, (value) {
+      return _then(_self.copyWith(rate: value));
+    });
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$MetaComicImpl implements _MetaComic {
-  const _$MetaComicImpl(
+class _MetaComic implements MetaComic {
+  const _MetaComic(
       {required this.name,
       this.originalName,
       required this.image,
@@ -312,9 +247,8 @@ class _$MetaComicImpl implements _MetaComic {
       this.fake = false})
       : _genres = genres,
         _chapters = chapters;
-
-  factory _$MetaComicImpl.fromJson(Map<String, dynamic> json) =>
-      _$$MetaComicImplFromJson(json);
+  factory _MetaComic.fromJson(Map<String, dynamic> json) =>
+      _$MetaComicFromJson(json);
 
   @override
   final String name;
@@ -358,16 +292,26 @@ class _$MetaComicImpl implements _MetaComic {
   @JsonKey()
   final bool fake;
 
+  /// Create a copy of MetaComic
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'MetaComic(name: $name, originalName: $originalName, image: $image, author: $author, translator: $translator, status: $status, views: $views, likes: $likes, rate: $rate, genres: $genres, description: $description, chapters: $chapters, lastModified: $lastModified, fake: $fake)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$MetaComicCopyWith<_MetaComic> get copyWith =>
+      __$MetaComicCopyWithImpl<_MetaComic>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$MetaComicToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MetaComicImpl &&
+            other is _MetaComic &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.originalName, originalName) ||
                 other.originalName == originalName) &&
@@ -388,7 +332,7 @@ class _$MetaComicImpl implements _MetaComic {
             (identical(other.fake, fake) || other.fake == fake));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -407,70 +351,152 @@ class _$MetaComicImpl implements _MetaComic {
       lastModified,
       fake);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$MetaComicImplCopyWith<_$MetaComicImpl> get copyWith =>
-      __$$MetaComicImplCopyWithImpl<_$MetaComicImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$MetaComicImplToJson(
-      this,
-    );
+  String toString() {
+    return 'MetaComic(name: $name, originalName: $originalName, image: $image, author: $author, translator: $translator, status: $status, views: $views, likes: $likes, rate: $rate, genres: $genres, description: $description, chapters: $chapters, lastModified: $lastModified, fake: $fake)';
   }
 }
 
-abstract class _MetaComic implements MetaComic {
-  const factory _MetaComic(
-      {required final String name,
-      final String? originalName,
-      required final OImage image,
-      final String? author,
-      final String? translator,
-      required final StatusEnum status,
-      final int? views,
-      final int? likes,
-      final RateValue? rate,
-      required final List<Genre> genres,
-      required final String description,
-      required final List<ComicChapter> chapters,
-      required final DateTime lastModified,
-      final bool fake}) = _$MetaComicImpl;
+/// @nodoc
+abstract mixin class _$MetaComicCopyWith<$Res>
+    implements $MetaComicCopyWith<$Res> {
+  factory _$MetaComicCopyWith(
+          _MetaComic value, $Res Function(_MetaComic) _then) =
+      __$MetaComicCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {String name,
+      String? originalName,
+      OImage image,
+      String? author,
+      String? translator,
+      StatusEnum status,
+      int? views,
+      int? likes,
+      RateValue? rate,
+      List<Genre> genres,
+      String description,
+      List<ComicChapter> chapters,
+      DateTime lastModified,
+      bool fake});
 
-  factory _MetaComic.fromJson(Map<String, dynamic> json) =
-      _$MetaComicImpl.fromJson;
-
   @override
-  String get name;
+  $OImageCopyWith<$Res> get image;
   @override
-  String? get originalName;
-  @override
-  OImage get image;
-  @override
-  String? get author;
-  @override
-  String? get translator;
-  @override
-  StatusEnum get status;
-  @override
-  int? get views;
-  @override
-  int? get likes;
-  @override
-  RateValue? get rate;
-  @override
-  List<Genre> get genres;
-  @override
-  String get description;
-  @override
-  List<ComicChapter> get chapters;
-  @override
-  DateTime get lastModified;
-  @override
-  bool get fake;
-  @override
-  @JsonKey(ignore: true)
-  _$$MetaComicImplCopyWith<_$MetaComicImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  $RateValueCopyWith<$Res>? get rate;
 }
+
+/// @nodoc
+class __$MetaComicCopyWithImpl<$Res> implements _$MetaComicCopyWith<$Res> {
+  __$MetaComicCopyWithImpl(this._self, this._then);
+
+  final _MetaComic _self;
+  final $Res Function(_MetaComic) _then;
+
+  /// Create a copy of MetaComic
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? name = null,
+    Object? originalName = freezed,
+    Object? image = null,
+    Object? author = freezed,
+    Object? translator = freezed,
+    Object? status = null,
+    Object? views = freezed,
+    Object? likes = freezed,
+    Object? rate = freezed,
+    Object? genres = null,
+    Object? description = null,
+    Object? chapters = null,
+    Object? lastModified = null,
+    Object? fake = null,
+  }) {
+    return _then(_MetaComic(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      originalName: freezed == originalName
+          ? _self.originalName
+          : originalName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      image: null == image
+          ? _self.image
+          : image // ignore: cast_nullable_to_non_nullable
+              as OImage,
+      author: freezed == author
+          ? _self.author
+          : author // ignore: cast_nullable_to_non_nullable
+              as String?,
+      translator: freezed == translator
+          ? _self.translator
+          : translator // ignore: cast_nullable_to_non_nullable
+              as String?,
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as StatusEnum,
+      views: freezed == views
+          ? _self.views
+          : views // ignore: cast_nullable_to_non_nullable
+              as int?,
+      likes: freezed == likes
+          ? _self.likes
+          : likes // ignore: cast_nullable_to_non_nullable
+              as int?,
+      rate: freezed == rate
+          ? _self.rate
+          : rate // ignore: cast_nullable_to_non_nullable
+              as RateValue?,
+      genres: null == genres
+          ? _self._genres
+          : genres // ignore: cast_nullable_to_non_nullable
+              as List<Genre>,
+      description: null == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      chapters: null == chapters
+          ? _self._chapters
+          : chapters // ignore: cast_nullable_to_non_nullable
+              as List<ComicChapter>,
+      lastModified: null == lastModified
+          ? _self.lastModified
+          : lastModified // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      fake: null == fake
+          ? _self.fake
+          : fake // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+
+  /// Create a copy of MetaComic
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $OImageCopyWith<$Res> get image {
+    return $OImageCopyWith<$Res>(_self.image, (value) {
+      return _then(_self.copyWith(image: value));
+    });
+  }
+
+  /// Create a copy of MetaComic
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $RateValueCopyWith<$Res>? get rate {
+    if (_self.rate == null) {
+      return null;
+    }
+
+    return $RateValueCopyWith<$Res>(_self.rate!, (value) {
+      return _then(_self.copyWith(rate: value));
+    });
+  }
+}
+
+// dart format on

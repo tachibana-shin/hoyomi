@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,32 +10,53 @@ part of 'watch_time_data.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-WatchTimeData _$WatchTimeDataFromJson(Map<String, dynamic> json) {
-  return _WatchTimeData.fromJson(json);
-}
 
 /// @nodoc
 mixin _$WatchTimeData {
-  String get eigaId => throw _privateConstructorUsedError;
-  String get episodeId => throw _privateConstructorUsedError;
-  WatchTime? get watchTime => throw _privateConstructorUsedError;
+  String get eigaId;
+  String get episodeId;
+  WatchTime? get watchTime;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+  /// Create a copy of WatchTimeData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $WatchTimeDataCopyWith<WatchTimeData> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$WatchTimeDataCopyWithImpl<WatchTimeData>(
+          this as WatchTimeData, _$identity);
+
+  /// Serializes this WatchTimeData to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is WatchTimeData &&
+            (identical(other.eigaId, eigaId) || other.eigaId == eigaId) &&
+            (identical(other.episodeId, episodeId) ||
+                other.episodeId == episodeId) &&
+            (identical(other.watchTime, watchTime) ||
+                other.watchTime == watchTime));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, eigaId, episodeId, watchTime);
+
+  @override
+  String toString() {
+    return 'WatchTimeData(eigaId: $eigaId, episodeId: $episodeId, watchTime: $watchTime)';
+  }
 }
 
 /// @nodoc
-abstract class $WatchTimeDataCopyWith<$Res> {
+abstract mixin class $WatchTimeDataCopyWith<$Res> {
   factory $WatchTimeDataCopyWith(
-          WatchTimeData value, $Res Function(WatchTimeData) then) =
-      _$WatchTimeDataCopyWithImpl<$Res, WatchTimeData>;
+          WatchTimeData value, $Res Function(WatchTimeData) _then) =
+      _$WatchTimeDataCopyWithImpl;
   @useResult
   $Res call({String eigaId, String episodeId, WatchTime? watchTime});
 
@@ -42,15 +64,15 @@ abstract class $WatchTimeDataCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$WatchTimeDataCopyWithImpl<$Res, $Val extends WatchTimeData>
+class _$WatchTimeDataCopyWithImpl<$Res>
     implements $WatchTimeDataCopyWith<$Res> {
-  _$WatchTimeDataCopyWithImpl(this._value, this._then);
+  _$WatchTimeDataCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WatchTimeData _self;
+  final $Res Function(WatchTimeData) _then;
 
+  /// Create a copy of WatchTimeData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -58,89 +80,44 @@ class _$WatchTimeDataCopyWithImpl<$Res, $Val extends WatchTimeData>
     Object? episodeId = null,
     Object? watchTime = freezed,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       eigaId: null == eigaId
-          ? _value.eigaId
+          ? _self.eigaId
           : eigaId // ignore: cast_nullable_to_non_nullable
               as String,
       episodeId: null == episodeId
-          ? _value.episodeId
+          ? _self.episodeId
           : episodeId // ignore: cast_nullable_to_non_nullable
               as String,
       watchTime: freezed == watchTime
-          ? _value.watchTime
+          ? _self.watchTime
           : watchTime // ignore: cast_nullable_to_non_nullable
               as WatchTime?,
-    ) as $Val);
+    ));
   }
 
+  /// Create a copy of WatchTimeData
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $WatchTimeCopyWith<$Res>? get watchTime {
-    if (_value.watchTime == null) {
+    if (_self.watchTime == null) {
       return null;
     }
 
-    return $WatchTimeCopyWith<$Res>(_value.watchTime!, (value) {
-      return _then(_value.copyWith(watchTime: value) as $Val);
+    return $WatchTimeCopyWith<$Res>(_self.watchTime!, (value) {
+      return _then(_self.copyWith(watchTime: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$WatchTimeDataImplCopyWith<$Res>
-    implements $WatchTimeDataCopyWith<$Res> {
-  factory _$$WatchTimeDataImplCopyWith(
-          _$WatchTimeDataImpl value, $Res Function(_$WatchTimeDataImpl) then) =
-      __$$WatchTimeDataImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String eigaId, String episodeId, WatchTime? watchTime});
-
-  @override
-  $WatchTimeCopyWith<$Res>? get watchTime;
-}
-
-/// @nodoc
-class __$$WatchTimeDataImplCopyWithImpl<$Res>
-    extends _$WatchTimeDataCopyWithImpl<$Res, _$WatchTimeDataImpl>
-    implements _$$WatchTimeDataImplCopyWith<$Res> {
-  __$$WatchTimeDataImplCopyWithImpl(
-      _$WatchTimeDataImpl _value, $Res Function(_$WatchTimeDataImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? eigaId = null,
-    Object? episodeId = null,
-    Object? watchTime = freezed,
-  }) {
-    return _then(_$WatchTimeDataImpl(
-      eigaId: null == eigaId
-          ? _value.eigaId
-          : eigaId // ignore: cast_nullable_to_non_nullable
-              as String,
-      episodeId: null == episodeId
-          ? _value.episodeId
-          : episodeId // ignore: cast_nullable_to_non_nullable
-              as String,
-      watchTime: freezed == watchTime
-          ? _value.watchTime
-          : watchTime // ignore: cast_nullable_to_non_nullable
-              as WatchTime?,
-    ));
-  }
-}
-
-/// @nodoc
 @JsonSerializable()
-class _$WatchTimeDataImpl implements _WatchTimeData {
-  const _$WatchTimeDataImpl(
+class _WatchTimeData implements WatchTimeData {
+  const _WatchTimeData(
       {required this.eigaId, required this.episodeId, this.watchTime});
-
-  factory _$WatchTimeDataImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WatchTimeDataImplFromJson(json);
+  factory _WatchTimeData.fromJson(Map<String, dynamic> json) =>
+      _$WatchTimeDataFromJson(json);
 
   @override
   final String eigaId;
@@ -149,16 +126,26 @@ class _$WatchTimeDataImpl implements _WatchTimeData {
   @override
   final WatchTime? watchTime;
 
+  /// Create a copy of WatchTimeData
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'WatchTimeData(eigaId: $eigaId, episodeId: $episodeId, watchTime: $watchTime)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WatchTimeDataCopyWith<_WatchTimeData> get copyWith =>
+      __$WatchTimeDataCopyWithImpl<_WatchTimeData>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WatchTimeDataToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WatchTimeDataImpl &&
+            other is _WatchTimeData &&
             (identical(other.eigaId, eigaId) || other.eigaId == eigaId) &&
             (identical(other.episodeId, episodeId) ||
                 other.episodeId == episodeId) &&
@@ -166,41 +153,76 @@ class _$WatchTimeDataImpl implements _WatchTimeData {
                 other.watchTime == watchTime));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, eigaId, episodeId, watchTime);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WatchTimeDataImplCopyWith<_$WatchTimeDataImpl> get copyWith =>
-      __$$WatchTimeDataImplCopyWithImpl<_$WatchTimeDataImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WatchTimeDataImplToJson(
-      this,
-    );
+  String toString() {
+    return 'WatchTimeData(eigaId: $eigaId, episodeId: $episodeId, watchTime: $watchTime)';
   }
 }
 
-abstract class _WatchTimeData implements WatchTimeData {
-  const factory _WatchTimeData(
-      {required final String eigaId,
-      required final String episodeId,
-      final WatchTime? watchTime}) = _$WatchTimeDataImpl;
+/// @nodoc
+abstract mixin class _$WatchTimeDataCopyWith<$Res>
+    implements $WatchTimeDataCopyWith<$Res> {
+  factory _$WatchTimeDataCopyWith(
+          _WatchTimeData value, $Res Function(_WatchTimeData) _then) =
+      __$WatchTimeDataCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String eigaId, String episodeId, WatchTime? watchTime});
 
-  factory _WatchTimeData.fromJson(Map<String, dynamic> json) =
-      _$WatchTimeDataImpl.fromJson;
-
   @override
-  String get eigaId;
-  @override
-  String get episodeId;
-  @override
-  WatchTime? get watchTime;
-  @override
-  @JsonKey(ignore: true)
-  _$$WatchTimeDataImplCopyWith<_$WatchTimeDataImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  $WatchTimeCopyWith<$Res>? get watchTime;
 }
+
+/// @nodoc
+class __$WatchTimeDataCopyWithImpl<$Res>
+    implements _$WatchTimeDataCopyWith<$Res> {
+  __$WatchTimeDataCopyWithImpl(this._self, this._then);
+
+  final _WatchTimeData _self;
+  final $Res Function(_WatchTimeData) _then;
+
+  /// Create a copy of WatchTimeData
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? eigaId = null,
+    Object? episodeId = null,
+    Object? watchTime = freezed,
+  }) {
+    return _then(_WatchTimeData(
+      eigaId: null == eigaId
+          ? _self.eigaId
+          : eigaId // ignore: cast_nullable_to_non_nullable
+              as String,
+      episodeId: null == episodeId
+          ? _self.episodeId
+          : episodeId // ignore: cast_nullable_to_non_nullable
+              as String,
+      watchTime: freezed == watchTime
+          ? _self.watchTime
+          : watchTime // ignore: cast_nullable_to_non_nullable
+              as WatchTime?,
+    ));
+  }
+
+  /// Create a copy of WatchTimeData
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $WatchTimeCopyWith<$Res>? get watchTime {
+    if (_self.watchTime == null) {
+      return null;
+    }
+
+    return $WatchTimeCopyWith<$Res>(_self.watchTime!, (value) {
+      return _then(_self.copyWith(watchTime: value));
+    });
+  }
+}
+
+// dart format on

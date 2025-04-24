@@ -7,7 +7,7 @@ part 'headers.g.dart';
 const _headersIgnoreWeb = ['set-cookie', 'user-agent', 'referer'];
 
 @freezed
-class Headers with _$Headers {
+sealed class Headers with _$Headers {
   const factory Headers._({
     @JsonKey() @Default({}) Map<String, List<String>> headers,
   }) = _Headers;

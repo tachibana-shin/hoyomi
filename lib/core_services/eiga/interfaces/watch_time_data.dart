@@ -5,7 +5,7 @@ part 'watch_time_data.freezed.dart';
 part 'watch_time_data.g.dart';
 
 @freezed
-class WatchTimeData with _$WatchTimeData {
+sealed class WatchTimeData with _$WatchTimeData {
   const factory WatchTimeData({
     required String eigaId,
     required String episodeId,

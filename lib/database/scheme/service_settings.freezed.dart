@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,98 +10,69 @@ part of 'service_settings.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-ServiceSettings _$ServiceSettingsFromJson(Map<String, dynamic> json) {
-  return _ServiceSettings.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ServiceSettings {
-  String get sourceId => throw _privateConstructorUsedError;
+  String get sourceId;
 
   /// This field save all field: cookie, user agent...
-  Map<String, dynamic>? get settings => throw _privateConstructorUsedError;
+  Map<String, dynamic>? get settings;
 
   /// Cache user data
-  String? get userDataCache => throw _privateConstructorUsedError;
-  DateTime get createdAt => throw _privateConstructorUsedError;
-  DateTime get updatedAt => throw _privateConstructorUsedError;
+  String? get userDataCache;
+  DateTime get createdAt;
+  DateTime get updatedAt;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $ServiceSettingsCopyWith<ServiceSettings> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ServiceSettingsCopyWith<$Res> {
-  factory $ServiceSettingsCopyWith(
-          ServiceSettings value, $Res Function(ServiceSettings) then) =
-      _$ServiceSettingsCopyWithImpl<$Res, ServiceSettings>;
-  @useResult
-  $Res call(
-      {String sourceId,
-      Map<String, dynamic>? settings,
-      String? userDataCache,
-      DateTime createdAt,
-      DateTime updatedAt});
-}
-
-/// @nodoc
-class _$ServiceSettingsCopyWithImpl<$Res, $Val extends ServiceSettings>
-    implements $ServiceSettingsCopyWith<$Res> {
-  _$ServiceSettingsCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of ServiceSettings
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $ServiceSettingsCopyWith<ServiceSettings> get copyWith =>
+      _$ServiceSettingsCopyWithImpl<ServiceSettings>(
+          this as ServiceSettings, _$identity);
+
+  /// Serializes this ServiceSettings to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? sourceId = null,
-    Object? settings = freezed,
-    Object? userDataCache = freezed,
-    Object? createdAt = null,
-    Object? updatedAt = null,
-  }) {
-    return _then(_value.copyWith(
-      sourceId: null == sourceId
-          ? _value.sourceId
-          : sourceId // ignore: cast_nullable_to_non_nullable
-              as String,
-      settings: freezed == settings
-          ? _value.settings
-          : settings // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>?,
-      userDataCache: freezed == userDataCache
-          ? _value.userDataCache
-          : userDataCache // ignore: cast_nullable_to_non_nullable
-              as String?,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ServiceSettings &&
+            (identical(other.sourceId, sourceId) ||
+                other.sourceId == sourceId) &&
+            const DeepCollectionEquality().equals(other.settings, settings) &&
+            (identical(other.userDataCache, userDataCache) ||
+                other.userDataCache == userDataCache) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      sourceId,
+      const DeepCollectionEquality().hash(settings),
+      userDataCache,
+      createdAt,
+      updatedAt);
+
+  @override
+  String toString() {
+    return 'ServiceSettings(sourceId: $sourceId, settings: $settings, userDataCache: $userDataCache, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
 /// @nodoc
-abstract class _$$ServiceSettingsImplCopyWith<$Res>
-    implements $ServiceSettingsCopyWith<$Res> {
-  factory _$$ServiceSettingsImplCopyWith(_$ServiceSettingsImpl value,
-          $Res Function(_$ServiceSettingsImpl) then) =
-      __$$ServiceSettingsImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $ServiceSettingsCopyWith<$Res> {
+  factory $ServiceSettingsCopyWith(
+          ServiceSettings value, $Res Function(ServiceSettings) _then) =
+      _$ServiceSettingsCopyWithImpl;
   @useResult
   $Res call(
       {String sourceId,
@@ -111,13 +83,15 @@ abstract class _$$ServiceSettingsImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$ServiceSettingsImplCopyWithImpl<$Res>
-    extends _$ServiceSettingsCopyWithImpl<$Res, _$ServiceSettingsImpl>
-    implements _$$ServiceSettingsImplCopyWith<$Res> {
-  __$$ServiceSettingsImplCopyWithImpl(
-      _$ServiceSettingsImpl _value, $Res Function(_$ServiceSettingsImpl) _then)
-      : super(_value, _then);
+class _$ServiceSettingsCopyWithImpl<$Res>
+    implements $ServiceSettingsCopyWith<$Res> {
+  _$ServiceSettingsCopyWithImpl(this._self, this._then);
 
+  final ServiceSettings _self;
+  final $Res Function(ServiceSettings) _then;
+
+  /// Create a copy of ServiceSettings
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -127,25 +101,25 @@ class __$$ServiceSettingsImplCopyWithImpl<$Res>
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
-    return _then(_$ServiceSettingsImpl(
+    return _then(_self.copyWith(
       sourceId: null == sourceId
-          ? _value.sourceId
+          ? _self.sourceId
           : sourceId // ignore: cast_nullable_to_non_nullable
               as String,
       settings: freezed == settings
-          ? _value._settings
+          ? _self.settings
           : settings // ignore: cast_nullable_to_non_nullable
               as Map<String, dynamic>?,
       userDataCache: freezed == userDataCache
-          ? _value.userDataCache
+          ? _self.userDataCache
           : userDataCache // ignore: cast_nullable_to_non_nullable
               as String?,
       createdAt: null == createdAt
-          ? _value.createdAt
+          ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
       updatedAt: null == updatedAt
-          ? _value.updatedAt
+          ? _self.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
     ));
@@ -154,17 +128,16 @@ class __$$ServiceSettingsImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ServiceSettingsImpl implements _ServiceSettings {
-  const _$ServiceSettingsImpl(
+class _ServiceSettings implements ServiceSettings {
+  const _ServiceSettings(
       {required this.sourceId,
       required final Map<String, dynamic>? settings,
       required this.userDataCache,
       required this.createdAt,
       required this.updatedAt})
       : _settings = settings;
-
-  factory _$ServiceSettingsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ServiceSettingsImplFromJson(json);
+  factory _ServiceSettings.fromJson(Map<String, dynamic> json) =>
+      _$ServiceSettingsFromJson(json);
 
   @override
   final String sourceId;
@@ -190,16 +163,26 @@ class _$ServiceSettingsImpl implements _ServiceSettings {
   @override
   final DateTime updatedAt;
 
+  /// Create a copy of ServiceSettings
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'ServiceSettings(sourceId: $sourceId, settings: $settings, userDataCache: $userDataCache, createdAt: $createdAt, updatedAt: $updatedAt)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ServiceSettingsCopyWith<_ServiceSettings> get copyWith =>
+      __$ServiceSettingsCopyWithImpl<_ServiceSettings>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ServiceSettingsToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ServiceSettingsImpl &&
+            other is _ServiceSettings &&
             (identical(other.sourceId, sourceId) ||
                 other.sourceId == sourceId) &&
             const DeepCollectionEquality().equals(other._settings, _settings) &&
@@ -211,7 +194,7 @@ class _$ServiceSettingsImpl implements _ServiceSettings {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -221,48 +204,70 @@ class _$ServiceSettingsImpl implements _ServiceSettings {
       createdAt,
       updatedAt);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$ServiceSettingsImplCopyWith<_$ServiceSettingsImpl> get copyWith =>
-      __$$ServiceSettingsImplCopyWithImpl<_$ServiceSettingsImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ServiceSettingsImplToJson(
-      this,
-    );
+  String toString() {
+    return 'ServiceSettings(sourceId: $sourceId, settings: $settings, userDataCache: $userDataCache, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
-abstract class _ServiceSettings implements ServiceSettings {
-  const factory _ServiceSettings(
-      {required final String sourceId,
-      required final Map<String, dynamic>? settings,
-      required final String? userDataCache,
-      required final DateTime createdAt,
-      required final DateTime updatedAt}) = _$ServiceSettingsImpl;
-
-  factory _ServiceSettings.fromJson(Map<String, dynamic> json) =
-      _$ServiceSettingsImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$ServiceSettingsCopyWith<$Res>
+    implements $ServiceSettingsCopyWith<$Res> {
+  factory _$ServiceSettingsCopyWith(
+          _ServiceSettings value, $Res Function(_ServiceSettings) _then) =
+      __$ServiceSettingsCopyWithImpl;
   @override
-  String get sourceId;
-  @override
-
-  /// This field save all field: cookie, user agent...
-  Map<String, dynamic>? get settings;
-  @override
-
-  /// Cache user data
-  String? get userDataCache;
-  @override
-  DateTime get createdAt;
-  @override
-  DateTime get updatedAt;
-  @override
-  @JsonKey(ignore: true)
-  _$$ServiceSettingsImplCopyWith<_$ServiceSettingsImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call(
+      {String sourceId,
+      Map<String, dynamic>? settings,
+      String? userDataCache,
+      DateTime createdAt,
+      DateTime updatedAt});
 }
+
+/// @nodoc
+class __$ServiceSettingsCopyWithImpl<$Res>
+    implements _$ServiceSettingsCopyWith<$Res> {
+  __$ServiceSettingsCopyWithImpl(this._self, this._then);
+
+  final _ServiceSettings _self;
+  final $Res Function(_ServiceSettings) _then;
+
+  /// Create a copy of ServiceSettings
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? sourceId = null,
+    Object? settings = freezed,
+    Object? userDataCache = freezed,
+    Object? createdAt = null,
+    Object? updatedAt = null,
+  }) {
+    return _then(_ServiceSettings(
+      sourceId: null == sourceId
+          ? _self.sourceId
+          : sourceId // ignore: cast_nullable_to_non_nullable
+              as String,
+      settings: freezed == settings
+          ? _self._settings
+          : settings // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
+      userDataCache: freezed == userDataCache
+          ? _self.userDataCache
+          : userDataCache // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdAt: null == createdAt
+          ? _self.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      updatedAt: null == updatedAt
+          ? _self.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+    ));
+  }
+}
+
+// dart format on

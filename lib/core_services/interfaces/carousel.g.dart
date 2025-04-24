@@ -6,8 +6,7 @@ part of 'carousel.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$CarouselImpl _$$CarouselImplFromJson(Map<String, dynamic> json) =>
-    _$CarouselImpl(
+_Carousel _$CarouselFromJson(Map<String, dynamic> json) => _Carousel(
       items: (json['items'] as List<dynamic>)
           .map((e) => CarouselItem.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -15,8 +14,7 @@ _$CarouselImpl _$$CarouselImplFromJson(Map<String, dynamic> json) =>
       maxHeightBuilder: (json['maxHeightBuilder'] as num).toDouble(),
     );
 
-Map<String, dynamic> _$$CarouselImplToJson(_$CarouselImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CarouselToJson(_Carousel instance) => <String, dynamic>{
       'items': instance.items,
       'aspectRatio': instance.aspectRatio,
       'maxHeightBuilder': instance.maxHeightBuilder,

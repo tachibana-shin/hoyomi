@@ -5,7 +5,7 @@ part 'genre.freezed.dart';
 part 'genre.g.dart';
 
 @freezed
-class Genre with _$Genre {
+sealed class Genre with _$Genre {
   static const String noId = '\$_no_id_\$';
 
   const factory Genre({

@@ -4,14 +4,11 @@ import 'dart:convert';
 
 import 'package:hoyomi/core_services/interfaces/web_rule.dart';
 
-import 'dart:js_util';
-// ignore: depend_on_referenced_packages
-import 'package:js/js.dart';
+import 'dart:js_interop';
 
 @JS('_installWebRules')
-external Object _installWebRules(
-    String rules); // or Map<String, dynamic> if applicable
+external JSPromise _installWebRules(String rules);
 
 Future<void> installWebRules(List<WebRule> rules) async {
-  await promiseToFuture<void>(_installWebRules(jsonEncode(rules)));
+  await _installWebRules(jsonEncode(rules)).toDart;
 }

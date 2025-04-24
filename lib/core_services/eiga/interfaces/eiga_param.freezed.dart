@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,95 +10,74 @@ part of 'eiga_param.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-EigaParam _$EigaParamFromJson(Map<String, dynamic> json) {
-  return _EigaParam.fromJson(json);
-}
 
 /// @nodoc
 mixin _$EigaParam {
-  String get eigaId => throw _privateConstructorUsedError;
-  String? get episodeId => throw _privateConstructorUsedError;
+  String get eigaId;
+  String? get episodeId;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $EigaParamCopyWith<EigaParam> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $EigaParamCopyWith<$Res> {
-  factory $EigaParamCopyWith(EigaParam value, $Res Function(EigaParam) then) =
-      _$EigaParamCopyWithImpl<$Res, EigaParam>;
-  @useResult
-  $Res call({String eigaId, String? episodeId});
-}
-
-/// @nodoc
-class _$EigaParamCopyWithImpl<$Res, $Val extends EigaParam>
-    implements $EigaParamCopyWith<$Res> {
-  _$EigaParamCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of EigaParam
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $EigaParamCopyWith<EigaParam> get copyWith =>
+      _$EigaParamCopyWithImpl<EigaParam>(this as EigaParam, _$identity);
+
+  /// Serializes this EigaParam to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? eigaId = null,
-    Object? episodeId = freezed,
-  }) {
-    return _then(_value.copyWith(
-      eigaId: null == eigaId
-          ? _value.eigaId
-          : eigaId // ignore: cast_nullable_to_non_nullable
-              as String,
-      episodeId: freezed == episodeId
-          ? _value.episodeId
-          : episodeId // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is EigaParam &&
+            (identical(other.eigaId, eigaId) || other.eigaId == eigaId) &&
+            (identical(other.episodeId, episodeId) ||
+                other.episodeId == episodeId));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, eigaId, episodeId);
+
+  @override
+  String toString() {
+    return 'EigaParam(eigaId: $eigaId, episodeId: $episodeId)';
   }
 }
 
 /// @nodoc
-abstract class _$$EigaParamImplCopyWith<$Res>
-    implements $EigaParamCopyWith<$Res> {
-  factory _$$EigaParamImplCopyWith(
-          _$EigaParamImpl value, $Res Function(_$EigaParamImpl) then) =
-      __$$EigaParamImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $EigaParamCopyWith<$Res> {
+  factory $EigaParamCopyWith(EigaParam value, $Res Function(EigaParam) _then) =
+      _$EigaParamCopyWithImpl;
   @useResult
   $Res call({String eigaId, String? episodeId});
 }
 
 /// @nodoc
-class __$$EigaParamImplCopyWithImpl<$Res>
-    extends _$EigaParamCopyWithImpl<$Res, _$EigaParamImpl>
-    implements _$$EigaParamImplCopyWith<$Res> {
-  __$$EigaParamImplCopyWithImpl(
-      _$EigaParamImpl _value, $Res Function(_$EigaParamImpl) _then)
-      : super(_value, _then);
+class _$EigaParamCopyWithImpl<$Res> implements $EigaParamCopyWith<$Res> {
+  _$EigaParamCopyWithImpl(this._self, this._then);
 
+  final EigaParam _self;
+  final $Res Function(EigaParam) _then;
+
+  /// Create a copy of EigaParam
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? eigaId = null,
     Object? episodeId = freezed,
   }) {
-    return _then(_$EigaParamImpl(
+    return _then(_self.copyWith(
       eigaId: null == eigaId
-          ? _value.eigaId
+          ? _self.eigaId
           : eigaId // ignore: cast_nullable_to_non_nullable
               as String,
       episodeId: freezed == episodeId
-          ? _value.episodeId
+          ? _self.episodeId
           : episodeId // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
@@ -106,64 +86,88 @@ class __$$EigaParamImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$EigaParamImpl implements _EigaParam {
-  const _$EigaParamImpl({required this.eigaId, this.episodeId});
-
-  factory _$EigaParamImpl.fromJson(Map<String, dynamic> json) =>
-      _$$EigaParamImplFromJson(json);
+class _EigaParam implements EigaParam {
+  const _EigaParam({required this.eigaId, this.episodeId});
+  factory _EigaParam.fromJson(Map<String, dynamic> json) =>
+      _$EigaParamFromJson(json);
 
   @override
   final String eigaId;
   @override
   final String? episodeId;
 
+  /// Create a copy of EigaParam
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'EigaParam(eigaId: $eigaId, episodeId: $episodeId)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$EigaParamCopyWith<_EigaParam> get copyWith =>
+      __$EigaParamCopyWithImpl<_EigaParam>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$EigaParamToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$EigaParamImpl &&
+            other is _EigaParam &&
             (identical(other.eigaId, eigaId) || other.eigaId == eigaId) &&
             (identical(other.episodeId, episodeId) ||
                 other.episodeId == episodeId));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, eigaId, episodeId);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$EigaParamImplCopyWith<_$EigaParamImpl> get copyWith =>
-      __$$EigaParamImplCopyWithImpl<_$EigaParamImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$EigaParamImplToJson(
-      this,
-    );
+  String toString() {
+    return 'EigaParam(eigaId: $eigaId, episodeId: $episodeId)';
   }
 }
 
-abstract class _EigaParam implements EigaParam {
-  const factory _EigaParam(
-      {required final String eigaId,
-      final String? episodeId}) = _$EigaParamImpl;
-
-  factory _EigaParam.fromJson(Map<String, dynamic> json) =
-      _$EigaParamImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$EigaParamCopyWith<$Res>
+    implements $EigaParamCopyWith<$Res> {
+  factory _$EigaParamCopyWith(
+          _EigaParam value, $Res Function(_EigaParam) _then) =
+      __$EigaParamCopyWithImpl;
   @override
-  String get eigaId;
-  @override
-  String? get episodeId;
-  @override
-  @JsonKey(ignore: true)
-  _$$EigaParamImplCopyWith<_$EigaParamImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({String eigaId, String? episodeId});
 }
+
+/// @nodoc
+class __$EigaParamCopyWithImpl<$Res> implements _$EigaParamCopyWith<$Res> {
+  __$EigaParamCopyWithImpl(this._self, this._then);
+
+  final _EigaParam _self;
+  final $Res Function(_EigaParam) _then;
+
+  /// Create a copy of EigaParam
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? eigaId = null,
+    Object? episodeId = freezed,
+  }) {
+    return _then(_EigaParam(
+      eigaId: null == eigaId
+          ? _self.eigaId
+          : eigaId // ignore: cast_nullable_to_non_nullable
+              as String,
+      episodeId: freezed == episodeId
+          ? _self.episodeId
+          : episodeId // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+// dart format on

@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,96 +10,76 @@ part of 'server_source.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-ServerSource _$ServerSourceFromJson(Map<String, dynamic> json) {
-  return _ServerSource.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ServerSource {
-  String get name => throw _privateConstructorUsedError;
-  String get serverId => throw _privateConstructorUsedError;
+  String get name;
+  String get serverId;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $ServerSourceCopyWith<ServerSource> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ServerSourceCopyWith<$Res> {
-  factory $ServerSourceCopyWith(
-          ServerSource value, $Res Function(ServerSource) then) =
-      _$ServerSourceCopyWithImpl<$Res, ServerSource>;
-  @useResult
-  $Res call({String name, String serverId});
-}
-
-/// @nodoc
-class _$ServerSourceCopyWithImpl<$Res, $Val extends ServerSource>
-    implements $ServerSourceCopyWith<$Res> {
-  _$ServerSourceCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of ServerSource
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $ServerSourceCopyWith<ServerSource> get copyWith =>
+      _$ServerSourceCopyWithImpl<ServerSource>(
+          this as ServerSource, _$identity);
+
+  /// Serializes this ServerSource to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? name = null,
-    Object? serverId = null,
-  }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      serverId: null == serverId
-          ? _value.serverId
-          : serverId // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ServerSource &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.serverId, serverId) ||
+                other.serverId == serverId));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, serverId);
+
+  @override
+  String toString() {
+    return 'ServerSource(name: $name, serverId: $serverId)';
   }
 }
 
 /// @nodoc
-abstract class _$$ServerSourceImplCopyWith<$Res>
-    implements $ServerSourceCopyWith<$Res> {
-  factory _$$ServerSourceImplCopyWith(
-          _$ServerSourceImpl value, $Res Function(_$ServerSourceImpl) then) =
-      __$$ServerSourceImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $ServerSourceCopyWith<$Res> {
+  factory $ServerSourceCopyWith(
+          ServerSource value, $Res Function(ServerSource) _then) =
+      _$ServerSourceCopyWithImpl;
   @useResult
   $Res call({String name, String serverId});
 }
 
 /// @nodoc
-class __$$ServerSourceImplCopyWithImpl<$Res>
-    extends _$ServerSourceCopyWithImpl<$Res, _$ServerSourceImpl>
-    implements _$$ServerSourceImplCopyWith<$Res> {
-  __$$ServerSourceImplCopyWithImpl(
-      _$ServerSourceImpl _value, $Res Function(_$ServerSourceImpl) _then)
-      : super(_value, _then);
+class _$ServerSourceCopyWithImpl<$Res> implements $ServerSourceCopyWith<$Res> {
+  _$ServerSourceCopyWithImpl(this._self, this._then);
 
+  final ServerSource _self;
+  final $Res Function(ServerSource) _then;
+
+  /// Create a copy of ServerSource
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? name = null,
     Object? serverId = null,
   }) {
-    return _then(_$ServerSourceImpl(
+    return _then(_self.copyWith(
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       serverId: null == serverId
-          ? _value.serverId
+          ? _self.serverId
           : serverId // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -107,64 +88,89 @@ class __$$ServerSourceImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ServerSourceImpl implements _ServerSource {
-  _$ServerSourceImpl({required this.name, required this.serverId});
-
-  factory _$ServerSourceImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ServerSourceImplFromJson(json);
+class _ServerSource implements ServerSource {
+  _ServerSource({required this.name, required this.serverId});
+  factory _ServerSource.fromJson(Map<String, dynamic> json) =>
+      _$ServerSourceFromJson(json);
 
   @override
   final String name;
   @override
   final String serverId;
 
+  /// Create a copy of ServerSource
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'ServerSource(name: $name, serverId: $serverId)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ServerSourceCopyWith<_ServerSource> get copyWith =>
+      __$ServerSourceCopyWithImpl<_ServerSource>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ServerSourceToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ServerSourceImpl &&
+            other is _ServerSource &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.serverId, serverId) ||
                 other.serverId == serverId));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, name, serverId);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$ServerSourceImplCopyWith<_$ServerSourceImpl> get copyWith =>
-      __$$ServerSourceImplCopyWithImpl<_$ServerSourceImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ServerSourceImplToJson(
-      this,
-    );
+  String toString() {
+    return 'ServerSource(name: $name, serverId: $serverId)';
   }
 }
 
-abstract class _ServerSource implements ServerSource {
-  factory _ServerSource(
-      {required final String name,
-      required final String serverId}) = _$ServerSourceImpl;
-
-  factory _ServerSource.fromJson(Map<String, dynamic> json) =
-      _$ServerSourceImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$ServerSourceCopyWith<$Res>
+    implements $ServerSourceCopyWith<$Res> {
+  factory _$ServerSourceCopyWith(
+          _ServerSource value, $Res Function(_ServerSource) _then) =
+      __$ServerSourceCopyWithImpl;
   @override
-  String get name;
-  @override
-  String get serverId;
-  @override
-  @JsonKey(ignore: true)
-  _$$ServerSourceImplCopyWith<_$ServerSourceImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call({String name, String serverId});
 }
+
+/// @nodoc
+class __$ServerSourceCopyWithImpl<$Res>
+    implements _$ServerSourceCopyWith<$Res> {
+  __$ServerSourceCopyWithImpl(this._self, this._then);
+
+  final _ServerSource _self;
+  final $Res Function(_ServerSource) _then;
+
+  /// Create a copy of ServerSource
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? name = null,
+    Object? serverId = null,
+  }) {
+    return _then(_ServerSource(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      serverId: null == serverId
+          ? _self.serverId
+          : serverId // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+// dart format on

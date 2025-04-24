@@ -4,7 +4,7 @@ part 'general_settings.freezed.dart';
 part 'general_settings.g.dart';
 
 @freezed
-class GeneralSettings with _$GeneralSettings {
+sealed class GeneralSettings with _$GeneralSettings {
   const factory GeneralSettings({
     @Default(false) bool mangaReadLazyPage,
     @Default(null) DateTime? lastCheckUpdateApp,

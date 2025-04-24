@@ -6,20 +6,19 @@ part of 'filter.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$OptionImpl _$$OptionImplFromJson(Map<String, dynamic> json) => _$OptionImpl(
+_Option _$OptionFromJson(Map<String, dynamic> json) => _Option(
       name: json['name'] as String,
       value: json['value'] as String,
       selected: json['selected'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$$OptionImplToJson(_$OptionImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$OptionToJson(_Option instance) => <String, dynamic>{
       'name': instance.name,
       'value': instance.value,
       'selected': instance.selected,
     };
 
-_$FilterImpl _$$FilterImplFromJson(Map<String, dynamic> json) => _$FilterImpl(
+_Filter _$FilterFromJson(Map<String, dynamic> json) => _Filter(
       name: json['name'] as String,
       key: json['key'] as String,
       multiple: json['multiple'] as bool,
@@ -28,8 +27,7 @@ _$FilterImpl _$$FilterImplFromJson(Map<String, dynamic> json) => _$FilterImpl(
           .toList(),
     );
 
-Map<String, dynamic> _$$FilterImplToJson(_$FilterImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$FilterToJson(_Filter instance) => <String, dynamic>{
       'name': instance.name,
       'key': instance.key,
       'multiple': instance.multiple,

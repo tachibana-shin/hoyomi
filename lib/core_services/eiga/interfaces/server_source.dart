@@ -4,7 +4,7 @@ part 'server_source.freezed.dart';
 part 'server_source.g.dart';
 
 @freezed
-class ServerSource with _$ServerSource {
+sealed class ServerSource with _$ServerSource {
   factory ServerSource({
     required String name,
     required String serverId,

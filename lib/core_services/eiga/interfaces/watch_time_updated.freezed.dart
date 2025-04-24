@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,141 +10,31 @@ part of 'watch_time_updated.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-WatchTimeUpdated _$WatchTimeUpdatedFromJson(Map<String, dynamic> json) {
-  return _WatchTimeUpdated.fromJson(json);
-}
 
 /// @nodoc
 mixin _$WatchTimeUpdated {
-  Duration get position => throw _privateConstructorUsedError;
-  Duration get duration => throw _privateConstructorUsedError;
-  DateTime get updatedAt => throw _privateConstructorUsedError;
+  Duration get position;
+  Duration get duration;
+  DateTime get updatedAt;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+  /// Create a copy of WatchTimeUpdated
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $WatchTimeUpdatedCopyWith<WatchTimeUpdated> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+      _$WatchTimeUpdatedCopyWithImpl<WatchTimeUpdated>(
+          this as WatchTimeUpdated, _$identity);
 
-/// @nodoc
-abstract class $WatchTimeUpdatedCopyWith<$Res> {
-  factory $WatchTimeUpdatedCopyWith(
-          WatchTimeUpdated value, $Res Function(WatchTimeUpdated) then) =
-      _$WatchTimeUpdatedCopyWithImpl<$Res, WatchTimeUpdated>;
-  @useResult
-  $Res call({Duration position, Duration duration, DateTime updatedAt});
-}
-
-/// @nodoc
-class _$WatchTimeUpdatedCopyWithImpl<$Res, $Val extends WatchTimeUpdated>
-    implements $WatchTimeUpdatedCopyWith<$Res> {
-  _$WatchTimeUpdatedCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? position = null,
-    Object? duration = null,
-    Object? updatedAt = null,
-  }) {
-    return _then(_value.copyWith(
-      position: null == position
-          ? _value.position
-          : position // ignore: cast_nullable_to_non_nullable
-              as Duration,
-      duration: null == duration
-          ? _value.duration
-          : duration // ignore: cast_nullable_to_non_nullable
-              as Duration,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$WatchTimeUpdatedImplCopyWith<$Res>
-    implements $WatchTimeUpdatedCopyWith<$Res> {
-  factory _$$WatchTimeUpdatedImplCopyWith(_$WatchTimeUpdatedImpl value,
-          $Res Function(_$WatchTimeUpdatedImpl) then) =
-      __$$WatchTimeUpdatedImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({Duration position, Duration duration, DateTime updatedAt});
-}
-
-/// @nodoc
-class __$$WatchTimeUpdatedImplCopyWithImpl<$Res>
-    extends _$WatchTimeUpdatedCopyWithImpl<$Res, _$WatchTimeUpdatedImpl>
-    implements _$$WatchTimeUpdatedImplCopyWith<$Res> {
-  __$$WatchTimeUpdatedImplCopyWithImpl(_$WatchTimeUpdatedImpl _value,
-      $Res Function(_$WatchTimeUpdatedImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? position = null,
-    Object? duration = null,
-    Object? updatedAt = null,
-  }) {
-    return _then(_$WatchTimeUpdatedImpl(
-      position: null == position
-          ? _value.position
-          : position // ignore: cast_nullable_to_non_nullable
-              as Duration,
-      duration: null == duration
-          ? _value.duration
-          : duration // ignore: cast_nullable_to_non_nullable
-              as Duration,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$WatchTimeUpdatedImpl implements _WatchTimeUpdated {
-  const _$WatchTimeUpdatedImpl(
-      {required this.position,
-      required this.duration,
-      required this.updatedAt});
-
-  factory _$WatchTimeUpdatedImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WatchTimeUpdatedImplFromJson(json);
-
-  @override
-  final Duration position;
-  @override
-  final Duration duration;
-  @override
-  final DateTime updatedAt;
-
-  @override
-  String toString() {
-    return 'WatchTimeUpdated(position: $position, duration: $duration, updatedAt: $updatedAt)';
-  }
+  /// Serializes this WatchTimeUpdated to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$WatchTimeUpdatedImpl &&
+            other is WatchTimeUpdated &&
             (identical(other.position, position) ||
                 other.position == position) &&
             (identical(other.duration, duration) ||
@@ -152,42 +43,157 @@ class _$WatchTimeUpdatedImpl implements _WatchTimeUpdated {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, position, duration, updatedAt);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$WatchTimeUpdatedImplCopyWith<_$WatchTimeUpdatedImpl> get copyWith =>
-      __$$WatchTimeUpdatedImplCopyWithImpl<_$WatchTimeUpdatedImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WatchTimeUpdatedImplToJson(
-      this,
-    );
+  String toString() {
+    return 'WatchTimeUpdated(position: $position, duration: $duration, updatedAt: $updatedAt)';
   }
 }
 
-abstract class _WatchTimeUpdated implements WatchTimeUpdated {
-  const factory _WatchTimeUpdated(
-      {required final Duration position,
-      required final Duration duration,
-      required final DateTime updatedAt}) = _$WatchTimeUpdatedImpl;
-
-  factory _WatchTimeUpdated.fromJson(Map<String, dynamic> json) =
-      _$WatchTimeUpdatedImpl.fromJson;
-
-  @override
-  Duration get position;
-  @override
-  Duration get duration;
-  @override
-  DateTime get updatedAt;
-  @override
-  @JsonKey(ignore: true)
-  _$$WatchTimeUpdatedImplCopyWith<_$WatchTimeUpdatedImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+/// @nodoc
+abstract mixin class $WatchTimeUpdatedCopyWith<$Res> {
+  factory $WatchTimeUpdatedCopyWith(
+          WatchTimeUpdated value, $Res Function(WatchTimeUpdated) _then) =
+      _$WatchTimeUpdatedCopyWithImpl;
+  @useResult
+  $Res call({Duration position, Duration duration, DateTime updatedAt});
 }
+
+/// @nodoc
+class _$WatchTimeUpdatedCopyWithImpl<$Res>
+    implements $WatchTimeUpdatedCopyWith<$Res> {
+  _$WatchTimeUpdatedCopyWithImpl(this._self, this._then);
+
+  final WatchTimeUpdated _self;
+  final $Res Function(WatchTimeUpdated) _then;
+
+  /// Create a copy of WatchTimeUpdated
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? position = null,
+    Object? duration = null,
+    Object? updatedAt = null,
+  }) {
+    return _then(_self.copyWith(
+      position: null == position
+          ? _self.position
+          : position // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      duration: null == duration
+          ? _self.duration
+          : duration // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      updatedAt: null == updatedAt
+          ? _self.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _WatchTimeUpdated implements WatchTimeUpdated {
+  const _WatchTimeUpdated(
+      {required this.position,
+      required this.duration,
+      required this.updatedAt});
+  factory _WatchTimeUpdated.fromJson(Map<String, dynamic> json) =>
+      _$WatchTimeUpdatedFromJson(json);
+
+  @override
+  final Duration position;
+  @override
+  final Duration duration;
+  @override
+  final DateTime updatedAt;
+
+  /// Create a copy of WatchTimeUpdated
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$WatchTimeUpdatedCopyWith<_WatchTimeUpdated> get copyWith =>
+      __$WatchTimeUpdatedCopyWithImpl<_WatchTimeUpdated>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$WatchTimeUpdatedToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _WatchTimeUpdated &&
+            (identical(other.position, position) ||
+                other.position == position) &&
+            (identical(other.duration, duration) ||
+                other.duration == duration) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, position, duration, updatedAt);
+
+  @override
+  String toString() {
+    return 'WatchTimeUpdated(position: $position, duration: $duration, updatedAt: $updatedAt)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$WatchTimeUpdatedCopyWith<$Res>
+    implements $WatchTimeUpdatedCopyWith<$Res> {
+  factory _$WatchTimeUpdatedCopyWith(
+          _WatchTimeUpdated value, $Res Function(_WatchTimeUpdated) _then) =
+      __$WatchTimeUpdatedCopyWithImpl;
+  @override
+  @useResult
+  $Res call({Duration position, Duration duration, DateTime updatedAt});
+}
+
+/// @nodoc
+class __$WatchTimeUpdatedCopyWithImpl<$Res>
+    implements _$WatchTimeUpdatedCopyWith<$Res> {
+  __$WatchTimeUpdatedCopyWithImpl(this._self, this._then);
+
+  final _WatchTimeUpdated _self;
+  final $Res Function(_WatchTimeUpdated) _then;
+
+  /// Create a copy of WatchTimeUpdated
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? position = null,
+    Object? duration = null,
+    Object? updatedAt = null,
+  }) {
+    return _then(_WatchTimeUpdated(
+      position: null == position
+          ? _self.position
+          : position // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      duration: null == duration
+          ? _self.duration
+          : duration // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      updatedAt: null == updatedAt
+          ? _self.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+    ));
+  }
+}
+
+// dart format on

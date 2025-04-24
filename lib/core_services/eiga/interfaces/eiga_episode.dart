@@ -5,7 +5,7 @@ part 'eiga_episode.freezed.dart';
 part 'eiga_episode.g.dart';
 
 @freezed
-class EigaEpisode with _$EigaEpisode {
+sealed class EigaEpisode with _$EigaEpisode {
   const factory EigaEpisode({
     required String name,
     required String episodeId,

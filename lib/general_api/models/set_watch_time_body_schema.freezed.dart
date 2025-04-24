@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,146 +10,99 @@ part of 'set_watch_time_body_schema.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-SetWatchTimeBodySchema _$SetWatchTimeBodySchemaFromJson(
-    Map<String, dynamic> json) {
-  return _SetWatchTimeBodySchema.fromJson(json);
-}
 
 /// @nodoc
 mixin _$SetWatchTimeBodySchema {
   /// The unique identifier for the source (e.g., series or season).
-  String get sourceId => throw _privateConstructorUsedError;
+  String get sourceId;
 
   /// The name of the episode.
-  String get name => throw _privateConstructorUsedError;
+  String get name;
 
   /// URL to the poster image for the episode.
-  String get poster => throw _privateConstructorUsedError;
+  String get poster;
 
   /// Unique identifier for the eiga (movie/show) text.
   @JsonKey(name: 'eiga_text_id')
-  String get eigaTextId => throw _privateConstructorUsedError;
+  String get eigaTextId;
 
   /// The name of the season.
   @JsonKey(name: 'season_name')
-  dynamic get seasonName => throw _privateConstructorUsedError;
+  dynamic get seasonName;
 
   /// The current watch time in seconds.
-  num get cur => throw _privateConstructorUsedError;
+  num get cur;
 
   /// The total duration of the episode in seconds.
-  num get dur => throw _privateConstructorUsedError;
+  num get dur;
 
   /// The name of the episode.
   @JsonKey(name: 'episode_name')
-  String get episodeName => throw _privateConstructorUsedError;
+  String get episodeName;
 
   /// Unique identifier for the episode.
   @JsonKey(name: 'episode_id')
-  String get episodeId => throw _privateConstructorUsedError;
+  String get episodeId;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $SetWatchTimeBodySchemaCopyWith<SetWatchTimeBodySchema> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $SetWatchTimeBodySchemaCopyWith<$Res> {
-  factory $SetWatchTimeBodySchemaCopyWith(SetWatchTimeBodySchema value,
-          $Res Function(SetWatchTimeBodySchema) then) =
-      _$SetWatchTimeBodySchemaCopyWithImpl<$Res, SetWatchTimeBodySchema>;
-  @useResult
-  $Res call(
-      {String sourceId,
-      String name,
-      String poster,
-      @JsonKey(name: 'eiga_text_id') String eigaTextId,
-      @JsonKey(name: 'season_name') dynamic seasonName,
-      num cur,
-      num dur,
-      @JsonKey(name: 'episode_name') String episodeName,
-      @JsonKey(name: 'episode_id') String episodeId});
-}
-
-/// @nodoc
-class _$SetWatchTimeBodySchemaCopyWithImpl<$Res,
-        $Val extends SetWatchTimeBodySchema>
-    implements $SetWatchTimeBodySchemaCopyWith<$Res> {
-  _$SetWatchTimeBodySchemaCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of SetWatchTimeBodySchema
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $SetWatchTimeBodySchemaCopyWith<SetWatchTimeBodySchema> get copyWith =>
+      _$SetWatchTimeBodySchemaCopyWithImpl<SetWatchTimeBodySchema>(
+          this as SetWatchTimeBodySchema, _$identity);
+
+  /// Serializes this SetWatchTimeBodySchema to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? sourceId = null,
-    Object? name = null,
-    Object? poster = null,
-    Object? eigaTextId = null,
-    Object? seasonName = freezed,
-    Object? cur = null,
-    Object? dur = null,
-    Object? episodeName = null,
-    Object? episodeId = null,
-  }) {
-    return _then(_value.copyWith(
-      sourceId: null == sourceId
-          ? _value.sourceId
-          : sourceId // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      poster: null == poster
-          ? _value.poster
-          : poster // ignore: cast_nullable_to_non_nullable
-              as String,
-      eigaTextId: null == eigaTextId
-          ? _value.eigaTextId
-          : eigaTextId // ignore: cast_nullable_to_non_nullable
-              as String,
-      seasonName: freezed == seasonName
-          ? _value.seasonName
-          : seasonName // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      cur: null == cur
-          ? _value.cur
-          : cur // ignore: cast_nullable_to_non_nullable
-              as num,
-      dur: null == dur
-          ? _value.dur
-          : dur // ignore: cast_nullable_to_non_nullable
-              as num,
-      episodeName: null == episodeName
-          ? _value.episodeName
-          : episodeName // ignore: cast_nullable_to_non_nullable
-              as String,
-      episodeId: null == episodeId
-          ? _value.episodeId
-          : episodeId // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is SetWatchTimeBodySchema &&
+            (identical(other.sourceId, sourceId) ||
+                other.sourceId == sourceId) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.poster, poster) || other.poster == poster) &&
+            (identical(other.eigaTextId, eigaTextId) ||
+                other.eigaTextId == eigaTextId) &&
+            const DeepCollectionEquality()
+                .equals(other.seasonName, seasonName) &&
+            (identical(other.cur, cur) || other.cur == cur) &&
+            (identical(other.dur, dur) || other.dur == dur) &&
+            (identical(other.episodeName, episodeName) ||
+                other.episodeName == episodeName) &&
+            (identical(other.episodeId, episodeId) ||
+                other.episodeId == episodeId));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      sourceId,
+      name,
+      poster,
+      eigaTextId,
+      const DeepCollectionEquality().hash(seasonName),
+      cur,
+      dur,
+      episodeName,
+      episodeId);
+
+  @override
+  String toString() {
+    return 'SetWatchTimeBodySchema(sourceId: $sourceId, name: $name, poster: $poster, eigaTextId: $eigaTextId, seasonName: $seasonName, cur: $cur, dur: $dur, episodeName: $episodeName, episodeId: $episodeId)';
   }
 }
 
 /// @nodoc
-abstract class _$$SetWatchTimeBodySchemaImplCopyWith<$Res>
-    implements $SetWatchTimeBodySchemaCopyWith<$Res> {
-  factory _$$SetWatchTimeBodySchemaImplCopyWith(
-          _$SetWatchTimeBodySchemaImpl value,
-          $Res Function(_$SetWatchTimeBodySchemaImpl) then) =
-      __$$SetWatchTimeBodySchemaImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $SetWatchTimeBodySchemaCopyWith<$Res> {
+  factory $SetWatchTimeBodySchemaCopyWith(SetWatchTimeBodySchema value,
+          $Res Function(SetWatchTimeBodySchema) _then) =
+      _$SetWatchTimeBodySchemaCopyWithImpl;
   @useResult
   $Res call(
       {String sourceId,
@@ -163,15 +117,15 @@ abstract class _$$SetWatchTimeBodySchemaImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$SetWatchTimeBodySchemaImplCopyWithImpl<$Res>
-    extends _$SetWatchTimeBodySchemaCopyWithImpl<$Res,
-        _$SetWatchTimeBodySchemaImpl>
-    implements _$$SetWatchTimeBodySchemaImplCopyWith<$Res> {
-  __$$SetWatchTimeBodySchemaImplCopyWithImpl(
-      _$SetWatchTimeBodySchemaImpl _value,
-      $Res Function(_$SetWatchTimeBodySchemaImpl) _then)
-      : super(_value, _then);
+class _$SetWatchTimeBodySchemaCopyWithImpl<$Res>
+    implements $SetWatchTimeBodySchemaCopyWith<$Res> {
+  _$SetWatchTimeBodySchemaCopyWithImpl(this._self, this._then);
 
+  final SetWatchTimeBodySchema _self;
+  final $Res Function(SetWatchTimeBodySchema) _then;
+
+  /// Create a copy of SetWatchTimeBodySchema
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -185,41 +139,41 @@ class __$$SetWatchTimeBodySchemaImplCopyWithImpl<$Res>
     Object? episodeName = null,
     Object? episodeId = null,
   }) {
-    return _then(_$SetWatchTimeBodySchemaImpl(
+    return _then(_self.copyWith(
       sourceId: null == sourceId
-          ? _value.sourceId
+          ? _self.sourceId
           : sourceId // ignore: cast_nullable_to_non_nullable
               as String,
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       poster: null == poster
-          ? _value.poster
+          ? _self.poster
           : poster // ignore: cast_nullable_to_non_nullable
               as String,
       eigaTextId: null == eigaTextId
-          ? _value.eigaTextId
+          ? _self.eigaTextId
           : eigaTextId // ignore: cast_nullable_to_non_nullable
               as String,
       seasonName: freezed == seasonName
-          ? _value.seasonName
+          ? _self.seasonName
           : seasonName // ignore: cast_nullable_to_non_nullable
               as dynamic,
       cur: null == cur
-          ? _value.cur
+          ? _self.cur
           : cur // ignore: cast_nullable_to_non_nullable
               as num,
       dur: null == dur
-          ? _value.dur
+          ? _self.dur
           : dur // ignore: cast_nullable_to_non_nullable
               as num,
       episodeName: null == episodeName
-          ? _value.episodeName
+          ? _self.episodeName
           : episodeName // ignore: cast_nullable_to_non_nullable
               as String,
       episodeId: null == episodeId
-          ? _value.episodeId
+          ? _self.episodeId
           : episodeId // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -228,8 +182,8 @@ class __$$SetWatchTimeBodySchemaImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$SetWatchTimeBodySchemaImpl implements _SetWatchTimeBodySchema {
-  const _$SetWatchTimeBodySchemaImpl(
+class _SetWatchTimeBodySchema implements SetWatchTimeBodySchema {
+  const _SetWatchTimeBodySchema(
       {required this.sourceId,
       required this.name,
       required this.poster,
@@ -239,9 +193,8 @@ class _$SetWatchTimeBodySchemaImpl implements _SetWatchTimeBodySchema {
       required this.dur,
       @JsonKey(name: 'episode_name') required this.episodeName,
       @JsonKey(name: 'episode_id') required this.episodeId});
-
-  factory _$SetWatchTimeBodySchemaImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SetWatchTimeBodySchemaImplFromJson(json);
+  factory _SetWatchTimeBodySchema.fromJson(Map<String, dynamic> json) =>
+      _$SetWatchTimeBodySchemaFromJson(json);
 
   /// The unique identifier for the source (e.g., series or season).
   @override
@@ -283,16 +236,27 @@ class _$SetWatchTimeBodySchemaImpl implements _SetWatchTimeBodySchema {
   @JsonKey(name: 'episode_id')
   final String episodeId;
 
+  /// Create a copy of SetWatchTimeBodySchema
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'SetWatchTimeBodySchema(sourceId: $sourceId, name: $name, poster: $poster, eigaTextId: $eigaTextId, seasonName: $seasonName, cur: $cur, dur: $dur, episodeName: $episodeName, episodeId: $episodeId)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$SetWatchTimeBodySchemaCopyWith<_SetWatchTimeBodySchema> get copyWith =>
+      __$SetWatchTimeBodySchemaCopyWithImpl<_SetWatchTimeBodySchema>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$SetWatchTimeBodySchemaToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SetWatchTimeBodySchemaImpl &&
+            other is _SetWatchTimeBodySchema &&
             (identical(other.sourceId, sourceId) ||
                 other.sourceId == sourceId) &&
             (identical(other.name, name) || other.name == name) &&
@@ -309,7 +273,7 @@ class _$SetWatchTimeBodySchemaImpl implements _SetWatchTimeBodySchema {
                 other.episodeId == episodeId));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -323,79 +287,94 @@ class _$SetWatchTimeBodySchemaImpl implements _SetWatchTimeBodySchema {
       episodeName,
       episodeId);
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$SetWatchTimeBodySchemaImplCopyWith<_$SetWatchTimeBodySchemaImpl>
-      get copyWith => __$$SetWatchTimeBodySchemaImplCopyWithImpl<
-          _$SetWatchTimeBodySchemaImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SetWatchTimeBodySchemaImplToJson(
-      this,
-    );
+  String toString() {
+    return 'SetWatchTimeBodySchema(sourceId: $sourceId, name: $name, poster: $poster, eigaTextId: $eigaTextId, seasonName: $seasonName, cur: $cur, dur: $dur, episodeName: $episodeName, episodeId: $episodeId)';
   }
 }
 
-abstract class _SetWatchTimeBodySchema implements SetWatchTimeBodySchema {
-  const factory _SetWatchTimeBodySchema(
-          {required final String sourceId,
-          required final String name,
-          required final String poster,
-          @JsonKey(name: 'eiga_text_id') required final String eigaTextId,
-          @JsonKey(name: 'season_name') required final dynamic seasonName,
-          required final num cur,
-          required final num dur,
-          @JsonKey(name: 'episode_name') required final String episodeName,
-          @JsonKey(name: 'episode_id') required final String episodeId}) =
-      _$SetWatchTimeBodySchemaImpl;
-
-  factory _SetWatchTimeBodySchema.fromJson(Map<String, dynamic> json) =
-      _$SetWatchTimeBodySchemaImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$SetWatchTimeBodySchemaCopyWith<$Res>
+    implements $SetWatchTimeBodySchemaCopyWith<$Res> {
+  factory _$SetWatchTimeBodySchemaCopyWith(_SetWatchTimeBodySchema value,
+          $Res Function(_SetWatchTimeBodySchema) _then) =
+      __$SetWatchTimeBodySchemaCopyWithImpl;
   @override
-
-  /// The unique identifier for the source (e.g., series or season).
-  String get sourceId;
-  @override
-
-  /// The name of the episode.
-  String get name;
-  @override
-
-  /// URL to the poster image for the episode.
-  String get poster;
-  @override
-
-  /// Unique identifier for the eiga (movie/show) text.
-  @JsonKey(name: 'eiga_text_id')
-  String get eigaTextId;
-  @override
-
-  /// The name of the season.
-  @JsonKey(name: 'season_name')
-  dynamic get seasonName;
-  @override
-
-  /// The current watch time in seconds.
-  num get cur;
-  @override
-
-  /// The total duration of the episode in seconds.
-  num get dur;
-  @override
-
-  /// The name of the episode.
-  @JsonKey(name: 'episode_name')
-  String get episodeName;
-  @override
-
-  /// Unique identifier for the episode.
-  @JsonKey(name: 'episode_id')
-  String get episodeId;
-  @override
-  @JsonKey(ignore: true)
-  _$$SetWatchTimeBodySchemaImplCopyWith<_$SetWatchTimeBodySchemaImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @useResult
+  $Res call(
+      {String sourceId,
+      String name,
+      String poster,
+      @JsonKey(name: 'eiga_text_id') String eigaTextId,
+      @JsonKey(name: 'season_name') dynamic seasonName,
+      num cur,
+      num dur,
+      @JsonKey(name: 'episode_name') String episodeName,
+      @JsonKey(name: 'episode_id') String episodeId});
 }
+
+/// @nodoc
+class __$SetWatchTimeBodySchemaCopyWithImpl<$Res>
+    implements _$SetWatchTimeBodySchemaCopyWith<$Res> {
+  __$SetWatchTimeBodySchemaCopyWithImpl(this._self, this._then);
+
+  final _SetWatchTimeBodySchema _self;
+  final $Res Function(_SetWatchTimeBodySchema) _then;
+
+  /// Create a copy of SetWatchTimeBodySchema
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? sourceId = null,
+    Object? name = null,
+    Object? poster = null,
+    Object? eigaTextId = null,
+    Object? seasonName = freezed,
+    Object? cur = null,
+    Object? dur = null,
+    Object? episodeName = null,
+    Object? episodeId = null,
+  }) {
+    return _then(_SetWatchTimeBodySchema(
+      sourceId: null == sourceId
+          ? _self.sourceId
+          : sourceId // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      poster: null == poster
+          ? _self.poster
+          : poster // ignore: cast_nullable_to_non_nullable
+              as String,
+      eigaTextId: null == eigaTextId
+          ? _self.eigaTextId
+          : eigaTextId // ignore: cast_nullable_to_non_nullable
+              as String,
+      seasonName: freezed == seasonName
+          ? _self.seasonName
+          : seasonName // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      cur: null == cur
+          ? _self.cur
+          : cur // ignore: cast_nullable_to_non_nullable
+              as num,
+      dur: null == dur
+          ? _self.dur
+          : dur // ignore: cast_nullable_to_non_nullable
+              as num,
+      episodeName: null == episodeName
+          ? _self.episodeName
+          : episodeName // ignore: cast_nullable_to_non_nullable
+              as String,
+      episodeId: null == episodeId
+          ? _self.episodeId
+          : episodeId // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+// dart format on

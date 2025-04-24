@@ -6,9 +6,9 @@ part of 'set_watch_time_body_schema.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SetWatchTimeBodySchemaImpl _$$SetWatchTimeBodySchemaImplFromJson(
+_SetWatchTimeBodySchema _$SetWatchTimeBodySchemaFromJson(
         Map<String, dynamic> json) =>
-    _$SetWatchTimeBodySchemaImpl(
+    _SetWatchTimeBodySchema(
       sourceId: json['sourceId'] as String,
       name: json['name'] as String,
       poster: json['poster'] as String,
@@ -20,8 +20,8 @@ _$SetWatchTimeBodySchemaImpl _$$SetWatchTimeBodySchemaImplFromJson(
       episodeId: json['episode_id'] as String,
     );
 
-Map<String, dynamic> _$$SetWatchTimeBodySchemaImplToJson(
-        _$SetWatchTimeBodySchemaImpl instance) =>
+Map<String, dynamic> _$SetWatchTimeBodySchemaToJson(
+        _SetWatchTimeBodySchema instance) =>
     <String, dynamic>{
       'sourceId': instance.sourceId,
       'name': instance.name,

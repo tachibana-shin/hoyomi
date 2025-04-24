@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,97 +10,71 @@ part of 'home_eiga_category.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-HomeEigaCategory _$HomeEigaCategoryFromJson(Map<String, dynamic> json) {
-  return _HomeEigaCategory.fromJson(json);
-}
 
 /// @nodoc
 mixin _$HomeEigaCategory {
-  String get name => throw _privateConstructorUsedError;
-  String? get categoryId => throw _privateConstructorUsedError;
-  bool? get gridView => throw _privateConstructorUsedError;
-  List<Eiga> get items => throw _privateConstructorUsedError;
+  String get name;
+  String? get categoryId;
+  bool? get gridView;
+  List<Eiga> get items;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $HomeEigaCategoryCopyWith<HomeEigaCategory> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $HomeEigaCategoryCopyWith<$Res> {
-  factory $HomeEigaCategoryCopyWith(
-          HomeEigaCategory value, $Res Function(HomeEigaCategory) then) =
-      _$HomeEigaCategoryCopyWithImpl<$Res, HomeEigaCategory>;
-  @useResult
-  $Res call(
-      {String name, String? categoryId, bool? gridView, List<Eiga> items});
-}
-
-/// @nodoc
-class _$HomeEigaCategoryCopyWithImpl<$Res, $Val extends HomeEigaCategory>
-    implements $HomeEigaCategoryCopyWith<$Res> {
-  _$HomeEigaCategoryCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
+  /// Create a copy of HomeEigaCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
+  $HomeEigaCategoryCopyWith<HomeEigaCategory> get copyWith =>
+      _$HomeEigaCategoryCopyWithImpl<HomeEigaCategory>(
+          this as HomeEigaCategory, _$identity);
+
+  /// Serializes this HomeEigaCategory to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? name = null,
-    Object? categoryId = freezed,
-    Object? gridView = freezed,
-    Object? items = null,
-  }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      categoryId: freezed == categoryId
-          ? _value.categoryId
-          : categoryId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      gridView: freezed == gridView
-          ? _value.gridView
-          : gridView // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      items: null == items
-          ? _value.items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<Eiga>,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is HomeEigaCategory &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.categoryId, categoryId) ||
+                other.categoryId == categoryId) &&
+            (identical(other.gridView, gridView) ||
+                other.gridView == gridView) &&
+            const DeepCollectionEquality().equals(other.items, items));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, categoryId, gridView,
+      const DeepCollectionEquality().hash(items));
+
+  @override
+  String toString() {
+    return 'HomeEigaCategory(name: $name, categoryId: $categoryId, gridView: $gridView, items: $items)';
   }
 }
 
 /// @nodoc
-abstract class _$$HomeEigaCategoryImplCopyWith<$Res>
-    implements $HomeEigaCategoryCopyWith<$Res> {
-  factory _$$HomeEigaCategoryImplCopyWith(_$HomeEigaCategoryImpl value,
-          $Res Function(_$HomeEigaCategoryImpl) then) =
-      __$$HomeEigaCategoryImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $HomeEigaCategoryCopyWith<$Res> {
+  factory $HomeEigaCategoryCopyWith(
+          HomeEigaCategory value, $Res Function(HomeEigaCategory) _then) =
+      _$HomeEigaCategoryCopyWithImpl;
   @useResult
   $Res call(
       {String name, String? categoryId, bool? gridView, List<Eiga> items});
 }
 
 /// @nodoc
-class __$$HomeEigaCategoryImplCopyWithImpl<$Res>
-    extends _$HomeEigaCategoryCopyWithImpl<$Res, _$HomeEigaCategoryImpl>
-    implements _$$HomeEigaCategoryImplCopyWith<$Res> {
-  __$$HomeEigaCategoryImplCopyWithImpl(_$HomeEigaCategoryImpl _value,
-      $Res Function(_$HomeEigaCategoryImpl) _then)
-      : super(_value, _then);
+class _$HomeEigaCategoryCopyWithImpl<$Res>
+    implements $HomeEigaCategoryCopyWith<$Res> {
+  _$HomeEigaCategoryCopyWithImpl(this._self, this._then);
 
+  final HomeEigaCategory _self;
+  final $Res Function(HomeEigaCategory) _then;
+
+  /// Create a copy of HomeEigaCategory
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -108,21 +83,21 @@ class __$$HomeEigaCategoryImplCopyWithImpl<$Res>
     Object? gridView = freezed,
     Object? items = null,
   }) {
-    return _then(_$HomeEigaCategoryImpl(
+    return _then(_self.copyWith(
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       categoryId: freezed == categoryId
-          ? _value.categoryId
+          ? _self.categoryId
           : categoryId // ignore: cast_nullable_to_non_nullable
               as String?,
       gridView: freezed == gridView
-          ? _value.gridView
+          ? _self.gridView
           : gridView // ignore: cast_nullable_to_non_nullable
               as bool?,
       items: null == items
-          ? _value._items
+          ? _self.items
           : items // ignore: cast_nullable_to_non_nullable
               as List<Eiga>,
     ));
@@ -131,16 +106,15 @@ class __$$HomeEigaCategoryImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$HomeEigaCategoryImpl implements _HomeEigaCategory {
-  const _$HomeEigaCategoryImpl(
+class _HomeEigaCategory implements HomeEigaCategory {
+  const _HomeEigaCategory(
       {required this.name,
       this.categoryId,
       this.gridView,
       required final List<Eiga> items})
       : _items = items;
-
-  factory _$HomeEigaCategoryImpl.fromJson(Map<String, dynamic> json) =>
-      _$$HomeEigaCategoryImplFromJson(json);
+  factory _HomeEigaCategory.fromJson(Map<String, dynamic> json) =>
+      _$HomeEigaCategoryFromJson(json);
 
   @override
   final String name;
@@ -156,16 +130,26 @@ class _$HomeEigaCategoryImpl implements _HomeEigaCategory {
     return EqualUnmodifiableListView(_items);
   }
 
+  /// Create a copy of HomeEigaCategory
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'HomeEigaCategory(name: $name, categoryId: $categoryId, gridView: $gridView, items: $items)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$HomeEigaCategoryCopyWith<_HomeEigaCategory> get copyWith =>
+      __$HomeEigaCategoryCopyWithImpl<_HomeEigaCategory>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$HomeEigaCategoryToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$HomeEigaCategoryImpl &&
+            other is _HomeEigaCategory &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.categoryId, categoryId) ||
                 other.categoryId == categoryId) &&
@@ -174,46 +158,66 @@ class _$HomeEigaCategoryImpl implements _HomeEigaCategory {
             const DeepCollectionEquality().equals(other._items, _items));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, name, categoryId, gridView,
       const DeepCollectionEquality().hash(_items));
 
-  @JsonKey(ignore: true)
   @override
-  @pragma('vm:prefer-inline')
-  _$$HomeEigaCategoryImplCopyWith<_$HomeEigaCategoryImpl> get copyWith =>
-      __$$HomeEigaCategoryImplCopyWithImpl<_$HomeEigaCategoryImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$HomeEigaCategoryImplToJson(
-      this,
-    );
+  String toString() {
+    return 'HomeEigaCategory(name: $name, categoryId: $categoryId, gridView: $gridView, items: $items)';
   }
 }
 
-abstract class _HomeEigaCategory implements HomeEigaCategory {
-  const factory _HomeEigaCategory(
-      {required final String name,
-      final String? categoryId,
-      final bool? gridView,
-      required final List<Eiga> items}) = _$HomeEigaCategoryImpl;
-
-  factory _HomeEigaCategory.fromJson(Map<String, dynamic> json) =
-      _$HomeEigaCategoryImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$HomeEigaCategoryCopyWith<$Res>
+    implements $HomeEigaCategoryCopyWith<$Res> {
+  factory _$HomeEigaCategoryCopyWith(
+          _HomeEigaCategory value, $Res Function(_HomeEigaCategory) _then) =
+      __$HomeEigaCategoryCopyWithImpl;
   @override
-  String get name;
-  @override
-  String? get categoryId;
-  @override
-  bool? get gridView;
-  @override
-  List<Eiga> get items;
-  @override
-  @JsonKey(ignore: true)
-  _$$HomeEigaCategoryImplCopyWith<_$HomeEigaCategoryImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @useResult
+  $Res call(
+      {String name, String? categoryId, bool? gridView, List<Eiga> items});
 }
+
+/// @nodoc
+class __$HomeEigaCategoryCopyWithImpl<$Res>
+    implements _$HomeEigaCategoryCopyWith<$Res> {
+  __$HomeEigaCategoryCopyWithImpl(this._self, this._then);
+
+  final _HomeEigaCategory _self;
+  final $Res Function(_HomeEigaCategory) _then;
+
+  /// Create a copy of HomeEigaCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? name = null,
+    Object? categoryId = freezed,
+    Object? gridView = freezed,
+    Object? items = null,
+  }) {
+    return _then(_HomeEigaCategory(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      categoryId: freezed == categoryId
+          ? _self.categoryId
+          : categoryId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      gridView: freezed == gridView
+          ? _self.gridView
+          : gridView // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      items: null == items
+          ? _self._items
+          : items // ignore: cast_nullable_to_non_nullable
+              as List<Eiga>,
+    ));
+  }
+}
+
+// dart format on

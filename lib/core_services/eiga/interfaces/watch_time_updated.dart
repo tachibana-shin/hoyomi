@@ -4,7 +4,7 @@ part 'watch_time_updated.freezed.dart';
 part 'watch_time_updated.g.dart';
 
 @freezed
-class WatchTimeUpdated with _$WatchTimeUpdated {
+sealed class WatchTimeUpdated with _$WatchTimeUpdated {
   const factory WatchTimeUpdated({
     required Duration position,
     required Duration duration,

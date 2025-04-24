@@ -4,7 +4,7 @@ part 'web_rule.freezed.dart';
 part 'web_rule.g.dart';
 
 @freezed
-class WebRule with _$WebRule {
+sealed class WebRule with _$WebRule {
   factory WebRule({
     /// Example: example\\.com
     String? regexFilter,
