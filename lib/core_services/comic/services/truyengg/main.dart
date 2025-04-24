@@ -57,7 +57,7 @@ class TruyenGGService extends ABComicService
   final init = ServiceInit(
     name: 'TruyenGGP',
     faviconUrl: OImage(src: '/favicon.ico'),
-    rootUrl: 'https://truyengg.com',
+    rootUrl: 'https://truyengg.net',
     rss: '/rss.html',
     onBeforeInsertCookie: (cookie) {
       cookie ??= '';
