@@ -19,16 +19,19 @@ class Comment extends StatefulWidget {
   final Future<ComicComments> Function({
     required ComicComment? parent,
     int? page,
-  })? getComments;
+  })?
+  getComments;
   final Future<void> Function({
     required ComicComment? parent,
     required ComicComment comment,
-  }) deleteComment;
+  })
+  deleteComment;
   final Future<bool> Function({
     required ComicComment? parent,
     required ComicComment comment,
     required bool value,
-  }) setLikeComment;
+  })
+  setLikeComment;
   final void Function() onPop;
   final void Function(ComicComment comment) onCommentChanged;
 
@@ -66,15 +69,16 @@ class _CommentState extends State<Comment> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Skeleton.replace(
-                width: 48,
-                height: 48,
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    widget.comment.photoUrl.src,
-                    headers: widget.comment.photoUrl.headers?.toMap(),
-                  ),
-                  radius: 24,
-                )),
+              width: 48,
+              height: 48,
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(
+                  widget.comment.photoUrl.src,
+                  headers: widget.comment.photoUrl.headers?.toMap(),
+                ),
+                radius: 24,
+              ),
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -87,9 +91,7 @@ class _CommentState extends State<Comment> {
                         child: Text(
                           widget.comment.name,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
+                          style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -187,10 +189,11 @@ class _CommentState extends State<Comment> {
                                   style: Theme.of(
                                     context,
                                   ).textTheme.bodyMedium?.copyWith(
-                                        color: Theme.of(
+                                    color:
+                                        Theme.of(
                                           context,
                                         ).colorScheme.secondaryFixedDim,
-                                      ),
+                                  ),
                                 ),
                                 WidgetSpan(
                                   child: Padding(
@@ -237,8 +240,9 @@ class _CommentState extends State<Comment> {
           }
         } else {
           if (old != false) {
-            comment =
-                comment.copyWith(countDislike: (comment.countDislike ?? 0) + 1);
+            comment = comment.copyWith(
+              countDislike: (comment.countDislike ?? 0) + 1,
+            );
           }
         }
 
@@ -277,38 +281,40 @@ class _CommentState extends State<Comment> {
                   child: const Text('Cancel'),
                 ),
                 TextButton(
-                  onPressed: isDeleting
-                      ? null
-                      : () async {
-                          setState(() {
-                            isDeleting = true;
-                          });
-
-                          try {
-                            await widget.deleteComment(
-                              comment: widget.comment,
-                              parent: widget.parent,
-                            );
-                            if (mounted) {
-                              // pop me
-                              widget.onPop();
-                              // ignore: use_build_context_synchronously
-                              Navigator.pop(context);
-                            }
-                          } catch (e) {
+                  onPressed:
+                      isDeleting
+                          ? null
+                          : () async {
                             setState(() {
-                              isDeleting = false;
+                              isDeleting = true;
                             });
-                            showSnackError('delete', e);
-                          }
-                        },
-                  child: isDeleting
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Delete'),
+
+                            try {
+                              await widget.deleteComment(
+                                comment: widget.comment,
+                                parent: widget.parent,
+                              );
+                              if (mounted) {
+                                // pop me
+                                widget.onPop();
+                                // ignore: use_build_context_synchronously
+                                Navigator.pop(context);
+                              }
+                            } catch (e) {
+                              setState(() {
+                                isDeleting = false;
+                              });
+                              showSnackError('delete', e);
+                            }
+                          },
+                  child:
+                      isDeleting
+                          ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : const Text('Delete'),
                 ),
               ],
             );

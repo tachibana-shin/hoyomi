@@ -76,9 +76,10 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
       case "NOT_SUPPORT":
         return CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.onSecondary,
-          child: const Iconify(Mdi.block_helper
-              // color: Colors.red,
-              ),
+          child: const Iconify(
+            Mdi.block_helper,
+            // color: Colors.red,
+          ),
         );
       case "LOADING":
         return CircleAvatar(
@@ -96,10 +97,7 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
       case "ERROR":
         return CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.onSecondary,
-          child: const Iconify(
-            Mdi.alert_circle_outline,
-            color: Colors.orange,
-          ),
+          child: const Iconify(Mdi.alert_circle_outline, color: Colors.orange),
         );
       default:
         return CircleAvatar(

@@ -7,10 +7,8 @@ part 'meta_eiga.g.dart';
 
 @freezed
 sealed class Season with _$Season {
-  const factory Season({
-    required String name,
-    required String eigaId,
-  }) = _Season;
+  const factory Season({required String name, required String eigaId}) =
+      _Season;
 
   factory Season.fromJson(Map<String, dynamic> json) => _$SeasonFromJson(json);
 }

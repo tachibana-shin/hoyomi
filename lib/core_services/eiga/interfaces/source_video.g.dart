@@ -7,14 +7,15 @@ part of 'source_video.dart';
 // **************************************************************************
 
 _SourceVideo _$SourceVideoFromJson(Map<String, dynamic> json) => _SourceVideo(
-      src: json['src'] as String,
-      url: Uri.parse(json['url'] as String),
-      type: json['type'] as String,
-      headers: json['headers'] == null
+  src: json['src'] as String,
+  url: Uri.parse(json['url'] as String),
+  type: json['type'] as String,
+  headers:
+      json['headers'] == null
           ? null
           : Headers.fromJson(json['headers'] as Map<String, dynamic>),
-      extra: json['extra'] as String?,
-    );
+  extra: json['extra'] as String?,
+);
 
 Map<String, dynamic> _$SourceVideoToJson(_SourceVideo instance) =>
     <String, dynamic>{

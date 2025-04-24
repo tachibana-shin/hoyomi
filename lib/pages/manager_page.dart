@@ -104,31 +104,32 @@ class ManagerPage extends StatelessWidget {
 
         /// OS button
         FutureBuilder(
-            future: _getInfoDevice(),
-            builder: (context, snapshot) {
-              if (snapshot.data == null) return SizedBox.shrink();
+          future: _getInfoDevice(),
+          builder: (context, snapshot) {
+            if (snapshot.data == null) return SizedBox.shrink();
 
-              final osInfo = snapshot.data!;
-              IconData osIcon = Icons.device_unknown;
+            final osInfo = snapshot.data!;
+            IconData osIcon = Icons.device_unknown;
 
-              if (XPlatform.isAndroid) {
-                osIcon = Icons.android;
-              } else if (XPlatform.isIOS) {
-                osIcon = Icons.apple;
-              } else if (XPlatform.isWindows) {
-                osIcon = Icons.laptop_windows;
-              } else if (XPlatform.isMacOS) {
-                osIcon = Icons.laptop_mac;
-              } else if (XPlatform.isLinux) {
-                osIcon = Icons.laptop;
-              }
+            if (XPlatform.isAndroid) {
+              osIcon = Icons.android;
+            } else if (XPlatform.isIOS) {
+              osIcon = Icons.apple;
+            } else if (XPlatform.isWindows) {
+              osIcon = Icons.laptop_windows;
+            } else if (XPlatform.isMacOS) {
+              osIcon = Icons.laptop_mac;
+            } else if (XPlatform.isLinux) {
+              osIcon = Icons.laptop;
+            }
 
-              return ListTile(
-                leading: Icon(osIcon),
-                title: const Text("Operating System"),
-                subtitle: Text(osInfo),
-              );
-            }),
+            return ListTile(
+              leading: Icon(osIcon),
+              title: const Text("Operating System"),
+              subtitle: Text(osInfo),
+            );
+          },
+        ),
 
         /// License button
         ListTile(
@@ -172,7 +173,7 @@ class ManagerPage extends StatelessWidget {
               ],
             );
           },
-        )
+        ),
       ],
     );
   }
@@ -183,10 +184,7 @@ class ManagerPage extends StatelessWidget {
       appBar: AppBar(
         actions: [
           /// icon search
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {},
-          ),
+          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
 
           /// icon settings
           IconButton(
@@ -196,11 +194,12 @@ class ManagerPage extends StatelessWidget {
         ],
       ),
       body: PullRefreshPage(
-          onLoadData: () async {
-            return false;
-          },
-          onLoadFake: () => true,
-          builder: (loading, _) => _buildWidgetMain(context)),
+        onLoadData: () async {
+          return false;
+        },
+        onLoadFake: () => true,
+        builder: (loading, _) => _buildWidgetMain(context),
+      ),
     );
   }
 
@@ -217,60 +216,66 @@ class _AccountMainTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          final user = snapshot.data;
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        final user = snapshot.data;
 
-          return ListTile(
-            leading: GestureDetector(
-                onTap: user?.photoURL != null
+        return ListTile(
+          leading: GestureDetector(
+            onTap:
+                user?.photoURL != null
                     ? () => _showAvatarDialog(context, user!.photoURL!)
                     : null,
-                child: CircleAvatar(
-                  radius: 24,
-                  backgroundColor: Colors.grey.shade300,
-                  backgroundImage: user?.photoURL != null
-                      ? NetworkImage(user!.photoURL!)
-                      : null,
-                  child: user?.photoURL == null
+            child: CircleAvatar(
+              radius: 24,
+              backgroundColor: Colors.grey.shade300,
+              backgroundImage:
+                  user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
+              child:
+                  user?.photoURL == null
                       ? Text(
-                          (user?.displayName ?? 'U')
-                              .substring(0, 1)
-                              .toUpperCase(),
-                          style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        )
+                        (user?.displayName ?? 'U')
+                            .substring(0, 1)
+                            .toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      )
                       : null,
-                )),
-            title: Text(
-              user?.displayName ?? 'Guest',
-              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            subtitle: Text(user?.email ?? 'No email'),
-            onTap: user != null
-                ? () => _showUserMenu(context, user)
-                : () => context.push('/sign_in/main'),
-          );
-        });
+          ),
+          title: Text(
+            user?.displayName ?? 'Guest',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(user?.email ?? 'No email'),
+          onTap:
+              user != null
+                  ? () => _showUserMenu(context, user)
+                  : () => context.push('/sign_in/main'),
+        );
+      },
+    );
   }
 
   void _showAvatarDialog(BuildContext context, String imageUrl) {
     showDialog(
       context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: GestureDetector(
-          onTap: () => Navigator.pop(context),
-          child: InteractiveViewer(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image.network(imageUrl, fit: BoxFit.contain),
+      builder:
+          (context) => Dialog(
+            backgroundColor: Colors.transparent,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: InteractiveViewer(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.network(imageUrl, fit: BoxFit.contain),
+                ),
+              ),
             ),
           ),
-        ),
-      ),
     );
   }
 
@@ -287,55 +292,63 @@ class _AccountMainTile extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: CircleAvatar(
-              backgroundImage:
-                  user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
-              child: user?.photoURL == null
-                  ? Text(
-                      (user?.displayName ?? 'U').substring(0, 1).toUpperCase(),
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    )
-                  : null,
-            ),
-            title: Text(user?.displayName ?? 'Guest'),
-            subtitle: Text(user?.email ?? 'No email'),
-          ),
-          if (kDebugMode && idToken != null) ...[
-            ListTile(
-              title: Text(
-                'Token:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+      builder:
+          (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundImage:
+                      user?.photoURL != null
+                          ? NetworkImage(user!.photoURL!)
+                          : null,
+                  child:
+                      user?.photoURL == null
+                          ? Text(
+                            (user?.displayName ?? 'U')
+                                .substring(0, 1)
+                                .toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                          : null,
+                ),
+                title: Text(user?.displayName ?? 'Guest'),
+                subtitle: Text(user?.email ?? 'No email'),
               ),
-              subtitle: Text(
-                idToken,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 12, fontFamily: 'monospace'),
-              ),
-              trailing: IconButton(
-                icon: Icon(Icons.copy),
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(text: idToken!));
-                  showSnackBar(Text('Copied to clipboard!'));
+              if (kDebugMode && idToken != null) ...[
+                ListTile(
+                  title: Text(
+                    'Token:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    idToken,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12, fontFamily: 'monospace'),
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.copy),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: idToken!));
+                      showSnackBar(Text('Copied to clipboard!'));
+                    },
+                  ),
+                ),
+              ],
+              ListTile(
+                leading: Icon(Icons.logout),
+                title: Text('Sign Out'),
+                onTap: () async {
+                  await Authentication.instance.signOut();
+                  if (context.mounted) context.pop();
                 },
               ),
-            ),
-          ],
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Sign Out'),
-            onTap: () async {
-              await Authentication.instance.signOut();
-              if (context.mounted) context.pop();
-            },
+            ],
           ),
-        ],
-      ),
     );
   }
 }

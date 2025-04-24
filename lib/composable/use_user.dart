@@ -39,8 +39,9 @@ UserData useUser(
     try {
       if (service is! Service) return;
 
-      final record = await ServiceSettingsController.instance
-          .get((service as Service).uid);
+      final record = await ServiceSettingsController.instance.get(
+        (service as Service).uid,
+      );
 
       if (record != null) {
         final json = record.userDataCache;
@@ -53,23 +54,24 @@ UserData useUser(
       (service as Service)
           .fetchUser(row: record, recordLoaded: true)
           .then((value) {
-        if (context != null && (context as State).mounted) {
-          user.value = value;
-        }
-      }).catchError((err) {
-        if (err is UserNotFoundException) {
-          if (context != null && (context as State).mounted) {
-            user.value = null;
-          }
+            if (context != null && (context as State).mounted) {
+              user.value = value;
+            }
+          })
+          .catchError((err) {
+            if (err is UserNotFoundException) {
+              if (context != null && (context as State).mounted) {
+                user.value = null;
+              }
 
-          return;
-        }
-        if (context != null && (context as State).mounted) {
-          error.value = '$err';
-        }
+              return;
+            }
+            if (context != null && (context as State).mounted) {
+              error.value = '$err';
+            }
 
-        debugPrint('Error: $err (${StackTrace.current})');
-      });
+            debugPrint('Error: $err (${StackTrace.current})');
+          });
     } finally {
       fetching.value = false;
     }

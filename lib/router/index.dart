@@ -42,10 +42,11 @@ final List<String> routeIgnoreLayoutDefault = [
 
 /// 日本語のコメント: ルートナビゲーターのためのグローバルキー。
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
-final pageBuilder = (!XPlatform.isAndroid && !XPlatform.isIOS) ||
-        (androidSdkInt != null && androidSdkInt! < 29)
-    ? GoTransitions.zoom.call
-    : null;
+final pageBuilder =
+    (!XPlatform.isAndroid && !XPlatform.isIOS) ||
+            (androidSdkInt != null && androidSdkInt! < 29)
+        ? GoTransitions.zoom.call
+        : null;
 final router = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/home_eiga',
@@ -91,10 +92,12 @@ final router = GoRouter(
               path: '/search',
               name: 'search',
               pageBuilder: pageBuilder,
-              builder: (context, state) => SearchPage(
-                  key: ValueKey(state.uri.queryParameters['q'] ?? ''),
-                  keyword: state.uri.queryParameters['q'] ?? '',
-                  from: state.uri.queryParameters['from']),
+              builder:
+                  (context, state) => SearchPage(
+                    key: ValueKey(state.uri.queryParameters['q'] ?? ''),
+                    keyword: state.uri.queryParameters['q'] ?? '',
+                    from: state.uri.queryParameters['from'],
+                  ),
               routes: [
                 GoRoute(
                   path: 'comic/:sourceId',
@@ -143,17 +146,19 @@ final router = GoRouter(
                   path: 'history/eiga/:sourceId',
                   name: 'history_eiga',
                   pageBuilder: pageBuilder,
-                  builder: (context, state) => HistoryEigaPage(
-                    sourceId: state.pathParameters['sourceId']!,
-                  ),
+                  builder:
+                      (context, state) => HistoryEigaPage(
+                        sourceId: state.pathParameters['sourceId']!,
+                      ),
                 ),
                 GoRoute(
                   path: 'follow/eiga/:sourceId',
                   name: 'follow_eiga',
                   pageBuilder: pageBuilder,
-                  builder: (context, state) => FollowsEigaPage(
-                    sourceId: state.pathParameters['sourceId']!,
-                  ),
+                  builder:
+                      (context, state) => FollowsEigaPage(
+                        sourceId: state.pathParameters['sourceId']!,
+                      ),
                 ),
               ],
             ),
@@ -180,10 +185,11 @@ final router = GoRouter(
       name: 'details_comic',
       pageBuilder: pageBuilder,
       parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => DetailsComic(
-        sourceId: state.pathParameters['sourceId']!,
-        comicId: state.pathParameters['comicId']!,
-      ),
+      builder:
+          (context, state) => DetailsComic(
+            sourceId: state.pathParameters['sourceId']!,
+            comicId: state.pathParameters['comicId']!,
+          ),
       routes: [
         GoRoute(
           path: 'view',
@@ -197,9 +203,10 @@ final router = GoRouter(
               sourceId: state.pathParameters['sourceId']!,
               comicId: state.pathParameters['comicId']!,
               chapterId: chapterId,
-              comic: state.extra != null
-                  ? (state.extra as Map)['comic'] as MetaComic
-                  : null,
+              comic:
+                  state.extra != null
+                      ? (state.extra as Map)['comic'] as MetaComic
+                      : null,
             );
           },
         ),
@@ -208,14 +215,16 @@ final router = GoRouter(
           name: 'similar_comic',
           pageBuilder: pageBuilder,
           parentNavigatorKey: _rootNavigatorKey,
-          builder: (context, state) => SimilarPage(
-            sourceId: state.pathParameters['sourceId']!,
-            comicId: state.pathParameters['comicId']!,
-            comic: (state.extra is Map &&
-                    (state.extra as Map).containsKey('comic'))
-                ? (state.extra as Map)['comic']
-                : null,
-          ),
+          builder:
+              (context, state) => SimilarPage(
+                sourceId: state.pathParameters['sourceId']!,
+                comicId: state.pathParameters['comicId']!,
+                comic:
+                    (state.extra is Map &&
+                            (state.extra as Map).containsKey('comic'))
+                        ? (state.extra as Map)['comic']
+                        : null,
+              ),
         ),
       ],
     ),
@@ -255,8 +264,9 @@ final router = GoRouter(
       name: 'webview',
       pageBuilder: pageBuilder,
       parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) =>
-          WebviewPage(sourceId: state.pathParameters['sourceId']!),
+      builder:
+          (context, state) =>
+              WebviewPage(sourceId: state.pathParameters['sourceId']!),
     ),
 
     // Category Comic Route
@@ -265,10 +275,11 @@ final router = GoRouter(
       name: 'category_comic',
       pageBuilder: pageBuilder,
       parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => CategoryComicPage(
-        sourceId: state.pathParameters['sourceId']!,
-        categoryId: state.pathParameters['categoryId']!,
-      ),
+      builder:
+          (context, state) => CategoryComicPage(
+            sourceId: state.pathParameters['sourceId']!,
+            categoryId: state.pathParameters['categoryId']!,
+          ),
     ),
 
     // Category Eiga Route
@@ -277,10 +288,11 @@ final router = GoRouter(
       name: 'category_eiga',
       pageBuilder: pageBuilder,
       parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => CategoryEigaPage(
-        sourceId: state.pathParameters['sourceId']!,
-        categoryId: state.pathParameters['categoryId']!,
-      ),
+      builder:
+          (context, state) => CategoryEigaPage(
+            sourceId: state.pathParameters['sourceId']!,
+            categoryId: state.pathParameters['categoryId']!,
+          ),
     ),
 
     // Category Service Setting Route
@@ -289,8 +301,9 @@ final router = GoRouter(
       name: 'service_settings',
       pageBuilder: pageBuilder,
       parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) =>
-          ServiceSettingsPage(sourceId: state.pathParameters['sourceId']!),
+      builder:
+          (context, state) =>
+              ServiceSettingsPage(sourceId: state.pathParameters['sourceId']!),
     ),
   ],
 );
@@ -369,18 +382,19 @@ class PersistentScaffold extends StatelessWidget {
   Widget _buildBottomNavigationBar() {
     return Scaffold(
       body: navigationShell, // This area will have transition animations.
-      bottomNavigationBar: showToolbar
-          ? NavigationApp(
-              selectedIndex: navigationShell.currentIndex,
-              rail: false,
-              onDestinationSelected: (index) {
-                navigationShell.goBranch(
-                  index,
-                  initialLocation: index == navigationShell.currentIndex,
-                );
-              },
-            )
-          : null,
+      bottomNavigationBar:
+          showToolbar
+              ? NavigationApp(
+                selectedIndex: navigationShell.currentIndex,
+                rail: false,
+                onDestinationSelected: (index) {
+                  navigationShell.goBranch(
+                    index,
+                    initialLocation: index == navigationShell.currentIndex,
+                  );
+                },
+              )
+              : null,
     );
   }
 }
@@ -388,8 +402,8 @@ class PersistentScaffold extends StatelessWidget {
 class AppScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-        PointerDeviceKind.trackpad,
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.trackpad,
+  };
 }

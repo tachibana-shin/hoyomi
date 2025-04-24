@@ -7,15 +7,15 @@ part of 'web_rule.dart';
 // **************************************************************************
 
 _WebRule _$WebRuleFromJson(Map<String, dynamic> json) => _WebRule(
-      regexFilter: json['regexFilter'] as String?,
-      shortRegexFilter: json['shortRegexFilter'] as String?,
-      urlFilter: json['urlFilter'] as String?,
-      referer: json['referer'] as String,
-    );
+  regexFilter: json['regexFilter'] as String?,
+  shortRegexFilter: json['shortRegexFilter'] as String?,
+  urlFilter: json['urlFilter'] as String?,
+  referer: json['referer'] as String,
+);
 
 Map<String, dynamic> _$WebRuleToJson(_WebRule instance) => <String, dynamic>{
-      'regexFilter': instance.regexFilter,
-      'shortRegexFilter': instance.shortRegexFilter,
-      'urlFilter': instance.urlFilter,
-      'referer': instance.referer,
-    };
+  'regexFilter': instance.regexFilter,
+  'shortRegexFilter': instance.shortRegexFilter,
+  'urlFilter': instance.urlFilter,
+  'referer': instance.referer,
+};

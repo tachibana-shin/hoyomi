@@ -12,9 +12,8 @@ part 'list_watch_history.g.dart';
 /// An array of watch history items. Schema representing an individual watch history item.
 @Freezed()
 sealed class ListWatchHistory with _$ListWatchHistory {
-  const factory ListWatchHistory({
-    required List<Data> data,
-  }) = _ListWatchHistory;
+  const factory ListWatchHistory({required List<Data> data}) =
+      _ListWatchHistory;
 
   factory ListWatchHistory.fromJson(Map<String, Object?> json) =>
       _$ListWatchHistoryFromJson(json);

@@ -16,6 +16,6 @@ sealed class PostApiComicSetWatchPageResponse
   }) = _PostApiComicSetWatchPageResponse;
 
   factory PostApiComicSetWatchPageResponse.fromJson(
-          Map<String, Object?> json) =>
-      _$PostApiComicSetWatchPageResponseFromJson(json);
+    Map<String, Object?> json,
+  ) => _$PostApiComicSetWatchPageResponseFromJson(json);
 }

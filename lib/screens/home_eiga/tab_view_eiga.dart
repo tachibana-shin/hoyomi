@@ -59,9 +59,10 @@ class _TabViewEigaState extends State<TabViewEiga>
                       .toList(),
                 ),
                 title: category.name,
-                more: category.categoryId != null
-                    ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
-                    : null,
+                more:
+                    category.categoryId != null
+                        ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
+                        : null,
               );
             }
 
@@ -69,17 +70,16 @@ class _TabViewEigaState extends State<TabViewEiga>
               itemsFuture: Future.value(
                 category.items
                     .map(
-                      (item) => EigaExtend(
-                        eiga: item,
-                        sourceId: widget.service.uid,
-                      ),
+                      (item) =>
+                          EigaExtend(eiga: item, sourceId: widget.service.uid),
                     )
                     .toList(),
               ),
               title: category.name,
-              more: category.categoryId != null
-                  ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
-                  : null,
+              more:
+                  category.categoryId != null
+                      ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
+                      : null,
             );
           },
         );

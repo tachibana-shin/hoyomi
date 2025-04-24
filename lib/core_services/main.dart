@@ -16,20 +16,25 @@ import 'eiga/services/kkphim/main.dart';
 import 'eiga/services/nguonc/main.dart';
 import 'eiga/services/ophim/main.dart';
 
-final _allComicServices = Map.fromEntries([
-  TruyenGGService(),
-  TruyenQQService(),
-].map((service) => MapEntry(service.uid, service)));
-final _allEigaServices = Map.fromEntries([
-  AnimeVietsubService(),
-  OPhimService(),
-  KKPhimService(),
-  NguonCService(),
-  HiAnimeService(),
-].map((service) => MapEntry(service.uid, service)));
+final _allComicServices = Map.fromEntries(
+  [
+    TruyenGGService(),
+    TruyenQQService(),
+  ].map((service) => MapEntry(service.uid, service)),
+);
+final _allEigaServices = Map.fromEntries(
+  [
+    AnimeVietsubService(),
+    OPhimService(),
+    KKPhimService(),
+    NguonCService(),
+    HiAnimeService(),
+  ].map((service) => MapEntry(service.uid, service)),
+);
 
-final comicServices =
-    Ref<List<ABComicService>>(_allComicServices.values.toList());
+final comicServices = Ref<List<ABComicService>>(
+  _allComicServices.values.toList(),
+);
 
 ABComicService getComicService(String id) {
   for (final service in comicServices.value) {
@@ -62,45 +67,51 @@ Future<void> _setupServices() async {
   final settings = await GeneralSettingsController.instance.get();
 
   if (settings?.sortComicService != null) {
-    comicServices.value = settings!.sortComicService!
-        .map((id) {
-          final service = _allComicServices[id];
-          if (service == null) {
-            showSnackBar(Text('Service $id not install.'));
-          }
+    comicServices.value =
+        settings!.sortComicService!
+            .map((id) {
+              final service = _allComicServices[id];
+              if (service == null) {
+                showSnackBar(Text('Service $id not install.'));
+              }
 
-          return service;
-        })
-        .whereType<ABComicService>()
-        .toList();
+              return service;
+            })
+            .whereType<ABComicService>()
+            .toList();
   }
   // eiga services
   if (settings?.sortEigaService != null) {
-    eigaServices.value = settings!.sortEigaService!
-        .map((id) {
-          final service = _allEigaServices[id];
-          if (service == null) {
-            showSnackBar(Text('Service $id not install.'));
-          }
+    eigaServices.value =
+        settings!.sortEigaService!
+            .map((id) {
+              final service = _allEigaServices[id];
+              if (service == null) {
+                showSnackBar(Text('Service $id not install.'));
+              }
 
-          return service;
-        })
-        .whereType<ABEigaService>()
-        .toList();
+              return service;
+            })
+            .whereType<ABEigaService>()
+            .toList();
   }
 
   // watch change
   watch$([comicServices], () {
-    GeneralSettingsController.instance.save((settings) => settings.copyWith(
-          sortComicService:
-              comicServices.value.map((service) => service.uid).toList(),
-        ));
+    GeneralSettingsController.instance.save(
+      (settings) => settings.copyWith(
+        sortComicService:
+            comicServices.value.map((service) => service.uid).toList(),
+      ),
+    );
   });
   watch$([eigaServices], () {
-    GeneralSettingsController.instance.save((settings) => settings.copyWith(
-          sortEigaService:
-              eigaServices.value.map((service) => service.uid).toList(),
-        ));
+    GeneralSettingsController.instance.save(
+      (settings) => settings.copyWith(
+        sortEigaService:
+            eigaServices.value.map((service) => service.uid).toList(),
+      ),
+    );
   });
 }
 
@@ -113,7 +124,8 @@ Service getService(String uid) {
 }
 
 final allServices = Computed<List<Service>>(
-    () => [...comicServices.value, ...eigaServices.value]);
+  () => [...comicServices.value, ...eigaServices.value],
+);
 
 Future<void> initializeServices([List<Service>? services]) async {
   _setupServices();

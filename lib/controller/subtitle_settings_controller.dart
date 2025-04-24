@@ -26,7 +26,9 @@ class SubtitleSettingsController extends ChangeNotifier {
 
   Future<void> save(SubtitleSettings settings) async {
     await asyncPrefs.setString(
-        'subtitle_settings/default', jsonEncode(settings.toJson()));
+      'subtitle_settings/default',
+      jsonEncode(settings.toJson()),
+    );
     _cacheDefault = settings;
     notifyListeners();
   }

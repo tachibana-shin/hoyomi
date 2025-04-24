@@ -15,14 +15,16 @@ mixin ComicAuthMixin implements AuthMixin {
     String? chapterId,
     ComicComment? parent,
     int? page,
-  })? get getComments;
+  })?
+  get getComments;
 
   Future<void> Function({
     required String comicId,
     String? chapterId,
     ComicComment? parent,
     required ComicComment comment,
-  })? get deleteComment;
+  })?
+  get deleteComment;
 
   Future<bool> Function({
     required String comicId,
@@ -30,5 +32,6 @@ mixin ComicAuthMixin implements AuthMixin {
     ComicComment? parent,
     required ComicComment comment,
     required bool value,
-  })? get setLikeComment;
+  })?
+  get setLikeComment;
 }

@@ -55,8 +55,9 @@ class _DetailsComicState extends State<DetailsComic>
   late final _isTitleVisible = ref(false);
   late final _comic = ref<MetaComic>(MetaComic.createFakeData());
   late final _comicIsFake = _comic.select((value) => value.fake);
-  late final _title =
-      computed(() => _comic.value.fake ? '' : _comic.value.name);
+  late final _title = computed(
+    () => _comic.value.fake ? '' : _comic.value.name,
+  );
   late final _suggest = computed<Future<List<Comic>?>>(() async {
     if (_comicIsFake.value) {
       return Completer<List<Comic>>().future;
@@ -68,46 +69,46 @@ class _DetailsComicState extends State<DetailsComic>
       return null;
     }
   });
-  late final _watchPageChapters =
-      asyncComputed<Map<String, WatchPageUpdated>?>(() async {
-    if (_comicIsFake.value) return null;
+  late final _watchPageChapters = asyncComputed<Map<String, WatchPageUpdated>?>(
+    () async {
+      if (_comicIsFake.value) return null;
 
-    if (_service is ComicWatchPageMixin) {
-      final chapters = _comic.value.chapters;
+      if (_service is ComicWatchPageMixin) {
+        final chapters = _comic.value.chapters;
 
-      try {
-        return await (_service as ComicWatchPageMixin).getWatchPageEpisodes(
-          comicId: widget.comicId,
-          chapters: chapters,
-        );
-      } on UnimplementedError {
-        return null;
+        try {
+          return await (_service as ComicWatchPageMixin).getWatchPageEpisodes(
+            comicId: widget.comicId,
+            chapters: chapters,
+          );
+        } on UnimplementedError {
+          return null;
+        }
       }
-    }
 
-    return null;
-  }, beforeUpdate: () => null);
+      return null;
+    },
+    beforeUpdate: () => null,
+  );
   late final _lastReadChapter =
       computed<({ComicChapter chapter, WatchPageUpdated watchPage})?>(() {
-    final watchPage = _watchPageChapters.value?.entries
-        .fold<MapEntry<String, WatchPageUpdated>?>(
-      null,
-      (prev, element) {
-        if (prev == null) return element;
-        return element.value.updatedAt.isAfter(prev.value.updatedAt)
-            ? element
-            : prev;
-      },
-    );
+        final watchPage = _watchPageChapters.value?.entries
+            .fold<MapEntry<String, WatchPageUpdated>?>(null, (prev, element) {
+              if (prev == null) return element;
+              return element.value.updatedAt.isAfter(prev.value.updatedAt)
+                  ? element
+                  : prev;
+            });
 
-    if (watchPage == null) return null;
+        if (watchPage == null) return null;
 
-    final chapter = _comic.value.chapters
-        .firstWhereOrNull((chapter) => chapter.chapterId == watchPage.key);
-    if (chapter == null) return null;
+        final chapter = _comic.value.chapters.firstWhereOrNull(
+          (chapter) => chapter.chapterId == watchPage.key,
+        );
+        if (chapter == null) return null;
 
-    return (chapter: chapter, watchPage: watchPage.value);
-  });
+        return (chapter: chapter, watchPage: watchPage.value);
+      });
 
   @override
   void initState() {
@@ -128,76 +129,83 @@ class _DetailsComicState extends State<DetailsComic>
   @override
   Widget build(BuildContext context2) {
     return PullRefreshPage(
-      onLoadData: () => _service
-          .getDetails(widget.comicId)
-          .then((comic) => _comic.value = comic),
+      onLoadData:
+          () => _service
+              .getDetails(widget.comicId)
+              .then((comic) => _comic.value = comic),
       onLoadFake: () => _comic.value = MetaComic.createFakeData(),
-      builderError: (body) => Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          scrolledUnderElevation: 0.0,
-          leading: IconButton(
-            icon: const Iconify(Ion.chevron_left),
-            onPressed: () {
-              context.pop();
-            },
-          ),
-        ),
-        body: body,
-      ),
-      builder: (comic, _) => Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          scrolledUnderElevation: 0.0,
-          leading: IconButton(
-            icon: Iconify(Ion.chevron_left),
-            onPressed: () {
-              context.pop();
-            },
-          ),
-          title: Watch(() => AnimatedOpacity(
-                duration: const Duration(milliseconds: 200),
-                opacity: _isTitleVisible.value ? 1.0 : 0.0,
-                child: Text(_title.value),
-              )),
-          actions: [
-            if (_service is ComicAuthMixin && AuthMixin.support(_service))
-              _AvatarUser(service: _service),
-            IconButtonShare(),
-            Watch(() => IconButtonFollow(
-                  sourceId: widget.sourceId,
-                  comicId: widget.comicId,
-                  comic: _comic.value,
-                )),
-            PopupMenuButton<String>(
-              onSelected: (value) {
-                _handleMenuSelection(context, value);
-              },
-              itemBuilder: (BuildContext context) {
-                return [
-                  _buildMenuItem('download', 'Download'),
-                  _buildMenuItem('find_similar', 'Find similar'),
-                  _buildMenuItem('open_browser', 'Open with browser'),
-                  _buildMenuItem('create_shortcut', 'Create shortcut'),
-                ];
-              },
+      builderError:
+          (body) => Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              scrolledUnderElevation: 0.0,
+              leading: IconButton(
+                icon: const Iconify(Ion.chevron_left),
+                onPressed: () {
+                  context.pop();
+                },
+              ),
             ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(
-            16.0,
-          ).add(EdgeInsets.only(bottom: 15.h(context))),
-          controller: _scrollController,
-          child: _buildContainer(comic),
-        ),
-        bottomSheet: BottomSheet(
-          animationController: _bottomSheetAnimationController,
-          showDragHandle: true,
-          builder: (context) => _buildSheetChapters(),
-          onClosing: () {},
-        ),
-      ),
+            body: body,
+          ),
+      builder:
+          (comic, _) => Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              scrolledUnderElevation: 0.0,
+              leading: IconButton(
+                icon: Iconify(Ion.chevron_left),
+                onPressed: () {
+                  context.pop();
+                },
+              ),
+              title: Watch(
+                () => AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: _isTitleVisible.value ? 1.0 : 0.0,
+                  child: Text(_title.value),
+                ),
+              ),
+              actions: [
+                if (_service is ComicAuthMixin && AuthMixin.support(_service))
+                  _AvatarUser(service: _service),
+                IconButtonShare(),
+                Watch(
+                  () => IconButtonFollow(
+                    sourceId: widget.sourceId,
+                    comicId: widget.comicId,
+                    comic: _comic.value,
+                  ),
+                ),
+                PopupMenuButton<String>(
+                  onSelected: (value) {
+                    _handleMenuSelection(context, value);
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      _buildMenuItem('download', 'Download'),
+                      _buildMenuItem('find_similar', 'Find similar'),
+                      _buildMenuItem('open_browser', 'Open with browser'),
+                      _buildMenuItem('create_shortcut', 'Create shortcut'),
+                    ];
+                  },
+                ),
+              ],
+            ),
+            body: SingleChildScrollView(
+              padding: EdgeInsets.all(
+                16.0,
+              ).add(EdgeInsets.only(bottom: 15.h(context))),
+              controller: _scrollController,
+              child: _buildContainer(comic),
+            ),
+            bottomSheet: BottomSheet(
+              animationController: _bottomSheetAnimationController,
+              showDragHandle: true,
+              builder: (context) => _buildSheetChapters(),
+              onClosing: () {},
+            ),
+          ),
     );
   }
 
@@ -376,17 +384,18 @@ class _DetailsComicState extends State<DetailsComic>
         Wrap(
           spacing: 8.0,
           runSpacing: 4.0,
-          children: comic.genres.map((genre) {
-            return InkWell(
-              onTap: () {
-                ///
-                context.push(
-                  "/category_comic/${_service.uid}/${genre.genreId}",
+          children:
+              comic.genres.map((genre) {
+                return InkWell(
+                  onTap: () {
+                    ///
+                    context.push(
+                      "/category_comic/${_service.uid}/${genre.genreId}",
+                    );
+                  },
+                  child: Chip(label: Text(genre.name)),
                 );
-              },
-              child: Chip(label: Text(genre.name)),
-            );
-          }).toList(),
+              }).toList(),
         ),
         SizedBox(height: 24.0),
         _buildSuggest(comic),
@@ -402,24 +411,28 @@ class _DetailsComicState extends State<DetailsComic>
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Watch(() {
-            final comic = _comic.value;
-            final lastReadChapter = _lastReadChapter.value;
-            final watchPageChapters = _watchPageChapters.value;
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Watch(() {
+              final comic = _comic.value;
+              final lastReadChapter = _lastReadChapter.value;
+              final watchPageChapters = _watchPageChapters.value;
 
-            return Table(
-              columnWidths: const {
-                0: FixedColumnWidth(100),
-                1: FlexColumnWidth(),
-              },
-              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              children: [
-                _buildTableRow(
+              return Table(
+                columnWidths: const {
+                  0: FixedColumnWidth(100),
+                  1: FlexColumnWidth(),
+                },
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                children: [
+                  _buildTableRow(
                     'Source',
                     null,
-                    Row(mainAxisSize: MainAxisSize.min, children: [
-                      SizedBox(
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
                           width: 24,
                           height: 24,
                           child: CircleAvatar(
@@ -430,103 +443,114 @@ class _DetailsComicState extends State<DetailsComic>
                               sourceId: _service.uid,
                               fit: BoxFit.cover,
                             ),
-                          )),
-                      Text(
-                        _service.name,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.start,
-                      )
-                    ])),
-                // if (comic.author != null)
-                //   _buildTableRow('Author', comic.author!),
-                if (comic.translator != null)
-                  _buildTableRow('Translate', comic.translator!),
-                if (comic.rate != null)
-                  _buildTableRow(
-                    'Rate',
-                    null,
-                    Row(
-                      children: [
-                        ...List.generate(
-                          comic.rate!.value.floor(),
-                          (index) => Icon(
-                            Icons.star,
-                            size: 16.0,
-                            color: Colors.blue.shade200,
                           ),
                         ),
-                        if (comic.rate!.value % 1 != 0)
-                          Icon(
-                            Icons.star_half,
-                            size: 16.0,
-                            color: Colors.blue.shade200,
-                          ),
-                        ...List.generate(
-                          (comic.rate!.best - comic.rate!.value).floor(),
-                          (index) => Icon(
-                            Icons.star,
-                            size: 16.0,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurfaceVariant
-                                .withValues(alpha: 0.5),
-                          ),
-                        ),
-                        const SizedBox(width: 4.0),
                         Text(
-                          "(${comic.rate!.count})",
+                          _service.name,
                           style: TextStyle(
-                            fontSize: 14.0,
-                            color: Theme.of(context).colorScheme.inverseSurface,
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontSize: 14,
                           ),
+                          textAlign: TextAlign.start,
                         ),
                       ],
                     ),
                   ),
-                // _buildTableRow(
-                //     'Status',
-                //     switch (comic.status) {
-                //       StatusEnum.ongoing => "On going",
-                //       StatusEnum.completed => "Completed",
-                //       StatusEnum.canceled => "Canceled",
-                //       StatusEnum.unknown => "Unknown",
-                //       StatusEnum.onHiatus => "On hiatus",
-                //       StatusEnum.publishingFinished => "Publishing finished",
-                //     }),
-                if (comic.views != null)
-                  _buildTableRow('Views', formatNumber(comic.views!)),
-                _buildTableRow(
-                    'Last Updated', formatTimeAgo(comic.lastModified)),
-                if (lastReadChapter != null)
-                  _buildTableRow('Last Read',
-                      '${lastReadChapter.chapter.name} of ${comic.chapters.length}'),
-                if (watchPageChapters != null)
-                  TableRow(children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Text(
-                        'Read Progress',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Theme.of(context).colorScheme.onSurface,
+                  // if (comic.author != null)
+                  //   _buildTableRow('Author', comic.author!),
+                  if (comic.translator != null)
+                    _buildTableRow('Translate', comic.translator!),
+                  if (comic.rate != null)
+                    _buildTableRow(
+                      'Rate',
+                      null,
+                      Row(
+                        children: [
+                          ...List.generate(
+                            comic.rate!.value.floor(),
+                            (index) => Icon(
+                              Icons.star,
+                              size: 16.0,
+                              color: Colors.blue.shade200,
+                            ),
+                          ),
+                          if (comic.rate!.value % 1 != 0)
+                            Icon(
+                              Icons.star_half,
+                              size: 16.0,
+                              color: Colors.blue.shade200,
+                            ),
+                          ...List.generate(
+                            (comic.rate!.best - comic.rate!.value).floor(),
+                            (index) => Icon(
+                              Icons.star,
+                              size: 16.0,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant
+                                  .withValues(alpha: 0.5),
+                            ),
+                          ),
+                          const SizedBox(width: 4.0),
+                          Text(
+                            "(${comic.rate!.count})",
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color:
+                                  Theme.of(context).colorScheme.inverseSurface,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  // _buildTableRow(
+                  //     'Status',
+                  //     switch (comic.status) {
+                  //       StatusEnum.ongoing => "On going",
+                  //       StatusEnum.completed => "Completed",
+                  //       StatusEnum.canceled => "Canceled",
+                  //       StatusEnum.unknown => "Unknown",
+                  //       StatusEnum.onHiatus => "On hiatus",
+                  //       StatusEnum.publishingFinished => "Publishing finished",
+                  //     }),
+                  if (comic.views != null)
+                    _buildTableRow('Views', formatNumber(comic.views!)),
+                  _buildTableRow(
+                    'Last Updated',
+                    formatTimeAgo(comic.lastModified),
+                  ),
+                  if (lastReadChapter != null)
+                    _buildTableRow(
+                      'Last Read',
+                      '${lastReadChapter.chapter.name} of ${comic.chapters.length}',
+                    ),
+                  if (watchPageChapters != null)
+                    TableRow(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: Text(
+                            'Read Progress',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                          ),
                         ),
-                      ),
+                        Text(
+                          '${((watchPageChapters.values.fold(0.0, (prev, item) => prev + item.currentPage / item.totalPage) / comic.chapters.length) * 100).round()}%',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      '${((watchPageChapters.values.fold(0.0, (prev, item) => prev + item.currentPage / item.totalPage) / comic.chapters.length) * 100).round()}%',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ]),
-              ],
-            );
-          }),
-        ]),
+                ],
+              );
+            }),
+          ],
+        ),
       ),
     );
   }
@@ -695,18 +719,22 @@ class _DetailsComicState extends State<DetailsComic>
   // }
 
   Widget _buildSuggest(MetaComic comic) {
-    return Watch(() => HorizontalComicList(
-          itemsFuture: _suggest.value.then(
-            (value) =>
-                value
-                    ?.map((comic) =>
-                        ComicExtend(comic: comic, sourceId: _service.uid))
-                    .toList() ??
-                const <ComicExtend>[],
-          ),
-          // totalItems: _suggestFuture!.then((value) => value.totalItems),
-          title: 'Suggest',
-        ));
+    return Watch(
+      () => HorizontalComicList(
+        itemsFuture: _suggest.value.then(
+          (value) =>
+              value
+                  ?.map(
+                    (comic) =>
+                        ComicExtend(comic: comic, sourceId: _service.uid),
+                  )
+                  .toList() ??
+              const <ComicExtend>[],
+        ),
+        // totalItems: _suggestFuture!.then((value) => value.totalItems),
+        title: 'Suggest',
+      ),
+    );
   }
 
   PopupMenuItem<String> _buildMenuItem(String id, String text) {
@@ -735,17 +763,19 @@ class _DetailsComicState extends State<DetailsComic>
   }
 
   Widget _buildSheetChapters() {
-    return Watch(() => SheetChapters(
-          comic: _comic.value,
-          sourceId: widget.sourceId,
-          comicId: widget.comicId,
-          watchPageChapters:
-              _watchPageChapters.value ?? const <String, WatchPageUpdated>{},
-          lastReadChapter: _lastReadChapter.value,
-          reverse: true,
-          // histories: _historyChapters.value,
-          initialChildSize: 0.15,
-        ));
+    return Watch(
+      () => SheetChapters(
+        comic: _comic.value,
+        sourceId: widget.sourceId,
+        comicId: widget.comicId,
+        watchPageChapters:
+            _watchPageChapters.value ?? const <String, WatchPageUpdated>{},
+        lastReadChapter: _lastReadChapter.value,
+        reverse: true,
+        // histories: _historyChapters.value,
+        initialChildSize: 0.15,
+      ),
+    );
   }
 }
 
@@ -823,16 +853,17 @@ class _ButtonLikeState extends State<_ButtonLike> {
       (widget.service as ComicAuthMixin)
           .isLiked(comicId: widget.comicId)
           .then((liked) {
-        if (mounted) {
-          setState(() {
-            _liked = liked;
+            if (mounted) {
+              setState(() {
+                _liked = liked;
+              });
+            }
+          })
+          .catchError((error) {
+            if (error is! CaptchaRequiredException) {
+              showSnackError('like', error); // 显示錯誤訊息
+            }
           });
-        }
-      }).catchError((error) {
-        if (error is! CaptchaRequiredException) {
-          showSnackError('like', error); // 显示錯誤訊息
-        }
-      });
     }
   }
 
@@ -840,27 +871,31 @@ class _ButtonLikeState extends State<_ButtonLike> {
     (widget.service as ComicAuthMixin)
         .setLike(comicId: widget.comicId, value: !(_liked ?? false))
         .then((value) {
-      if (mounted) {
-        setState(() {
-          _liked = value;
-          _likes =
-              value ? (widget.comic.likes ?? 0) + 1 : widget.comic.likes! - 1;
+          if (mounted) {
+            setState(() {
+              _liked = value;
+              _likes =
+                  value
+                      ? (widget.comic.likes ?? 0) + 1
+                      : widget.comic.likes! - 1;
+            });
+          }
+        })
+        .catchError((error) {
+          if (error is! CaptchaRequiredException) {
+            showSnackError('like', error); // 显示錯誤訊息
+          }
         });
-      }
-    }).catchError((error) {
-      if (error is! CaptchaRequiredException) {
-        showSnackError('like', error); // 显示錯誤訊息
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (widget.service is ComicAuthMixin &&
-              !(widget.service as AuthMixin).$noAuth)
-          ? _onTap
-          : null,
+      onTap:
+          (widget.service is ComicAuthMixin &&
+                  !(widget.service as AuthMixin).$noAuth)
+              ? _onTap
+              : null,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(30.0),
         child: Padding(

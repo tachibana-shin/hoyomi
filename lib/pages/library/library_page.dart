@@ -24,8 +24,10 @@ class _LibraryPageState extends State<LibraryPage>
     return Watch(() {
       if (_tabController?.length != eigaServices.value.length) {
         _tabController?.dispose();
-        _tabController =
-            TabController(length: eigaServices.value.length, vsync: this);
+        _tabController = TabController(
+          length: eigaServices.value.length,
+          vsync: this,
+        );
       }
 
       return Scaffold(
@@ -42,16 +44,18 @@ class _LibraryPageState extends State<LibraryPage>
             controller: _tabController,
             isScrollable: true,
             splashBorderRadius: BorderRadius.circular(35.0),
-            tabs: eigaServices.value
-                .map((service) => Tab(text: service.name))
-                .toList(),
+            tabs:
+                eigaServices.value
+                    .map((service) => Tab(text: service.name))
+                    .toList(),
           ),
         ),
         body: TabBarView(
           controller: _tabController,
-          children: eigaServices.value
-              .map((service) => _TabView(sourceId: service.uid))
-              .toList(),
+          children:
+              eigaServices.value
+                  .map((service) => _TabView(sourceId: service.uid))
+                  .toList(),
         ),
       );
     });

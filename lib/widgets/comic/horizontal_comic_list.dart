@@ -69,14 +69,15 @@ class HorizontalComicList extends StatelessWidget {
             title: title,
             subtitle: subtitle,
             more: more,
-            builder: (viewFraction) => Center(
-              child: Service.errorWidgetBuilder(
-                context,
-                error: snapshot.error,
-                service: null,
-                orElse: (error) => Text('Error: $error'),
-              ),
-            ),
+            builder:
+                (viewFraction) => Center(
+                  child: Service.errorWidgetBuilder(
+                    context,
+                    error: snapshot.error,
+                    service: null,
+                    orElse: (error) => Text('Error: $error'),
+                  ),
+                ),
             titleLength: 1,
             itemSubtitle: false,
             itemTimeAgo: false,
@@ -103,11 +104,13 @@ class HorizontalComicList extends StatelessWidget {
           titleLength: snapshot.data!
               .map((item) => item.comic.name.length)
               .reduce((max, length) => length > max ? length : max),
-          itemSubtitle: snapshot.data!.firstWhereOrNull(
+          itemSubtitle:
+              snapshot.data!.firstWhereOrNull(
                 (comic) => VerticalComic.existsSubtitle(comic.comic),
               ) !=
               null,
-          itemTimeAgo: snapshot.data!.firstWhereOrNull(
+          itemTimeAgo:
+              snapshot.data!.firstWhereOrNull(
                 (comic) => VerticalComic.existsTimeAgo(comic.comic),
               ) !=
               null,

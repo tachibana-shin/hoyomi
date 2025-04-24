@@ -46,22 +46,18 @@ class CardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final widgetStar = switch (rate) {
       (!= null && != 0) => Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Iconify(
-              Eva.star_fill,
-              color: Colors.blue.shade200,
-              size: 12.0,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Iconify(Eva.star_fill, color: Colors.blue.shade200, size: 12.0),
+          Text(
+            ' $rate',
+            style: TextStyle(
+              fontSize: 10.0,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
-            Text(
-              ' $rate',
-              style: TextStyle(
-                fontSize: 10.0,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
+      ),
       _ => null,
     };
 
@@ -90,15 +86,16 @@ class CardItem extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
                     child: Skeleton.replace(
-                        replacement: Image.asset(
-                          'assets/images/blank.png',
-                          fit: BoxFit.cover,
-                        ),
-                        child: OImage.oNetwork(
-                          image,
-                          sourceId: sourceId,
-                          fit: BoxFit.cover,
-                        )),
+                      replacement: Image.asset(
+                        'assets/images/blank.png',
+                        fit: BoxFit.cover,
+                      ),
+                      child: OImage.oNetwork(
+                        image,
+                        sourceId: sourceId,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
 
@@ -109,45 +106,44 @@ class CardItem extends StatelessWidget {
                     left: 0,
                     right: 4,
                     child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Wrap(
+                          alignment: WrapAlignment.end,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(
+                                left: 8.0,
+                                right: 8.0,
+                                top: 4.0,
+                                bottom: 4.0,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.surfaceContainer,
+                                borderRadius: BorderRadius.circular(14.0),
+                              ),
+                              child: Text(
+                                notice!,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodySmall?.copyWith(fontSize: 10.0),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (extend.isNotEmpty)
                           Wrap(
                             alignment: WrapAlignment.end,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.only(
-                                  left: 8.0,
-                                  right: 8.0,
-                                  top: 4.0,
-                                  bottom: 4.0,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .surfaceContainer,
-                                  borderRadius: BorderRadius.circular(14.0),
-                                ),
-                                child: Text(
-                                  notice!,
-                                  style: Theme.of(
-                                    context,
-                                  )
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(fontSize: 10.0),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
+                            spacing: 2,
+                            children: extend,
                           ),
-                          if (extend.isNotEmpty)
-                            Wrap(
-                              alignment: WrapAlignment.end,
-                              spacing: 2,
-                              children: extend,
-                            ),
-                        ]),
+                      ],
+                    ),
                   ),
 
                 // bottom
@@ -209,27 +205,29 @@ class CardItem extends StatelessWidget {
                 //         ),
                 //     ])),
                 // ),
-
                 if (widgetStar != null)
                   Positioned(
                     bottom: 4,
                     left: 4,
                     right: 0,
-                    child: Wrap(children: [
-                      Container(
-                        padding: const EdgeInsets.only(
-                          left: 8.0,
-                          right: 8.0,
-                          top: 4.0,
-                          bottom: 4.0,
+                    child: Wrap(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(
+                            left: 8.0,
+                            right: 8.0,
+                            top: 4.0,
+                            bottom: 4.0,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).colorScheme.surfaceContainer,
+                            borderRadius: BorderRadius.circular(14.0),
+                          ),
+                          child: widgetStar,
                         ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surfaceContainer,
-                          borderRadius: BorderRadius.circular(14.0),
-                        ),
-                        child: widgetStar,
-                      ),
-                    ]),
+                      ],
+                    ),
                   ),
 
                 // progress read
@@ -306,10 +304,9 @@ class CardItem extends StatelessWidget {
                 formatTimeAgo(timeAgo!),
                 style: TextStyle(
                   fontSize: 12.0,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .secondary
-                      .withValues(alpha: 0.8),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.secondary.withValues(alpha: 0.8),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

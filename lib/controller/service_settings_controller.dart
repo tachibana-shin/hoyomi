@@ -24,7 +24,9 @@ class ServiceSettingsController {
 
   Future<void> save(String name, ServiceSettings settings) async {
     await asyncPrefs.setString(
-        'service_settings/$name', jsonEncode(settings.toJson()));
+      'service_settings/$name',
+      jsonEncode(settings.toJson()),
+    );
     _cacheStore[name] = settings;
   }
 }

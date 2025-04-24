@@ -16,10 +16,8 @@ sealed class DurationRange with _$DurationRange {
 
 @freezed
 sealed class OpeningEnding with _$OpeningEnding {
-  const factory OpeningEnding({
-    DurationRange? opening,
-    DurationRange? ending,
-  }) = _OpeningEnding;
+  const factory OpeningEnding({DurationRange? opening, DurationRange? ending}) =
+      _OpeningEnding;
 
   factory OpeningEnding.fromJson(Map<String, dynamic> json) =>
       _$OpeningEndingFromJson(json);

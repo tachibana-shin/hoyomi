@@ -28,9 +28,11 @@ class DQuery {
   /// final firstParagraph = $('p', single: true);
   /// ```
   static DollarFunction fromDocument(Document document) {
-    return (String selector, {single = false}) => DQuery(single
-        ? [document.querySelector(selector)].whereType<Element>().toList()
-        : document.querySelectorAll(selector));
+    return (String selector, {single = false}) => DQuery(
+      single
+          ? [document.querySelector(selector)].whereType<Element>().toList()
+          : document.querySelectorAll(selector),
+    );
   }
 
   // --- Properties ---
@@ -97,10 +99,11 @@ class DQuery {
 
   /// Gets the immediately following sibling of each element in the set of matched elements.
   DQuery next() {
-    final nextElements = _elements
-        .map((e) => e.nextElementSibling)
-        .whereType<Element>()
-        .toList();
+    final nextElements =
+        _elements
+            .map((e) => e.nextElementSibling)
+            .whereType<Element>()
+            .toList();
     return DQuery(nextElements);
   }
 

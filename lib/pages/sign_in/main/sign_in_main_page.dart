@@ -42,13 +42,17 @@ class _SignInMainPageState extends State<SignInMainPage> {
         if (!snapshot.hasData) {
           _signed = false;
           return Scaffold(
-              appBar: AppBar(title: Text(_isSigningIn ? 'Sign in' : 'Sign up')),
-              body: ListView(padding: const EdgeInsets.all(24.0), children: [
+            appBar: AppBar(title: Text(_isSigningIn ? 'Sign in' : 'Sign up')),
+            body: ListView(
+              padding: const EdgeInsets.all(24.0),
+              children: [
                 _buildEmailAuth(),
                 const Divider(),
                 SizedBox(height: 15),
-                _buildOAuth2()
-              ]));
+                _buildOAuth2(),
+              ],
+            ),
+          );
         }
 
         Future.microtask(() {
@@ -74,9 +78,10 @@ class _SignInMainPageState extends State<SignInMainPage> {
               autovalidateMode: AutovalidateMode.onUserInteraction,
               autofocus: true,
               focusNode: _emailFocusNode,
-              textInputAction: _isRecoveringPassword
-                  ? TextInputAction.done
-                  : TextInputAction.next,
+              textInputAction:
+                  _isRecoveringPassword
+                      ? TextInputAction.done
+                      : TextInputAction.next,
               validator: (value) {
                 if (value == null ||
                     value.isEmpty ||
@@ -100,9 +105,10 @@ class _SignInMainPageState extends State<SignInMainPage> {
             if (!_isRecoveringPassword) ...[
               SizedBox(height: 16),
               TextFormField(
-                autofillHints: _isSigningIn
-                    ? [AutofillHints.password]
-                    : [AutofillHints.newPassword],
+                autofillHints:
+                    _isSigningIn
+                        ? [AutofillHints.password]
+                        : [AutofillHints.newPassword],
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 textInputAction:
                     !_isSigningIn ? TextInputAction.next : TextInputAction.done,
@@ -141,16 +147,17 @@ class _SignInMainPageState extends State<SignInMainPage> {
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _signInSignUp,
-                child: _isLoading
-                    ? SizedBox(
-                        height: 16,
-                        width: 16,
-                        child: CircularProgressIndicator(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          strokeWidth: 1.5,
-                        ),
-                      )
-                    : Text(_isSigningIn ? 'Sign in' : 'Sign up'),
+                child:
+                    _isLoading
+                        ? SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            strokeWidth: 1.5,
+                          ),
+                        )
+                        : Text(_isSigningIn ? 'Sign in' : 'Sign up'),
               ),
               SizedBox(height: 16),
               if (_isSigningIn) ...[
@@ -171,9 +178,11 @@ class _SignInMainPageState extends State<SignInMainPage> {
                     _isSigningIn = !_isSigningIn;
                   });
                 },
-                child: Text(_isSigningIn
-                    ? 'Don\'t have an account? Sign up'
-                    : 'Already have an account? Sign in'),
+                child: Text(
+                  _isSigningIn
+                      ? 'Don\'t have an account? Sign up'
+                      : 'Already have an account? Sign in',
+                ),
               ),
             ],
             if (_isSigningIn && _isRecoveringPassword) ...[
@@ -272,21 +281,21 @@ class _SignInMainPageState extends State<SignInMainPage> {
 
   Widget _buildOAuth2() {
     final authButtons = [
-      _generateButtonOAuth(_SocialOauth2('google'), icon: widget.oauth2WithIcon,
-          onTap: () {
-        Authentication.instance.signInWithGoogle();
-      }),
+      _generateButtonOAuth(
+        _SocialOauth2('google'),
+        icon: widget.oauth2WithIcon,
+        onTap: () {
+          Authentication.instance.signInWithGoogle();
+        },
+      ),
     ];
 
     return widget.oauth2WithIcon
-        ? Wrap(
-            alignment: WrapAlignment.spaceEvenly,
-            children: authButtons,
-          )
+        ? Wrap(alignment: WrapAlignment.spaceEvenly, children: authButtons)
         : Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: authButtons,
-          );
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: authButtons,
+        );
   }
 }
 
@@ -296,52 +305,55 @@ class _SocialOauth2 {
   const _SocialOauth2(this.name);
 
   String get iconData => switch (name) {
-        'apple' => Logos.apple,
-        'azure' => Logos.microsoft,
-        'bitbucket' => Logos.bitbucket,
-        'discord' => Logos.discord,
-        'facebook' => Logos.facebook,
-        'figma' => Logos.figma,
-        'github' => Logos.github,
-        'gitlab' => Logos.gitlab,
-        'google' => Logos.google_icon,
-        'linkedin' => Logos.linkedin,
-        'slack' => Logos.slack,
-        'spotify' => Logos.spotify,
-        'twitch' => Logos.twitch,
-        'twitter' => Logos.twitter,
-        _ => '',
-      };
+    'apple' => Logos.apple,
+    'azure' => Logos.microsoft,
+    'bitbucket' => Logos.bitbucket,
+    'discord' => Logos.discord,
+    'facebook' => Logos.facebook,
+    'figma' => Logos.figma,
+    'github' => Logos.github,
+    'gitlab' => Logos.gitlab,
+    'google' => Logos.google_icon,
+    'linkedin' => Logos.linkedin,
+    'slack' => Logos.slack,
+    'spotify' => Logos.spotify,
+    'twitch' => Logos.twitch,
+    'twitter' => Logos.twitter,
+    _ => '',
+  };
 
   Color get btnBgColor => switch (name) {
-        'apple' => Colors.black,
-        'azure' => Colors.blueAccent,
-        'bitbucket' => Colors.blue,
-        'discord' => Colors.purple,
-        'facebook' => const Color(0xFF3b5998),
-        'figma' => const Color.fromRGBO(241, 77, 27, 1),
-        'github' => Colors.black,
-        'gitlab' => Colors.deepOrange,
-        'google' => Colors.white,
-        'kakao' => const Color(0xFFFFE812),
-        'keycloak' => const Color.fromRGBO(0, 138, 170, 1),
-        'linkedin' => const Color.fromRGBO(0, 136, 209, 1),
-        'notion' => const Color.fromRGBO(69, 75, 78, 1),
-        'slack' => const Color.fromRGBO(74, 21, 75, 1),
-        'spotify' => Colors.green,
-        'twitch' => Colors.purpleAccent,
-        'twitter' => Colors.black,
-        'workos' => const Color.fromRGBO(99, 99, 241, 1),
-        // ignore: unreachable_switch_case
-        _ => Colors.black,
-      };
+    'apple' => Colors.black,
+    'azure' => Colors.blueAccent,
+    'bitbucket' => Colors.blue,
+    'discord' => Colors.purple,
+    'facebook' => const Color(0xFF3b5998),
+    'figma' => const Color.fromRGBO(241, 77, 27, 1),
+    'github' => Colors.black,
+    'gitlab' => Colors.deepOrange,
+    'google' => Colors.white,
+    'kakao' => const Color(0xFFFFE812),
+    'keycloak' => const Color.fromRGBO(0, 138, 170, 1),
+    'linkedin' => const Color.fromRGBO(0, 136, 209, 1),
+    'notion' => const Color.fromRGBO(69, 75, 78, 1),
+    'slack' => const Color.fromRGBO(74, 21, 75, 1),
+    'spotify' => Colors.green,
+    'twitch' => Colors.purpleAccent,
+    'twitter' => Colors.black,
+    'workos' => const Color.fromRGBO(99, 99, 241, 1),
+    // ignore: unreachable_switch_case
+    _ => Colors.black,
+  };
 
   String get labelText =>
       'Continue with ${name[0].toUpperCase()}${name.substring(1)}';
 }
 
-Widget _generateButtonOAuth(_SocialOauth2 socialOAuth2,
-    {bool icon = false, required VoidCallback onTap}) {
+Widget _generateButtonOAuth(
+  _SocialOauth2 socialOAuth2, {
+  bool icon = false,
+  required VoidCallback onTap,
+}) {
   // var foregroundColor = socialOAuth2.btnBgColor;
   var backgroundColor = socialOAuth2.btnBgColor;
   // var overlayColor = Colors.white10;
@@ -366,22 +378,19 @@ Widget _generateButtonOAuth(_SocialOauth2 socialOAuth2,
 
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-    child: icon
-        ? Material(
-            shape: const CircleBorder(),
-            elevation: 2,
-            color: backgroundColor,
-            child: InkResponse(
-              radius: 24,
-              onTap: onTap,
-              child: iconWidget,
+    child:
+        icon
+            ? Material(
+              shape: const CircleBorder(),
+              elevation: 2,
+              color: backgroundColor,
+              child: InkResponse(radius: 24, onTap: onTap, child: iconWidget),
+            )
+            : ElevatedButton.icon(
+              icon: iconWidget,
+              style: authButtonStyle,
+              onPressed: onTap,
+              label: Text(socialOAuth2.labelText),
             ),
-          )
-        : ElevatedButton.icon(
-            icon: iconWidget,
-            style: authButtonStyle,
-            onPressed: onTap,
-            label: Text(socialOAuth2.labelText),
-          ),
   );
 }

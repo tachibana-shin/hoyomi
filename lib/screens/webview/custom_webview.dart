@@ -45,12 +45,11 @@ class _CustomWebViewState extends State<CustomWebView> {
         url: WebUri(_initialUrl),
         webViewController: _webViewController,
       );
-      final cookiesText =
-          cookies.map((cookie) => '${cookie.name}=${cookie.value}').join("; ");
+      final cookiesText = cookies
+          .map((cookie) => '${cookie.name}=${cookie.value}')
+          .join("; ");
 
-      final user = await _service.onAfterSignIn(
-        cookie: cookiesText,
-      );
+      final user = await _service.onAfterSignIn(cookie: cookiesText);
 
       showSnackBar(Text('Signed in to ${_service.name} as ${user.fullName}'));
     } on UserNotFoundException catch (_) {

@@ -23,8 +23,9 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
 
   GeneralApiClient _getClient() {
     return _client ??= GeneralApiClient(
-        Dio(BaseOptions(contentType: 'application/json')),
-        baseUrl: _baseApiGeneral);
+      Dio(BaseOptions(contentType: 'application/json')),
+      baseUrl: _baseApiGeneral,
+    );
   }
 
   @override
@@ -35,7 +36,10 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
     final idToken = await user.getIdTokenResult();
 
     final body = await _getClient().client.getApiComicGetWatchHistory(
-        sourceId: uid, page: page, authorization: 'Bearer ${idToken.token}');
+      sourceId: uid,
+      page: page,
+      authorization: 'Bearer ${idToken.token}',
+    );
 
     return body.data.map((history) {
       return ComicHistory(
@@ -46,8 +50,10 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
           image: OImage(src: history.poster),
         ),
         watchUpdatedAt: DateTime.parse(history.createdAt),
-        lastEpisode:
-            ComicChapter(name: history.watchName, chapterId: history.watchId),
+        lastEpisode: ComicChapter(
+          name: history.watchName,
+          chapterId: history.watchId,
+        ),
         watchPage: WatchPage(
           currentPage: history.watchCur.toInt(),
           totalPage: history.watchDur.toInt(),
@@ -68,10 +74,11 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
     final idToken = await user.getIdTokenResult();
 
     final body = await _getClient().client.getApiComicGetWatchPage(
-        sourceId: uid,
-        comicTextId: comicId,
-        chapId: chapter.chapterId,
-        authorization: 'Bearer ${idToken.token}');
+      sourceId: uid,
+      comicTextId: comicId,
+      chapId: chapter.chapterId,
+      authorization: 'Bearer ${idToken.token}',
+    );
     final data = body.data;
 
     if (data == null) throw Exception('No watch page found');
@@ -94,9 +101,10 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
     final idToken = await user.getIdTokenResult();
 
     final body = await _getClient().client.getApiComicGetWatchPageEpisodes(
-        sourceId: uid,
-        comicTextId: comicId,
-        authorization: 'Bearer ${idToken.token}');
+      sourceId: uid,
+      comicTextId: comicId,
+      authorization: 'Bearer ${idToken.token}',
+    );
 
     return {
       for (final item in body.data)
@@ -104,7 +112,7 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
           currentPage: item.cur.toInt(),
           totalPage: item.dur.toInt(),
           updatedAt: DateTime.parse(item.updatedAt),
-        )
+        ),
     };
   }
 
@@ -121,18 +129,19 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
     final idToken = await user.getIdTokenResult();
 
     await _getClient().client.postApiComicSetWatchPage(
-        body: SetWatchPageBodySchema(
-          sourceId: uid,
-          // data
-          name: metaComic.name,
-          poster: metaComic.image.src,
-          comicTextId: comicId,
-          seasonName: '',
-          cur: watchPage.currentPage,
-          dur: watchPage.totalPage,
-          episodeName: chapter.name,
-          episodeId: chapter.chapterId,
-        ),
-        authorization: 'Bearer ${idToken.token}');
+      body: SetWatchPageBodySchema(
+        sourceId: uid,
+        // data
+        name: metaComic.name,
+        poster: metaComic.image.src,
+        comicTextId: comicId,
+        seasonName: '',
+        cur: watchPage.currentPage,
+        dur: watchPage.totalPage,
+        episodeName: chapter.name,
+        episodeId: chapter.chapterId,
+      ),
+      authorization: 'Bearer ${idToken.token}',
+    );
   }
 }

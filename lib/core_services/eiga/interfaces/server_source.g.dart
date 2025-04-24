@@ -13,7 +13,4 @@ _ServerSource _$ServerSourceFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$ServerSourceToJson(_ServerSource instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'serverId': instance.serverId,
-    };
+    <String, dynamic>{'name': instance.name, 'serverId': instance.serverId};

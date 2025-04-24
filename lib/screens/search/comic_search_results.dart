@@ -32,16 +32,16 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
     if (_itemsStore[service] != null) return _itemsStore[service]!;
 
     final searchResult = service.search(
-        keyword: widget.keyword, page: 1, filters: {}, quick: false);
+      keyword: widget.keyword,
+      page: 1,
+      filters: {},
+      quick: false,
+    );
     final itemsFuture = searchResult.then(
-      (data) => data.items
-          .map(
-            (item) => ComicExtend(
-              comic: item,
-              sourceId: service.uid,
-            ),
-          )
-          .toList(),
+      (data) =>
+          data.items
+              .map((item) => ComicExtend(comic: item, sourceId: service.uid))
+              .toList(),
     );
 
     String subtitle = '';
@@ -71,11 +71,14 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
   }
 
   void _buildWidgetMain() {
-    _widgetMain = Watch(() => ListView.builder(
+    _widgetMain = Watch(
+      () => ListView.builder(
         itemCount: comicServices.value.length,
         itemBuilder: (context, index) {
           return _itemBuilderCache(comicServices.value.elementAt(index));
-        }));
+        },
+      ),
+    );
   }
 
   @override

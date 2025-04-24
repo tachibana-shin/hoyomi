@@ -12,16 +12,19 @@ class Comments extends StatefulWidget {
   final Future<ComicComments> Function({
     required ComicComment? parent,
     int? page,
-  })? getComments;
+  })?
+  getComments;
   final Future<void> Function({
     required ComicComment? parent,
     required ComicComment comment,
-  }) deleteComment;
+  })
+  deleteComment;
   final Future<bool> Function({
     required ComicComment? parent,
     required ComicComment comment,
     required bool value,
-  }) setLikeComment;
+  })
+  setLikeComment;
   final ScrollController? controller;
   final ComicComment? parent;
   final bool activatorMode;
@@ -70,9 +73,10 @@ class _CommentsState extends State<Comments> {
               loading ? ComicComments.createFakeData() : snapshot.data!;
 
           return Skeletonizer(
-              enabled: loading,
-              enableSwitchAnimation: true,
-              child: _buildLastComment(data));
+            enabled: loading,
+            enableSwitchAnimation: true,
+            child: _buildLastComment(data),
+          );
         },
       );
     }
@@ -90,19 +94,20 @@ class _CommentsState extends State<Comments> {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
         child: Comment(
-            comment: comment,
-            getComments: widget.getComments,
-            deleteComment: widget.deleteComment,
-            setLikeComment: widget.setLikeComment,
-            onPop: () {
-              setState(() {
-                comments.items.removeAt(index);
-              });
-            },
-            parent: widget.parent,
-            onCommentChanged: (comment) {
-              comments.items[index] = comment;
-            }),
+          comment: comment,
+          getComments: widget.getComments,
+          deleteComment: widget.deleteComment,
+          setLikeComment: widget.setLikeComment,
+          onPop: () {
+            setState(() {
+              comments.items.removeAt(index);
+            });
+          },
+          parent: widget.parent,
+          onCommentChanged: (comment) {
+            comments.items[index] = comment;
+          },
+        ),
       );
     }
 
@@ -150,8 +155,8 @@ class _CommentsState extends State<Comments> {
                   TextSpan(
                     text: ' ${comments.totalItems}',
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -162,22 +167,23 @@ class _CommentsState extends State<Comments> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Skeleton.replace(
-                    width: 24,
-                    height: 24,
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        comment.photoUrl.src,
-                        headers: comment.photoUrl.headers?.toMap(),
-                      ),
-                      radius: 12,
-                    )),
+                  width: 24,
+                  height: 24,
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(
+                      comment.photoUrl.src,
+                      headers: comment.photoUrl.headers?.toMap(),
+                    ),
+                    radius: 12,
+                  ),
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: HtmlWidget(
                     comment.content,
                     textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -193,19 +199,20 @@ class _CommentsState extends State<Comments> {
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (context) => DraggableScrollableSheet(
-        expand: false,
-        snap: true,
-        initialChildSize: 0.5,
-        minChildSize: 0.3,
-        maxChildSize: 0.9,
-        builder: (context, scrollController) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            child: _buildFullComments(comments),
-          );
-        },
-      ),
+      builder:
+          (context) => DraggableScrollableSheet(
+            expand: false,
+            snap: true,
+            initialChildSize: 0.5,
+            minChildSize: 0.3,
+            maxChildSize: 0.9,
+            builder: (context, scrollController) {
+              return SingleChildScrollView(
+                controller: scrollController,
+                child: _buildFullComments(comments),
+              );
+            },
+          ),
     );
   }
 }

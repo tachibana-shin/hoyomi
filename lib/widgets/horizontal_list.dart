@@ -41,23 +41,25 @@ class HorizontalList<T> extends StatelessWidget {
       title: Text(
         title,
         style: TextStyle(
-            // fontSize: 18.0,
-            // fontWeight: FontWeight.w600,
-            // color: Theme.of(context).colorScheme.onSurface,
-            ),
+          // fontSize: 18.0,
+          // fontWeight: FontWeight.w600,
+          // color: Theme.of(context).colorScheme.onSurface,
+        ),
       ),
-      subtitle: subtitle != null
-          ? Text(
-              subtitle,
-              style: TextStyle(fontSize: 14, color: Colors.white70),
-            )
-          : null,
-      trailing: more != null
-          ? ElevatedButton(
-              onPressed: () => context.push(more),
-              child: Text('More'),
-            )
-          : null,
+      subtitle:
+          subtitle != null
+              ? Text(
+                subtitle,
+                style: TextStyle(fontSize: 14, color: Colors.white70),
+              )
+              : null,
+      trailing:
+          more != null
+              ? ElevatedButton(
+                onPressed: () => context.push(more),
+                child: Text('More'),
+              )
+              : null,
     );
     final main = LayoutBuilder(
       builder: (context, constraints) {
@@ -77,30 +79,26 @@ class HorizontalList<T> extends StatelessWidget {
         final widthItem =
             (screenWidth / crossAxisCount) - 4.0 * 2 /* space by Card */;
         final defaultLineHeight = 1.42;
-        final heightItem = (widthItem) / (2 / 3) /* image */ +
-                4.0 * 2 /* space by Card */ +
-
-                /// === title ===
-                2.0 * 2 /* padding */ +
-                14.0 *
-                    (widthItem < 14.0 * titleLength ? 2 : 1) *
-                    defaultLineHeight /* font */ +
-
-                /// === /title ===
-                ///
-                /// === subtitle ===
-                (itemSubtitle ? 12.0 * defaultLineHeight : 0) /* font */ +
-
-                /// === /subtitle ===
-                ///
-                /// === time ago ===
-                (itemTimeAgo ? 12.0 * defaultLineHeight : 0) + /* font */
-
-                /// === /time ago ===
-                1.0
-
-            /// offset
-            ;
+        final heightItem =
+            (widthItem) / (2 / 3) /* image */ +
+            4.0 * 2 /* space by Card */ +
+            /// === title ===
+            2.0 * 2 /* padding */ +
+            14.0 *
+                (widthItem < 14.0 * titleLength ? 2 : 1) *
+                defaultLineHeight /* font */ +
+            /// === /title ===
+            ///
+            /// === subtitle ===
+            (itemSubtitle ? 12.0 * defaultLineHeight : 0) /* font */ +
+            /// === /subtitle ===
+            ///
+            /// === time ago ===
+            (itemTimeAgo ? 12.0 * defaultLineHeight : 0) + /* font */
+            /// === /time ago ===
+            1.0
+        /// offset
+        ;
 
         return SizedBox(height: heightItem, child: builder(viewportFraction));
       },
@@ -122,20 +120,21 @@ class HorizontalList<T> extends StatelessWidget {
       titleLength: titleLength,
       itemSubtitle: itemSubtitle,
       itemTimeAgo: itemTimeAgo,
-      builder: (viewportFraction) =>
-          child ??
-          PageView.builder(
-            itemCount: items!.length,
-            allowImplicitScrolling: true,
-            padEnds: false,
-            controller: PageController(
-              viewportFraction: viewportFraction,
-              initialPage: 0,
-            ),
-            itemBuilder: (context, index) {
-              return builder(context, items!.elementAt(index), index);
-            },
-          ),
+      builder:
+          (viewportFraction) =>
+              child ??
+              PageView.builder(
+                itemCount: items!.length,
+                allowImplicitScrolling: true,
+                padEnds: false,
+                controller: PageController(
+                  viewportFraction: viewportFraction,
+                  initialPage: 0,
+                ),
+                itemBuilder: (context, index) {
+                  return builder(context, items!.elementAt(index), index);
+                },
+              ),
     );
   }
 }

@@ -26,13 +26,16 @@ class ListEpisodes extends StatefulWidget {
   final Axis scrollDirection;
   final ScrollController? controller;
   final Future<EigaEpisodes> Function(void Function(EigaEpisodes newValue))
-      getData;
+  getData;
   final void Function({
     required int indexEpisode,
     required EigaEpisodes episodesEiga,
-  }) onTapEpisode;
+  })
+  onTapEpisode;
   final Future<Map<String, WatchTimeUpdated>> Function(
-      EigaEpisodes episodesEiga) getWatchTimeEpisodes;
+    EigaEpisodes episodesEiga,
+  )
+  getWatchTimeEpisodes;
   final EventBus eventBus;
   final bool eager;
 
@@ -66,13 +69,16 @@ class _ListEpisodesState extends State<ListEpisodes>
       final episodes = await widget.getData(_updateEpisodesEiga);
       if (!mounted) throw Exception('Page destroyed');
 
-      widget.getWatchTimeEpisodes(episodes).then((watchTimes) {
-        if (mounted) _watchTimeEpisodes.value = watchTimes;
-      }).catchError((error) {
-        if (error is! UserNotFoundException) {
-          debugPrint('Error: $error (${StackTrace.current})');
-        }
-      });
+      widget
+          .getWatchTimeEpisodes(episodes)
+          .then((watchTimes) {
+            if (mounted) _watchTimeEpisodes.value = watchTimes;
+          })
+          .catchError((error) {
+            if (error is! UserNotFoundException) {
+              debugPrint('Error: $error (${StackTrace.current})');
+            }
+          });
 
       if (widget.eager) {
         final indexActive = episodes.episodes.indexWhere(
@@ -119,207 +125,224 @@ class _ListEpisodesState extends State<ListEpisodes>
       final episodesEiga = _episodesEiga.value;
 
       return FutureBuilder(
-          future: episodesEiga,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Service.errorWidgetBuilder(
-                  context,
-                  error: snapshot.error,
-                  service: null,
-                  orElse: (error) => Text('Error: $error'),
-                ),
-              );
-            }
+        future: episodesEiga,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Service.errorWidgetBuilder(
+                context,
+                error: snapshot.error,
+                service: null,
+                orElse: (error) => Text('Error: $error'),
+              ),
+            );
+          }
 
-            final waiting = snapshot.connectionState == ConnectionState.waiting;
-            if (!snapshot.hasData && !waiting) {
-              return const Center(child: Text('No data available'));
-            }
+          final waiting = snapshot.connectionState == ConnectionState.waiting;
+          if (!snapshot.hasData && !waiting) {
+            return const Center(child: Text('No data available'));
+          }
 
-            final episodesEiga =
-                waiting ? EigaEpisodes.createFakeData() : snapshot.data!;
+          final episodesEiga =
+              waiting ? EigaEpisodes.createFakeData() : snapshot.data!;
 
-            final isVertical = widget.scrollDirection == Axis.vertical;
+          final isVertical = widget.scrollDirection == Axis.vertical;
 
-            Widget generateGroup(int start, [int? stop]) {
-              stop ??= episodesEiga.episodes.length;
-              final itemCount = stop - start;
+          Widget generateGroup(int start, [int? stop]) {
+            stop ??= episodesEiga.episodes.length;
+            final itemCount = stop - start;
 
-              final indexActive = switch (
-                  widget.eigaId.value == widget.season.eigaId &&
-                      widget.episodeId.value != null) {
-                true => episodesEiga.episodes.indexWhere(
-                    (episode) => episode.episodeId == widget.episodeId.value),
-                false => 0,
-              };
-
-              final activeKey = GlobalKey();
-
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                Timer(Duration(milliseconds: 70), () {
-                  if (widget.controller != null &&
-                      activeKey.currentContext != null) {
-                    Scrollable.ensureVisible(
-                      activeKey.currentContext!,
-                      duration: Duration(milliseconds: 200),
-                    );
-                  }
-                });
-              });
-
-              final child = Watch(() {
-                if (isVertical && showListEpisodeWithGrid.value) {
-                  return ResponsiveGridList(
-                    horizontalGridSpacing: 16,
-                    verticalGridSpacing: 16,
-                    horizontalGridMargin: 0,
-                    verticalGridMargin: 0,
-                    minItemWidth: 16.0 * 5,
-                    minItemsPerRow: 2,
-                    maxItemsPerRow: 12,
-                    listViewBuilderOptions: ListViewBuilderOptions(
-                      controller: widget.controller,
-                    ),
-                    children: List.generate(
-                      itemCount,
-                      (index) => _itemBuilder(
-                        context,
-                        key: indexActive == index + start ? activeKey : null,
-                        index: index + start,
-                        episodesEiga: episodesEiga,
-                        waiting: waiting,
-                        isVertical: false,
-                        height: height,
-                        inGridMode: true,
-                      ),
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  scrollDirection: widget.scrollDirection,
-                  itemCount: itemCount,
-                  shrinkWrap: true,
-                  controller: widget.controller,
-                  itemBuilder: (context, index) => _itemBuilder(
-                    context,
-                    key: indexActive == index + start ? activeKey : null,
-                    index: index + start,
-                    episodesEiga: episodesEiga,
-                    waiting: waiting,
-                    isVertical: isVertical,
-                    height: height,
-                    inGridMode: false,
-                  ),
-                );
-              });
-              return waiting
-                  ? Skeletonizer(
-                      enabled: true,
-                      enableSwitchAnimation: true,
-                      child: child,
-                    )
-                  : child;
-            }
-
-            const sizeGroup = 50;
-            final lengthGroup =
-                (episodesEiga.episodes.length / sizeGroup).ceil();
-
-            final initialIndex = switch (
-                widget.eigaId.value == widget.season.eigaId &&
-                    widget.episodeId.value != null) {
-              true => max(
-                  0,
-                  (episodesEiga.episodes.indexWhere((episode) =>
-                              episode.episodeId == widget.episodeId.value) /
-                          sizeGroup)
-                      .floor(),
-                ),
+            final indexActive = switch (widget.eigaId.value ==
+                    widget.season.eigaId &&
+                widget.episodeId.value != null) {
+              true => episodesEiga.episodes.indexWhere(
+                (episode) => episode.episodeId == widget.episodeId.value,
+              ),
               false => 0,
             };
-            final tabController = TabController(
-                initialIndex: initialIndex, length: lengthGroup, vsync: this);
 
-            // Watch(() {
-            //   final index = switch (
-            //       widget.eigaId.value == widget.season.eigaId &&
-            //           widget.episodeId.value != null) {
-            //     true => episodesEiga.episodes.indexWhere(
-            //         (episode) => episode.episodeId == widget.episodeId.value),
-            //     false => 0,
-            //   };
+            final activeKey = GlobalKey();
 
-            //   if (tabController.index != index) {
-            //     tabController.animateTo(index);
-            //   }
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              Timer(Duration(milliseconds: 70), () {
+                if (widget.controller != null &&
+                    activeKey.currentContext != null) {
+                  Scrollable.ensureVisible(
+                    activeKey.currentContext!,
+                    duration: Duration(milliseconds: 200),
+                  );
+                }
+              });
+            });
 
-            //   return nil;
-            // });
-
-            return switch (isVertical) {
-              true => Column(children: [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Episodes').fontSize(16.0),
-                        Watch(() => IconButton(
-                              onPressed: () {
-                                showListEpisodeWithGrid.value =
-                                    !showListEpisodeWithGrid.value;
-                              },
-                              icon: Iconify(
-                                showListEpisodeWithGrid.value
-                                    ? Majesticons.checkbox_list_detail_line
-                                    : Majesticons.applications_line,
-                                // Mingcute.grid_line
-                              ),
-                            )),
-                      ]),
-                  if (lengthGroup > 1)
-                    ButtonsTabBar(
-                      controller: tabController,
-                      height: 40,
-                      backgroundColor: Colors.green[600],
-                      unselectedBackgroundColor: Colors.transparent,
-                      labelStyle: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      unselectedLabelStyle: TextStyle(
-                        color: Colors.green[600],
-                        fontWeight: FontWeight.bold,
-                      ),
-                      borderWidth: 1,
-                      unselectedBorderColor: Colors.green.shade600,
-                      radius: 100,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 8.0, vertical: 4.0),
-                      tabs: List.generate(lengthGroup, (index) {
-                        return Tab(
-                          child: Text(
-                                  'EP.${index * sizeGroup + 1}-${min((index + 1) * sizeGroup, episodesEiga.episodes.length)}')
-                              .fontSize(12.0),
-                        );
-                      }),
+            final child = Watch(() {
+              if (isVertical && showListEpisodeWithGrid.value) {
+                return ResponsiveGridList(
+                  horizontalGridSpacing: 16,
+                  verticalGridSpacing: 16,
+                  horizontalGridMargin: 0,
+                  verticalGridMargin: 0,
+                  minItemWidth: 16.0 * 5,
+                  minItemsPerRow: 2,
+                  maxItemsPerRow: 12,
+                  listViewBuilderOptions: ListViewBuilderOptions(
+                    controller: widget.controller,
+                  ),
+                  children: List.generate(
+                    itemCount,
+                    (index) => _itemBuilder(
+                      context,
+                      key: indexActive == index + start ? activeKey : null,
+                      index: index + start,
+                      episodesEiga: episodesEiga,
+                      waiting: waiting,
+                      isVertical: false,
+                      height: height,
+                      inGridMode: true,
                     ),
-                  if (lengthGroup > 1)
-                    TabBarView(
-                      controller: tabController,
-                      children: List.generate(lengthGroup, (indexGroup) {
-                        return generateGroup(
-                            indexGroup * sizeGroup,
-                            min(episodesEiga.episodes.length,
-                                (indexGroup + 1) * sizeGroup));
-                      }),
-                    ).expanded()
-                  else
-                    generateGroup(0).expanded(),
-                ]),
-              false => SizedBox(height: height, child: generateGroup(0)),
-            };
-          });
+                  ),
+                );
+              }
+
+              return ListView.builder(
+                scrollDirection: widget.scrollDirection,
+                itemCount: itemCount,
+                shrinkWrap: true,
+                controller: widget.controller,
+                itemBuilder:
+                    (context, index) => _itemBuilder(
+                      context,
+                      key: indexActive == index + start ? activeKey : null,
+                      index: index + start,
+                      episodesEiga: episodesEiga,
+                      waiting: waiting,
+                      isVertical: isVertical,
+                      height: height,
+                      inGridMode: false,
+                    ),
+              );
+            });
+            return waiting
+                ? Skeletonizer(
+                  enabled: true,
+                  enableSwitchAnimation: true,
+                  child: child,
+                )
+                : child;
+          }
+
+          const sizeGroup = 50;
+          final lengthGroup = (episodesEiga.episodes.length / sizeGroup).ceil();
+
+          final initialIndex = switch (widget.eigaId.value ==
+                  widget.season.eigaId &&
+              widget.episodeId.value != null) {
+            true => max(
+              0,
+              (episodesEiga.episodes.indexWhere(
+                        (episode) =>
+                            episode.episodeId == widget.episodeId.value,
+                      ) /
+                      sizeGroup)
+                  .floor(),
+            ),
+            false => 0,
+          };
+          final tabController = TabController(
+            initialIndex: initialIndex,
+            length: lengthGroup,
+            vsync: this,
+          );
+
+          // Watch(() {
+          //   final index = switch (
+          //       widget.eigaId.value == widget.season.eigaId &&
+          //           widget.episodeId.value != null) {
+          //     true => episodesEiga.episodes.indexWhere(
+          //         (episode) => episode.episodeId == widget.episodeId.value),
+          //     false => 0,
+          //   };
+
+          //   if (tabController.index != index) {
+          //     tabController.animateTo(index);
+          //   }
+
+          //   return nil;
+          // });
+
+          return switch (isVertical) {
+            true => Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Episodes').fontSize(16.0),
+                    Watch(
+                      () => IconButton(
+                        onPressed: () {
+                          showListEpisodeWithGrid.value =
+                              !showListEpisodeWithGrid.value;
+                        },
+                        icon: Iconify(
+                          showListEpisodeWithGrid.value
+                              ? Majesticons.checkbox_list_detail_line
+                              : Majesticons.applications_line,
+                          // Mingcute.grid_line
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                if (lengthGroup > 1)
+                  ButtonsTabBar(
+                    controller: tabController,
+                    height: 40,
+                    backgroundColor: Colors.green[600],
+                    unselectedBackgroundColor: Colors.transparent,
+                    labelStyle: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    unselectedLabelStyle: TextStyle(
+                      color: Colors.green[600],
+                      fontWeight: FontWeight.bold,
+                    ),
+                    borderWidth: 1,
+                    unselectedBorderColor: Colors.green.shade600,
+                    radius: 100,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 4.0,
+                    ),
+                    tabs: List.generate(lengthGroup, (index) {
+                      return Tab(
+                        child: Text(
+                          'EP.${index * sizeGroup + 1}-${min((index + 1) * sizeGroup, episodesEiga.episodes.length)}',
+                        ).fontSize(12.0),
+                      );
+                    }),
+                  ),
+                if (lengthGroup > 1)
+                  TabBarView(
+                    controller: tabController,
+                    children: List.generate(lengthGroup, (indexGroup) {
+                      return generateGroup(
+                        indexGroup * sizeGroup,
+                        min(
+                          episodesEiga.episodes.length,
+                          (indexGroup + 1) * sizeGroup,
+                        ),
+                      );
+                    }),
+                  ).expanded()
+                else
+                  generateGroup(0).expanded(),
+              ],
+            ),
+            false => SizedBox(height: height, child: generateGroup(0)),
+          };
+        },
+      );
     });
   }
 
@@ -345,9 +368,10 @@ class _ListEpisodesState extends State<ListEpisodes>
 
       return StatefulBuilder(
         builder: (context, setState2) {
-          final watchTime = _watchTimeEpisodes.value == null
-              ? null
-              : _watchTimeEpisodes.value![episode.episodeId];
+          final watchTime =
+              _watchTimeEpisodes.value == null
+                  ? null
+                  : _watchTimeEpisodes.value![episode.episodeId];
 
           if (_disposes[index] != null) {
             _disposes[index]!();
@@ -374,15 +398,17 @@ class _ListEpisodesState extends State<ListEpisodes>
           if (isVertical) {
             return InkWell(
               borderRadius: BorderRadius.circular(7),
-              onTap: () => widget.onTapEpisode(
-                indexEpisode: index,
-                episodesEiga: episodesEiga,
-              ),
+              onTap:
+                  () => widget.onTapEpisode(
+                    indexEpisode: index,
+                    episodesEiga: episodesEiga,
+                  ),
               child: Container(
                 decoration: BoxDecoration(
-                  color: active
-                      ? Theme.of(context).colorScheme.tertiaryContainer
-                      : null,
+                  color:
+                      active
+                          ? Theme.of(context).colorScheme.tertiaryContainer
+                          : null,
                   borderRadius: BorderRadius.circular(7.0),
                 ),
                 padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 7.0),
@@ -403,7 +429,8 @@ class _ListEpisodesState extends State<ListEpisodes>
                             child: OImage.network(
                               episode.image?.src ?? widget.thumbnail.src,
                               sourceId: widget.sourceId,
-                              headers: episodesEiga.image?.headers ??
+                              headers:
+                                  episodesEiga.image?.headers ??
                                   widget.thumbnail.headers,
                               fit: BoxFit.cover,
                             ),
@@ -416,18 +443,19 @@ class _ListEpisodesState extends State<ListEpisodes>
                               child: Column(
                                 children: [
                                   LinearProgressIndicator(
-                                    value: watchTime.position.inMilliseconds /
+                                    value:
+                                        watchTime.position.inMilliseconds /
                                         watchTime.duration.inMilliseconds,
                                     backgroundColor:
                                         Theme.of(context).brightness ==
                                                 Brightness.light
                                             ? Color.fromRGBO(0, 0, 0, 0.6)
                                             : Color.fromRGBO(
-                                                255,
-                                                255,
-                                                255,
-                                                0.6,
-                                              ),
+                                              255,
+                                              255,
+                                              255,
+                                              0.6,
+                                            ),
                                     valueColor: AlwaysStoppedAnimation<Color>(
                                       active
                                           ? Color(0xFF2196F3)
@@ -453,9 +481,9 @@ class _ListEpisodesState extends State<ListEpisodes>
                             style: Theme.of(
                               context,
                             ).textTheme.titleMedium?.copyWith(
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w400,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -465,14 +493,14 @@ class _ListEpisodesState extends State<ListEpisodes>
                               style: Theme.of(
                                 context,
                               ).textTheme.titleMedium?.copyWith(
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.color
-                                        ?.withValues(alpha: 0.8),
-                                  ),
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w400,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.color
+                                    ?.withValues(alpha: 0.8),
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -480,14 +508,12 @@ class _ListEpisodesState extends State<ListEpisodes>
                           if (episode.description?.isNotEmpty == true)
                             Text(
                               episode.description!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(
-                                      fontSize: 12.0,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary),
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(
+                                fontSize: 12.0,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
                               maxLines: 2,
                             ),
                         ],
@@ -512,20 +538,23 @@ class _ListEpisodesState extends State<ListEpisodes>
             padding: EdgeInsets.only(right: 8.0),
             child: InkWell(
               borderRadius: BorderRadius.circular(7),
-              onTap: () => widget.onTapEpisode(
-                indexEpisode: index,
-                episodesEiga: episodesEiga,
-              ),
+              onTap:
+                  () => widget.onTapEpisode(
+                    indexEpisode: index,
+                    episodesEiga: episodesEiga,
+                  ),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: active
-                        ? Theme.of(context).colorScheme.tertiaryContainer
-                        : Colors.grey.withAlpha(60),
+                    color:
+                        active
+                            ? Theme.of(context).colorScheme.tertiaryContainer
+                            : Colors.grey.withAlpha(60),
                   ),
-                  color: active
-                      ? Theme.of(context).colorScheme.tertiaryContainer
-                      : Colors.transparent,
+                  color:
+                      active
+                          ? Theme.of(context).colorScheme.tertiaryContainer
+                          : Colors.transparent,
                   borderRadius: BorderRadius.circular(7),
                 ),
                 clipBehavior: Clip.antiAlias,
@@ -538,7 +567,8 @@ class _ListEpisodesState extends State<ListEpisodes>
                         left: 0,
                         right: 0,
                         child: LinearProgressIndicator(
-                          value: watchTime.position.inMilliseconds /
+                          value:
+                              watchTime.position.inMilliseconds /
                               watchTime.duration.inMilliseconds,
                           backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
                           valueColor: AlwaysStoppedAnimation<Color>(

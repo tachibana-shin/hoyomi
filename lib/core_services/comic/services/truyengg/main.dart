@@ -82,7 +82,8 @@ class TruyenGGService extends ABComicService
       src: $image.attr('data-src'),
       headers: Headers({'referer': referer}),
     );
-    final String name = itemComic.queryOne('.comic_name').textRaw() ??
+    final String name =
+        itemComic.queryOne('.comic_name').textRaw() ??
         itemComic.queryOne('img').attr('alt');
 
     final ComicChapter lastChap = ComicChapter(
@@ -97,9 +98,10 @@ class TruyenGGService extends ABComicService
     );
 
     final timeAgoElement = itemComic.queryOne('.time-ago');
-    final timeAgo = timeAgoElement.isNotEmpty
-        ? convertTimeAgoToUtc(timeAgoElement.text())
-        : null;
+    final timeAgo =
+        timeAgoElement.isNotEmpty
+            ? convertTimeAgoToUtc(timeAgoElement.text())
+            : null;
     final String notice = itemComic.queryOne('.type-label').text();
 
     final rateValueText = itemComic.queryOne('.rate-star').text();
@@ -127,29 +129,32 @@ class TruyenGGService extends ABComicService
 
     return [
       HomeComicCategory(
-        items: categories
-            .first()
-            .query('.item_home')
-            .map((element) => parseComic(element, baseUrl))
-            .toList(),
+        items:
+            categories
+                .first()
+                .query('.item_home')
+                .map((element) => parseComic(element, baseUrl))
+                .toList(),
         name: 'Mới Cập Nhật',
         categoryId: 'truyen-moi-cap-nhat',
       ),
       HomeComicCategory(
-        items: categories
-            .eq(1)
-            .query('.item_home')
-            .map((element) => parseComic(element, baseUrl))
-            .toList(),
+        items:
+            categories
+                .eq(1)
+                .query('.item_home')
+                .map((element) => parseComic(element, baseUrl))
+                .toList(),
         name: 'Bình Chọn',
         categoryId: 'top-binh-chon',
       ),
       HomeComicCategory(
-        items: categories
-            .eq(2)
-            .query('.item_home')
-            .map((element) => parseComic(element, baseUrl))
-            .toList(),
+        items:
+            categories
+                .eq(2)
+                .query('.item_home')
+                .map((element) => parseComic(element, baseUrl))
+                .toList(),
         name: 'Xem Nhiều',
         categoryId: 'top-thang',
       ),
@@ -158,9 +163,7 @@ class TruyenGGService extends ABComicService
 
   @override
   Future<MetaComic> getDetails(String comicId) async {
-    final $ = parse$(
-      _comicCachedStore[comicId] = await fetch(getURL(comicId)),
-    );
+    final $ = parse$(_comicCachedStore[comicId] = await fetch(getURL(comicId)));
 
     final String name = $('h1[itemprop=name]', single: true).text();
     final OImage image = OImage(
@@ -174,10 +177,11 @@ class TruyenGGService extends ABComicService
     final translator = _getInfoTale(tales, 'Dịch Giả:')?.textRaw();
     final status$ =
         _getInfoTale(tales, 'Trạng Thái:')?.textRaw()?.toLowerCase() ??
-            'Unknown';
-    final status = status$ == 'đang cập nhật'
-        ? StatusEnum.ongoing
-        : status$ == 'unknown'
+        'Unknown';
+    final status =
+        status$ == 'đang cập nhật'
+            ? StatusEnum.ongoing
+            : status$ == 'unknown'
             ? StatusEnum.unknown
             : StatusEnum.completed;
     final views = int.tryParse(
@@ -187,17 +191,24 @@ class TruyenGGService extends ABComicService
       _getInfoTale(tales, 'Theo Dõi:')?.textRaw()?.replaceAll(',', '') ?? '',
     );
 
-    final rate$ = JsonDecoder().convert(
-      $('script[type=\'application/ld+json\']', single: true).textRaw() ?? '{}',
-    ) as Map<String, dynamic>;
+    final rate$ =
+        JsonDecoder().convert(
+              $(
+                    'script[type=\'application/ld+json\']',
+                    single: true,
+                  ).textRaw() ??
+                  '{}',
+            )
+            as Map<String, dynamic>;
 
-    final rate = rate$.containsKey('aggregateRating')
-        ? RateValue(
-            best: int.parse('${rate$['aggregateRating']['bestRating']}'),
-            count: int.parse(rate$['aggregateRating']['ratingCount']),
-            value: double.parse(rate$['aggregateRating']['ratingValue']),
-          )
-        : null;
+    final rate =
+        rate$.containsKey('aggregateRating')
+            ? RateValue(
+              best: int.parse('${rate$['aggregateRating']['bestRating']}'),
+              count: int.parse(rate$['aggregateRating']['ratingCount']),
+              value: double.parse(rate$['aggregateRating']['ratingValue']),
+            )
+            : null;
 
     final genres = $('.clblue').map(
       (anchor) => Genre(
@@ -222,10 +233,12 @@ class TruyenGGService extends ABComicService
 
       return ComicChapter(name: name, chapterId: chapterId, time: time);
     });
-    final lastModified = rate$.containsKey('dateModified')
-        ? DateTime.parse(rate$['dateModified'])
-        : DateFormat('dd/MM/yyyy')
-            .parse($('div.w110.text-right > span > em', single: true).text());
+    final lastModified =
+        rate$.containsKey('dateModified')
+            ? DateTime.parse(rate$['dateModified'])
+            : DateFormat(
+              'dd/MM/yyyy',
+            ).parse($('div.w110.text-right > span > em', single: true).text());
 
     return MetaComic(
       name: name,
@@ -258,7 +271,8 @@ class TruyenGGService extends ABComicService
   DQuery? _getInfoTale(DQuery tales, String name) {
     return tales
         .findOne(
-            (element) => element.queryOne('.name-title').text().contains(name))
+          (element) => element.queryOne('.name-title').text().contains(name),
+        )
         .queryOne('p:last-child');
   }
 
@@ -292,141 +306,142 @@ class TruyenGGService extends ABComicService
 
   @override
   get getComments => ({required comicId, chapterId, parent, page = 1}) async {
-        final parentId = parent?.id ?? 0;
+    final parentId = parent?.id ?? 0;
 
-        if (chapterId != null) {
-          // pre-fetch
-          chapterId = _episodeIdStore[chapterId] ??= (await fetch$(
-            getURL(comicId, chapterId: chapterId),
-          ))('#episode_id', single: true)
-              .val();
-        }
+    if (chapterId != null) {
+      // pre-fetch
+      chapterId =
+          _episodeIdStore[chapterId] ??=
+              (await fetch$(getURL(comicId, chapterId: chapterId)))(
+                '#episode_id',
+                single: true,
+              ).val();
+    }
 
-        final docB = parse$(
-          _comicCachedStore[comicId] ?? await fetch(getURL(comicId)),
-        );
-        final $ = page == 1
+    final docB = parse$(
+      _comicCachedStore[comicId] ?? await fetch(getURL(comicId)),
+    );
+    final $ =
+        page == 1
             ? docB
             : await fetch$(
-                '$baseUrl/frontend/comment/list',
-                body: {
-                  'comic_id': RegExp(r'(\d+)$').firstMatch(comicId)!.group(1)!,
-                  'parent_id': parentId,
-                  'team_id': docB('#team_id', single: true).val(),
-                  'token': docB('#csrf-token', single: true).val(),
-                  'page': page,
-                  'episode_id': chapterId,
-                },
-              );
+              '$baseUrl/frontend/comment/list',
+              body: {
+                'comic_id': RegExp(r'(\d+)$').firstMatch(comicId)!.group(1)!,
+                'parent_id': parentId,
+                'team_id': docB('#team_id', single: true).val(),
+                'token': docB('#csrf-token', single: true).val(),
+                'page': page,
+                'episode_id': chapterId,
+              },
+            );
 
-        final items = $('.info-comment').map((element) {
-          final id =
-              RegExp(r'child_(\d+)').firstMatch(element.className())!.group(1)!;
+    final items = $('.info-comment').map((element) {
+      final id =
+          RegExp(r'child_(\d+)').firstMatch(element.className())!.group(1)!;
 
-          final photoUrl = element.queryOne('.avartar-comment img').attr('src');
-          final name = element.queryOne('.avartar-comment img').attr('alt');
-          final time = convertTimeAgoToUtc(element.queryOne('.time').text());
+      final photoUrl = element.queryOne('.avartar-comment img').attr('src');
+      final name = element.queryOne('.avartar-comment img').attr('alt');
+      final time = convertTimeAgoToUtc(element.queryOne('.time').text());
 
-          final content = element.queryOne('.content-comment').html();
+      final content = element.queryOne('.content-comment').html();
 
-          final like =
-              int.parse(element.queryOne('.total-like-comment').text());
-          final dislike = int.parse(
-              element.queryOne('.total-dislike-comment').textRaw() ?? '0');
+      final like = int.parse(element.queryOne('.total-like-comment').text());
+      final dislike = int.parse(
+        element.queryOne('.total-dislike-comment').textRaw() ?? '0',
+      );
 
-          final countReply$ = element.queryOne('.text-list-reply').text();
-          final countReply = countReply$.isNotEmpty
+      final countReply$ = element.queryOne('.text-list-reply').text();
+      final countReply =
+          countReply$.isNotEmpty
               ? int.parse(
-                  RegExp(r'(\d+)').firstMatch(countReply$)?.group(0) ?? '0',
-                )
+                RegExp(r'(\d+)').firstMatch(countReply$)?.group(0) ?? '0',
+              )
               : 0;
 
-          final canDelete = element.queryOne('.remove_comnent').isNotEmpty;
+      final canDelete = element.queryOne('.remove_comnent').isNotEmpty;
 
-          return ComicComment(
-            id: id,
-            comicId: comicId,
-            chapterId: chapterId,
-            userId: name,
-            name: name,
-            photoUrl:
-                OImage(src: photoUrl, headers: Headers({'referer': baseUrl})),
-            content: content,
-            countLike: like,
-            countDislike: dislike,
-            countReply: countReply,
-            timeAgo: time,
-            canDelete: canDelete,
-          );
-        });
+      return ComicComment(
+        id: id,
+        comicId: comicId,
+        chapterId: chapterId,
+        userId: name,
+        name: name,
+        photoUrl: OImage(src: photoUrl, headers: Headers({'referer': baseUrl})),
+        content: content,
+        countLike: like,
+        countDislike: dislike,
+        countReply: countReply,
+        timeAgo: time,
+        canDelete: canDelete,
+      );
+    });
 
-        final totalItems =
-            int.parse(docB('.comment-count', single: true).text());
-        final totalPages = int.parse(
-          RegExp(r'loadComment\((\d+)\);')
-                  .firstMatch($('.page-item').last().attr('onclick'))
-                  ?.group(1) ??
-              '1',
-        );
+    final totalItems = int.parse(docB('.comment-count', single: true).text());
+    final totalPages = int.parse(
+      RegExp(
+            r'loadComment\((\d+)\);',
+          ).firstMatch($('.page-item').last().attr('onclick'))?.group(1) ??
+          '1',
+    );
 
-        return ComicComments(
-          items: items.toList(),
-          page: page!,
-          totalItems: totalItems,
-          totalPages: totalPages,
-        );
-      };
+    return ComicComments(
+      items: items.toList(),
+      page: page!,
+      totalItems: totalItems,
+      totalPages: totalPages,
+    );
+  };
 
   @override
   get deleteComment => ({
-        required comicId,
-        chapterId,
-        parent,
-        required comment,
-      }) async {
-        final docB = parse$(
-          _comicCachedStore[comicId] ?? await fetch(getURL(comicId)),
-        );
+    required comicId,
+    chapterId,
+    parent,
+    required comment,
+  }) async {
+    final docB = parse$(
+      _comicCachedStore[comicId] ?? await fetch(getURL(comicId)),
+    );
 
-        await fetch(
-          '$baseUrl/frontend/comment/remove',
-          body: {
-            'id': comment.id,
-            'comic_id': comicId,
-            'token': docB('#csrf-token', single: true).val(),
-            'episode_id': chapterId,
-          },
-        );
-      };
+    await fetch(
+      '$baseUrl/frontend/comment/remove',
+      body: {
+        'id': comment.id,
+        'comic_id': comicId,
+        'token': docB('#csrf-token', single: true).val(),
+        'episode_id': chapterId,
+      },
+    );
+  };
 
   @override
   get setLikeComment => ({
-        required comicId,
-        chapterId,
-        parent,
-        required comment,
-        required value,
-      }) async {
-        if (value) {
-          final json = jsonDecode(
-            await fetch('$baseUrl/frontend/comment/like',
-                body: {'id': comment.id}),
-          );
+    required comicId,
+    chapterId,
+    parent,
+    required comment,
+    required value,
+  }) async {
+    if (value) {
+      final json = jsonDecode(
+        await fetch('$baseUrl/frontend/comment/like', body: {'id': comment.id}),
+      );
 
-          if (json['success'] == 0) throw Exception(json['error']);
-        } else {
-          final json = jsonDecode(
-            await fetch(
-              '$baseUrl/frontend/comment/dislike',
-              body: {'id': comment.id},
-            ),
-          );
+      if (json['success'] == 0) throw Exception(json['error']);
+    } else {
+      final json = jsonDecode(
+        await fetch(
+          '$baseUrl/frontend/comment/dislike',
+          body: {'id': comment.id},
+        ),
+      );
 
-          if (json['success'] == 0) throw Exception(json['error']);
-        }
+      if (json['success'] == 0) throw Exception(json['error']);
+    }
 
-        return value;
-      };
+    return value;
+  };
 
   @override
   getSuggest(comic, {page = 1}) async {
@@ -434,22 +449,23 @@ class TruyenGGService extends ABComicService
       categoryId: 'tim-kiem-nang-cao',
       page: page!,
       filters: {
-        'category': comic.genres
-            .toList()
-            .sublist(0, min(3, comic.genres.length))
-            .map((e) => RegExp(r'\d+').allMatches(e.genreId).last.group(0)!)
-            .toList(),
+        'category':
+            comic.genres
+                .toList()
+                .sublist(0, min(3, comic.genres.length))
+                .map((e) => RegExp(r'\d+').allMatches(e.genreId).last.group(0)!)
+                .toList(),
       },
-    ))
-        .items;
+    )).items;
   }
 
   @override
-  search(
-      {required keyword,
-      required page,
-      required filters,
-      required quick}) async {
+  search({
+    required keyword,
+    required page,
+    required filters,
+    required quick,
+  }) async {
     final url =
         '$baseUrl/tim-kiem${page > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}';
 
@@ -462,13 +478,16 @@ class TruyenGGService extends ABComicService
         .query('.item_home')
         .map((element) => parseComic(element, baseUrl));
 
-    final lastPageLink =
-        $('.pagination > a:last-child', single: true).attr('href');
-    final maxPage = lastPageLink.isNotEmpty
-        ? int.parse(
-            RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
-          )
-        : 1;
+    final lastPageLink = $(
+      '.pagination > a:last-child',
+      single: true,
+    ).attr('href');
+    final maxPage =
+        lastPageLink.isNotEmpty
+            ? int.parse(
+              RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
+            )
+            : 1;
 
     return ComicCategory(
       name: '',
@@ -485,21 +504,23 @@ class TruyenGGService extends ABComicService
     final url =
         '$baseUrl/${categoryId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html';
 
-    final $ = await fetch$(
-      buildQueryUri(url, filters: filters).toString(),
-    );
+    final $ = await fetch$(buildQueryUri(url, filters: filters).toString());
 
-    final data = $('.list_item_home, .list_grid', single: true)
-        .query('.item_home')
-        .map((element) => parseComic(element, baseUrl));
+    final data = $(
+      '.list_item_home, .list_grid',
+      single: true,
+    ).query('.item_home').map((element) => parseComic(element, baseUrl));
 
-    final lastPageLink =
-        $('.pagination > a:last-child', single: true).attr('href');
-    final maxPage = lastPageLink.isNotEmpty
-        ? int.parse(
-            RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
-          )
-        : 1;
+    final lastPageLink = $(
+      '.pagination > a:last-child',
+      single: true,
+    ).attr('href');
+    final maxPage =
+        lastPageLink.isNotEmpty
+            ? int.parse(
+              RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
+            )
+            : 1;
 
     return ComicCategory(
       name: $('.title_cate', single: true).text(),
@@ -515,10 +536,7 @@ class TruyenGGService extends ABComicService
   // auth service
   @override
   getUser({required cookie}) async {
-    final $ = await fetch$(
-      '$baseUrl/thiet-lap-tai-khoan.html',
-      cookie: cookie,
-    );
+    final $ = await fetch$('$baseUrl/thiet-lap-tai-khoan.html', cookie: cookie);
 
     if ($('title', single: true).text() != 'Thông Tin Tài Khoản') {
       throw UserNotFoundException(); // Not logged in

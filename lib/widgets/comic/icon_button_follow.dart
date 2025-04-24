@@ -38,9 +38,9 @@ class _IconButtonFollowState extends State<IconButtonFollow> {
         tooltip: _isFollowed.value ? "Unfollow" : "Follow",
         icon: ValueListenableBuilder<bool>(
           valueListenable: _isFollowed,
-          builder: (context, value, child) => Iconify(
-            value ? Mdi.bookmark : Mdi.bookmark_outline,
-          ),
+          builder:
+              (context, value, child) =>
+                  Iconify(value ? Mdi.bookmark : Mdi.bookmark_outline),
         ),
         onPressed: () {
           _setFollowed(!_isFollowed.value);

@@ -23,8 +23,9 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
 
   GeneralApiClient _getClient() {
     return _client ??= GeneralApiClient(
-        Dio(BaseOptions(headers: {'content-type': 'application/json'})),
-        baseUrl: _baseApiGeneral);
+      Dio(BaseOptions(headers: {'content-type': 'application/json'})),
+      baseUrl: _baseApiGeneral,
+    );
   }
 
   @override
@@ -35,7 +36,10 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
     final idToken = await user.getIdTokenResult();
 
     final body = await _getClient().client.getApiEigaGetWatchHistory(
-        sourceId: uid, page: page, authorization: 'Bearer ${idToken.token}');
+      sourceId: uid,
+      page: page,
+      authorization: 'Bearer ${idToken.token}',
+    );
 
     return body.data.map((history) {
       return EigaHistory(
@@ -46,8 +50,10 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
           image: OImage(src: history.poster),
         ),
         watchUpdatedAt: DateTime.parse(history.createdAt),
-        lastEpisode:
-            EigaEpisode(name: history.watchName, episodeId: history.watchId),
+        lastEpisode: EigaEpisode(
+          name: history.watchName,
+          episodeId: history.watchId,
+        ),
         watchTime: WatchTime(
           position: Duration(seconds: history.watchCur.round()),
           duration: Duration(seconds: history.watchDur.round()),
@@ -68,10 +74,11 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
     final idToken = await user.getIdTokenResult();
 
     final body = await _getClient().client.getApiEigaGetWatchTime(
-        sourceId: uid,
-        eigaTextId: eigaId,
-        chapId: episode.episodeId,
-        authorization: 'Bearer ${idToken.token}');
+      sourceId: uid,
+      eigaTextId: eigaId,
+      chapId: episode.episodeId,
+      authorization: 'Bearer ${idToken.token}',
+    );
     final data = body.data;
 
     if (data == null) throw Exception('No watch time found');
@@ -93,9 +100,10 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
     final idToken = await user.getIdTokenResult();
 
     final body = await _getClient().client.getApiEigaGetWatchTimeEpisodes(
-        sourceId: uid,
-        eigaTextId: eigaId,
-        authorization: 'Bearer ${idToken.token}');
+      sourceId: uid,
+      eigaTextId: eigaId,
+      authorization: 'Bearer ${idToken.token}',
+    );
 
     return {
       for (final item in body.data)
@@ -103,7 +111,7 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
           position: Duration(seconds: item.cur.round()),
           duration: Duration(seconds: item.dur.round()),
           updatedAt: DateTime.parse(item.updatedAt),
-        )
+        ),
     };
   }
 
@@ -121,18 +129,19 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
     final idToken = await user.getIdTokenResult();
 
     await _getClient().client.postApiEigaSetWatchTime(
-        body: SetWatchTimeBodySchema(
-          sourceId: uid,
-          // data
-          name: metaEiga.name,
-          poster: metaEiga.poster?.src ?? metaEiga.image.src,
-          eigaTextId: eigaId,
-          seasonName: season.name,
-          cur: watchTime.position.inMilliseconds / 1e3,
-          dur: watchTime.duration.inMilliseconds / 1e3,
-          episodeName: episode.name,
-          episodeId: episode.episodeId,
-        ),
-        authorization: 'Bearer ${idToken.token}');
+      body: SetWatchTimeBodySchema(
+        sourceId: uid,
+        // data
+        name: metaEiga.name,
+        poster: metaEiga.poster?.src ?? metaEiga.image.src,
+        eigaTextId: eigaId,
+        seasonName: season.name,
+        cur: watchTime.position.inMilliseconds / 1e3,
+        dur: watchTime.duration.inMilliseconds / 1e3,
+        episodeName: episode.name,
+        episodeId: episode.episodeId,
+      ),
+      authorization: 'Bearer ${idToken.token}',
+    );
   }
 }

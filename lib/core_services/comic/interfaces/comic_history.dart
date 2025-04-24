@@ -21,10 +21,7 @@ sealed class ComicHistory with _$ComicHistory {
         chapterId: 'fake_episode_id',
         name: 'Fake Episode',
       ),
-      watchPage: WatchPage(
-        currentPage: 0,
-        totalPage: 10,
-      ),
+      watchPage: WatchPage(currentPage: 0, totalPage: 10),
     );
   }
 }

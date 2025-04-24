@@ -8,7 +8,7 @@ class InfiniteList<T> extends StatefulWidget {
   final List<T> data;
   final Future<(bool, List<T>)> Function() fetchData;
   final Widget Function(BuildContext context, T item, int index, T? prev)
-      itemBuilder;
+  itemBuilder;
 
   const InfiniteList({
     super.key,
@@ -65,25 +65,28 @@ class _InfiniteListState<T> extends State<InfiniteList<T>> {
           setState(() {});
         }
       },
-      itemBuilder: (context, index) => widget.itemBuilder(
-        context,
-        _data.elementAt(index),
-        index,
-        index < 1 ? null : _data.elementAtOrNull(index - 1),
-      ),
-      loadingBuilder: (context) => Padding(
-        padding: EdgeInsets.symmetric(vertical: 8.0),
-        child: SpinKitSpinningLines(
-          color: Theme.of(context).colorScheme.secondary,
-          size: 50.0,
-        ),
-      ),
-      errorBuilder: (context) => Service.errorWidgetBuilder(
-        context,
-        error: _error,
-        service: null,
-        orElse: (error) => Text('Error: $error'),
-      ),
+      itemBuilder:
+          (context, index) => widget.itemBuilder(
+            context,
+            _data.elementAt(index),
+            index,
+            index < 1 ? null : _data.elementAtOrNull(index - 1),
+          ),
+      loadingBuilder:
+          (context) => Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: SpinKitSpinningLines(
+              color: Theme.of(context).colorScheme.secondary,
+              size: 50.0,
+            ),
+          ),
+      errorBuilder:
+          (context) => Service.errorWidgetBuilder(
+            context,
+            error: _error,
+            service: null,
+            orElse: (error) => Text('Error: $error'),
+          ),
     );
   }
 }

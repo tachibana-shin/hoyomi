@@ -98,24 +98,26 @@ class _MangaReaderState extends State<MangaReader>
   late final Computed<double> _realCurrentPage;
   late final Computed<int> _realLength;
 
-  late final _watchPageChapters =
-      asyncComputed<Map<String, WatchPageUpdated>?>(() async {
-    if (widget.service is ComicWatchPageMixin) {
-      final chapters = widget.comic.chapters;
+  late final _watchPageChapters = asyncComputed<Map<String, WatchPageUpdated>?>(
+    () async {
+      if (widget.service is ComicWatchPageMixin) {
+        final chapters = widget.comic.chapters;
 
-      try {
-        return await (widget.service as ComicWatchPageMixin)
-            .getWatchPageEpisodes(
-          comicId: widget.comicId,
-          chapters: chapters,
-        );
-      } on UnimplementedError {
-        return null;
+        try {
+          return await (widget.service as ComicWatchPageMixin)
+              .getWatchPageEpisodes(
+                comicId: widget.comicId,
+                chapters: chapters,
+              );
+        } on UnimplementedError {
+          return null;
+        }
       }
-    }
 
-    return null;
-  }, beforeUpdate: () => null);
+      return null;
+    },
+    beforeUpdate: () => null,
+  );
 
   // tiny status system
   late final _batteryLevel = ref<int?>(null);
@@ -127,38 +129,45 @@ class _MangaReaderState extends State<MangaReader>
   @override
   void initState() {
     _currChapter = computed(() {
-      final index = widget.comic.chapters
-          .indexWhere((chapter) => chapter.chapterId == _chapterId.value);
+      final index = widget.comic.chapters.indexWhere(
+        (chapter) => chapter.chapterId == _chapterId.value,
+      );
 
       if (index == -1) return null;
 
       return widget.comic.chapters.elementAtOrNull(index);
     });
 
-    _pages = ref(widget.pages.indexed
-        .map((params) {
-          if (_currChapter.value == null) return null;
+    _pages = ref(
+      widget.pages.indexed
+          .map((params) {
+            if (_currChapter.value == null) return null;
 
-          final (index, page) = params;
+            final (index, page) = params;
 
-          return ImageWithGroup(
-            chapter: _currChapter.value!,
-            index: index,
-            image: OImage(src: page.src, headers: page.headers),
-          );
-        })
-        .whereType<ImageWithGroup>()
-        .toList());
+            return ImageWithGroup(
+              chapter: _currChapter.value!,
+              index: index,
+              image: OImage(src: page.src, headers: page.headers),
+            );
+          })
+          .whereType<ImageWithGroup>()
+          .toList(),
+    );
 
     final startPage = computed(() {
-      return _pages.value.indexWhere((page) =>
-          page.chapter.chapterId == _chapterId.value &&
-          page.image.src != OImage.fake);
+      return _pages.value.indexWhere(
+        (page) =>
+            page.chapter.chapterId == _chapterId.value &&
+            page.image.src != OImage.fake,
+      );
     });
     final stopPage = computed(() {
-      return _pages.value.lastIndexWhere((page) =>
-          page.chapter.chapterId == _chapterId.value &&
-          page.image.src != OImage.fake);
+      return _pages.value.lastIndexWhere(
+        (page) =>
+            page.chapter.chapterId == _chapterId.value &&
+            page.image.src != OImage.fake,
+      );
     });
 
     late final ComicModes mode;
@@ -265,17 +274,15 @@ class _MangaReaderState extends State<MangaReader>
             if (chaptersLoadedStore[nextChapter.chapterId] == true) return;
 
             final currentChapter = _pages.value.last.chapter;
-            final $pages =
-                (await widget.getPages(nextChapter.chapterId)).indexed.map(
-                      (params) => ImageWithGroup(
-                        chapter: nextChapter,
-                        index: params.$1,
-                        image: OImage(
-                          src: params.$2.src,
-                          headers: params.$2.headers,
-                        ),
-                      ),
-                    );
+            final $pages = (await widget.getPages(
+              nextChapter.chapterId,
+            )).indexed.map(
+              (params) => ImageWithGroup(
+                chapter: nextChapter,
+                index: params.$1,
+                image: OImage(src: params.$2.src, headers: params.$2.headers),
+              ),
+            );
 
             chaptersLoadedStore[nextChapter.chapterId] = true;
 
@@ -287,7 +294,7 @@ class _MangaReaderState extends State<MangaReader>
                   index: -1,
                   image: OImage(src: OImage.fake),
                 ),
-                ...$pages
+                ...$pages,
               ];
             }
           } finally {
@@ -309,31 +316,37 @@ class _MangaReaderState extends State<MangaReader>
     battery.isInBatterySaveMode.then((state) {
       if (mounted) _batterySaveM.value = state;
     });
-    onBeforeUnmount(battery.onBatteryStateChanged.listen((state) {
-      _batteryState.value = state;
-    }).cancel);
-    onBeforeUnmount(Timer.periodic(Duration(seconds: 10), (timer) {
-      final battery = Battery();
+    onBeforeUnmount(
+      battery.onBatteryStateChanged.listen((state) {
+        _batteryState.value = state;
+      }).cancel,
+    );
+    onBeforeUnmount(
+      Timer.periodic(Duration(seconds: 10), (timer) {
+        final battery = Battery();
 
-      battery.batteryLevel.then((level) {
-        if (mounted) _batteryLevel.value = level;
-      });
-      battery.batteryState.then((state) {
-        if (mounted) _batteryState.value = state;
-      });
-      battery.isInBatterySaveMode.then((state) {
-        if (mounted) _batterySaveM.value = state;
-      });
-    }).cancel);
+        battery.batteryLevel.then((level) {
+          if (mounted) _batteryLevel.value = level;
+        });
+        battery.batteryState.then((state) {
+          if (mounted) _batteryState.value = state;
+        });
+        battery.isInBatterySaveMode.then((state) {
+          if (mounted) _batterySaveM.value = state;
+        });
+      }).cancel,
+    );
 
     /// current time
-    onBeforeUnmount(Timer.periodic(Duration(seconds: 1), (timer) {
-      if (!mounted) return;
-      final now = DateTime.now();
+    onBeforeUnmount(
+      Timer.periodic(Duration(seconds: 1), (timer) {
+        if (!mounted) return;
+        final now = DateTime.now();
 
-      final format = DateFormat(_use24h ? 'HH:mm' : 'hh:mm a');
-      _currentTime.value = format.format(now);
-    }).cancel);
+        final format = DateFormat(_use24h ? 'HH:mm' : 'hh:mm a');
+        _currentTime.value = format.format(now);
+      }).cancel,
+    );
 
     /// history read
     watch([_realCurrentPage], () {
@@ -382,12 +395,12 @@ class _MangaReaderState extends State<MangaReader>
     watchEffect(() async {
       if (widget.service is ComicWatchPageMixin && _currChapter.value != null) {
         try {
-          final watchPage =
-              await (widget.service as ComicWatchPageMixin).getWatchPage(
-            comicId: widget.comicId,
-            chapter: _currChapter.value!,
-            metaComic: widget.comic,
-          );
+          final watchPage = await (widget.service as ComicWatchPageMixin)
+              .getWatchPage(
+                comicId: widget.comicId,
+                chapter: _currChapter.value!,
+                metaComic: widget.comic,
+              );
 
           if (kDebugMode) {
             print(watchPage);
@@ -395,8 +408,11 @@ class _MangaReaderState extends State<MangaReader>
 
           // pages always ready
           _currentPage.value = watchPage.currentPage.toDouble();
-          showSnackBar(Text(
-              'Read page restored ${((_currentPage.value + 1) / watchPage.totalPage * 100).round()}%'));
+          showSnackBar(
+            Text(
+              'Read page restored ${((_currentPage.value + 1) / watchPage.totalPage * 100).round()}%',
+            ),
+          );
         } catch (error) {
           if (error is! UnimplementedError) {
             debugPrint('Error: $error (${StackTrace.current})');
@@ -440,8 +456,11 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   void _updateRoute() {
-    final currentGroup = _pages.value[_currentPage.value.round()].chapter
-        .chapterId; // Get the group id of the current page
+    final currentGroup =
+        _pages
+            .value[_currentPage.value.round()]
+            .chapter
+            .chapterId; // Get the group id of the current page
     if (_chapterId.value != currentGroup) {
       _chapterId.value = currentGroup;
       widget.onChangeChap(currentGroup);
@@ -471,10 +490,11 @@ class _MangaReaderState extends State<MangaReader>
   //   });
   // }
 
-  Widget _buildPlacePage(
-      {required ComicChapter chapter,
-      ComicChapter? prevChapter,
-      ComicChapter? nextChapter}) {
+  Widget _buildPlacePage({
+    required ComicChapter chapter,
+    ComicChapter? prevChapter,
+    ComicChapter? nextChapter,
+  }) {
     return SizedBox(
       width: 100.w(context),
       height: _usingPageView ? 100.h(context) : 50.h(context),
@@ -505,10 +525,7 @@ class _MangaReaderState extends State<MangaReader>
           ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
-            child: Text(
-              chapter.name,
-              style: TextStyle(fontSize: 18.0),
-            ),
+            child: Text(chapter.name, style: TextStyle(fontSize: 18.0)),
           ),
           if (nextChapter != null) ...[
             SizedBox(height: 20.0),
@@ -538,26 +555,32 @@ class _MangaReaderState extends State<MangaReader>
       final prevPage = index < 1 ? null : _pages.value.elementAt(index - 1);
       if (prevPage != null && prevPage.chapter != item.chapter) {
         return _buildPlacePage(
-            chapter: item.chapter, prevChapter: prevPage.chapter);
+          chapter: item.chapter,
+          prevChapter: prevPage.chapter,
+        );
       }
 
       final nextPage = _pages.value.elementAtOrNull(index + 1);
       if (nextPage != null && nextPage.chapter != item.chapter) {
         return _buildPlacePage(
-            chapter: item.chapter, nextChapter: nextPage.chapter);
+          chapter: item.chapter,
+          nextChapter: nextPage.chapter,
+        );
       }
     }
 
     return CachedNetworkImage(
       key: key,
       imageUrl: item.image.src,
-      httpHeaders: Headers({
-        'set-cookie': widget.service.getSetting(key: 'cookie') ?? '',
-        'user-agent': widget.service.getSetting(key: 'user_agent') ?? '',
-        ...item.image.headers?.toMap() ?? {},
-      }).toMap(),
-      placeholder: (context, url) =>
-          SizedBox(height: 100.h(context), child: _buildPageLoading(null)),
+      httpHeaders:
+          Headers({
+            'set-cookie': widget.service.getSetting(key: 'cookie') ?? '',
+            'user-agent': widget.service.getSetting(key: 'user_agent') ?? '',
+            ...item.image.headers?.toMap() ?? {},
+          }).toMap(),
+      placeholder:
+          (context, url) =>
+              SizedBox(height: 100.h(context), child: _buildPageLoading(null)),
       errorWidget: (context, url, error) => Icon(Icons.error),
       fit: BoxFit.cover,
     );
@@ -610,14 +633,16 @@ class _MangaReaderState extends State<MangaReader>
         trackHeight: 15.0,
         overlayShape: SliderComponentShape.noOverlay,
       ),
-      child: Watch(() => Slider(
-            min: 0.0,
-            max: _realLength.value - 1,
-            value: min(_realCurrentPage.value, _realLength.value - 1),
-            onChanged: (value) {
-              _currentPage.value = value; //.toInt();
-            },
-          )),
+      child: Watch(
+        () => Slider(
+          min: 0.0,
+          max: _realLength.value - 1,
+          value: min(_realCurrentPage.value, _realLength.value - 1),
+          onChanged: (value) {
+            _currentPage.value = value; //.toInt();
+          },
+        ),
+      ),
     );
   }
 
@@ -670,43 +695,36 @@ class _MangaReaderState extends State<MangaReader>
                   const SizedBox(height: 8.0),
 
                   // Button Group
-                  Watch(() => ToggleButtons(
-                        isSelected: [
-                          _mode.value == ComicModes.leftToRight,
-                          _mode.value == ComicModes.rightToLeft,
-                          _mode.value == ComicModes.topToBottom,
-                          _mode.value == ComicModes.webToon,
-                        ],
-                        onPressed: (index) {
-                          _mode.value = ComicModes.values.elementAt(index);
-                        },
-                        borderRadius: BorderRadius.circular(15.0),
-                        selectedColor: Colors.black,
-                        fillColor: Theme.of(context).colorScheme.primary,
-                        color: Theme.of(context).colorScheme.onSurface,
-                        constraints: const BoxConstraints(
-                          minHeight: 50.0,
-                          minWidth: 70.0,
+                  Watch(
+                    () => ToggleButtons(
+                      isSelected: [
+                        _mode.value == ComicModes.leftToRight,
+                        _mode.value == ComicModes.rightToLeft,
+                        _mode.value == ComicModes.topToBottom,
+                        _mode.value == ComicModes.webToon,
+                      ],
+                      onPressed: (index) {
+                        _mode.value = ComicModes.values.elementAt(index);
+                      },
+                      borderRadius: BorderRadius.circular(15.0),
+                      selectedColor: Colors.black,
+                      fillColor: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.onSurface,
+                      constraints: const BoxConstraints(
+                        minHeight: 50.0,
+                        minWidth: 70.0,
+                      ),
+                      children: [
+                        _buildIconWithLabel(Mdi.cog, "Standard"),
+                        _buildIconWithLabel(Mdi.arrow_left, "RTL"),
+                        _buildIconWithLabel(
+                          Mdi.format_vertical_align_center,
+                          "Vertical",
                         ),
-                        children: [
-                          _buildIconWithLabel(
-                            Mdi.cog,
-                            "Standard",
-                          ),
-                          _buildIconWithLabel(
-                            Mdi.arrow_left,
-                            "RTL",
-                          ),
-                          _buildIconWithLabel(
-                            Mdi.format_vertical_align_center,
-                            "Vertical",
-                          ),
-                          _buildIconWithLabel(
-                            Mdi.web,
-                            "Webtoon",
-                          ),
-                        ],
-                      )),
+                        _buildIconWithLabel(Mdi.web, "Webtoon"),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 16.0),
 
                   // Description Text
@@ -742,12 +760,14 @@ class _MangaReaderState extends State<MangaReader>
                           ),
                           Transform.scale(
                             scale: 0.8,
-                            child: Watch(() => Switch(
-                                  value: _useTwoPage.value,
-                                  onChanged: (value) {
-                                    _useTwoPage.value = value;
-                                  },
-                                )),
+                            child: Watch(
+                              () => Switch(
+                                value: _useTwoPage.value,
+                                onChanged: (value) {
+                                  _useTwoPage.value = value;
+                                },
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -806,16 +826,17 @@ class _MangaReaderState extends State<MangaReader>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (context) => ImagePicker(
-        images: _pages.value.map((page) => page.image).toList(),
-        sourceId: widget.service.uid,
-        onChange: (selected) {
-          setState(() {
-            _skipImages.clear();
-            _skipImages.addAll(selected);
-          });
-        },
-      ),
+      builder:
+          (context) => ImagePicker(
+            images: _pages.value.map((page) => page.image).toList(),
+            sourceId: widget.service.uid,
+            onChange: (selected) {
+              setState(() {
+                _skipImages.clear();
+                _skipImages.addAll(selected);
+              });
+            },
+          ),
     );
   }
 
@@ -824,11 +845,12 @@ class _MangaReaderState extends State<MangaReader>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (context) => CommentsSheet(
-        comicId: widget.comicId,
-        chapterId: _chapterId.value,
-        service: widget.service as ComicAuthMixin,
-      ),
+      builder:
+          (context) => CommentsSheet(
+            comicId: widget.comicId,
+            chapterId: _chapterId.value,
+            service: widget.service as ComicAuthMixin,
+          ),
     );
   }
 
@@ -837,16 +859,20 @@ class _MangaReaderState extends State<MangaReader>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (context) => Watch(() => SheetChapters(
-            comic: widget.comic,
-            sourceId: widget.service.uid,
-            comicId: widget.comicId,
-            currentChapterId: _chapterId.value,
-            initialChildSize: 0.6,
-            watchPageChapters:
-                _watchPageChapters.value ?? const <String, WatchPageUpdated>{},
-            lastReadChapter: null,
-          )),
+      builder:
+          (context) => Watch(
+            () => SheetChapters(
+              comic: widget.comic,
+              sourceId: widget.service.uid,
+              comicId: widget.comicId,
+              currentChapterId: _chapterId.value,
+              initialChildSize: 0.6,
+              watchPageChapters:
+                  _watchPageChapters.value ??
+                  const <String, WatchPageUpdated>{},
+              lastReadChapter: null,
+            ),
+          ),
     );
   }
 
@@ -942,33 +968,36 @@ class _MangaReaderState extends State<MangaReader>
   Widget _buildPageLoading(ImageChunkEvent? loadingProgress) {
     return Center(
       child: CircularProgressIndicator(
-        value: loadingProgress?.expectedTotalBytes != null
-            ? loadingProgress!.cumulativeBytesLoaded /
-                (loadingProgress.expectedTotalBytes!)
-            : null,
+        value:
+            loadingProgress?.expectedTotalBytes != null
+                ? loadingProgress!.cumulativeBytesLoaded /
+                    (loadingProgress.expectedTotalBytes!)
+                : null,
       ),
     );
   }
 
   Widget _buildBottomBar() {
-    return Watch(() => AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          transitionBuilder: (child, animation) {
-            const begin = Offset(0.0, kToolbarHeight * 2.5);
-            const end = Offset.zero;
-            const curve = Curves.easeInOut;
+    return Watch(
+      () => AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        transitionBuilder: (child, animation) {
+          const begin = Offset(0.0, kToolbarHeight * 2.5);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
 
-            var tween = Tween(
-              begin: begin,
-              end: end,
-            ).chain(CurveTween(curve: curve));
-            var offsetAnimation = animation.drive(tween);
+          var tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
 
-            return SlideTransition(position: offsetAnimation, child: child);
-          },
-          child: !_showToolbar.value
-              ? nil
-              : Column(
+          return SlideTransition(position: offsetAnimation, child: child);
+        },
+        child:
+            !_showToolbar.value
+                ? nil
+                : Column(
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 12.0),
@@ -979,32 +1008,33 @@ class _MangaReaderState extends State<MangaReader>
                             () => AbsorbPointer(
                               absorbing: _prevChapter.value == null,
                               child: SizedBox(
-                                  child: Ink(
-                                decoration: ShapeDecoration(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.surface.withValues(alpha: 0.9),
-                                  shape: CircleBorder(),
+                                child: Ink(
+                                  decoration: ShapeDecoration(
+                                    color: Theme.of(context).colorScheme.surface
+                                        .withValues(alpha: 0.9),
+                                    shape: CircleBorder(),
+                                  ),
+                                  child: IconButton(
+                                    iconSize: 30.0,
+                                    icon: const Iconify(Mdi.skip_previous),
+                                    color:
+                                        _prevChapter.value != null
+                                            ? Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withValues(alpha: 0.5),
+                                    onPressed: () {
+                                      context.replace(
+                                        "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_prevChapter.value!.chapterId}",
+                                        extra: {'comic': widget.comic},
+                                      );
+                                    },
+                                  ),
                                 ),
-                                child: IconButton(
-                                  iconSize: 30.0,
-                                  icon: const Iconify(Mdi.skip_previous),
-                                  color: _prevChapter.value != null
-                                      ? Theme.of(
-                                          context,
-                                        ).colorScheme.onSurface
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withValues(alpha: 0.5),
-                                  onPressed: () {
-                                    context.replace(
-                                      "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_prevChapter.value!.chapterId}",
-                                      extra: {'comic': widget.comic},
-                                    );
-                                  },
-                                ),
-                              )),
+                              ),
                             ),
                           ),
                           Expanded(
@@ -1029,29 +1059,26 @@ class _MangaReaderState extends State<MangaReader>
                           ),
                           Watch(
                             () => AbsorbPointer(
-                                absorbing: _nextChapter.value == null,
-                                child: SizedBox(
-                                    child: Ink(
+                              absorbing: _nextChapter.value == null,
+                              child: SizedBox(
+                                child: Ink(
                                   decoration: ShapeDecoration(
-                                    color: Theme.of(
-                                      context,
-                                    )
-                                        .colorScheme
-                                        .surface
+                                    color: Theme.of(context).colorScheme.surface
                                         .withValues(alpha: 0.9),
                                     shape: CircleBorder(),
                                   ),
                                   child: IconButton(
                                     iconSize: 30.0,
                                     icon: const Iconify(Mdi.skip_next),
-                                    color: _nextChapter.value != null
-                                        ? Theme.of(
-                                            context,
-                                          ).colorScheme.onSurface
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withValues(alpha: 0.5),
+                                    color:
+                                        _nextChapter.value != null
+                                            ? Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withValues(alpha: 0.5),
                                     onPressed: () {
                                       context.replace(
                                         "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_nextChapter.value!.chapterId}",
@@ -1059,7 +1086,9 @@ class _MangaReaderState extends State<MangaReader>
                                       );
                                     },
                                   ),
-                                ))),
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -1097,19 +1126,22 @@ class _MangaReaderState extends State<MangaReader>
                                       text: 'Comments',
                                       disabled:
                                           widget.service is! ComicAuthMixin ||
-                                              (widget.service as ComicAuthMixin)
-                                                      .getComments ==
-                                                  null,
+                                          (widget.service as ComicAuthMixin)
+                                                  .getComments ==
+                                              null,
                                       onPressed: _showPanelComments,
                                     ),
                                   ),
                                   Expanded(
-                                      child: Watch(() => ButtonInset(
-                                            icon: Eva.list_outline,
-                                            text:
-                                                '${_realCurrentPage.value.toInt() + 1} / ${_realLength.value}',
-                                            onPressed: _showPanelListChapters,
-                                          ))),
+                                    child: Watch(
+                                      () => ButtonInset(
+                                        icon: Eva.list_outline,
+                                        text:
+                                            '${_realCurrentPage.value.toInt() + 1} / ${_realLength.value}',
+                                        onPressed: _showPanelListChapters,
+                                      ),
+                                    ),
+                                  ),
                                   Expanded(
                                     child: ButtonInset(
                                       icon: Eva.settings_2_outline,
@@ -1133,7 +1165,8 @@ class _MangaReaderState extends State<MangaReader>
                     ),
                   ],
                 ),
-        ));
+      ),
+    );
   }
 
   Widget _buildTinyStatus() {
@@ -1150,23 +1183,27 @@ class _MangaReaderState extends State<MangaReader>
       //   ).createShader(bounds),
       //   child:
 
-      return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        StrokeText('${currChapter.name}/${widget.comic.chapters.length}'),
-        10.0.widthBox,
-        StrokeText(
-            'Page.${_realCurrentPage.value.toInt() + 1}/${_realLength.value}'),
-        10.0.widthBox,
-        StrokeText(
-            '${((_realCurrentPage.value.toInt() + 1) * 100 / _realLength.value).round()}%'),
-        20.0.widthBox,
-        Watch(() {
-          final String icon = switch (_batteryState.value) {
-            BatteryState.charging => Fluent.batteryCharge24,
-            BatteryState.connectedNotCharging => Fluent.batteryWarning24,
-            BatteryState.full => Fluent.batteryCheckmark24,
-            BatteryState.unknown => Fluent.batteryWarning24,
-            BatteryState.discharging || null => switch (
-                  _batteryLevel.value ?? 0) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          StrokeText('${currChapter.name}/${widget.comic.chapters.length}'),
+          10.0.widthBox,
+          StrokeText(
+            'Page.${_realCurrentPage.value.toInt() + 1}/${_realLength.value}',
+          ),
+          10.0.widthBox,
+          StrokeText(
+            '${((_realCurrentPage.value.toInt() + 1) * 100 / _realLength.value).round()}%',
+          ),
+          20.0.widthBox,
+          Watch(() {
+            final String icon = switch (_batteryState.value) {
+              BatteryState.charging => Fluent.batteryCharge24,
+              BatteryState.connectedNotCharging => Fluent.batteryWarning24,
+              BatteryState.full => Fluent.batteryCheckmark24,
+              BatteryState.unknown => Fluent.batteryWarning24,
+              BatteryState.discharging || null => switch (_batteryLevel.value ??
+                  0) {
                 <= 10 => Fluent.battery024,
                 <= 20 => Fluent.battery124,
                 <= 30 => Fluent.battery224,
@@ -1180,41 +1217,45 @@ class _MangaReaderState extends State<MangaReader>
                 >= 100 => Fluent.battery1024,
                 int() => throw UnimplementedError(),
               },
-          };
-          late final Color color;
-          if (_batteryState.value == BatteryState.charging) {
-            color = Colors.green.shade600;
-          } else if (_batterySaveM.value == true) {
-            color = Colors.yellow.shade600;
-          } else {
-            color = switch (_batteryLevel.value ?? 0) {
-              <= 20 => Colors.red.shade600,
-              _ => Colors.white,
             };
-          }
+            late final Color color;
+            if (_batteryState.value == BatteryState.charging) {
+              color = Colors.green.shade600;
+            } else if (_batterySaveM.value == true) {
+              color = Colors.yellow.shade600;
+            } else {
+              color = switch (_batteryLevel.value ?? 0) {
+                <= 20 => Colors.red.shade600,
+                _ => Colors.white,
+              };
+            }
 
-          return Stack(
-            children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                child: Iconify(icon, color: Colors.black, size: 22),
-              ),
-              // Fill (white)
-              Iconify(icon, color: color, size: 20),
-            ],
-          );
-        }),
-        // get current battery
-        Watch(() => StrokeText('${_batteryLevel.value}%')),
-        5.0.widthBox,
-        // current time
-        Watch(() => StrokeText(
+            return Stack(
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: Iconify(icon, color: Colors.black, size: 22),
+                ),
+                // Fill (white)
+                Iconify(icon, color: color, size: 20),
+              ],
+            );
+          }),
+          // get current battery
+          Watch(() => StrokeText('${_batteryLevel.value}%')),
+          5.0.widthBox,
+          // current time
+          Watch(
+            () => StrokeText(
               _currentTime.value ??
-                  DateFormat(_use24h ? 'HH:mm' : 'hh:mm a')
-                      .format(DateTime.now()),
-            )),
-      ]);
+                  DateFormat(
+                    _use24h ? 'HH:mm' : 'hh:mm a',
+                  ).format(DateTime.now()),
+            ),
+          ),
+        ],
+      );
     });
   }
 

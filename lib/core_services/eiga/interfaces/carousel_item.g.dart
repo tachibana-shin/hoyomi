@@ -15,9 +15,10 @@ _CarouselItem _$CarouselItemFromJson(Map<String, dynamic> json) =>
       originalName: json['originalName'] as String?,
       type: json['type'] as String?,
       episodeDuration: json['episodeDuration'] as String?,
-      updatedAt: json['updatedAt'] == null
-          ? null
-          : DateTime.parse(json['updatedAt'] as String),
+      updatedAt:
+          json['updatedAt'] == null
+              ? null
+              : DateTime.parse(json['updatedAt'] as String),
       quality: json['quality'] as String?,
       countSub: (json['countSub'] as num?)?.toInt(),
       countDub: (json['countDub'] as num?)?.toInt(),
@@ -28,12 +29,14 @@ _CarouselItem _$CarouselItemFromJson(Map<String, dynamic> json) =>
       studio: json['studio'] as String?,
       duration: json['duration'] as String?,
       language: json['language'] as String?,
-      genres: (json['genres'] as List<dynamic>?)
-          ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      actors: (json['actors'] as List<dynamic>?)
-          ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      genres:
+          (json['genres'] as List<dynamic>?)
+              ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
+              .toList(),
+      actors:
+          (json['actors'] as List<dynamic>?)
+              ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
+              .toList(),
     );
 
 Map<String, dynamic> _$CarouselItemToJson(_CarouselItem instance) =>

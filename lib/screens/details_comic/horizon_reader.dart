@@ -7,21 +7,22 @@ import 'package:kaeru/kaeru.dart';
 class HorizonReader extends StatefulWidget {
   final Ref<List<ImageWithGroup>> pages;
   final Widget Function(BuildContext context, int index, ValueKey key)
-      itemBuilder;
+  itemBuilder;
   final Ref<double> currentPage;
 
   final Image Function(int page, ValueKey key) builderImage;
   final bool rtl;
   final bool twoPage;
 
-  const HorizonReader(
-      {super.key,
-      required this.pages,
-      required this.itemBuilder,
-      required this.currentPage,
-      required this.builderImage,
-      required this.rtl,
-      required this.twoPage});
+  const HorizonReader({
+    super.key,
+    required this.pages,
+    required this.itemBuilder,
+    required this.currentPage,
+    required this.builderImage,
+    required this.rtl,
+    required this.twoPage,
+  });
 
   @override
   State<HorizonReader> createState() => _HorizonReaderState();
@@ -72,8 +73,11 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
       if (_controller.position.isScrollingNotifier.value) return;
       _jumping = true;
 
-      _controller.animateToPage(widget.currentPage.value.toInt(),
-          duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
+      _controller.animateToPage(
+        widget.currentPage.value.toInt(),
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+      );
       Timer(Duration(milliseconds: 50), () {
         _jumping = false;
       });
@@ -82,7 +86,8 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Watch(() => PageView.builder(
+    return Watch(
+      () => PageView.builder(
         controller: _controller,
         reverse: widget.rtl,
         // allowImplicitScrolling: true,
@@ -100,11 +105,16 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
         itemCount: _itemCount,
         itemBuilder: (context, index) {
           if (widget.twoPage) {
-            final children = _mapPage[index]!.map((i) {
-              return Expanded(
-                  child: widget.itemBuilder(context, i,
-                      ValueKey(widget.pages.value.elementAt(i).image.src)));
-            }).toList();
+            final children =
+                _mapPage[index]!.map((i) {
+                  return Expanded(
+                    child: widget.itemBuilder(
+                      context,
+                      i,
+                      ValueKey(widget.pages.value.elementAt(i).image.src),
+                    ),
+                  );
+                }).toList();
 
             return InteractiveViewer(
               panEnabled: true,
@@ -122,10 +132,15 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
             minScale: 1.0,
             maxScale: 2.0,
             trackpadScrollCausesScale: true,
-            child: widget.itemBuilder(context, index,
-                ValueKey(widget.pages.value.elementAt(index).image.src)),
+            child: widget.itemBuilder(
+              context,
+              index,
+              ValueKey(widget.pages.value.elementAt(index).image.src),
+            ),
           );
-        }));
+        },
+      ),
+    );
   }
 
   @override
@@ -166,7 +181,9 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
 
     try {
       final image = widget.builderImage(
-          index, ValueKey(widget.pages.value.elementAt(index).image.src));
+        index,
+        ValueKey(widget.pages.value.elementAt(index).image.src),
+      );
 
       final imageStream = image.image.resolve(const ImageConfiguration());
       final completer = Completer<double>();

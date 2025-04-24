@@ -32,24 +32,28 @@ Future<void> bumpFlutter() async {
     "next": [versionParts[0], versionParts[1], versionParts[2] + 1],
     "major": [versionParts[0] + 1, 0, 0],
     "minor": [versionParts[0], versionParts[1] + 1, 0],
-    "patch": [versionParts[0], versionParts[1], versionParts[2] + 1]
+    "patch": [versionParts[0], versionParts[1], versionParts[2] + 1],
   };
 
-  final versionChoices = versionOptions.keys.map((key) {
-    final newVersion = versionOptions[key]!;
-    return "$key → ${newVersion.join('.')}+${buildNumber + 1}";
-  }).toList()
-    ..add("custom → Enter manually");
+  final versionChoices =
+      versionOptions.keys.map((key) {
+          final newVersion = versionOptions[key]!;
+          return "$key → ${newVersion.join('.')}+${buildNumber + 1}";
+        }).toList()
+        ..add("custom → Enter manually");
 
   final versionChoice =
       prompts.choose("Select version update type:", versionChoices) ?? "next";
   String selectedKey = versionOptions.keys.firstWhere(
-      (key) => versionChoice.startsWith(key),
-      orElse: () => "custom");
+    (key) => versionChoice.startsWith(key),
+    orElse: () => "custom",
+  );
 
   if (selectedKey == "custom") {
-    final customVersion =
-        prompts.get("Enter new version", defaultsTo: parts[0]);
+    final customVersion = prompts.get(
+      "Enter new version",
+      defaultsTo: parts[0],
+    );
     versionParts.setAll(0, customVersion.split(".").map(int.parse));
   } else {
     versionParts.setAll(0, versionOptions[selectedKey]!);
@@ -59,7 +63,9 @@ Future<void> bumpFlutter() async {
   final newVersionString = "${versionParts.join('.')}+$newBuildNumber";
 
   final updatedContent = content.replaceAll(
-      RegExp(r'version:\s*\d+\.\d+\.\d+\+\d+'), 'version: $newVersionString');
+    RegExp(r'version:\s*\d+\.\d+\.\d+\+\d+'),
+    'version: $newVersionString',
+  );
 
   await pubspecFile.writeAsString(updatedContent);
 

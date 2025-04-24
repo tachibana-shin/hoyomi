@@ -7,9 +7,9 @@ part of 'watch_time.dart';
 // **************************************************************************
 
 _WatchTime _$WatchTimeFromJson(Map<String, dynamic> json) => _WatchTime(
-      position: Duration(microseconds: (json['position'] as num).toInt()),
-      duration: Duration(microseconds: (json['duration'] as num).toInt()),
-    );
+  position: Duration(microseconds: (json['position'] as num).toInt()),
+  duration: Duration(microseconds: (json['duration'] as num).toInt()),
+);
 
 Map<String, dynamic> _$WatchTimeToJson(_WatchTime instance) =>
     <String, dynamic>{

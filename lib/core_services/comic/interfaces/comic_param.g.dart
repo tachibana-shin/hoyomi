@@ -7,9 +7,9 @@ part of 'comic_param.dart';
 // **************************************************************************
 
 _ComicParam _$ComicParamFromJson(Map<String, dynamic> json) => _ComicParam(
-      comicId: json['comicId'] as String,
-      chapterId: json['chapterId'] as String?,
-    );
+  comicId: json['comicId'] as String,
+  chapterId: json['chapterId'] as String?,
+);
 
 Map<String, dynamic> _$ComicParamToJson(_ComicParam instance) =>
     <String, dynamic>{

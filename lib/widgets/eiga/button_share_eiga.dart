@@ -29,31 +29,32 @@ class _ButtonShareEigaState extends State<ButtonShareEiga> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: widget.eigaId,
-      builder: (context, eigaId, _) => ElevatedButton.icon(
-        onPressed: () {
-          final title =
-              '${widget.episodeName.value} ${widget.metaEiga.value.name}, ${widget.metaEiga.value.originalName}';
-          SharePlus.instance.share(
-            ShareParams(title: 'Watch $title on Hoyomi: ', subject: title),
-          );
-        },
-        icon: Iconify(
-          Mdi.share_outline,
-          color: Theme.of(context).textTheme.labelLarge?.color,
-        ),
-        label: Text(
-          'Share',
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+      builder:
+          (context, eigaId, _) => ElevatedButton.icon(
+            onPressed: () {
+              final title =
+                  '${widget.episodeName.value} ${widget.metaEiga.value.name}, ${widget.metaEiga.value.originalName}';
+              SharePlus.instance.share(
+                ShareParams(title: 'Watch $title on Hoyomi: ', subject: title),
+              );
+            },
+            icon: Iconify(
+              Mdi.share_outline,
+              color: Theme.of(context).textTheme.labelLarge?.color,
+            ),
+            label: Text(
+              'Share',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.normal,
                 fontSize: 12.0,
               ),
-        ),
-        style: ButtonStyle(
-          padding: WidgetStateProperty.all(
-            EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
+            ),
+            style: ButtonStyle(
+              padding: WidgetStateProperty.all(
+                EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
+              ),
+            ),
           ),
-        ),
-      ),
     );
   }
 }

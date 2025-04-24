@@ -49,9 +49,10 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
     _service = getComicService(widget.sourceId);
     _pagesFuture = _service.getPages(widget.comicId, widget.chapterId);
 
-    _metaComicFuture = widget.comic != null
-        ? Future.value(widget.comic)
-        : _service.getDetails(widget.comicId);
+    _metaComicFuture =
+        widget.comic != null
+            ? Future.value(widget.comic)
+            : _service.getDetails(widget.comicId);
     _metaComicFuture.then((comic) {
       _chapter.value = comic.chapters.firstWhere(
         (element) => element.chapterId == widget.chapterId,
@@ -110,8 +111,8 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
                 comicId: widget.comicId,
                 comic: metaComic,
                 chapterId: widget.chapterId,
-                getPages: (String chap) =>
-                    _service.getPages(widget.comicId, chap),
+                getPages:
+                    (String chap) => _service.getPages(widget.comicId, chap),
                 onChangeChap: _updateChapter,
                 onChangeEnabled: _updateEnabled,
               );
@@ -152,25 +153,25 @@ class _AppBar extends StatefulWidget {
 class _AppBarState extends State<_AppBar> with KaeruMixin {
   @override
   Widget build(BuildContext context) {
-    return Watch(
-      () {
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          transitionBuilder: (child, animation) {
-            const begin = Offset(0.0, -50.0);
-            const end = Offset.zero;
-            const curve = Curves.easeInOut;
+    return Watch(() {
+      return AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        transitionBuilder: (child, animation) {
+          const begin = Offset(0.0, -50.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
 
-            var tween = Tween(
-              begin: begin,
-              end: end,
-            ).chain(CurveTween(curve: curve));
-            var offsetAnimation = animation.drive(tween);
+          var tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
 
-            return SlideTransition(position: offsetAnimation, child: child);
-          },
-          child: widget.enabled.value
-              ? ClipRRect(
+          return SlideTransition(position: offsetAnimation, child: child);
+        },
+        child:
+            widget.enabled.value
+                ? ClipRRect(
                   child: SizedBox(
                     height: 53.0,
                     child: BackdropFilter(
@@ -189,48 +190,52 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                         ),
                         title: Watch(() {
                           return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.comic.value?.name ?? '',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 2),
+                              if (widget.chapter.value != null)
                                 Text(
-                                  widget.comic.value?.name ?? '',
+                                  widget.chapter.value!.name,
                                   style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Colors.white70,
                                   ),
                                 ),
-                                SizedBox(height: 2),
-                                if (widget.chapter.value != null)
-                                  Text(
-                                    widget.chapter.value!.name,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white70,
-                                    ),
-                                  ),
-                              ]);
+                            ],
+                          );
                         }),
                         actions: [
-                          Watch(() => IconButtonFollow(
-                                sourceId: widget.service.uid,
-                                comicId: widget.comicId,
-                                comic: widget.comic.value,
-                              )),
-                          Watch(() => IconButtonOpenBrowser(
-                                url: widget.service.getURL(
-                                  widget.comicId,
-                                  chapterId: widget.chapter.value?.chapterId,
-                                ),
-                              )),
+                          Watch(
+                            () => IconButtonFollow(
+                              sourceId: widget.service.uid,
+                              comicId: widget.comicId,
+                              comic: widget.comic.value,
+                            ),
+                          ),
+                          Watch(
+                            () => IconButtonOpenBrowser(
+                              url: widget.service.getURL(
+                                widget.comicId,
+                                chapterId: widget.chapter.value?.chapterId,
+                              ),
+                            ),
+                          ),
                           IconButtonShare(),
                         ],
                       ),
                     ),
                   ),
                 )
-              : null,
-        );
-      },
-    );
+                : null,
+      );
+    });
   }
 }

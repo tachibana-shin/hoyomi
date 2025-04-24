@@ -7,9 +7,9 @@ part of 'watch_page.dart';
 // **************************************************************************
 
 _WatchPage _$WatchPageFromJson(Map<String, dynamic> json) => _WatchPage(
-      currentPage: (json['currentPage'] as num).toInt(),
-      totalPage: (json['totalPage'] as num).toInt(),
-    );
+  currentPage: (json['currentPage'] as num).toInt(),
+  totalPage: (json['totalPage'] as num).toInt(),
+);
 
 Map<String, dynamic> _$WatchPageToJson(_WatchPage instance) =>
     <String, dynamic>{

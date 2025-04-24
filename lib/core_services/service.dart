@@ -85,19 +85,23 @@ mixin _SettingsMixin {
   }
 
   Future<void> setSetting(String name, String value) async {
-    var record = _serviceSettings ??
+    var record =
+        _serviceSettings ??
         ServiceSettings(
-            sourceId: uid,
-            settings: null,
-            userDataCache: null,
-            createdAt: DateTime.now(),
-            updatedAt: DateTime.now());
+          sourceId: uid,
+          settings: null,
+          userDataCache: null,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
 
     try {
-      record = record.copyWith(settings: {
-        if (record.settings != null) ...record.settings!,
-        name: value,
-      });
+      record = record.copyWith(
+        settings: {
+          if (record.settings != null) ...record.settings!,
+          name: value,
+        },
+      );
     } catch (err) {
       record = record.copyWith(settings: {name: value});
     }
@@ -125,8 +129,9 @@ abstract class Service with _SettingsMixin {
     FieldInput(
       name: 'User Agent',
       key: 'user_agent',
-      defaultFn: (service) =>
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      defaultFn:
+          (service) =>
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       placeholder:
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       description: 'The user agent to use when fetching data',
@@ -154,13 +159,17 @@ abstract class Service with _SettingsMixin {
   @override
   String get uid => init.uid ?? name.toLowerCase().replaceAll(r'\s', '-');
   OImage? _faviconUrl;
-  OImage get faviconUrl => _faviconUrl ??= OImage(
-      src: Uri.parse(baseUrl).resolve(init.faviconUrl.src).toString(),
-      headers: init.faviconUrl.headers);
+  OImage get faviconUrl =>
+      _faviconUrl ??= OImage(
+        src: Uri.parse(baseUrl).resolve(init.faviconUrl.src).toString(),
+        headers: init.faviconUrl.headers,
+      );
   String? _rss;
-  String? get rss => _rss ??= init.rss == null
-      ? null
-      : Uri.parse(baseUrl).resolve(init.rss!).toString();
+  String? get rss =>
+      _rss ??=
+          init.rss == null
+              ? null
+              : Uri.parse(baseUrl).resolve(init.rss!).toString();
 
   Future<User>? _userFuture;
 
@@ -192,9 +201,10 @@ abstract class Service with _SettingsMixin {
     debugPrint('$error');
     if (error is CaptchaRequiredException) {
       return Padding(
-        padding: isSnackbar
-            ? EdgeInsets.zero
-            : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        padding:
+            isSnackbar
+                ? EdgeInsets.zero
+                : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -203,9 +213,10 @@ abstract class Service with _SettingsMixin {
               children: [
                 Iconify(
                   Mdi.earth,
-                  color: isSnackbar || context == null
-                      ? Colors.black
-                      : Theme.of(context).colorScheme.onSurface,
+                  color:
+                      isSnackbar || context == null
+                          ? Colors.black
+                          : Theme.of(context).colorScheme.onSurface,
                 ),
                 SizedBox(width: 8),
                 Expanded(
@@ -240,9 +251,10 @@ abstract class Service with _SettingsMixin {
 
     if (error is UserNotFoundException) {
       return Padding(
-        padding: isSnackbar
-            ? EdgeInsets.zero
-            : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        padding:
+            isSnackbar
+                ? EdgeInsets.zero
+                : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -261,14 +273,17 @@ abstract class Service with _SettingsMixin {
       );
     }
 
-    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      orElse(error),
-      // button refresh page
-      ElevatedButton(
-        child: Text('Refresh'),
-        onPressed: () => router.refresh(),
-      ),
-    ]);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        orElse(error),
+        // button refresh page
+        ElevatedButton(
+          child: Text('Refresh'),
+          onPressed: () => router.refresh(),
+        ),
+      ],
+    );
   }
 
   /// Fetches data from the provided URL, handling cookies and retries.
@@ -318,9 +333,10 @@ abstract class Service with _SettingsMixin {
       'sec-fetch-site': 'same-origin',
       'sec-fetch-user': '?1',
       'upgrade-insecure-requests': '1',
-      'user-agent': record?.settings?['user_agent'] as String? ??
+      'user-agent':
+          record?.settings?['user_agent'] as String? ??
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-      if (headers != null) ...headers.toMap()
+      if (headers != null) ...headers.toMap(),
     });
 
     final DateTime? startTime = kDebugMode ? DateTime.now() : null;
@@ -331,12 +347,13 @@ abstract class Service with _SettingsMixin {
 
       if (body != null) {
         final filteredBody = Map.fromEntries(
-          body.entries.where((entry) => entry.value != null).map(
+          body.entries
+              .where((entry) => entry.value != null)
+              .map(
                 (entry) => MapEntry(
-                    entry.key,
-                    entry.value is String
-                        ? entry.value
-                        : entry.value.toString()),
+                  entry.key,
+                  entry.value is String ? entry.value : entry.value.toString(),
+                ),
               ),
         );
 
@@ -349,19 +366,20 @@ abstract class Service with _SettingsMixin {
       ..followRedirects = true;
 
     if (headers != null) request.headers.addAll(headers.toMap());
-    final Object? fBody = body == null
-        ? null
-        : Map.fromEntries(
-            body.entries.where((entry) => entry.value != null).toList().map(
-              (entry) {
+    final Object? fBody =
+        body == null
+            ? null
+            : Map.fromEntries(
+              body.entries.where((entry) => entry.value != null).toList().map((
+                entry,
+              ) {
                 if (entry.value is String) {
                   return entry;
                 } else {
                   return MapEntry(entry.key, entry.value.toString());
                 }
-              },
-            ),
-          );
+              }),
+            );
     if (fBody != null) {
       if (fBody is String) {
         request.body = fBody;
@@ -448,10 +466,14 @@ abstract class Service with _SettingsMixin {
     Map<String, dynamic>? body,
     Headers? headers,
   }) async {
-    final uid = sha256
-        .convert(utf8.encode(
-            '$url|$cookie|${jsonEncode(query)}|${body == null ? '' : jsonEncode(body)}|${headers == null ? '' : jsonEncode(headers)}'))
-        .toString();
+    final uid =
+        sha256
+            .convert(
+              utf8.encode(
+                '$url|$cookie|${jsonEncode(query)}|${body == null ? '' : jsonEncode(body)}|${headers == null ? '' : jsonEncode(headers)}',
+              ),
+            )
+            .toString();
 
     final inStore = _cacheFetch[uid];
     if (inStore != null &&
@@ -461,12 +483,16 @@ abstract class Service with _SettingsMixin {
     }
 
     final expiresIn = expires == null ? null : DateTime.now().add(expires);
-    final response =
-        fetch(url, cookie: cookie, query: query, body: body, headers: headers)
-          ..catchError((error) {
-            _cacheFetch.remove(uid);
-            throw error;
-          });
+    final response = fetch(
+      url,
+      cookie: cookie,
+      query: query,
+      body: body,
+      headers: headers,
+    )..catchError((error) {
+      _cacheFetch.remove(uid);
+      throw error;
+    });
     _cacheFetch[uid] = (expire: expiresIn, response: response);
 
     return response;
@@ -477,14 +503,21 @@ abstract class Service with _SettingsMixin {
     return DQuery.fromDocument(document);
   }
 
-  Future<DollarFunction> fetch$(String url,
-      {String? cookie,
-      Map<String, dynamic>? query,
-      Map<String, dynamic>? body,
-      Headers? headers}) async {
+  Future<DollarFunction> fetch$(
+    String url, {
+    String? cookie,
+    Map<String, dynamic>? query,
+    Map<String, dynamic>? body,
+    Headers? headers,
+  }) async {
     return parse$(
-      await fetch(url,
-          cookie: cookie, query: query, body: body, headers: headers),
+      await fetch(
+        url,
+        cookie: cookie,
+        query: query,
+        body: body,
+        headers: headers,
+      ),
     );
   }
 
@@ -533,13 +566,13 @@ abstract class Service with _SettingsMixin {
     // save to cache
     var currentServiceSettings =
         await ServiceSettingsController.instance.get(uid) ??
-            ServiceSettings(
-              sourceId: uid,
-              settings: null,
-              userDataCache: null,
-              createdAt: DateTime.now(),
-              updatedAt: DateTime.now(),
-            );
+        ServiceSettings(
+          sourceId: uid,
+          settings: null,
+          userDataCache: null,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
     var currentSettings = currentServiceSettings.settings ?? {};
 
     try {
@@ -547,8 +580,9 @@ abstract class Service with _SettingsMixin {
       final jsonNewUserData = jsonEncode(user.toJson());
 
       if (currentServiceSettings.userDataCache != jsonNewUserData) {
-        currentServiceSettings =
-            currentServiceSettings.copyWith(userDataCache: jsonNewUserData);
+        currentServiceSettings = currentServiceSettings.copyWith(
+          userDataCache: jsonNewUserData,
+        );
       }
 
       currentSettings = {...currentSettings, 'cookie': cookie};
@@ -560,8 +594,10 @@ abstract class Service with _SettingsMixin {
 
       _userFuture = Future.value(user);
 
-      await ServiceSettingsController.instance
-          .save(uid, currentServiceSettings);
+      await ServiceSettingsController.instance.save(
+        uid,
+        currentServiceSettings,
+      );
 
       return user;
     } on UserNotFoundException catch (_) {
@@ -573,16 +609,20 @@ abstract class Service with _SettingsMixin {
         updatedAt: DateTime.now(),
       );
 
-      await ServiceSettingsController.instance
-          .save(uid, currentServiceSettings);
+      await ServiceSettingsController.instance.save(
+        uid,
+        currentServiceSettings,
+      );
 
       rethrow;
     }
   }
 
   Future<User> fetchUser({ServiceSettings? row, bool? recordLoaded}) async {
-    return _userFuture ??=
-        _fetchUser(record: row, recordLoaded: recordLoaded).catchError((error) {
+    return _userFuture ??= _fetchUser(
+      record: row,
+      recordLoaded: recordLoaded,
+    ).catchError((error) {
       _userFuture = null;
       throw error;
     });
@@ -594,9 +634,10 @@ abstract class Service with _SettingsMixin {
     }
     final service = this as AuthMixin;
 
-    record = recordLoaded == true
-        ? record
-        : await ServiceSettingsController.instance.get(uid);
+    record =
+        recordLoaded == true
+            ? record
+            : await ServiceSettingsController.instance.get(uid);
     final settings = record?.settings ?? {};
     final cookie = settings['cookie'] as String?;
     var user = record?.userDataCache;

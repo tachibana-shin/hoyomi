@@ -7,9 +7,9 @@ part of 'eiga_param.dart';
 // **************************************************************************
 
 _EigaParam _$EigaParamFromJson(Map<String, dynamic> json) => _EigaParam(
-      eigaId: json['eigaId'] as String,
-      episodeId: json['episodeId'] as String?,
-    );
+  eigaId: json['eigaId'] as String,
+  episodeId: json['episodeId'] as String?,
+);
 
 Map<String, dynamic> _$EigaParamToJson(_EigaParam instance) =>
     <String, dynamic>{

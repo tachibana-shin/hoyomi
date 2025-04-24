@@ -23,17 +23,17 @@ class _AnimatedIconRewindState extends State<AnimatedIconRewind>
     _fadeAnimations = List.generate(3, (index) {
       return TweenSequence<double>([
         TweenSequenceItem(
-            tween: Tween<double>(begin: 0, end: 1), weight: 50), // Fade-in
+          tween: Tween<double>(begin: 0, end: 1),
+          weight: 50,
+        ), // Fade-in
         TweenSequenceItem(
-            tween: Tween<double>(begin: 1, end: 0), weight: 50), // Fade-out
+          tween: Tween<double>(begin: 1, end: 0),
+          weight: 50,
+        ), // Fade-out
       ]).animate(
         CurvedAnimation(
           parent: _controller,
-          curve: Interval(
-            index * 0.2,
-            1.0,
-            curve: Curves.easeInOut,
-          ),
+          curve: Interval(index * 0.2, 1.0, curve: Curves.easeInOut),
         ),
       );
     });
@@ -49,10 +49,7 @@ class _AnimatedIconRewindState extends State<AnimatedIconRewind>
   Widget _buildTriangle(Animation<double> animation) {
     return FadeTransition(
       opacity: animation,
-      child: CustomPaint(
-        size: const Size(12, 12),
-        painter: _TrianglePainter(),
-      ),
+      child: CustomPaint(size: const Size(12, 12), painter: _TrianglePainter()),
     );
   }
 

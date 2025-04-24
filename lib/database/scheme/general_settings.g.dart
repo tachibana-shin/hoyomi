@@ -9,19 +9,22 @@ part of 'general_settings.dart';
 _GeneralSettings _$GeneralSettingsFromJson(Map<String, dynamic> json) =>
     _GeneralSettings(
       mangaReadLazyPage: json['mangaReadLazyPage'] as bool? ?? false,
-      lastCheckUpdateApp: json['lastCheckUpdateApp'] == null
-          ? null
-          : DateTime.parse(json['lastCheckUpdateApp'] as String),
+      lastCheckUpdateApp:
+          json['lastCheckUpdateApp'] == null
+              ? null
+              : DateTime.parse(json['lastCheckUpdateApp'] as String),
       brightnessApp: (json['brightnessApp'] as num?)?.toDouble() ?? null,
       pollingIntervalComic:
           (json['pollingIntervalComic'] as num?)?.toInt() ?? 60 * 60 * 3,
       showListEpisodeWithGrid:
           json['showListEpisodeWithGrid'] as bool? ?? false,
-      sortComicService: (json['sortComicService'] as List<dynamic>?)
+      sortComicService:
+          (json['sortComicService'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           null,
-      sortEigaService: (json['sortEigaService'] as List<dynamic>?)
+      sortEigaService:
+          (json['sortEigaService'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           null,

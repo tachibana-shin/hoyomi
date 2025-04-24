@@ -20,8 +20,10 @@ class _HomeEigaPageState extends State<HomeEigaPage>
     return Watch(() {
       if (_tabController?.length != eigaServices.value.length) {
         _tabController?.dispose();
-        _tabController =
-            TabController(length: eigaServices.value.length, vsync: this);
+        _tabController = TabController(
+          length: eigaServices.value.length,
+          vsync: this,
+        );
       }
 
       return Scaffold(
@@ -38,17 +40,22 @@ class _HomeEigaPageState extends State<HomeEigaPage>
             controller: _tabController,
             isScrollable: true,
             splashBorderRadius: BorderRadius.circular(35.0),
-            tabs: eigaServices.value
-                .map((service) => Tab(text: service.name))
-                .toList(),
+            tabs:
+                eigaServices.value
+                    .map((service) => Tab(text: service.name))
+                    .toList(),
           ),
         ),
         body: TabBarView(
-            controller: _tabController,
-            children: eigaServices.value
-                .map((service) =>
-                    TabViewEiga(key: Key(service.uid), service: service))
-                .toList()),
+          controller: _tabController,
+          children:
+              eigaServices.value
+                  .map(
+                    (service) =>
+                        TabViewEiga(key: Key(service.uid), service: service),
+                  )
+                  .toList(),
+        ),
       );
     });
   }

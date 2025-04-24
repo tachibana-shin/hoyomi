@@ -1,6 +1,8 @@
 extension FoldWithIterableExtension<T> on Iterable<T> {
-  R foldWithIterable<R>(R initialValue,
-      R Function(R accumulator, T currentValue, Iterable<T> list) callback) {
+  R foldWithIterable<R>(
+    R initialValue,
+    R Function(R accumulator, T currentValue, Iterable<T> list) callback,
+  ) {
     R accumulator = initialValue;
     for (int i = 0; i < length; i++) {
       accumulator = callback(accumulator, elementAt(i), this);
@@ -9,7 +11,8 @@ extension FoldWithIterableExtension<T> on Iterable<T> {
   }
 
   Iterable<R> mapWithIterable<R>(
-      R Function(T currentValue, Iterable<T> list) callback) {
+    R Function(T currentValue, Iterable<T> list) callback,
+  ) {
     return map((currentValue) => callback(currentValue, this));
   }
 }

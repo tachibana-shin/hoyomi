@@ -7,7 +7,7 @@ class WebToonReader extends StatefulWidget {
   // final int itemCount;
   final Ref<List<ImageWithGroup>> pages;
   final Widget Function(BuildContext context, int index, ValueKey key)
-      itemBuilder;
+  itemBuilder;
   final Ref<double> currentPage;
 
   const WebToonReader({

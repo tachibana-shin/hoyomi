@@ -63,7 +63,7 @@ class _SearchPageState extends State<SearchPage>
           if (widget.keyword.trim().isNotEmpty)
             _buildBodySearch(context)
           else
-            _buildBodyGetStarting(context)
+            _buildBodyGetStarting(context),
         ],
       ),
     );

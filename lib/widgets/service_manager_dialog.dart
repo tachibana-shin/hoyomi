@@ -49,8 +49,10 @@ void showServiceManagerDialog<T extends Service>(
                         ),
                         title: Text(dialogItems[i].name),
                         subtitle: Text(dialogItems[i].baseUrl),
-                        trailing:
-                            const Iconify(Ic.sharp_drag_indicator, size: 20),
+                        trailing: const Iconify(
+                          Ic.sharp_drag_indicator,
+                          size: 20,
+                        ),
                       ),
                     ),
                 ],
@@ -65,8 +67,9 @@ void showServiceManagerDialog<T extends Service>(
                   if (!listEquals(dialogItems, items)) {
                     await initializeServices(dialogItems);
                     onDone(dialogItems);
-                  } else if (!dialogItems.indexed
-                      .every((entry) => entry.$2 == items[entry.$1])) {
+                  } else if (!dialogItems.indexed.every(
+                    (entry) => entry.$2 == items[entry.$1],
+                  )) {
                     onDone(dialogItems);
                   }
 

@@ -5,7 +5,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 class PullRefreshPage<T> extends StatefulWidget {
   final Widget Function(Widget body)? builderError;
   final Widget Function(T data, (bool loading, Future<void> Function() refresh))
-      builder;
+  builder;
   final Future<T> Function() onLoadData;
   final T Function() onLoadFake;
 

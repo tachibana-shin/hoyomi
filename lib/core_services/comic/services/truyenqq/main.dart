@@ -57,8 +57,9 @@ class TruyenQQService extends TruyenGGService {
       src: $image.attr('src'),
       headers: Headers({'referer': referer}),
     );
-    final String name = (itemComic.queryOne('.book_name a').textRaw() ??
-        itemComic.queryOne('img').attr('alt'));
+    final String name =
+        (itemComic.queryOne('.book_name a').textRaw() ??
+            itemComic.queryOne('img').attr('alt'));
 
     final ComicChapter lastChap = ComicChapter(
       name: itemComic.queryOne('.last_chapter > a').text(),
@@ -72,9 +73,10 @@ class TruyenQQService extends TruyenGGService {
     );
 
     final timeAgoElement = itemComic.queryOne('.time-ago');
-    final timeAgo = timeAgoElement.isNotEmpty
-        ? convertTimeAgoToUtc(timeAgoElement.text())
-        : null;
+    final timeAgo =
+        timeAgoElement.isNotEmpty
+            ? convertTimeAgoToUtc(timeAgoElement.text())
+            : null;
     final String? notice = itemComic.queryOne('.type-label').textRaw();
 
     final rateValueText = itemComic.queryOne('.rate-star').textRaw();
@@ -99,15 +101,17 @@ class TruyenQQService extends TruyenGGService {
 
     return [
       HomeComicCategory(
-        items: $('#list_suggest > li')
-            .map((element) => parseComic(element, baseUrl))
-            .toList(),
+        items:
+            $(
+              '#list_suggest > li',
+            ).map((element) => parseComic(element, baseUrl)).toList(),
         name: 'Truyện Hay',
       ),
       HomeComicCategory(
-        items: $('#list_new > li')
-            .map((element) => parseComic(element, baseUrl))
-            .toList(),
+        items:
+            $(
+              '#list_new > li',
+            ).map((element) => parseComic(element, baseUrl)).toList(),
         name: 'Truyện Mới Cập Nhật',
         categoryId: 'truyen-moi-cap-nhat',
       ),
@@ -131,10 +135,11 @@ class TruyenQQService extends TruyenGGService {
     final translator = _getInfoTale(tales, 'Dịch giả')?.textRaw();
     final status$ =
         _getInfoTale(tales, 'Tình trạng')?.textRaw()?.toLowerCase() ??
-            'unknown';
-    final status = status$ == 'đang cập nhật'
-        ? StatusEnum.ongoing
-        : status$ == 'unknown'
+        'unknown';
+    final status =
+        status$ == 'đang cập nhật'
+            ? StatusEnum.ongoing
+            : status$ == 'unknown'
             ? StatusEnum.unknown
             : StatusEnum.completed;
 
@@ -146,17 +151,24 @@ class TruyenQQService extends TruyenGGService {
           '',
     );
 
-    final rate$ = JsonDecoder().convert(
-      $('script[type=\'application/ld+json\']', single: true).textRaw() ?? '{}',
-    ) as Map<String, dynamic>;
+    final rate$ =
+        JsonDecoder().convert(
+              $(
+                    'script[type=\'application/ld+json\']',
+                    single: true,
+                  ).textRaw() ??
+                  '{}',
+            )
+            as Map<String, dynamic>;
 
-    final rate = rate$.containsKey('aggregateRating')
-        ? RateValue(
-            best: int.parse('${rate$['aggregateRating']['bestRating']}'),
-            count: int.parse(rate$['aggregateRating']['ratingCount']),
-            value: double.parse(rate$['aggregateRating']['ratingValue']),
-          )
-        : null;
+    final rate =
+        rate$.containsKey('aggregateRating')
+            ? RateValue(
+              best: int.parse('${rate$['aggregateRating']['bestRating']}'),
+              count: int.parse(rate$['aggregateRating']['ratingCount']),
+              value: double.parse(rate$['aggregateRating']['ratingValue']),
+            )
+            : null;
 
     final genres = $('.list01 a').map(
       (anchor) => Genre(
@@ -182,9 +194,12 @@ class TruyenQQService extends TruyenGGService {
 
       return ComicChapter(name: name, chapterId: chapterId, time: time);
     });
-    final lastModified = rate$.containsKey('dateModified')
-        ? DateTime.parse(rate$['dateModified'])
-        : DateFormat('dd/MM/yyyy').parse($('.time-chap', single: true).text());
+    final lastModified =
+        rate$.containsKey('dateModified')
+            ? DateTime.parse(rate$['dateModified'])
+            : DateFormat(
+              'dd/MM/yyyy',
+            ).parse($('.time-chap', single: true).text());
 
     return MetaComic(
       name: name,
@@ -221,25 +236,30 @@ class TruyenQQService extends TruyenGGService {
   }
 
   @override
-  search(
-      {required keyword,
-      required page,
-      required filters,
-      required quick}) async {
+  search({
+    required keyword,
+    required page,
+    required filters,
+    required quick,
+  }) async {
     final url =
         '$baseUrl/tim-kiem${page > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}';
     final $ = await fetch$(url);
 
-    final data =
-        $('.list_grid_out li').map((element) => parseComic(element, baseUrl));
+    final data = $(
+      '.list_grid_out li',
+    ).map((element) => parseComic(element, baseUrl));
 
-    final lastPageLink =
-        $('.page_redirect > a:last-child', single: true).attrRaw('href');
-    final maxPage = lastPageLink != null
-        ? int.parse(
-            RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
-          )
-        : 1;
+    final lastPageLink = $(
+      '.page_redirect > a:last-child',
+      single: true,
+    ).attrRaw('href');
+    final maxPage =
+        lastPageLink != null
+            ? int.parse(
+              RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
+            )
+            : 1;
 
     return ComicCategory(
       name: '',
@@ -256,20 +276,22 @@ class TruyenQQService extends TruyenGGService {
     final url =
         '$baseUrl/${categoryId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html';
 
-    final $ = await fetch$(
-      buildQueryUri(url, filters: filters).toString(),
-    );
+    final $ = await fetch$(buildQueryUri(url, filters: filters).toString());
 
-    final data =
-        $('.list_grid_out li').map((element) => parseComic(element, baseUrl));
+    final data = $(
+      '.list_grid_out li',
+    ).map((element) => parseComic(element, baseUrl));
 
-    final lastPageLink =
-        $('.page_redirect > a:last-child', single: true).attrRaw('href');
-    final maxPage = lastPageLink != null
-        ? int.parse(
-            RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
-          )
-        : 1;
+    final lastPageLink = $(
+      '.page_redirect > a:last-child',
+      single: true,
+    ).attrRaw('href');
+    final maxPage =
+        lastPageLink != null
+            ? int.parse(
+              RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
+            )
+            : 1;
 
     return ComicCategory(
       name: $('.title_cate, .text_list_update', single: true).text(),

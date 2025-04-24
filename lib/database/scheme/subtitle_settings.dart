@@ -22,7 +22,7 @@ const subtitleOptions = {
     'Serif',
     'Monospace',
     'Cursive',
-    'Small Caps'
+    'Small Caps',
   ],
   'fontColor': _colors,
   'fontSize': ['50%', '75%', '100%', '150%', '200%', '300%', '400%'],
@@ -57,9 +57,10 @@ extension SubtitleSettingsStyle on SubtitleSettings {
   TextStyle toTextStyle() {
     return TextStyle(
       fontSize: _parseFontSize(fontSize),
-      color: _needsForeground(edgeStyle)
-          ? null
-          : _parseColor(fontColor, fontOpacity),
+      color:
+          _needsForeground(edgeStyle)
+              ? null
+              : _parseColor(fontColor, fontOpacity),
       backgroundColor: _parseColor(bgColor, bgOpacity),
       fontFamily: _parseFontFamily(fontFamily),
       foreground: _parseEdgePaint(edgeStyle, fontColor, fontOpacity),
@@ -69,9 +70,7 @@ extension SubtitleSettingsStyle on SubtitleSettings {
 
   /// 字幕ウィンドウのコンテナスタイルに変換する関数
   BoxDecoration toWindowDecoration() {
-    return BoxDecoration(
-      color: _parseColor(windowColor, windowOpacity),
-    );
+    return BoxDecoration(color: _parseColor(windowColor, windowOpacity));
   }
 
   /// パーセンテージ文字列を `double` のフォントサイズへ変換
@@ -82,7 +81,8 @@ extension SubtitleSettingsStyle on SubtitleSettings {
 
   /// カラーと不透明度を `Color` に変換
   Color _parseColor(String name, String opacityPercent) {
-    final baseColor = {
+    final baseColor =
+        {
           'White': Colors.white,
           'Yellow': Colors.yellow,
           'Green': Colors.green,
@@ -136,7 +136,7 @@ extension SubtitleSettingsStyle on SubtitleSettings {
           offset: Offset(1.5, 1.5),
           blurRadius: 2.0,
           color: Colors.black54,
-        )
+        ),
       ];
     }
     return null;

@@ -9,10 +9,7 @@ part 'o_image.g.dart';
 
 @freezed
 sealed class OImage with _$OImage {
-  const factory OImage({
-    required String src,
-    Headers? headers,
-  }) = _OImage;
+  const factory OImage({required String src, Headers? headers}) = _OImage;
 
   factory OImage.fromJson(Map<String, dynamic> json) => _$OImageFromJson(json);
   factory OImage.from(String src) => OImage(src: src);
@@ -101,11 +98,12 @@ sealed class OImage with _$OImage {
       gaplessPlayback: gaplessPlayback,
       filterQuality: filterQuality,
       isAntiAlias: isAntiAlias,
-      headers: Headers({
-        'set-cookie': service.getSetting(key: 'cookie') ?? '',
-        'user-agent': service.getSetting(key: 'user_agent') ?? '',
-        ...headers?.toMap() ?? {},
-      }).toMap(),
+      headers:
+          Headers({
+            'set-cookie': service.getSetting(key: 'cookie') ?? '',
+            'user-agent': service.getSetting(key: 'user_agent') ?? '',
+            ...headers?.toMap() ?? {},
+          }).toMap(),
       cacheWidth: cacheWidth,
       cacheHeight: cacheHeight,
     );

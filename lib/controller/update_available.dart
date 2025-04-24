@@ -74,9 +74,10 @@ class Release {
       prerelease: json['prerelease'],
       createdAt: DateTime.parse(json['created_at']),
       publishedAt: DateTime.parse(json['published_at']),
-      assets: (json['assets'] as List)
-          .map((assetJson) => Asset.fromJson(assetJson))
-          .toList(),
+      assets:
+          (json['assets'] as List)
+              .map((assetJson) => Asset.fromJson(assetJson))
+              .toList(),
       tarballUrl: json['tarball_url'],
       zipballUrl: json['zipball_url'],
       body: json['body'],
@@ -221,8 +222,11 @@ class UpdateAvailableController {
           arch = 'x86_64';
         }
 
-        final release = _findReleaseLatest(releases,
-            contentType: 'application/vnd.android.package-archive', arch: arch);
+        final release = _findReleaseLatest(
+          releases,
+          contentType: 'application/vnd.android.package-archive',
+          arch: arch,
+        );
         if (release != null &&
             context.mounted &&
             release.tagName.substring(1, release.tagName.indexOf('_')) !=
@@ -232,8 +236,10 @@ class UpdateAvailableController {
           _pauseUpdate();
         }
       } else if (XPlatform.isIOS) {
-        final release = _findReleaseLatest(releases,
-            contentType: 'application/octet-stream');
+        final release = _findReleaseLatest(
+          releases,
+          contentType: 'application/octet-stream',
+        );
         if (release != null &&
             context.mounted &&
             release.tagName.substring(1, release.tagName.indexOf('_')) !=
@@ -252,7 +258,8 @@ class UpdateAvailableController {
 
   void _pauseUpdate() async {
     await GeneralSettingsController.instance.save(
-        (settings) => settings.copyWith(lastCheckUpdateApp: DateTime.now()));
+      (settings) => settings.copyWith(lastCheckUpdateApp: DateTime.now()),
+    );
   }
 
   Future<bool> _checkPauseUpdate() async {
@@ -276,8 +283,11 @@ class UpdateAvailableController {
     }
   }
 
-  Release? _findReleaseLatest(List<Release> releases,
-      {required String contentType, String? arch}) {
+  Release? _findReleaseLatest(
+    List<Release> releases, {
+    required String contentType,
+    String? arch,
+  }) {
     return releases.firstWhereOrNull((release) {
       if (release.prerelease) return false;
 
@@ -293,7 +303,9 @@ class UpdateAvailableController {
   }
 
   Future<File> _downloadRelease(
-      Release release, void Function(double progress) onProgress) async {
+    Release release,
+    void Function(double progress) onProgress,
+  ) async {
     if (!XPlatform.isAndroid) {
       throw Exception('Platform not supported');
     }
@@ -310,7 +322,8 @@ class UpdateAvailableController {
 
     if (response.statusCode != 200) {
       throw Exception(
-          "Failed to download file, status: ${response.statusCode}");
+        "Failed to download file, status: ${response.statusCode}",
+      );
     }
 
     final totalBytes = response.contentLength ?? 0;
@@ -341,7 +354,8 @@ class UpdateAvailableController {
       if (totalBytes > 0 && receivedBytes != totalBytes) {
         await file.delete();
         throw Exception(
-            "Download incomplete. Expected: $totalBytes, Got: $receivedBytes");
+          "Download incomplete. Expected: $totalBytes, Got: $receivedBytes",
+        );
       }
 
       onProgress(1.0);
@@ -374,76 +388,94 @@ class UpdateAvailableController {
         bool downloaded = false;
         bool installing = false;
 
-        return StatefulBuilder(builder: (context, setState) {
-          return AlertDialog(
-            title: Text('Update Available'),
-            contentPadding:
-                EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
-            content:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              if (downloading || downloaded)
-                Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 24.0, vertical: 4.0),
-                    child: LinearProgressIndicator(
-                      value: downloadingProgress,
-                    )),
-              Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 4.0)
-                      .copyWith(bottom: 2.0),
-                  child: Text('Change log (${release.tagName})',
-                      style: TextStyle(
-                        fontSize: 17.0,
-                      ))),
-              SizedBox(height: 4.0),
-              SingleChildScrollView(
-                  padding: EdgeInsets.only(right: 18.0),
-                  child: HtmlWidget(markdown.markdownToHtml(release.body),
-                      textStyle: Theme.of(context).textTheme.bodyMedium)),
-              SizedBox(height: 8.0)
-            ]),
-            scrollable: true,
-            actions: <Widget>[
-              OutlinedButton(
-                child: Text('Cancel'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Update Available'),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 0.0,
+                vertical: 8.0,
               ),
-              Opacity(
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (downloading || downloaded)
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24.0,
+                        vertical: 4.0,
+                      ),
+                      child: LinearProgressIndicator(
+                        value: downloadingProgress,
+                      ),
+                    ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 4.0,
+                    ).copyWith(bottom: 2.0),
+                    child: Text(
+                      'Change log (${release.tagName})',
+                      style: TextStyle(fontSize: 17.0),
+                    ),
+                  ),
+                  SizedBox(height: 4.0),
+                  SingleChildScrollView(
+                    padding: EdgeInsets.only(right: 18.0),
+                    child: HtmlWidget(
+                      markdown.markdownToHtml(release.body),
+                      textStyle: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                ],
+              ),
+              scrollable: true,
+              actions: <Widget>[
+                OutlinedButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                Opacity(
                   opacity: downloading ? 0.5 : 1.0,
                   child: IgnorePointer(
-                      ignoring: downloading,
-                      child: FilledButton(
-                        child: Text(installing ? 'Installing' : 'Download'),
-                        onPressed: () async {
-                          if (XPlatform.isAndroid) {
-                            downloading = true;
+                    ignoring: downloading,
+                    child: FilledButton(
+                      child: Text(installing ? 'Installing' : 'Download'),
+                      onPressed: () async {
+                        if (XPlatform.isAndroid) {
+                          downloading = true;
+                          setState(() {});
+
+                          final file = await _downloadRelease(release, (
+                            progress,
+                          ) {
+                            downloadingProgress = progress;
                             setState(() {});
+                          });
 
-                            final file =
-                                await _downloadRelease(release, (progress) {
-                              downloadingProgress = progress;
-                              setState(() {});
-                            });
+                          downloading = false;
+                          downloaded = true;
+                          installing = true;
+                          setState(() {});
 
-                            downloading = false;
-                            downloaded = true;
-                            installing = true;
-                            setState(() {});
+                          await _installApk(file);
 
-                            await _installApk(file);
-
-                            installing = false;
-                            setState(() {});
-                          } else if (XPlatform.isIOS) {
-                            await launchUrl(Uri.parse(release.htmlUrl));
-                          }
-                        },
-                      ))),
-            ],
-          );
-        });
+                          installing = false;
+                          setState(() {});
+                        } else if (XPlatform.isIOS) {
+                          await launchUrl(Uri.parse(release.htmlUrl));
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
       },
     );
   }

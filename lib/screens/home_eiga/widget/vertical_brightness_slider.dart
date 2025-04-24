@@ -9,7 +9,9 @@ class VerticalBrightnessSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-        builder: (context, constraints) => Watch(() => Column(
+      builder:
+          (context, constraints) => Watch(
+            () => Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -25,8 +27,9 @@ class VerticalBrightnessSlider extends StatelessWidget {
                     quarterTurns: -1,
                     child: SliderTheme(
                       data: SliderTheme.of(context).copyWith(
-                        thumbShape:
-                            const RoundSliderThumbShape(enabledThumbRadius: 0),
+                        thumbShape: const RoundSliderThumbShape(
+                          enabledThumbRadius: 0,
+                        ),
                         overlayShape: SliderComponentShape.noOverlay,
                         trackHeight: 5,
                       ),
@@ -40,7 +43,9 @@ class VerticalBrightnessSlider extends StatelessWidget {
                   ),
                 ),
               ],
-            )));
+            ),
+          ),
+    );
   }
 
   IconData _getBrightnessIcon(double value) {

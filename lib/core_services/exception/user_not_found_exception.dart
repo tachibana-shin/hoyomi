@@ -3,7 +3,7 @@ class UserNotFoundException implements Exception {
   final StackTrace trace;
 
   UserNotFoundException([this.message = 'User not found', StackTrace? trace])
-      : trace = trace ?? StackTrace.current;
+    : trace = trace ?? StackTrace.current;
 
   @override
   String toString() {

@@ -9,7 +9,8 @@ import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/env.dart';
 
-final _googleNativeSupport = XPlatform.isAndroid ||
+final _googleNativeSupport =
+    XPlatform.isAndroid ||
     XPlatform.isIOS ||
     XPlatform.isMacOS ||
     XPlatform.isWeb;
@@ -27,19 +28,22 @@ class Authentication {
 
   late final _googleSignIn =
       _googleNativeSupport ? g_native.GoogleSignIn() : null;
-  late final _googleSignInAll = _googleNativeSupport
-      ? null
-      : g_all.GoogleSignIn(
-          params: g_all.GoogleSignInParams(
-            clientId: _clientId,
-            clientSecret: _clientSecret,
-            redirectPort: _redirectPort,
-          ),
-        );
+  late final _googleSignInAll =
+      _googleNativeSupport
+          ? null
+          : g_all.GoogleSignIn(
+            params: g_all.GoogleSignInParams(
+              clientId: _clientId,
+              clientSecret: _clientSecret,
+              redirectPort: _redirectPort,
+            ),
+          );
 
   Future<User?> signInWithGoogle() async {
-    assert(_googleSignIn != null || _googleSignInAll != null,
-        'No Google Sign-In implementation available for this platform');
+    assert(
+      _googleSignIn != null || _googleSignInAll != null,
+      'No Google Sign-In implementation available for this platform',
+    );
 
     bool firebaseError = false;
     try {
@@ -108,8 +112,11 @@ class Authentication {
         password: password.trim(),
       );
 
-      showSnackBar(Text(
-          'Welcome back, ${credential.user?.displayName ?? credential.user?.email}'));
+      showSnackBar(
+        Text(
+          'Welcome back, ${credential.user?.displayName ?? credential.user?.email}',
+        ),
+      );
 
       return credential.user;
     } on FirebaseAuthException catch (err) {
@@ -140,11 +147,11 @@ class Authentication {
         }
         user = currentUser!;
       } else {
-        user = (await auth.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        ))
-            .user!;
+        user =
+            (await auth.createUserWithEmailAndPassword(
+              email: email,
+              password: password,
+            )).user!;
       }
 
       showSnackBar(Text('Welcome, ${user.displayName ?? user.email}'));
@@ -186,17 +193,21 @@ class Authentication {
 
     bool firstChanged = false;
     late final StreamSubscription<User?> subscription;
-    subscription = _auth.userChanges().listen((user) {
-      if (firstChanged || user != null) {
+    subscription = _auth.userChanges().listen(
+      (user) {
+        if (firstChanged || user != null) {
+          subscription.cancel();
+          completer.complete(user);
+        } else {
+          firstChanged = true;
+        }
+      },
+      onError: (error) {
         subscription.cancel();
-        completer.complete(user);
-      } else {
-        firstChanged = true;
-      }
-    }, onError: (error) {
-      subscription.cancel();
-      completer.completeError(error);
-    }, onDone: () => subscription.cancel());
+        completer.completeError(error);
+      },
+      onDone: () => subscription.cancel(),
+    );
 
     return completer.future;
   } // =================== utils ===================
@@ -206,11 +217,13 @@ class Authentication {
     switch (err.code) {
       case 'account-exists-with-different-credential':
         showSnackBar(
-            Text('The account already exists with a different credential.'));
+          Text('The account already exists with a different credential.'),
+        );
         break;
       case 'invalid-credential':
         showSnackBar(
-            Text('Error occurred while accessing credentials. Try again.'));
+          Text('Error occurred while accessing credentials. Try again.'),
+        );
         signOut();
         break;
       default:

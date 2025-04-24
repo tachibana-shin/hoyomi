@@ -13,7 +13,9 @@ void main() {
       final updated = headers.set('Authorization', 'Bearer token');
       expect(updated.get('authorization'), 'Bearer token');
       expect(
-          headers.get('authorization'), isNull); // original remains unchanged
+        headers.get('authorization'),
+        isNull,
+      ); // original remains unchanged
     });
 
     test('append header returns new instance with multiple values', () {
@@ -40,9 +42,9 @@ void main() {
     });
 
     test('toMap returns simplified map', () {
-      final headers = Headers({})
-          .append('Accept', 'text/html')
-          .append('Accept', 'application/json');
+      final headers = Headers(
+        {},
+      ).append('Accept', 'text/html').append('Accept', 'application/json');
       expect(headers.toMap()['accept'], 'text/html, application/json');
     });
 
@@ -55,8 +57,8 @@ void main() {
     test('fromJson restores correctly', () {
       final json = {
         'headers': {
-          'content-type': ['text/plain']
-        }
+          'content-type': ['text/plain'],
+        },
       };
       final headers = Headers.fromJson(json);
       expect(headers.get('Content-Type'), 'text/plain');

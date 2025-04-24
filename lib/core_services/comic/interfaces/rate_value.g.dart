@@ -7,10 +7,10 @@ part of 'rate_value.dart';
 // **************************************************************************
 
 _RateValue _$RateValueFromJson(Map<String, dynamic> json) => _RateValue(
-      best: (json['best'] as num).toInt(),
-      count: (json['count'] as num).toInt(),
-      value: (json['value'] as num).toDouble(),
-    );
+  best: (json['best'] as num).toInt(),
+  count: (json['count'] as num).toInt(),
+  value: (json['value'] as num).toDouble(),
+);
 
 Map<String, dynamic> _$RateValueToJson(_RateValue instance) =>
     <String, dynamic>{

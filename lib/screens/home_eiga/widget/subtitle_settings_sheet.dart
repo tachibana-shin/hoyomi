@@ -68,75 +68,97 @@ class _SubtitleSettingsSheetState extends State<SubtitleSettingsSheet> {
             Expanded(
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
-                child: selectedGroup == null
-                    ? SingleChildScrollView(
-                        key: const ValueKey('main'),
-                        child: Column(
-                          children: subtitleOptions.keys
-                              .map((key) => ListTile(
-                                    dense: true,
-                                    visualDensity: VisualDensity.compact,
-                                    title: Text(_formatLabel(key),
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurface)),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          settingsMap[key]!,
+                child:
+                    selectedGroup == null
+                        ? SingleChildScrollView(
+                          key: const ValueKey('main'),
+                          child: Column(
+                            children:
+                                subtitleOptions.keys
+                                    .map(
+                                      (key) => ListTile(
+                                        dense: true,
+                                        visualDensity: VisualDensity.compact,
+                                        title: Text(
+                                          _formatLabel(key),
                                           style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurfaceVariant),
+                                            color:
+                                                Theme.of(
+                                                  context,
+                                                ).colorScheme.onSurface,
+                                          ),
                                         ),
-                                        Icon(Icons.chevron_right,
-                                            color: Theme.of(context)
-                                                .iconTheme
-                                                .color),
-                                      ],
-                                    ),
-                                    onTap: () =>
-                                        setState(() => selectedGroup = key),
-                                  ))
-                              .toList(),
-                        ),
-                      )
-                    : Column(
-                        key: const ValueKey('submenu'),
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ListTile(
-                            leading: Icon(Icons.arrow_back,
-                                color: Theme.of(context).iconTheme.color),
-                            title: Text(
-                              _formatLabel(selectedGroup!),
-                            ),
-                            onTap: () => setState(() => selectedGroup = null),
-                          ),
-                          Expanded(
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: subtitleOptions[selectedGroup!]!
-                                    .map((option) => ListTile(
-                                          dense: true,
-                                          visualDensity: VisualDensity.compact,
-                                          title: Text(option),
-                                          trailing:
-                                              settingsMap[selectedGroup!] ==
-                                                      option
-                                                  ? const Icon(Icons.check)
-                                                  : null,
-                                          onTap: () => _updateSetting(
-                                              selectedGroup!, option),
-                                        ))
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              settingsMap[key]!,
+                                              style: TextStyle(
+                                                color:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurfaceVariant,
+                                              ),
+                                            ),
+                                            Icon(
+                                              Icons.chevron_right,
+                                              color:
+                                                  Theme.of(
+                                                    context,
+                                                  ).iconTheme.color,
+                                            ),
+                                          ],
+                                        ),
+                                        onTap:
+                                            () => setState(
+                                              () => selectedGroup = key,
+                                            ),
+                                      ),
+                                    )
                                     .toList(),
+                          ),
+                        )
+                        : Column(
+                          key: const ValueKey('submenu'),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListTile(
+                              leading: Icon(
+                                Icons.arrow_back,
+                                color: Theme.of(context).iconTheme.color,
+                              ),
+                              title: Text(_formatLabel(selectedGroup!)),
+                              onTap: () => setState(() => selectedGroup = null),
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children:
+                                      subtitleOptions[selectedGroup!]!
+                                          .map(
+                                            (option) => ListTile(
+                                              dense: true,
+                                              visualDensity:
+                                                  VisualDensity.compact,
+                                              title: Text(option),
+                                              trailing:
+                                                  settingsMap[selectedGroup!] ==
+                                                          option
+                                                      ? const Icon(Icons.check)
+                                                      : null,
+                                              onTap:
+                                                  () => _updateSetting(
+                                                    selectedGroup!,
+                                                    option,
+                                                  ),
+                                            ),
+                                          )
+                                          .toList(),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
               ),
             ),
             const SizedBox(height: 12),
@@ -169,7 +191,9 @@ class _SubtitleSettingsSheetState extends State<SubtitleSettingsSheet> {
       default:
         return key
             .replaceAllMapped(
-                RegExp(r'([a-z])([A-Z])'), (m) => '${m[1]} ${m[2]}')
+              RegExp(r'([a-z])([A-Z])'),
+              (m) => '${m[1]} ${m[2]}',
+            )
             .trim()
             .split(' ')
             .map((word) => word[0].toUpperCase() + word.substring(1))

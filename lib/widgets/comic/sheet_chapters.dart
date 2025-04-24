@@ -73,29 +73,35 @@ class _SheetChaptersState extends State<SheetChapters> {
         return Column(
           children: [
             // Header
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text(lastReadChapter == null
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  lastReadChapter == null
                       ? 'Get start'
-                      : 'Continue ${lastReadChapter.chapter.name}')
-                  .fontSize(20.0),
-              GFButton(
-                onPressed: () {
-                  final url =
-                      "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${lastReadChapter?.chapter.chapterId ?? widget.comic.chapters.first.chapterId}";
-                  final extra = {'comic': widget.comic};
+                      : 'Continue ${lastReadChapter.chapter.name}',
+                ).fontSize(20.0),
+                GFButton(
+                  onPressed: () {
+                    final url =
+                        "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${lastReadChapter?.chapter.chapterId ?? widget.comic.chapters.first.chapterId}";
+                    final extra = {'comic': widget.comic};
 
-                  if (widget.replace) {
-                    context.replace(url, extra: extra);
-                  } else {
-                    context.push(url, extra: extra);
-                  }
-                },
-                text: widget.lastReadChapter == null ? 'Start' : 'Continue',
-                shape: GFButtonShape.pills,
-                textStyle:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
-              )
-            ]).paddingHorizontal(16.0),
+                    if (widget.replace) {
+                      context.replace(url, extra: extra);
+                    } else {
+                      context.push(url, extra: extra);
+                    }
+                  },
+                  text: widget.lastReadChapter == null ? 'Start' : 'Continue',
+                  shape: GFButtonShape.pills,
+                  textStyle: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ).paddingHorizontal(16.0),
             // Chapters List
             FractionallySizedBox(
               heightFactor: 1.0,
@@ -136,12 +142,11 @@ class _SheetChaptersState extends State<SheetChapters> {
                           style: TextStyle(
                             fontSize: 14.0,
                             fontWeight: selected ? FontWeight.w500 : null,
-                            color: selected
-                                ? Theme.of(context).colorScheme.onSurface
-                                : Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withValues(alpha: 0.85),
+                            color:
+                                selected
+                                    ? Theme.of(context).colorScheme.onSurface
+                                    : Theme.of(context).colorScheme.onSurface
+                                        .withValues(alpha: 0.85),
                           ),
                         ),
                       ],
@@ -149,45 +154,47 @@ class _SheetChaptersState extends State<SheetChapters> {
                     subtitle: Text(
                       chapter.time != null ? formatTimeAgo(chapter.time!) : "",
                       style: TextStyle(
-                        color: selected
-                            ? Theme.of(context).colorScheme.secondary
-                            : Theme.of(
-                                context,
-                              ).colorScheme.secondary.withValues(alpha: 0.85),
+                        color:
+                            selected
+                                ? Theme.of(context).colorScheme.secondary
+                                : Theme.of(
+                                  context,
+                                ).colorScheme.secondary.withValues(alpha: 0.85),
                         fontSize: 12.0,
                       ),
                     ),
                     trailing: switch (watchPage) {
                       null => null,
                       final watchPage => SizedBox(
-                          width: 30,
-                          height: 30,
-                          child: DashedCircularProgressBar.aspectRatio(
-                            aspectRatio: 1,
-                            progress: (watchPage.currentPage + 1) /
-                                watchPage.totalPage *
-                                100,
-                            startAngle: 225,
-                            sweepAngle: 270,
-                            foregroundColor: Colors.green,
-                            backgroundColor: const Color(0xffeeeeee),
-                            foregroundStrokeWidth: 3,
-                            backgroundStrokeWidth: 3,
-                            animation: true,
-                            seekSize: 3,
-                            seekColor: const Color(0xffeeeeee),
-                            child: Center(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    '${((watchPage.currentPage + 1) / watchPage.totalPage * 100).toInt()}',
-                                  ).fontSize(12.0),
-                                ],
-                              ),
+                        width: 30,
+                        height: 30,
+                        child: DashedCircularProgressBar.aspectRatio(
+                          aspectRatio: 1,
+                          progress:
+                              (watchPage.currentPage + 1) /
+                              watchPage.totalPage *
+                              100,
+                          startAngle: 225,
+                          sweepAngle: 270,
+                          foregroundColor: Colors.green,
+                          backgroundColor: const Color(0xffeeeeee),
+                          foregroundStrokeWidth: 3,
+                          backgroundStrokeWidth: 3,
+                          animation: true,
+                          seekSize: 3,
+                          seekColor: const Color(0xffeeeeee),
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  '${((watchPage.currentPage + 1) / watchPage.totalPage * 100).toInt()}',
+                                ).fontSize(12.0),
+                              ],
                             ),
                           ),
                         ),
+                      ),
                     },
                     onTap: () {
                       final url =

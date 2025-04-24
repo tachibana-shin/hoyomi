@@ -53,14 +53,18 @@ class _HtmlSubtitleWrapperState extends State<HtmlSubtitleWrapper>
       final subtitle = widget.subtitle.value;
       if (subtitle == null) return;
 
-      final data =
-          await widget.service.fetch(subtitle.url, headers: subtitle.headers);
+      final data = await widget.service.fetch(
+        subtitle.url,
+        headers: subtitle.headers,
+      );
 
       if (!mounted) return;
 
       final controller = lib_subtitle.SubtitleController(
         provider: lib_subtitle.SubtitleProvider.fromString(
-            data: data, type: subtitle.type),
+          data: data,
+          type: subtitle.type,
+        ),
       );
       await controller.initial();
 
@@ -74,8 +78,10 @@ class _HtmlSubtitleWrapperState extends State<HtmlSubtitleWrapper>
       _subtitleSettings.value = settings;
     }, immediate: true);
 
-    _cancelListenUpdatePosition =
-        listen(widget.videoController, _updatePosition);
+    _cancelListenUpdatePosition = listen(
+      widget.videoController,
+      _updatePosition,
+    );
   }
 
   @override
@@ -83,8 +89,10 @@ class _HtmlSubtitleWrapperState extends State<HtmlSubtitleWrapper>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.videoController != widget.videoController) {
       _cancelListenUpdatePosition();
-      _cancelListenUpdatePosition =
-          listen(widget.videoController, _updatePosition);
+      _cancelListenUpdatePosition = listen(
+        widget.videoController,
+        _updatePosition,
+      );
     }
   }
 
@@ -94,10 +102,10 @@ class _HtmlSubtitleWrapperState extends State<HtmlSubtitleWrapper>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      widget.child,
-      Watch(
-        () {
+    return Stack(
+      children: [
+        widget.child,
+        Watch(() {
           final controller = _controller.value;
           final data = switch (_position.value) {
             null => null,
@@ -118,21 +126,23 @@ class _HtmlSubtitleWrapperState extends State<HtmlSubtitleWrapper>
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 decoration: _subtitleSettings.value?.toWindowDecoration(),
-                child: HtmlWidget('<center>$data</center>', textStyle: textStyle
+                child: HtmlWidget(
+                  '<center>$data</center>',
+                  textStyle: textStyle,
 
-                    // TextStyle(
-                    //   color: widget.textStyle?.color ?? Colors.white,
-                    //   fontSize: widget.textStyle?.fontSize ?? 18,
-                    //   backgroundColor:
-                    //    widget.textStyle?.backgroundColor ??
-                    //       Colors.black.withValues(alpha: 0.5),
-                    // ),
-                    ),
+                  // TextStyle(
+                  //   color: widget.textStyle?.color ?? Colors.white,
+                  //   fontSize: widget.textStyle?.fontSize ?? 18,
+                  //   backgroundColor:
+                  //    widget.textStyle?.backgroundColor ??
+                  //       Colors.black.withValues(alpha: 0.5),
+                  // ),
+                ),
               ),
             ),
           );
-        },
-      ),
-    ]);
+        }),
+      ],
+    );
   }
 }

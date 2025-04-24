@@ -9,11 +9,7 @@ class EigaSearchResults extends StatefulWidget {
   final String keyword;
   final Function()? onDismissed;
 
-  const EigaSearchResults({
-    super.key,
-    this.onDismissed,
-    required this.keyword,
-  });
+  const EigaSearchResults({super.key, this.onDismissed, required this.keyword});
 
   @override
   State<EigaSearchResults> createState() => _EigaSearchResultsState();
@@ -32,16 +28,16 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
     if (_itemsStore[service] != null) return _itemsStore[service]!;
 
     final searchResult = service.search(
-        keyword: widget.keyword, page: 1, filters: {}, quick: false);
+      keyword: widget.keyword,
+      page: 1,
+      filters: {},
+      quick: false,
+    );
     final itemsFuture = searchResult.then(
-      (data) => data.items
-          .map(
-            (item) => EigaExtend(
-              eiga: item,
-              sourceId: service.uid,
-            ),
-          )
-          .toList(),
+      (data) =>
+          data.items
+              .map((item) => EigaExtend(eiga: item, sourceId: service.uid))
+              .toList(),
     );
 
     String subtitle = '';
@@ -96,12 +92,13 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
     }
 
     return PullRefreshPage(
-        onLoadData: () async {
-          _itemsStore.clear();
-          _buildWidgetMain();
-          return false;
-        },
-        onLoadFake: () => true,
-        builder: (loading, __) => _widgetMain!);
+      onLoadData: () async {
+        _itemsStore.clear();
+        _buildWidgetMain();
+        return false;
+      },
+      onLoadFake: () => true,
+      builder: (loading, __) => _widgetMain!,
+    );
   }
 }

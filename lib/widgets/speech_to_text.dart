@@ -5,8 +5,11 @@ class SpeechToText extends StatefulWidget {
   final void Function(String text) onChanged;
   final void Function(dynamic error) onError;
 
-  const SpeechToText(
-      {super.key, required this.onChanged, required this.onError});
+  const SpeechToText({
+    super.key,
+    required this.onChanged,
+    required this.onError,
+  });
 
   @override
   createState() => _SpeechToTextState();
@@ -29,8 +32,8 @@ class _SpeechToTextState extends State<SpeechToText>
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..addListener(() {
-        setState(() {});
-      });
+      setState(() {});
+    });
   }
 
   Future<void> _startListening() async {
@@ -87,16 +90,10 @@ class _SpeechToTextState extends State<SpeechToText>
               if (_isListening)
                 CustomPaint(
                   painter: CircleWavePainter(_animationController.value),
-                  child: SizedBox(
-                    width: 100,
-                    height: 100,
-                  ),
+                  child: SizedBox(width: 100, height: 100),
                 ),
               IconButton(
-                icon: Icon(
-                  _isListening ? Icons.mic_off : Icons.mic,
-                  size: 40,
-                ),
+                icon: Icon(_isListening ? Icons.mic_off : Icons.mic, size: 40),
                 onPressed: () {
                   if (_isListening) {
                     _stopListening();
@@ -132,10 +129,11 @@ class CircleWavePainter extends CustomPainter {
       final value = ((progress + i / waveCount) % 1.0);
       final radius = (size.width / 2) * value;
       final opacity = (1.0 - value).clamp(0.0, 1.0);
-      final paint = Paint()
-        ..color = Colors.blueAccent.withValues(alpha: opacity)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.0;
+      final paint =
+          Paint()
+            ..color = Colors.blueAccent.withValues(alpha: opacity)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2.0;
       canvas.drawCircle(center, radius, paint);
     }
   }

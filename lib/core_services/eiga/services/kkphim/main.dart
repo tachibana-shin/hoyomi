@@ -30,14 +30,16 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
   );
 
   Future<_MovieResponse> _get(String path) {
-    return fetch('$baseUrl/$path')
-        .then((value) => _MovieResponse.fromJson(jsonDecode(value)));
+    return fetch(
+      '$baseUrl/$path',
+    ).then((value) => _MovieResponse.fromJson(jsonDecode(value)));
   }
 
   Future<_MovieDetailResponse> _getDetails(String eigaId) {
-    return fetchWithCache('$baseUrl/phim/$eigaId',
-            expires: Duration(seconds: 30))
-        .then((value) => _MovieDetailResponse.fromJson(jsonDecode(value)));
+    return fetchWithCache(
+      '$baseUrl/phim/$eigaId',
+      expires: Duration(seconds: 30),
+    ).then((value) => _MovieDetailResponse.fromJson(jsonDecode(value)));
   }
 
   @override
@@ -58,7 +60,8 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
 
   OImage _getImage({required String? cdn, required String src}) {
     return OImage(
-        src: cdn == null ? src : Uri.parse(cdn).resolve(src).toString());
+      src: cdn == null ? src : Uri.parse(cdn).resolve(src).toString(),
+    );
   }
 
   Eiga _parseItem(String? cdn, _MovieItem item) {
@@ -81,10 +84,15 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final year = item.year.toString();
     final description = item.originName;
     final studio = null;
-    final genres = item.category
-        .map((category) =>
-            Genre(name: category.name, genreId: 'the-loai_${category.slug}'))
-        .toList();
+    final genres =
+        item.category
+            .map(
+              (category) => Genre(
+                name: category.name,
+                genreId: 'the-loai_${category.slug}',
+              ),
+            )
+            .toList();
     final duration = item.time;
     //     final actors = item.querySelectorAll('.Cast a').map((anchor) {
     //       final href = anchor.attributes['href']!.split('/');
@@ -123,12 +131,18 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     };
 
     final carouselPage$ = fetch('$baseUrl/danh-sach/phim-moi-cap-nhat-v3').then(
-        (json) => List<_MovieItem>.from(
-            jsonDecode(json)['items'].map((x) => _MovieItem.fromJson(x))));
-    final categoryPages$ = categoryUrls.values
-        .map((slug) =>
-            _get(slug.startsWith('/') ? slug : 'v1/api/danh-sach/$slug?page=1'))
-        .toList();
+      (json) => List<_MovieItem>.from(
+        jsonDecode(json)['items'].map((x) => _MovieItem.fromJson(x)),
+      ),
+    );
+    final categoryPages$ =
+        categoryUrls.values
+            .map(
+              (slug) => _get(
+                slug.startsWith('/') ? slug : 'v1/api/danh-sach/$slug?page=1',
+              ),
+            )
+            .toList();
 
     await Future.wait([carouselPage$, ...categoryPages$]);
 
@@ -136,19 +150,23 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final categoryPages = await Future.wait(categoryPages$);
 
     final carouselItems = carouselPage.map(_parseCarousel).toList();
-    final categories = categoryUrls.entries.map((entry) {
-      final name = entry.key;
-      final slug = entry.value;
-      final page = categoryPages[categoryUrls.keys.toList().indexOf(name)];
+    final categories =
+        categoryUrls.entries.map((entry) {
+          final name = entry.key;
+          final slug = entry.value;
+          final page = categoryPages[categoryUrls.keys.toList().indexOf(name)];
 
-      return HomeEigaCategory(
-        name: name,
-        categoryId: 'danh-sach_$slug',
-        items: page.data.items
-            .map((item) => _parseItem(page.data.appDomainCdnImage, item))
-            .toList(),
-      );
-    }).toList();
+          return HomeEigaCategory(
+            name: name,
+            categoryId: 'danh-sach_$slug',
+            items:
+                page.data.items
+                    .map(
+                      (item) => _parseItem(page.data.appDomainCdnImage, item),
+                    )
+                    .toList(),
+          );
+        }).toList();
 
     return EigaHome(
       carousel: Carousel(
@@ -167,24 +185,22 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
       final name = group.queryOne('.font-bold').text();
       final key = group.queryOne('input').attr('name').replaceFirst('[]', '');
       final multiple = false;
-      final items = group
-          .query('label')
-          .skip(1)
-          .toList()
-          .indexed
-          .map((entry) => Option(
-                name: entry.$2.text(),
-                value: entry.$2.queryOne('input').attr('value'),
-                selected: false,
-              ))
-          .toList();
+      final items =
+          group
+              .query('label')
+              .skip(1)
+              .toList()
+              .indexed
+              .map(
+                (entry) => Option(
+                  name: entry.$2.text(),
+                  value: entry.$2.queryOne('input').attr('value'),
+                  selected: false,
+                ),
+              )
+              .toList();
 
-      return Filter(
-        name: name,
-        key: key,
-        multiple: multiple,
-        options: items,
-      );
+      return Filter(name: name, key: key, multiple: multiple, options: items);
     }).toList();
   }
 
@@ -224,9 +240,10 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final pageData = await _get(url);
 
     final name = pageData.data.seoOnPage.titleHead;
-    final items = pageData.data.items
-        .map((item) => _parseItem(pageData.data.appDomainCdnImage, item))
-        .toList();
+    final items =
+        pageData.data.items
+            .map((item) => _parseItem(pageData.data.appDomainCdnImage, item))
+            .toList();
     final totalPages = pageData.data.params.pagination.totalPages;
     final totalItems = pageData.data.params.pagination.totalItems;
 
@@ -239,9 +256,10 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
       page: page,
       totalItems: totalItems,
       totalPages: totalPages,
-      filters: isListMode
-          ? iFilters
-          : iFilters.where((filter) => filter.key != 'type').toList(),
+      filters:
+          isListMode
+              ? iFilters
+              : iFilters.where((filter) => filter.key != 'type').toList(),
     );
   }
 
@@ -263,27 +281,39 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final duration = pageData.movie.episodeTotal;
     final yearOf = pageData.movie.year;
     final views = pageData.movie.view;
-    final seasons = pageData.episodes.indexed.map((entry) {
-      final index = entry.$1;
-      final item = entry.$2;
-      return Season(
-          name: item.serverName,
-          eigaId: index == 0 ? eigaIdRaw : '$eigaIdRaw@${item.serverName}');
-    }).toList();
-    final genres = pageData.movie.category
-        .map((category) =>
-            Genre(name: category.name, genreId: 'the-loai_${category.slug}'))
-        .toList();
+    final seasons =
+        pageData.episodes.indexed.map((entry) {
+          final index = entry.$1;
+          final item = entry.$2;
+          return Season(
+            name: item.serverName,
+            eigaId: index == 0 ? eigaIdRaw : '$eigaIdRaw@${item.serverName}',
+          );
+        }).toList();
+    final genres =
+        pageData.movie.category
+            .map(
+              (category) => Genre(
+                name: category.name,
+                genreId: 'the-loai_${category.slug}',
+              ),
+            )
+            .toList();
     final quality = pageData.movie.quality;
 
     // final status = pageData.movie.status;
     final authors = [
-      Genre(name: pageData.movie.director.first, genreId: Genre.noId)
+      Genre(name: pageData.movie.director.first, genreId: Genre.noId),
     ];
-    final countries = pageData.movie.country
-        .map((country) =>
-            Genre(name: country.name, genreId: 'quoc-gia_${country.slug}'))
-        .toList();
+    final countries =
+        pageData.movie.country
+            .map(
+              (country) => Genre(
+                name: country.name,
+                genreId: 'quoc-gia_${country.slug}',
+              ),
+            )
+            .toList();
     final language = pageData.movie.lang;
     final studios = null;
     final trailer = pageData.movie.trailerUrl;
@@ -317,21 +347,27 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final index = max(0, eigaId.indexOf('@'));
 
     final eigaIdRaw = index == 0 ? eigaId : eigaId.substring(0, index);
-    final seasonName = eigaIdRaw.length + 1 < eigaId.length
-        ? eigaId.substring(eigaIdRaw.length + 1)
-        : '';
+    final seasonName =
+        eigaIdRaw.length + 1 < eigaId.length
+            ? eigaId.substring(eigaIdRaw.length + 1)
+            : '';
 
     final pageData = await _getDetails(eigaIdRaw);
 
-    final episodes = pageData.episodes
-        .firstWhereOrNull(
-            (server) => seasonName.isEmpty || server.serverName == seasonName)
-        ?.serverData
-        .map((episode) => EigaEpisode(
-            name: episode.name,
-            episodeId: episode.slug,
-            extra: jsonEncode(episode.toJson())))
-        .toList();
+    final episodes =
+        pageData.episodes
+            .firstWhereOrNull(
+              (server) => seasonName.isEmpty || server.serverName == seasonName,
+            )
+            ?.serverData
+            .map(
+              (episode) => EigaEpisode(
+                name: episode.name,
+                episodeId: episode.slug,
+                extra: jsonEncode(episode.toJson()),
+              ),
+            )
+            .toList();
     if (episodes == null) throw Exception('Episode not found');
 
     final image = _getImage(cdn: null, src: pageData.movie.thumbUrl);
@@ -366,44 +402,58 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
   @override
   fetchSourceContent({required source}) async {
     final master = await fetch(source.url.toString(), headers: source.headers);
-    final m3u8 =
-        master.split('\n').firstWhere((line) => line.contains('.m3u8'));
+    final m3u8 = master
+        .split('\n')
+        .firstWhere((line) => line.contains('.m3u8'));
 
     final urlMediaPlaylist = source.url.resolve(m3u8);
-    final content =
-        await fetch(urlMediaPlaylist.toString(), headers: source.headers);
+    final content = await fetch(
+      urlMediaPlaylist.toString(),
+      headers: source.headers,
+    );
 
-    final playlist =
-        await HlsPlaylistParser.create().parseString(urlMediaPlaylist, content);
+    final playlist = await HlsPlaylistParser.create().parseString(
+      urlMediaPlaylist,
+      content,
+    );
 
     if (playlist is HlsMasterPlaylist) {
       return SourceContent(
-          content: content, url: urlMediaPlaylist, headers: source.headers);
+        content: content,
+        url: urlMediaPlaylist,
+        headers: source.headers,
+      );
     }
 
     return SourceContent(
-        content: _removeAdsFromM3U8(urlMediaPlaylist, content),
-        url: urlMediaPlaylist,
-        headers: source.headers);
+      content: _removeAdsFromM3U8(urlMediaPlaylist, content),
+      url: urlMediaPlaylist,
+      headers: source.headers,
+    );
   }
 
   @override
   getSuggest({required metaEiga, required eigaId, page}) async {
-    final pageData =
-        await _get('v1/api/the-loai/${metaEiga.genres.first.genreId}?limit=30');
+    final pageData = await _get(
+      'v1/api/the-loai/${metaEiga.genres.first.genreId}?limit=30',
+    );
 
-    final metaSlugs = metaEiga.genres
-        .map((c) => c.genreId.replaceFirst('the-loai_', ''))
-        .toSet();
+    final metaSlugs =
+        metaEiga.genres
+            .map((c) => c.genreId.replaceFirst('the-loai_', ''))
+            .toSet();
 
-    final scoredItems = pageData.data.items
-        .map<({_MovieItem item, int matchCount})>((item) {
-          final matchCount =
-              item.category.where((cat) => metaSlugs.contains(cat.slug)).length;
-          return (item: item, matchCount: matchCount);
-        })
-        .where((entry) => entry.matchCount > 0)
-        .toList();
+    final scoredItems =
+        pageData.data.items
+            .map<({_MovieItem item, int matchCount})>((item) {
+              final matchCount =
+                  item.category
+                      .where((cat) => metaSlugs.contains(cat.slug))
+                      .length;
+              return (item: item, matchCount: matchCount);
+            })
+            .where((entry) => entry.matchCount > 0)
+            .toList();
 
     scoredItems.sort((a, b) => b.matchCount - a.matchCount);
 
@@ -431,9 +481,7 @@ class _MovieResponse {
   _MovieResponse({required this.data});
 
   factory _MovieResponse.fromJson(Map<String, dynamic> json) {
-    return _MovieResponse(
-      data: _Data.fromJson(json['data']),
-    );
+    return _MovieResponse(data: _Data.fromJson(json['data']));
   }
 }
 
@@ -462,10 +510,12 @@ class _Data {
     return _Data(
       seoOnPage: _SeoOnPage.fromJson(json['seoOnPage']),
       breadCrumb: List<_BreadCrumb>.from(
-          json['breadCrumb'].map((x) => _BreadCrumb.fromJson(x))),
+        json['breadCrumb'].map((x) => _BreadCrumb.fromJson(x)),
+      ),
       titlePage: json['titlePage'],
       items: List<_MovieItem>.from(
-          json['items'].map((x) => _MovieItem.fromJson(x))),
+        json['items'].map((x) => _MovieItem.fromJson(x)),
+      ),
       params: _Params.fromJson(json['params']),
       typeList: json['type_list'],
       appDomainFrontend: json['APP_DOMAIN_FRONTEND'],
@@ -602,11 +652,7 @@ class _Category {
   _Category({required this.id, required this.name, required this.slug});
 
   factory _Category.fromJson(Map<String, dynamic> json) {
-    return _Category(
-      id: json['id'],
-      name: json['name'],
-      slug: json['slug'],
-    );
+    return _Category(id: json['id'], name: json['name'], slug: json['slug']);
   }
 }
 
@@ -618,11 +664,7 @@ class _Country {
   _Country({required this.id, required this.name, required this.slug});
 
   factory _Country.fromJson(Map<String, dynamic> json) {
-    return _Country(
-      id: json['id'],
-      name: json['name'],
-      slug: json['slug'],
-    );
+    return _Country(id: json['id'], name: json['name'], slug: json['slug']);
   }
 }
 
@@ -645,9 +687,10 @@ class _MovieDetailResponse {
       status: json['status'],
       msg: json['msg'],
       movie: _MovieDetail.fromJson(json['movie']),
-      episodes: (json['episodes'] as List)
-          .map((e) => _EpisodeGroup.fromJson(e))
-          .toList(),
+      episodes:
+          (json['episodes'] as List)
+              .map((e) => _EpisodeGroup.fromJson(e))
+              .toList(),
     );
   }
 }
@@ -759,10 +802,7 @@ class _Tmdb {
   final double? voteAverage;
   final int? voteCount;
 
-  _Tmdb({
-    required this.voteAverage,
-    required this.voteCount,
-  });
+  _Tmdb({required this.voteAverage, required this.voteCount});
 
   factory _Tmdb.fromJson(Map<String, dynamic> json) {
     return _Tmdb(
@@ -778,14 +818,10 @@ class _Imdb {
   _Imdb({this.id});
 
   factory _Imdb.fromJson(Map<String, dynamic> json) {
-    return _Imdb(
-      id: json['id'],
-    );
+    return _Imdb(id: json['id']);
   }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-      };
+  Map<String, dynamic> toJson() => {'id': id};
 }
 
 class _TimeInfo {
@@ -794,38 +830,32 @@ class _TimeInfo {
   _TimeInfo({required this.time});
 
   factory _TimeInfo.fromJson(Map<String, dynamic> json) {
-    return _TimeInfo(
-      time: json['time'],
-    );
+    return _TimeInfo(time: json['time']);
   }
 
-  Map<String, dynamic> toJson() => {
-        'time': time,
-      };
+  Map<String, dynamic> toJson() => {'time': time};
 }
 
 class _EpisodeGroup {
   final String serverName;
   final List<_ServerData> serverData;
 
-  _EpisodeGroup({
-    required this.serverName,
-    required this.serverData,
-  });
+  _EpisodeGroup({required this.serverName, required this.serverData});
 
   factory _EpisodeGroup.fromJson(Map<String, dynamic> json) {
     return _EpisodeGroup(
       serverName: json['server_name'],
-      serverData: (json['server_data'] as List)
-          .map((e) => _ServerData.fromJson(e))
-          .toList(),
+      serverData:
+          (json['server_data'] as List)
+              .map((e) => _ServerData.fromJson(e))
+              .toList(),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'server_name': serverName,
-        'server_data': serverData.map((e) => e.toJson()).toList(),
-      };
+    'server_name': serverName,
+    'server_data': serverData.map((e) => e.toJson()).toList(),
+  };
 }
 
 class _Pagination {
@@ -922,12 +952,12 @@ class _ServerData {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'slug': slug,
-        'filename': filename,
-        'link_embed': linkEmbed,
-        'link_m3u8': linkM3u8,
-      };
+    'name': name,
+    'slug': slug,
+    'filename': filename,
+    'link_embed': linkEmbed,
+    'link_m3u8': linkM3u8,
+  };
 }
 
 String _removeAdsFromM3U8(Uri url, String m3u8) {
@@ -942,7 +972,8 @@ String _removeAdsFromM3U8(Uri url, String m3u8) {
       // if line is segment. Example #EXTINF:133343
       // the next line is url
       final currentUrl = lines.elementAt(i + 1);
-      final isAd = RegExp(r'^\d+\.ts$').hasMatch(currentUrl) ||
+      final isAd =
+          RegExp(r'^\d+\.ts$').hasMatch(currentUrl) ||
           currentUrl.contains('adjump');
 
       i++;
