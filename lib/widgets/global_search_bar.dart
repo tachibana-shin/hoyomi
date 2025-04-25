@@ -169,10 +169,7 @@ class _QuickSearchItemState extends State<_QuickSearchItem> {
 class GlobalSearchBar extends StatefulWidget {
   final bool pageIsSearch;
 
-  const GlobalSearchBar({
-    super.key,
-    required this.pageIsSearch,
-  });
+  const GlobalSearchBar({super.key, required this.pageIsSearch});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -239,7 +236,9 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                       children: [
                         // Text(_keyword.value),
                         _buildKeywordSuggest(globalKeyword.value),
-                        Expanded(child: _buildSearchResults(globalKeyword.value)),
+                        Expanded(
+                          child: _buildSearchResults(globalKeyword.value),
+                        ),
                       ],
                     );
                   }),
@@ -551,7 +550,9 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         ),
         child: Row(
           children: [
-            if (widget.pageIsSearch && !focusing && globalKeyword.value.isNotEmpty)
+            if (widget.pageIsSearch &&
+                !focusing &&
+                globalKeyword.value.isNotEmpty)
               IconButton(
                 icon: Iconify(
                   Mdi.arrow_back,
@@ -565,7 +566,8 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                             ? context.pop()
                             : context.replace('/search'),
               ),
-            if (focusing || widget.pageIsSearch && globalKeyword.value.isNotEmpty)
+            if (focusing ||
+                widget.pageIsSearch && globalKeyword.value.isNotEmpty)
               _buildServiceSelector()
             else
               IconButton(

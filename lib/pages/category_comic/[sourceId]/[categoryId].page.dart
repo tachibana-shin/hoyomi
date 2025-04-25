@@ -59,7 +59,9 @@ class _CategoryComicPageState extends State<CategoryComicPage> {
     _service = getComicService(widget.sourceId);
   }
 
-  Future<({bool isLastPage, List<Comic> data})> _fetchComics(int pageKey) async {
+  Future<({bool isLastPage, List<Comic> data})> _fetchComics(
+    int pageKey,
+  ) async {
     final newComics = await (widget.getCategory ?? _service.getCategory)(
       categoryId: widget.categoryId,
       page: pageKey,
@@ -90,8 +92,10 @@ class _CategoryComicPageState extends State<CategoryComicPage> {
       builderError:
           (body) => Scaffold(appBar: _buildAppBar(() async {}), body: body),
       builder:
-          (data, param) =>
-              Scaffold(appBar: _buildAppBar(param.refresh), body: _buildBody(data)),
+          (data, param) => Scaffold(
+            appBar: _buildAppBar(param.refresh),
+            body: _buildBody(data),
+          ),
     );
   }
 
@@ -274,8 +278,9 @@ class _CategoryComicPageState extends State<CategoryComicPage> {
         mainAxisSpacing: 4.0,
         fetchData: () async {
           final result = await _fetchComics(_pageKey);
-          if (!result.isLastPage){
-          _pageKey++;}
+          if (!result.isLastPage) {
+            _pageKey++;
+          }
 
           return result;
         },

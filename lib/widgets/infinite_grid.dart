@@ -68,7 +68,8 @@ class _InfiniteGridState<T> extends State<InfiniteGrid<T>> {
         setState(() {});
 
         try {
-          final (isLastPage: isLastPage, data: items) = await widget.fetchData();
+          final (isLastPage: isLastPage, data: items) =
+              await widget.fetchData();
 
           _data.addAll(items);
           _hasReachedMax = isLastPage;

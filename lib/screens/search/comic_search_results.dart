@@ -8,10 +8,7 @@ import 'package:kaeru/kaeru.dart';
 class ComicSearchResults extends StatefulWidget {
   final String keyword;
 
-  const ComicSearchResults({
-    super.key,
-    required this.keyword,
-  });
+  const ComicSearchResults({super.key, required this.keyword});
 
   @override
   State<ComicSearchResults> createState() => _ComicSearchResultsState();

@@ -22,7 +22,7 @@ import 'package:iconify_flutter/icons/mdi.dart';
 
 import 'interfaces/main.dart';
 
-Dio?  _dio ;
+Dio? _dio;
 
 class ServiceInit {
   final String name;
@@ -323,7 +323,7 @@ abstract class Service with _SettingsMixin {
       'pragma': 'no-cache',
       // 'priority': 'u=0, i',
       'host': uri.host,
-      
+
       // 'upgrade-insecure-requests': '1',
       'user-agent':
           record?.settings?['user_agent'] as String? ??
@@ -355,14 +355,20 @@ abstract class Service with _SettingsMixin {
 
     late final Response response;
     try {
-      response = await (_dio ??= await createDioClient(BaseOptions(responseType: ResponseType.plain, followRedirects: true))).fetch(
-        RequestOptions(
-          path: uri.toString(),
-          method: body == null ? 'GET' : 'POST',
-          data: body,
-          headers: $headers.toMap(),
-        ),
-      );
+      response = await (_dio ??= await createDioClient(
+            BaseOptions(
+              responseType: ResponseType.plain,
+              followRedirects: true,
+            ),
+          ))
+          .fetch(
+            RequestOptions(
+              path: uri.toString(),
+              method: body == null ? 'GET' : 'POST',
+              data: body,
+              headers: $headers.toMap(),
+            ),
+          );
 
       if (kDebugMode) {
         if (startTime != null) {
