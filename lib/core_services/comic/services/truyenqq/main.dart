@@ -178,7 +178,7 @@ class TruyenQQService extends TruyenGGService {
       ),
     );
     final description = $('.story-detail-info', single: true).text();
-    final chapters = $('.works-chapter-item').reversed().map((chap) {
+    final chapters = $('.works-chapter-item').map((chap) {
       final name = chap.queryOne('a').text();
       final chapterId = chap
           .queryOne('a')
@@ -213,7 +213,7 @@ class TruyenQQService extends TruyenGGService {
       rate: rate,
       genres: genres.toList(),
       description: description,
-      chapters: chapters.toList().reversed.toList(),
+      chapters: chapters.reversed.toList(),
       lastModified: lastModified,
     );
   }

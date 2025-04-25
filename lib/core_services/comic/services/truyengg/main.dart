@@ -290,7 +290,7 @@ class TruyenGGService extends ABComicService
       rate: rate,
       genres: genres.toList(),
       description: description,
-      chapters: chaps.toList().reversed.toList(),
+      chapters: chaps.reversed.toList(),
       lastModified: lastModified,
       originalName: null,
     );
