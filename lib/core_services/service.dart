@@ -304,7 +304,7 @@ abstract class Service with _SettingsMixin {
     Map<String, dynamic>? query,
     Map<String, dynamic>? body,
     Headers? headers,
-    bool notify = true
+    bool notify = true,
   }) async {
     final record = await ServiceSettingsController.instance.get(uid);
     String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;
@@ -389,8 +389,9 @@ abstract class Service with _SettingsMixin {
         final error = CaptchaRequiredException(getService(uid));
 
         // // required captcha resolve
-        if (notify){
-        showCaptchaResolve(null, url: url, error: error);}
+        if (notify) {
+          showCaptchaResolve(null, url: url, error: error);
+        }
         // try {
         //   final start = DateTime.now();
         //   final data = await createWebView(uri)
