@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:dio/dio.dart';
 
 final GlobalKey<ScaffoldMessengerState> snackbarKey =
     GlobalKey<ScaffoldMessengerState>();
@@ -21,7 +21,7 @@ void showSnackBar(Widget content, {SnackBarAction? action}) {
 
 void showSnackError(String source, Object error) {
   if (error is Response) {
-    debugPrint('[$source]: ${error.body}');
+    debugPrint('[$source]: ${error.data}');
   } else {
     debugPrint('[$source]: $error (${StackTrace.current})');
   }
@@ -30,7 +30,7 @@ void showSnackError(String source, Object error) {
     Text(
       // if is response show status and body
       error is Response
-          ? 'Error<$source>: ${error.statusCode} ${utf8.decode(error.bodyBytes)}'
+          ? 'Error<$source>: ${error.statusCode} ${utf8.decode(error.data)}'
           : 'Error<$source>: ${error.toString()}',
     ),
     action: SnackBarAction(

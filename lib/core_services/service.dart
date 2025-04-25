@@ -408,7 +408,7 @@ abstract class Service with _SettingsMixin {
         RequestOptions(
           path: uri.toString(),
           method: body == null ? 'GET' : 'POST',
-          data: body,
+          data: body == null ? null : FormData.fromMap(body),
           responseType: ResponseType.plain,
           headers: $headers.toMap(),
         ),

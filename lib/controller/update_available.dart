@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,7 +6,7 @@ import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/controller/general_settings_controller.dart';
 import 'package:hoyomi/database/scheme/general_settings.dart';
-import 'package:http/http.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_package_installer/flutter_package_installer.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:markdown/markdown.dart' as markdown;
@@ -173,9 +172,8 @@ class Author {
 }
 
 /// Example function to parse JSON string into a list of Release objects.
-List<Release> parseReleases(String jsonString) {
-  final parsed = json.decode(jsonString) as List<dynamic>;
-  return parsed.map((json) => Release.fromJson(json)).toList();
+List<Release> parseReleases(List<dynamic> json) {
+  return json.map((json) => Release.fromJson(json)).toList();
 }
 
 class UpdateAvailableController {
@@ -273,10 +271,10 @@ class UpdateAvailableController {
   }
 
   Future<List<Release>> _getReleases() async {
-    final response = await get(Uri.parse(apiUrl));
+    final response = await Dio().fetch(RequestOptions(path: apiUrl));
 
     if (response.statusCode == 200) {
-      final releases = parseReleases(response.body);
+      final releases = parseReleases(response.data);
       return releases;
     } else {
       throw Exception('Failed to load releases');
@@ -316,59 +314,49 @@ class UpdateAvailableController {
       orElse: () => throw Exception('No Android package found in the release'),
     );
 
-    final uri = Uri.parse(asset.browserDownloadUrl);
-    final request = Request('GET', uri);
-    final response = await Client().send(request);
-
-    if (response.statusCode != 200) {
-      throw Exception(
-        "Failed to download file, status: ${response.statusCode}",
-      );
-    }
-
-    final totalBytes = response.contentLength ?? 0;
-    int receivedBytes = 0;
+    final uri = asset.browserDownloadUrl;
 
     final tempDir = await getTemporaryDirectory();
     final updateDir = Directory('${tempDir.path}/update');
     if (!await updateDir.exists()) {
       await updateDir.create(recursive: true);
     }
+
     final filePath = '${updateDir.path}/${asset.name}';
-    final file = File(filePath);
-    final fileSink = file.openWrite();
+
+    final dio = Dio();
 
     try {
-      await for (final chunk in response.stream) {
-        receivedBytes += chunk.length;
-        fileSink.add(chunk);
+      final response = await dio.download(
+        uri,
+        filePath,
+        onReceiveProgress: (received, total) {
+          if (total != -1) {
+            onProgress(received / total);
+          }
+        },
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: true,
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
 
-        if (totalBytes > 0) {
-          onProgress(receivedBytes / totalBytes);
-        }
-      }
-
-      await fileSink.flush();
-      await fileSink.close();
-
-      if (totalBytes > 0 && receivedBytes != totalBytes) {
-        await file.delete();
+      if (response.statusCode != 200) {
         throw Exception(
-          "Download incomplete. Expected: $totalBytes, Got: $receivedBytes",
+          "Failed to download file, status: ${response.statusCode}",
         );
       }
 
-      onProgress(1.0);
       debugPrint('Download completed: $filePath');
-
-      return file;
+      onProgress(1.0);
+      return File(filePath);
     } catch (e) {
-      try {
-        await fileSink.close();
+      final file = File(filePath);
+      if (await file.exists()) {
         await file.delete();
-      } catch (_) {}
+      }
       showSnackBar(Text("Error during file download: $e"));
-
       rethrow;
     }
   }

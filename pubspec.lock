@@ -1021,7 +1021,7 @@ packages:
     source: hosted
     version: "0.15.5+1"
   http:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: http
       sha256: fe7ab022b76f3034adc518fb6ea04a82387620e19977665ea18d30a1cf43442f

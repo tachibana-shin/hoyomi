@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dio/dio.dart' show Dio, BaseOptions, FormData;
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData, Response;
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
@@ -13,7 +14,6 @@ import 'package:hoyomi/plugins/inflate_raw.dart';
 import 'package:hoyomi/utils/d_query.dart';
 
 import 'package:crypto/crypto.dart';
-import 'package:http/http.dart';
 import 'package:pointycastle/export.dart';
 
 mixin _SupabaseRPC {
@@ -21,9 +21,9 @@ mixin _SupabaseRPC {
   final String _supabaseKey =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0d3dsdGJrd2tzZ25pc3Bjam1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAxNjM5ODksImV4cCI6MjAzNTczOTk4OX0.Dva9EPqy4P0KFYLAGpFqFoMBH4I_yz0VWnGny0uA-8U';
 
-  Future<List<dynamic>> rpc(String name, Object requestData) async {
-    final response = await post(
-      Uri.parse('$_supabaseUrl/rest/v1/rpc/$name'),
+  late final _dio = Dio(
+    BaseOptions(
+      baseUrl: _supabaseUrl,
       headers: {
         'User-Agent':
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0',
@@ -47,17 +47,13 @@ mixin _SupabaseRPC {
         'Cache-Control': 'no-cache',
         'TE': 'trailers',
       },
-      body: jsonEncode(requestData),
-    );
+    ),
+  );
 
-    if (response.statusCode > 299) {
-      if (kDebugMode) {
-        print('[${response.reasonPhrase}]: ${response.body}');
-      }
-      throw Exception('[${response.reasonPhrase}]: ${response.body}');
-    }
+  Future<List<dynamic>> rpc(String name, Map<String, dynamic> requestData) async {
+    final response = await _dio.post('/rest/v1/rpc/$name', data: FormData.fromMap(requestData));
 
-    return jsonDecode(response.body) as List;
+    return response.data as List;
   }
 }
 
@@ -705,10 +701,7 @@ class AnimeVietsubService extends ABEigaService
   final Map<String, Future<String>> _callApiStore = {};
   Future<String> _callApiAnimeVsub(String url) {
     if (_callApiStore[url] != null) return _callApiStore[url]!;
-    return _callApiStore[url] = get(Uri.parse(url)).then<String>((response) {
-      if (response.statusCode == 200) return response.body;
-      throw response;
-    });
+    return _callApiStore[url] = fetch(url);
   }
 
   Future<String?> _getEpisodeIDApi({

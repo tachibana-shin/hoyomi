@@ -60,7 +60,6 @@ dependencies:
   google_sign_in: ^6.3.0
   google_sign_in_all_platforms: ^1.1.0
   html: ^0.15.5
-  http: ^1.2.2
   http_cache_file_store: ^2.0.1
   iconify_flutter: ^0.0.7
   intl: ^0.19.0

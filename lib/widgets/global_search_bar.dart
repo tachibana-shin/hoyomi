@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide WidgetPaddingX;
 import 'package:go_router/go_router.dart';
@@ -18,7 +18,6 @@ import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/utils/debouncer.dart';
 import 'package:hoyomi/widgets/blurred_part_background.dart';
 import 'package:hoyomi/widgets/speech_to_text.dart';
-import 'package:http/http.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
@@ -177,6 +176,7 @@ class GlobalSearchBar extends StatefulWidget {
 }
 
 class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
+  final Dio _dio = Dio();
   late final TextEditingController _controller;
 
   bool _showingSearchLayer = false;
@@ -265,18 +265,11 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
   }
 
   Widget _buildKeywordSuggest(String keyword) {
-    final response = get(
-      Uri.parse(
-        'https://suggestqueries.google.com/complete/search?client=chrome&q=$keyword',
-      ),
+    final response = _dio.get(
+      'https://suggestqueries.google.com/complete/search?client=chrome&q=$keyword',
     );
     return FutureBuilder(
-      future: response.then(
-        (response) =>
-            response.statusCode == 200
-                ? jsonDecode(response.body)[1]
-                : throw Exception('Failed to get response'),
-      ),
+      future: response.then((response) => response.data[1]),
       builder: (context, snapshot) {
         if (snapshot.hasError) return SizedBox.shrink();
 
