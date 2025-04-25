@@ -256,10 +256,10 @@ class TruyenQQService extends TruyenGGService {
     final maxPage =
         lastPageLinkText?.isNotEmpty == true
             ? int.parse(
-              lastPageLinkText?.contains('javascript') == true
+              !lastPageLinkText!.contains('javascript')
                   ? RegExp(
                     r'trang-(\d+)',
-                  ).firstMatch(lastPageLinkText!)!.group(1)!
+                  ).firstMatch(lastPageLinkText)!.group(1)!
                   : lastPageLink.textRaw() ?? '1',
             )
             : 1;
