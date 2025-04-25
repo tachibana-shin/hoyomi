@@ -4,7 +4,6 @@ import 'dart:ui';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:battery_plus/battery_plus.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -569,37 +568,37 @@ class _MangaReaderState extends State<MangaReader>
       }
     }
 
-    return CachedNetworkImage(
-      key: key,
-      imageUrl: item.image.src,
-      httpHeaders:
-          Headers({
-            'set-cookie': widget.service.getSetting(key: 'cookie') ?? '',
-            'user-agent': widget.service.getSetting(key: 'user_agent') ?? '',
-            ...item.image.headers?.toMap() ?? {},
-          }).toMap(),
-      placeholder:
-          (context, url) =>
-              SizedBox(height: 100.h(context), child: _buildPageLoading(null)),
-      errorWidget: (context, url, error) => Icon(Icons.error),
-      fit: BoxFit.cover,
-    );
-
-    // return OImage.oNetwork(
-    //   item.image,
-    //   sourceId: widget.service.uid,
-    //   fit: BoxFit.contain,
-    //   loadingBuilder: (context, child, loadingProgress) {
-    //     if (loadingProgress == null) {
-    //       return child;
-    //     }
-
-    //     return SizedBox(
-    //       height: 100.h(context),
-    //       child: _buildPageLoading(loadingProgress),
-    //     );
-    //   },
+    // return CachedNetworkImage(
+    //   key: key,
+    //   imageUrl: item.image.src,
+    //   httpHeaders:
+    //       Headers({
+    //         'set-cookie': widget.service.getSetting(key: 'cookie') ?? '',
+    //         'user-agent': widget.service.getSetting(key: 'user_agent') ?? '',
+    //         ...item.image.headers?.toMap() ?? {},
+    //       }).toMap(),
+    //   placeholder:
+    //       (context, url) =>
+    //           SizedBox(height: 100.h(context), child: _buildPageLoading(null)),
+    //   errorWidget: (context, url, error) => Icon(Icons.error),
+    //   fit: BoxFit.cover,
     // );
+
+    return OImage.oNetwork(
+      item.image,
+      sourceId: widget.service.uid,
+      fit: BoxFit.contain,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) {
+          return child;
+        }
+
+        return SizedBox(
+          height: 100.h(context),
+          child: _buildPageLoading(loadingProgress),
+        );
+      },
+    );
   }
 
   @override
