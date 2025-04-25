@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_web_plugins/url_strategy.dart';
 
+import 'plugins/create_dio_client.dart';
 import 'stores.dart';
 
 // import 'package:go_transitions/go_transitions.dart';
@@ -25,6 +26,7 @@ Future<void> main() async {
 
   await androidSdkIntInit();
   await initializeCert();
+  await initializeDioClient();
   await initializeFirebase();
   await initializeServices();
   await initializeFullscreen();

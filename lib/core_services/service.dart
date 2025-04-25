@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
+import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/service_settings_controller.dart';
@@ -10,9 +11,9 @@ import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/database/scheme/service_settings.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
+import 'package:hoyomi/plugins/create_dio_client.dart';
 import 'package:hoyomi/utils/d_query.dart';
 import 'package:html/parser.dart';
-import 'package:http/http.dart';
 
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/router/index.dart';
@@ -20,6 +21,8 @@ import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 
 import 'interfaces/main.dart';
+
+Dio?  _dio ;
 
 class ServiceInit {
   final String name;
@@ -56,7 +59,7 @@ class ServiceInit {
 mixin _SettingsMixin {
   String get uid;
   ServiceInit get init;
-  late final ServiceSettings? _serviceSettings;
+  ServiceSettings? _serviceSettings;
   bool _stateReady = false;
 
   Future<void> initState() async {
@@ -105,6 +108,8 @@ mixin _SettingsMixin {
     } catch (err) {
       record = record.copyWith(settings: {name: value});
     }
+
+    _serviceSettings = record;
 
     await ServiceSettingsController.instance.save(uid, record);
   }
@@ -316,23 +321,10 @@ abstract class Service with _SettingsMixin {
       'cache-control': 'no-cache',
       if (cookiesText != null) 'cookie': cookiesText,
       'pragma': 'no-cache',
-      'priority': 'u=0, i',
-      'sec-ch-ua':
-          '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-      'sec-ch-ua-arch': '"x86"',
-      'sec-ch-ua-bitness': '"64"',
-      'sec-ch-ua-full-version': '"131.0.6778.265"',
-      'sec-ch-ua-full-version-list':
-          '"Google Chrome";v="131.0.6778.265", "Chromium";v="131.0.6778.265", "Not_A Brand";v="24.0.0.0"',
-      'sec-ch-ua-mobile': '?0',
-      'sec-ch-ua-model': '""',
-      'sec-ch-ua-platform': '"Windows"',
-      'sec-ch-ua-platform-version': '"19.0.0"',
-      'sec-fetch-dest': 'document',
-      'sec-fetch-mode': 'navigate',
-      'sec-fetch-site': 'same-origin',
-      'sec-fetch-user': '?1',
-      'upgrade-insecure-requests': '1',
+      // 'priority': 'u=0, i',
+      'host': uri.host,
+      
+      // 'upgrade-insecure-requests': '1',
       'user-agent':
           record?.settings?['user_agent'] as String? ??
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
@@ -361,40 +353,16 @@ abstract class Service with _SettingsMixin {
       }
     }
 
-    final client = Client();
-    final request = Request(body == null ? 'GET' : 'POST', uri)
-      ..followRedirects = true;
-
-    if (headers != null) request.headers.addAll(headers.toMap());
-    final Object? fBody =
-        body == null
-            ? null
-            : Map.fromEntries(
-              body.entries.where((entry) => entry.value != null).toList().map((
-                entry,
-              ) {
-                if (entry.value is String) {
-                  return entry;
-                } else {
-                  return MapEntry(entry.key, entry.value.toString());
-                }
-              }),
-            );
-    if (fBody != null) {
-      if (fBody is String) {
-        request.body = fBody;
-      } else if (fBody is List) {
-        request.bodyBytes = fBody.cast<int>();
-      } else if (fBody is Map) {
-        request.bodyFields = fBody.cast<String, String>();
-      } else {
-        throw ArgumentError('Invalid request body "$fBody".');
-      }
-    }
-
     late final Response response;
     try {
-      response = await Response.fromStream(await client.send(request));
+      response = await (_dio ??= await createDioClient(BaseOptions(responseType: ResponseType.plain, followRedirects: true))).fetch(
+        RequestOptions(
+          path: uri.toString(),
+          method: body == null ? 'GET' : 'POST',
+          data: body,
+          headers: $headers.toMap(),
+        ),
+      );
 
       if (kDebugMode) {
         if (startTime != null) {
@@ -408,6 +376,27 @@ abstract class Service with _SettingsMixin {
           print('📥 Response Cookie: ${response.headers['set-cookie']}');
         }
       }
+    } on DioException catch (error) {
+      if ([429, 503, 403].contains(error.response?.statusCode)) {
+        // return Future.error(response);
+        final error = CaptchaRequiredException(getService(uid));
+
+        // // required captcha resolve
+        showCaptchaResolve(null, url: url, error: error);
+        // try {
+        //   final start = DateTime.now();
+        //   final data = await createWebView(uri)
+        //       .fetch(url: url, headers: headers, body: body);
+
+        //   debugPrint(
+        //       'Future completed in ${DateTime.now().difference(start).inMilliseconds} milliseconds');
+        //   return data;
+        // } catch (err) {
+        //   debugPrint('Error: $err');
+        return Future.error(error);
+        // }
+      }
+      rethrow;
     } catch (error) {
       if (kDebugMode) {
         print('❌ [HTTP] Request Failed');
@@ -415,8 +404,6 @@ abstract class Service with _SettingsMixin {
       }
 
       rethrow;
-    } finally {
-      client.close();
     }
     // if (useCookie == true) {
     //   // update cookie
@@ -430,30 +417,10 @@ abstract class Service with _SettingsMixin {
     //           '');
     // }
 
-    if ([429, 503, 403].contains(response.statusCode)) {
-      // return Future.error(response);
-      final error = CaptchaRequiredException(getService(uid));
-
-      // // required captcha resolve
-      showCaptchaResolve(null, url: url, error: error);
-      // try {
-      //   final start = DateTime.now();
-      //   final data = await createWebView(uri)
-      //       .fetch(url: url, headers: headers, body: body);
-
-      //   debugPrint(
-      //       'Future completed in ${DateTime.now().difference(start).inMilliseconds} milliseconds');
-      //   return data;
-      // } catch (err) {
-      //   debugPrint('Error: $err');
-      return Future.error(error);
-      // }
-    }
-
     if (response.statusCode == 200) {
-      return utf8.decode(response.bodyBytes);
+      return response.data.toString();
     } else {
-      debugPrint('Error: ${response.statusCode} ${response.reasonPhrase}');
+      debugPrint('Error: ${response.statusMessage}');
       throw response;
     }
   }

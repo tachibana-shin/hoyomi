@@ -23,6 +23,7 @@ dependencies:
   dashed_circular_progress_bar: ^0.0.6
   device_info_plus: ^11.3.0
   dio: ^5.8.0+1
+  dio_compatibility_layer: ^0.1.0
   drop_down_list: ^2.0.0
   dynamic_height_grid_view: ^0.0.4
   email_validator: ^3.0.0
@@ -73,6 +74,7 @@ dependencies:
   pointycastle: ^4.0.0
   provider: ^6.1.4
   responsive_grid_list: ^1.4.0
+  rhttp: ^0.11.1
   rss_feed_parser: ^1.0.6
   screen_brightness: ^2.1.2
   scrollable_positioned_list: ^0.3.8
