@@ -80,7 +80,7 @@ class _TabViewEigaState extends State<TabViewEiga>
                   category.categoryId != null
                       ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
                       : null,
-                      disableScroll: true,
+              disableScroll: true,
             );
           },
         );
