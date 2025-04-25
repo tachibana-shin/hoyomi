@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart' hide Headers;
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
@@ -331,10 +332,11 @@ abstract class Service with _SettingsMixin {
       children: [
         orElse(error),
         // button refresh page
-        ElevatedButton(
-          child: Text('Refresh'),
-          onPressed: () => router.refresh(),
-        ),
+        // ElevatedButton(
+        //   child: Text('Refresh'),
+        //   onPressed: () => router.refresh(),
+        // ),
+        Opacity(opacity: 0.8, child: Text('Pull to refresh').fontSize(14)),
       ],
     );
   }

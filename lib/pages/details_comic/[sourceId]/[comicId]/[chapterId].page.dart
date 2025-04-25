@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
@@ -189,28 +190,38 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                           },
                         ),
                         title: Watch(() {
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.comic.value?.name ?? '',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 2),
+                          return Text(
+                            <String>[
                               if (widget.chapter.value != null)
-                                Text(
-                                  widget.chapter.value!.name,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white70,
-                                  ),
-                                ),
-                            ],
-                          );
+                                widget.chapter.value!.name,
+                              if (widget.comic.value?.name != null)
+                                widget.comic.value!.name,
+                            ].join(' - '),
+                            maxLines: 1,
+                            overflow: TextOverflow.fade,
+                          ).fontSize(16.0);
+                          // return Column(
+                          // mainAxisSize: MainAxisSize.min,
+                          // crossAxisAlignment: CrossAxisAlignment.start,
+                          // children: [
+                          //   Text(
+                          //     widget.comic.value?.name ?? '',
+                          //     style: TextStyle(
+                          //       fontSize: 16,
+                          //       fontWeight: FontWeight.bold,
+                          //     ),
+                          //   ),
+                          //   SizedBox(height: 2),
+                          //   if (widget.chapter.value != null)
+                          //     Text(
+                          //       widget.chapter.value!.name,
+                          //       style: TextStyle(
+                          //         fontSize: 14,
+                          //         color: Colors.white70,
+                          //       ),
+                          //     ),
+                          // ],
+                          // );
                         }),
                         actions: [
                           Watch(
