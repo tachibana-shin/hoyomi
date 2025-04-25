@@ -250,14 +250,17 @@ class TruyenQQService extends TruyenGGService {
       '.list_grid_out li',
     ).map((element) => parseComic(element, baseUrl));
 
-    final lastPageLink = $(
-      '.page_redirect > a:last-child',
-      single: true,
-    ).attrRaw('href');
+    final lastPageLink = $('.page_redirect > a:last-child', single: true);
+    final lastPageLinkText =
+        lastPageLink.attrRaw('href') ?? lastPageLink.textRaw();
     final maxPage =
-        lastPageLink != null
+        lastPageLinkText?.isNotEmpty == true
             ? int.parse(
-              RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
+              lastPageLinkText?.contains('javascript') == true
+                  ? RegExp(
+                    r'trang-(\d+)',
+                  ).firstMatch(lastPageLinkText!)!.group(1)!
+                  : lastPageLink.textRaw() ?? '1',
             )
             : 1;
 

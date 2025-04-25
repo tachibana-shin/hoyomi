@@ -478,14 +478,17 @@ class TruyenGGService extends ABComicService
         .query('.item_home')
         .map((element) => parseComic(element, baseUrl));
 
-    final lastPageLink = $(
-      '.pagination > a:last-child',
-      single: true,
-    ).attr('href');
+    final lastPageLink = $('.pagination > a:last-child', single: true);
+    final lastPageLinkText =
+        lastPageLink.attrRaw('href') ?? lastPageLink.textRaw();
     final maxPage =
-        lastPageLink.isNotEmpty
+        lastPageLinkText?.isNotEmpty == true
             ? int.parse(
-              RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
+              lastPageLinkText?.contains('javascript') == true
+                  ? RegExp(
+                    r'trang-(\d+)',
+                  ).firstMatch(lastPageLinkText!)!.group(1)!
+                  : lastPageLink.textRaw() ?? '1',
             )
             : 1;
 
