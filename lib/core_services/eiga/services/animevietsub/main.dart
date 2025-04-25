@@ -50,8 +50,14 @@ mixin _SupabaseRPC {
     ),
   );
 
-  Future<List<dynamic>> rpc(String name, Map<String, dynamic> requestData) async {
-    final response = await _dio.post('/rest/v1/rpc/$name', data: FormData.fromMap(requestData));
+  Future<List<dynamic>> rpc(
+    String name,
+    Map<String, dynamic> requestData,
+  ) async {
+    final response = await _dio.post(
+      '/rest/v1/rpc/$name',
+      data: FormData.fromMap(requestData),
+    );
 
     return response.data as List;
   }
