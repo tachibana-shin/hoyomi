@@ -467,7 +467,7 @@ class TruyenGGService extends ABComicService
     required quick,
   }) async {
     final url =
-        '$baseUrl/tim-kiem${page > 1 ? '/trang-$page' : ''}.html?q=${Uri.encodeComponent(keyword)}';
+        '$baseUrl/tim-kiem${page > 1 ? '/trang-$page' : ''}.html?q=$keyword';
 
     final $ = await fetch$(url);
 
