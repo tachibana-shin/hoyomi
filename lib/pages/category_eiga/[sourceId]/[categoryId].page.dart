@@ -59,7 +59,7 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
     _service = getEigaService(widget.sourceId);
   }
 
-  Future<(bool, List<Eiga>)> _fetchComics(int pageKey) async {
+  Future<({bool isLastPage, List<Eiga> data})> _fetchComics(int pageKey) async {
     final newComics = await (widget.getCategory ?? _service.getCategory)(
       categoryId: widget.categoryId,
       page: pageKey,
@@ -79,19 +79,21 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
       _totalPages = newComics.totalPages;
     });
 
-    return (isLastPage, newComics.items.toList());
+    return (isLastPage: isLastPage, data: newComics.items.toList());
   }
 
   @override
   Widget build(BuildContext context) {
     return PullRefreshPage<List<Eiga>>(
-      onLoadData: () => _fetchComics(1).then((param) => param.$2),
+      onLoadData: () => _fetchComics(1).then((param) => param.data),
       onLoadFake: () => List.generate(30, (_) => Eiga.createFakeData()),
       builderError:
           (body) => Scaffold(appBar: _buildAppBar(() async {}), body: body),
       builder:
-          (data, param) =>
-              Scaffold(appBar: _buildAppBar(param.$2), body: _buildBody(data)),
+          (data, param) => Scaffold(
+            appBar: _buildAppBar(param.refresh),
+            body: _buildBody(data),
+          ),
     );
   }
 
@@ -274,7 +276,9 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
         mainAxisSpacing: 4.0,
         fetchData: () async {
           final result = await _fetchComics(_pageKey);
-          _pageKey++;
+          if (!result.isLastPage) {
+            _pageKey++;
+          }
 
           return result;
         },

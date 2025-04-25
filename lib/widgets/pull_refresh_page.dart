@@ -4,7 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 class PullRefreshPage<T> extends StatefulWidget {
   final Widget Function(Widget body)? builderError;
-  final Widget Function(T data, (bool loading, Future<void> Function() refresh))
+  final Widget Function(T data, ({bool loading, Future<void> Function() refresh}))
   builder;
   final Future<T> Function() onLoadData;
   final T Function() onLoadFake;
@@ -94,7 +94,7 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
     return Skeletonizer(
       enabled: loading,
       enableSwitchAnimation: true,
-      child: widget.builder(data, (loading, _pullRefresh)),
+      child: widget.builder(data, (loading: loading, refresh: _pullRefresh)),
     );
   }
 

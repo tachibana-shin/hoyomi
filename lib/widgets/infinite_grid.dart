@@ -9,7 +9,7 @@ class InfiniteGrid<T> extends StatefulWidget {
   final double crossAxisSpacing;
   final double mainAxisSpacing;
   final CrossAxisAlignment rowCrossAxisAlignment;
-  final Future<(bool, List<T>)> Function() fetchData;
+  final Future<({bool isLastPage, List<T> data})> Function() fetchData;
   final Widget Function(BuildContext context, T item, int index) itemBuilder;
 
   const InfiniteGrid({
@@ -68,7 +68,7 @@ class _InfiniteGridState<T> extends State<InfiniteGrid<T>> {
         setState(() {});
 
         try {
-          final (isLastPage, items) = await widget.fetchData();
+          final (isLastPage: isLastPage, data: items) = await widget.fetchData();
 
           _data.addAll(items);
           _hasReachedMax = isLastPage;

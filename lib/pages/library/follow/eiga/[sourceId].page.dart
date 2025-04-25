@@ -64,7 +64,7 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
                 _pageKey++;
 
                 final isLastPage = result.page >= result.totalPages;
-                return (isLastPage, result.items);
+                return (isLastPage: isLastPage, data: result.items);
               },
               itemBuilder: (context, follow, index) {
                 return VerticalEiga(

@@ -517,9 +517,11 @@ class TruyenGGService extends ABComicService
     ).attr('href');
     final maxPage =
         lastPageLink.isNotEmpty
-            ? int.parse(
-              RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
-            )
+            ? int.tryParse(
+                  RegExp(r'trang-(\d+)').firstMatch(lastPageLink)?.group(1) ??
+                      '1',
+                ) ??
+                1
             : 1;
 
     return ComicCategory(
