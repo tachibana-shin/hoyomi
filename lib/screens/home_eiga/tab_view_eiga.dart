@@ -46,7 +46,7 @@ class _TabViewEigaState extends State<TabViewEiga>
               categoryIndex - (data.carousel != null ? 1 : 0),
             );
 
-            if (category.gridView == true) {
+            if (category.gridView != true) {
               return HorizontalEigaList(
                 itemsFuture: Future.value(
                   category.items
@@ -80,6 +80,7 @@ class _TabViewEigaState extends State<TabViewEiga>
                   category.categoryId != null
                       ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
                       : null,
+                      disableScroll: true,
             );
           },
         );

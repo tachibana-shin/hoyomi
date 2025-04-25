@@ -9,7 +9,7 @@ sealed class HomeEigaCategory with _$HomeEigaCategory {
   const factory HomeEigaCategory({
     required String name,
     String? categoryId,
-    bool? gridView,
+    @Default(false) bool gridView,
     required List<Eiga> items,
   }) = _HomeEigaCategory;
 

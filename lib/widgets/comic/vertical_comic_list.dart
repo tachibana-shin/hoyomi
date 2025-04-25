@@ -13,6 +13,7 @@ class VerticalComicList extends StatelessWidget {
   final String? more;
   final ScrollController? controller;
   final bool skeleton;
+  final bool disableScroll;
 
   const VerticalComicList({
     super.key,
@@ -22,6 +23,7 @@ class VerticalComicList extends StatelessWidget {
     this.more,
     this.controller,
     this.skeleton = true,
+    this.disableScroll = false,
   });
 
   @override
@@ -49,6 +51,7 @@ class VerticalComicList extends StatelessWidget {
                   progress: comic.progress,
                 );
               },
+              disableScroll: disableScroll,
             ),
           );
         }
@@ -77,6 +80,7 @@ class VerticalComicList extends StatelessWidget {
               progress: comic.progress,
             );
           },
+          disableScroll: disableScroll,
         );
       },
     );

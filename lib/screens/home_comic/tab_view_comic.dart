@@ -34,7 +34,7 @@ class _TabViewComicState extends State<TabViewComic>
             itemBuilder: (context, categoryIndex) {
               final category = data.elementAt(categoryIndex);
 
-              if (category.gridView == true) {
+              if (category.gridView != true) {
                 return HorizontalComicList(
                   itemsFuture: Future.value(
                     category.items
@@ -70,6 +70,7 @@ class _TabViewComicState extends State<TabViewComic>
                     category.categoryId != null
                         ? '/category_comic/${widget.service.uid}/${category.categoryId}'
                         : null,
+                disableScroll: true,
               );
             },
           ),

@@ -10,7 +10,7 @@ _HomeEigaCategory _$HomeEigaCategoryFromJson(Map<String, dynamic> json) =>
     _HomeEigaCategory(
       name: json['name'] as String,
       categoryId: json['categoryId'] as String?,
-      gridView: json['gridView'] as bool?,
+      gridView: json['gridView'] as bool? ?? false,
       items:
           (json['items'] as List<dynamic>)
               .map((e) => Eiga.fromJson(e as Map<String, dynamic>))

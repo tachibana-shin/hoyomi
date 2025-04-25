@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HomeEigaCategory {
 
- String get name; String? get categoryId; bool? get gridView; List<Eiga> get items;
+ String get name; String? get categoryId; bool get gridView; List<Eiga> get items;
 /// Create a copy of HomeEigaCategory
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $HomeEigaCategoryCopyWith<$Res>  {
   factory $HomeEigaCategoryCopyWith(HomeEigaCategory value, $Res Function(HomeEigaCategory) _then) = _$HomeEigaCategoryCopyWithImpl;
 @useResult
 $Res call({
- String name, String? categoryId, bool? gridView, List<Eiga> items
+ String name, String? categoryId, bool gridView, List<Eiga> items
 });
 
 
@@ -66,12 +66,12 @@ class _$HomeEigaCategoryCopyWithImpl<$Res>
 
 /// Create a copy of HomeEigaCategory
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? categoryId = freezed,Object? gridView = freezed,Object? items = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? categoryId = freezed,Object? gridView = null,Object? items = null,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,categoryId: freezed == categoryId ? _self.categoryId : categoryId // ignore: cast_nullable_to_non_nullable
-as String?,gridView: freezed == gridView ? _self.gridView : gridView // ignore: cast_nullable_to_non_nullable
-as bool?,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
+as String?,gridView: null == gridView ? _self.gridView : gridView // ignore: cast_nullable_to_non_nullable
+as bool,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<Eiga>,
   ));
 }
@@ -83,12 +83,12 @@ as List<Eiga>,
 @JsonSerializable()
 
 class _HomeEigaCategory implements HomeEigaCategory {
-  const _HomeEigaCategory({required this.name, this.categoryId, this.gridView, required final  List<Eiga> items}): _items = items;
+  const _HomeEigaCategory({required this.name, this.categoryId, this.gridView = false, required final  List<Eiga> items}): _items = items;
   factory _HomeEigaCategory.fromJson(Map<String, dynamic> json) => _$HomeEigaCategoryFromJson(json);
 
 @override final  String name;
 @override final  String? categoryId;
-@override final  bool? gridView;
+@override@JsonKey() final  bool gridView;
  final  List<Eiga> _items;
 @override List<Eiga> get items {
   if (_items is EqualUnmodifiableListView) return _items;
@@ -130,7 +130,7 @@ abstract mixin class _$HomeEigaCategoryCopyWith<$Res> implements $HomeEigaCatego
   factory _$HomeEigaCategoryCopyWith(_HomeEigaCategory value, $Res Function(_HomeEigaCategory) _then) = __$HomeEigaCategoryCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String? categoryId, bool? gridView, List<Eiga> items
+ String name, String? categoryId, bool gridView, List<Eiga> items
 });
 
 
@@ -147,12 +147,12 @@ class __$HomeEigaCategoryCopyWithImpl<$Res>
 
 /// Create a copy of HomeEigaCategory
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? categoryId = freezed,Object? gridView = freezed,Object? items = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? categoryId = freezed,Object? gridView = null,Object? items = null,}) {
   return _then(_HomeEigaCategory(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,categoryId: freezed == categoryId ? _self.categoryId : categoryId // ignore: cast_nullable_to_non_nullable
-as String?,gridView: freezed == gridView ? _self.gridView : gridView // ignore: cast_nullable_to_non_nullable
-as bool?,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
+as String?,gridView: null == gridView ? _self.gridView : gridView // ignore: cast_nullable_to_non_nullable
+as bool,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
 as List<Eiga>,
   ));
 }

@@ -125,6 +125,7 @@ class HorizontalList<T> extends StatelessWidget {
               child ??
               PageView.builder(
                 itemCount: items!.length,
+                scrollDirection: Axis.horizontal,
                 allowImplicitScrolling: true,
                 padEnds: false,
                 controller: PageController(
