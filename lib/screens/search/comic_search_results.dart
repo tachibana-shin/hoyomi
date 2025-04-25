@@ -7,11 +7,9 @@ import 'package:kaeru/kaeru.dart';
 
 class ComicSearchResults extends StatefulWidget {
   final String keyword;
-  final Function()? onDismissed;
 
   const ComicSearchResults({
     super.key,
-    this.onDismissed,
     required this.keyword,
   });
 

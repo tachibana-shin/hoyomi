@@ -7,9 +7,8 @@ import 'package:kaeru/kaeru.dart';
 
 class EigaSearchResults extends StatefulWidget {
   final String keyword;
-  final Function()? onDismissed;
 
-  const EigaSearchResults({super.key, this.onDismissed, required this.keyword});
+  const EigaSearchResults({super.key, required this.keyword});
 
   @override
   State<EigaSearchResults> createState() => _EigaSearchResultsState();
