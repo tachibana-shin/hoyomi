@@ -318,10 +318,10 @@ abstract class Service with _SettingsMixin {
     final $headers = Headers({
       'accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-      'accept-language': 'vi',
-      'cache-control': 'no-cache',
+      // 'accept-language': 'vi',
+      'cache-control': 'max-age=0',
       if (cookiesText != null) 'cookie': cookiesText,
-      'pragma': 'no-cache',
+      // 'pragma': 'no-cache',
       // 'priority': 'u=0, i',
       'host': uri.host,
 
