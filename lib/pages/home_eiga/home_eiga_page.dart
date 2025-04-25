@@ -33,7 +33,7 @@ class _HomeEigaPageState extends State<HomeEigaPage>
           // floating: _overlayQuickSearch == null,
           // snap: _overlayQuickSearch == null,
           // pinned: _overlayQuickSearch == null,
-          title: GlobalSearchBar(keyword: '', pageIsSearch: false),
+          title: GlobalSearchBar(pageIsSearch: false),
           centerTitle: true,
           titleSpacing: 0.0,
           bottom: TabBar(

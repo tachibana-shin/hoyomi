@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/screens/rss/news_feed.dart';
 import 'package:hoyomi/screens/search/comic_search_results.dart';
@@ -7,20 +8,16 @@ import 'package:hoyomi/widgets/global_search_bar.dart';
 import 'package:kaeru/kaeru.dart';
 
 class SearchPage extends StatefulWidget {
-  final String keyword;
   final String? from;
 
-  const SearchPage({super.key, required this.keyword, required this.from});
+  const SearchPage({super.key, required this.from});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage>
-    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+    with SingleTickerProviderStateMixin, KaeruMixin {
   late TabController _tabController;
 
   @override
@@ -30,7 +27,11 @@ class _SearchPageState extends State<SearchPage>
       initialIndex: widget.from == 'eiga' ? 1 : 0,
       length: 2,
       vsync: this,
-    );
+    )..addListener(() {
+      context.replace(
+        '/search?q=${globalKeyword.value}&from=${_tabController.index == 0 ? 'comic' : 'eiga'}',
+      );
+    });
   }
 
   @override
@@ -41,13 +42,11 @@ class _SearchPageState extends State<SearchPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         scrolledUnderElevation: 0.0,
-        title: GlobalSearchBar(keyword: widget.keyword, pageIsSearch: true),
+        title: GlobalSearchBar(pageIsSearch: true),
         titleSpacing: 0,
         automaticallyImplyLeading: false,
         centerTitle: true,
@@ -60,7 +59,7 @@ class _SearchPageState extends State<SearchPage>
       ),
       body: Stack(
         children: [
-          if (widget.keyword.trim().isNotEmpty)
+          if (globalKeyword.value.trim().isNotEmpty)
             _buildBodySearch(context)
           else
             _buildBodyGetStarting(context),
@@ -78,8 +77,18 @@ class _SearchPageState extends State<SearchPage>
       child: TabBarView(
         controller: _tabController,
         children: [
-          ComicSearchResults(keyword: widget.keyword),
-          EigaSearchResults(keyword: widget.keyword),
+          Watch(
+            () => ComicSearchResults(
+              key: ValueKey(globalKeyword.value),
+              keyword: globalKeyword.value,
+            ),
+          ),
+          Watch(
+            () => EigaSearchResults(
+              key: ValueKey(globalKeyword.value),
+              keyword: globalKeyword.value,
+            ),
+          ),
         ],
       ),
     );

@@ -27,12 +27,12 @@ import 'package:speech_to_text_google_dialog/speech_to_text_google_dialog.dart';
 
 import 'service_manager_dialog.dart';
 
-final Ref<String> _keyword = Ref('');
+final Ref<String> globalKeyword = Ref('');
 final Ref<String?> _serviceSelect = Ref(null);
 
 final _setKeyword =
     Debouncer(Duration(seconds: 1), (String keyword) {
-      _keyword.value = keyword;
+      globalKeyword.value = keyword;
     }).run;
 
 class _AppBarExtended extends AppBar {
@@ -167,12 +167,10 @@ class _QuickSearchItemState extends State<_QuickSearchItem> {
 }
 
 class GlobalSearchBar extends StatefulWidget {
-  final String keyword;
   final bool pageIsSearch;
 
   const GlobalSearchBar({
     super.key,
-    required this.keyword,
     required this.pageIsSearch,
   });
 
@@ -190,10 +188,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
   void initState() {
     super.initState();
 
-    if (widget.keyword.isNotEmpty) {
-      _setKeyword(widget.keyword);
-    }
-    _controller = TextEditingController(text: _keyword.value);
+    _controller = TextEditingController(text: globalKeyword.value);
   }
 
   void _showSearchLayer() {
@@ -217,7 +212,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                 body: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Watch(() {
-                    if (_keyword.value.isEmpty) {
+                    if (globalKeyword.value.isEmpty) {
                       return Padding(
                         padding: EdgeInsets.symmetric(vertical: 16.0),
                         child: Row(
@@ -243,8 +238,8 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Text(_keyword.value),
-                        _buildKeywordSuggest(_keyword.value),
-                        Expanded(child: _buildSearchResults(_keyword.value)),
+                        _buildKeywordSuggest(globalKeyword.value),
+                        Expanded(child: _buildSearchResults(globalKeyword.value)),
                       ],
                     );
                   }),
@@ -319,7 +314,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                           .map(
                             (text) => GestureDetector(
                               onTap: () {
-                                _controller.text = _keyword.value = text;
+                                _controller.text = globalKeyword.value = text;
                               },
                               child: Chip(
                                 label: Text(text),
@@ -347,112 +342,110 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
       return SizedBox.shrink();
     }
 
-    return Watch(() {
-      final service = _getCurrentService(context);
+    final service = _getCurrentService(context);
 
-      if (service is ABComicService) {
-        return FutureBuilder(
-          future: service.search(
-            keyword: keyword,
-            page: 1,
-            filters: {},
-            quick: true,
-          ),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Service.errorWidgetBuilder(
-                  context,
-                  error: snapshot.error,
-                  service: null,
-                  orElse: (err) => Text('Error: $err'),
-                ),
-              );
-            }
-
-            final loading = snapshot.connectionState == ConnectionState.waiting;
-            final data =
-                loading
-                    ? List.generate(10, (_) => Comic.createFakeData())
-                    : snapshot.data!.items;
-
-            if (data.isEmpty) return SizedBox.shrink();
-
-            return Skeletonizer(
-              enabled: loading,
-              enableSwitchAnimation: true,
-              child: ListView.builder(
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  final comic = data.elementAt(index);
-
-                  return _QuickSearchItem(
-                    to: '/details_comic/${service.uid}/${comic.comicId}',
-                    title: comic.name,
-                    image: comic.image,
-                    subtitle: comic.lastChap?.name,
-                    description: comic.description ?? comic.notice,
-                    sourceId: service.uid,
-                  );
-                },
+    if (service is ABComicService) {
+      return FutureBuilder(
+        future: service.search(
+          keyword: keyword,
+          page: 1,
+          filters: {},
+          quick: true,
+        ),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Service.errorWidgetBuilder(
+                context,
+                error: snapshot.error,
+                service: null,
+                orElse: (err) => Text('Error: $err'),
               ),
             );
-          },
-        );
-      }
-      if (service is ABEigaService) {
-        return FutureBuilder(
-          future: service.search(
-            keyword: keyword,
-            page: 1,
-            filters: {},
-            quick: true,
-          ),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Service.errorWidgetBuilder(
-                  context,
-                  error: snapshot.error,
-                  service: null,
-                  orElse: (err) => Text('Error: $err'),
-                ),
-              );
-            }
+          }
 
-            final loading = snapshot.connectionState == ConnectionState.waiting;
-            final data =
-                loading
-                    ? List.generate(10, (_) => Eiga.createFakeData())
-                    : snapshot.data!.items;
+          final loading = snapshot.connectionState == ConnectionState.waiting;
+          final data =
+              loading
+                  ? List.generate(10, (_) => Comic.createFakeData())
+                  : snapshot.data!.items;
 
-            if (data.isEmpty) return SizedBox.shrink();
+          if (data.isEmpty) return SizedBox.shrink();
 
-            return Skeletonizer(
-              enabled: loading,
-              enableSwitchAnimation: true,
-              child: ListView.builder(
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  final eiga = data.elementAt(index);
+          return Skeletonizer(
+            enabled: loading,
+            enableSwitchAnimation: true,
+            child: ListView.builder(
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                final comic = data.elementAt(index);
 
-                  return _QuickSearchItem(
-                    to: '/details_eiga/${service.uid}/${eiga.eigaId}',
-                    title: eiga.name,
-                    image: eiga.image,
-                    subtitle: eiga.lastEpisode?.name,
-                    description: eiga.description ?? eiga.notice,
-                    sourceId: service.uid,
-                  );
-                },
+                return _QuickSearchItem(
+                  to: '/details_comic/${service.uid}/${comic.comicId}',
+                  title: comic.name,
+                  image: comic.image,
+                  subtitle: comic.lastChap?.name,
+                  description: comic.description ?? comic.notice,
+                  sourceId: service.uid,
+                );
+              },
+            ),
+          );
+        },
+      );
+    }
+    if (service is ABEigaService) {
+      return FutureBuilder(
+        future: service.search(
+          keyword: keyword,
+          page: 1,
+          filters: {},
+          quick: true,
+        ),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Service.errorWidgetBuilder(
+                context,
+                error: snapshot.error,
+                service: null,
+                orElse: (err) => Text('Error: $err'),
               ),
             );
-          },
-        );
-      }
+          }
 
-      throw Exception('Unknown service: ${service.runtimeType}');
-    });
+          final loading = snapshot.connectionState == ConnectionState.waiting;
+          final data =
+              loading
+                  ? List.generate(10, (_) => Eiga.createFakeData())
+                  : snapshot.data!.items;
+
+          if (data.isEmpty) return SizedBox.shrink();
+
+          return Skeletonizer(
+            enabled: loading,
+            enableSwitchAnimation: true,
+            child: ListView.builder(
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                final eiga = data.elementAt(index);
+
+                return _QuickSearchItem(
+                  to: '/details_eiga/${service.uid}/${eiga.eigaId}',
+                  title: eiga.name,
+                  image: eiga.image,
+                  subtitle: eiga.lastEpisode?.name,
+                  description: eiga.description ?? eiga.notice,
+                  sourceId: service.uid,
+                );
+              },
+            ),
+          );
+        },
+      );
+    }
+
+    throw Exception('Unknown service: ${service.runtimeType}');
   }
 
   Service _getCurrentService(BuildContext context) {
@@ -558,7 +551,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         ),
         child: Row(
           children: [
-            if (widget.pageIsSearch && !focusing && widget.keyword.isNotEmpty)
+            if (widget.pageIsSearch && !focusing && globalKeyword.value.isNotEmpty)
               IconButton(
                 icon: Iconify(
                   Mdi.arrow_back,
@@ -572,7 +565,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                             ? context.pop()
                             : context.replace('/search'),
               ),
-            if (focusing || widget.pageIsSearch && widget.keyword.isNotEmpty)
+            if (focusing || widget.pageIsSearch && globalKeyword.value.isNotEmpty)
               _buildServiceSelector()
             else
               IconButton(
@@ -602,8 +595,18 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                           _setKeyword(value);
                         },
                         onSubmitted: (value) {
+                          globalKeyword.value = value;
                           _closeSearchLayer();
-                          switch (GoRouter.of(context).state.name) {
+
+                          final route = GoRouter.of(context).state;
+                          if (route.pathParameters['from'] != null) {
+                            context.replace(
+                              "/search?q=$value&from=${route.pathParameters['from']}",
+                            );
+
+                            return;
+                          }
+                          switch (route.name) {
                             case 'search':
                             case 'search_comic':
                             case 'search_eiga':
@@ -632,8 +635,8 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                                 children: [
                                   Watch(
                                     () => Text(
-                                      widget.keyword.isNotEmpty
-                                          ? widget.keyword
+                                      globalKeyword.value.isNotEmpty
+                                          ? globalKeyword.value
                                           : 'Search',
                                     ).fontSize(16.0).paddingAll(4.0),
                                   ),
@@ -649,7 +652,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                     (child, animation) =>
                         ScaleTransition(scale: animation, child: child),
                 child:
-                    (_keyword.value.isEmpty || !focusing)
+                    (globalKeyword.value.isEmpty || !focusing)
                         ? (!XPlatform.isLinux && !XPlatform.isWindows)
                             ? IconButton(
                               icon: Iconify(Mdi.microphone),
@@ -686,7 +689,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
 
                                 try {
                                   final text = await completer.future;
-                                  _keyword.value = _controller.text = text;
+                                  globalKeyword.value = _controller.text = text;
 
                                   _showSearchLayer();
                                 } catch (error) {
@@ -699,7 +702,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                           icon: Icon(Icons.clear),
                           onPressed: () {
                             _controller.clear();
-                            _keyword.value = '';
+                            globalKeyword.value = '';
                           },
                         ),
               ),

@@ -30,7 +30,7 @@ class _HomeComicPageState extends State<HomeComicPage>
         appBar: AppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           scrolledUnderElevation: 0.0,
-          title: const GlobalSearchBar(keyword: '', pageIsSearch: false),
+          title: const GlobalSearchBar(pageIsSearch: false),
           centerTitle: true,
           titleSpacing: 0.0,
           bottom: TabBar(
