@@ -6,6 +6,7 @@ import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_watch_page_general_mixin.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
+import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:hoyomi/utils/d_query.dart';
 import 'package:intl/intl.dart';
 
@@ -65,6 +66,44 @@ class TruyenGGService extends ABComicService
       return 'type_comic=1; $cookie';
     },
   );
+
+  @override
+  fetch(
+    String url, {
+    String? cookie,
+    Map<String, dynamic>? query,
+    Map<String, dynamic>? body,
+    Headers? headers,
+    bool notify = true,
+  }) async {
+    for (int i = 0; i < 5; i++) {
+      try {
+        return await super.fetch(
+          url,
+          cookie: cookie,
+          query: query,
+          body: body,
+          headers: headers,
+          notify: false,
+        );
+      } on CaptchaRequiredException catch (error) {
+        if (i == 4) {
+          Service.showCaptchaResolve(null, url: url, error: error);
+
+          rethrow;
+        } else {
+          await Future.delayed(
+            Duration(milliseconds: Random().nextInt(100) + 100),
+          );
+          continue;
+        }
+      } catch (error) {
+        rethrow;
+      }
+    }
+
+    throw UnimplementedError();
+  }
 
   final Map<String, String> _comicCachedStore = {};
   final Map<String, String> _episodeIdStore = {};
