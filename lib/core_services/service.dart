@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart' hide Headers;
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/service_settings_controller.dart';
@@ -18,11 +19,58 @@ import 'package:html/parser.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/widgets/iconify.dart';
+import 'package:http_cache_file_store/http_cache_file_store.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'interfaces/main.dart';
 
 Dio? _dio;
+Future<Dio> _createDioClientCache() async {
+  if (_dio != null) return _dio!;
+
+  final options = CacheOptions(
+    // A default store is required for interceptor.
+    store:
+        kIsWeb
+            ? MemCacheStore()
+            : FileCacheStore(
+              join((await getTemporaryDirectory()).path, 'dio_cache_service'),
+            ),
+
+    // All subsequent fields are optional to get a standard behaviour.
+
+    // Default.
+    policy: CachePolicy.forceCache,
+    // Returns a cached response on error for given status codes.
+    // Defaults to `[]`.
+    hitCacheOnErrorCodes: const [500],
+    // Allows to return a cached response on network errors (e.g. offline usage).
+    // Defaults to `false`.
+    hitCacheOnNetworkFailure: true,
+    // Overrides any HTTP directive to delete entry past this duration.
+    // Useful only when origin server has no cache config or custom behaviour is desired.
+    // Defaults to `null`.
+    maxStale: const Duration(hours: 5),
+    // Default. Allows 3 cache sets and ease cleanup.
+    priority: CachePriority.normal,
+    // Default. Body and headers encryption with your own algorithm.
+    cipher: null,
+    // Default. Key builder to retrieve requests.
+    keyBuilder: CacheOptions.defaultCacheKeyBuilder,
+    // Default. Allows to cache POST requests.
+    // Assigning a [keyBuilder] is strongly recommended when `true`.
+    allowPostMethod: false,
+  );
+
+  _dio = await createDioClient(
+      BaseOptions(responseType: ResponseType.plain, followRedirects: true),
+    )
+    ..interceptors.add(DioCacheInterceptor(options: options));
+
+  return _dio!;
+}
 
 class ServiceInit {
   final String name;
@@ -356,20 +404,15 @@ abstract class Service with _SettingsMixin {
 
     late final Response response;
     try {
-      response = await (_dio ??= await createDioClient(
-            BaseOptions(
-              responseType: ResponseType.plain,
-              followRedirects: true,
-            ),
-          ))
-          .fetch(
-            RequestOptions(
-              path: uri.toString(),
-              method: body == null ? 'GET' : 'POST',
-              data: body,
-              headers: $headers.toMap(),
-            ),
-          );
+      response = await (await _createDioClientCache()).fetch(
+        RequestOptions(
+          path: uri.toString(),
+          method: body == null ? 'GET' : 'POST',
+          data: body,
+          responseType: ResponseType.plain,
+          headers: $headers.toMap(),
+        ),
+      );
 
       if (kDebugMode) {
         if (startTime != null) {

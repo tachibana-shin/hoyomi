@@ -23,6 +23,7 @@ dependencies:
   dashed_circular_progress_bar: ^0.0.6
   device_info_plus: ^11.3.0
   dio: ^5.8.0+1
+  dio_cache_interceptor: ^4.0.3
   dio_compatibility_layer: ^0.1.0
   drop_down_list: ^2.0.0
   dynamic_height_grid_view: ^0.0.4
@@ -60,6 +61,7 @@ dependencies:
   google_sign_in_all_platforms: ^1.1.0
   html: ^0.15.5
   http: ^1.2.2
+  http_cache_file_store: ^2.0.1
   iconify_flutter: ^0.0.7
   intl: ^0.19.0
   json_annotation: ^4.9.0
