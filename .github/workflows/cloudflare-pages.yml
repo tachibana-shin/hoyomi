@@ -36,11 +36,10 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
-          git fetch origin
-          git switch --orphan cloudflare-pages
-          git rm -rf .
-
-          cp -r build/web/* .
+          cp -r build/web/* ./
+          cd build/web
+          git init
           git add .
           git commit -m "Deploy Flutter Web build [skip ci]"
+          git remote add origin https://github.com/tachibana-shin/hoyomi
           git push -f origin cloudflare-pages
