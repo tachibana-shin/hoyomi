@@ -71,8 +71,6 @@ export function createRule(
         "object",
         "other",
         "ping",
-        "script",
-        "stylesheet",
         "sub_frame",
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         "webbundle" as unknown as any,

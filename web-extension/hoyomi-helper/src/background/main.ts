@@ -45,7 +45,7 @@ async function installRules(
 
   // biome-ignore lint/complexity/noForEach: <explanation>
   rules.forEach((rawRule) => {
-    const id = hashToInt(`${rawRule.regexFilter}@${rawRule.referer}`)
+    const id = hashToInt(`${rawRule.regexFilter}@${rawRule.referer}@${origin}`)
     const installed = rulesInstalled.get(id)
 
     const newRule = createRule(id, {
