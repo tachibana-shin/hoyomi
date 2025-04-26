@@ -40,6 +40,8 @@ jobs:
           git reset --hard
       
           cp -r ../web-deploy/* .
+          
+          rm -rf *
       
           git add .
           git config user.email "github-actions[bot]@users.noreply.github.com"
