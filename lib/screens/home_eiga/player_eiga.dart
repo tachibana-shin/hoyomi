@@ -479,7 +479,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     watch([_source], () {
       if (_source.value != null) {
-        _setupPlayer(_source.value!, uid, isMaster: true);
+        _setupPlayer(_source.value!, uid, parseQuality: true);
       }
     }, immediate: true);
 
@@ -679,9 +679,9 @@ class _PlayerEigaState extends State<PlayerEiga>
   void _setupPlayer(
     SourceVideo source,
     String id, {
-    required bool isMaster,
+    required bool parseQuality,
   }) async {
-    if (isMaster) _availableResolutions.value = [];
+    if (parseQuality) _availableResolutions.value = [];
 
     _loading.value = true;
 
@@ -706,6 +706,18 @@ class _PlayerEigaState extends State<PlayerEiga>
       url = ProxyCache.instance.getUrlHttp(fileCache);
     } on UnimplementedError {
       url = source.url; // Uri.parse(source.url);
+    }
+
+    content ??= await widget.service.fetch(
+      url.toString(),
+      headers: source.headers,
+    );
+
+    if (parseQuality && source.type == 'hls') {
+      final isMediaPlaylist = await _initializeHls(content: content, url: url, headers: source.headers);
+      if (isMediaPlaylist) {
+        return _setQualityCode(_qualityCode.value);
+      }
     }
 
     _controller.value?.dispose();
@@ -739,14 +751,6 @@ class _PlayerEigaState extends State<PlayerEiga>
               })
           ..addListener(_onPlayerValueChanged);
 
-    content ??= await widget.service.fetch(
-      url.toString(),
-      headers: source.headers,
-    );
-
-    if (isMaster && source.type == 'hls') {
-      _initializeHls(content: content, url: url, headers: source.headers);
-    }
   }
 
   DateTime _activeTime = DateTime.now();
@@ -883,7 +887,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   void _onHorizontalDragUpdate(DragUpdateDetails _) {}
   void _onHorizontalDragEnd(DragEndDetails _) {}
 
-  Future<void> _initializeHls({
+  Future<bool> _initializeHls({
     required String content,
     required Uri url,
     required Headers? headers,
@@ -897,7 +901,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         debugPrint("[initialize_hls]: variant: ${variant.url}");
       }
 
-      if (playlist.variants.isEmpty) return;
+      if (playlist.variants.isEmpty) return false;
 
       _availableResolutions.value =
           playlist.variants.map((variant) {
@@ -915,10 +919,13 @@ class _PlayerEigaState extends State<PlayerEiga>
 
       /// video_player always select media playlist first in master playlist
       _qualityCode.value = _availableResolutions.value.first.code;
+      return true;
     } else if (playlist is HlsMediaPlaylist) {
       // media m3u8 file
       debugPrint("[initialize_hls]: no action because is media playlist");
     }
+
+    return false;
   }
 
   @override
@@ -1961,7 +1968,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         url: resolution.variant.url,
       ),
       _controllerId.value ?? uid,
-      isMaster: false,
+      parseQuality: false,
     );
   }
 

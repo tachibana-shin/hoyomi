@@ -18,6 +18,7 @@ import 'package:hoyomi/utils/d_query.dart';
 import 'package:html/parser.dart';
 
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:http_cache_file_store/http_cache_file_store.dart';
@@ -205,6 +206,7 @@ abstract class Service with _SettingsMixin {
   final Map<String, ({DateTime? expire, Future<String> response})> _cacheFetch =
       {};
 
+  final kIsWeb = XPlatform.isWeb;
   String get baseUrl {
     return getSetting(key: 'url') ?? init.rootUrl;
   }

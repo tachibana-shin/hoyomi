@@ -29,7 +29,7 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
     rootUrl: 'https://$hostCUrl',
     webRules: [
       WebRule(
-        regexFilter: '^(https?:\\/\\/(.+\\.)?hianime(.+)?',
+        regexFilter: '^https?:\\/\\/(.+\\.)?hianime(.+)?',
         referer: 'https://$hostCUrl',
       ),
       WebRule(urlFilter: '#megacloud|', referer: 'https://megacloud.club/'),
@@ -436,16 +436,38 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
     throw Exception('No source found');
   }
 
-  // @override
-  // Future<SourceContent> fetchSourceContent({required SourceVideo source}) async {
-  //   final content = await fetch(source.src, headers: source.headers);
+  @override
+  Future<SourceContent> fetchSourceContent({required SourceVideo source}) async {
+    final content = await fetch(source.src, headers: source.headers);
 
-  //   return SourceContent(
-  //     content: content,
-  //     url: source.url,
-  //     headers: source.headers,
-  //   );
-  // }
+    return SourceContent(
+      content: kIsWeb ? _processM3U8StreamUrls(content, source.url) : content,
+      url: source.url,
+      headers: source.headers,
+    );
+  }
+
+  String _processM3U8StreamUrls(String content, Uri baseUri) {
+    final lines = content.split('\n');
+    final processedLines = <String>[];
+
+    for (int i = 0; i < lines.length; i++) {
+      final line = lines[i];
+      processedLines.add(line);
+
+      if ((line.startsWith('#EXT-X-STREAM-INF') || line.startsWith('#EXTINF')) &&
+          i + 1 < lines.length &&
+          !lines[i+1].startsWith('#') &&
+          lines[i+1].trim().isNotEmpty) {
+        final relativeUrl = lines[i+1].trim();
+        final fullUrl = '${baseUri.resolve(relativeUrl)}#megacloud';
+        processedLines.add(fullUrl);
+        i++;
+      }
+    }
+
+    return processedLines.join('\n');
+  }
 
   @override
   getSubtitles({required eigaId, required episode, required source}) async {
