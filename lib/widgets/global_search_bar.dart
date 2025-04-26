@@ -215,10 +215,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.search,
-                              color: theme.colorScheme.secondary,
-                            ),
+                            Icon(Icons.search),
                             SizedBox(width: 4.0),
                             Text(
                               'Enter keyword to search',
@@ -547,12 +544,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                 !focusing &&
                 globalKeyword.value.isNotEmpty)
               IconButton(
-                icon: Iconify(
-                  Mdi.arrow_back,
-                  color: theme.colorScheme.secondaryFixedDim.withValues(
-                    alpha: 0.7,
-                  ),
-                ),
+                icon: Iconify(Mdi.arrow_back),
                 onPressed:
                     () =>
                         context.canPop()
@@ -564,12 +556,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
               _buildServiceSelector()
             else
               IconButton(
-                icon: Iconify(
-                  Mdi.magnify,
-                  color: theme.colorScheme.secondaryFixedDim.withValues(
-                    alpha: 0.7,
-                  ),
-                ),
+                icon: Iconify(Mdi.magnify),
                 onPressed: () => _showSearchLayer(),
               ),
             const SizedBox(width: 8),
@@ -732,12 +719,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         icon: Iconify(Fluent.extension20),
       ),
       PopupMenuButton<String>(
-        icon: Iconify(
-          Mdi.dots_vertical,
-          color: Theme.of(
-            context,
-          ).colorScheme.secondaryFixedDim.withValues(alpha: 0.7),
-        ),
+        icon: Iconify(Mdi.dots_vertical),
         itemBuilder:
             (BuildContext context) => <PopupMenuEntry<String>>[
               const PopupMenuItem<String>(

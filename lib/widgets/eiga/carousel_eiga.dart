@@ -52,7 +52,11 @@ class _CarouselEigaState extends State<CarouselEiga> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Iconify(Eva.star_fill, size: 14.0),
+                    const Iconify(
+                      Eva.star_fill,
+                      size: 14.0,
+                      color: Colors.white,
+                    ),
                     Text(
                       ' ${item.rate}',
                       style: const TextStyle(
@@ -68,7 +72,11 @@ class _CarouselEigaState extends State<CarouselEiga> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Iconify(Eva.play_circle_fill, size: 14.0),
+                    const Iconify(
+                      Eva.play_circle_fill,
+                      size: 14.0,
+                      color: Colors.white,
+                    ),
                     Text(
                       ' ${item.type}',
                       style: const TextStyle(
@@ -84,7 +92,11 @@ class _CarouselEigaState extends State<CarouselEiga> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Iconify(Eva.clock_fill, size: 14.0),
+                    const Iconify(
+                      Eva.clock_fill,
+                      size: 14.0,
+                      color: Colors.white,
+                    ),
                     Text(
                       ' ${item.episodeDuration}',
                       style: const TextStyle(
@@ -100,7 +112,11 @@ class _CarouselEigaState extends State<CarouselEiga> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Iconify(Eva.calendar_fill, size: 14.0),
+                    const Iconify(
+                      Eva.calendar_fill,
+                      size: 14.0,
+                      color: Colors.white,
+                    ),
                     Text(
                       ' ${item.updatedAt != null ? DateFormat('MMM d, y').format(item.updatedAt!) : item.year!}',
                       style: const TextStyle(
