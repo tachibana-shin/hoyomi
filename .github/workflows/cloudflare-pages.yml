@@ -1,0 +1,46 @@
+name: Build and Deploy Flutter Web to Cloudflare Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: flutter-actions/setup-flutter@v4
+        with:
+          channel: stable
+          version: 3.29.3
+
+      - run: flutter pub get
+
+      - name: Create .env file
+        run: echo -e "${{ secrets.ENV_CONTENT }}" > .env
+
+      - name: Create .env.web file
+        run: echo -e "${{ secrets.ENV_WEB_CONTENT }}" > .env.web
+
+      - name: Build runner
+        run: sh build_bunner.sh
+
+      - name: Build Flutter Web
+        run: flutter build web --release
+
+      - name: Deploy to cloudflare-pages branch
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+          git fetch origin
+          git switch --orphan cloudflare-pages
+          git rm -rf .
+
+          cp -r build/web/* .
+          git add .
+          git commit -m "Deploy Flutter Web build [skip ci]"
+          git push -f origin cloudflare-pages
