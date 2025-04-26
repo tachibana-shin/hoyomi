@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
@@ -425,7 +426,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
                     SizedBox(height: 2.0),
                   ],
-                ),
+                ).expanded(),
                 Opacity(
                   opacity: 0.8,
                   child: Iconify(
