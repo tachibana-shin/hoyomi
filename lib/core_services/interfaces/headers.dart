@@ -4,7 +4,7 @@ import 'package:hoyomi/constraints/x_platform.dart';
 part 'headers.freezed.dart';
 part 'headers.g.dart';
 
-const _headersIgnoreWeb = ['set-cookie', 'user-agent', 'referer'];
+const _headersIgnoreWeb = ['accept', 'cookie', 'set-cookie', 'user-agent', 'referer', 'host', 'cache-control', 'pragma', 'connection', 'content-length', 'origin'];
 
 @freezed
 sealed class Headers with _$Headers {
