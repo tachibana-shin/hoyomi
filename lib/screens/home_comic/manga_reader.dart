@@ -621,7 +621,10 @@ class _MangaReaderState extends State<MangaReader>
             rows: 3,
             columns: 3,
             onTap: _onTapGrid,
-            child: _buildReader(),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 900),
+              child: _buildReader(),
+            ).alignAtTopCenter(),
           ),
           Positioned(left: 0, right: 0, bottom: 0, child: _buildTinyStatus()),
           Positioned(left: 0, right: 0, bottom: 0, child: _buildBottomBar()),
