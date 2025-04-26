@@ -41,6 +41,12 @@ class TruyenQQService extends TruyenGGService {
 
       return 'visit-read=${_generateRandomHex(13)}-${_generateRandomHex(13)}; $cookie';
     },
+    webRules: [
+      WebRule(
+        shortRegexFilter: 'i\\.hinhhinh\\.com',
+        referer: 'https://truyenqqgo.com',
+      ),
+    ],
   );
 
   // Utils

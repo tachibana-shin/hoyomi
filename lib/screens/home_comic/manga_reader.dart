@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/fluent.dart';
+import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
 import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
@@ -312,14 +313,16 @@ class _MangaReaderState extends State<MangaReader>
     battery.batteryState.then((state) {
       if (mounted) _batteryState.value = state;
     });
-    battery.isInBatterySaveMode.then((state) {
-      if (mounted) _batterySaveM.value = state;
-    });
-    onBeforeUnmount(
-      battery.onBatteryStateChanged.listen((state) {
-        _batteryState.value = state;
-      }).cancel,
-    );
+    if (!XPlatform.isWeb) {
+      battery.isInBatterySaveMode.then((state) {
+        if (mounted) _batterySaveM.value = state;
+      });
+      onBeforeUnmount(
+        battery.onBatteryStateChanged.listen((state) {
+          _batteryState.value = state;
+        }).cancel,
+      );
+    }
     onBeforeUnmount(
       Timer.periodic(Duration(seconds: 10), (timer) {
         final battery = Battery();
@@ -330,9 +333,11 @@ class _MangaReaderState extends State<MangaReader>
         battery.batteryState.then((state) {
           if (mounted) _batteryState.value = state;
         });
-        battery.isInBatterySaveMode.then((state) {
+        if (!XPlatform.isWeb) {
+          battery.isInBatterySaveMode.then((state) {
           if (mounted) _batterySaveM.value = state;
         });
+        }
       }).cancel,
     );
 
