@@ -46,6 +46,10 @@ class TruyenQQService extends TruyenGGService {
         shortRegexFilter: 'i\\.hinhhinh\\.com',
         referer: 'https://truyenqqgo.com',
       ),
+      WebRule(
+        regexFilter: '#truyenqq|',
+        referer: 'https://truyenqqgo.com',
+      ),
     ],
   );
 
@@ -229,7 +233,7 @@ class TruyenQQService extends TruyenGGService {
     final $ = await fetch$(getURL(manga, chapterId: chap));
 
     return $('.chapter_content img').map((img) {
-      final src = img.attr('src');
+      final src = img.attr('src') + (kIsWeb ? '#truyenqq' : '');
 
       return OImage(src: src, headers: Headers({'referer': baseUrl}));
     }).toList();
