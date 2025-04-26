@@ -11,10 +11,14 @@ import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/authentication.dart';
+import 'package:hoyomi/widgets/iconify.dart';
 import 'package:hoyomi/widgets/manager/account_service.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:iconify_flutter/icons/ic.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
+import '../controller/update_available.dart';
 
 class ManagerPage extends StatelessWidget {
   const ManagerPage({super.key});
@@ -128,6 +132,15 @@ class ManagerPage extends StatelessWidget {
               title: const Text("Operating System"),
               subtitle: Text(osInfo),
             );
+          },
+        ),
+
+        /// Check update button
+        ListTile(
+          leading: Iconify(Ic.round_security_update),
+          title: const Text('Check Update'),
+          onTap: () {
+            UpdateAvailableController.instance.init(context, true);
           },
         ),
 

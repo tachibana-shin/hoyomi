@@ -189,11 +189,11 @@ class UpdateAvailableController {
 
   UpdateAvailableController._internal();
 
-  void init(BuildContext context) async {
+  void init(BuildContext context, [bool force = false]) async {
     initialized = true;
     if (!context.mounted) return;
 
-    if (await _checkPauseUpdate()) return;
+    if (!force && await _checkPauseUpdate()) return;
 
     try {
       final releases = await _getReleases();
@@ -231,6 +231,7 @@ class UpdateAvailableController {
                 packageInfo.version) {
           showUpdateDialog(context, release);
         } else {
+          if (force) showSnackBar(Text('No update available'));
           _pauseUpdate();
         }
       } else if (XPlatform.isIOS) {
@@ -244,6 +245,7 @@ class UpdateAvailableController {
                 packageInfo.version) {
           showUpdateDialog(context, release);
         } else {
+          if (force) showSnackBar(Text('No update available'));
           _pauseUpdate();
         }
       } else {
