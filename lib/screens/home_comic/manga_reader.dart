@@ -335,8 +335,8 @@ class _MangaReaderState extends State<MangaReader>
         });
         if (!XPlatform.isWeb) {
           battery.isInBatterySaveMode.then((state) {
-          if (mounted) _batterySaveM.value = state;
-        });
+            if (mounted) _batterySaveM.value = state;
+          });
         }
       }).cancel,
     );

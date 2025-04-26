@@ -46,10 +46,7 @@ class TruyenQQService extends TruyenGGService {
         shortRegexFilter: 'i\\.hinhhinh\\.com',
         referer: 'https://truyenqqgo.com',
       ),
-      WebRule(
-        regexFilter: '#truyenqq|',
-        referer: 'https://truyenqqgo.com',
-      ),
+      WebRule(regexFilter: '#truyenqq|', referer: 'https://truyenqqgo.com'),
     ],
   );
 
