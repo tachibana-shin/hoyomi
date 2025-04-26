@@ -109,7 +109,7 @@ class AnimeVietsubService extends ABEigaService
       throw UserNotFoundException();
     }
 
-    final avatar = $('.profile-userpic img:eq(0)', single: true)
+    final avatar = $('.profile-userpic img', single: true)
         .attr('src')
         .replaceFirst(
           RegExp(r'animevietsub\.\w+\/'),
