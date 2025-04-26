@@ -437,7 +437,9 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
   }
 
   @override
-  Future<SourceContent> fetchSourceContent({required SourceVideo source}) async {
+  Future<SourceContent> fetchSourceContent({
+    required SourceVideo source,
+  }) async {
     final content = await fetch(source.src, headers: source.headers);
 
     return SourceContent(
@@ -455,11 +457,12 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
       final line = lines[i];
       processedLines.add(line);
 
-      if ((line.startsWith('#EXT-X-STREAM-INF') || line.startsWith('#EXTINF')) &&
+      if ((line.startsWith('#EXT-X-STREAM-INF') ||
+              line.startsWith('#EXTINF')) &&
           i + 1 < lines.length &&
-          !lines[i+1].startsWith('#') &&
-          lines[i+1].trim().isNotEmpty) {
-        final relativeUrl = lines[i+1].trim();
+          !lines[i + 1].startsWith('#') &&
+          lines[i + 1].trim().isNotEmpty) {
+        final relativeUrl = lines[i + 1].trim();
         final fullUrl = '${baseUri.resolve(relativeUrl)}#megacloud';
         processedLines.add(fullUrl);
         i++;

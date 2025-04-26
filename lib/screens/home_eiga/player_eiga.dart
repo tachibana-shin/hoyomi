@@ -714,7 +714,11 @@ class _PlayerEigaState extends State<PlayerEiga>
     );
 
     if (parseQuality && source.type == 'hls') {
-      final isMediaPlaylist = await _initializeHls(content: content, url: url, headers: source.headers);
+      final isMediaPlaylist = await _initializeHls(
+        content: content,
+        url: url,
+        headers: source.headers,
+      );
       if (isMediaPlaylist) {
         return _setQualityCode(_qualityCode.value);
       }
@@ -750,7 +754,6 @@ class _PlayerEigaState extends State<PlayerEiga>
                 _error.value = '$err';
               })
           ..addListener(_onPlayerValueChanged);
-
   }
 
   DateTime _activeTime = DateTime.now();
