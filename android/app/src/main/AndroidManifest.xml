@@ -13,7 +13,7 @@
     <application
         android:label="hoyomi"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcher_icon"
         android:usesCleartextTraffic="true">
         <provider
             android:name="androidx.core.content.FileProvider"
