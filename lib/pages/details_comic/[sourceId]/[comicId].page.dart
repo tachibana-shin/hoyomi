@@ -69,46 +69,47 @@ class _DetailsComicState extends State<DetailsComic>
       return null;
     }
   });
-  late final _watchPageChapters = asyncComputed<Map<String, WatchPageUpdated>?>(
-    () async {
-      if (_comicIsFake.value) return null;
+  late final _watchPageChapters =
+      computed<Future<Map<String, WatchPageUpdated>?>>(() async {
+        if (_comicIsFake.value) return null;
 
-      if (_service is ComicWatchPageMixin) {
-        final chapters = _comic.value.chapters;
+        if (_service is ComicWatchPageMixin) {
+          final chapters = _comic.value.chapters;
 
-        try {
-          return await (_service as ComicWatchPageMixin).getWatchPageEpisodes(
-            comicId: widget.comicId,
-            chapters: chapters,
-          );
-        } on UnimplementedError {
-          return null;
+          try {
+            return await (_service as ComicWatchPageMixin).getWatchPageEpisodes(
+              comicId: widget.comicId,
+              chapters: chapters,
+            );
+          } on UnimplementedError {
+            return null;
+          }
         }
-      }
 
-      return null;
-    },
-    beforeUpdate: () => null,
-  );
-  late final _lastReadChapter =
-      computed<({ComicChapter chapter, WatchPageUpdated watchPage})?>(() {
-        final watchPage = _watchPageChapters.value?.entries
-            .fold<MapEntry<String, WatchPageUpdated>?>(null, (prev, element) {
-              if (prev == null) return element;
-              return element.value.updatedAt.isAfter(prev.value.updatedAt)
-                  ? element
-                  : prev;
-            });
-
-        if (watchPage == null) return null;
-
-        final chapter = _comic.value.chapters.firstWhereOrNull(
-          (chapter) => chapter.chapterId == watchPage.key,
-        );
-        if (chapter == null) return null;
-
-        return (chapter: chapter, watchPage: watchPage.value);
+        return null;
       });
+  late final _lastReadChapter = computed<
+    Future<({ComicChapter chapter, WatchPageUpdated watchPage})?>
+  >(() {
+    return _watchPageChapters.value.then((watchPageChapters) {
+      final watchPage = watchPageChapters?.entries
+          .fold<MapEntry<String, WatchPageUpdated>?>(null, (prev, element) {
+            if (prev == null) return element;
+            return element.value.updatedAt.isAfter(prev.value.updatedAt)
+                ? element
+                : prev;
+          });
+
+      if (watchPage == null) return null;
+
+      final chapter = _comic.value.chapters.firstWhereOrNull(
+        (chapter) => chapter.chapterId == watchPage.key,
+      );
+      if (chapter == null) return null;
+
+      return (chapter: chapter, watchPage: watchPage.value);
+    });
+  });
 
   @override
   void initState() {
@@ -416,8 +417,6 @@ class _DetailsComicState extends State<DetailsComic>
           children: [
             Watch(() {
               final comic = _comic.value;
-              final lastReadChapter = _lastReadChapter.value;
-              final watchPageChapters = _watchPageChapters.value;
 
               return Table(
                 columnWidths: const {
@@ -519,33 +518,60 @@ class _DetailsComicState extends State<DetailsComic>
                     'Last Updated',
                     formatTimeAgo(comic.lastModified),
                   ),
-                  if (lastReadChapter != null)
-                    _buildTableRow(
-                      'Last Read',
-                      '${lastReadChapter.chapter.name} of ${comic.chapters.length}',
-                    ),
-                  if (watchPageChapters != null)
-                    TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: Text(
-                            'Read Progress',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
+                  _buildTableRow(
+                    'Last Read',
+                    null,
+                    FutureBuilder(
+                      future: _lastReadChapter.value,
+                      builder:
+                          (context, snapshot) => snapshot.when(
+                            data:
+                                (lastReadChapter, isComplete) => Text(
+                                  lastReadChapter == null
+                                      ? '(No data)'
+                                      : '${lastReadChapter.chapter.name} of ${comic.chapters.length}',
+                                ),
+                            error: (error, stack) => Text('Error: $error'),
+                            loading: () => Text('Loading...'),
                           ),
-                        ),
-                        Text(
-                          '${((watchPageChapters.values.fold(0.0, (prev, item) => prev + item.currentPage / item.totalPage) / comic.chapters.length) * 100).round()}%',
+                    ),
+                  ),
+
+                  TableRow(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text(
+                          'Read Progress',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      FutureBuilder(
+                        future: _watchPageChapters.value,
+                        builder:
+                            (context, snapshot) => snapshot.when(
+                              data:
+                                  (watchPageChapters, isComplete) => Text(
+                                    watchPageChapters == null
+                                        ? '(No data)'
+                                        : '${((watchPageChapters.values.fold(0.0, (prev, item) => prev + item.currentPage / item.totalPage) / comic.chapters.length) * 100).round()}%',
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(
+                                            context,
+                                          ).colorScheme.secondary,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                              error: (error, stack) => Text('Error: $error'),
+                              loading: () => Text('Loading...'),
+                            ),
+                      ),
+                    ],
+                  ),
                 ],
               );
             }),
@@ -764,16 +790,23 @@ class _DetailsComicState extends State<DetailsComic>
 
   Widget _buildSheetChapters() {
     return Watch(
-      () => SheetChapters(
-        comic: _comic.value,
-        sourceId: widget.sourceId,
-        comicId: widget.comicId,
-        watchPageChapters:
-            _watchPageChapters.value ?? const <String, WatchPageUpdated>{},
-        lastReadChapter: _lastReadChapter.value,
-        reverse: true,
-        // histories: _historyChapters.value,
-        initialChildSize: 0.15,
+      () => FutureBuilder(
+        future: Future.wait([_watchPageChapters.value, _lastReadChapter.value]),
+        builder:
+            (context, snapshot) => SheetChapters(
+              comic: _comic.value,
+              sourceId: widget.sourceId,
+              comicId: widget.comicId,
+              watchPageChapters:
+                  snapshot.data?.first as Map<String, WatchPageUpdated>? ??
+                  const <String, WatchPageUpdated>{},
+              lastReadChapter:
+                  snapshot.data?.last
+                      as ({ComicChapter chapter, WatchPageUpdated watchPage})?,
+              reverse: true,
+              // histories: _historyChapters.value,
+              initialChildSize: 0.15,
+            ),
       ),
     );
   }
