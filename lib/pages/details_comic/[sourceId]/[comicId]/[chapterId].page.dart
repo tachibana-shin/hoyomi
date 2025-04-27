@@ -154,99 +154,107 @@ class _AppBar extends StatefulWidget {
 class _AppBarState extends State<_AppBar> with KaeruMixin {
   @override
   Widget build(BuildContext context) {
-    return Watch(() {
-      return AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        transitionBuilder: (child, animation) {
-          const begin = Offset(0.0, -50.0);
-          const end = Offset.zero;
-          const curve = Curves.easeInOut;
+    return SafeArea(
+      child: Watch(() {
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          transitionBuilder: (child, animation) {
+            const begin = Offset(0.0, -50.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
 
-          var tween = Tween(
-            begin: begin,
-            end: end,
-          ).chain(CurveTween(curve: curve));
-          var offsetAnimation = animation.drive(tween);
+            var tween = Tween(
+              begin: begin,
+              end: end,
+            ).chain(CurveTween(curve: curve));
+            var offsetAnimation = animation.drive(tween);
 
-          return SlideTransition(position: offsetAnimation, child: child);
-        },
-        child:
-            widget.enabled.value
-                ? ClipRRect(
-                  child: SizedBox(
-                    height: 53.0,
+            return SlideTransition(position: offsetAnimation, child: child);
+          },
+          child:
+              widget.enabled.value
+                  ? ClipRRect(
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                      child: AppBar(
-                        toolbarHeight: 56,
-                        backgroundColor: Theme.of(
+                      child: Container(
+                        color: Theme.of(
                           context,
                         ).scaffoldBackgroundColor.withValues(alpha: 0.8),
-                        elevation: 0,
-                        leading: IconButton(
-                          icon: const Iconify(Ion.chevron_left),
-                          onPressed: () {
-                            context.pop();
-                          },
+                        padding: EdgeInsets.symmetric(
+                          vertical: 4.0,
+                          horizontal: 8.0,
                         ),
-                        title: Watch(() {
-                          return Text(
-                            <String>[
-                              if (widget.chapter.value != null)
-                                widget.chapter.value!.name,
-                              if (widget.comic.value?.name != null)
-                                widget.comic.value!.name,
-                            ].join(' - '),
-                            maxLines: 1,
-                            overflow: TextOverflow.fade,
-                          ).fontSize(16.0);
-                          // return Column(
-                          // mainAxisSize: MainAxisSize.min,
-                          // crossAxisAlignment: CrossAxisAlignment.start,
-                          // children: [
-                          //   Text(
-                          //     widget.comic.value?.name ?? '',
-                          //     style: TextStyle(
-                          //       fontSize: 16,
-                          //       fontWeight: FontWeight.bold,
-                          //     ),
-                          //   ),
-                          //   SizedBox(height: 2),
-                          //   if (widget.chapter.value != null)
-                          //     Text(
-                          //       widget.chapter.value!.name,
-                          //       style: TextStyle(
-                          //         fontSize: 14,
-                          //         color: Colors.white70,
-                          //       ),
-                          //     ),
-                          // ],
-                          // );
-                        }),
-                        actions: [
-                          Watch(
-                            () => IconButtonFollow(
-                              sourceId: widget.service.uid,
-                              comicId: widget.comicId,
-                              comic: widget.comic.value,
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: const Iconify(Ion.chevron_left),
+                              onPressed: () {
+                                context.pop();
+                              },
                             ),
-                          ),
-                          Watch(
-                            () => IconButtonOpenBrowser(
-                              url: widget.service.getURL(
-                                widget.comicId,
-                                chapterId: widget.chapter.value?.chapterId,
-                              ),
+                            Watch(() {
+                              return Text(
+                                <String>[
+                                  if (widget.chapter.value != null)
+                                    widget.chapter.value!.name,
+                                  if (widget.comic.value?.name != null)
+                                    widget.comic.value!.name,
+                                ].join(' - '),
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
+                              ).fontSize(16.0);
+                              // return Column(
+                              // mainAxisSize: MainAxisSize.min,
+                              // crossAxisAlignment: CrossAxisAlignment.start,
+                              // children: [
+                              //   Text(
+                              //     widget.comic.value?.name ?? '',
+                              //     style: TextStyle(
+                              //       fontSize: 16,
+                              //       fontWeight: FontWeight.bold,
+                              //     ),
+                              //   ),
+                              //   SizedBox(height: 2),
+                              //   if (widget.chapter.value != null)
+                              //     Text(
+                              //       widget.chapter.value!.name,
+                              //       style: TextStyle(
+                              //         fontSize: 14,
+                              //         color: Colors.white70,
+                              //       ),
+                              //     ),
+                              // ],
+                              // );
+                            }).paddingHorizontal(8.0).expanded(),
+                            Row(
+                              children: [
+                                Watch(
+                                  () => IconButtonFollow(
+                                    sourceId: widget.service.uid,
+                                    comicId: widget.comicId,
+                                    comic: widget.comic.value,
+                                  ),
+                                ),
+                                Watch(
+                                  () => IconButtonOpenBrowser(
+                                    url: widget.service.getURL(
+                                      widget.comicId,
+                                      chapterId:
+                                          widget.chapter.value?.chapterId,
+                                    ),
+                                  ),
+                                ),
+                                IconButtonShare(),
+                              ],
                             ),
-                          ),
-                          IconButtonShare(),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                )
-                : null,
-      );
-    });
+                  )
+                  : null,
+        );
+      }),
+    );
   }
 }

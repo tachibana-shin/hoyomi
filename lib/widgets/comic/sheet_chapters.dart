@@ -88,7 +88,7 @@ class _SheetChaptersState extends State<SheetChapters> {
                     final extra = {'comic': widget.comic};
 
                     if (widget.replace) {
-                      context.replace(url, extra: extra);
+                      context.pushReplacement(url, extra: extra);
                     } else {
                       context.push(url, extra: extra);
                     }
@@ -202,7 +202,7 @@ class _SheetChaptersState extends State<SheetChapters> {
                       final extra = {'comic': widget.comic};
 
                       if (widget.replace) {
-                        context.replace(url, extra: extra);
+                        context.pushReplacement(url, extra: extra);
                       } else {
                         context.push(url, extra: extra);
                       }

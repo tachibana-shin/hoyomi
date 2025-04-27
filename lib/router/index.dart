@@ -102,7 +102,7 @@ final router = GoRouter(
                   pageBuilder: pageBuilder,
                   builder: (context, state) {
                     if (state.uri.queryParameters['q'] == null) {
-                      context.replace("/search");
+                      context.pushReplacement("/search");
                       return const SizedBox();
                     }
                     return SearchComicPage(
@@ -117,7 +117,7 @@ final router = GoRouter(
                   pageBuilder: pageBuilder,
                   builder: (context, state) {
                     if (state.uri.queryParameters['q'] == null) {
-                      context.replace("/search");
+                      context.pushReplacement("/search");
                       return const SizedBox();
                     }
                     return SearchEigaPage(

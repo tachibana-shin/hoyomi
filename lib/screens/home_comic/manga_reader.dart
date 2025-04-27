@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/fluent.dart';
@@ -422,6 +424,24 @@ class _MangaReaderState extends State<MangaReader>
             debugPrint('Error: $error (${StackTrace.current})');
           }
         }
+      }
+    });
+
+    // status state manager
+    onBeforeUnmount(
+      () => SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.manual,
+        overlays: SystemUiOverlay.values,
+      ),
+    );
+    watch([_showToolbar], () async {
+      if (_showToolbar.value) {
+        await SystemChrome.setEnabledSystemUIMode(
+          SystemUiMode.manual,
+          overlays: SystemUiOverlay.values,
+        );
+      } else {
+        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
       }
     });
 
@@ -879,6 +899,7 @@ class _MangaReaderState extends State<MangaReader>
                   _watchPageChapters.value ??
                   const <String, WatchPageUpdated>{},
               lastReadChapter: null,
+              replace: true,
             ),
           ),
     );
@@ -1013,35 +1034,27 @@ class _MangaReaderState extends State<MangaReader>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Watch(
-                            () => AbsorbPointer(
-                              absorbing: _prevChapter.value == null,
-                              child: SizedBox(
-                                child: Ink(
-                                  decoration: ShapeDecoration(
-                                    color: Theme.of(context).colorScheme.surface
-                                        .withValues(alpha: 0.9),
-                                    shape: CircleBorder(),
-                                  ),
-                                  child: IconButton(
-                                    iconSize: 30.0,
-                                    icon: const Iconify(Mdi.skip_previous),
-                                    color:
-                                        _prevChapter.value != null
-                                            ? Theme.of(
-                                              context,
-                                            ).colorScheme.onSurface
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .onSurface
-                                                .withValues(alpha: 0.5),
-                                    onPressed: () {
-                                      context.replace(
-                                        "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_prevChapter.value!.chapterId}",
-                                        extra: {'comic': widget.comic},
-                                      );
-                                    },
-                                  ),
+                            () => Opacity(
+                              opacity: _prevChapter.value == null ? 0.8 : 1.0,
+                              child: GFIconButton(
+                                icon: Iconify(
+                                  Mdi.skip_previous,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                 ),
+                                shape: GFIconButtonShape.circle,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surface.withValues(alpha: 0.9),
+                                onPressed:
+                                    _prevChapter.value == null
+                                        ? null
+                                        : () {
+                                          context.pushReplacement(
+                                            "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${_prevChapter.value!.chapterId}",
+                                            extra: {'comic': widget.comic},
+                                          );
+                                        },
                               ),
                             ),
                           ),
@@ -1066,35 +1079,27 @@ class _MangaReaderState extends State<MangaReader>
                             ),
                           ),
                           Watch(
-                            () => AbsorbPointer(
-                              absorbing: _nextChapter.value == null,
-                              child: SizedBox(
-                                child: Ink(
-                                  decoration: ShapeDecoration(
-                                    color: Theme.of(context).colorScheme.surface
-                                        .withValues(alpha: 0.9),
-                                    shape: CircleBorder(),
-                                  ),
-                                  child: IconButton(
-                                    iconSize: 30.0,
-                                    icon: const Iconify(Mdi.skip_next),
-                                    color:
-                                        _nextChapter.value != null
-                                            ? Theme.of(
-                                              context,
-                                            ).colorScheme.onSurface
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .onSurface
-                                                .withValues(alpha: 0.5),
-                                    onPressed: () {
-                                      context.replace(
-                                        "/details_comic/${widget.service}/${widget.comicId}/view?chap=${_nextChapter.value!.chapterId}",
-                                        extra: {'comic': widget.comic},
-                                      );
-                                    },
-                                  ),
+                            () => Opacity(
+                              opacity: _nextChapter.value == null ? 0.8 : 1.0,
+                              child: GFIconButton(
+                                icon: Iconify(
+                                  Mdi.skip_next,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                 ),
+                                shape: GFIconButtonShape.circle,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surface.withValues(alpha: 0.9),
+                                onPressed:
+                                    _nextChapter.value == null
+                                        ? null
+                                        : () {
+                                          context.pushReplacement(
+                                            "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${_nextChapter.value!.chapterId}",
+                                            extra: {'comic': widget.comic},
+                                          );
+                                        },
                               ),
                             ),
                           ),

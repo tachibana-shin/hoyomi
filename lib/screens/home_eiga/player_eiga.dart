@@ -1776,54 +1776,61 @@ class _PlayerEigaState extends State<PlayerEiga>
     });
   }
 
-  void _setFullscreen(bool value) {
+  void _setFullscreen(bool value) async {
     _fullscreen.value = value;
 
     if (value) {
+      showGeneralDialog(
+        context: context,
+        transitionDuration: Duration(milliseconds: 300),
+        pageBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+        ) {
+          return MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: TextScaler.linear(1.2)),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              extendBodyBehindAppBar: true,
+              body: _buildStack(context, isFullscreen: true),
+            ),
+          );
+        },
+      );
       if (XPlatform.isAndroid || XPlatform.isIOS) {
-        SystemChrome.setPreferredOrientations([
+        await SystemChrome.setPreferredOrientations([
           DeviceOrientation.landscapeRight,
           DeviceOrientation.landscapeLeft,
         ]);
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+        if (mounted) {
+          setState(() {});
+        }
       } else {
         setFullScreen(true);
       }
-
-      Navigator.of(context).push(
-        PageRouteBuilder(
-          opaque: false,
-          settings: RouteSettings(),
-          pageBuilder: (
-            BuildContext context,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,
-          ) {
-            return MediaQuery(
-              data: MediaQuery.of(
-                context,
-              ).copyWith(textScaler: TextScaler.linear(1.2)),
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                extendBodyBehindAppBar: true,
-                body: _buildStack(context, isFullscreen: true),
-              ),
-            );
-          },
-        ),
-      );
     } else {
       if (XPlatform.isAndroid || XPlatform.isIOS) {
-        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-        SystemChrome.setEnabledSystemUIMode(
+        await SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+        ]);
+        await SystemChrome.setEnabledSystemUIMode(
           SystemUiMode.manual,
           overlays: SystemUiOverlay.values,
         );
+        if (mounted) {
+          setState(() {});
+        }
       } else {
         setFullScreen(false);
       }
 
-      Navigator.pop(context);
+      if (mounted) {
+        Navigator.pop(context);
+      }
     }
   }
 
