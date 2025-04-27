@@ -61,18 +61,15 @@ class _VerticalReaderState extends State<VerticalReader> with KaeruListenMixin {
         },
         itemCount: widget.pages.value.length,
         itemBuilder:
-            (context, index) => widget.itemBuilder(
-              context,
-              index,
-              ValueKey(widget.pages.value.elementAt(index).image.src),
+            (context, index) => InteractiveViewer(
+              minScale: 0.5,
+              child: widget.itemBuilder(
+                context,
+                index,
+                ValueKey(widget.pages.value.elementAt(index).image.src),
+              ),
             ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }

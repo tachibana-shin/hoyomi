@@ -88,17 +88,20 @@ class _WebToonReaderState extends State<WebToonReader>
     super.build(context);
 
     return Watch(() {
-      return ListView.builder(
-        controller: _scrollController,
-        itemCount: widget.pages.value.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          final key = widget.pages.value.elementAt(index).image.src;
-          return Container(
-            key: _getKey(index),
-            child: widget.itemBuilder(context, index, ValueKey(key)),
-          );
-        },
+      return InteractiveViewer(
+        minScale: 0.5,
+        child: ListView.builder(
+          controller: _scrollController,
+          itemCount: widget.pages.value.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            final key = widget.pages.value.elementAt(index).image.src;
+            return Container(
+              key: _getKey(index),
+              child: widget.itemBuilder(context, index, ValueKey(key)),
+            );
+          },
+        ),
       );
     });
   }

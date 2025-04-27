@@ -143,12 +143,6 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
     );
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   bool _isImageVertical(int index) {
     return _aspectRatios[index] != null && _aspectRatios[index]! > 1;
   }
