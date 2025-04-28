@@ -174,25 +174,27 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
           child:
               widget.enabled.value
                   ? ClipRRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                      child: Container(
-                        color: Theme.of(
-                          context,
-                        ).scaffoldBackgroundColor.withValues(alpha: 0.8),
-                        padding: EdgeInsets.symmetric(
-                          vertical: 4.0,
-                          horizontal: 8.0,
-                        ),
-                        child: Row(
-                          children: [
-                            IconButton(
+                    child: SizedBox(
+                      height: 54.0,
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                        child: Container(
+                          color: Theme.of(
+                            context,
+                          ).scaffoldBackgroundColor.withValues(alpha: 0.8),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 4.0,
+                            horizontal: 8.0,
+                          ),
+                          child: AppBar(
+                            backgroundColor: Colors.transparent,
+                            leading: IconButton(
                               icon: const Iconify(Ion.chevron_left),
                               onPressed: () {
                                 context.pop();
                               },
                             ),
-                            Watch(() {
+                            title: Watch(() {
                               return Text(
                                 <String>[
                                   if (widget.chapter.value != null)
@@ -225,29 +227,26 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                               //     ),
                               // ],
                               // );
-                            }).paddingHorizontal(8.0).expanded(),
-                            Row(
-                              children: [
-                                Watch(
-                                  () => IconButtonFollow(
-                                    sourceId: widget.service.uid,
-                                    comicId: widget.comicId,
-                                    comic: widget.comic.value,
+                            }),
+                            actions: [
+                              Watch(
+                                () => IconButtonFollow(
+                                  sourceId: widget.service.uid,
+                                  comicId: widget.comicId,
+                                  comic: widget.comic.value,
+                                ),
+                              ),
+                              Watch(
+                                () => IconButtonOpenBrowser(
+                                  url: widget.service.getURL(
+                                    widget.comicId,
+                                    chapterId: widget.chapter.value?.chapterId,
                                   ),
                                 ),
-                                Watch(
-                                  () => IconButtonOpenBrowser(
-                                    url: widget.service.getURL(
-                                      widget.comicId,
-                                      chapterId:
-                                          widget.chapter.value?.chapterId,
-                                    ),
-                                  ),
-                                ),
-                                IconButtonShare(),
-                              ],
-                            ),
-                          ],
+                              ),
+                              IconButtonShare(),
+                            ],
+                          ),
                         ),
                       ),
                     ),
