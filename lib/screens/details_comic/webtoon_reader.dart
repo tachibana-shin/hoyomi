@@ -48,7 +48,7 @@ class _WebToonReaderState extends State<WebToonReader>
       if (_lastReportedPage != pageIndex) {
         _scrollToPage(pageIndex);
       }
-    });
+    }, immediate: true);
   }
 
   void _onScroll() {
@@ -80,7 +80,11 @@ class _WebToonReaderState extends State<WebToonReader>
       }
     }
 
-    _scrollController.jumpTo(100.h(context) * (index - (befIndex + 1)) + bef);
+    _scrollController.animateTo(
+      100.h(context) * (index - (befIndex + 1)) + bef,
+      duration: Duration.zero,
+      curve: Curves.linear,
+    );
   }
 
   @override
