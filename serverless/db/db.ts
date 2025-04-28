@@ -33,7 +33,3 @@ export const db = drizzle({
     users
   }
 })
-
-console.log("ok")
-console.log(await db.select().from(users))
-console.log("done")
