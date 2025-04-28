@@ -58,7 +58,7 @@ limit
   ${params.limit} offset ${(params.page - 1) * params.limit}
 `
 
-    return (await db.execute(query)).records as {
+    return (await db.execute(query)).rows as {
       created_at: string
       eiga_text_id: string
       name: string
