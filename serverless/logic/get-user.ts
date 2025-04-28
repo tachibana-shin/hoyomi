@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm"
 import { db } from "../db/db.ts"
 import { users } from "../db/schema.ts"
 import { app } from "../firebase-admin.ts"
+import { single } from "./single.ts"
 
 type DecodedIdToken = Awaited<
   ReturnType<ReturnType<typeof app.auth>["verifyIdToken"]>
@@ -15,22 +16,27 @@ export async function getUser(token: string): Promise<MetaUser> {
 
   try {
     const user = await app.auth().verifyIdToken(token)
-    let rowExists = await db
-      .select()
-      .from(users)
-      .where(eq(users.user_id, user.uid))
-      .limit(1)
+    const userData =
+      single(
+        await db
+          .select()
+          .from(users)
+          .where(eq(users.user_id, user.uid))
+          .limit(1)
+      ) ??
+      single(
+        await db
+          .insert(users)
+          .values({
+            user_id: user.uid
+          })
+          .onConflictDoNothing()
+          .returning()
+      )
 
-    if (!rowExists)
-      rowExists = await db
-        .insert(users)
-        .values({
-          user_id: user.uid
-        })
-        .onConflictDoNothing()
-        .returning()
+    if (!userData) throw new Error("User not found")
 
-    const out = { decode: user, userId: rowExists[0].id }
+    const out = { decode: user, userId: userData.id }
     cacheVerify.set(token, out)
     return out
     // deno-lint-ignore no-explicit-any
