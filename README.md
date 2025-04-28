@@ -87,11 +87,10 @@ Please goto `Project Settings`
 1. Click to `Generate new private key`
 2. Paste file download to `serverless/service-account-key.json`
 
-#### Step 2: Configre the Xata database
-The server required xata database for working
+#### Step 2: Configre the Postgres database
+The server required database for working
 1. Run `cd serverless`
-2. Run `xata init` and select project. The command auto create new file `.env`
-3. Add `XATA_DATABASE_URL` from `setting project` xata to `.env`
+3. Add `DATABASE_URL` from `setting project` to `.env`
 
 -----
 ### Setup Application

@@ -17,6 +17,7 @@
     "@hono/zod-openapi": "^0.19.2",
     "@hono/zod-validator": "^0.4.3",
     "drizzle-orm": "^0.41.0",
+    "postgres": "^3.4.5",
     "zod": "^3.24.2"
   }
 }
