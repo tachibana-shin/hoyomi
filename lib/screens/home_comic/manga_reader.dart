@@ -359,6 +359,7 @@ class _MangaReaderState extends State<MangaReader>
       final service = widget.service;
       if (service is ComicWatchPageMixin && _currChapter.value != null) {
         _saveWatchPage(
+          service: widget.service as ComicWatchPageMixin,
           comicId: widget.comicId,
           chapter: _currChapter.value!,
           metaComic: widget.comic,
@@ -370,31 +371,10 @@ class _MangaReaderState extends State<MangaReader>
         );
       }
     });
-    watch([_currChapter], () {
-      _saveWatchPage(
-        comicId: widget.comicId,
-        chapter: _currChapter.value!,
-        metaComic: widget.comic,
-        watchPage: WatchPage(
-          currentPage: _realCurrentPage.value.toInt(),
-          totalPage: _realLength.value,
-        ),
-        force: true,
-      );
-      debugPrint('save watch page because redirect chapter');
-    });
+    watch([_currChapter], () {});
     // save watch page if exit reader
     onBeforeUnmount(() {
-      _saveWatchPage(
-        comicId: widget.comicId,
-        chapter: _currChapter.value!,
-        metaComic: widget.comic,
-        watchPage: WatchPage(
-          currentPage: _realCurrentPage.value.toInt(),
-          totalPage: _realLength.value,
-        ),
-        force: true,
-      );
+      _forceUpdateWatchPage();
       debugPrint('save watch page because exit reader');
     });
 
@@ -448,8 +428,26 @@ class _MangaReaderState extends State<MangaReader>
     super.initState();
   }
 
+  void _forceUpdateWatchPage() {
+    if (widget.service is ComicWatchPageMixin) {
+      _saveWatchPage(
+        service: widget.service as ComicWatchPageMixin,
+        comicId: widget.comicId,
+        chapter: _currChapter.value!,
+        metaComic: widget.comic,
+        watchPage: WatchPage(
+          currentPage: _realCurrentPage.value.toInt(),
+          totalPage: _realLength.value,
+        ),
+        force: true,
+      );
+      debugPrint('save watch page');
+    }
+  }
+
   Timer? _timer;
   void _saveWatchPage({
+    required ComicWatchPageMixin service,
     required String comicId,
     required ComicChapter chapter,
     required MetaComic metaComic,
@@ -468,15 +466,21 @@ class _MangaReaderState extends State<MangaReader>
       return;
     }
 
-    _timer = Timer(Duration(seconds: 10), () {
+    void run() {
       _timer = null;
-      (widget.service as ComicWatchPageMixin).setWatchPage(
+      service.setWatchPage(
         comicId: comicId,
         chapter: chapter,
         metaComic: metaComic,
         watchPage: watchPage,
       );
-    });
+    }
+
+    if (force) {
+      run();
+    } else {
+      _timer = Timer(Duration(seconds: 10), run);
+    }
   }
 
   void _updateRoute() {
@@ -486,6 +490,7 @@ class _MangaReaderState extends State<MangaReader>
             .chapter
             .chapterId; // Get the group id of the current page
     if (_chapterId.value != currentGroup) {
+      _forceUpdateWatchPage();
       _chapterId.value = currentGroup;
       widget.onChangeChap(currentGroup);
       // GoRouter.of(context)
