@@ -9,29 +9,29 @@ part of 'main.dart';
 _HomeMangaResponse _$HomeMangaResponseFromJson(Map<String, dynamic> json) =>
     _HomeMangaResponse(
       spotlightMangas:
-          (json['spotlightMangas'] as List<dynamic>)
+          (json['spotlight_mangas'] as List<dynamic>)
               .map((e) => _SpotlightManga.fromJson(e as Map<String, dynamic>))
               .toList(),
       newChapterMangas:
-          (json['newChapterMangas'] as List<dynamic>)
+          (json['new_chapter_mangas'] as List<dynamic>)
               .map((e) => _NewChapterManga.fromJson(e as Map<String, dynamic>))
               .toList(),
     );
 
 Map<String, dynamic> _$HomeMangaResponseToJson(_HomeMangaResponse instance) =>
     <String, dynamic>{
-      'spotlightMangas': instance.spotlightMangas,
-      'newChapterMangas': instance.newChapterMangas,
+      'spotlight_mangas': instance.spotlightMangas,
+      'new_chapter_mangas': instance.newChapterMangas,
     };
 
 _SpotlightManga _$SpotlightMangaFromJson(Map<String, dynamic> json) =>
     _SpotlightManga(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
-      panoramaUrl: json['panoramaUrl'] as String,
-      panoramaMobileUrl: json['panoramaMobileUrl'] as String,
-      panoramaDominantColor: json['panoramaDominantColor'] as String,
-      panoramaDominantColor2: json['panoramaDominantColor2'] as String,
+      panoramaUrl: json['panorama_url'] as String,
+      panoramaMobileUrl: json['panorama_mobile_url'] as String,
+      panoramaDominantColor: json['panorama_dominant_color'] as String?,
+      panoramaDominantColor2: json['panorama_dominant_color2'] as String?,
       description: json['description'] as String,
     );
 
@@ -39,10 +39,10 @@ Map<String, dynamic> _$SpotlightMangaToJson(_SpotlightManga instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'panoramaUrl': instance.panoramaUrl,
-      'panoramaMobileUrl': instance.panoramaMobileUrl,
-      'panoramaDominantColor': instance.panoramaDominantColor,
-      'panoramaDominantColor2': instance.panoramaDominantColor2,
+      'panorama_url': instance.panoramaUrl,
+      'panorama_mobile_url': instance.panoramaMobileUrl,
+      'panorama_dominant_color': instance.panoramaDominantColor,
+      'panorama_dominant_color2': instance.panoramaDominantColor2,
       'description': instance.description,
     };
 
@@ -50,26 +50,26 @@ _NewChapterManga _$NewChapterMangaFromJson(Map<String, dynamic> json) =>
     _NewChapterManga(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
-      coverUrl: json['coverUrl'] as String,
-      coverMobileUrl: json['coverMobileUrl'] as String,
-      newestChapterNumber: json['newestChapterNumber'] as String,
-      newestChapterId: (json['newestChapterId'] as num).toInt(),
+      coverUrl: json['cover_url'] as String,
+      coverMobileUrl: json['cover_mobile_url'] as String,
+      newestChapterNumber: json['newest_chapter_number'] as String,
+      newestChapterId: (json['newest_chapter_id'] as num).toInt(),
       newestChapterCreatedAt: DateTime.parse(
-        json['newestChapterCreatedAt'] as String,
+        json['newest_chapter_created_at'] as String,
       ),
     );
 
-Map<String, dynamic> _$NewChapterMangaToJson(
-  _NewChapterManga instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  'name': instance.name,
-  'coverUrl': instance.coverUrl,
-  'coverMobileUrl': instance.coverMobileUrl,
-  'newestChapterNumber': instance.newestChapterNumber,
-  'newestChapterId': instance.newestChapterId,
-  'newestChapterCreatedAt': instance.newestChapterCreatedAt.toIso8601String(),
-};
+Map<String, dynamic> _$NewChapterMangaToJson(_NewChapterManga instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'cover_url': instance.coverUrl,
+      'cover_mobile_url': instance.coverMobileUrl,
+      'newest_chapter_number': instance.newestChapterNumber,
+      'newest_chapter_id': instance.newestChapterId,
+      'newest_chapter_created_at':
+          instance.newestChapterCreatedAt.toIso8601String(),
+    };
 
 _MangaListResponse _$MangaListResponseFromJson(Map<String, dynamic> json) =>
     _MangaListResponse(

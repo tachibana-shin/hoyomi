@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HomeMangaResponse {
 
- List<_SpotlightManga> get spotlightMangas; List<_NewChapterManga> get newChapterMangas;
+@JsonKey(name: 'spotlight_mangas') List<_SpotlightManga> get spotlightMangas;@JsonKey(name: 'new_chapter_mangas') List<_NewChapterManga> get newChapterMangas;
 /// Create a copy of HomeMangaResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $HomeMangaResponseCopyWith<$Res>  {
   factory $HomeMangaResponseCopyWith(HomeMangaResponse value, $Res Function(HomeMangaResponse) _then) = _$HomeMangaResponseCopyWithImpl;
 @useResult
 $Res call({
- List<_SpotlightManga> spotlightMangas, List<_NewChapterManga> newChapterMangas
+@JsonKey(name: 'spotlight_mangas') List<_SpotlightManga> spotlightMangas,@JsonKey(name: 'new_chapter_mangas') List<_NewChapterManga> newChapterMangas
 });
 
 
@@ -81,18 +81,18 @@ as List<_NewChapterManga>,
 @JsonSerializable()
 
 class _HomeMangaResponse implements HomeMangaResponse {
-   _HomeMangaResponse({required final  List<_SpotlightManga> spotlightMangas, required final  List<_NewChapterManga> newChapterMangas}): _spotlightMangas = spotlightMangas,_newChapterMangas = newChapterMangas;
+   _HomeMangaResponse({@JsonKey(name: 'spotlight_mangas') required final  List<_SpotlightManga> spotlightMangas, @JsonKey(name: 'new_chapter_mangas') required final  List<_NewChapterManga> newChapterMangas}): _spotlightMangas = spotlightMangas,_newChapterMangas = newChapterMangas;
   factory _HomeMangaResponse.fromJson(Map<String, dynamic> json) => _$HomeMangaResponseFromJson(json);
 
  final  List<_SpotlightManga> _spotlightMangas;
-@override List<_SpotlightManga> get spotlightMangas {
+@override@JsonKey(name: 'spotlight_mangas') List<_SpotlightManga> get spotlightMangas {
   if (_spotlightMangas is EqualUnmodifiableListView) return _spotlightMangas;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_spotlightMangas);
 }
 
  final  List<_NewChapterManga> _newChapterMangas;
-@override List<_NewChapterManga> get newChapterMangas {
+@override@JsonKey(name: 'new_chapter_mangas') List<_NewChapterManga> get newChapterMangas {
   if (_newChapterMangas is EqualUnmodifiableListView) return _newChapterMangas;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_newChapterMangas);
@@ -132,7 +132,7 @@ abstract mixin class _$HomeMangaResponseCopyWith<$Res> implements $HomeMangaResp
   factory _$HomeMangaResponseCopyWith(_HomeMangaResponse value, $Res Function(_HomeMangaResponse) _then) = __$HomeMangaResponseCopyWithImpl;
 @override @useResult
 $Res call({
- List<_SpotlightManga> spotlightMangas, List<_NewChapterManga> newChapterMangas
+@JsonKey(name: 'spotlight_mangas') List<_SpotlightManga> spotlightMangas,@JsonKey(name: 'new_chapter_mangas') List<_NewChapterManga> newChapterMangas
 });
 
 
@@ -164,7 +164,7 @@ as List<_NewChapterManga>,
 /// @nodoc
 mixin _$SpotlightManga {
 
- int get id; String get name; String get panoramaUrl; String get panoramaMobileUrl; String get panoramaDominantColor; String get panoramaDominantColor2; String get description;
+ int get id; String get name;@JsonKey(name: 'panorama_url') String get panoramaUrl;@JsonKey(name: 'panorama_mobile_url') String get panoramaMobileUrl;@JsonKey(name: 'panorama_dominant_color') String? get panoramaDominantColor;@JsonKey(name: 'panorama_dominant_color2') String? get panoramaDominantColor2; String get description;
 /// Create a copy of SpotlightManga
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -197,7 +197,7 @@ abstract mixin class $SpotlightMangaCopyWith<$Res>  {
   factory $SpotlightMangaCopyWith(SpotlightManga value, $Res Function(SpotlightManga) _then) = _$SpotlightMangaCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, String panoramaUrl, String panoramaMobileUrl, String panoramaDominantColor, String panoramaDominantColor2, String description
+ int id, String name,@JsonKey(name: 'panorama_url') String panoramaUrl,@JsonKey(name: 'panorama_mobile_url') String panoramaMobileUrl,@JsonKey(name: 'panorama_dominant_color') String? panoramaDominantColor,@JsonKey(name: 'panorama_dominant_color2') String? panoramaDominantColor2, String description
 });
 
 
@@ -214,15 +214,15 @@ class _$SpotlightMangaCopyWithImpl<$Res>
 
 /// Create a copy of SpotlightManga
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? panoramaUrl = null,Object? panoramaMobileUrl = null,Object? panoramaDominantColor = null,Object? panoramaDominantColor2 = null,Object? description = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? panoramaUrl = null,Object? panoramaMobileUrl = null,Object? panoramaDominantColor = freezed,Object? panoramaDominantColor2 = freezed,Object? description = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,panoramaUrl: null == panoramaUrl ? _self.panoramaUrl : panoramaUrl // ignore: cast_nullable_to_non_nullable
 as String,panoramaMobileUrl: null == panoramaMobileUrl ? _self.panoramaMobileUrl : panoramaMobileUrl // ignore: cast_nullable_to_non_nullable
-as String,panoramaDominantColor: null == panoramaDominantColor ? _self.panoramaDominantColor : panoramaDominantColor // ignore: cast_nullable_to_non_nullable
-as String,panoramaDominantColor2: null == panoramaDominantColor2 ? _self.panoramaDominantColor2 : panoramaDominantColor2 // ignore: cast_nullable_to_non_nullable
-as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,panoramaDominantColor: freezed == panoramaDominantColor ? _self.panoramaDominantColor : panoramaDominantColor // ignore: cast_nullable_to_non_nullable
+as String?,panoramaDominantColor2: freezed == panoramaDominantColor2 ? _self.panoramaDominantColor2 : panoramaDominantColor2 // ignore: cast_nullable_to_non_nullable
+as String?,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -234,15 +234,15 @@ as String,
 @JsonSerializable()
 
 class _SpotlightManga implements SpotlightManga {
-  const _SpotlightManga({required this.id, required this.name, required this.panoramaUrl, required this.panoramaMobileUrl, required this.panoramaDominantColor, required this.panoramaDominantColor2, required this.description});
+  const _SpotlightManga({required this.id, required this.name, @JsonKey(name: 'panorama_url') required this.panoramaUrl, @JsonKey(name: 'panorama_mobile_url') required this.panoramaMobileUrl, @JsonKey(name: 'panorama_dominant_color') this.panoramaDominantColor, @JsonKey(name: 'panorama_dominant_color2') this.panoramaDominantColor2, required this.description});
   factory _SpotlightManga.fromJson(Map<String, dynamic> json) => _$SpotlightMangaFromJson(json);
 
 @override final  int id;
 @override final  String name;
-@override final  String panoramaUrl;
-@override final  String panoramaMobileUrl;
-@override final  String panoramaDominantColor;
-@override final  String panoramaDominantColor2;
+@override@JsonKey(name: 'panorama_url') final  String panoramaUrl;
+@override@JsonKey(name: 'panorama_mobile_url') final  String panoramaMobileUrl;
+@override@JsonKey(name: 'panorama_dominant_color') final  String? panoramaDominantColor;
+@override@JsonKey(name: 'panorama_dominant_color2') final  String? panoramaDominantColor2;
 @override final  String description;
 
 /// Create a copy of SpotlightManga
@@ -278,7 +278,7 @@ abstract mixin class _$SpotlightMangaCopyWith<$Res> implements $SpotlightMangaCo
   factory _$SpotlightMangaCopyWith(_SpotlightManga value, $Res Function(_SpotlightManga) _then) = __$SpotlightMangaCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, String panoramaUrl, String panoramaMobileUrl, String panoramaDominantColor, String panoramaDominantColor2, String description
+ int id, String name,@JsonKey(name: 'panorama_url') String panoramaUrl,@JsonKey(name: 'panorama_mobile_url') String panoramaMobileUrl,@JsonKey(name: 'panorama_dominant_color') String? panoramaDominantColor,@JsonKey(name: 'panorama_dominant_color2') String? panoramaDominantColor2, String description
 });
 
 
@@ -295,15 +295,15 @@ class __$SpotlightMangaCopyWithImpl<$Res>
 
 /// Create a copy of SpotlightManga
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? panoramaUrl = null,Object? panoramaMobileUrl = null,Object? panoramaDominantColor = null,Object? panoramaDominantColor2 = null,Object? description = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? panoramaUrl = null,Object? panoramaMobileUrl = null,Object? panoramaDominantColor = freezed,Object? panoramaDominantColor2 = freezed,Object? description = null,}) {
   return _then(_SpotlightManga(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,panoramaUrl: null == panoramaUrl ? _self.panoramaUrl : panoramaUrl // ignore: cast_nullable_to_non_nullable
 as String,panoramaMobileUrl: null == panoramaMobileUrl ? _self.panoramaMobileUrl : panoramaMobileUrl // ignore: cast_nullable_to_non_nullable
-as String,panoramaDominantColor: null == panoramaDominantColor ? _self.panoramaDominantColor : panoramaDominantColor // ignore: cast_nullable_to_non_nullable
-as String,panoramaDominantColor2: null == panoramaDominantColor2 ? _self.panoramaDominantColor2 : panoramaDominantColor2 // ignore: cast_nullable_to_non_nullable
-as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,panoramaDominantColor: freezed == panoramaDominantColor ? _self.panoramaDominantColor : panoramaDominantColor // ignore: cast_nullable_to_non_nullable
+as String?,panoramaDominantColor2: freezed == panoramaDominantColor2 ? _self.panoramaDominantColor2 : panoramaDominantColor2 // ignore: cast_nullable_to_non_nullable
+as String?,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -315,7 +315,7 @@ as String,
 /// @nodoc
 mixin _$NewChapterManga {
 
- int get id; String get name; String get coverUrl; String get coverMobileUrl; String get newestChapterNumber; int get newestChapterId; DateTime get newestChapterCreatedAt;
+ int get id; String get name;@JsonKey(name: 'cover_url') String get coverUrl;@JsonKey(name: 'cover_mobile_url') String get coverMobileUrl;@JsonKey(name: 'newest_chapter_number') String get newestChapterNumber;@JsonKey(name: 'newest_chapter_id') int get newestChapterId;@JsonKey(name: 'newest_chapter_created_at') DateTime get newestChapterCreatedAt;
 /// Create a copy of NewChapterManga
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -348,7 +348,7 @@ abstract mixin class $NewChapterMangaCopyWith<$Res>  {
   factory $NewChapterMangaCopyWith(NewChapterManga value, $Res Function(NewChapterManga) _then) = _$NewChapterMangaCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, String coverUrl, String coverMobileUrl, String newestChapterNumber, int newestChapterId, DateTime newestChapterCreatedAt
+ int id, String name,@JsonKey(name: 'cover_url') String coverUrl,@JsonKey(name: 'cover_mobile_url') String coverMobileUrl,@JsonKey(name: 'newest_chapter_number') String newestChapterNumber,@JsonKey(name: 'newest_chapter_id') int newestChapterId,@JsonKey(name: 'newest_chapter_created_at') DateTime newestChapterCreatedAt
 });
 
 
@@ -385,16 +385,16 @@ as DateTime,
 @JsonSerializable()
 
 class _NewChapterManga implements NewChapterManga {
-  const _NewChapterManga({required this.id, required this.name, required this.coverUrl, required this.coverMobileUrl, required this.newestChapterNumber, required this.newestChapterId, required this.newestChapterCreatedAt});
+  const _NewChapterManga({required this.id, required this.name, @JsonKey(name: 'cover_url') required this.coverUrl, @JsonKey(name: 'cover_mobile_url') required this.coverMobileUrl, @JsonKey(name: 'newest_chapter_number') required this.newestChapterNumber, @JsonKey(name: 'newest_chapter_id') required this.newestChapterId, @JsonKey(name: 'newest_chapter_created_at') required this.newestChapterCreatedAt});
   factory _NewChapterManga.fromJson(Map<String, dynamic> json) => _$NewChapterMangaFromJson(json);
 
 @override final  int id;
 @override final  String name;
-@override final  String coverUrl;
-@override final  String coverMobileUrl;
-@override final  String newestChapterNumber;
-@override final  int newestChapterId;
-@override final  DateTime newestChapterCreatedAt;
+@override@JsonKey(name: 'cover_url') final  String coverUrl;
+@override@JsonKey(name: 'cover_mobile_url') final  String coverMobileUrl;
+@override@JsonKey(name: 'newest_chapter_number') final  String newestChapterNumber;
+@override@JsonKey(name: 'newest_chapter_id') final  int newestChapterId;
+@override@JsonKey(name: 'newest_chapter_created_at') final  DateTime newestChapterCreatedAt;
 
 /// Create a copy of NewChapterManga
 /// with the given fields replaced by the non-null parameter values.
@@ -429,7 +429,7 @@ abstract mixin class _$NewChapterMangaCopyWith<$Res> implements $NewChapterManga
   factory _$NewChapterMangaCopyWith(_NewChapterManga value, $Res Function(_NewChapterManga) _then) = __$NewChapterMangaCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, String coverUrl, String coverMobileUrl, String newestChapterNumber, int newestChapterId, DateTime newestChapterCreatedAt
+ int id, String name,@JsonKey(name: 'cover_url') String coverUrl,@JsonKey(name: 'cover_mobile_url') String coverMobileUrl,@JsonKey(name: 'newest_chapter_number') String newestChapterNumber,@JsonKey(name: 'newest_chapter_id') int newestChapterId,@JsonKey(name: 'newest_chapter_created_at') DateTime newestChapterCreatedAt
 });
 
 

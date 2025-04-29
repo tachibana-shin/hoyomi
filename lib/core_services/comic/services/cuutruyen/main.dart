@@ -16,20 +16,19 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
     name: 'CuuTruyen',
     faviconUrl: OImage(src: '/favicon.ico'),
     rootUrl: 'https://cuutruyen.net',
+    fetchHeadless: true,
+    fetchBaseUrl: '{BASE_URL}/api/v2/',
   );
 
   @override
   Future<List<HomeComicCategory>> home() async {
-    final data = HomeMangaResponse.fromJson(
-      jsonDecode(await fetch('$baseUrl/api/v2/home_a'))['data'],
-    );
-    final topWeek = MangaListResponse.fromJson(
-      jsonDecode(
-        await fetch(
-          '$baseUrl/api/v2/mangas/top?duration=week&page=1&per_page=24',
-        ),
-      ),
-    );
+    final all = await Future.wait([
+      fetch('home_a'),
+      fetch('mangas/top?duration=week&page=1&per_page=24'),
+    ]);
+
+    final data = HomeMangaResponse.fromJson(jsonDecode(all[0])['data']);
+    final topWeek = MangaListResponse.fromJson(jsonDecode(all[1]));
 
     return [
       HomeComicCategory(
@@ -90,9 +89,15 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
 
   @override
   Future<MetaComic> getDetails(String comicId) async {
-    final all = await Future.wait([fetch('$baseUrl/api/v2/mangas/$comicId')]);
-    final data = MangaDetail.fromJson(jsonDecode(all[0]));
-    final chapters = ChaptersResponse.fromJson(jsonDecode(all[1]));
+    final all = await Future.wait([
+      fetch('mangas/$comicId'),
+      fetch('mangas/$comicId/chapters'),
+    ]);
+    final data = MangaDetail.fromJson(jsonDecode(all[0])['data']);
+    final chapters =
+        (jsonDecode(all[1])['data'] as List)
+            .map((item) => Chapter.fromJson(item))
+            .toList();
 
     final name = data.name;
     final originalName = data.titles.map((title) => title.name).join(', ');
@@ -139,7 +144,7 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
             .toList();
     final description = data.description;
     final chaps =
-        chapters.data
+        chapters
             .map(
               (chapter) => ComicChapter(
                 name: ['Chapter ${chapter.number}', chapter.name].join(' - '),
@@ -148,8 +153,8 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
             )
             .toList();
 
-    final lastModified = chapters.data.fold(
-      chapters.data.first.updatedAt,
+    final lastModified = chapters.fold(
+      chapters.first.updatedAt,
       (prev, chapter) =>
           prev.isBefore(chapter.updatedAt) ? chapter.updatedAt : prev,
     );
@@ -185,7 +190,7 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
   @override
   Future<List<OImage>> getPages(String manga, String chap) async {
     final data = ChapterResponse.fromJson(
-      jsonDecode(await fetch('$baseUrl/api/v2/chapters/$chap')),
+      jsonDecode(await fetch('chapters/$chap'))['data'],
     );
 
     return data.pages.map((page) {
@@ -211,9 +216,7 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
   }) async {
     final data = SearchResultResponse.fromJson(
       jsonDecode(
-        await fetch(
-          '$baseUrl/api/v2/mangas/search?q=$keyword&page=$page&per_page=30',
-        ),
+        await fetch('mangas/search?q=$keyword&page=$page&per_page=30'),
       ),
     );
 
@@ -250,7 +253,7 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
     final data = MangaTagResponse.fromJson(
       jsonDecode(
         await fetch(
-          '$baseUrl/api/v2/${categoryId.replaceFirst('tag_', 'tags/')}?page=$page&per_page=30',
+          '${categoryId.replaceFirst('tag_', 'tags/')}?page=$page&per_page=30',
         ),
       ),
     );
@@ -292,7 +295,9 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
 @freezed
 sealed class HomeMangaResponse with _$HomeMangaResponse {
   factory HomeMangaResponse({
+    @JsonKey(name: 'spotlight_mangas')
     required List<_SpotlightManga> spotlightMangas,
+    @JsonKey(name: 'new_chapter_mangas')
     required List<_NewChapterManga> newChapterMangas,
   }) = _HomeMangaResponse;
 
@@ -306,10 +311,10 @@ sealed class SpotlightManga with _$SpotlightManga {
   const factory SpotlightManga({
     required int id,
     required String name,
-    required String panoramaUrl,
-    required String panoramaMobileUrl,
-    required String panoramaDominantColor,
-    required String panoramaDominantColor2,
+    @JsonKey(name: 'panorama_url') required String panoramaUrl,
+    @JsonKey(name: 'panorama_mobile_url') required String panoramaMobileUrl,
+    @JsonKey(name: 'panorama_dominant_color') String? panoramaDominantColor,
+    @JsonKey(name: 'panorama_dominant_color2') String? panoramaDominantColor2,
     required String description,
   }) = _SpotlightManga;
 
@@ -323,10 +328,11 @@ sealed class NewChapterManga with _$NewChapterManga {
   const factory NewChapterManga({
     required int id,
     required String name,
-    required String coverUrl,
-    required String coverMobileUrl,
-    required String newestChapterNumber,
-    required int newestChapterId,
+    @JsonKey(name: 'cover_url') required String coverUrl,
+    @JsonKey(name: 'cover_mobile_url') required String coverMobileUrl,
+    @JsonKey(name: 'newest_chapter_number') required String newestChapterNumber,
+    @JsonKey(name: 'newest_chapter_id') required int newestChapterId,
+    @JsonKey(name: 'newest_chapter_created_at')
     required DateTime newestChapterCreatedAt,
   }) = _NewChapterManga;
 
@@ -519,7 +525,7 @@ sealed class ChapterResponse with _$ChapterResponse {
     required int id,
     required int order,
     required String number,
-    required String name,
+    required String? name,
     @JsonKey(name: 'views_count') required int viewsCount,
     @JsonKey(name: 'comments_count') required int commentsCount,
     required String status,
