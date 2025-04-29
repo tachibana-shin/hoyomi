@@ -93,7 +93,7 @@ class TruyenQQService extends TruyenGGService {
     return Comic(
       image: image,
       lastChap: lastChap,
-      timeAgo: timeAgo,
+      lastUpdate: timeAgo,
       notice: notice,
       name: name,
       comicId: comicId,

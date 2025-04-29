@@ -14,7 +14,7 @@ sealed class Comic with _$Comic {
     String? originalName,
     required OImage image,
     ComicChapter? lastChap,
-    DateTime? timeAgo,
+    DateTime? lastUpdate,
     String? notice,
     @Default(false) bool pending,
     DateTime? preRelease,
@@ -31,7 +31,7 @@ sealed class Comic with _$Comic {
       originalName: comic.originalName,
       image: comic.image,
       lastChap: null,
-      timeAgo: null,
+      lastUpdate: null,
       notice: null,
       rate: comic.rate?.value,
     );
@@ -44,7 +44,7 @@ sealed class Comic with _$Comic {
       originalName: null,
       image: OImage.createFakeData(),
       lastChap: null,
-      timeAgo: null,
+      lastUpdate: null,
       notice: 'Notice Fake',
       rate: 8.5,
     );

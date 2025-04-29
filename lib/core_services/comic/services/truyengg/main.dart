@@ -150,7 +150,7 @@ class TruyenGGService extends ABComicService
     return Comic(
       image: image,
       lastChap: lastChap,
-      timeAgo: timeAgo,
+      lastUpdate: timeAgo,
       notice: (notice.isEmpty ? null : notice),
       name: name,
       comicId: comicId,
@@ -314,7 +314,7 @@ class TruyenGGService extends ABComicService
         )
         .queryOne('p:last-child');
   }
-
+  
   @override
   String getURL(comicId, {chapterId}) {
     return '$baseUrl/truyen-tranh/$comicId${chapterId != null ? '-$chapterId' : ''}.html';

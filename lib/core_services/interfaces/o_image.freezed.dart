@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OImage {
 
- String get src; Headers? get headers;
+ String get src; Headers? get headers; String? get extra;
 /// Create a copy of OImage
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $OImageCopyWith<OImage> get copyWith => _$OImageCopyWithImpl<OImage>(this as OIm
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OImage&&(identical(other.src, src) || other.src == src)&&(identical(other.headers, headers) || other.headers == headers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OImage&&(identical(other.src, src) || other.src == src)&&(identical(other.headers, headers) || other.headers == headers)&&(identical(other.extra, extra) || other.extra == extra));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,src,headers);
+int get hashCode => Object.hash(runtimeType,src,headers,extra);
 
 @override
 String toString() {
-  return 'OImage(src: $src, headers: $headers)';
+  return 'OImage(src: $src, headers: $headers, extra: $extra)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $OImageCopyWith<$Res>  {
   factory $OImageCopyWith(OImage value, $Res Function(OImage) _then) = _$OImageCopyWithImpl;
 @useResult
 $Res call({
- String src, Headers? headers
+ String src, Headers? headers, String? extra
 });
 
 
@@ -66,11 +66,12 @@ class _$OImageCopyWithImpl<$Res>
 
 /// Create a copy of OImage
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? src = null,Object? headers = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? src = null,Object? headers = freezed,Object? extra = freezed,}) {
   return _then(_self.copyWith(
 src: null == src ? _self.src : src // ignore: cast_nullable_to_non_nullable
 as String,headers: freezed == headers ? _self.headers : headers // ignore: cast_nullable_to_non_nullable
-as Headers?,
+as Headers?,extra: freezed == extra ? _self.extra : extra // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 /// Create a copy of OImage
@@ -93,11 +94,12 @@ $HeadersCopyWith<$Res>? get headers {
 @JsonSerializable()
 
 class _OImage implements OImage {
-  const _OImage({required this.src, this.headers});
+  const _OImage({required this.src, this.headers, this.extra});
   factory _OImage.fromJson(Map<String, dynamic> json) => _$OImageFromJson(json);
 
 @override final  String src;
 @override final  Headers? headers;
+@override final  String? extra;
 
 /// Create a copy of OImage
 /// with the given fields replaced by the non-null parameter values.
@@ -112,16 +114,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OImage&&(identical(other.src, src) || other.src == src)&&(identical(other.headers, headers) || other.headers == headers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OImage&&(identical(other.src, src) || other.src == src)&&(identical(other.headers, headers) || other.headers == headers)&&(identical(other.extra, extra) || other.extra == extra));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,src,headers);
+int get hashCode => Object.hash(runtimeType,src,headers,extra);
 
 @override
 String toString() {
-  return 'OImage(src: $src, headers: $headers)';
+  return 'OImage(src: $src, headers: $headers, extra: $extra)';
 }
 
 
@@ -132,7 +134,7 @@ abstract mixin class _$OImageCopyWith<$Res> implements $OImageCopyWith<$Res> {
   factory _$OImageCopyWith(_OImage value, $Res Function(_OImage) _then) = __$OImageCopyWithImpl;
 @override @useResult
 $Res call({
- String src, Headers? headers
+ String src, Headers? headers, String? extra
 });
 
 
@@ -149,11 +151,12 @@ class __$OImageCopyWithImpl<$Res>
 
 /// Create a copy of OImage
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? src = null,Object? headers = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? src = null,Object? headers = freezed,Object? extra = freezed,}) {
   return _then(_OImage(
 src: null == src ? _self.src : src // ignore: cast_nullable_to_non_nullable
 as String,headers: freezed == headers ? _self.headers : headers // ignore: cast_nullable_to_non_nullable
-as Headers?,
+as Headers?,extra: freezed == extra ? _self.extra : extra // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

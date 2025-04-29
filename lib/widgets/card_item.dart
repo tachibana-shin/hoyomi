@@ -22,7 +22,7 @@ class CardItem extends StatelessWidget {
   final DateTime? preRelease;
   final String title;
   final String? subtitle;
-  final DateTime? timeAgo;
+  final DateTime? lastUpdate;
   final List<Widget> extend;
 
   const CardItem({
@@ -38,7 +38,7 @@ class CardItem extends StatelessWidget {
     required this.preRelease,
     required this.title,
     required this.subtitle,
-    required this.timeAgo,
+    required this.lastUpdate,
     required this.extend,
   });
 
@@ -299,9 +299,9 @@ class CardItem extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-            if (timeAgo != null)
+            if (lastUpdate != null)
               Text(
-                formatTimeAgo(timeAgo!),
+                formatTimeAgo(lastUpdate!),
                 style: TextStyle(
                   fontSize: 12.0,
                   color: Theme.of(
