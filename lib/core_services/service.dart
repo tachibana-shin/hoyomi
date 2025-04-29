@@ -27,6 +27,8 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'interfaces/main.dart';
+import 'mixin/headless_mixin.dart';
+import 'mixin/settings_mixin.dart';
 
 Dio? _dio;
 Future<Dio> _createDioClientCache() async {
@@ -82,6 +84,8 @@ class ServiceInit {
   final String? rss;
   final List<SettingField>? settings;
   final List<WebRule>? webRules;
+  final bool fetchHeadless;
+  final String? fetchBaseUrl;
 
   /// Called before inserting the cookie to the insert request. Override this method to modify the cookie
   /// before it is inserted. The default implementation simply returns the original cookie.
@@ -103,69 +107,21 @@ class ServiceInit {
     this.settings,
     this.onBeforeInsertCookie,
     this.webRules,
+    this.fetchHeadless = false,
+    this.fetchBaseUrl,
   });
 }
 
-mixin _SettingsMixin {
-  String get uid;
+abstract class BaseService {
+  final kIsWeb = XPlatform.isWeb;
+
   ServiceInit get init;
-  ServiceSettings? _serviceSettings;
-  bool _stateReady = false;
-
-  Future<void> initState() async {
-    if (_stateReady) return;
-    _stateReady = true;
-
-    _serviceSettings = await ServiceSettingsController.instance.get(uid);
-    _initSettings();
-  }
-
-  void _initSettings() {
-    // init settings appear
-    if (init.settings != null) {
-      for (final field in init.settings!) {
-        if (field is FieldInput && field.appear) {
-          if (getSetting(key: field.key) == null) {
-            setSetting(field.key, field.defaultFn(this as Service));
-          }
-        }
-      }
-    }
-  }
-
-  String? getSetting({required String key}) {
-    return _serviceSettings?.settings?[key];
-  }
-
-  Future<void> setSetting(String name, String value) async {
-    var record =
-        _serviceSettings ??
-        ServiceSettings(
-          sourceId: uid,
-          settings: null,
-          userDataCache: null,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
-
-    try {
-      record = record.copyWith(
-        settings: {
-          if (record.settings != null) ...record.settings!,
-          name: value,
-        },
-      );
-    } catch (err) {
-      record = record.copyWith(settings: {name: value});
-    }
-
-    _serviceSettings = record;
-
-    await ServiceSettingsController.instance.save(uid, record);
-  }
+  String get uid => init.uid ?? name.toLowerCase().replaceAll(r'\s', '-');
+  String get name => init.name;
+  String get baseUrl;
 }
 
-abstract class Service with _SettingsMixin {
+abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
   static final List<SettingField> settingsDefault = [
     FieldInput(
       name: 'URL',
@@ -203,17 +159,11 @@ abstract class Service with _SettingsMixin {
     ),
   ];
 
-  final Map<String, ({DateTime? expire, Future<String> response})> _cacheFetch =
-      {};
-
-  final kIsWeb = XPlatform.isWeb;
+  @override
   String get baseUrl {
     return getSetting(key: 'url') ?? init.rootUrl;
   }
 
-  String get name => init.name;
-  @override
-  String get uid => init.uid ?? name.toLowerCase().replaceAll(r'\s', '-');
   OImage? _faviconUrl;
   OImage get faviconUrl =>
       _faviconUrl ??= OImage(
@@ -226,6 +176,19 @@ abstract class Service with _SettingsMixin {
           init.rss == null
               ? null
               : Uri.parse(baseUrl).resolve(init.rss!).toString();
+
+  String? _$fetchBaseUrl;
+  String? get _fetchBaseUrl {
+    if (init.fetchBaseUrl == null) return null;
+
+    return _$fetchBaseUrl ??= init.fetchBaseUrl!.replaceFirst(
+      '{BASE_URL}',
+      baseUrl,
+    );
+  }
+
+  final Map<String, ({DateTime? expire, Future<String> response})> _cacheFetch =
+      {};
 
   Future<User>? _userFuture;
 
@@ -254,7 +217,10 @@ abstract class Service with _SettingsMixin {
     required Service? service,
     required Widget Function(Object? error) orElse,
   }) {
-    debugPrint('$error');
+    if (kDebugMode) {
+      print(error);
+    }
+
     if (error is CaptchaRequiredException) {
       return Padding(
         padding:
@@ -350,45 +316,17 @@ abstract class Service with _SettingsMixin {
   /// [cookie] The cookie to include in the request. Defaults to null.
   ///
   /// Returns a string containing the fetched data, or throws an exception if the request fails.
-  Future<String> fetch(
+  Future<String> fetchRust(
     String url, {
-    String? cookie,
-    Map<String, dynamic>? query,
     Map<String, dynamic>? body,
-    Headers? headers,
+    required Headers headers,
     bool notify = true,
   }) async {
-    final record = await ServiceSettingsController.instance.get(uid);
-    String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;
-
-    cookiesText = init.onBeforeInsertCookie?.call(cookiesText) ?? cookiesText;
-
-    var uri = Uri.parse(url);
-    if (query != null) {
-      uri = uri.replace(queryParameters: {...uri.queryParametersAll, ...query});
-    }
-    final $headers = Headers({
-      'accept':
-          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-      // 'accept-language': 'vi',
-      'cache-control': 'max-age=0',
-      if (cookiesText != null) 'cookie': cookiesText,
-      // 'pragma': 'no-cache',
-      // 'priority': 'u=0, i',
-      'host': uri.host,
-
-      // 'upgrade-insecure-requests': '1',
-      'user-agent':
-          record?.settings?['user_agent'] as String? ??
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-      if (headers != null) ...headers.toMap(),
-    });
-
     final DateTime? startTime = kDebugMode ? DateTime.now() : null;
     if (kDebugMode) {
       print('🔵 [HTTP] Request Started');
-      print('➡️ URL: $uri');
-      print('📩 Cookie: ${$headers.get('cookie')}');
+      print('➡️ URL: $url');
+      print('📩 Cookie: ${headers.get('cookie')}');
 
       if (body != null) {
         final filteredBody = Map.fromEntries(
@@ -410,11 +348,11 @@ abstract class Service with _SettingsMixin {
     try {
       response = await (await _createDioClientCache()).fetch(
         RequestOptions(
-          path: uri.toString(),
+          path: url,
           method: body == null ? 'GET' : 'POST',
           data: body == null ? null : FormData.fromMap(body),
           responseType: ResponseType.plain,
-          headers: $headers.toMap(),
+          headers: headers.toMap(),
         ),
       );
 
@@ -479,6 +417,63 @@ abstract class Service with _SettingsMixin {
       debugPrint('Error: ${response.statusMessage}');
       throw response;
     }
+  }
+
+  Future<String> fetch(
+    String url, {
+    String? cookie,
+    Map<String, dynamic>? query,
+    Map<String, dynamic>? body,
+    Headers? headers,
+    bool notify = true,
+    bool headless = false,
+  }) async {
+    if (init.fetchHeadless) headless = init.fetchHeadless;
+
+    final record = await ServiceSettingsController.instance.get(uid);
+    String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;
+
+    cookiesText = init.onBeforeInsertCookie?.call(cookiesText) ?? cookiesText;
+
+    var uri =
+        _fetchBaseUrl == null
+            ? Uri.parse(url)
+            : Uri.parse(_fetchBaseUrl!).resolve(url);
+    if (query != null) {
+      uri = uri.replace(queryParameters: {...uri.queryParametersAll, ...query});
+    }
+    final $headers = Headers({
+      'accept':
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+      // 'accept-language': 'vi',
+      'cache-control': 'max-age=0',
+      if (cookiesText != null) 'cookie': cookiesText,
+      // 'pragma': 'no-cache',
+      // 'priority': 'u=0, i',
+      'host': uri.host,
+
+      // 'upgrade-insecure-requests': '1',
+      'user-agent':
+          record?.settings?['user_agent'] as String? ??
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      if (headers != null) ...headers.toMap(),
+    });
+
+    if (headless) {
+      return fetchHeadless(
+        uri.toString(),
+        body: body,
+        headers: $headers,
+        notify: notify,
+      );
+    }
+
+    return fetchRust(
+      uri.toString(),
+      body: body,
+      headers: $headers,
+      notify: notify,
+    );
   }
 
   Future<String> fetchWithCache(
