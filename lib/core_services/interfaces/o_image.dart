@@ -9,7 +9,8 @@ part 'o_image.g.dart';
 
 @freezed
 sealed class OImage with _$OImage {
-  const factory OImage({required String src, Headers? headers, String? extra}) = _OImage;
+  const factory OImage({required String src, Headers? headers, String? extra}) =
+      _OImage;
 
   factory OImage.fromJson(Map<String, dynamic> json) => _$OImageFromJson(json);
   factory OImage.from(String src) => OImage(src: src);

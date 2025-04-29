@@ -314,7 +314,7 @@ class TruyenGGService extends ABComicService
         )
         .queryOne('p:last-child');
   }
-  
+
   @override
   String getURL(comicId, {chapterId}) {
     return '$baseUrl/truyen-tranh/$comicId${chapterId != null ? '-$chapterId' : ''}.html';

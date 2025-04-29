@@ -21,7 +21,7 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
   @override
   Future<List<HomeComicCategory>> home() async {
     final data = HomeMangaResponse.fromJson(
-      jsonDecode(await fetch('$baseUrl/api/v2/home_a')),
+      jsonDecode(await fetch('$baseUrl/api/v2/home_a'))['data'],
     );
     final topWeek = MangaListResponse.fromJson(
       jsonDecode(

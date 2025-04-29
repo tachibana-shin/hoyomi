@@ -70,7 +70,7 @@ Future<void> _setupServices() async {
   final settings = await GeneralSettingsController.instance.get();
 
   if (settings?.sortComicService != null) {
-    comicServices.value =
+    final services =
         settings!.sortComicService!
             .map((id) {
               final service = _allComicServices[id];
@@ -82,10 +82,16 @@ Future<void> _setupServices() async {
             })
             .whereType<ABComicService>()
             .toList();
+
+    for (final service in _allComicServices.values) {
+      if (!services.contains(service)) services.add(service);
+    }
+
+    comicServices.value = services;
   }
   // eiga services
   if (settings?.sortEigaService != null) {
-    eigaServices.value =
+    final services =
         settings!.sortEigaService!
             .map((id) {
               final service = _allEigaServices[id];
@@ -97,6 +103,12 @@ Future<void> _setupServices() async {
             })
             .whereType<ABEigaService>()
             .toList();
+
+    for (final service in _allEigaServices.values) {
+      if (!services.contains(service)) services.add(service);
+    }
+
+    eigaServices.value = services;
   }
 
   // watch change
