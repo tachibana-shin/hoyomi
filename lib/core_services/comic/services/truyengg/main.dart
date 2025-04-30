@@ -75,6 +75,7 @@ class TruyenGGService extends ABComicService
     Map<String, dynamic>? body,
     Headers? headers,
     bool notify = true,
+    bool headless = false,
   }) async {
     for (int i = 0; i < 5; i++) {
       try {
