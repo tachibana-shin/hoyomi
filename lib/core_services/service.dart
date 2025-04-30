@@ -459,7 +459,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
       if (headers != null) ...headers.toMap(),
     });
 
-    if (headless) {
+    if (headless && !kIsWeb) {
       return fetchHeadless(
         uri.toString(),
         body: body,
