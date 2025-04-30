@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_home.dart';
-import 'package:hoyomi/widgets/comic/carousel_comic.dart';
-import 'package:hoyomi/widgets/comic/horizontal_comic_list.dart';
-import 'package:hoyomi/widgets/comic/vertical_comic_list.dart';
-import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:hoyomi/core_services/comic/main.dart';
+import 'package:hoyomi/widgets/export.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
 class TabViewComic extends StatefulWidget {

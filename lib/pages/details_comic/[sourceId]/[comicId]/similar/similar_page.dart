@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
+import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/screens/search/comic_search_results.dart';
-import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:hoyomi/screens/export.dart';
+import 'package:hoyomi/widgets/export.dart';
 
 class SimilarPage extends StatefulWidget {
   final String sourceId;

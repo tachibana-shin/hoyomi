@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/core_services/comic/services/truyengg/main.dart';
-import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/d_query.dart';
 import 'package:hoyomi/utils/time_utils.dart';
 import 'package:intl/intl.dart';
+
+import '../../main.dart';
 
 String _generateRandomHex(int length) {
   const hexChars = '0123456789abcdef';

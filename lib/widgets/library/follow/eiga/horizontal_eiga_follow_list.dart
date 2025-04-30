@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_follow_mixin.dart';
-import 'package:hoyomi/core_services/interfaces/follow_item.dart';
+import 'package:hoyomi/core_services/eiga/main.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/core_services/service.dart';
-import 'package:hoyomi/utils/format_watch_update_at.dart';
-import 'package:hoyomi/widgets/eiga/vertical_eiga.dart';
-import 'package:hoyomi/widgets/horizontal_list.dart';
+import 'package:hoyomi/utils/export.dart';
+import 'package:hoyomi/widgets/export.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class HorizontalEigaFollowList extends StatefulWidget {

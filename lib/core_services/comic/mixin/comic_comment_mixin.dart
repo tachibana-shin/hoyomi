@@ -1,6 +1,4 @@
-import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
-
-import '../interfaces/main.dart';
+import '../main.dart';
 
 mixin ComicCommentMixin on ComicAuthMixin {
   // for comment system

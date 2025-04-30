@@ -5,30 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/controller/update_available.dart';
-import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
+import 'package:hoyomi/core_services/comic/main.dart';
 
-import 'package:hoyomi/pages/details_comic/[sourceId]/[comicId].page.dart';
-import 'package:hoyomi/pages/details_comic/[sourceId]/[comicId]/[chapterId].page.dart';
-import 'package:hoyomi/pages/home_comic/home_comic_page.dart';
-import 'package:hoyomi/pages/home_eiga/home_eiga_page.dart';
-import 'package:hoyomi/pages/library/follow/eiga/[sourceId].page.dart';
-import 'package:hoyomi/pages/library/history/eiga/[sourceId].page.dart';
-import 'package:hoyomi/pages/library/library_page.dart';
-import 'package:hoyomi/pages/manager_page.dart';
-import 'package:hoyomi/pages/search/comic/[sourceId].page.dart';
-import 'package:hoyomi/pages/search/eiga/[sourceId].page.dart';
-import 'package:hoyomi/pages/search/index_page.dart';
-import 'package:hoyomi/pages/category_comic/%5BsourceId%5D/%5BcategoryId%5D.page.dart';
-import 'package:hoyomi/pages/category_eiga/%5BsourceId%5D/%5BcategoryId%5D.page.dart';
-import 'package:hoyomi/pages/service_settings/[sourceId].page.dart';
-import 'package:hoyomi/pages/sign_in/main/sign_in_main_page.dart';
-import 'package:hoyomi/pages/webview_page.dart';
 import 'package:hoyomi/plugins/android_sdk_int.dart';
 
 import 'package:hoyomi/widgets/navigation_app.dart';
 
-import '../pages/details_comic/[sourceId]/[comicId]/similar/similar_page.dart';
-import '../pages/details_eiga/[sourceId]/[eigaId].page.dart';
+import '../pages/export.dart';
 
 final List<String> routeIgnoreLayoutDefault = [
   '/details_comic',

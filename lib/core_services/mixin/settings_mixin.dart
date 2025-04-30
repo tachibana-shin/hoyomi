@@ -1,7 +1,7 @@
 import 'package:hoyomi/controller/service_settings_controller.dart';
-import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/database/scheme/service_settings.dart';
 
+import '../interfaces/main.dart';
 import '../service.dart';
 
 mixin SettingsMixin on BaseService {
