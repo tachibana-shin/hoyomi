@@ -248,7 +248,7 @@ class AnimeVietsubService extends ABEigaService
     );
   }
 
-  CarouselItem _parseCarousel(DQuery item) {
+  EigaCarouselItem _parseCarousel(DQuery item) {
     final data = _parseItem(item);
 
     final year = item.queryOne('.AAIco-date_range').text();
@@ -273,7 +273,7 @@ class AnimeVietsubService extends ABEigaService
     //       );
     //     });
 
-    return CarouselItem(
+    return EigaCarouselItem(
       image: data.image,
       eigaId: data.eigaId,
       name: data.name,
@@ -294,7 +294,7 @@ class AnimeVietsubService extends ABEigaService
     final $ = await fetch$(baseUrl);
 
     return EigaHome(
-      carousel: Carousel(
+      carousel: EigaCarousel(
         items:
             $(
               '.MovieListSldCn .TPostMv',

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_carousel_item.dart';
+import 'package:hoyomi/core_services/comic/interfaces/comic_carousel_item.dart';
 import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/extensions/iterable_extension.dart';
 import 'package:hoyomi/extensions/list_extension.dart';
@@ -13,13 +13,13 @@ import 'package:iconify_flutter/icons/bi.dart';
 import 'package:iconify_flutter/icons/eva.dart';
 import 'package:intl/intl.dart';
 
-class CarouselEiga extends StatefulWidget {
+class CarouselComic extends StatefulWidget {
   final double aspectRatio;
   final double maxHeight;
   final String sourceId;
-  final List<EigaCarouselItem> items;
+  final List<ComicCarouselItem> items;
 
-  const CarouselEiga({
+  const CarouselComic({
     super.key,
     required this.aspectRatio,
     required this.maxHeight,
@@ -28,10 +28,10 @@ class CarouselEiga extends StatefulWidget {
   });
 
   @override
-  State<CarouselEiga> createState() => _CarouselEigaState();
+  State<CarouselComic> createState() => _CarouselComicState();
 }
 
-class _CarouselEigaState extends State<CarouselEiga> {
+class _CarouselComicState extends State<CarouselComic> {
   @override
   Widget build(BuildContext context) {
     final screen = MediaQuery.of(context).size;
@@ -260,7 +260,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
 
           return GestureDetector(
             onTap: () {
-              context.push("/details_eiga/${widget.sourceId}/${item.eigaId}");
+              context.push("/details_comic/${widget.sourceId}/${item.comicId}");
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
@@ -419,7 +419,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                               genre.genreId == Genre.noId
                                                   ? null
                                                   : () => context.push(
-                                                    '/category_eiga/${widget.sourceId}/${genre.genreId}',
+                                                    '/category_comic/${widget.sourceId}/${genre.genreId}',
                                                   ),
                                           child: Text(
                                             '#${genre.name}',
@@ -453,7 +453,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                               actor.genreId == Genre.noId
                                                   ? null
                                                   : () => context.push(
-                                                    '/category_eiga/${widget.sourceId}/${actor.genreId}',
+                                                    '/category_comic/${widget.sourceId}/${actor.genreId}',
                                                   ),
                                           child: Text(
                                             '${actor.name}${index < list.length - 1 ? ', ' : ''}',

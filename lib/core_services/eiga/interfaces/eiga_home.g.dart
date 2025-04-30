@@ -10,7 +10,7 @@ _EigaHome _$EigaHomeFromJson(Map<String, dynamic> json) => _EigaHome(
   carousel:
       json['carousel'] == null
           ? null
-          : Carousel.fromJson(json['carousel'] as Map<String, dynamic>),
+          : EigaCarousel.fromJson(json['carousel'] as Map<String, dynamic>),
   categories:
       (json['categories'] as List<dynamic>)
           .map((e) => HomeEigaCategory.fromJson(e as Map<String, dynamic>))

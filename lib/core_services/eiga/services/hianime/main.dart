@@ -72,7 +72,7 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
   Future<EigaHome> home() async {
     final $ = await fetch$('$baseUrl/home');
 
-    final carousel = Carousel(
+    final carousel = EigaCarousel(
       aspectRatio: 679 / 350,
       maxHeightBuilder: 0.4,
       items: $('#slider .deslide-item').map(($deslide) {
@@ -112,7 +112,7 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
         /// List<Genre>? genres,
         /// List<Genre>? actors,
 
-        return CarouselItem(
+        return EigaCarouselItem(
           subText: subText,
           image: image,
           eigaId: eigaId,

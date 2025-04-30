@@ -1,26 +1,26 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/carousel_item.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga_carousel_item.dart';
 import 'package:hoyomi/core_services/interfaces/genre.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 
-part 'carousel.freezed.dart';
-part 'carousel.g.dart';
+part 'eiga_carousel.freezed.dart';
+part 'eiga_carousel.g.dart';
 
 @freezed
-sealed class Carousel with _$Carousel {
-  const factory Carousel({
-    required List<CarouselItem> items,
+sealed class EigaCarousel with _$EigaCarousel {
+  const factory EigaCarousel({
+    required List<EigaCarouselItem> items,
     required double aspectRatio,
     required double maxHeightBuilder,
-  }) = _Carousel;
+  }) = _EigaCarousel;
 
-  factory Carousel.fromJson(Map<String, dynamic> json) =>
-      _$CarouselFromJson(json);
+  factory EigaCarousel.fromJson(Map<String, dynamic> json) =>
+      _$EigaCarouselFromJson(json);
 
-  factory Carousel.createFakeData() {
-    return Carousel(
+  factory EigaCarousel.createFakeData() {
+    return EigaCarousel(
       items: [
-        CarouselItem(
+        EigaCarouselItem(
           image: OImage.createFakeData(),
           eigaId: 'eiga1',
           name: 'Eiga 1',

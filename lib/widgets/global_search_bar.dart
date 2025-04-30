@@ -227,15 +227,12 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                         ),
                       );
                     }
-                    return Flex(
-                      direction: Axis.vertical,
+                    return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Text(_keyword.value),
                         _buildKeywordSuggest(globalKeyword.value),
-                        Expanded(
-                          child: _buildSearchResults(globalKeyword.value),
-                        ),
+                        _buildSearchResults(globalKeyword.value).expanded(),
                       ],
                     );
                   }),
@@ -285,7 +282,9 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                     ),
                   );
                 })
-                : snapshot.data! as List;
+                : snapshot.data is List
+                ? snapshot.data as List
+                : const <String>[];
         if (!snapshot.hasData || data.isEmpty) return SizedBox.shrink();
 
         return Column(

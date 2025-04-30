@@ -4,7 +4,12 @@ class ComicChapter {
   final String chapterId;
   final DateTime? time;
 
-  const ComicChapter({required this.name, required this.chapterId, this.time, this.fullName});
+  const ComicChapter({
+    required this.name,
+    required this.chapterId,
+    this.time,
+    this.fullName,
+  });
 
   factory ComicChapter.createFakeData() {
     return ComicChapter(

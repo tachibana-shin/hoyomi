@@ -4,6 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
 
 part 'home_comic_category.freezed.dart';
+part 'home_comic_category.g.dart';
 
 @freezed
 sealed class HomeComicCategory with _$HomeComicCategory {
@@ -13,6 +14,9 @@ sealed class HomeComicCategory with _$HomeComicCategory {
     bool? gridView,
     required List<Comic> items,
   }) = _HomeComicCategory;
+
+  factory HomeComicCategory.fromJson(Map<String, dynamic> json) =>
+      _$HomeComicCategoryFromJson(json);
 
   factory HomeComicCategory.createFakeData() {
     return HomeComicCategory(
