@@ -6,11 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user_async.dart';
-import 'package:hoyomi/core_services/comic/interfaces/main.dart';
-import 'package:hoyomi/core_services/comic/mixin/comic_watch_page_mixin.dart';
+import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
-import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
-import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
@@ -339,28 +336,26 @@ class _DetailsComicState extends State<DetailsComic>
         // const SizedBox(height: 20.0),
 
         // Comment
-        if (_service is ComicAuthMixin &&
-            !(_service as AuthMixin).$noAuth &&
-            (_service as ComicAuthMixin).getComments != null)
+        if (_service is ComicCommentMixin)
           Padding(
             padding: EdgeInsets.only(bottom: 16),
             child: Comments(
               getComments: ({page, parent}) {
-                return (_service as ComicAuthMixin).getComments!(
+                return (_service as ComicCommentMixin).getComments(
                   comicId: widget.comicId,
                   page: page,
                   parent: parent,
                 );
               },
               deleteComment: ({required comment, parent}) {
-                return (_service as ComicAuthMixin).deleteComment!(
+                return (_service as ComicCommentMixin).deleteComment(
                   comicId: widget.comicId,
                   comment: comment,
                   parent: parent,
                 );
               },
               setLikeComment: ({required comment, parent, required value}) {
-                return (_service as ComicAuthMixin).setLikeComment!(
+                return (_service as ComicCommentMixin).setLikeComment(
                   comicId: widget.comicId,
                   comment: comment,
                   parent: parent,
@@ -881,9 +876,8 @@ class _ButtonLikeState extends State<_ButtonLike> {
     super.initState();
     _likes = widget.comic.likes;
 
-    if (widget.service is ComicAuthMixin &&
-        !(widget.service as AuthMixin).$noAuth) {
-      (widget.service as ComicAuthMixin)
+    if (widget.service is ComicLikeMixin) {
+      (widget.service as ComicLikeMixin)
           .isLiked(comicId: widget.comicId)
           .then((liked) {
             if (mounted) {
@@ -901,7 +895,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
   }
 
   void _onTap() {
-    (widget.service as ComicAuthMixin)
+    (widget.service as ComicLikeMixin)
         .setLike(comicId: widget.comicId, value: !(_liked ?? false))
         .then((value) {
           if (mounted) {

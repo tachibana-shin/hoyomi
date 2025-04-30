@@ -1,10 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
-import 'package:hoyomi/core_services/comic/interfaces/main.dart';
-import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
-import 'package:hoyomi/core_services/comic/mixin/comic_watch_page_general_mixin.dart';
+import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:hoyomi/utils/d_query.dart';
@@ -50,7 +47,11 @@ final List<Filter> globalFilters = [
 ];
 
 class TruyenGGService extends ABComicService
-    with ComicAuthMixin, ComicWatchPageGeneralMixin {
+    with
+        ComicAuthMixin,
+        ComicCommentMixin,
+        ComicLikeMixin,
+        ComicWatchPageGeneralMixin {
   @override
   bool? get $isAuth => true;
 
@@ -347,7 +348,7 @@ class TruyenGGService extends ABComicService
   }
 
   @override
-  get getComments => ({required comicId, chapterId, parent, page = 1}) async {
+  getComments({required comicId, chapterId, parent, page = 1}) async {
     final parentId = parent?.id ?? 0;
 
     if (chapterId != null) {
@@ -433,15 +434,10 @@ class TruyenGGService extends ABComicService
       totalItems: totalItems,
       totalPages: totalPages,
     );
-  };
+  }
 
   @override
-  get deleteComment => ({
-    required comicId,
-    chapterId,
-    parent,
-    required comment,
-  }) async {
+  deleteComment({required comicId, chapterId, parent, required comment}) async {
     final docB = parse$(
       _comicCachedStore[comicId] ?? await fetch(getURL(comicId)),
     );
@@ -455,10 +451,10 @@ class TruyenGGService extends ABComicService
         'episode_id': chapterId,
       },
     );
-  };
+  }
 
   @override
-  get setLikeComment => ({
+  setLikeComment({
     required comicId,
     chapterId,
     parent,
@@ -483,7 +479,7 @@ class TruyenGGService extends ABComicService
     }
 
     return value;
-  };
+  }
 
   @override
   getSuggest(comic, {page = 1}) async {

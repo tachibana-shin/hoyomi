@@ -126,7 +126,6 @@ class _CommentState extends State<Comment> {
                         onPressed: () {
                           _setLike(true);
                         },
-                        color: Theme.of(context).colorScheme.primary,
                       ),
                       Text(
                         '${widget.comment.countLike ?? 0}',
@@ -144,7 +143,6 @@ class _CommentState extends State<Comment> {
                         onPressed: () {
                           _setLike(false);
                         },
-                        color: Theme.of(context).colorScheme.primary,
                       ),
                       Text(
                         '${widget.comment.countDislike ?? 0}',
@@ -154,10 +152,7 @@ class _CommentState extends State<Comment> {
                       TextButton.icon(
                         onPressed: _showRepliesList,
                         icon: const Iconify(Mdi.reply, size: 18),
-                        label: Text(
-                          'Reply',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
+                        label: Text('Reply'),
                       ),
                       if (widget.comment.canDelete)
                         IconButton(
