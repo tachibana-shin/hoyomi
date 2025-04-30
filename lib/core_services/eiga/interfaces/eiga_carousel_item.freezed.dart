@@ -4,7 +4,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'carousel_item.dart';
+part of 'eiga_carousel_item.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,22 +14,22 @@ part of 'carousel_item.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$CarouselItem {
+mixin _$EigaCarouselItem {
 
  String? get subText; OImage get image; String get eigaId; String get name; String? get originalName; String? get type; String? get episodeDuration; DateTime? get updatedAt; String? get quality; int? get countSub; int? get countDub; double? get rate; String? get notice; String? get year; String? get description; String? get studio; String? get duration; String? get language; List<Genre>? get genres; List<Genre>? get actors;
-/// Create a copy of CarouselItem
+/// Create a copy of EigaCarouselItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$CarouselItemCopyWith<CarouselItem> get copyWith => _$CarouselItemCopyWithImpl<CarouselItem>(this as CarouselItem, _$identity);
+$EigaCarouselItemCopyWith<EigaCarouselItem> get copyWith => _$EigaCarouselItemCopyWithImpl<EigaCarouselItem>(this as EigaCarouselItem, _$identity);
 
-  /// Serializes this CarouselItem to a JSON map.
+  /// Serializes this EigaCarouselItem to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CarouselItem&&(identical(other.subText, subText) || other.subText == subText)&&(identical(other.image, image) || other.image == image)&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.type, type) || other.type == type)&&(identical(other.episodeDuration, episodeDuration) || other.episodeDuration == episodeDuration)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.quality, quality) || other.quality == quality)&&(identical(other.countSub, countSub) || other.countSub == countSub)&&(identical(other.countDub, countDub) || other.countDub == countDub)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.year, year) || other.year == year)&&(identical(other.description, description) || other.description == description)&&(identical(other.studio, studio) || other.studio == studio)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.language, language) || other.language == language)&&const DeepCollectionEquality().equals(other.genres, genres)&&const DeepCollectionEquality().equals(other.actors, actors));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EigaCarouselItem&&(identical(other.subText, subText) || other.subText == subText)&&(identical(other.image, image) || other.image == image)&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.type, type) || other.type == type)&&(identical(other.episodeDuration, episodeDuration) || other.episodeDuration == episodeDuration)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.quality, quality) || other.quality == quality)&&(identical(other.countSub, countSub) || other.countSub == countSub)&&(identical(other.countDub, countDub) || other.countDub == countDub)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.year, year) || other.year == year)&&(identical(other.description, description) || other.description == description)&&(identical(other.studio, studio) || other.studio == studio)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.language, language) || other.language == language)&&const DeepCollectionEquality().equals(other.genres, genres)&&const DeepCollectionEquality().equals(other.actors, actors));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -38,15 +38,15 @@ int get hashCode => Object.hashAll([runtimeType,subText,image,eigaId,name,origin
 
 @override
 String toString() {
-  return 'CarouselItem(subText: $subText, image: $image, eigaId: $eigaId, name: $name, originalName: $originalName, type: $type, episodeDuration: $episodeDuration, updatedAt: $updatedAt, quality: $quality, countSub: $countSub, countDub: $countDub, rate: $rate, notice: $notice, year: $year, description: $description, studio: $studio, duration: $duration, language: $language, genres: $genres, actors: $actors)';
+  return 'EigaCarouselItem(subText: $subText, image: $image, eigaId: $eigaId, name: $name, originalName: $originalName, type: $type, episodeDuration: $episodeDuration, updatedAt: $updatedAt, quality: $quality, countSub: $countSub, countDub: $countDub, rate: $rate, notice: $notice, year: $year, description: $description, studio: $studio, duration: $duration, language: $language, genres: $genres, actors: $actors)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $CarouselItemCopyWith<$Res>  {
-  factory $CarouselItemCopyWith(CarouselItem value, $Res Function(CarouselItem) _then) = _$CarouselItemCopyWithImpl;
+abstract mixin class $EigaCarouselItemCopyWith<$Res>  {
+  factory $EigaCarouselItemCopyWith(EigaCarouselItem value, $Res Function(EigaCarouselItem) _then) = _$EigaCarouselItemCopyWithImpl;
 @useResult
 $Res call({
  String? subText, OImage image, String eigaId, String name, String? originalName, String? type, String? episodeDuration, DateTime? updatedAt, String? quality, int? countSub, int? countDub, double? rate, String? notice, String? year, String? description, String? studio, String? duration, String? language, List<Genre>? genres, List<Genre>? actors
@@ -57,14 +57,14 @@ $OImageCopyWith<$Res> get image;
 
 }
 /// @nodoc
-class _$CarouselItemCopyWithImpl<$Res>
-    implements $CarouselItemCopyWith<$Res> {
-  _$CarouselItemCopyWithImpl(this._self, this._then);
+class _$EigaCarouselItemCopyWithImpl<$Res>
+    implements $EigaCarouselItemCopyWith<$Res> {
+  _$EigaCarouselItemCopyWithImpl(this._self, this._then);
 
-  final CarouselItem _self;
-  final $Res Function(CarouselItem) _then;
+  final EigaCarouselItem _self;
+  final $Res Function(EigaCarouselItem) _then;
 
-/// Create a copy of CarouselItem
+/// Create a copy of EigaCarouselItem
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? subText = freezed,Object? image = null,Object? eigaId = null,Object? name = null,Object? originalName = freezed,Object? type = freezed,Object? episodeDuration = freezed,Object? updatedAt = freezed,Object? quality = freezed,Object? countSub = freezed,Object? countDub = freezed,Object? rate = freezed,Object? notice = freezed,Object? year = freezed,Object? description = freezed,Object? studio = freezed,Object? duration = freezed,Object? language = freezed,Object? genres = freezed,Object? actors = freezed,}) {
   return _then(_self.copyWith(
@@ -91,7 +91,7 @@ as List<Genre>?,actors: freezed == actors ? _self.actors : actors // ignore: cas
 as List<Genre>?,
   ));
 }
-/// Create a copy of CarouselItem
+/// Create a copy of EigaCarouselItem
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -107,9 +107,9 @@ $OImageCopyWith<$Res> get image {
 /// @nodoc
 @JsonSerializable()
 
-class _CarouselItem implements CarouselItem {
-  const _CarouselItem({this.subText, required this.image, required this.eigaId, required this.name, this.originalName, this.type, this.episodeDuration, this.updatedAt, this.quality, this.countSub, this.countDub, this.rate, this.notice, this.year, this.description, this.studio, this.duration, this.language, final  List<Genre>? genres, final  List<Genre>? actors}): _genres = genres,_actors = actors;
-  factory _CarouselItem.fromJson(Map<String, dynamic> json) => _$CarouselItemFromJson(json);
+class _EigaCarouselItem implements EigaCarouselItem {
+  const _EigaCarouselItem({this.subText, required this.image, required this.eigaId, required this.name, this.originalName, this.type, this.episodeDuration, this.updatedAt, this.quality, this.countSub, this.countDub, this.rate, this.notice, this.year, this.description, this.studio, this.duration, this.language, final  List<Genre>? genres, final  List<Genre>? actors}): _genres = genres,_actors = actors;
+  factory _EigaCarouselItem.fromJson(Map<String, dynamic> json) => _$EigaCarouselItemFromJson(json);
 
 @override final  String? subText;
 @override final  OImage image;
@@ -148,20 +148,20 @@ class _CarouselItem implements CarouselItem {
 }
 
 
-/// Create a copy of CarouselItem
+/// Create a copy of EigaCarouselItem
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$CarouselItemCopyWith<_CarouselItem> get copyWith => __$CarouselItemCopyWithImpl<_CarouselItem>(this, _$identity);
+_$EigaCarouselItemCopyWith<_EigaCarouselItem> get copyWith => __$EigaCarouselItemCopyWithImpl<_EigaCarouselItem>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$CarouselItemToJson(this, );
+  return _$EigaCarouselItemToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CarouselItem&&(identical(other.subText, subText) || other.subText == subText)&&(identical(other.image, image) || other.image == image)&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.type, type) || other.type == type)&&(identical(other.episodeDuration, episodeDuration) || other.episodeDuration == episodeDuration)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.quality, quality) || other.quality == quality)&&(identical(other.countSub, countSub) || other.countSub == countSub)&&(identical(other.countDub, countDub) || other.countDub == countDub)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.year, year) || other.year == year)&&(identical(other.description, description) || other.description == description)&&(identical(other.studio, studio) || other.studio == studio)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.language, language) || other.language == language)&&const DeepCollectionEquality().equals(other._genres, _genres)&&const DeepCollectionEquality().equals(other._actors, _actors));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EigaCarouselItem&&(identical(other.subText, subText) || other.subText == subText)&&(identical(other.image, image) || other.image == image)&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.type, type) || other.type == type)&&(identical(other.episodeDuration, episodeDuration) || other.episodeDuration == episodeDuration)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.quality, quality) || other.quality == quality)&&(identical(other.countSub, countSub) || other.countSub == countSub)&&(identical(other.countDub, countDub) || other.countDub == countDub)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.year, year) || other.year == year)&&(identical(other.description, description) || other.description == description)&&(identical(other.studio, studio) || other.studio == studio)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.language, language) || other.language == language)&&const DeepCollectionEquality().equals(other._genres, _genres)&&const DeepCollectionEquality().equals(other._actors, _actors));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -170,15 +170,15 @@ int get hashCode => Object.hashAll([runtimeType,subText,image,eigaId,name,origin
 
 @override
 String toString() {
-  return 'CarouselItem(subText: $subText, image: $image, eigaId: $eigaId, name: $name, originalName: $originalName, type: $type, episodeDuration: $episodeDuration, updatedAt: $updatedAt, quality: $quality, countSub: $countSub, countDub: $countDub, rate: $rate, notice: $notice, year: $year, description: $description, studio: $studio, duration: $duration, language: $language, genres: $genres, actors: $actors)';
+  return 'EigaCarouselItem(subText: $subText, image: $image, eigaId: $eigaId, name: $name, originalName: $originalName, type: $type, episodeDuration: $episodeDuration, updatedAt: $updatedAt, quality: $quality, countSub: $countSub, countDub: $countDub, rate: $rate, notice: $notice, year: $year, description: $description, studio: $studio, duration: $duration, language: $language, genres: $genres, actors: $actors)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$CarouselItemCopyWith<$Res> implements $CarouselItemCopyWith<$Res> {
-  factory _$CarouselItemCopyWith(_CarouselItem value, $Res Function(_CarouselItem) _then) = __$CarouselItemCopyWithImpl;
+abstract mixin class _$EigaCarouselItemCopyWith<$Res> implements $EigaCarouselItemCopyWith<$Res> {
+  factory _$EigaCarouselItemCopyWith(_EigaCarouselItem value, $Res Function(_EigaCarouselItem) _then) = __$EigaCarouselItemCopyWithImpl;
 @override @useResult
 $Res call({
  String? subText, OImage image, String eigaId, String name, String? originalName, String? type, String? episodeDuration, DateTime? updatedAt, String? quality, int? countSub, int? countDub, double? rate, String? notice, String? year, String? description, String? studio, String? duration, String? language, List<Genre>? genres, List<Genre>? actors
@@ -189,17 +189,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$CarouselItemCopyWithImpl<$Res>
-    implements _$CarouselItemCopyWith<$Res> {
-  __$CarouselItemCopyWithImpl(this._self, this._then);
+class __$EigaCarouselItemCopyWithImpl<$Res>
+    implements _$EigaCarouselItemCopyWith<$Res> {
+  __$EigaCarouselItemCopyWithImpl(this._self, this._then);
 
-  final _CarouselItem _self;
-  final $Res Function(_CarouselItem) _then;
+  final _EigaCarouselItem _self;
+  final $Res Function(_EigaCarouselItem) _then;
 
-/// Create a copy of CarouselItem
+/// Create a copy of EigaCarouselItem
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? subText = freezed,Object? image = null,Object? eigaId = null,Object? name = null,Object? originalName = freezed,Object? type = freezed,Object? episodeDuration = freezed,Object? updatedAt = freezed,Object? quality = freezed,Object? countSub = freezed,Object? countDub = freezed,Object? rate = freezed,Object? notice = freezed,Object? year = freezed,Object? description = freezed,Object? studio = freezed,Object? duration = freezed,Object? language = freezed,Object? genres = freezed,Object? actors = freezed,}) {
-  return _then(_CarouselItem(
+  return _then(_EigaCarouselItem(
 subText: freezed == subText ? _self.subText : subText // ignore: cast_nullable_to_non_nullable
 as String?,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
 as OImage,eigaId: null == eigaId ? _self.eigaId : eigaId // ignore: cast_nullable_to_non_nullable
@@ -224,7 +224,7 @@ as List<Genre>?,
   ));
 }
 
-/// Create a copy of CarouselItem
+/// Create a copy of EigaCarouselItem
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')

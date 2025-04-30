@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EigaHome {
 
- Carousel? get carousel; List<HomeEigaCategory> get categories;
+ EigaCarousel? get carousel; List<HomeEigaCategory> get categories;
 /// Create a copy of EigaHome
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,11 +49,11 @@ abstract mixin class $EigaHomeCopyWith<$Res>  {
   factory $EigaHomeCopyWith(EigaHome value, $Res Function(EigaHome) _then) = _$EigaHomeCopyWithImpl;
 @useResult
 $Res call({
- Carousel? carousel, List<HomeEigaCategory> categories
+ EigaCarousel? carousel, List<HomeEigaCategory> categories
 });
 
 
-$CarouselCopyWith<$Res>? get carousel;
+$EigaCarouselCopyWith<$Res>? get carousel;
 
 }
 /// @nodoc
@@ -69,7 +69,7 @@ class _$EigaHomeCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? carousel = freezed,Object? categories = null,}) {
   return _then(_self.copyWith(
 carousel: freezed == carousel ? _self.carousel : carousel // ignore: cast_nullable_to_non_nullable
-as Carousel?,categories: null == categories ? _self.categories : categories // ignore: cast_nullable_to_non_nullable
+as EigaCarousel?,categories: null == categories ? _self.categories : categories // ignore: cast_nullable_to_non_nullable
 as List<HomeEigaCategory>,
   ));
 }
@@ -77,12 +77,12 @@ as List<HomeEigaCategory>,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$CarouselCopyWith<$Res>? get carousel {
+$EigaCarouselCopyWith<$Res>? get carousel {
     if (_self.carousel == null) {
     return null;
   }
 
-  return $CarouselCopyWith<$Res>(_self.carousel!, (value) {
+  return $EigaCarouselCopyWith<$Res>(_self.carousel!, (value) {
     return _then(_self.copyWith(carousel: value));
   });
 }
@@ -96,7 +96,7 @@ class _EigaHome implements EigaHome {
   const _EigaHome({this.carousel, required final  List<HomeEigaCategory> categories}): _categories = categories;
   factory _EigaHome.fromJson(Map<String, dynamic> json) => _$EigaHomeFromJson(json);
 
-@override final  Carousel? carousel;
+@override final  EigaCarousel? carousel;
  final  List<HomeEigaCategory> _categories;
 @override List<HomeEigaCategory> get categories {
   if (_categories is EqualUnmodifiableListView) return _categories;
@@ -138,11 +138,11 @@ abstract mixin class _$EigaHomeCopyWith<$Res> implements $EigaHomeCopyWith<$Res>
   factory _$EigaHomeCopyWith(_EigaHome value, $Res Function(_EigaHome) _then) = __$EigaHomeCopyWithImpl;
 @override @useResult
 $Res call({
- Carousel? carousel, List<HomeEigaCategory> categories
+ EigaCarousel? carousel, List<HomeEigaCategory> categories
 });
 
 
-@override $CarouselCopyWith<$Res>? get carousel;
+@override $EigaCarouselCopyWith<$Res>? get carousel;
 
 }
 /// @nodoc
@@ -158,7 +158,7 @@ class __$EigaHomeCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? carousel = freezed,Object? categories = null,}) {
   return _then(_EigaHome(
 carousel: freezed == carousel ? _self.carousel : carousel // ignore: cast_nullable_to_non_nullable
-as Carousel?,categories: null == categories ? _self._categories : categories // ignore: cast_nullable_to_non_nullable
+as EigaCarousel?,categories: null == categories ? _self._categories : categories // ignore: cast_nullable_to_non_nullable
 as List<HomeEigaCategory>,
   ));
 }
@@ -167,12 +167,12 @@ as List<HomeEigaCategory>,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$CarouselCopyWith<$Res>? get carousel {
+$EigaCarouselCopyWith<$Res>? get carousel {
     if (_self.carousel == null) {
     return null;
   }
 
-  return $CarouselCopyWith<$Res>(_self.carousel!, (value) {
+  return $EigaCarouselCopyWith<$Res>(_self.carousel!, (value) {
     return _then(_self.copyWith(carousel: value));
   });
 }

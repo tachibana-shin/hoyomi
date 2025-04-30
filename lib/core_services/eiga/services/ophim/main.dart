@@ -78,7 +78,7 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     );
   }
 
-  CarouselItem _parseCarousel(String domainCDNImage, _Item item) {
+  EigaCarouselItem _parseCarousel(String domainCDNImage, _Item item) {
     final data = _parseItem(domainCDNImage, item);
 
     final year = item.year?.toString();
@@ -102,7 +102,7 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     //       );
     //     });
 
-    return CarouselItem(
+    return EigaCarouselItem(
       image: _getImage(
         cdn: domainCDNImage,
         src: item.posterUrl ?? item.thumbUrl,
@@ -168,7 +168,7 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
         }).toList();
 
     return EigaHome(
-      carousel: Carousel(
+      carousel: EigaCarousel(
         items: carouselItems,
         aspectRatio: 404 / 720,
         maxHeightBuilder: 0.3,

@@ -1,16 +1,16 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'carousel_item.dart';
+part of 'comic_carousel_item.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_CarouselItem _$CarouselItemFromJson(Map<String, dynamic> json) =>
-    _CarouselItem(
+_ComicCarouselItem _$ComicCarouselItemFromJson(Map<String, dynamic> json) =>
+    _ComicCarouselItem(
       subText: json['subText'] as String?,
       image: OImage.fromJson(json['image'] as Map<String, dynamic>),
-      eigaId: json['eigaId'] as String,
+      comicId: json['comicId'] as String,
       name: json['name'] as String,
       originalName: json['originalName'] as String?,
       type: json['type'] as String?,
@@ -39,11 +39,11 @@ _CarouselItem _$CarouselItemFromJson(Map<String, dynamic> json) =>
               .toList(),
     );
 
-Map<String, dynamic> _$CarouselItemToJson(_CarouselItem instance) =>
+Map<String, dynamic> _$ComicCarouselItemToJson(_ComicCarouselItem instance) =>
     <String, dynamic>{
       'subText': instance.subText,
       'image': instance.image,
-      'eigaId': instance.eigaId,
+      'comicId': instance.comicId,
       'name': instance.name,
       'originalName': instance.originalName,
       'type': instance.type,

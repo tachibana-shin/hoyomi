@@ -12,6 +12,7 @@ part of 'home_comic_category.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$HomeComicCategory {
 
@@ -22,6 +23,8 @@ mixin _$HomeComicCategory {
 @pragma('vm:prefer-inline')
 $HomeComicCategoryCopyWith<HomeComicCategory> get copyWith => _$HomeComicCategoryCopyWithImpl<HomeComicCategory>(this as HomeComicCategory, _$identity);
 
+  /// Serializes this HomeComicCategory to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
@@ -29,7 +32,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeComicCategory&&(identical(other.name, name) || other.name == name)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.gridView, gridView) || other.gridView == gridView)&&const DeepCollectionEquality().equals(other.items, items));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,name,categoryId,gridView,const DeepCollectionEquality().hash(items));
 
@@ -77,11 +80,11 @@ as List<Comic>,
 
 
 /// @nodoc
-
+@JsonSerializable()
 
 class _HomeComicCategory implements HomeComicCategory {
   const _HomeComicCategory({required this.name, this.categoryId, this.gridView, required final  List<Comic> items}): _items = items;
-  
+  factory _HomeComicCategory.fromJson(Map<String, dynamic> json) => _$HomeComicCategoryFromJson(json);
 
 @override final  String name;
 @override final  String? categoryId;
@@ -100,14 +103,17 @@ class _HomeComicCategory implements HomeComicCategory {
 @pragma('vm:prefer-inline')
 _$HomeComicCategoryCopyWith<_HomeComicCategory> get copyWith => __$HomeComicCategoryCopyWithImpl<_HomeComicCategory>(this, _$identity);
 
-
+@override
+Map<String, dynamic> toJson() {
+  return _$HomeComicCategoryToJson(this, );
+}
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeComicCategory&&(identical(other.name, name) || other.name == name)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.gridView, gridView) || other.gridView == gridView)&&const DeepCollectionEquality().equals(other._items, _items));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,name,categoryId,gridView,const DeepCollectionEquality().hash(_items));
 

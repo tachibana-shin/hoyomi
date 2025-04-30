@@ -1,4 +1,5 @@
-export 'carousel_item.dart';
+export 'eiga_carousel.dart';
+export 'eiga_carousel_item.dart';
 export 'eiga_category.dart';
 export 'eiga_episode.dart';
 export 'eiga_episodes.dart';

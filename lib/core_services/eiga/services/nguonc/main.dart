@@ -73,7 +73,7 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
     );
   }
 
-  CarouselItem _parseCarousel(_MovieItem item) {
+  EigaCarouselItem _parseCarousel(_MovieItem item) {
     final data = _parseItem(item);
 
     final year = null;
@@ -95,7 +95,7 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
     //       );
     //     });
 
-    return CarouselItem(
+    return EigaCarouselItem(
       image: _getImage(src: item.posterUrl),
       eigaId: data.eigaId,
       name: data.name,
@@ -149,7 +149,7 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
         }).toList();
 
     return EigaHome(
-      carousel: Carousel(
+      carousel: EigaCarousel(
         items: carouselItems,
         aspectRatio: 404 / 720,
         maxHeightBuilder: 0.3,

@@ -2,15 +2,15 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/interfaces/genre.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 
-part 'carousel_item.freezed.dart';
-part 'carousel_item.g.dart';
+part 'comic_carousel_item.freezed.dart';
+part 'comic_carousel_item.g.dart';
 
 @freezed
-sealed class CarouselItem with _$CarouselItem {
-  const factory CarouselItem({
+sealed class ComicCarouselItem with _$ComicCarouselItem {
+  const factory ComicCarouselItem({
     String? subText,
     required OImage image,
-    required String eigaId,
+    required String comicId,
     required String name,
     String? originalName,
     String? type,
@@ -28,8 +28,8 @@ sealed class CarouselItem with _$CarouselItem {
     String? language,
     List<Genre>? genres,
     List<Genre>? actors,
-  }) = _CarouselItem;
+  }) = _ComicCarouselItem;
 
-  factory CarouselItem.fromJson(Map<String, dynamic> json) =>
-      _$CarouselItemFromJson(json);
+  factory ComicCarouselItem.fromJson(Map<String, dynamic> json) =>
+      _$ComicCarouselItemFromJson(json);
 }
