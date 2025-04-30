@@ -6,6 +6,7 @@ export 'comic.dart';
 export 'comic_chapter.dart';
 export 'comic_comment.dart';
 export 'comic_history.dart';
+export 'comic_home.dart';
 export 'home_comic_category.dart';
 export 'comic_param.dart';
 export 'comic_modes.dart';

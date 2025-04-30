@@ -162,12 +162,12 @@ class TruyenGGService extends ABComicService
 
   // Main
   @override
-  Future<List<HomeComicCategory>> home() async {
+  home() async {
     final $ = await fetch$(baseUrl);
 
     final categories = $('.list_item_home');
 
-    return [
+    return ComicHome(categories:  [
       HomeComicCategory(
         items:
             categories
@@ -198,7 +198,7 @@ class TruyenGGService extends ABComicService
         name: 'Xem Nhiều',
         categoryId: 'top-thang',
       ),
-    ];
+    ]);
   }
 
   @override

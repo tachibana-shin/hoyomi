@@ -103,10 +103,10 @@ class TruyenQQService extends TruyenGGService {
   }
 
   @override
-  Future<List<HomeComicCategory>> home() async {
+  home() async {
     final $ = await fetch$(baseUrl);
 
-    return [
+    return ComicHome(categories: [
       HomeComicCategory(
         items:
             $(
@@ -122,7 +122,7 @@ class TruyenQQService extends TruyenGGService {
         name: 'Truyện Mới Cập Nhật',
         categoryId: 'truyen-moi-cap-nhat',
       ),
-    ];
+    ]);
   }
 
   @override
