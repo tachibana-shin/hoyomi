@@ -9,7 +9,7 @@ abstract class ABComicService extends Service {
   String getURL(String comicId, {String? chapterId});
   ComicParam parseURL(String url);
 
-  Future<List<HomeComicCategory>> home();
+  Future<ComicHome> home();
 
   Future<ComicCategory> getCategory({
     required String categoryId,
