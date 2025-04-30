@@ -95,6 +95,8 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
           if (_jumping) return;
 
           widget.currentPage.value = page.toDouble();
+
+          if (widget.twoPage == false) return;
           for (int i = 0; i < 5; i++) {
             if (page + i >= widget.pages.value.length) break;
             if (_imagesLoaded.containsKey(page + i)) continue;
