@@ -27,7 +27,7 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
   );
 
   @override
-  Future<List<HomeComicCategory>> home() async {
+  home() async {
     final all = await Future.wait([
       fetch('home_a'),
       fetch('mangas/top?duration=week&page=1&per_page=24'),
@@ -36,12 +36,14 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
     final data = HomeMangaResponse.fromJson(jsonDecode(all[0])['data']);
     final topWeek = MangaListResponse.fromJson(jsonDecode(all[1]));
 
-    return [
-      HomeComicCategory(
+    return ComicHome(
+      carousel: ComicCarousel(
+        aspectRatio: 679 / 350,
+        maxHeightBuilder: 0.4,
         items:
             data.spotlightMangas
                 .map(
-                  (item) => Comic(
+                  (item) => ComicCarouselItem(
                     comicId: item.id.toString(),
                     name: item.name,
                     image: OImage.from(item.panoramaUrl),
@@ -49,48 +51,49 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
                   ),
                 )
                 .toList(),
-        name: '',
-        categoryId: 'truyen-moi-cap-nhat',
       ),
-      HomeComicCategory(
-        items:
-            data.newChapterMangas
-                .map(
-                  (item) => Comic(
-                    comicId: item.id.toString(),
-                    name: item.name,
-                    image: OImage.from(item.coverUrl),
-                    lastChap: ComicChapter(
-                      name: 'Chapter ${item.newestChapterNumber}',
-                      chapterId: item.newestChapterId.toString(),
+      categories: [
+        HomeComicCategory(
+          items:
+              data.newChapterMangas
+                  .map(
+                    (item) => Comic(
+                      comicId: item.id.toString(),
+                      name: item.name,
+                      image: OImage.from(item.coverUrl),
+                      lastChap: ComicChapter(
+                        name: 'Chapter ${item.newestChapterNumber}',
+                        chapterId: item.newestChapterId.toString(),
+                      ),
+                      lastUpdate: item.newestChapterCreatedAt,
                     ),
-                    lastUpdate: item.newestChapterCreatedAt,
-                  ),
-                )
-                .toList(),
-        name: 'Mới Cập Nhật',
-        categoryId: 'newest',
-      ),
+                  )
+                  .toList(),
+          name: 'Mới Cập Nhật',
+          categoryId: 'newest',
+        ),
 
-      HomeComicCategory(
-        name: 'Top nổi bật tuần',
-        items:
-            topWeek.data
-                .map(
-                  (item) => Comic(
-                    comicId: item.id.toString(),
-                    name: item.name,
-                    image: OImage.from(item.coverUrl),
-                    lastChap: ComicChapter(
-                      name: 'Chapter ${item.newestChapterNumber}',
-                      chapterId: item.newestChapterId.toString(),
+        HomeComicCategory(
+          name: 'Top nổi bật tuần',
+          gridView: true,
+          items:
+              topWeek.data
+                  .map(
+                    (item) => Comic(
+                      comicId: item.id.toString(),
+                      name: item.name,
+                      image: OImage.from(item.coverUrl),
+                      lastChap: ComicChapter(
+                        name: 'Chapter ${item.newestChapterNumber}',
+                        chapterId: item.newestChapterId.toString(),
+                      ),
+                      lastUpdate: DateTime.parse(item.newestChapterCreatedAt),
                     ),
-                    lastUpdate: DateTime.parse(item.newestChapterCreatedAt),
-                  ),
-                )
-                .toList(),
-      ),
-    ];
+                  )
+                  .toList(),
+        ),
+      ],
+    );
   }
 
   @override
