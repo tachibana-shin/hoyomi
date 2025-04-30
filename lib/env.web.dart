@@ -16,4 +16,6 @@ abstract class Env {
   static final String baseApiGeneral = _Env.baseApiGeneral;
   @EnviedField(obfuscate: true, defaultValue: '')
   static final String twoApi = _Env.twoApi;
+  @EnviedField(obfuscate: true, defaultValue: '')
+  static final String niceTruyenKey = _Env.niceTruyenKey;
 }

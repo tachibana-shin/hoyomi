@@ -1,6 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hoyomi/env.dart';
 import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
 import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/core_services/comic/mixin/comic_watch_page_general_mixin.dart';
@@ -147,7 +153,8 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
         chapters
             .map(
               (chapter) => ComicChapter(
-                name: ['Chapter ${chapter.number}', chapter.name].join(' - '),
+                name: 'Chapter ${chapter.number}',
+                fullName: chapter.name,
                 chapterId: chapter.id.toString(),
               ),
             )
@@ -194,8 +201,13 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
     );
 
     return data.pages.map((page) {
-      return OImage(src: page.imageUrl, extra: jsonEncode(page.toJson()));
+      return OImage(src: page.imageUrl, extra: page.drmData);
     }).toList();
+  }
+
+  @override
+  fetchPage(source) async {
+    return _decodeAndBuildImage(source.src, source.extra!);
   }
 
   @override
@@ -651,4 +663,105 @@ sealed class MangaListData with _$MangaListData {
 
   factory MangaListData.fromJson(Map<String, dynamic> json) =>
       _$MangaListDataFromJson(json);
+}
+
+/// =============== utils ===================
+// XOR decode
+Uint8List _decodeXor(Uint8List data, String key) {
+  final keyBytes = utf8.encode(key);
+  final result = Uint8List(data.length);
+  for (int i = 0; i < data.length; i++) {
+    result[i] = data[i] ^ keyBytes[i % keyBytes.length];
+  }
+  return result;
+}
+
+// Decode DRM string
+Future<List<Map<String, int>>> _decodeDrm(
+  String drmBase64,
+  String decryptionKey,
+) async {
+  final drmBytes = base64.decode(drmBase64.replaceAll('\n', ''));
+  final decrypted = _decodeXor(drmBytes, decryptionKey);
+  final decodedStr = utf8.decode(decrypted);
+
+  if (!decodedStr.startsWith('#v4|')) {
+    throw Exception('Invalid DRM format');
+  }
+
+  final parts = decodedStr.split('|').sublist(1);
+  final blocks = <Map<String, int>>[];
+
+  for (final part in parts) {
+    final values = part.split('-');
+    blocks.add({'dy': int.parse(values[0]), 'height': int.parse(values[1])});
+  }
+
+  return blocks;
+}
+
+// Load image from URL as ui.Image
+final _dio = Dio();
+Future<ui.Image> _loadImageFromUrl(String url) async {
+  final response = await _dio.get(
+    url,
+    options: Options(responseType: ResponseType.bytes),
+  );
+  final completer = Completer<ui.Image>();
+  ui.decodeImageFromList(response.data, completer.complete);
+  return completer.future;
+}
+
+// Copy region from one image to another
+Future<ui.Image> _unscrambleImage(
+  ui.Image srcImg,
+  List<Map<String, int>> blocks,
+) async {
+  final recorder = ui.PictureRecorder();
+  final canvas = Canvas(recorder);
+  final paint = Paint();
+
+  int sy = 0;
+  for (final block in blocks) {
+    final dy = block['dy']!;
+    final height = block['height']!;
+
+    final srcRect = Rect.fromLTWH(
+      0,
+      sy.toDouble(),
+      srcImg.width.toDouble(),
+      height.toDouble(),
+    );
+    final dstRect = Rect.fromLTWH(
+      0,
+      dy.toDouble(),
+      srcImg.width.toDouble(),
+      height.toDouble(),
+    );
+
+    canvas.drawImageRect(srcImg, srcRect, dstRect, paint);
+    sy += height;
+  }
+
+  final picture = recorder.endRecording();
+  return await picture.toImage(srcImg.width, srcImg.height);
+}
+
+// Convert ui.Image to Widget
+Future<Uint8List> _imageFromUiImage(ui.Image uiImage) async {
+  final byteData = await uiImage.toByteData(format: ui.ImageByteFormat.png);
+  return byteData!.buffer.asUint8List();
+}
+
+// Main function to call
+final _encryptedKey = Env.niceTruyenKey;
+Future<Uint8List> _decodeAndBuildImage(String url, String drmData) async {
+  final key = utf8.decode(
+    base64.decode('${_encryptedKey.substring(0, _encryptedKey.length - 2)}=='),
+  );
+
+  final blocks = await _decodeDrm(drmData.trim(), key);
+  final srcImage = await _loadImageFromUrl(url);
+  final decodedImage = await _unscrambleImage(srcImage, blocks);
+  return await _imageFromUiImage(decodedImage);
 }
