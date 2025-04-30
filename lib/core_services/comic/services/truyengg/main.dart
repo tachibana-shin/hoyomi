@@ -167,38 +167,40 @@ class TruyenGGService extends ABComicService
 
     final categories = $('.list_item_home');
 
-    return ComicHome(categories:  [
-      HomeComicCategory(
-        items:
-            categories
-                .first()
-                .query('.item_home')
-                .map((element) => parseComic(element, baseUrl))
-                .toList(),
-        name: 'Mới Cập Nhật',
-        categoryId: 'truyen-moi-cap-nhat',
-      ),
-      HomeComicCategory(
-        items:
-            categories
-                .eq(1)
-                .query('.item_home')
-                .map((element) => parseComic(element, baseUrl))
-                .toList(),
-        name: 'Bình Chọn',
-        categoryId: 'top-binh-chon',
-      ),
-      HomeComicCategory(
-        items:
-            categories
-                .eq(2)
-                .query('.item_home')
-                .map((element) => parseComic(element, baseUrl))
-                .toList(),
-        name: 'Xem Nhiều',
-        categoryId: 'top-thang',
-      ),
-    ]);
+    return ComicHome(
+      categories: [
+        HomeComicCategory(
+          items:
+              categories
+                  .first()
+                  .query('.item_home')
+                  .map((element) => parseComic(element, baseUrl))
+                  .toList(),
+          name: 'Mới Cập Nhật',
+          categoryId: 'truyen-moi-cap-nhat',
+        ),
+        HomeComicCategory(
+          items:
+              categories
+                  .eq(1)
+                  .query('.item_home')
+                  .map((element) => parseComic(element, baseUrl))
+                  .toList(),
+          name: 'Bình Chọn',
+          categoryId: 'top-binh-chon',
+        ),
+        HomeComicCategory(
+          items:
+              categories
+                  .eq(2)
+                  .query('.item_home')
+                  .map((element) => parseComic(element, baseUrl))
+                  .toList(),
+          name: 'Xem Nhiều',
+          categoryId: 'top-thang',
+        ),
+      ],
+    );
   }
 
   @override

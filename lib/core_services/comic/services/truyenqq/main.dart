@@ -106,23 +106,25 @@ class TruyenQQService extends TruyenGGService {
   home() async {
     final $ = await fetch$(baseUrl);
 
-    return ComicHome(categories: [
-      HomeComicCategory(
-        items:
-            $(
-              '#list_suggest > li',
-            ).map((element) => parseComic(element, baseUrl)).toList(),
-        name: 'Truyện Hay',
-      ),
-      HomeComicCategory(
-        items:
-            $(
-              '#list_new > li',
-            ).map((element) => parseComic(element, baseUrl)).toList(),
-        name: 'Truyện Mới Cập Nhật',
-        categoryId: 'truyen-moi-cap-nhat',
-      ),
-    ]);
+    return ComicHome(
+      categories: [
+        HomeComicCategory(
+          items:
+              $(
+                '#list_suggest > li',
+              ).map((element) => parseComic(element, baseUrl)).toList(),
+          name: 'Truyện Hay',
+        ),
+        HomeComicCategory(
+          items:
+              $(
+                '#list_new > li',
+              ).map((element) => parseComic(element, baseUrl)).toList(),
+          name: 'Truyện Mới Cập Nhật',
+          categoryId: 'truyen-moi-cap-nhat',
+        ),
+      ],
+    );
   }
 
   @override

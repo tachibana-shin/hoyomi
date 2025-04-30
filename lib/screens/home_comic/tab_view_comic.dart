@@ -27,8 +27,7 @@ class _TabViewComicState extends State<TabViewComic>
 
     return PullRefreshPage<ComicHome>(
       onLoadData: widget.service.home,
-      onLoadFake:
-          () => ComicHome.createFakeData(),
+      onLoadFake: () => ComicHome.createFakeData(),
       builder: (data, _) {
         return ListView.builder(
           padding: const EdgeInsets.all(8.0),
@@ -53,17 +52,17 @@ class _TabViewComicState extends State<TabViewComic>
                   category.items
                       .map(
                         (item) => ComicExtend(
-                      comic: item,
-                      sourceId: widget.service.uid,
-                    ),
-                  )
+                          comic: item,
+                          sourceId: widget.service.uid,
+                        ),
+                      )
                       .toList(),
                 ),
                 title: category.name,
                 more:
-                category.categoryId != null
-                    ? '/category_comic/${widget.service.uid}/${category.categoryId}'
-                    : null,
+                    category.categoryId != null
+                        ? '/category_comic/${widget.service.uid}/${category.categoryId}'
+                        : null,
               );
             }
 
@@ -71,16 +70,18 @@ class _TabViewComicState extends State<TabViewComic>
               itemsFuture: Future.value(
                 category.items
                     .map(
-                      (item) =>
-                      ComicExtend(comic: item, sourceId: widget.service.uid),
-                )
+                      (item) => ComicExtend(
+                        comic: item,
+                        sourceId: widget.service.uid,
+                      ),
+                    )
                     .toList(),
               ),
               title: category.name,
               more:
-              category.categoryId != null
-                  ? '/category_comic/${widget.service.uid}/${category.categoryId}'
-                  : null,
+                  category.categoryId != null
+                      ? '/category_comic/${widget.service.uid}/${category.categoryId}'
+                      : null,
               disableScroll: true,
             );
           },
