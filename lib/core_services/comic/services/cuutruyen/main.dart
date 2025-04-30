@@ -20,7 +20,7 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
   @override
   final init = ServiceInit(
     name: 'CuuTruyen',
-    faviconUrl: OImage(src: '/favicon.ico'),
+    faviconUrl: OImage.from('https://i.imgur.com/2Vjm3S4.png'),
     rootUrl: 'https://cuutruyen.net',
     fetchHeadless: true,
     fetchBaseUrl: '{BASE_URL}/api/v2/',
