@@ -276,7 +276,7 @@ _ChapterResponse _$ChapterResponseFromJson(Map<String, dynamic> json) =>
       id: (json['id'] as num).toInt(),
       order: (json['order'] as num).toInt(),
       number: json['number'] as String,
-      name: json['name'] as String,
+      name: json['name'] as String?,
       viewsCount: (json['views_count'] as num).toInt(),
       commentsCount: (json['comments_count'] as num).toInt(),
       status: json['status'] as String,

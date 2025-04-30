@@ -1970,7 +1970,7 @@ as List<Chapter>,
 /// @nodoc
 mixin _$ChapterResponse {
 
- int get id; int get order; String get number; String get name;@JsonKey(name: 'views_count') int get viewsCount;@JsonKey(name: 'comments_count') int get commentsCount; String get status;@JsonKey(name: 'previous_chapter_id') int? get previousChapterId;@JsonKey(name: 'previous_chapter_number') String? get previousChapterNumber;@JsonKey(name: 'previous_chapter_name') String? get previousChapterName;@JsonKey(name: 'next_chapter_id') int? get nextChapterId;@JsonKey(name: 'next_chapter_number') String? get nextChapterNumber;@JsonKey(name: 'next_chapter_name') String? get nextChapterName;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt; Manga get manga; Team get team; List<Page> get pages;
+ int get id; int get order; String get number; String? get name;@JsonKey(name: 'views_count') int get viewsCount;@JsonKey(name: 'comments_count') int get commentsCount; String get status;@JsonKey(name: 'previous_chapter_id') int? get previousChapterId;@JsonKey(name: 'previous_chapter_number') String? get previousChapterNumber;@JsonKey(name: 'previous_chapter_name') String? get previousChapterName;@JsonKey(name: 'next_chapter_id') int? get nextChapterId;@JsonKey(name: 'next_chapter_number') String? get nextChapterNumber;@JsonKey(name: 'next_chapter_name') String? get nextChapterName;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt; Manga get manga; Team get team; List<Page> get pages;
 /// Create a copy of ChapterResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2003,7 +2003,7 @@ abstract mixin class $ChapterResponseCopyWith<$Res>  {
   factory $ChapterResponseCopyWith(ChapterResponse value, $Res Function(ChapterResponse) _then) = _$ChapterResponseCopyWithImpl;
 @useResult
 $Res call({
- int id, int order, String number, String name,@JsonKey(name: 'views_count') int viewsCount,@JsonKey(name: 'comments_count') int commentsCount, String status,@JsonKey(name: 'previous_chapter_id') int? previousChapterId,@JsonKey(name: 'previous_chapter_number') String? previousChapterNumber,@JsonKey(name: 'previous_chapter_name') String? previousChapterName,@JsonKey(name: 'next_chapter_id') int? nextChapterId,@JsonKey(name: 'next_chapter_number') String? nextChapterNumber,@JsonKey(name: 'next_chapter_name') String? nextChapterName,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, Manga manga, Team team, List<Page> pages
+ int id, int order, String number, String? name,@JsonKey(name: 'views_count') int viewsCount,@JsonKey(name: 'comments_count') int commentsCount, String status,@JsonKey(name: 'previous_chapter_id') int? previousChapterId,@JsonKey(name: 'previous_chapter_number') String? previousChapterNumber,@JsonKey(name: 'previous_chapter_name') String? previousChapterName,@JsonKey(name: 'next_chapter_id') int? nextChapterId,@JsonKey(name: 'next_chapter_number') String? nextChapterNumber,@JsonKey(name: 'next_chapter_name') String? nextChapterName,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, Manga manga, Team team, List<Page> pages
 });
 
 
@@ -2020,13 +2020,13 @@ class _$ChapterResponseCopyWithImpl<$Res>
 
 /// Create a copy of ChapterResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? order = null,Object? number = null,Object? name = null,Object? viewsCount = null,Object? commentsCount = null,Object? status = null,Object? previousChapterId = freezed,Object? previousChapterNumber = freezed,Object? previousChapterName = freezed,Object? nextChapterId = freezed,Object? nextChapterNumber = freezed,Object? nextChapterName = freezed,Object? createdAt = null,Object? updatedAt = null,Object? manga = null,Object? team = null,Object? pages = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? order = null,Object? number = null,Object? name = freezed,Object? viewsCount = null,Object? commentsCount = null,Object? status = null,Object? previousChapterId = freezed,Object? previousChapterNumber = freezed,Object? previousChapterName = freezed,Object? nextChapterId = freezed,Object? nextChapterNumber = freezed,Object? nextChapterName = freezed,Object? createdAt = null,Object? updatedAt = null,Object? manga = null,Object? team = null,Object? pages = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as int,number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,viewsCount: null == viewsCount ? _self.viewsCount : viewsCount // ignore: cast_nullable_to_non_nullable
+as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,viewsCount: null == viewsCount ? _self.viewsCount : viewsCount // ignore: cast_nullable_to_non_nullable
 as int,commentsCount: null == commentsCount ? _self.commentsCount : commentsCount // ignore: cast_nullable_to_non_nullable
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,previousChapterId: freezed == previousChapterId ? _self.previousChapterId : previousChapterId // ignore: cast_nullable_to_non_nullable
@@ -2075,7 +2075,7 @@ class _ChapterResponse implements ChapterResponse {
 @override final  int id;
 @override final  int order;
 @override final  String number;
-@override final  String name;
+@override final  String? name;
 @override@JsonKey(name: 'views_count') final  int viewsCount;
 @override@JsonKey(name: 'comments_count') final  int commentsCount;
 @override final  String status;
@@ -2130,7 +2130,7 @@ abstract mixin class _$ChapterResponseCopyWith<$Res> implements $ChapterResponse
   factory _$ChapterResponseCopyWith(_ChapterResponse value, $Res Function(_ChapterResponse) _then) = __$ChapterResponseCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int order, String number, String name,@JsonKey(name: 'views_count') int viewsCount,@JsonKey(name: 'comments_count') int commentsCount, String status,@JsonKey(name: 'previous_chapter_id') int? previousChapterId,@JsonKey(name: 'previous_chapter_number') String? previousChapterNumber,@JsonKey(name: 'previous_chapter_name') String? previousChapterName,@JsonKey(name: 'next_chapter_id') int? nextChapterId,@JsonKey(name: 'next_chapter_number') String? nextChapterNumber,@JsonKey(name: 'next_chapter_name') String? nextChapterName,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, Manga manga, Team team, List<Page> pages
+ int id, int order, String number, String? name,@JsonKey(name: 'views_count') int viewsCount,@JsonKey(name: 'comments_count') int commentsCount, String status,@JsonKey(name: 'previous_chapter_id') int? previousChapterId,@JsonKey(name: 'previous_chapter_number') String? previousChapterNumber,@JsonKey(name: 'previous_chapter_name') String? previousChapterName,@JsonKey(name: 'next_chapter_id') int? nextChapterId,@JsonKey(name: 'next_chapter_number') String? nextChapterNumber,@JsonKey(name: 'next_chapter_name') String? nextChapterName,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, Manga manga, Team team, List<Page> pages
 });
 
 
@@ -2147,13 +2147,13 @@ class __$ChapterResponseCopyWithImpl<$Res>
 
 /// Create a copy of ChapterResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? order = null,Object? number = null,Object? name = null,Object? viewsCount = null,Object? commentsCount = null,Object? status = null,Object? previousChapterId = freezed,Object? previousChapterNumber = freezed,Object? previousChapterName = freezed,Object? nextChapterId = freezed,Object? nextChapterNumber = freezed,Object? nextChapterName = freezed,Object? createdAt = null,Object? updatedAt = null,Object? manga = null,Object? team = null,Object? pages = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? order = null,Object? number = null,Object? name = freezed,Object? viewsCount = null,Object? commentsCount = null,Object? status = null,Object? previousChapterId = freezed,Object? previousChapterNumber = freezed,Object? previousChapterName = freezed,Object? nextChapterId = freezed,Object? nextChapterNumber = freezed,Object? nextChapterName = freezed,Object? createdAt = null,Object? updatedAt = null,Object? manga = null,Object? team = null,Object? pages = null,}) {
   return _then(_ChapterResponse(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as int,number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,viewsCount: null == viewsCount ? _self.viewsCount : viewsCount // ignore: cast_nullable_to_non_nullable
+as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,viewsCount: null == viewsCount ? _self.viewsCount : viewsCount // ignore: cast_nullable_to_non_nullable
 as int,commentsCount: null == commentsCount ? _self.commentsCount : commentsCount // ignore: cast_nullable_to_non_nullable
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,previousChapterId: freezed == previousChapterId ? _self.previousChapterId : previousChapterId // ignore: cast_nullable_to_non_nullable
