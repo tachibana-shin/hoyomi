@@ -100,6 +100,8 @@ class _MangaReaderState extends State<MangaReader>
   late final Computed<double> _realCurrentPage;
   late final Computed<int> _realLength;
 
+  late final Map<Service, bool> _serviceSupportFetchPage = {};
+
   late final _watchPageChapters = asyncComputed<Map<String, WatchPageUpdated>?>(
     () async {
       if (widget.service is ComicWatchPageMixin) {
@@ -150,7 +152,7 @@ class _MangaReaderState extends State<MangaReader>
             return ImageWithGroup(
               chapter: _currChapter.value!,
               index: index,
-              image: OImage(src: page.src, headers: page.headers),
+              image: page,
             );
           })
           .whereType<ImageWithGroup>()
@@ -282,7 +284,7 @@ class _MangaReaderState extends State<MangaReader>
               (params) => ImageWithGroup(
                 chapter: nextChapter,
                 index: params.$1,
-                image: OImage(src: params.$2.src, headers: params.$2.headers),
+                image: params.$2,
               ),
             );
 
@@ -542,7 +544,11 @@ class _MangaReaderState extends State<MangaReader>
             Padding(
               padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
               child: Text(
-                prevChapter.name,
+                [
+                  prevChapter.name,
+                  if (prevChapter.fullName != null)
+                    ' - ${prevChapter.fullName}',
+                ].join(''),
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),
               ),
             ),
@@ -554,7 +560,13 @@ class _MangaReaderState extends State<MangaReader>
           ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
-            child: Text(chapter.name, style: TextStyle(fontSize: 18.0)),
+            child: Text(
+              [
+                chapter.name,
+                if (chapter.fullName != null) ' - ${chapter.fullName}',
+              ].join(''),
+              style: TextStyle(fontSize: 18.0),
+            ),
           ),
           if (nextChapter != null) ...[
             SizedBox(height: 20.0),
@@ -568,7 +580,11 @@ class _MangaReaderState extends State<MangaReader>
             Padding(
               padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 20.0),
               child: Text(
-                nextChapter.name,
+                [
+                  nextChapter.name,
+                  if (nextChapter.fullName != null)
+                    ' - ${nextChapter.fullName}',
+                ].join(''),
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),
               ),
             ),
@@ -614,19 +630,62 @@ class _MangaReaderState extends State<MangaReader>
     //   fit: BoxFit.cover,
     // );
 
-    return OImage.oNetwork(
-      item.image,
-      sourceId: widget.service.uid,
-      fit: BoxFit.contain,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) {
-          return child;
+    if (_serviceSupportFetchPage[widget.service] == false) {
+      return OImage.oNetwork(
+        item.image,
+        sourceId: widget.service.uid,
+        fit: BoxFit.contain,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) {
+            return child;
+          }
+
+          return SizedBox(
+            height: 100.h(context),
+            child: _buildPageLoading(loadingProgress),
+          );
+        },
+      );
+    }
+
+    return FutureBuilder(
+      future: widget.service.fetchPage(item.image),
+      builder: (context, snapshot) {
+        final waiting = snapshot.connectionState == ConnectionState.waiting;
+
+        if (snapshot.hasError || (!waiting && !snapshot.hasData)) {
+          if (snapshot.error is UnimplementedError) {
+            _serviceSupportFetchPage[widget.service] = false;
+            return OImage.oNetwork(
+              item.image,
+              sourceId: widget.service.uid,
+              fit: BoxFit.contain,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+
+                return SizedBox(
+                  height: 100.h(context),
+                  child: _buildPageLoading(loadingProgress),
+                );
+              },
+            );
+          }
+
+          return SizedBox(
+            height: 100.h(context),
+            child: Text('Error: ${snapshot.error}'),
+          );
+        }
+        if (waiting) {
+          return SizedBox(
+            height: 100.h(context),
+            child: _buildPageLoading(null),
+          );
         }
 
-        return SizedBox(
-          height: 100.h(context),
-          child: _buildPageLoading(loadingProgress),
-        );
+        return Image.memory(snapshot.data!);
       },
     );
   }
@@ -1273,7 +1332,7 @@ class _MangaReaderState extends State<MangaReader>
             ),
           ),
         ],
-      );
+      ).paddingHorizontal(8);
     });
   }
 

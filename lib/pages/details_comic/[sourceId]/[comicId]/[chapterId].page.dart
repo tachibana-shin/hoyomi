@@ -199,6 +199,8 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                                 <String>[
                                   if (widget.chapter.value != null)
                                     widget.chapter.value!.name,
+                                  if (widget.chapter.value?.fullName != null)
+                                    widget.chapter.value!.fullName!,
                                   if (widget.comic.value?.name != null)
                                     widget.comic.value!.name,
                                 ].join(' - '),

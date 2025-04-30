@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 
@@ -17,6 +19,9 @@ abstract class ABComicService extends Service {
 
   Future<MetaComic> getDetails(String comicId);
   Future<List<OImage>> getPages(String manga, String chap);
+  Future<Uint8List> fetchPage(OImage source) {
+    throw UnimplementedError();
+  }
 
   Future<List<Comic>> getSuggest(MetaComic comic, {int? page}) {
     throw UnimplementedError();

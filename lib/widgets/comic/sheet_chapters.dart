@@ -128,41 +128,44 @@ class _SheetChaptersState extends State<SheetChapters> {
                     selected: selected,
                     autofocus: selected,
                     focusColor: Colors.transparent,
-                    title: Row(
-                      children: [
-                        if (selected)
-                          Iconify(
-                            Ion.play,
-                            size: 20,
-                            color: Colors.green.shade500,
-                          ),
-                        if (selected) SizedBox(width: 4.0),
-                        Text(
-                          chapter.name,
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: selected ? FontWeight.w500 : null,
-                            color:
-                                selected
-                                    ? Theme.of(context).colorScheme.onSurface
-                                    : Theme.of(context).colorScheme.onSurface
-                                        .withValues(alpha: 0.85),
-                          ),
-                        ),
-                      ],
-                    ),
-                    subtitle: Text(
-                      chapter.time != null ? formatTimeAgo(chapter.time!) : "",
+                    leading: switch (selected) {
+                      true => Iconify(
+                        Ion.play,
+                        size: 20,
+                        color: Colors.green.shade500,
+                      ),
+                      false => null,
+                    },
+                    title: Text(
+                      [
+                        chapter.name,
+                        if (chapter.fullName != null) ' - ${chapter.fullName}',
+                      ].join(''),
                       style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: selected ? FontWeight.w500 : null,
                         color:
                             selected
-                                ? Theme.of(context).colorScheme.secondary
+                                ? Theme.of(context).colorScheme.onSurface
                                 : Theme.of(
                                   context,
-                                ).colorScheme.secondary.withValues(alpha: 0.85),
-                        fontSize: 12.0,
+                                ).colorScheme.onSurface.withValues(alpha: 0.85),
                       ),
                     ),
+                    subtitle: switch (chapter.time) {
+                      != null => Text(
+                        formatTimeAgo(chapter.time!),
+                        style: TextStyle(
+                          color:
+                              selected
+                                  ? Theme.of(context).colorScheme.secondary
+                                  : Theme.of(context).colorScheme.secondary
+                                      .withValues(alpha: 0.85),
+                          fontSize: 12.0,
+                        ),
+                      ),
+                      _ => null,
+                    },
                     trailing: switch (watchPage) {
                       null => null,
                       final watchPage => SizedBox(
