@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'main.dart';
+
+import '../main.dart';
 
 part 'comic_home.freezed.dart';
 part 'comic_home.g.dart';

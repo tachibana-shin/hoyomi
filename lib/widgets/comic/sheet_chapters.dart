@@ -5,10 +5,11 @@ import 'package:dashed_circular_progress_bar/dashed_circular_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/comic/interfaces/main.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/ion.dart';
+
+import '../../core_services/comic/main.dart';
 
 class SheetChapters extends StatefulWidget {
   final MetaComic comic;

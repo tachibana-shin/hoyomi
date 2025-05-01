@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/screens/rss/news_feed.dart';
-import 'package:hoyomi/screens/search/comic_search_results.dart';
-import 'package:hoyomi/screens/search/eiga_search_results.dart';
-import 'package:hoyomi/widgets/global_search_bar.dart';
+import 'package:hoyomi/screens/export.dart';
+import 'package:hoyomi/widgets/export.dart';
 import 'package:kaeru/kaeru.dart';
 
 class SearchPage extends StatefulWidget {

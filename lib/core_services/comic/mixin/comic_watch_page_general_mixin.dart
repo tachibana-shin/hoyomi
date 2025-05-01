@@ -1,12 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
-import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/env.dart';
 import 'package:hoyomi/general_api/export.dart';
 import 'package:hoyomi/utils/authentication.dart';
 
-import '../interfaces/main.dart';
-import 'comic_watch_page_mixin.dart';
+import '../main.dart';
 
 mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
   final _baseApiGeneral = Env.baseApiGeneral;

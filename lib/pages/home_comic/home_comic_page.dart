@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/screens/home_comic/tab_view_comic.dart';
-import 'package:hoyomi/widgets/global_search_bar.dart';
+import 'package:hoyomi/screens/export.dart';
+import 'package:hoyomi/widgets/export.dart';
 import 'package:kaeru/kaeru.dart';
 
 class HomeComicPage extends StatefulWidget {

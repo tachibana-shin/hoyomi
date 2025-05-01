@@ -12,20 +12,9 @@ import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/fluent.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
-import 'package:hoyomi/core_services/comic/interfaces/main.dart';
-import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
-import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
-import 'package:hoyomi/core_services/comic/mixin/comic_watch_page_mixin.dart';
-import 'package:hoyomi/screens/details_comic/horizon_reader.dart';
-import 'package:hoyomi/screens/details_comic/vertical_reader.dart';
-import 'package:hoyomi/screens/details_comic/webtoon_reader.dart';
-import 'package:hoyomi/widgets/button_inset.dart';
-import 'package:hoyomi/widgets/comments/widget/comments_sheet.dart';
-import 'package:hoyomi/widgets/image_picker.dart';
-import 'package:hoyomi/widgets/comic/sheet_chapters.dart';
-import 'package:hoyomi/widgets/stroke_text.dart';
-import 'package:hoyomi/widgets/tap_listener.dart';
-import 'package:hoyomi/widgets/iconify.dart';
+import 'package:hoyomi/core_services/comic/main.dart';
+import 'package:hoyomi/screens/export.dart';
+import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/eva.dart';
 import 'package:iconify_flutter/icons/ic.dart';
 import 'package:iconify_flutter/icons/ion.dart';
@@ -941,7 +930,7 @@ class _MangaReaderState extends State<MangaReader>
           (context) => CommentsSheet(
             comicId: widget.comicId,
             chapterId: _chapterId.value,
-            service: widget.service as ComicAuthMixin,
+            service: widget.service as ComicCommentMixin,
           ),
     );
   }
@@ -1202,10 +1191,7 @@ class _MangaReaderState extends State<MangaReader>
                                       icon: Eva.message_square_outline,
                                       text: 'Comments',
                                       disabled:
-                                          widget.service is! ComicAuthMixin ||
-                                          (widget.service as ComicAuthMixin)
-                                                  .getComments ==
-                                              null,
+                                          widget.service is! ComicLikeMixin,
                                       onPressed: _showPanelComments,
                                     ),
                                   ),

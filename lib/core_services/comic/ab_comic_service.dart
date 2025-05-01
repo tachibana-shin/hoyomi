@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:hoyomi/core_services/comic/interfaces/main.dart';
-import 'package:hoyomi/core_services/service.dart';
+import 'main.dart';
 
 export 'package:hoyomi/core_services/service.dart';
 

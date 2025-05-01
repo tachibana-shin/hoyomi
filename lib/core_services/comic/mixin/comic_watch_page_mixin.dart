@@ -1,5 +1,5 @@
-import 'package:hoyomi/core_services/comic/interfaces/main.dart';
-import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
+import '../../mixin/export.dart';
+import '../main.dart';
 
 mixin ComicWatchPageMixin on AuthMixin {
   Future<List<ComicHistory>> getWatchHistory({required int page});
