@@ -474,7 +474,7 @@ sealed class Team with _$Team {
     String? description, // 説明 / Description
     @JsonKey(name: 'is_ads') bool? isAds, // 広告あり？/ Has advertisement?
     @JsonKey(name: 'facebook_address')
-    required String facebookAddress, // Facebookアドレス / Facebook address
+    String? facebookAddress, // Facebookアドレス / Facebook address
     @JsonKey(name: 'views_count')
     int? viewsCount, // チームの閲覧数 / Views count for team
     @JsonKey(name: 'translations_count')

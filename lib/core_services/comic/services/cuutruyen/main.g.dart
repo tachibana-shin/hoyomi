@@ -197,7 +197,7 @@ _Team _$TeamFromJson(Map<String, dynamic> json) => _Team(
   name: json['name'] as String,
   description: json['description'] as String?,
   isAds: json['is_ads'] as bool?,
-  facebookAddress: json['facebook_address'] as String,
+  facebookAddress: json['facebook_address'] as String?,
   viewsCount: (json['views_count'] as num?)?.toInt(),
   translationsCount: (json['translations_count'] as num?)?.toInt(),
   mangasCount: (json['mangas_count'] as num?)?.toInt(),

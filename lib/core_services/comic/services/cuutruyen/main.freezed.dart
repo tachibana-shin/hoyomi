@@ -1343,7 +1343,7 @@ mixin _$Team {
  String get name;// チーム名 / Team name
  String? get description;// 説明 / Description
 @JsonKey(name: 'is_ads') bool? get isAds;// 広告あり？/ Has advertisement?
-@JsonKey(name: 'facebook_address') String get facebookAddress;// Facebookアドレス / Facebook address
+@JsonKey(name: 'facebook_address') String? get facebookAddress;// Facebookアドレス / Facebook address
 @JsonKey(name: 'views_count') int? get viewsCount;// チームの閲覧数 / Views count for team
 @JsonKey(name: 'translations_count') int? get translationsCount;// 翻訳数 / Number of translations
 @JsonKey(name: 'mangas_count') int? get mangasCount;@JsonKey(name: 'created_at') DateTime? get createdAt;// 作成日 / Created date
@@ -1380,7 +1380,7 @@ abstract mixin class $TeamCopyWith<$Res>  {
   factory $TeamCopyWith(Team value, $Res Function(Team) _then) = _$TeamCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, String? description,@JsonKey(name: 'is_ads') bool? isAds,@JsonKey(name: 'facebook_address') String facebookAddress,@JsonKey(name: 'views_count') int? viewsCount,@JsonKey(name: 'translations_count') int? translationsCount,@JsonKey(name: 'mangas_count') int? mangasCount,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'updated_at') DateTime? updatedAt
+ int id, String name, String? description,@JsonKey(name: 'is_ads') bool? isAds,@JsonKey(name: 'facebook_address') String? facebookAddress,@JsonKey(name: 'views_count') int? viewsCount,@JsonKey(name: 'translations_count') int? translationsCount,@JsonKey(name: 'mangas_count') int? mangasCount,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -1397,14 +1397,14 @@ class _$TeamCopyWithImpl<$Res>
 
 /// Create a copy of Team
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? description = freezed,Object? isAds = freezed,Object? facebookAddress = null,Object? viewsCount = freezed,Object? translationsCount = freezed,Object? mangasCount = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? description = freezed,Object? isAds = freezed,Object? facebookAddress = freezed,Object? viewsCount = freezed,Object? translationsCount = freezed,Object? mangasCount = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,isAds: freezed == isAds ? _self.isAds : isAds // ignore: cast_nullable_to_non_nullable
-as bool?,facebookAddress: null == facebookAddress ? _self.facebookAddress : facebookAddress // ignore: cast_nullable_to_non_nullable
-as String,viewsCount: freezed == viewsCount ? _self.viewsCount : viewsCount // ignore: cast_nullable_to_non_nullable
+as bool?,facebookAddress: freezed == facebookAddress ? _self.facebookAddress : facebookAddress // ignore: cast_nullable_to_non_nullable
+as String?,viewsCount: freezed == viewsCount ? _self.viewsCount : viewsCount // ignore: cast_nullable_to_non_nullable
 as int?,translationsCount: freezed == translationsCount ? _self.translationsCount : translationsCount // ignore: cast_nullable_to_non_nullable
 as int?,mangasCount: freezed == mangasCount ? _self.mangasCount : mangasCount // ignore: cast_nullable_to_non_nullable
 as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -1420,7 +1420,7 @@ as DateTime?,
 @JsonSerializable()
 
 class _Team implements Team {
-  const _Team({required this.id, required this.name, this.description, @JsonKey(name: 'is_ads') this.isAds, @JsonKey(name: 'facebook_address') required this.facebookAddress, @JsonKey(name: 'views_count') this.viewsCount, @JsonKey(name: 'translations_count') this.translationsCount, @JsonKey(name: 'mangas_count') this.mangasCount, @JsonKey(name: 'created_at') this.createdAt, @JsonKey(name: 'updated_at') this.updatedAt});
+  const _Team({required this.id, required this.name, this.description, @JsonKey(name: 'is_ads') this.isAds, @JsonKey(name: 'facebook_address') this.facebookAddress, @JsonKey(name: 'views_count') this.viewsCount, @JsonKey(name: 'translations_count') this.translationsCount, @JsonKey(name: 'mangas_count') this.mangasCount, @JsonKey(name: 'created_at') this.createdAt, @JsonKey(name: 'updated_at') this.updatedAt});
   factory _Team.fromJson(Map<String, dynamic> json) => _$TeamFromJson(json);
 
 @override final  int id;
@@ -1431,7 +1431,7 @@ class _Team implements Team {
 // 説明 / Description
 @override@JsonKey(name: 'is_ads') final  bool? isAds;
 // 広告あり？/ Has advertisement?
-@override@JsonKey(name: 'facebook_address') final  String facebookAddress;
+@override@JsonKey(name: 'facebook_address') final  String? facebookAddress;
 // Facebookアドレス / Facebook address
 @override@JsonKey(name: 'views_count') final  int? viewsCount;
 // チームの閲覧数 / Views count for team
@@ -1475,7 +1475,7 @@ abstract mixin class _$TeamCopyWith<$Res> implements $TeamCopyWith<$Res> {
   factory _$TeamCopyWith(_Team value, $Res Function(_Team) _then) = __$TeamCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, String? description,@JsonKey(name: 'is_ads') bool? isAds,@JsonKey(name: 'facebook_address') String facebookAddress,@JsonKey(name: 'views_count') int? viewsCount,@JsonKey(name: 'translations_count') int? translationsCount,@JsonKey(name: 'mangas_count') int? mangasCount,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'updated_at') DateTime? updatedAt
+ int id, String name, String? description,@JsonKey(name: 'is_ads') bool? isAds,@JsonKey(name: 'facebook_address') String? facebookAddress,@JsonKey(name: 'views_count') int? viewsCount,@JsonKey(name: 'translations_count') int? translationsCount,@JsonKey(name: 'mangas_count') int? mangasCount,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -1492,14 +1492,14 @@ class __$TeamCopyWithImpl<$Res>
 
 /// Create a copy of Team
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? description = freezed,Object? isAds = freezed,Object? facebookAddress = null,Object? viewsCount = freezed,Object? translationsCount = freezed,Object? mangasCount = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? description = freezed,Object? isAds = freezed,Object? facebookAddress = freezed,Object? viewsCount = freezed,Object? translationsCount = freezed,Object? mangasCount = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_Team(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,isAds: freezed == isAds ? _self.isAds : isAds // ignore: cast_nullable_to_non_nullable
-as bool?,facebookAddress: null == facebookAddress ? _self.facebookAddress : facebookAddress // ignore: cast_nullable_to_non_nullable
-as String,viewsCount: freezed == viewsCount ? _self.viewsCount : viewsCount // ignore: cast_nullable_to_non_nullable
+as bool?,facebookAddress: freezed == facebookAddress ? _self.facebookAddress : facebookAddress // ignore: cast_nullable_to_non_nullable
+as String?,viewsCount: freezed == viewsCount ? _self.viewsCount : viewsCount // ignore: cast_nullable_to_non_nullable
 as int?,translationsCount: freezed == translationsCount ? _self.translationsCount : translationsCount // ignore: cast_nullable_to_non_nullable
 as int?,mangasCount: freezed == mangasCount ? _self.mangasCount : mangasCount // ignore: cast_nullable_to_non_nullable
 as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
