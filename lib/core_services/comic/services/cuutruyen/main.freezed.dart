@@ -776,7 +776,7 @@ mixin _$MangaDetail {
 @JsonKey(name: 'newest_chapter_created_at') DateTime get newestChapterCreatedAt;// 最新チャプター作成日時 / Latest chapter creation datetime
  Author get author;// 作者情報 / Author info
  String get description;// 簡単な説明 / Short description
-@JsonKey(name: 'full_description') String get fullDescription;// 詳細説明 / Full description
+@JsonKey(name: 'full_description') String? get fullDescription;// 詳細説明 / Full description
 @JsonKey(name: 'official_url') String get officialUrl;// 公式URL / Official URL
 @JsonKey(name: 'is_region_limited') bool get isRegionLimited;// 地域制限あり？/ Region limited?
 @JsonKey(name: 'is_ads') bool get isAds;// 広告あり？/ Has advertisement?
@@ -821,7 +821,7 @@ abstract mixin class $MangaDetailCopyWith<$Res>  {
   factory $MangaDetailCopyWith(MangaDetail value, $Res Function(MangaDetail) _then) = _$MangaDetailCopyWithImpl;
 @useResult
 $Res call({
- int id, String name,@JsonKey(name: 'cover_url') String coverUrl,@JsonKey(name: 'cover_mobile_url') String coverMobileUrl,@JsonKey(name: 'panorama_url') String panoramaUrl,@JsonKey(name: 'panorama_mobile_url') String panoramaMobileUrl,@JsonKey(name: 'newest_chapter_number') String newestChapterNumber,@JsonKey(name: 'newest_chapter_id') int newestChapterId,@JsonKey(name: 'newest_chapter_created_at') DateTime newestChapterCreatedAt, Author author, String description,@JsonKey(name: 'full_description') String fullDescription,@JsonKey(name: 'official_url') String officialUrl,@JsonKey(name: 'is_region_limited') bool isRegionLimited,@JsonKey(name: 'is_ads') bool isAds,@JsonKey(name: 'chapters_count') int chaptersCount,@JsonKey(name: 'views_count') int viewsCount,@JsonKey(name: 'is_nsfw') bool isNsfw, List<Tag> tags, Team team,@JsonKey(name: 'is_following') bool isFollowing, List<Title> titles,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
+ int id, String name,@JsonKey(name: 'cover_url') String coverUrl,@JsonKey(name: 'cover_mobile_url') String coverMobileUrl,@JsonKey(name: 'panorama_url') String panoramaUrl,@JsonKey(name: 'panorama_mobile_url') String panoramaMobileUrl,@JsonKey(name: 'newest_chapter_number') String newestChapterNumber,@JsonKey(name: 'newest_chapter_id') int newestChapterId,@JsonKey(name: 'newest_chapter_created_at') DateTime newestChapterCreatedAt, Author author, String description,@JsonKey(name: 'full_description') String? fullDescription,@JsonKey(name: 'official_url') String officialUrl,@JsonKey(name: 'is_region_limited') bool isRegionLimited,@JsonKey(name: 'is_ads') bool isAds,@JsonKey(name: 'chapters_count') int chaptersCount,@JsonKey(name: 'views_count') int viewsCount,@JsonKey(name: 'is_nsfw') bool isNsfw, List<Tag> tags, Team team,@JsonKey(name: 'is_following') bool isFollowing, List<Title> titles,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
 });
 
 
@@ -838,7 +838,7 @@ class _$MangaDetailCopyWithImpl<$Res>
 
 /// Create a copy of MangaDetail
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? coverUrl = null,Object? coverMobileUrl = null,Object? panoramaUrl = null,Object? panoramaMobileUrl = null,Object? newestChapterNumber = null,Object? newestChapterId = null,Object? newestChapterCreatedAt = null,Object? author = null,Object? description = null,Object? fullDescription = null,Object? officialUrl = null,Object? isRegionLimited = null,Object? isAds = null,Object? chaptersCount = null,Object? viewsCount = null,Object? isNsfw = null,Object? tags = null,Object? team = null,Object? isFollowing = null,Object? titles = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? coverUrl = null,Object? coverMobileUrl = null,Object? panoramaUrl = null,Object? panoramaMobileUrl = null,Object? newestChapterNumber = null,Object? newestChapterId = null,Object? newestChapterCreatedAt = null,Object? author = null,Object? description = null,Object? fullDescription = freezed,Object? officialUrl = null,Object? isRegionLimited = null,Object? isAds = null,Object? chaptersCount = null,Object? viewsCount = null,Object? isNsfw = null,Object? tags = null,Object? team = null,Object? isFollowing = null,Object? titles = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -851,8 +851,8 @@ as String,newestChapterId: null == newestChapterId ? _self.newestChapterId : new
 as int,newestChapterCreatedAt: null == newestChapterCreatedAt ? _self.newestChapterCreatedAt : newestChapterCreatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as Author,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,fullDescription: null == fullDescription ? _self.fullDescription : fullDescription // ignore: cast_nullable_to_non_nullable
-as String,officialUrl: null == officialUrl ? _self.officialUrl : officialUrl // ignore: cast_nullable_to_non_nullable
+as String,fullDescription: freezed == fullDescription ? _self.fullDescription : fullDescription // ignore: cast_nullable_to_non_nullable
+as String?,officialUrl: null == officialUrl ? _self.officialUrl : officialUrl // ignore: cast_nullable_to_non_nullable
 as String,isRegionLimited: null == isRegionLimited ? _self.isRegionLimited : isRegionLimited // ignore: cast_nullable_to_non_nullable
 as bool,isAds: null == isAds ? _self.isAds : isAds // ignore: cast_nullable_to_non_nullable
 as bool,chaptersCount: null == chaptersCount ? _self.chaptersCount : chaptersCount // ignore: cast_nullable_to_non_nullable
@@ -893,7 +893,7 @@ $TeamCopyWith<$Res> get team {
 @JsonSerializable()
 
 class _MangaDetail implements MangaDetail {
-  const _MangaDetail({required this.id, required this.name, @JsonKey(name: 'cover_url') required this.coverUrl, @JsonKey(name: 'cover_mobile_url') required this.coverMobileUrl, @JsonKey(name: 'panorama_url') required this.panoramaUrl, @JsonKey(name: 'panorama_mobile_url') required this.panoramaMobileUrl, @JsonKey(name: 'newest_chapter_number') required this.newestChapterNumber, @JsonKey(name: 'newest_chapter_id') required this.newestChapterId, @JsonKey(name: 'newest_chapter_created_at') required this.newestChapterCreatedAt, required this.author, required this.description, @JsonKey(name: 'full_description') required this.fullDescription, @JsonKey(name: 'official_url') required this.officialUrl, @JsonKey(name: 'is_region_limited') required this.isRegionLimited, @JsonKey(name: 'is_ads') required this.isAds, @JsonKey(name: 'chapters_count') required this.chaptersCount, @JsonKey(name: 'views_count') required this.viewsCount, @JsonKey(name: 'is_nsfw') required this.isNsfw, required final  List<Tag> tags, required this.team, @JsonKey(name: 'is_following') required this.isFollowing, required final  List<Title> titles, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt}): _tags = tags,_titles = titles;
+  const _MangaDetail({required this.id, required this.name, @JsonKey(name: 'cover_url') required this.coverUrl, @JsonKey(name: 'cover_mobile_url') required this.coverMobileUrl, @JsonKey(name: 'panorama_url') required this.panoramaUrl, @JsonKey(name: 'panorama_mobile_url') required this.panoramaMobileUrl, @JsonKey(name: 'newest_chapter_number') required this.newestChapterNumber, @JsonKey(name: 'newest_chapter_id') required this.newestChapterId, @JsonKey(name: 'newest_chapter_created_at') required this.newestChapterCreatedAt, required this.author, required this.description, @JsonKey(name: 'full_description') this.fullDescription, @JsonKey(name: 'official_url') required this.officialUrl, @JsonKey(name: 'is_region_limited') required this.isRegionLimited, @JsonKey(name: 'is_ads') required this.isAds, @JsonKey(name: 'chapters_count') required this.chaptersCount, @JsonKey(name: 'views_count') required this.viewsCount, @JsonKey(name: 'is_nsfw') required this.isNsfw, required final  List<Tag> tags, required this.team, @JsonKey(name: 'is_following') required this.isFollowing, required final  List<Title> titles, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt}): _tags = tags,_titles = titles;
   factory _MangaDetail.fromJson(Map<String, dynamic> json) => _$MangaDetailFromJson(json);
 
 @override final  int id;
@@ -918,7 +918,7 @@ class _MangaDetail implements MangaDetail {
 // 作者情報 / Author info
 @override final  String description;
 // 簡単な説明 / Short description
-@override@JsonKey(name: 'full_description') final  String fullDescription;
+@override@JsonKey(name: 'full_description') final  String? fullDescription;
 // 詳細説明 / Full description
 @override@JsonKey(name: 'official_url') final  String officialUrl;
 // 公式URL / Official URL
@@ -991,7 +991,7 @@ abstract mixin class _$MangaDetailCopyWith<$Res> implements $MangaDetailCopyWith
   factory _$MangaDetailCopyWith(_MangaDetail value, $Res Function(_MangaDetail) _then) = __$MangaDetailCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name,@JsonKey(name: 'cover_url') String coverUrl,@JsonKey(name: 'cover_mobile_url') String coverMobileUrl,@JsonKey(name: 'panorama_url') String panoramaUrl,@JsonKey(name: 'panorama_mobile_url') String panoramaMobileUrl,@JsonKey(name: 'newest_chapter_number') String newestChapterNumber,@JsonKey(name: 'newest_chapter_id') int newestChapterId,@JsonKey(name: 'newest_chapter_created_at') DateTime newestChapterCreatedAt, Author author, String description,@JsonKey(name: 'full_description') String fullDescription,@JsonKey(name: 'official_url') String officialUrl,@JsonKey(name: 'is_region_limited') bool isRegionLimited,@JsonKey(name: 'is_ads') bool isAds,@JsonKey(name: 'chapters_count') int chaptersCount,@JsonKey(name: 'views_count') int viewsCount,@JsonKey(name: 'is_nsfw') bool isNsfw, List<Tag> tags, Team team,@JsonKey(name: 'is_following') bool isFollowing, List<Title> titles,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
+ int id, String name,@JsonKey(name: 'cover_url') String coverUrl,@JsonKey(name: 'cover_mobile_url') String coverMobileUrl,@JsonKey(name: 'panorama_url') String panoramaUrl,@JsonKey(name: 'panorama_mobile_url') String panoramaMobileUrl,@JsonKey(name: 'newest_chapter_number') String newestChapterNumber,@JsonKey(name: 'newest_chapter_id') int newestChapterId,@JsonKey(name: 'newest_chapter_created_at') DateTime newestChapterCreatedAt, Author author, String description,@JsonKey(name: 'full_description') String? fullDescription,@JsonKey(name: 'official_url') String officialUrl,@JsonKey(name: 'is_region_limited') bool isRegionLimited,@JsonKey(name: 'is_ads') bool isAds,@JsonKey(name: 'chapters_count') int chaptersCount,@JsonKey(name: 'views_count') int viewsCount,@JsonKey(name: 'is_nsfw') bool isNsfw, List<Tag> tags, Team team,@JsonKey(name: 'is_following') bool isFollowing, List<Title> titles,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
 });
 
 
@@ -1008,7 +1008,7 @@ class __$MangaDetailCopyWithImpl<$Res>
 
 /// Create a copy of MangaDetail
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? coverUrl = null,Object? coverMobileUrl = null,Object? panoramaUrl = null,Object? panoramaMobileUrl = null,Object? newestChapterNumber = null,Object? newestChapterId = null,Object? newestChapterCreatedAt = null,Object? author = null,Object? description = null,Object? fullDescription = null,Object? officialUrl = null,Object? isRegionLimited = null,Object? isAds = null,Object? chaptersCount = null,Object? viewsCount = null,Object? isNsfw = null,Object? tags = null,Object? team = null,Object? isFollowing = null,Object? titles = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? coverUrl = null,Object? coverMobileUrl = null,Object? panoramaUrl = null,Object? panoramaMobileUrl = null,Object? newestChapterNumber = null,Object? newestChapterId = null,Object? newestChapterCreatedAt = null,Object? author = null,Object? description = null,Object? fullDescription = freezed,Object? officialUrl = null,Object? isRegionLimited = null,Object? isAds = null,Object? chaptersCount = null,Object? viewsCount = null,Object? isNsfw = null,Object? tags = null,Object? team = null,Object? isFollowing = null,Object? titles = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_MangaDetail(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -1021,8 +1021,8 @@ as String,newestChapterId: null == newestChapterId ? _self.newestChapterId : new
 as int,newestChapterCreatedAt: null == newestChapterCreatedAt ? _self.newestChapterCreatedAt : newestChapterCreatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as Author,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,fullDescription: null == fullDescription ? _self.fullDescription : fullDescription // ignore: cast_nullable_to_non_nullable
-as String,officialUrl: null == officialUrl ? _self.officialUrl : officialUrl // ignore: cast_nullable_to_non_nullable
+as String,fullDescription: freezed == fullDescription ? _self.fullDescription : fullDescription // ignore: cast_nullable_to_non_nullable
+as String?,officialUrl: null == officialUrl ? _self.officialUrl : officialUrl // ignore: cast_nullable_to_non_nullable
 as String,isRegionLimited: null == isRegionLimited ? _self.isRegionLimited : isRegionLimited // ignore: cast_nullable_to_non_nullable
 as bool,isAds: null == isAds ? _self.isAds : isAds // ignore: cast_nullable_to_non_nullable
 as bool,chaptersCount: null == chaptersCount ? _self.chaptersCount : chaptersCount // ignore: cast_nullable_to_non_nullable

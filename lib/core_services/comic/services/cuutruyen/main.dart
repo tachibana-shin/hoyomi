@@ -12,7 +12,7 @@ import 'package:hoyomi/env.dart';
 part 'main.freezed.dart';
 part 'main.g.dart';
 
-class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
+class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin, ComicCommentMixin {
   @override
   bool? get $isAuth => false;
   @override
@@ -149,7 +149,7 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
         data.tags
             .map((tag) => Genre(name: tag.name, genreId: 'tag_${tag.slug}'))
             .toList();
-    final description = data.description;
+    final description = data.fullDescription ?? data.description;
     final chaps =
         chapters
             .map(
@@ -301,6 +301,18 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
   ComicParam parseURL(String url) {
     throw UnimplementedError();
   }
+  
+  @override
+  Future<void> deleteComment({required String comicId, String? chapterId, ComicComment? parent, required ComicComment comment}) {
+    // TODO: implement deleteComment
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<ComicComments> getComments({required String comicId, String? chapterId, ComicComment? parent, int? page}) {
+    // TODO: implement getComments
+    throw UnimplementedError();
+  }
 }
 
 /// ==============================================
@@ -411,7 +423,7 @@ sealed class MangaDetail with _$MangaDetail {
     required Author author, // 作者情報 / Author info
     required String description, // 簡単な説明 / Short description
     @JsonKey(name: 'full_description')
-    required String fullDescription, // 詳細説明 / Full description
+     String? fullDescription, // 詳細説明 / Full description
     @JsonKey(name: 'official_url')
     required String officialUrl, // 公式URL / Official URL
     @JsonKey(name: 'is_region_limited')

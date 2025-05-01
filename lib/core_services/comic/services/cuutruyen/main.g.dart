@@ -123,7 +123,7 @@ _MangaDetail _$MangaDetailFromJson(Map<String, dynamic> json) => _MangaDetail(
   ),
   author: Author.fromJson(json['author'] as Map<String, dynamic>),
   description: json['description'] as String,
-  fullDescription: json['full_description'] as String,
+  fullDescription: json['full_description'] as String?,
   officialUrl: json['official_url'] as String,
   isRegionLimited: json['is_region_limited'] as bool,
   isAds: json['is_ads'] as bool,
