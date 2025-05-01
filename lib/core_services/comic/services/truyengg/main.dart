@@ -368,7 +368,8 @@ class TruyenGGService extends ABComicService
             : await fetch$(
               '$baseUrl/frontend/comment/list',
               body: {
-                (baseUrl.contains('gg') ? 'comic_id' : 'book_id'): RegExp(r'(\d+)$').firstMatch(comicId)!.group(1)!,
+                (baseUrl.contains('gg') ? 'comic_id' : 'book_id'):
+                    RegExp(r'(\d+)$').firstMatch(comicId)!.group(1)!,
                 'parent_id': parentId,
                 'team_id': docB('#team_id', single: true).val(),
                 'token': docB('#csrf-token', single: true).val(),
@@ -390,7 +391,8 @@ class TruyenGGService extends ABComicService
 
       final content$ = element.queryOne('.content-comment').get(0);
       content$.querySelectorAll('img').forEach((image) {
-        image.attributes['src'] = (image.attributes['data-src'] ?? image.attributes['src'])!;
+        image.attributes['src'] =
+            (image.attributes['data-src'] ?? image.attributes['src'])!;
       });
 
       final content = DQuery([content$]).html();
