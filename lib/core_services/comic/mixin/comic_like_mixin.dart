@@ -1,6 +1,6 @@
-import 'package:hoyomi/core_services/comic/mixin/comic_auth_mixin.dart';
+import '../../mixin/auth_mixin.dart';
 
-mixin ComicLikeMixin on ComicAuthMixin {
+mixin ComicLikeMixin on AuthMixin {
   Future<bool> isLiked({required String comicId});
   Future<bool> setLike({required String comicId, required bool value});
 }

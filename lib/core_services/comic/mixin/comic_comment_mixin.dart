@@ -1,6 +1,7 @@
+import '../../mixin/export.dart';
 import '../main.dart';
 
-mixin ComicCommentMixin on ComicAuthMixin {
+mixin ComicCommentMixin on AuthMixin {
   // for comment system
   Future<ComicComments> getComments({
     required String comicId,
