@@ -72,10 +72,7 @@ class _CommentState extends State<Comment> {
               width: 48,
               height: 48,
               child: CircleAvatar(
-                backgroundImage: NetworkImage(
-                  widget.comment.photoUrl.src,
-                  headers: widget.comment.photoUrl.headers?.toMap(),
-                ),
+                backgroundImage: OImage.oImageProvider(widget.comment.photoUrl),
                 radius: 24,
               ),
             ),
@@ -169,38 +166,35 @@ class _CommentState extends State<Comment> {
                     ],
                   ),
                   if (widget.comment.countReply > 0 && _showReplies == false)
-                    Transform.translate(
-                      offset: Offset(-28.0, -8.0),
-                      child: TextButton(
-                        onPressed: _showRepliesList,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text:
-                                      'View more replies (${widget.comment.countReply})',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.bodyMedium?.copyWith(
-                                    color:
-                                        Theme.of(
-                                          context,
-                                        ).colorScheme.secondaryFixedDim,
+                    TextButton(
+                      onPressed: _showRepliesList,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text:
+                                    'View more replies (${widget.comment.countReply})',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.copyWith(
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.secondaryFixedDim,
+                                ),
+                              ),
+                              WidgetSpan(
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 4.0),
+                                  child: const Iconify(
+                                    Ion.chevron_down,
+                                    size: 18,
                                   ),
                                 ),
-                                WidgetSpan(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 4.0),
-                                    child: const Iconify(
-                                      Ion.chevron_down,
-                                      size: 18,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

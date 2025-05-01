@@ -27,7 +27,7 @@ class Comments extends StatefulWidget {
   setLikeComment;
   final ScrollController? controller;
   final ComicComment? parent;
-  final bool activatorMode;
+  final bool preview;
 
   const Comments({
     super.key,
@@ -35,8 +35,8 @@ class Comments extends StatefulWidget {
     required this.controller,
     this.parent,
     required this.deleteComment,
-    this.activatorMode = false,
     required this.setLikeComment,
+    this.preview = false,
   });
 
   @override
@@ -53,7 +53,7 @@ class _CommentsState extends State<Comments> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.activatorMode) {
+    if (widget.preview) {
       return FutureBuilder(
         future: widget.getComments!(page: page, parent: widget.parent),
         builder: (context, snapshot) {
@@ -81,10 +81,38 @@ class _CommentsState extends State<Comments> {
       );
     }
 
+    if (widget.parent != null) {
+      return FutureBuilder(
+        future: widget.getComments!(page: page, parent: widget.parent),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Service.errorWidgetBuilder(
+                context,
+                error: snapshot.error,
+                service: null,
+                orElse: (err) => Text('Error: $err'),
+              ),
+            );
+          }
+          final loading = snapshot.connectionState == ConnectionState.waiting;
+
+          final data =
+              loading ? ComicComments.createFakeData() : snapshot.data!;
+
+          return Skeletonizer(
+            enabled: loading,
+            enableSwitchAnimation: true,
+            child: _buildFullComments(data),
+          );
+        },
+      );
+    }
+
     return PullRefreshPage<ComicComments>(
       onLoadData: () => widget.getComments!(page: page, parent: widget.parent),
       onLoadFake: () => ComicComments.createFakeData(),
-      builder: (data, _) => _buildLastComment(data),
+      builder: (data, _) => _buildFullComments(data),
     );
   }
 
@@ -170,10 +198,7 @@ class _CommentsState extends State<Comments> {
                   width: 24,
                   height: 24,
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                      comment.photoUrl.src,
-                      headers: comment.photoUrl.headers?.toMap(),
-                    ),
+                    backgroundImage: OImage.oImageProvider(comment.photoUrl),
                     radius: 12,
                   ),
                 ),

@@ -355,7 +355,7 @@ class _DetailsComicState extends State<DetailsComic>
                 );
               },
               controller: null,
-              activatorMode: true,
+              preview: true,
             ),
           ),
 

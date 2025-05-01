@@ -218,4 +218,21 @@ class DQuery {
   Iterable<DQuery> toList() {
     return _elements.map((element) => DQuery([element]));
   }
+
+  /// A jQuery-like wrapper for HTML [Element] objects, providing convenient methods
+  /// for DOM traversal, manipulation, and data extraction in Dart.
+  /// 
+  /// Use [DQuery.fromDocument] to create a factory for selecting elements with CSS selectors.
+  /// Supports attribute access, text and HTML extraction, DOM traversal (parent, next, children),
+  /// filtering, and iteration over matched elements.
+  /// 
+  /// Example usage:
+  ///   final $ = DQuery.fromDocument(document);
+  ///   final title = $('h1').text();
+  ///   final firstParagraph = $('p', single: true);
+  /// 
+  /// Useful for simplifying HTML parsing and manipulation in Dart applications.
+  Element get(int index) {
+    return _elements[index];
+  }
 }

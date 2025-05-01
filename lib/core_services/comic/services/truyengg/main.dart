@@ -361,33 +361,39 @@ class TruyenGGService extends ABComicService
               ).val();
     }
 
-    final docB = parse$(
-      _comicCachedStore[comicId] ?? await fetch(getURL(comicId)),
-    );
+    final docB = parse$(await fetch(getURL(comicId)));
     final $ =
-        page == 1
+        page == 1 && parentId == 0
             ? docB
             : await fetch$(
               '$baseUrl/frontend/comment/list',
               body: {
-                'comic_id': RegExp(r'(\d+)$').firstMatch(comicId)!.group(1)!,
+                (baseUrl.contains('gg') ? 'comic_id' : 'book_id'): RegExp(r'(\d+)$').firstMatch(comicId)!.group(1)!,
                 'parent_id': parentId,
                 'team_id': docB('#team_id', single: true).val(),
                 'token': docB('#csrf-token', single: true).val(),
                 'page': page,
                 'episode_id': chapterId,
               },
+              headers: Headers({'x-requested-with': 'XMLHttpRequest'}),
             );
 
     final items = $('.info-comment').map((element) {
       final id =
           RegExp(r'child_(\d+)').firstMatch(element.className())!.group(1)!;
 
-      final photoUrl = element.queryOne('.avartar-comment img').attr('src');
+      final photoUrl =
+          element.queryOne('.avartar-comment> img').attrRaw('data-src') ??
+          element.queryOne('.avartar-comment> img').attr('src');
       final name = element.queryOne('.avartar-comment img').attr('alt');
       final time = convertTimeAgoToUtc(element.queryOne('.time').text());
 
-      final content = element.queryOne('.content-comment').html();
+      final content$ = element.queryOne('.content-comment').get(0);
+      content$.querySelectorAll('img').forEach((image) {
+        image.attributes['src'] = (image.attributes['data-src'] ?? image.attributes['src'])!;
+      });
+
+      final content = DQuery([content$]).html();
 
       final like = int.parse(element.queryOne('.total-like-comment').text());
       final dislike = int.parse(
@@ -446,7 +452,7 @@ class TruyenGGService extends ABComicService
       '$baseUrl/frontend/comment/remove',
       body: {
         'id': comment.id,
-        'comic_id': comicId,
+        (baseUrl.contains('gg') ? 'comic_id' : 'book_id'): comicId,
         'token': docB('#csrf-token', single: true).val(),
         'episode_id': chapterId,
       },

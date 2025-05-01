@@ -16,10 +16,11 @@ sealed class OImage with _$OImage {
   factory OImage.from(String src) => OImage(src: src);
 
   factory OImage.createFakeData() {
-    return OImage(src: "fake:");
+    return OImage(src: fake);
   }
 
   static final fake = "fake:";
+  static final blank = 'assets/images/blank.png';
 
   static Image network(
     String src, {
@@ -50,7 +51,7 @@ sealed class OImage with _$OImage {
   }) {
     if (src == fake) {
       return Image.asset(
-        'assets/images/blank.png',
+        blank,
         key: key,
         scale: scale,
         frameBuilder: frameBuilder,
@@ -164,5 +165,11 @@ sealed class OImage with _$OImage {
       cacheWidth: cacheWidth,
       cacheHeight: cacheHeight,
     );
+  }
+
+  static ImageProvider oImageProvider(OImage image) {
+    if (image.src == fake) return ExactAssetImage(blank);
+
+    return NetworkImage(image.src, headers: image.headers?.toMap());
   }
 }
