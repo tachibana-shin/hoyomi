@@ -57,6 +57,7 @@ void main() {
       '// 再生成するには scripts/auto_export.dart を実行してください。',
       '',
       ...exports,
+      ''
     ].join('\n');
 
     // ファイルに書き込み
