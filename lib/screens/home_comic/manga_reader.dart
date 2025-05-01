@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:battery_plus/battery_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import 'package:hoyomi/constraints/fluent.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/screens/export.dart';
+import 'package:hoyomi/utils/export.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/eva.dart';
 import 'package:iconify_flutter/icons/ic.dart';
@@ -118,6 +120,10 @@ class _MangaReaderState extends State<MangaReader>
   late final _batterySaveM = ref<bool?>(null);
   bool _use24h = false;
   late final _currentTime = ref<String?>(null);
+
+  // image cache
+  late final _pageMemoryCacheStore = <OImage, FutureCache<Uint8List>>{};
+  late final _progressCacheStore = <OImage, Ref<double>>{};
 
   @override
   void initState() {
@@ -416,6 +422,22 @@ class _MangaReaderState extends State<MangaReader>
       }
     });
 
+    // preload page
+    watch([_pages], () async {
+      for (int i = 0; i < _pages.value.length; i++) {
+        if (!mounted) break;
+        if (_pages.value.elementAt(i).image.src == OImage.fake) continue;
+
+        debugPrint('[manga_reader]: preload image $i');
+
+        final progress =
+            _progressCacheStore[_pages.value.elementAt(i).image] ??= ref(-1.0);
+        await Future.any([
+          _fetchPage(i, false, progress: progress),
+          Future.delayed(Duration(milliseconds: 500)),
+        ]);
+      }
+    }, immediate: true);
     super.initState();
   }
 
@@ -583,6 +605,63 @@ class _MangaReaderState extends State<MangaReader>
     );
   }
 
+  Future<FutureCache<Uint8List>> _fetchPage(
+    int index,
+    bool wait, {
+    required Ref<double> progress,
+  }) async {
+    final item = _pages.value.elementAt(index);
+
+    final cache = _pageMemoryCacheStore[item.image];
+    if (cache != null && cache.error == null) {
+      await cache.future;
+
+      return cache;
+    }
+
+    try {
+      if (_serviceSupportFetchPage[widget.service] == false) {
+        throw UnimplementedError();
+      }
+
+      _pageMemoryCacheStore[item.image] = FutureCache(
+        widget.service.fetchPage(item.image, (count, total) {
+          progress.value = (count / total);
+        }),
+      );
+
+      await _pageMemoryCacheStore[item.image]!.future;
+    } on UnimplementedError {
+      _serviceSupportFetchPage[widget.service] = false;
+
+      _pageMemoryCacheStore[item.image] = FutureCache(
+        widget.service.dio
+            .get(
+              item.image.src,
+              options: Options(
+                headers: item.image.headers?.toMap(),
+                responseType: ResponseType.bytes,
+              ),
+              onReceiveProgress: (count, total) {
+                progress.value = (count / total);
+              },
+            )
+            .then((res) => Uint8List.fromList(res.data)),
+      );
+
+      await _pageMemoryCacheStore[item.image]!.future;
+    }
+
+    final image = MemoryImage(_pageMemoryCacheStore[item.image]!.data!);
+
+    if (mounted) {
+      final future = precacheImage(image, context);
+      if (wait) await future;
+    }
+
+    return _pageMemoryCacheStore[item.image]!;
+  }
+
   Widget _buildPage(int index, {Key? key}) {
     final item = _pages.value.elementAt(index);
     if (item.image.src == OImage.fake) {
@@ -619,64 +698,48 @@ class _MangaReaderState extends State<MangaReader>
     //   fit: BoxFit.cover,
     // );
 
-    if (_serviceSupportFetchPage[widget.service] == false) {
-      return OImage.oNetwork(
-        item.image,
-        sourceId: widget.service.uid,
-        fit: BoxFit.contain,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) {
-            return child;
-          }
+    final source = item;
 
-          return SizedBox(
-            height: 100.h(context),
-            child: _buildPageLoading(loadingProgress),
-          );
-        },
-      );
+    final cache = _pageMemoryCacheStore[source.image];
+    if (cache != null && cache.data != null) {
+      return Image.memory(cache.data!, fit: BoxFit.contain);
     }
 
+    final progress = _progressCacheStore[source.image] ??= ref(-1.0);
     return FutureBuilder(
-      future: widget.service.fetchPage(item.image),
+      future: _fetchPage(index, false, progress: progress),
       builder: (context, snapshot) {
-        final waiting = snapshot.connectionState == ConnectionState.waiting;
-
-        if (snapshot.hasError || (!waiting && !snapshot.hasData)) {
-          if (snapshot.error is UnimplementedError) {
-            _serviceSupportFetchPage[widget.service] = false;
-            return OImage.oNetwork(
-              item.image,
-              sourceId: widget.service.uid,
-              fit: BoxFit.contain,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) {
-                  return child;
-                }
-
-                return SizedBox(
-                  height: 100.h(context),
-                  child: _buildPageLoading(loadingProgress),
-                );
-              },
-            );
-          }
-
-          return SizedBox(
-            height: 100.h(context),
-            child: Text('Error: ${snapshot.error}'),
-          );
-        }
-        if (waiting) {
-          return SizedBox(
-            height: 100.h(context),
-            child: _buildPageLoading(null),
-          );
-        }
-
-        return Image.memory(snapshot.data!);
+        return snapshot.when(
+          error:
+              (error, stack) => SizedBox(
+                height: 100.h(context),
+                child: Text('Error: $error ($stack)'),
+              ),
+          loading:
+              () => SizedBox(
+                height: 100.h(context),
+                child: Watch(() => _buildPageLoading(progress.value)),
+              ),
+          data: (data, _) => Image.memory(data.data!, fit: BoxFit.contain),
+        );
       },
     );
+
+    // return OImage.oNetwork(
+    //   source,
+    //   sourceId: widget.service.uid,
+    //   fit: BoxFit.contain,
+    //   loadingBuilder: (context, child, loadingProgress) {
+    //     if (loadingProgress == null) {
+    //       return child;
+    //     }
+
+    //     return SizedBox(
+    //       height: 100.h(context),
+    //       child: _buildPageLoading(loadingProgress),
+    //     );
+    //   },
+    // );
   }
 
   @override
@@ -1047,14 +1110,10 @@ class _MangaReaderState extends State<MangaReader>
     });
   }
 
-  Widget _buildPageLoading(ImageChunkEvent? loadingProgress) {
+  Widget _buildPageLoading(double? progress) {
     return Center(
       child: CircularProgressIndicator(
-        value:
-            loadingProgress?.expectedTotalBytes != null
-                ? loadingProgress!.cumulativeBytesLoaded /
-                    (loadingProgress.expectedTotalBytes!)
-                : null,
+        value: progress == null || progress < 0 ? null : progress,
       ),
     );
   }
