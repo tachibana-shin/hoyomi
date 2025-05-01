@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:path/path.dart' as p;
 
@@ -42,7 +44,9 @@ void main() {
 
     for (final file in allFiles) {
       // export.dart からの相対パスを計算
-      final relativePath = p.relative(file.path, from: p.dirname(mainFilePath));
+      final relativePath = p
+          .relative(file.path, from: p.dirname(mainFilePath))
+          .replaceAll(r'\', '/');
       // export 文を追加
       exports.add("export '$relativePath';");
     }
@@ -69,5 +73,6 @@ bool _isGeneratedFile(String path) {
   return basename.contains('.g.dart') ||
       basename.contains('.freezed.dart') ||
       RegExp(r'\.[a-z]+\.dart$').hasMatch(basename) ||
-      path.contains('/services/');
+      path.contains('/services/') ||
+      path.contains('\\services\\');
 }
