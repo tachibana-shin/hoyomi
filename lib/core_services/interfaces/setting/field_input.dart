@@ -16,6 +16,6 @@ class FieldInput extends SettingField {
     required this.placeholder,
     required this.defaultFn,
     this.maxLines = 1,
-    this.appear = true,
+    this.appear = false,
   });
 }

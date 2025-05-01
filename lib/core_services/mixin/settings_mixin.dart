@@ -30,7 +30,10 @@ mixin SettingsMixin on BaseService {
   }
 
   String? getSetting({required String key}) {
-    return _serviceSettings?.settings?[key];
+    final value = _serviceSettings?.settings?[key];
+
+    if (value == null || value.isEmpty) return null;
+    return value;
   }
 
   Future<void> setSetting(String name, String value) async {
