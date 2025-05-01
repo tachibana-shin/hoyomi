@@ -6,10 +6,8 @@ import 'dart:ui' as ui;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/env.dart';
-import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
-import 'package:hoyomi/core_services/comic/interfaces/main.dart';
-import 'package:hoyomi/core_services/comic/mixin/comic_watch_page_general_mixin.dart';
 
 part 'main.freezed.dart';
 part 'main.g.dart';
@@ -209,8 +207,8 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
   }
 
   @override
-  fetchPage(source) async {
-    return _decodeAndBuildImage(source.src, source.extra!);
+  fetchPage(source, onReceiveProgress) async {
+    return _decodeAndBuildImage(source.src, source.extra!, onReceiveProgress);
   }
 
   @override
@@ -705,10 +703,14 @@ Future<List<Map<String, int>>> _decodeDrm(
 
 // Load image from URL as ui.Image
 final _dio = Dio();
-Future<ui.Image> _loadImageFromUrl(String url) async {
+Future<ui.Image> _loadImageFromUrl(
+  String url,
+  void Function(int count, int total) onReceiveProgress,
+) async {
   final response = await _dio.get(
     url,
     options: Options(responseType: ResponseType.bytes),
+    onReceiveProgress: onReceiveProgress,
   );
   final completer = Completer<ui.Image>();
   ui.decodeImageFromList(response.data, completer.complete);
@@ -758,13 +760,17 @@ Future<Uint8List> _imageFromUiImage(ui.Image uiImage) async {
 
 // Main function to call
 final _encryptedKey = Env.niceTruyenKey;
-Future<Uint8List> _decodeAndBuildImage(String url, String drmData) async {
+Future<Uint8List> _decodeAndBuildImage(
+  String url,
+  String drmData,
+  void Function(int count, int total) onReceiveProgress,
+) async {
   final key = utf8.decode(
     base64.decode('${_encryptedKey.substring(0, _encryptedKey.length - 2)}=='),
   );
 
   final blocks = await _decodeDrm(drmData.trim(), key);
-  final srcImage = await _loadImageFromUrl(url);
+  final srcImage = await _loadImageFromUrl(url, onReceiveProgress);
   final decodedImage = await _unscrambleImage(srcImage, blocks);
   return await _imageFromUiImage(decodedImage);
 }
