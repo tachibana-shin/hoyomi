@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user_async.dart';
@@ -375,7 +376,7 @@ class _DetailsComicState extends State<DetailsComic>
           style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 7.0),
-        Text(comic.description, style: TextStyle(fontSize: 14.0)),
+        HtmlWidget(comic.description, textStyle: TextStyle(fontSize: 14.0)),
 
         const SizedBox(height: 24.0),
 
