@@ -43,6 +43,19 @@ async function installRules(
   const addRules: Browser.DeclarativeNetRequest.Rule[] = []
   const removeRuleIds: number[] = []
 
+  if (import.meta.env.DEV) {
+    /// remove all localhost
+    await browser.declarativeNetRequest.updateDynamicRules({
+      removeRuleIds: (await browser.declarativeNetRequest.getDynamicRules())
+        .filter((rule) =>
+          rule.condition.initiatorDomains?.some((domain) =>
+            domain.includes("localhost")
+          )
+        )
+        .map((rule) => rule.id)
+    })
+  }
+
   // biome-ignore lint/complexity/noForEach: <explanation>
   rules.forEach((rawRule) => {
     const id = hashToInt(`${rawRule.regexFilter}@${rawRule.referer}@${origin}`)
