@@ -190,9 +190,13 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
   final Map<String, ({DateTime? expire, Future<String> response})> _cacheFetch =
       {};
   late final Dio dio;
+  bool _initialize = false;
 
   @override
   Future<void> initState() async {
+    if (_initialize) return;
+    _initialize = true;
+
     dio = await _createDioClientCache();
     await super.initState();
   }
