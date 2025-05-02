@@ -334,23 +334,32 @@ class _DetailsComicState extends State<DetailsComic>
             child: Comments(
               getComments: ({page, parent}) {
                 return (_service as ComicCommentMixin).getComments(
-                  comicId: widget.comicId,
+                  ComicCommentContext(
+                    comicId: widget.comicId,
+                    metaComic: comic,
+                    parent: parent,
+                  ),
                   page: page,
-                  parent: parent,
                 );
               },
               deleteComment: ({required comment, parent}) {
                 return (_service as ComicCommentMixin).deleteComment(
-                  comicId: widget.comicId,
+                  ComicCommentContext(
+                    comicId: widget.comicId,
+                    metaComic: comic,
+                    parent: parent,
+                  ),
                   comment: comment,
-                  parent: parent,
                 );
               },
               setLikeComment: ({required comment, parent, required value}) {
                 return (_service as ComicCommentMixin).setLikeComment(
-                  comicId: widget.comicId,
+                  ComicCommentContext(
+                    comicId: widget.comicId,
+                    metaComic: comic,
+                    parent: parent,
+                  ),
                   comment: comment,
-                  parent: parent,
                   value: value,
                 );
               },

@@ -495,8 +495,8 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
   }
 
   @override
-  getSeekThumbnail(props) async {
-    final data = jsonDecode(props.source.extra!);
+  getSeekThumbnail(context) async {
+    final data = jsonDecode(context.source.extra!);
 
     final subtitles = data['subtitles'] as List;
     // is {url: string, lang: string}[] ! lang=thumbnails is preview thumbnail
@@ -510,8 +510,8 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
   }
 
   @override
-  getOpeningEnding(props) async {
-    final data = jsonDecode(props.source.extra!);
+  getOpeningEnding(context) async {
+    final data = jsonDecode(context.source.extra!);
 
     final opening = data['intro'] as Map;
     final ending = data['outro'] as Map;

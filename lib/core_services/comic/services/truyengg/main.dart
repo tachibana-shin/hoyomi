@@ -348,20 +348,21 @@ class TruyenGGService extends ABComicService
   }
 
   @override
-  getComments({required comicId, chapterId, parent, page = 1}) async {
-    final parentId = parent?.id ?? 0;
+  getComments(context, {page = 1}) async {
+    final parentId = context.parent?.id ?? 0;
 
+    var chapterId = context.chapterId;
     if (chapterId != null) {
       // pre-fetch
       chapterId =
           _episodeIdStore[chapterId] ??=
-              (await fetch$(getURL(comicId, chapterId: chapterId)))(
+              (await fetch$(getURL(context.comicId, chapterId: chapterId)))(
                 '#episode_id',
                 single: true,
               ).val();
     }
 
-    final docB = parse$(await fetch(getURL(comicId)));
+    final docB = parse$(await fetch(getURL(context.comicId)));
     final $ =
         page == 1 && parentId == 0
             ? docB
@@ -369,7 +370,7 @@ class TruyenGGService extends ABComicService
               '$baseUrl/frontend/comment/list',
               body: {
                 (baseUrl.contains('gg') ? 'comic_id' : 'book_id'):
-                    RegExp(r'(\d+)$').firstMatch(comicId)!.group(1)!,
+                    RegExp(r'(\d+)$').firstMatch(context.comicId)!.group(1)!,
                 'parent_id': parentId,
                 'team_id': docB('#team_id', single: true).val(),
                 'token': docB('#csrf-token', single: true).val(),
@@ -414,7 +415,7 @@ class TruyenGGService extends ABComicService
 
       return ComicComment(
         id: id,
-        comicId: comicId,
+        comicId: context.comicId,
         chapterId: chapterId,
         userId: name,
         name: name,
@@ -445,30 +446,25 @@ class TruyenGGService extends ABComicService
   }
 
   @override
-  deleteComment({required comicId, chapterId, parent, required comment}) async {
+  deleteComment(context, {required comment}) async {
     final docB = parse$(
-      _comicCachedStore[comicId] ?? await fetch(getURL(comicId)),
+      _comicCachedStore[context.comicId] ??
+          await fetch(getURL(context.comicId)),
     );
 
     await fetch(
       '$baseUrl/frontend/comment/remove',
       body: {
         'id': comment.id,
-        (baseUrl.contains('gg') ? 'comic_id' : 'book_id'): comicId,
+        (baseUrl.contains('gg') ? 'comic_id' : 'book_id'): context.comicId,
         'token': docB('#csrf-token', single: true).val(),
-        'episode_id': chapterId,
+        'episode_id': context.chapterId,
       },
     );
   }
 
   @override
-  setLikeComment({
-    required comicId,
-    chapterId,
-    parent,
-    required comment,
-    required value,
-  }) async {
+  setLikeComment(context, {required comment, required value}) async {
     if (value) {
       final json = jsonDecode(
         await fetch('$baseUrl/frontend/comment/like', body: {'id': comment.id}),

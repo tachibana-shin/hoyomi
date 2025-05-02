@@ -50,7 +50,7 @@ $Res call({
 });
 
 
-$ComicCopyWith<$Res> get item;$WatchPageCopyWith<$Res> get watchPage;
+$ComicCopyWith<$Res> get item;$ComicChapterCopyWith<$Res> get lastEpisode;$WatchPageCopyWith<$Res> get watchPage;
 
 }
 /// @nodoc
@@ -80,6 +80,15 @@ $ComicCopyWith<$Res> get item {
   
   return $ComicCopyWith<$Res>(_self.item, (value) {
     return _then(_self.copyWith(item: value));
+  });
+}/// Create a copy of ComicHistory
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ComicChapterCopyWith<$Res> get lastEpisode {
+  
+  return $ComicChapterCopyWith<$Res>(_self.lastEpisode, (value) {
+    return _then(_self.copyWith(lastEpisode: value));
   });
 }/// Create a copy of ComicHistory
 /// with the given fields replaced by the non-null parameter values.
@@ -140,7 +149,7 @@ $Res call({
 });
 
 
-@override $ComicCopyWith<$Res> get item;@override $WatchPageCopyWith<$Res> get watchPage;
+@override $ComicCopyWith<$Res> get item;@override $ComicChapterCopyWith<$Res> get lastEpisode;@override $WatchPageCopyWith<$Res> get watchPage;
 
 }
 /// @nodoc
@@ -171,6 +180,15 @@ $ComicCopyWith<$Res> get item {
   
   return $ComicCopyWith<$Res>(_self.item, (value) {
     return _then(_self.copyWith(item: value));
+  });
+}/// Create a copy of ComicHistory
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ComicChapterCopyWith<$Res> get lastEpisode {
+  
+  return $ComicChapterCopyWith<$Res>(_self.lastEpisode, (value) {
+    return _then(_self.copyWith(lastEpisode: value));
   });
 }/// Create a copy of ComicHistory
 /// with the given fields replaced by the non-null parameter values.
