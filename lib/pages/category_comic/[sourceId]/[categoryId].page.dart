@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/ion.dart';
+import 'package:kaeru/kaeru.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class CategoryComicPage extends StatefulWidget {
@@ -32,16 +34,16 @@ class CategoryComicPage extends StatefulWidget {
   createState() => _CategoryComicPageState();
 }
 
-class _CategoryComicPageState extends State<CategoryComicPage> {
+class _CategoryComicPageState extends State<CategoryComicPage> with KaeruMixin {
   late final ABComicService _service;
   int _pageKey = 2;
 
-  String? _title;
-  String? _url;
+  late final _title = ref<String?>(null);
+  late final _url = ref<String?>(null);
   // String? _description;
-  List<Filter>? _filters;
-  int? _currentPage;
-  int? _totalPages;
+  late final _filters = ref<List<Filter>?>(null);
+  late final _currentPage = ref<int?>(null);
+  late final _totalPages = ref<int?>(null);
 
   final Map<String, List<String>?> _selectFilters = {};
 
@@ -61,17 +63,17 @@ class _CategoryComicPageState extends State<CategoryComicPage> {
     );
     final isLastPage = newComics.page >= newComics.totalPages;
 
-    setState(() {
-      _title = newComics.name;
-      _url = newComics.url;
-      // _description = newComics.description;
-      _filters = newComics.filters;
-      _filters?.map((filter) {
-        _selectFilters[filter.key] = null;
-      });
-      _currentPage = pageKey;
-      _totalPages = newComics.totalPages;
+    _title.value = newComics.name;
+    _url.value = newComics.url;
+    // _description = newComics.description;
+    _filters.value = newComics.filters;
+    if (_filters.value?.isEmpty == true) _filters.value = null;
+
+    _filters.value?.map((filter) {
+      _selectFilters[filter.key] = null;
     });
+    _currentPage.value = pageKey;
+    _totalPages.value = newComics.totalPages;
 
     return (isLastPage: isLastPage, data: newComics.items.toList());
   }
@@ -82,11 +84,15 @@ class _CategoryComicPageState extends State<CategoryComicPage> {
       onLoadData: () => _fetchComics(1).then((param) => param.data),
       onLoadFake: () => List.generate(30, (_) => Comic.createFakeData()),
       builderError:
-          (body) => Scaffold(appBar: _buildAppBar(() async {}), body: body),
+          (body) => Watch(
+            () => Scaffold(appBar: _buildAppBar(() async {}), body: body),
+          ),
       builder:
-          (data, param) => Scaffold(
-            appBar: _buildAppBar(param.refresh),
-            body: _buildBody(data),
+          (data, param) => Watch(
+            () => Scaffold(
+              appBar: _buildAppBar(param.refresh),
+              body: _buildBody(data),
+            ),
           ),
     );
   }
@@ -101,28 +107,37 @@ class _CategoryComicPageState extends State<CategoryComicPage> {
           context.pop();
         },
       ),
-      title: Skeletonizer(
-        enabled: _title == null || _title!.isEmpty,
-        enableSwitchAnimation: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              _title ?? "Fake title",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 2),
-            Text(
-              "${_service.name} (${(_currentPage ?? '?')}/${_totalPages ?? '??'}) page",
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).colorScheme.secondary,
+      title: Watch(
+        () => Skeletonizer(
+          enabled: _title.value == null,
+          enableSwitchAnimation: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _title.value ?? "Fake title",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-            ),
-          ],
+              SizedBox(height: 2),
+              Text(
+                "${_service.name} (${(_currentPage.value ?? '?')}/${_totalPages.value ?? '??'}) page",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      actions: [if (_url != null) IconButtonOpenBrowser(url: _url!)],
+      actions: [
+        Watch(
+          () =>
+              _url.value != null
+                  ? IconButtonOpenBrowser(url: _url.value!)
+                  : nil,
+        ),
+      ],
       // actions: [
       //   IconButton(
       //       onPressed: () {},
@@ -130,7 +145,7 @@ class _CategoryComicPageState extends State<CategoryComicPage> {
       //           color: Theme.of(context).colorScheme.onSurface)),
       // ],
       bottom:
-          _filters == null
+          _filters.value == null
               ? null
               : PreferredSize(
                 preferredSize: Size.fromHeight(48.0),
@@ -143,7 +158,7 @@ class _CategoryComicPageState extends State<CategoryComicPage> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children:
-                          _filters!.map((filter) {
+                          _filters.value!.map((filter) {
                             final options = filter.options;
 
                             return Padding(

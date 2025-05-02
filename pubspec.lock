@@ -1176,10 +1176,10 @@ packages:
     dependency: "direct main"
     description:
       name: kaeru
-      sha256: "2f1040e232f7809947ae35edd6b7c9b8ba3dc8b5d522861e371d8bf3f5f7f73f"
+      sha256: "2d17c5dc4beff6df6dd90ea3cf836c80a9af3472e246c969469ae9033fb311e2"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.10"
+    version: "0.1.12"
   l10n_languages:
     dependency: transitive
     description:
