@@ -53,7 +53,7 @@ $Res call({
 });
 
 
-$OImageCopyWith<$Res> get image;
+$OImageCopyWith<$Res> get image;$ComicChapterCopyWith<$Res>? get lastChap;
 
 }
 /// @nodoc
@@ -90,6 +90,18 @@ $OImageCopyWith<$Res> get image {
   
   return $OImageCopyWith<$Res>(_self.image, (value) {
     return _then(_self.copyWith(image: value));
+  });
+}/// Create a copy of Comic
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ComicChapterCopyWith<$Res>? get lastChap {
+    if (_self.lastChap == null) {
+    return null;
+  }
+
+  return $ComicChapterCopyWith<$Res>(_self.lastChap!, (value) {
+    return _then(_self.copyWith(lastChap: value));
   });
 }
 }
@@ -151,7 +163,7 @@ $Res call({
 });
 
 
-@override $OImageCopyWith<$Res> get image;
+@override $OImageCopyWith<$Res> get image;@override $ComicChapterCopyWith<$Res>? get lastChap;
 
 }
 /// @nodoc
@@ -189,6 +201,18 @@ $OImageCopyWith<$Res> get image {
   
   return $OImageCopyWith<$Res>(_self.image, (value) {
     return _then(_self.copyWith(image: value));
+  });
+}/// Create a copy of Comic
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ComicChapterCopyWith<$Res>? get lastChap {
+    if (_self.lastChap == null) {
+    return null;
+  }
+
+  return $ComicChapterCopyWith<$Res>(_self.lastChap!, (value) {
+    return _then(_self.copyWith(lastChap: value));
   });
 }
 }

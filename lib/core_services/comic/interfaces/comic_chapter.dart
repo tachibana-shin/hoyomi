@@ -1,39 +1,24 @@
-class ComicChapter {
-  final String name;
-  final String? fullName;
-  final String chapterId;
-  final DateTime? time;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  const ComicChapter({
-    required this.name,
-    required this.chapterId,
-    this.time,
-    this.fullName,
-  });
+part 'comic_chapter.freezed.dart';
+part 'comic_chapter.g.dart';
 
-  factory ComicChapter.createFakeData() {
-    return ComicChapter(
-      name: "Chapter 1: The Beginning",
-      chapterId: "ch1",
-      time: DateTime.now().subtract(Duration(days: 2)),
-    );
-  }
+@freezed
+sealed class ComicChapter with _$ComicChapter {
+  const factory ComicChapter({
+    required String name,
+    String? fullName,
+    required String chapterId,
+    DateTime? time,
+  }) = _ComicChapter;
 
-  // Convert from JSON
-  factory ComicChapter.fromJson(Map<String, dynamic> json) {
-    return ComicChapter(
-      name: json['name'],
-      chapterId: json['chapterId'],
-      time: json['time'] != null ? DateTime.parse(json['time']) : null,
-    );
-  }
+  /// JSONからの生成
+  factory ComicChapter.fromJson(Map<String, dynamic> json) => _$ComicChapterFromJson(json);
 
-  // Convert to JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'chapterId': chapterId,
-      'time': time?.toIso8601String(),
-    };
-  }
+  /// Fakeデータを作成
+  factory ComicChapter.createFakeData() => ComicChapter(
+        name: "Chapter 1: The Beginning",
+        chapterId: "ch1",
+        time: DateTime.now().subtract(const Duration(days: 2)),
+      );
 }

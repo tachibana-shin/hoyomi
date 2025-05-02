@@ -743,11 +743,11 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  getSeekThumbnail(props) async {
+  getSeekThumbnail(context) async {
     final episodeId = await _getEpisodeIDApi(
-      eigaId: props.eigaId,
-      episode: props.episode,
-      metaEiga: props.metaEiga,
+      eigaId: context.eigaId,
+      episode: context.episode,
+      metaEiga: context.metaEiga,
     );
     final meta = jsonDecode(
       await _callApiAnimeVsub('$_apiThumb/episode-skip/$episodeId'),
@@ -759,11 +759,11 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  getOpeningEnding(props) async {
+  getOpeningEnding(context) async {
     final episodeId = await _getEpisodeIDApi(
-      eigaId: props.eigaId,
-      episode: props.episode,
-      metaEiga: props.metaEiga,
+      eigaId: context.eigaId,
+      episode: context.episode,
+      metaEiga: context.metaEiga,
     );
     final meta = jsonDecode(
       await _callApiAnimeVsub('$_apiThumb/episode-skip/$episodeId'),
@@ -817,17 +817,15 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  getWatchTime({
-    required String eigaId,
-    required EigaEpisode episode,
-    required MetaEiga metaEiga,
-  }) async {
+  getWatchTime(context) async {
     final userUid = await _getUidUser();
 
     final json = await rpc('get_single_progress', {
       'user_uid': userUid,
-      'season_id': eigaId,
-      'p_chap_id': RegExp(r'-(\d+)$').firstMatch(episode.episodeId)!.group(1),
+      'season_id': context.eigaId,
+      'p_chap_id': RegExp(
+        r'-(\d+)$',
+      ).firstMatch(context.episode.episodeId)!.group(1),
     });
     if (json.isEmpty) throw Exception('No watch time found');
 
@@ -866,27 +864,22 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  Future<void> setWatchTime({
-    required eigaId,
-    required episode,
-    required MetaEiga metaEiga,
-    required season,
-    required WatchTime watchTime,
-  }) async {
+  Future<void> setWatchTime(context, {required watchTime}) async {
     final userUid = await _getUidUser();
 
     await rpc('set_single_progress', {
       'user_uid': userUid,
-      'p_name': metaEiga.name,
+      'p_name': context.metaEiga.name,
       'p_poster': _removeHostUrlImage(
-        metaEiga.poster?.src ?? metaEiga.image.src,
+        context.metaEiga.poster?.src ?? context.metaEiga.image.src,
       ),
-      'season_id': eigaId,
-      'p_season_name': season.name,
+      'season_id': context.eigaId,
+      'p_season_name': context.season?.name ?? '',
       'e_cur': watchTime.position.inMilliseconds / 1e3,
       'e_dur': watchTime.duration.inMilliseconds / 1e3,
-      'e_name': episode.name,
-      'e_chap': RegExp(r'(\d+)$').firstMatch(episode.episodeId)!.group(1)!,
+      'e_name': context.episode.name,
+      'e_chap':
+          RegExp(r'(\d+)$').firstMatch(context.episode.episodeId)!.group(1)!,
       'gmt': 'Asia/Saigon',
     });
   }

@@ -19,23 +19,13 @@ export 'package:hoyomi/core_services/service.dart';
 part 'ab_eiga_service.freezed.dart';
 
 @freezed
-sealed class PropsGetSeekThumbnail with _$PropsGetSeekThumbnail {
-  const factory PropsGetSeekThumbnail({
+sealed class EigaContext with _$EigaContext {
+  const factory EigaContext({
     required String eigaId,
     required MetaEiga metaEiga,
     required EigaEpisode episode,
     required SourceVideo source,
-  }) = _PropsGetSeekThumbnail;
-}
-
-@freezed
-sealed class PropsGetOpeningEnding with _$PropsGetOpeningEnding {
-  const factory PropsGetOpeningEnding({
-    required String eigaId,
-    required MetaEiga metaEiga,
-    required EigaEpisode episode,
-    required SourceVideo source,
-  }) = _PropsGetOpeningEnding;
+  }) = _EigaContext;
 }
 
 abstract class ABEigaService extends Service {
@@ -51,6 +41,7 @@ abstract class ABEigaService extends Service {
 
   Future<MetaEiga> getDetails(String eigaId);
   Future<EigaEpisodes> getEpisodes(String eigaId);
+
   Future<List<ServerSource>> getServers({
     required String eigaId,
     required EigaEpisode episode,
@@ -63,6 +54,7 @@ abstract class ABEigaService extends Service {
     required EigaEpisode episode,
     ServerSource? server,
   });
+
   Future<SourceContent> fetchSourceContent({required SourceVideo source}) {
     throw UnimplementedError();
   }
@@ -75,11 +67,11 @@ abstract class ABEigaService extends Service {
     throw UnimplementedError();
   }
 
-  Future<Vtt?> getSeekThumbnail(PropsGetSeekThumbnail props) {
+  Future<Vtt?> getSeekThumbnail(EigaContext context) {
     throw UnimplementedError();
   }
 
-  Future<OpeningEnding?> getOpeningEnding(PropsGetOpeningEnding props) {
+  Future<OpeningEnding?> getOpeningEnding(EigaContext context) {
     throw UnimplementedError();
   }
 

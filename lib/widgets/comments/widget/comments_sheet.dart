@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/comic/mixin/main.dart';
-import 'package:hoyomi/widgets/comments/widget/comments.dart';
+import 'package:hoyomi/core_services/comic/main.dart';
+import 'comments.dart';
 
 class CommentsSheet extends StatefulWidget {
   final ComicCommentMixin service;
 
   final String comicId;
+  final MetaComic metaComic;
   final String chapterId;
+  final ComicChapter chapter;
 
   const CommentsSheet({
     super.key,
     required this.comicId,
+    required this.metaComic,
     required this.chapterId,
+    required this.chapter,
     required this.service,
   });
 
@@ -32,26 +36,38 @@ class _CommentsSheetState extends State<CommentsSheet> {
         return Comments(
           getComments: ({page, parent}) {
             return widget.service.getComments(
-              comicId: widget.comicId,
-              chapterId: widget.chapterId,
+              ComicCommentContext(
+                comicId: widget.comicId,
+                metaComic: widget.metaComic,
+                chapterId: widget.chapterId,
+                chapter: widget.chapter,
+                parent: parent,
+              ),
               page: page,
-              parent: parent,
             );
           },
           deleteComment: ({required comment, parent}) {
             return widget.service.deleteComment(
-              comicId: widget.comicId,
-              chapterId: widget.chapterId,
-              parent: parent,
+              ComicCommentContext(
+                comicId: widget.comicId,
+                metaComic: widget.metaComic,
+                chapterId: widget.chapterId,
+                chapter: widget.chapter,
+                parent: parent,
+              ),
               comment: comment,
             );
           },
           controller: scrollController,
           setLikeComment: ({required comment, parent, required value}) {
             return widget.service.setLikeComment(
-              comicId: widget.comicId,
-              chapterId: widget.chapterId,
-              parent: parent,
+              ComicCommentContext(
+                comicId: widget.comicId,
+                metaComic: widget.metaComic,
+                chapterId: widget.chapterId,
+                chapter: widget.chapter,
+                parent: parent,
+              ),
               comment: comment,
               value: value,
             );

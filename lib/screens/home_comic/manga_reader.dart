@@ -985,6 +985,8 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   void _showPanelComments() {
+    if (_currChapter.value == null) return;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -992,7 +994,9 @@ class _MangaReaderState extends State<MangaReader>
       builder:
           (context) => CommentsSheet(
             comicId: widget.comicId,
+            metaComic: widget.comic,
             chapterId: _chapterId.value,
+            chapter: _currChapter.value!,
             service: widget.service as ComicCommentMixin,
           ),
     );

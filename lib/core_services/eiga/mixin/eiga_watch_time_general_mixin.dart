@@ -63,11 +63,7 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
   }
 
   @override
-  Future<WatchTime> getWatchTime({
-    required String eigaId,
-    required EigaEpisode episode,
-    required MetaEiga metaEiga,
-  }) async {
+  Future<WatchTime> getWatchTime(context) async {
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
@@ -75,8 +71,8 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
 
     final body = await _getClient().client.getApiEigaGetWatchTime(
       sourceId: uid,
-      eigaTextId: eigaId,
-      chapId: episode.episodeId,
+      eigaTextId: context.eigaId,
+      chapId: context.episode.episodeId,
       authorization: 'Bearer ${idToken.token}',
     );
     final data = body.data;
@@ -116,13 +112,7 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
   }
 
   @override
-  Future<void> setWatchTime({
-    required String eigaId,
-    required EigaEpisode episode,
-    required MetaEiga metaEiga,
-    required Season season,
-    required WatchTime watchTime,
-  }) async {
+  Future<void> setWatchTime(context, {required watchTime}) async {
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
@@ -132,14 +122,14 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
       body: SetWatchTimeBodySchema(
         sourceId: uid,
         // data
-        name: metaEiga.name,
-        poster: metaEiga.poster?.src ?? metaEiga.image.src,
-        eigaTextId: eigaId,
-        seasonName: season.name,
+        name: context.metaEiga.name,
+        poster: context.metaEiga.poster?.src ?? context.metaEiga.image.src,
+        eigaTextId: context.eigaId,
+        seasonName: context.season?.name ?? '',
         cur: watchTime.position.inMilliseconds / 1e3,
         dur: watchTime.duration.inMilliseconds / 1e3,
-        episodeName: episode.name,
-        episodeId: episode.episodeId,
+        episodeName: context.episode.name,
+        episodeId: context.episode.episodeId,
       ),
       authorization: 'Bearer ${idToken.token}',
     );

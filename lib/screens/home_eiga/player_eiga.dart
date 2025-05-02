@@ -347,9 +347,12 @@ class _PlayerEigaState extends State<PlayerEiga>
 
           return (widget.service as EigaWatchTimeMixin)
               .getWatchTime(
-                eigaId: eigaId,
-                episode: episode,
-                metaEiga: widget.metaEiga.value,
+                EigaWatchContext(
+                  eigaId: eigaId,
+                  episode: episode,
+                  metaEiga: widget.metaEiga.value,
+                  season: widget.season.value,
+                ),
               )
               .then(
                 (data) => WatchTimeData(
@@ -388,7 +391,7 @@ class _PlayerEigaState extends State<PlayerEiga>
             _source.value != null) {
           try {
             return await widget.service.getSeekThumbnail(
-              PropsGetSeekThumbnail(
+              EigaContext(
                 eigaId: widget.eigaId.value,
                 episode: widget.episode.value!,
                 metaEiga: widget.metaEiga.value,
@@ -416,7 +419,7 @@ class _PlayerEigaState extends State<PlayerEiga>
             _source.value != null) {
           try {
             return widget.service.getOpeningEnding(
-              PropsGetOpeningEnding(
+              EigaContext(
                 eigaId: widget.eigaId.value,
                 metaEiga: widget.metaEiga.value,
                 episode: widget.episode.value!,
@@ -623,10 +626,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     final season = widget.season.value;
 
-    if (metaEiga.fake ||
-        episodeId == null ||
-        episode == null ||
-        season == null) {
+    if (metaEiga.fake || episodeId == null || episode == null) {
       return;
     }
 
@@ -655,10 +655,12 @@ class _PlayerEigaState extends State<PlayerEiga>
     );
     (widget.service as EigaWatchTimeMixin)
         .setWatchTime(
-          eigaId: eigaId,
-          episode: episode,
-          metaEiga: metaEiga,
-          season: season,
+          EigaWatchContext(
+            eigaId: eigaId,
+            episode: episode,
+            metaEiga: metaEiga,
+            season: season,
+          ),
           watchTime: watchTime,
         )
         .catchError((error) {
