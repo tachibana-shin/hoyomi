@@ -312,7 +312,6 @@ class CuuTruyenService extends ABComicService
 
   @override
   Future<ComicComments> getComments(context, {page = 1}) async {
-    print(context);
     final data = CommentsResponse.fromJson(
       jsonDecode(
         await fetch(
