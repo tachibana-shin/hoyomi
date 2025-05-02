@@ -10,7 +10,7 @@ describe("jsonToResponse", () => {
         "Content-Type": "application/json",
         "X-Custom-Header": "CustomValue"
       },
-      body: '{"message":"Success"}',
+      body: btoa('{"message":"Success"}'),
       type: "default",
       redirected: true,
       url: "http://example.com"
@@ -28,7 +28,7 @@ describe("jsonToResponse", () => {
 
     // Verify body
     const text = await response.text()
-    expect(text).toBe(responseJson.body)
+    expect(text).toBe(atob(responseJson.body))
   })
 
   it("should handle responses without a body", async () => {

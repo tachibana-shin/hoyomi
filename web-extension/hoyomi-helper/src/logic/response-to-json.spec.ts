@@ -18,9 +18,9 @@ describe("responseToJson", () => {
     expect(json.statusText).toBe("OK")
     expect(json.headers["content-type"]).toBe("application/json")
     expect(json.headers["x-custom-header"]).toBe("CustomValue")
-    expect(json.body).toBe(bodyContent)
+    expect(atob(json.body)).toBe(bodyContent)
     expect(json.redirected).toBe(false)
-    expect(json.type).toBe("basic")
+    expect(json.type).toBe("default")
     expect(json.url).toBe("")
   })
 
