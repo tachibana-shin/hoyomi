@@ -31,6 +31,9 @@ jobs:
       - name: Create .env.web file
         run: echo -e "${{ secrets.ENV_WEB_CONTENT }}" > .env.web
 
+      - name: Build runner
+        run: sh build_bunner.sh
+
       - name: Build x64 binary
         run: flutter build linux --release
 
@@ -47,6 +50,12 @@ jobs:
           Description: The application for watch anime and read manga for Android, iOS, MacOS, Windows, Linux and Web.
           EOF
           dpkg-deb --build deb-x64 app-linux-amd64-release.deb
+
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+        if: ${{ failure() }}
+        with:
+          wait-timeout-minutes: 5
 
       - name: Upload .deb x64
         uses: actions/upload-artifact@v4
