@@ -9,6 +9,7 @@ import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_package_installer/flutter_package_installer.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:kaeru/kaeru.dart';
 import 'package:markdown/markdown.dart' as markdown;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -373,52 +374,54 @@ class UpdateAvailableController {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        bool downloading = false;
-        double downloadingProgress = 0.0;
-        bool downloaded = false;
-        bool installing = false;
+        return KaeruBuilder(
+          builder: (state) {
+            final downloading = state.ref(false);
+            final downloadingProgress = state.ref(0.0);
+            final downloaded = state.ref(false);
+            final installing = state.ref(false);
 
-        return StatefulBuilder(
-          builder: (context, setState) {
             return AlertDialog(
               title: Text('Update Available'),
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 0.0,
                 vertical: 8.0,
               ),
-              content: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (downloading || downloaded)
+              content: Watch(
+                () => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (downloading.value || downloaded.value)
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 24.0,
+                          vertical: 4.0,
+                        ),
+                        child: LinearProgressIndicator(
+                          value: downloadingProgress.value,
+                        ),
+                      ),
                     Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: 24.0,
                         vertical: 4.0,
+                      ).copyWith(bottom: 2.0),
+                      child: Text(
+                        'Change log (${release.tagName})',
+                        style: TextStyle(fontSize: 17.0),
                       ),
-                      child: LinearProgressIndicator(
-                        value: downloadingProgress,
+                    ),
+                    SizedBox(height: 4.0),
+                    SingleChildScrollView(
+                      padding: EdgeInsets.only(right: 18.0),
+                      child: HtmlWidget(
+                        markdown.markdownToHtml(release.body),
+                        textStyle: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 24.0,
-                      vertical: 4.0,
-                    ).copyWith(bottom: 2.0),
-                    child: Text(
-                      'Change log (${release.tagName})',
-                      style: TextStyle(fontSize: 17.0),
-                    ),
-                  ),
-                  SizedBox(height: 4.0),
-                  SingleChildScrollView(
-                    padding: EdgeInsets.only(right: 18.0),
-                    child: HtmlWidget(
-                      markdown.markdownToHtml(release.body),
-                      textStyle: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
-                  SizedBox(height: 8.0),
-                ],
+                    SizedBox(height: 8.0),
+                  ],
+                ),
               ),
               scrollable: true,
               actions: <Widget>[
@@ -428,37 +431,37 @@ class UpdateAvailableController {
                     Navigator.of(context).pop();
                   },
                 ),
-                Opacity(
-                  opacity: downloading ? 0.5 : 1.0,
-                  child: IgnorePointer(
-                    ignoring: downloading,
-                    child: FilledButton(
-                      child: Text(installing ? 'Installing' : 'Download'),
-                      onPressed: () async {
-                        if (XPlatform.isAndroid) {
-                          downloading = true;
-                          setState(() {});
+                Watch(
+                  () => Opacity(
+                    opacity: downloading.value ? 0.5 : 1.0,
+                    child: IgnorePointer(
+                      ignoring: downloading.value,
+                      child: FilledButton(
+                        child: Text(
+                          installing.value ? 'Installing' : 'Download',
+                        ),
+                        onPressed: () async {
+                          if (XPlatform.isAndroid) {
+                            downloading.value = true;
 
-                          final file = await _downloadRelease(release, (
-                            progress,
-                          ) {
-                            downloadingProgress = progress;
-                            setState(() {});
-                          });
+                            final file = await _downloadRelease(release, (
+                              progress,
+                            ) {
+                              downloadingProgress.value = progress;
+                            });
 
-                          downloading = false;
-                          downloaded = true;
-                          installing = true;
-                          setState(() {});
+                            downloading.value = false;
+                            downloaded.value = true;
+                            installing.value = true;
 
-                          await _installApk(file);
+                            await _installApk(file);
 
-                          installing = false;
-                          setState(() {});
-                        } else if (XPlatform.isIOS) {
-                          await launchUrl(Uri.parse(release.htmlUrl));
-                        }
-                      },
+                            installing.value = false;
+                          } else if (XPlatform.isIOS) {
+                            await launchUrl(Uri.parse(release.htmlUrl));
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ),

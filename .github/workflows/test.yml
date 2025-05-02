@@ -1,0 +1,37 @@
+on:
+  push:
+  pull_request:
+
+name: Test
+
+jobs:
+  test:
+    name: Test code
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: "20.x"
+
+      - uses: flutter-actions/setup-flutter@v4
+        with:
+          channel: stable
+          version: 3.29.3
+
+      - name: Create .env file
+        run: echo -e "${{ secrets.ENV_CONTENT }}" > .env
+
+      - name: Create .env.web file
+        run: echo -e "${{ secrets.ENV_WEB_CONTENT }}" > .env.web
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build runner
+        run: sh build_bunner.sh
+
+      - name: Test
+        run: flutter test

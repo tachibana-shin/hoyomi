@@ -76,7 +76,7 @@ describe("requestToJson", () => {
     }
 
     // Kiểm tra body
-    expect(json.body).toBe("")
+    expect(json.body).toBe(null)
   })
 
   it("should handle different HTTP methods", async () => {

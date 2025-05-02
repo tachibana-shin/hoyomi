@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comments.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comment.dart';
@@ -10,6 +11,7 @@ import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/ic.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
+import 'package:kaeru/kaeru.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class Comment extends StatefulWidget {
@@ -50,13 +52,11 @@ class Comment extends StatefulWidget {
   State<Comment> createState() => _CommentState();
 }
 
-class _CommentState extends State<Comment> {
-  bool _showReplies = false;
+class _CommentState extends State<Comment> with KaeruMixin {
+  late final _showReplies = ref(false);
 
   void _showRepliesList() {
-    setState(() {
-      _showReplies = true;
-    });
+    _showReplies.value = true;
   }
 
   @override
@@ -168,55 +168,64 @@ class _CommentState extends State<Comment> {
                         ),
                     ],
                   ),
-                  if (widget.comment.countReply > 0 && _showReplies == false)
-                    TextButton(
-                      onPressed: _showRepliesList,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text:
-                                    'View more replies (${widget.comment.countReply})',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.bodyMedium?.copyWith(
-                                  color:
-                                      Theme.of(
-                                        context,
-                                      ).colorScheme.secondaryFixedDim,
-                                ),
-                              ),
-                              WidgetSpan(
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 4.0),
-                                  child: const Iconify(
-                                    Ion.chevron_down,
-                                    size: 18,
+                  Watch(() {
+                    if (widget.comment.countReply > 0 &&
+                        _showReplies.value == false) {
+                      return TextButton(
+                        onPressed: _showRepliesList,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text:
+                                      'View more replies (${widget.comment.countReply})',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.copyWith(
+                                    color:
+                                        Theme.of(
+                                          context,
+                                        ).colorScheme.secondaryFixedDim,
                                   ),
                                 ),
-                              ),
-                            ],
+                                WidgetSpan(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 4.0),
+                                    child: const Iconify(
+                                      Ion.chevron_down,
+                                      size: 18,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    }
+
+                    return nil;
+                  }),
                 ],
               ),
             ),
           ],
         ),
         // Replies category
-        if (_showReplies)
-          Comments(
-            fake: false,
-            getComments: widget.getComments,
-            parent: widget.comment,
-            controller: null,
-            deleteComment: widget.deleteComment,
-            setLikeComment: widget.setLikeComment,
-          ),
+        Watch(
+          () =>
+              _showReplies.value
+                  ? Comments(
+                    getComments: widget.getComments,
+                    parent: widget.comment,
+                    controller: null,
+                    deleteComment: widget.deleteComment,
+                    setLikeComment: widget.setLikeComment,
+                  )
+                  : nil,
+        ),
       ],
     );
   }
