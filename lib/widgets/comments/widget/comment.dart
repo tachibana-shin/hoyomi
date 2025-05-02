@@ -218,6 +218,7 @@ class _CommentState extends State<Comment> with KaeruMixin {
           () =>
               _showReplies.value
                   ? Comments(
+                    fake: false,
                     getComments: widget.getComments,
                     parent: widget.comment,
                     controller: null,
