@@ -8,7 +8,7 @@ class VerticalComic extends StatelessWidget {
   }
 
   static bool existsTimeAgo(Comic comic) {
-    return comic.timeAgo != null;
+    return comic.lastUpdate != null;
   }
 
   final Comic comic;
@@ -38,7 +38,7 @@ class VerticalComic extends StatelessWidget {
       preRelease: comic.preRelease,
       title: comic.name,
       subtitle: comic.lastChap?.name,
-      timeAgo: comic.timeAgo,
+      lastUpdate: comic.lastUpdate,
       extend: const <Widget>[],
     );
   }

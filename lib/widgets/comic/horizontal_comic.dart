@@ -119,7 +119,7 @@ class HorizontalComic extends StatelessWidget {
                   ),
 
                 // Bottom: Time Ago
-                if (comic.timeAgo != null)
+                if (comic.lastUpdate != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Container(
@@ -139,7 +139,7 @@ class HorizontalComic extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4.0),
                       ),
                       child: Text(
-                        formatTimeAgo(comic.timeAgo!),
+                        formatTimeAgo(comic.lastUpdate!),
                         style: TextStyle(
                           fontSize: 12.0,
                           color: Colors.blueGrey.shade50,

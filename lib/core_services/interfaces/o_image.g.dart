@@ -12,9 +12,11 @@ _OImage _$OImageFromJson(Map<String, dynamic> json) => _OImage(
       json['headers'] == null
           ? null
           : Headers.fromJson(json['headers'] as Map<String, dynamic>),
+  extra: json['extra'] as String?,
 );
 
 Map<String, dynamic> _$OImageToJson(_OImage instance) => <String, dynamic>{
   'src': instance.src,
   'headers': instance.headers,
+  'extra': instance.extra,
 };

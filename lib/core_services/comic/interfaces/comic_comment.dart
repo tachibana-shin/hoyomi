@@ -8,11 +8,10 @@ part 'comic_comment.g.dart';
 sealed class ComicComment with _$ComicComment {
   const factory ComicComment({
     required String id,
-    required String comicId,
     String? chapterId,
     required String userId,
     required String name,
-    required OImage photoUrl,
+    required OImage? photoUrl,
     required String content,
     required DateTime timeAgo,
     int? countLike,
@@ -20,6 +19,7 @@ sealed class ComicComment with _$ComicComment {
     required int countReply,
     @Default(false) bool canDelete,
     bool? like,
+    List<ComicComment>? replies,
   }) = _ComicComment;
 
   factory ComicComment.fromJson(Map<String, dynamic> json) =>
@@ -28,7 +28,6 @@ sealed class ComicComment with _$ComicComment {
   factory ComicComment.createFakeData() {
     return ComicComment(
       id: "comment_1",
-      comicId: "comic_123",
       chapterId: "ch1",
       userId: "user_456",
       name: "Fake User",

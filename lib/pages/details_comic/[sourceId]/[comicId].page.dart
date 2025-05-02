@@ -332,6 +332,7 @@ class _DetailsComicState extends State<DetailsComic>
           Padding(
             padding: EdgeInsets.only(bottom: 16),
             child: Comments(
+              fake: comic.fake,
               getComments: ({page, parent}) {
                 return (_service as ComicCommentMixin).getComments(
                   ComicCommentContext(

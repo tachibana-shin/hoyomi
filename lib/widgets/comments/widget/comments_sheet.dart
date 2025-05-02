@@ -34,6 +34,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
       maxChildSize: 0.9,
       builder: (context, scrollController) {
         return Comments(
+          fake: widget.metaComic.fake,
           getComments: ({page, parent}) {
             return widget.service.getComments(
               ComicCommentContext(

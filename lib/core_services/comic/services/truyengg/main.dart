@@ -76,7 +76,7 @@ class TruyenGGService extends ABComicService
     Map<String, dynamic>? body,
     Headers? headers,
     bool notify = true,
-    bool headless = false,
+    bool headless = true,
   }) async {
     for (int i = 0; i < 5; i++) {
       try {
@@ -152,7 +152,7 @@ class TruyenGGService extends ABComicService
     return Comic(
       image: image,
       lastChap: lastChap,
-      timeAgo: timeAgo,
+      lastUpdate: timeAgo,
       notice: (notice.isEmpty ? null : notice),
       name: name,
       comicId: comicId,
@@ -415,7 +415,6 @@ class TruyenGGService extends ABComicService
 
       return ComicComment(
         id: id,
-        comicId: context.comicId,
         chapterId: chapterId,
         userId: name,
         name: name,

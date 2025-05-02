@@ -15,10 +15,10 @@ _Comic _$ComicFromJson(Map<String, dynamic> json) => _Comic(
       json['lastChap'] == null
           ? null
           : ComicChapter.fromJson(json['lastChap'] as Map<String, dynamic>),
-  timeAgo:
-      json['timeAgo'] == null
+  lastUpdate:
+      json['lastUpdate'] == null
           ? null
-          : DateTime.parse(json['timeAgo'] as String),
+          : DateTime.parse(json['lastUpdate'] as String),
   notice: json['notice'] as String?,
   pending: json['pending'] as bool? ?? false,
   preRelease:
@@ -35,7 +35,7 @@ Map<String, dynamic> _$ComicToJson(_Comic instance) => <String, dynamic>{
   'originalName': instance.originalName,
   'image': instance.image,
   'lastChap': instance.lastChap,
-  'timeAgo': instance.timeAgo?.toIso8601String(),
+  'lastUpdate': instance.lastUpdate?.toIso8601String(),
   'notice': instance.notice,
   'pending': instance.pending,
   'preRelease': instance.preRelease?.toIso8601String(),

@@ -8,8 +8,10 @@ import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/plugins/install_web_rules.dart';
 import 'package:kaeru/kaeru.dart';
 
+import 'comic/services/cuutruyen/main.dart';
 import 'comic/services/truyengg/main.dart';
 import 'comic/services/truyenqq/main.dart';
+
 import 'eiga/services/animevietsub/main.dart';
 import 'eiga/services/hianime/main.dart';
 import 'eiga/services/kkphim/main.dart';
@@ -17,13 +19,14 @@ import 'eiga/services/nguonc/main.dart';
 import 'eiga/services/ophim/main.dart';
 
 final _allComicServices = Map.fromEntries(
-  [
+  <ABComicService>[
     TruyenGGService(),
+    CuuTruyenService(),
     TruyenQQService(),
   ].map((service) => MapEntry(service.uid, service)),
 );
 final _allEigaServices = Map.fromEntries(
-  [
+  <ABEigaService>[
     AnimeVietsubService(),
     OPhimService(),
     KKPhimService(),
@@ -67,7 +70,7 @@ Future<void> _setupServices() async {
   final settings = await GeneralSettingsController.instance.get();
 
   if (settings?.sortComicService != null) {
-    comicServices.value =
+    final services =
         settings!.sortComicService!
             .map((id) {
               final service = _allComicServices[id];
@@ -79,10 +82,16 @@ Future<void> _setupServices() async {
             })
             .whereType<ABComicService>()
             .toList();
+
+    for (final service in _allComicServices.values) {
+      if (!services.contains(service)) services.add(service);
+    }
+
+    comicServices.value = services;
   }
   // eiga services
   if (settings?.sortEigaService != null) {
-    eigaServices.value =
+    final services =
         settings!.sortEigaService!
             .map((id) {
               final service = _allEigaServices[id];
@@ -94,6 +103,12 @@ Future<void> _setupServices() async {
             })
             .whereType<ABEigaService>()
             .toList();
+
+    for (final service in _allEigaServices.values) {
+      if (!services.contains(service)) services.add(service);
+    }
+
+    eigaServices.value = services;
   }
 
   // watch change

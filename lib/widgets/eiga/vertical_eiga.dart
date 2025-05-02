@@ -41,7 +41,7 @@ class VerticalEiga extends StatelessWidget {
       preRelease: eiga.preRelease,
       title: eiga.name,
       subtitle: eiga.lastEpisode?.name,
-      timeAgo: eiga.timeAgo,
+      lastUpdate: eiga.timeAgo,
       extend: [
         if (eiga.countSub != null)
           Row(

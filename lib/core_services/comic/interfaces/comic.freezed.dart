@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Comic {
 
- String get name; String get comicId; String? get originalName; OImage get image; ComicChapter? get lastChap; DateTime? get timeAgo; String? get notice; bool get pending; DateTime? get preRelease; double? get rate; String? get description;
+ String get name; String get comicId; String? get originalName; OImage get image; ComicChapter? get lastChap; DateTime? get lastUpdate; String? get notice; bool get pending; DateTime? get preRelease; double? get rate; String? get description;
 /// Create a copy of Comic
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $ComicCopyWith<Comic> get copyWith => _$ComicCopyWithImpl<Comic>(this as Comic, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Comic&&(identical(other.name, name) || other.name == name)&&(identical(other.comicId, comicId) || other.comicId == comicId)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.image, image) || other.image == image)&&(identical(other.lastChap, lastChap) || other.lastChap == lastChap)&&(identical(other.timeAgo, timeAgo) || other.timeAgo == timeAgo)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.pending, pending) || other.pending == pending)&&(identical(other.preRelease, preRelease) || other.preRelease == preRelease)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Comic&&(identical(other.name, name) || other.name == name)&&(identical(other.comicId, comicId) || other.comicId == comicId)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.image, image) || other.image == image)&&(identical(other.lastChap, lastChap) || other.lastChap == lastChap)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.pending, pending) || other.pending == pending)&&(identical(other.preRelease, preRelease) || other.preRelease == preRelease)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.description, description) || other.description == description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,comicId,originalName,image,lastChap,timeAgo,notice,pending,preRelease,rate,description);
+int get hashCode => Object.hash(runtimeType,name,comicId,originalName,image,lastChap,lastUpdate,notice,pending,preRelease,rate,description);
 
 @override
 String toString() {
-  return 'Comic(name: $name, comicId: $comicId, originalName: $originalName, image: $image, lastChap: $lastChap, timeAgo: $timeAgo, notice: $notice, pending: $pending, preRelease: $preRelease, rate: $rate, description: $description)';
+  return 'Comic(name: $name, comicId: $comicId, originalName: $originalName, image: $image, lastChap: $lastChap, lastUpdate: $lastUpdate, notice: $notice, pending: $pending, preRelease: $preRelease, rate: $rate, description: $description)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $ComicCopyWith<$Res>  {
   factory $ComicCopyWith(Comic value, $Res Function(Comic) _then) = _$ComicCopyWithImpl;
 @useResult
 $Res call({
- String name, String comicId, String? originalName, OImage image, ComicChapter? lastChap, DateTime? timeAgo, String? notice, bool pending, DateTime? preRelease, double? rate, String? description
+ String name, String comicId, String? originalName, OImage image, ComicChapter? lastChap, DateTime? lastUpdate, String? notice, bool pending, DateTime? preRelease, double? rate, String? description
 });
 
 
@@ -66,14 +66,14 @@ class _$ComicCopyWithImpl<$Res>
 
 /// Create a copy of Comic
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? comicId = null,Object? originalName = freezed,Object? image = null,Object? lastChap = freezed,Object? timeAgo = freezed,Object? notice = freezed,Object? pending = null,Object? preRelease = freezed,Object? rate = freezed,Object? description = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? comicId = null,Object? originalName = freezed,Object? image = null,Object? lastChap = freezed,Object? lastUpdate = freezed,Object? notice = freezed,Object? pending = null,Object? preRelease = freezed,Object? rate = freezed,Object? description = freezed,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,comicId: null == comicId ? _self.comicId : comicId // ignore: cast_nullable_to_non_nullable
 as String,originalName: freezed == originalName ? _self.originalName : originalName // ignore: cast_nullable_to_non_nullable
 as String?,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
 as OImage,lastChap: freezed == lastChap ? _self.lastChap : lastChap // ignore: cast_nullable_to_non_nullable
-as ComicChapter?,timeAgo: freezed == timeAgo ? _self.timeAgo : timeAgo // ignore: cast_nullable_to_non_nullable
+as ComicChapter?,lastUpdate: freezed == lastUpdate ? _self.lastUpdate : lastUpdate // ignore: cast_nullable_to_non_nullable
 as DateTime?,notice: freezed == notice ? _self.notice : notice // ignore: cast_nullable_to_non_nullable
 as String?,pending: null == pending ? _self.pending : pending // ignore: cast_nullable_to_non_nullable
 as bool,preRelease: freezed == preRelease ? _self.preRelease : preRelease // ignore: cast_nullable_to_non_nullable
@@ -111,7 +111,7 @@ $ComicChapterCopyWith<$Res>? get lastChap {
 @JsonSerializable()
 
 class _Comic implements Comic {
-  const _Comic({required this.name, required this.comicId, this.originalName, required this.image, this.lastChap, this.timeAgo, this.notice, this.pending = false, this.preRelease, this.rate, this.description});
+  const _Comic({required this.name, required this.comicId, this.originalName, required this.image, this.lastChap, this.lastUpdate, this.notice, this.pending = false, this.preRelease, this.rate, this.description});
   factory _Comic.fromJson(Map<String, dynamic> json) => _$ComicFromJson(json);
 
 @override final  String name;
@@ -119,7 +119,7 @@ class _Comic implements Comic {
 @override final  String? originalName;
 @override final  OImage image;
 @override final  ComicChapter? lastChap;
-@override final  DateTime? timeAgo;
+@override final  DateTime? lastUpdate;
 @override final  String? notice;
 @override@JsonKey() final  bool pending;
 @override final  DateTime? preRelease;
@@ -139,16 +139,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Comic&&(identical(other.name, name) || other.name == name)&&(identical(other.comicId, comicId) || other.comicId == comicId)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.image, image) || other.image == image)&&(identical(other.lastChap, lastChap) || other.lastChap == lastChap)&&(identical(other.timeAgo, timeAgo) || other.timeAgo == timeAgo)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.pending, pending) || other.pending == pending)&&(identical(other.preRelease, preRelease) || other.preRelease == preRelease)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Comic&&(identical(other.name, name) || other.name == name)&&(identical(other.comicId, comicId) || other.comicId == comicId)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.image, image) || other.image == image)&&(identical(other.lastChap, lastChap) || other.lastChap == lastChap)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.pending, pending) || other.pending == pending)&&(identical(other.preRelease, preRelease) || other.preRelease == preRelease)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.description, description) || other.description == description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,comicId,originalName,image,lastChap,timeAgo,notice,pending,preRelease,rate,description);
+int get hashCode => Object.hash(runtimeType,name,comicId,originalName,image,lastChap,lastUpdate,notice,pending,preRelease,rate,description);
 
 @override
 String toString() {
-  return 'Comic(name: $name, comicId: $comicId, originalName: $originalName, image: $image, lastChap: $lastChap, timeAgo: $timeAgo, notice: $notice, pending: $pending, preRelease: $preRelease, rate: $rate, description: $description)';
+  return 'Comic(name: $name, comicId: $comicId, originalName: $originalName, image: $image, lastChap: $lastChap, lastUpdate: $lastUpdate, notice: $notice, pending: $pending, preRelease: $preRelease, rate: $rate, description: $description)';
 }
 
 
@@ -159,7 +159,7 @@ abstract mixin class _$ComicCopyWith<$Res> implements $ComicCopyWith<$Res> {
   factory _$ComicCopyWith(_Comic value, $Res Function(_Comic) _then) = __$ComicCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String comicId, String? originalName, OImage image, ComicChapter? lastChap, DateTime? timeAgo, String? notice, bool pending, DateTime? preRelease, double? rate, String? description
+ String name, String comicId, String? originalName, OImage image, ComicChapter? lastChap, DateTime? lastUpdate, String? notice, bool pending, DateTime? preRelease, double? rate, String? description
 });
 
 
@@ -176,14 +176,14 @@ class __$ComicCopyWithImpl<$Res>
 
 /// Create a copy of Comic
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? comicId = null,Object? originalName = freezed,Object? image = null,Object? lastChap = freezed,Object? timeAgo = freezed,Object? notice = freezed,Object? pending = null,Object? preRelease = freezed,Object? rate = freezed,Object? description = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? comicId = null,Object? originalName = freezed,Object? image = null,Object? lastChap = freezed,Object? lastUpdate = freezed,Object? notice = freezed,Object? pending = null,Object? preRelease = freezed,Object? rate = freezed,Object? description = freezed,}) {
   return _then(_Comic(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,comicId: null == comicId ? _self.comicId : comicId // ignore: cast_nullable_to_non_nullable
 as String,originalName: freezed == originalName ? _self.originalName : originalName // ignore: cast_nullable_to_non_nullable
 as String?,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
 as OImage,lastChap: freezed == lastChap ? _self.lastChap : lastChap // ignore: cast_nullable_to_non_nullable
-as ComicChapter?,timeAgo: freezed == timeAgo ? _self.timeAgo : timeAgo // ignore: cast_nullable_to_non_nullable
+as ComicChapter?,lastUpdate: freezed == lastUpdate ? _self.lastUpdate : lastUpdate // ignore: cast_nullable_to_non_nullable
 as DateTime?,notice: freezed == notice ? _self.notice : notice // ignore: cast_nullable_to_non_nullable
 as String?,pending: null == pending ? _self.pending : pending // ignore: cast_nullable_to_non_nullable
 as bool,preRelease: freezed == preRelease ? _self.preRelease : preRelease // ignore: cast_nullable_to_non_nullable
