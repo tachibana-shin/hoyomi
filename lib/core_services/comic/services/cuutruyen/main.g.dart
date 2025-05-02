@@ -451,3 +451,58 @@ _MangaListData _$MangaListDataFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$MangaListDataToJson(_MangaListData instance) =>
     <String, dynamic>{'mangas': instance.mangas, 'tag': instance.tag};
+
+_Comment _$CommentFromJson(Map<String, dynamic> json) => _Comment(
+  id: (json['id'] as num).toInt(),
+  user: CommentUser.fromJson(json['user'] as Map<String, dynamic>),
+  processedContent: json['processed_content'] as String,
+  isShadowRemoved: json['is_shadow_removed'] as bool,
+  createdAt: DateTime.parse(json['created_at'] as String),
+  repliedIds:
+      (json['replied_ids'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
+);
+
+Map<String, dynamic> _$CommentToJson(_Comment instance) => <String, dynamic>{
+  'id': instance.id,
+  'user': instance.user,
+  'processed_content': instance.processedContent,
+  'is_shadow_removed': instance.isShadowRemoved,
+  'created_at': instance.createdAt.toIso8601String(),
+  'replied_ids': instance.repliedIds,
+};
+
+_CommentUser _$CommentUserFromJson(Map<String, dynamic> json) => _CommentUser(
+  id: (json['id'] as num).toInt(),
+  username: json['username'] as String,
+  teams: json['teams'] as List<dynamic>,
+  level: json['level'] as String,
+);
+
+Map<String, dynamic> _$CommentUserToJson(_CommentUser instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'username': instance.username,
+      'teams': instance.teams,
+      'level': instance.level,
+    };
+
+_CommentsResponse _$CommentsResponseFromJson(Map<String, dynamic> json) =>
+    _CommentsResponse(
+      data:
+          (json['data'] as List<dynamic>)
+              .map((e) => Comment.fromJson(e as Map<String, dynamic>))
+              .toList(),
+      total: (json['total'] as num).toInt(),
+      page: (json['page'] as num).toInt(),
+      pageSize: (json['page_size'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$CommentsResponseToJson(_CommentsResponse instance) =>
+    <String, dynamic>{
+      'data': instance.data,
+      'total': instance.total,
+      'page': instance.page,
+      'page_size': instance.pageSize,
+    };

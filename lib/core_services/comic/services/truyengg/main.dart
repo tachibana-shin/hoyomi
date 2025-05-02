@@ -415,7 +415,6 @@ class TruyenGGService extends ABComicService
 
       return ComicComment(
         id: id,
-        comicId: context.comicId,
         chapterId: chapterId,
         userId: name,
         name: name,

@@ -3309,4 +3309,472 @@ $TagCopyWith<$Res> get tag {
 }
 }
 
+
+/// @nodoc
+mixin _$Comment {
+
+ int get id; CommentUser get user;@JsonKey(name: 'processed_content') String get processedContent;@JsonKey(name: 'is_shadow_removed') bool get isShadowRemoved;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'replied_ids') List<int> get repliedIds;
+/// Create a copy of Comment
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CommentCopyWith<Comment> get copyWith => _$CommentCopyWithImpl<Comment>(this as Comment, _$identity);
+
+  /// Serializes this Comment to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Comment&&(identical(other.id, id) || other.id == id)&&(identical(other.user, user) || other.user == user)&&(identical(other.processedContent, processedContent) || other.processedContent == processedContent)&&(identical(other.isShadowRemoved, isShadowRemoved) || other.isShadowRemoved == isShadowRemoved)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other.repliedIds, repliedIds));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,user,processedContent,isShadowRemoved,createdAt,const DeepCollectionEquality().hash(repliedIds));
+
+@override
+String toString() {
+  return 'Comment(id: $id, user: $user, processedContent: $processedContent, isShadowRemoved: $isShadowRemoved, createdAt: $createdAt, repliedIds: $repliedIds)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CommentCopyWith<$Res>  {
+  factory $CommentCopyWith(Comment value, $Res Function(Comment) _then) = _$CommentCopyWithImpl;
+@useResult
+$Res call({
+ int id, CommentUser user,@JsonKey(name: 'processed_content') String processedContent,@JsonKey(name: 'is_shadow_removed') bool isShadowRemoved,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'replied_ids') List<int> repliedIds
+});
+
+
+$CommentUserCopyWith<$Res> get user;
+
+}
+/// @nodoc
+class _$CommentCopyWithImpl<$Res>
+    implements $CommentCopyWith<$Res> {
+  _$CommentCopyWithImpl(this._self, this._then);
+
+  final Comment _self;
+  final $Res Function(Comment) _then;
+
+/// Create a copy of Comment
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? user = null,Object? processedContent = null,Object? isShadowRemoved = null,Object? createdAt = null,Object? repliedIds = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as CommentUser,processedContent: null == processedContent ? _self.processedContent : processedContent // ignore: cast_nullable_to_non_nullable
+as String,isShadowRemoved: null == isShadowRemoved ? _self.isShadowRemoved : isShadowRemoved // ignore: cast_nullable_to_non_nullable
+as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,repliedIds: null == repliedIds ? _self.repliedIds : repliedIds // ignore: cast_nullable_to_non_nullable
+as List<int>,
+  ));
+}
+/// Create a copy of Comment
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CommentUserCopyWith<$Res> get user {
+  
+  return $CommentUserCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
+}
+
+
+/// @nodoc
+@JsonSerializable()
+
+class _Comment implements Comment {
+  const _Comment({required this.id, required this.user, @JsonKey(name: 'processed_content') required this.processedContent, @JsonKey(name: 'is_shadow_removed') required this.isShadowRemoved, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'replied_ids') required final  List<int> repliedIds}): _repliedIds = repliedIds;
+  factory _Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
+
+@override final  int id;
+@override final  CommentUser user;
+@override@JsonKey(name: 'processed_content') final  String processedContent;
+@override@JsonKey(name: 'is_shadow_removed') final  bool isShadowRemoved;
+@override@JsonKey(name: 'created_at') final  DateTime createdAt;
+ final  List<int> _repliedIds;
+@override@JsonKey(name: 'replied_ids') List<int> get repliedIds {
+  if (_repliedIds is EqualUnmodifiableListView) return _repliedIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_repliedIds);
+}
+
+
+/// Create a copy of Comment
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CommentCopyWith<_Comment> get copyWith => __$CommentCopyWithImpl<_Comment>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CommentToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Comment&&(identical(other.id, id) || other.id == id)&&(identical(other.user, user) || other.user == user)&&(identical(other.processedContent, processedContent) || other.processedContent == processedContent)&&(identical(other.isShadowRemoved, isShadowRemoved) || other.isShadowRemoved == isShadowRemoved)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other._repliedIds, _repliedIds));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,user,processedContent,isShadowRemoved,createdAt,const DeepCollectionEquality().hash(_repliedIds));
+
+@override
+String toString() {
+  return 'Comment(id: $id, user: $user, processedContent: $processedContent, isShadowRemoved: $isShadowRemoved, createdAt: $createdAt, repliedIds: $repliedIds)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CommentCopyWith<$Res> implements $CommentCopyWith<$Res> {
+  factory _$CommentCopyWith(_Comment value, $Res Function(_Comment) _then) = __$CommentCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, CommentUser user,@JsonKey(name: 'processed_content') String processedContent,@JsonKey(name: 'is_shadow_removed') bool isShadowRemoved,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'replied_ids') List<int> repliedIds
+});
+
+
+@override $CommentUserCopyWith<$Res> get user;
+
+}
+/// @nodoc
+class __$CommentCopyWithImpl<$Res>
+    implements _$CommentCopyWith<$Res> {
+  __$CommentCopyWithImpl(this._self, this._then);
+
+  final _Comment _self;
+  final $Res Function(_Comment) _then;
+
+/// Create a copy of Comment
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? user = null,Object? processedContent = null,Object? isShadowRemoved = null,Object? createdAt = null,Object? repliedIds = null,}) {
+  return _then(_Comment(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as CommentUser,processedContent: null == processedContent ? _self.processedContent : processedContent // ignore: cast_nullable_to_non_nullable
+as String,isShadowRemoved: null == isShadowRemoved ? _self.isShadowRemoved : isShadowRemoved // ignore: cast_nullable_to_non_nullable
+as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,repliedIds: null == repliedIds ? _self._repliedIds : repliedIds // ignore: cast_nullable_to_non_nullable
+as List<int>,
+  ));
+}
+
+/// Create a copy of Comment
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CommentUserCopyWith<$Res> get user {
+  
+  return $CommentUserCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
+}
+
+
+/// @nodoc
+mixin _$CommentUser {
+
+ int get id; String get username; List<dynamic> get teams; String get level;
+/// Create a copy of CommentUser
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CommentUserCopyWith<CommentUser> get copyWith => _$CommentUserCopyWithImpl<CommentUser>(this as CommentUser, _$identity);
+
+  /// Serializes this CommentUser to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommentUser&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&const DeepCollectionEquality().equals(other.teams, teams)&&(identical(other.level, level) || other.level == level));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,username,const DeepCollectionEquality().hash(teams),level);
+
+@override
+String toString() {
+  return 'CommentUser(id: $id, username: $username, teams: $teams, level: $level)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CommentUserCopyWith<$Res>  {
+  factory $CommentUserCopyWith(CommentUser value, $Res Function(CommentUser) _then) = _$CommentUserCopyWithImpl;
+@useResult
+$Res call({
+ int id, String username, List<dynamic> teams, String level
+});
+
+
+
+
+}
+/// @nodoc
+class _$CommentUserCopyWithImpl<$Res>
+    implements $CommentUserCopyWith<$Res> {
+  _$CommentUserCopyWithImpl(this._self, this._then);
+
+  final CommentUser _self;
+  final $Res Function(CommentUser) _then;
+
+/// Create a copy of CommentUser
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? teams = null,Object? level = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,teams: null == teams ? _self.teams : teams // ignore: cast_nullable_to_non_nullable
+as List<dynamic>,level: null == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// @nodoc
+@JsonSerializable()
+
+class _CommentUser implements CommentUser {
+  const _CommentUser({required this.id, required this.username, required final  List<dynamic> teams, required this.level}): _teams = teams;
+  factory _CommentUser.fromJson(Map<String, dynamic> json) => _$CommentUserFromJson(json);
+
+@override final  int id;
+@override final  String username;
+ final  List<dynamic> _teams;
+@override List<dynamic> get teams {
+  if (_teams is EqualUnmodifiableListView) return _teams;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_teams);
+}
+
+@override final  String level;
+
+/// Create a copy of CommentUser
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CommentUserCopyWith<_CommentUser> get copyWith => __$CommentUserCopyWithImpl<_CommentUser>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CommentUserToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommentUser&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&const DeepCollectionEquality().equals(other._teams, _teams)&&(identical(other.level, level) || other.level == level));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,username,const DeepCollectionEquality().hash(_teams),level);
+
+@override
+String toString() {
+  return 'CommentUser(id: $id, username: $username, teams: $teams, level: $level)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CommentUserCopyWith<$Res> implements $CommentUserCopyWith<$Res> {
+  factory _$CommentUserCopyWith(_CommentUser value, $Res Function(_CommentUser) _then) = __$CommentUserCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, String username, List<dynamic> teams, String level
+});
+
+
+
+
+}
+/// @nodoc
+class __$CommentUserCopyWithImpl<$Res>
+    implements _$CommentUserCopyWith<$Res> {
+  __$CommentUserCopyWithImpl(this._self, this._then);
+
+  final _CommentUser _self;
+  final $Res Function(_CommentUser) _then;
+
+/// Create a copy of CommentUser
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? teams = null,Object? level = null,}) {
+  return _then(_CommentUser(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,teams: null == teams ? _self._teams : teams // ignore: cast_nullable_to_non_nullable
+as List<dynamic>,level: null == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$CommentsResponse {
+
+ List<Comment> get data; int get total; int get page;@JsonKey(name: 'page_size') int get pageSize;
+/// Create a copy of CommentsResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CommentsResponseCopyWith<CommentsResponse> get copyWith => _$CommentsResponseCopyWithImpl<CommentsResponse>(this as CommentsResponse, _$identity);
+
+  /// Serializes this CommentsResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommentsResponse&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.total, total) || other.total == total)&&(identical(other.page, page) || other.page == page)&&(identical(other.pageSize, pageSize) || other.pageSize == pageSize));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(data),total,page,pageSize);
+
+@override
+String toString() {
+  return 'CommentsResponse(data: $data, total: $total, page: $page, pageSize: $pageSize)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CommentsResponseCopyWith<$Res>  {
+  factory $CommentsResponseCopyWith(CommentsResponse value, $Res Function(CommentsResponse) _then) = _$CommentsResponseCopyWithImpl;
+@useResult
+$Res call({
+ List<Comment> data, int total, int page,@JsonKey(name: 'page_size') int pageSize
+});
+
+
+
+
+}
+/// @nodoc
+class _$CommentsResponseCopyWithImpl<$Res>
+    implements $CommentsResponseCopyWith<$Res> {
+  _$CommentsResponseCopyWithImpl(this._self, this._then);
+
+  final CommentsResponse _self;
+  final $Res Function(CommentsResponse) _then;
+
+/// Create a copy of CommentsResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? data = null,Object? total = null,Object? page = null,Object? pageSize = null,}) {
+  return _then(_self.copyWith(
+data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as List<Comment>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int,pageSize: null == pageSize ? _self.pageSize : pageSize // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// @nodoc
+@JsonSerializable()
+
+class _CommentsResponse implements CommentsResponse {
+  const _CommentsResponse({required final  List<Comment> data, required this.total, required this.page, @JsonKey(name: 'page_size') required this.pageSize}): _data = data;
+  factory _CommentsResponse.fromJson(Map<String, dynamic> json) => _$CommentsResponseFromJson(json);
+
+ final  List<Comment> _data;
+@override List<Comment> get data {
+  if (_data is EqualUnmodifiableListView) return _data;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_data);
+}
+
+@override final  int total;
+@override final  int page;
+@override@JsonKey(name: 'page_size') final  int pageSize;
+
+/// Create a copy of CommentsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CommentsResponseCopyWith<_CommentsResponse> get copyWith => __$CommentsResponseCopyWithImpl<_CommentsResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CommentsResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommentsResponse&&const DeepCollectionEquality().equals(other._data, _data)&&(identical(other.total, total) || other.total == total)&&(identical(other.page, page) || other.page == page)&&(identical(other.pageSize, pageSize) || other.pageSize == pageSize));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_data),total,page,pageSize);
+
+@override
+String toString() {
+  return 'CommentsResponse(data: $data, total: $total, page: $page, pageSize: $pageSize)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CommentsResponseCopyWith<$Res> implements $CommentsResponseCopyWith<$Res> {
+  factory _$CommentsResponseCopyWith(_CommentsResponse value, $Res Function(_CommentsResponse) _then) = __$CommentsResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ List<Comment> data, int total, int page,@JsonKey(name: 'page_size') int pageSize
+});
+
+
+
+
+}
+/// @nodoc
+class __$CommentsResponseCopyWithImpl<$Res>
+    implements _$CommentsResponseCopyWith<$Res> {
+  __$CommentsResponseCopyWithImpl(this._self, this._then);
+
+  final _CommentsResponse _self;
+  final $Res Function(_CommentsResponse) _then;
+
+/// Create a copy of CommentsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? data = null,Object? total = null,Object? page = null,Object? pageSize = null,}) {
+  return _then(_CommentsResponse(
+data: null == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
+as List<Comment>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int,pageSize: null == pageSize ? _self.pageSize : pageSize // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
 // dart format on

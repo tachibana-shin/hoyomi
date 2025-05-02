@@ -10,6 +10,7 @@ sealed class ComicChapter with _$ComicChapter {
     String? fullName,
     required String chapterId,
     DateTime? time,
+    String? extra,
   }) = _ComicChapter;
 
   /// JSONからの生成

@@ -12,7 +12,8 @@ import 'package:hoyomi/env.dart';
 part 'main.freezed.dart';
 part 'main.g.dart';
 
-class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin, ComicCommentMixin {
+class CuuTruyenService extends ABComicService
+    with ComicWatchPageGeneralMixin, ComicCommentMixin {
   @override
   bool? get $isAuth => false;
   @override
@@ -301,17 +302,93 @@ class CuuTruyenService extends ABComicService with ComicWatchPageGeneralMixin, C
   ComicParam parseURL(String url) {
     throw UnimplementedError();
   }
-  
+
   @override
-  Future<void> deleteComment({required String comicId, String? chapterId, ComicComment? parent, required ComicComment comment}) {
+  Future<void> deleteComment(context, {required comment}) {
     // TODO: implement deleteComment
     throw UnimplementedError();
   }
-  
+
   @override
-  Future<ComicComments> getComments({required String comicId, String? chapterId, ComicComment? parent, int? page}) {
-    // TODO: implement getComments
-    throw UnimplementedError();
+  Future<ComicComments> getComments(context, {page = 1}) async {
+    final data = CommentsResponse.fromJson(
+      jsonDecode(
+        await fetch(
+          'mangas/${context.chapter?.extra! ?? context.metaComic.chapters.first.extra}/chapters',
+        ),
+      ),
+    );
+
+    final parentMap = <String, String>{};
+    for (final comment in data.data) {
+      for (final repliedId in comment.repliedIds) {
+        parentMap[repliedId.toString()] = comment.id.toString();
+      }
+    }
+
+    final mapRawComments = Map.fromEntries(
+      data.data.map((c) => MapEntry(c.id.toString(), c)),
+    );
+    final mapComments = Map.fromEntries(
+      mapRawComments.entries.map(
+        (entry) => MapEntry(
+          entry.key,
+          ComicComment(
+            id: entry.value.id.toString(),
+            userId: entry.value.user.id.toString(),
+            name: entry.value.user.username,
+            photoUrl: entry.value.user.teams.firstOrNull?.photoUrl,
+            content: entry.value.processedContent,
+            timeAgo: entry.value.createdAt,
+            countReply: 0,
+          ),
+        ),
+      ),
+    );
+
+    final repliesByRootId = <String, List<ComicComment>>{};
+    final rootComments = <ComicComment>[];
+
+    for (final comment in data.data) {
+      final commentId = comment.id.toString();
+      final parentId = parentMap[commentId];
+
+      if (parentId == null) {
+        rootComments.add(mapComments[commentId]!);
+        continue;
+      }
+
+      String rootId = parentId;
+      while (parentMap[rootId] != null) {
+        rootId = parentMap[rootId]!;
+      }
+
+      final isDeepReply = parentId != rootId;
+      final originalParent = mapRawComments[parentId];
+
+      final modified =
+          isDeepReply
+              ? mapComments[commentId]!.copyWith(
+                content:
+                    "@${originalParent?.user.username ?? 'unknown'} ${mapComments[commentId]!.content}",
+              )
+              : mapComments[commentId]!;
+
+      repliesByRootId.putIfAbsent(rootId, () => []).add(modified);
+    }
+
+    // Gán replies vào root comment
+    final result =
+        rootComments.map((root) {
+          return root.copyWith(replies: repliesByRootId[root.id] ?? []);
+        }).toList();
+
+    return ComicComments(
+      items: result,
+      page: 1,
+      totalItems: data.data.length,
+      totalPages: 1,
+    );
   }
 }
 
@@ -423,7 +500,7 @@ sealed class MangaDetail with _$MangaDetail {
     required Author author, // 作者情報 / Author info
     required String description, // 簡単な説明 / Short description
     @JsonKey(name: 'full_description')
-     String? fullDescription, // 詳細説明 / Full description
+    String? fullDescription, // 詳細説明 / Full description
     @JsonKey(name: 'official_url')
     required String officialUrl, // 公式URL / Official URL
     @JsonKey(name: 'is_region_limited')
@@ -785,4 +862,45 @@ Future<Uint8List> _decodeAndBuildImage(
   final srcImage = await _loadImageFromUrl(url, onReceiveProgress);
   final decodedImage = await _unscrambleImage(srcImage, blocks);
   return await _imageFromUiImage(decodedImage);
+}
+
+@freezed
+sealed class Comment with _$Comment {
+  const factory Comment({
+    required int id,
+    required CommentUser user,
+    @JsonKey(name: 'processed_content') required String processedContent,
+    @JsonKey(name: 'is_shadow_removed') required bool isShadowRemoved,
+    @JsonKey(name: 'created_at') required DateTime createdAt,
+    @JsonKey(name: 'replied_ids') required List<int> repliedIds,
+  }) = _Comment;
+
+  factory Comment.fromJson(Map<String, dynamic> json) =>
+      _$CommentFromJson(json);
+}
+
+@freezed
+sealed class CommentUser with _$CommentUser {
+  const factory CommentUser({
+    required int id,
+    required String username,
+    required List<dynamic> teams,
+    required String level,
+  }) = _CommentUser;
+
+  factory CommentUser.fromJson(Map<String, dynamic> json) =>
+      _$CommentUserFromJson(json);
+}
+
+@freezed
+sealed class CommentsResponse with _$CommentsResponse {
+  const factory CommentsResponse({
+    required List<Comment> data,
+    required int total,
+    required int page,
+    @JsonKey(name: 'page_size') required int pageSize,
+  }) = _CommentsResponse;
+
+  factory CommentsResponse.fromJson(Map<String, dynamic> json) =>
+      _$CommentsResponseFromJson(json);
 }

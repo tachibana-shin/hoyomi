@@ -13,6 +13,7 @@ _ComicChapter _$ComicChapterFromJson(Map<String, dynamic> json) =>
       chapterId: json['chapterId'] as String,
       time:
           json['time'] == null ? null : DateTime.parse(json['time'] as String),
+      extra: json['extra'] as String?,
     );
 
 Map<String, dynamic> _$ComicChapterToJson(_ComicChapter instance) =>
@@ -21,4 +22,5 @@ Map<String, dynamic> _$ComicChapterToJson(_ComicChapter instance) =>
       'fullName': instance.fullName,
       'chapterId': instance.chapterId,
       'time': instance.time?.toIso8601String(),
+      'extra': instance.extra,
     };

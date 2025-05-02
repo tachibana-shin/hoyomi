@@ -9,7 +9,6 @@ part of 'comic_comment.dart';
 _ComicComment _$ComicCommentFromJson(Map<String, dynamic> json) =>
     _ComicComment(
       id: json['id'] as String,
-      comicId: json['comicId'] as String,
       chapterId: json['chapterId'] as String?,
       userId: json['userId'] as String,
       name: json['name'] as String,
@@ -21,12 +20,15 @@ _ComicComment _$ComicCommentFromJson(Map<String, dynamic> json) =>
       countReply: (json['countReply'] as num).toInt(),
       canDelete: json['canDelete'] as bool? ?? false,
       like: json['like'] as bool?,
+      replies:
+          (json['replies'] as List<dynamic>?)
+              ?.map((e) => ComicComment.fromJson(e as Map<String, dynamic>))
+              .toList(),
     );
 
 Map<String, dynamic> _$ComicCommentToJson(_ComicComment instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'comicId': instance.comicId,
       'chapterId': instance.chapterId,
       'userId': instance.userId,
       'name': instance.name,
@@ -38,4 +40,5 @@ Map<String, dynamic> _$ComicCommentToJson(_ComicComment instance) =>
       'countReply': instance.countReply,
       'canDelete': instance.canDelete,
       'like': instance.like,
+      'replies': instance.replies,
     };
