@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comments.dart';
@@ -9,6 +11,8 @@ import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class Comments extends StatefulWidget {
+  final bool fake;
+
   final Future<ComicComments> Function({
     required ComicComment? parent,
     int? page,
@@ -31,6 +35,7 @@ class Comments extends StatefulWidget {
 
   const Comments({
     super.key,
+    required this.fake,
     required this.getComments,
     required this.controller,
     this.parent,
@@ -55,7 +60,10 @@ class _CommentsState extends State<Comments> {
   Widget build(BuildContext context) {
     if (widget.preview) {
       return FutureBuilder(
-        future: widget.getComments!(page: page, parent: widget.parent),
+        future:
+            widget.fake
+                ? Completer<ComicComments>().future
+                : widget.getComments!(page: page, parent: widget.parent),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -194,14 +202,15 @@ class _CommentsState extends State<Comments> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Skeleton.replace(
-                  width: 24,
-                  height: 24,
-                  child: CircleAvatar(
-                    backgroundImage: OImage.oImageProvider(comment.photoUrl),
-                    radius: 12,
+                if (comment.photoUrl != null)
+                  Skeleton.replace(
+                    width: 24,
+                    height: 24,
+                    child: CircleAvatar(
+                      backgroundImage: OImage.oImageProvider(comment.photoUrl!),
+                      radius: 12,
+                    ),
                   ),
-                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: HtmlWidget(

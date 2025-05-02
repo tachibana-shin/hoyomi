@@ -494,9 +494,9 @@ _CommentsResponse _$CommentsResponseFromJson(Map<String, dynamic> json) =>
           (json['data'] as List<dynamic>)
               .map((e) => Comment.fromJson(e as Map<String, dynamic>))
               .toList(),
-      total: (json['total'] as num).toInt(),
-      page: (json['page'] as num).toInt(),
-      pageSize: (json['page_size'] as num).toInt(),
+      total: (json['total'] as num?)?.toInt(),
+      page: (json['page'] as num?)?.toInt(),
+      pageSize: (json['page_size'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$CommentsResponseToJson(_CommentsResponse instance) =>

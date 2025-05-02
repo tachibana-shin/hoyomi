@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ComicComment {
 
- String get id; String? get chapterId; String get userId; String get name; OImage get photoUrl; String get content; DateTime get timeAgo; int? get countLike; int? get countDislike; int get countReply; bool get canDelete; bool? get like; List<ComicComment>? get replies;
+ String get id; String? get chapterId; String get userId; String get name; OImage? get photoUrl; String get content; DateTime get timeAgo; int? get countLike; int? get countDislike; int get countReply; bool get canDelete; bool? get like; List<ComicComment>? get replies;
 /// Create a copy of ComicComment
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,11 +49,11 @@ abstract mixin class $ComicCommentCopyWith<$Res>  {
   factory $ComicCommentCopyWith(ComicComment value, $Res Function(ComicComment) _then) = _$ComicCommentCopyWithImpl;
 @useResult
 $Res call({
- String id, String? chapterId, String userId, String name, OImage photoUrl, String content, DateTime timeAgo, int? countLike, int? countDislike, int countReply, bool canDelete, bool? like, List<ComicComment>? replies
+ String id, String? chapterId, String userId, String name, OImage? photoUrl, String content, DateTime timeAgo, int? countLike, int? countDislike, int countReply, bool canDelete, bool? like, List<ComicComment>? replies
 });
 
 
-$OImageCopyWith<$Res> get photoUrl;
+$OImageCopyWith<$Res>? get photoUrl;
 
 }
 /// @nodoc
@@ -66,14 +66,14 @@ class _$ComicCommentCopyWithImpl<$Res>
 
 /// Create a copy of ComicComment
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? chapterId = freezed,Object? userId = null,Object? name = null,Object? photoUrl = null,Object? content = null,Object? timeAgo = null,Object? countLike = freezed,Object? countDislike = freezed,Object? countReply = null,Object? canDelete = null,Object? like = freezed,Object? replies = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? chapterId = freezed,Object? userId = null,Object? name = null,Object? photoUrl = freezed,Object? content = null,Object? timeAgo = null,Object? countLike = freezed,Object? countDislike = freezed,Object? countReply = null,Object? canDelete = null,Object? like = freezed,Object? replies = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,chapterId: freezed == chapterId ? _self.chapterId : chapterId // ignore: cast_nullable_to_non_nullable
 as String?,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,photoUrl: null == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
-as OImage,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,photoUrl: freezed == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
+as OImage?,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,timeAgo: null == timeAgo ? _self.timeAgo : timeAgo // ignore: cast_nullable_to_non_nullable
 as DateTime,countLike: freezed == countLike ? _self.countLike : countLike // ignore: cast_nullable_to_non_nullable
 as int?,countDislike: freezed == countDislike ? _self.countDislike : countDislike // ignore: cast_nullable_to_non_nullable
@@ -88,9 +88,12 @@ as List<ComicComment>?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$OImageCopyWith<$Res> get photoUrl {
-  
-  return $OImageCopyWith<$Res>(_self.photoUrl, (value) {
+$OImageCopyWith<$Res>? get photoUrl {
+    if (_self.photoUrl == null) {
+    return null;
+  }
+
+  return $OImageCopyWith<$Res>(_self.photoUrl!, (value) {
     return _then(_self.copyWith(photoUrl: value));
   });
 }
@@ -108,7 +111,7 @@ class _ComicComment implements ComicComment {
 @override final  String? chapterId;
 @override final  String userId;
 @override final  String name;
-@override final  OImage photoUrl;
+@override final  OImage? photoUrl;
 @override final  String content;
 @override final  DateTime timeAgo;
 @override final  int? countLike;
@@ -159,11 +162,11 @@ abstract mixin class _$ComicCommentCopyWith<$Res> implements $ComicCommentCopyWi
   factory _$ComicCommentCopyWith(_ComicComment value, $Res Function(_ComicComment) _then) = __$ComicCommentCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String? chapterId, String userId, String name, OImage photoUrl, String content, DateTime timeAgo, int? countLike, int? countDislike, int countReply, bool canDelete, bool? like, List<ComicComment>? replies
+ String id, String? chapterId, String userId, String name, OImage? photoUrl, String content, DateTime timeAgo, int? countLike, int? countDislike, int countReply, bool canDelete, bool? like, List<ComicComment>? replies
 });
 
 
-@override $OImageCopyWith<$Res> get photoUrl;
+@override $OImageCopyWith<$Res>? get photoUrl;
 
 }
 /// @nodoc
@@ -176,14 +179,14 @@ class __$ComicCommentCopyWithImpl<$Res>
 
 /// Create a copy of ComicComment
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? chapterId = freezed,Object? userId = null,Object? name = null,Object? photoUrl = null,Object? content = null,Object? timeAgo = null,Object? countLike = freezed,Object? countDislike = freezed,Object? countReply = null,Object? canDelete = null,Object? like = freezed,Object? replies = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? chapterId = freezed,Object? userId = null,Object? name = null,Object? photoUrl = freezed,Object? content = null,Object? timeAgo = null,Object? countLike = freezed,Object? countDislike = freezed,Object? countReply = null,Object? canDelete = null,Object? like = freezed,Object? replies = freezed,}) {
   return _then(_ComicComment(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,chapterId: freezed == chapterId ? _self.chapterId : chapterId // ignore: cast_nullable_to_non_nullable
 as String?,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,photoUrl: null == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
-as OImage,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,photoUrl: freezed == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
+as OImage?,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,timeAgo: null == timeAgo ? _self.timeAgo : timeAgo // ignore: cast_nullable_to_non_nullable
 as DateTime,countLike: freezed == countLike ? _self.countLike : countLike // ignore: cast_nullable_to_non_nullable
 as int?,countDislike: freezed == countDislike ? _self.countDislike : countDislike // ignore: cast_nullable_to_non_nullable
@@ -199,9 +202,12 @@ as List<ComicComment>?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$OImageCopyWith<$Res> get photoUrl {
-  
-  return $OImageCopyWith<$Res>(_self.photoUrl, (value) {
+$OImageCopyWith<$Res>? get photoUrl {
+    if (_self.photoUrl == null) {
+    return null;
+  }
+
+  return $OImageCopyWith<$Res>(_self.photoUrl!, (value) {
     return _then(_self.copyWith(photoUrl: value));
   });
 }

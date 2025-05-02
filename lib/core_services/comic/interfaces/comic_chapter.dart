@@ -14,12 +14,13 @@ sealed class ComicChapter with _$ComicChapter {
   }) = _ComicChapter;
 
   /// JSONからの生成
-  factory ComicChapter.fromJson(Map<String, dynamic> json) => _$ComicChapterFromJson(json);
+  factory ComicChapter.fromJson(Map<String, dynamic> json) =>
+      _$ComicChapterFromJson(json);
 
   /// Fakeデータを作成
   factory ComicChapter.createFakeData() => ComicChapter(
-        name: "Chapter 1: The Beginning",
-        chapterId: "ch1",
-        time: DateTime.now().subtract(const Duration(days: 2)),
-      );
+    name: "Chapter 1: The Beginning",
+    chapterId: "ch1",
+    time: DateTime.now().subtract(const Duration(days: 2)),
+  );
 }

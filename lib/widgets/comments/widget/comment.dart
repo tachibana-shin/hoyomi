@@ -68,14 +68,17 @@ class _CommentState extends State<Comment> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Skeleton.replace(
-              width: 48,
-              height: 48,
-              child: CircleAvatar(
-                backgroundImage: OImage.oImageProvider(widget.comment.photoUrl),
-                radius: 24,
+            if (widget.comment.photoUrl != null)
+              Skeleton.replace(
+                width: 48,
+                height: 48,
+                child: CircleAvatar(
+                  backgroundImage: OImage.oImageProvider(
+                    widget.comment.photoUrl!,
+                  ),
+                  radius: 24,
+                ),
               ),
-            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -207,6 +210,7 @@ class _CommentState extends State<Comment> {
         // Replies category
         if (_showReplies)
           Comments(
+            fake: false,
             getComments: widget.getComments,
             parent: widget.comment,
             controller: null,

@@ -158,6 +158,7 @@ class CuuTruyenService extends ABComicService
                 name: 'Chapter ${chapter.number}',
                 fullName: chapter.name,
                 chapterId: chapter.id.toString(),
+                extra: chapter.id.toString(),
               ),
             )
             .toList();
@@ -311,10 +312,11 @@ class CuuTruyenService extends ABComicService
 
   @override
   Future<ComicComments> getComments(context, {page = 1}) async {
+    print(context);
     final data = CommentsResponse.fromJson(
       jsonDecode(
         await fetch(
-          'mangas/${context.chapter?.extra! ?? context.metaComic.chapters.first.extra}/chapters',
+          'chapters/${context.chapter?.extra! ?? context.metaComic.chapters.first.extra}/comments',
         ),
       ),
     );
@@ -336,8 +338,11 @@ class CuuTruyenService extends ABComicService
           ComicComment(
             id: entry.value.id.toString(),
             userId: entry.value.user.id.toString(),
-            name: entry.value.user.username,
-            photoUrl: entry.value.user.teams.firstOrNull?.photoUrl,
+            photoUrl: null,
+            name:
+                entry.value.user.teams.firstOrNull != null
+                    ? 'Team ${entry.value.user.teams.firstOrNull['name']}'
+                    : entry.value.user.username,
             content: entry.value.processedContent,
             timeAgo: entry.value.createdAt,
             countReply: 0,
@@ -896,9 +901,9 @@ sealed class CommentUser with _$CommentUser {
 sealed class CommentsResponse with _$CommentsResponse {
   const factory CommentsResponse({
     required List<Comment> data,
-    required int total,
-    required int page,
-    @JsonKey(name: 'page_size') required int pageSize,
+    int? total,
+    int? page,
+    @JsonKey(name: 'page_size') int? pageSize,
   }) = _CommentsResponse;
 
   factory CommentsResponse.fromJson(Map<String, dynamic> json) =>

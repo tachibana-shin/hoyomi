@@ -12,7 +12,10 @@ _ComicComment _$ComicCommentFromJson(Map<String, dynamic> json) =>
       chapterId: json['chapterId'] as String?,
       userId: json['userId'] as String,
       name: json['name'] as String,
-      photoUrl: OImage.fromJson(json['photoUrl'] as Map<String, dynamic>),
+      photoUrl:
+          json['photoUrl'] == null
+              ? null
+              : OImage.fromJson(json['photoUrl'] as Map<String, dynamic>),
       content: json['content'] as String,
       timeAgo: DateTime.parse(json['timeAgo'] as String),
       countLike: (json['countLike'] as num?)?.toInt(),

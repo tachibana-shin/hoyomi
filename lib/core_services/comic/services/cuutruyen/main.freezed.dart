@@ -3633,7 +3633,7 @@ as String,
 /// @nodoc
 mixin _$CommentsResponse {
 
- List<Comment> get data; int get total; int get page;@JsonKey(name: 'page_size') int get pageSize;
+ List<Comment> get data; int? get total; int? get page;@JsonKey(name: 'page_size') int? get pageSize;
 /// Create a copy of CommentsResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -3666,7 +3666,7 @@ abstract mixin class $CommentsResponseCopyWith<$Res>  {
   factory $CommentsResponseCopyWith(CommentsResponse value, $Res Function(CommentsResponse) _then) = _$CommentsResponseCopyWithImpl;
 @useResult
 $Res call({
- List<Comment> data, int total, int page,@JsonKey(name: 'page_size') int pageSize
+ List<Comment> data, int? total, int? page,@JsonKey(name: 'page_size') int? pageSize
 });
 
 
@@ -3683,13 +3683,13 @@ class _$CommentsResponseCopyWithImpl<$Res>
 
 /// Create a copy of CommentsResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? data = null,Object? total = null,Object? page = null,Object? pageSize = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? data = null,Object? total = freezed,Object? page = freezed,Object? pageSize = freezed,}) {
   return _then(_self.copyWith(
 data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as List<Comment>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
-as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
-as int,pageSize: null == pageSize ? _self.pageSize : pageSize // ignore: cast_nullable_to_non_nullable
-as int,
+as List<Comment>,total: freezed == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int?,page: freezed == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int?,pageSize: freezed == pageSize ? _self.pageSize : pageSize // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -3700,7 +3700,7 @@ as int,
 @JsonSerializable()
 
 class _CommentsResponse implements CommentsResponse {
-  const _CommentsResponse({required final  List<Comment> data, required this.total, required this.page, @JsonKey(name: 'page_size') required this.pageSize}): _data = data;
+  const _CommentsResponse({required final  List<Comment> data, this.total, this.page, @JsonKey(name: 'page_size') this.pageSize}): _data = data;
   factory _CommentsResponse.fromJson(Map<String, dynamic> json) => _$CommentsResponseFromJson(json);
 
  final  List<Comment> _data;
@@ -3710,9 +3710,9 @@ class _CommentsResponse implements CommentsResponse {
   return EqualUnmodifiableListView(_data);
 }
 
-@override final  int total;
-@override final  int page;
-@override@JsonKey(name: 'page_size') final  int pageSize;
+@override final  int? total;
+@override final  int? page;
+@override@JsonKey(name: 'page_size') final  int? pageSize;
 
 /// Create a copy of CommentsResponse
 /// with the given fields replaced by the non-null parameter values.
@@ -3747,7 +3747,7 @@ abstract mixin class _$CommentsResponseCopyWith<$Res> implements $CommentsRespon
   factory _$CommentsResponseCopyWith(_CommentsResponse value, $Res Function(_CommentsResponse) _then) = __$CommentsResponseCopyWithImpl;
 @override @useResult
 $Res call({
- List<Comment> data, int total, int page,@JsonKey(name: 'page_size') int pageSize
+ List<Comment> data, int? total, int? page,@JsonKey(name: 'page_size') int? pageSize
 });
 
 
@@ -3764,13 +3764,13 @@ class __$CommentsResponseCopyWithImpl<$Res>
 
 /// Create a copy of CommentsResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? data = null,Object? total = null,Object? page = null,Object? pageSize = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? data = null,Object? total = freezed,Object? page = freezed,Object? pageSize = freezed,}) {
   return _then(_CommentsResponse(
 data: null == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
-as List<Comment>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
-as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
-as int,pageSize: null == pageSize ? _self.pageSize : pageSize // ignore: cast_nullable_to_non_nullable
-as int,
+as List<Comment>,total: freezed == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int?,page: freezed == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int?,pageSize: freezed == pageSize ? _self.pageSize : pageSize // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 

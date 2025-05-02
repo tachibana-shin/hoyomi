@@ -11,7 +11,7 @@ sealed class ComicComment with _$ComicComment {
     String? chapterId,
     required String userId,
     required String name,
-    required OImage photoUrl,
+    required OImage? photoUrl,
     required String content,
     required DateTime timeAgo,
     int? countLike,
