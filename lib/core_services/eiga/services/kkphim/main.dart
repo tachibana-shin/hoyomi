@@ -435,7 +435,7 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
   @override
   getSuggest({required metaEiga, required eigaId, page}) async {
     final pageData = await _get(
-      'v1/api/the-loai/${metaEiga.genres.first.genreId}?limit=30',
+      'v1/api/${metaEiga.genres.first.genreId.replaceAll(r'_', '/')}?limit=30',
     );
 
     final metaSlugs =
