@@ -77,6 +77,7 @@ class TruyenGGService extends ABComicService
     Headers? headers,
     bool notify = true,
     bool headless = true,
+    bool cache = true,
   }) async {
     for (int i = 0; i < 5; i++) {
       try {
@@ -582,7 +583,11 @@ class TruyenGGService extends ABComicService
   // auth service
   @override
   getUser({required cookie}) async {
-    final $ = await fetch$('$baseUrl/thiet-lap-tai-khoan.html', cookie: cookie);
+    final $ = await fetch$(
+      '$baseUrl/thiet-lap-tai-khoan.html',
+      cookie: cookie,
+      cache: false,
+    );
 
     if ($('title', single: true).text() != 'Thông Tin Tài Khoản') {
       throw UserNotFoundException(); // Not logged in

@@ -103,6 +103,7 @@ class AnimeVietsubService extends ABEigaService
       '$baseUrl/account/info/',
       cookie: cookie,
       headers: Headers({'Referer': baseUrl}),
+      cache: false,
     );
 
     if ($('.profile-userpic', single: true).isEmpty) {

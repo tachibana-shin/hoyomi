@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/setting/field_input.dart';
 import 'package:hoyomi/core_services/interfaces/setting/setting_field.dart';
 import 'package:hoyomi/core_services/main.dart';
@@ -33,7 +34,13 @@ class _ServiceSettingsPageState extends State<ServiceSettingsPage> {
 
     if (_settingsChanged.containsKey('cookie')) {
       /// Update user cache
-      await _service.onAfterSignIn(cookie: _settingsChanged['cookie'] ?? '');
+      try {
+        await _service.onAfterSignIn(cookie: _settingsChanged['cookie'] ?? '');
+      } on UserNotFoundException {
+        showSnackBar(Text('Sign in ${_service.name} failed.'));
+      } catch (error) {
+        // pass;
+      }
     }
 
     _settingsChanged.clear();

@@ -635,7 +635,7 @@ class _MangaReaderState extends State<MangaReader>
       _serviceSupportFetchPage[widget.service] = false;
 
       _pageMemoryCacheStore[item.image] = FutureCache(
-        widget.service.dio
+        widget.service.dioCache
             .get(
               item.image.src,
               options: Options(

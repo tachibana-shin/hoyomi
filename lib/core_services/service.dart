@@ -30,9 +30,9 @@ import 'interfaces/main.dart';
 import 'mixin/headless_mixin.dart';
 import 'mixin/settings_mixin.dart';
 
-Dio? _dio;
+Dio? _dioCache;
 Future<Dio> _createDioClientCache() async {
-  if (_dio != null) return _dio!;
+  if (_dioCache != null) return _dioCache!;
 
   final options = CacheOptions(
     // A default store is required for interceptor.
@@ -68,10 +68,21 @@ Future<Dio> _createDioClientCache() async {
     allowPostMethod: false,
   );
 
-  _dio = await createDioClient(
+  _dioCache = await createDioClient(
       BaseOptions(responseType: ResponseType.plain, followRedirects: true),
     )
     ..interceptors.add(DioCacheInterceptor(options: options));
+
+  return _dioCache!;
+}
+
+Dio? _dio;
+Future<Dio> _createDioClient() async {
+  if (_dio != null) return _dio!;
+
+  _dio = await createDioClient(
+    BaseOptions(responseType: ResponseType.plain, followRedirects: true),
+  );
 
   return _dio!;
 }
@@ -189,7 +200,9 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
 
   final Map<String, ({DateTime? expire, Future<String> response})> _cacheFetch =
       {};
+  late final Dio dioCache;
   late final Dio dio;
+
   bool _initialize = false;
 
   @override
@@ -197,7 +210,9 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
     if (_initialize) return;
     _initialize = true;
 
-    dio = await _createDioClientCache();
+    dioCache = await _createDioClientCache();
+    dio = await _createDioClient();
+
     await super.initState();
   }
 
@@ -332,6 +347,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
     Map<String, dynamic>? body,
     required Headers headers,
     bool notify = true,
+    bool cache = true,
   }) async {
     final DateTime? startTime = kDebugMode ? DateTime.now() : null;
     if (kDebugMode) {
@@ -357,7 +373,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
 
     late final Response response;
     try {
-      response = await dio.fetch(
+      response = await (cache ? dioCache : dio).fetch(
         RequestOptions(
           path: url,
           method: body == null ? 'GET' : 'POST',
@@ -438,6 +454,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
     Headers? headers,
     bool notify = true,
     bool headless = false,
+    bool cache = true,
   }) async {
     if (init.fetchHeadless) headless = init.fetchHeadless;
 
@@ -484,6 +501,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
       body: body,
       headers: $headers,
       notify: notify,
+      cache: cache,
     );
   }
 
@@ -538,6 +556,8 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
     Map<String, dynamic>? query,
     Map<String, dynamic>? body,
     Headers? headers,
+    bool headless = false,
+    bool cache = true,
   }) async {
     return parse$(
       await fetch(
@@ -546,6 +566,8 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
         query: query,
         body: body,
         headers: headers,
+        headless: headless,
+        cache: cache,
       ),
     );
   }
