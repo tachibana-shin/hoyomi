@@ -307,10 +307,6 @@ class UpdateAvailableController {
     Release release,
     void Function(double progress) onProgress,
   ) async {
-    if (!XPlatform.isAndroid) {
-      throw Exception('Platform not supported');
-    }
-
     // Find the Android APK asset
     final asset = release.assets.firstWhere(
       (asset) => asset.contentType == 'application/vnd.android.package-archive',
