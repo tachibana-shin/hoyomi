@@ -367,28 +367,29 @@ class AnimeVietsubService extends ABEigaService
 
     final name = $('title', single: true).text();
     final items = switch (categoryId.contains('bang-xep-hang')) {
-      true => $('li.group').map((item) {
-    final eigaId = parseURL(item.queryOne('a').attr('href')).eigaId;
-    final name = item.queryOne('.title-item').text();
-    final originalName = item.queryOne('.title-sd-item').text();
-    final $img = item.queryOne('img');
-    final image = OImage(
-      src:
-          $img.attr('data-cfsrc').isNotEmpty
-              ? $img.attr('data-cfsrc')
-              : $img.attr('src'),
-      headers: Headers({'Referer': baseUrl}),
-    );
-    final notice = item.queryOne('.score').text();
+      true =>
+        $('li.group').map((item) {
+          final eigaId = parseURL(item.queryOne('a').attr('href')).eigaId;
+          final name = item.queryOne('.title-item').text();
+          final originalName = item.queryOne('.title-sd-item').text();
+          final $img = item.queryOne('img');
+          final image = OImage(
+            src:
+                $img.attr('data-cfsrc').isNotEmpty
+                    ? $img.attr('data-cfsrc')
+                    : $img.attr('src'),
+            headers: Headers({'Referer': baseUrl}),
+          );
+          final notice = item.queryOne('.score').text();
 
-        return Eiga(
-eigaId: eigaId,
-name: name,
-originalName: originalName,
-image: image,
-notice: notice,
-        );
-      }).toList(),
+          return Eiga(
+            eigaId: eigaId,
+            name: name,
+            originalName: originalName,
+            image: image,
+            notice: notice,
+          );
+        }).toList(),
       false =>
         $(
           '.MovieList',
