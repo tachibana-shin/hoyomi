@@ -46,7 +46,7 @@ Future<Dio> _createDioClientCache() async {
     // All subsequent fields are optional to get a standard behaviour.
 
     // Default.
-    policy: CachePolicy.forceCache,
+    // policy: CachePolicy.forceCache,
     // Returns a cached response on error for given status codes.
     // Defaults to `[]`.
     hitCacheOnErrorCodes: const [500],
