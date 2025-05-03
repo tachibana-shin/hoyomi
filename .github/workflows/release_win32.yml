@@ -1,11 +1,11 @@
-name: Build and Release for Windows
+name: Build and Release for Windows (.exe with Inno Setup)
 
 on:
   push:
 
 jobs:
   build_windows:
-    name: Build .exe installer for Windows
+    name: Build Windows Installer
     runs-on: windows-latest
     permissions:
       contents: write
@@ -19,9 +19,8 @@ jobs:
           channel: stable
           version: 3.29.3
 
-      - name: Install build dependencies
-        run: |
-          choco install nsis -y
+      - name: Install Inno Setup
+        run: choco install innosetup -y
 
       - name: Flutter pub get
         run: flutter pub get
@@ -41,27 +40,20 @@ jobs:
       - name: Build Windows release
         run: flutter build windows --release
 
-      - name: Generate NSIS script
-        run: |
-          $nsisScript = @"
-          Outfile "hoyomi_installer.exe"
-          InstallDir "$PROGRAMFILES\hoyomi"
-          Page directory
-          Page instfiles
-          
-          Section ""
-          SetOutPath "$INSTDIR"
-          File /r "build\windows\x64\runner\Release\*"
-          CreateShortCut "$DESKTOP\Hoyomi.lnk" "$INSTDIR\hoyomi.exe"
-          SectionEnd
-          "@
-          Set-Content -Path installer.nsi -Value $nsisScript
+      - name: Create Inno Setup script
+        run: powershell .\build_win32.ps
 
-      - name: Create installer using NSIS
-        run: makensis installer.nsi
+      - name: Compile installer with Inno Setup
+        run: iscc hoyomi_installer.iss
+
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+        if: ${{ failure() }}
+        with:
+          wait-timeout-minutes: 5
 
       - name: Upload .exe installer
         uses: actions/upload-artifact@v4
         with:
-          ame: hoyomi-windows-installer
-          path: hoyomi_installer.exe
+          name: hoyomi-windows-installer
+          path: HoyomiInstaller.exe
