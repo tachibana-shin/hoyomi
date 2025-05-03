@@ -1136,7 +1136,11 @@ String _removeAdsFromM3U8(Uri url, String m3u8) {
       final prev = i > 0 ? finalResult[i - 1] : '';
       if (prev.startsWith('#E')) continue;
     }
-    cleaned.add(url.resolve(line).toString());
+    if (line.endsWith('.ts')) {
+      cleaned.add(url.resolve(line).toString());
+    } else {
+      cleaned.add(line);
+    }
   }
 
   return cleaned.join('\n');
