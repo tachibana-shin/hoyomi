@@ -317,6 +317,7 @@ class AnimeVietsubService extends ABEigaService
               $(
                 '#single-home .TPostMv',
               ).map((item) => _parseItem(item)).toList(),
+          categoryId: 'anime-moi',
         ),
         HomeEigaCategory(
           name: 'Pre Release',
@@ -327,11 +328,13 @@ class AnimeVietsubService extends ABEigaService
           name: 'Hot',
           items:
               $('#hot-home .TPostMv').map((item) => _parseItem(item)).toList(),
+          categoryId: 'bang-xep-hang_day',
         ),
         HomeEigaCategory(
           name: 'Top',
           items:
               $('#showTopPhim .TPost').map((item) => _parseItem(item)).toList(),
+          categoryId: 'bang-xep-hang_month',
         ),
       ],
     );
@@ -356,18 +359,43 @@ class AnimeVietsubService extends ABEigaService
             ].join('/');
     final url =
         (params == null
-            ? baseUrl + categoryId.replaceAll('_', '/')
+            ? '$baseUrl/${categoryId.replaceAll('_', '/')}'
             : '$baseUrl/$params') +
         (page > 1 ? '/trang-$page' : '') +
         (filters['sort'] == null ? '' : '?sort=${filters['sort']}');
     final $ = await fetch$(url);
 
     final name = $('title', single: true).text();
-    final items =
+    final items = switch (categoryId.contains('bang-xep-hang')) {
+      true => $('li.group').map((item) {
+    final eigaId = parseURL(item.queryOne('a').attr('href')).eigaId;
+    final name = item.queryOne('.title-item').text();
+    final originalName = item.queryOne('.title-sd-item').text();
+    final $img = item.queryOne('img');
+    final image = OImage(
+      src:
+          $img.attr('data-cfsrc').isNotEmpty
+              ? $img.attr('data-cfsrc')
+              : $img.attr('src'),
+      headers: Headers({'Referer': baseUrl}),
+    );
+    final notice = item.queryOne('.score').text();
+
+        return Eiga(
+eigaId: eigaId,
+name: name,
+originalName: originalName,
+image: image,
+notice: notice,
+        );
+      }).toList(),
+      false =>
         $(
           '.MovieList',
           single: true,
-        ).query('.TPostMv').map((item) => _parseItem(item)).toList();
+        ).query('.TPostMv').map((item) => _parseItem(item)).toList(),
+    };
+
     final $pageNavi = $(
       '.larger:last-child, .wp-pagenavi > *:last-child',
       single: true,
