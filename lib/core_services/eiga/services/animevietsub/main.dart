@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dio/dio.dart' show Dio, BaseOptions, FormData;
+import 'package:dio/dio.dart' show Dio, BaseOptions;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart' hide FormData, Response;
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
@@ -56,7 +56,7 @@ mixin _SupabaseRPC {
   ) async {
     final response = await _dio.post(
       '/rest/v1/rpc/$name',
-      data: FormData.fromMap(requestData),
+      data: jsonEncode(requestData),
     );
 
     return response.data as List;
