@@ -1,6 +1,6 @@
-# hoyomi
+## 📱 Hoyomi — Your Ultimate Anime & Manga Companion
 
-A new Flutter project.
+**Hoyomi** is a modern, open-source app to **watch anime** and **read manga** in one seamless experience. Designed to be **lightweight**, **fast**, and **fully cross-platform**, Hoyomi runs smoothly on Android, iOS, Linux, macOS, Windows, and even on the web.
 
 > [!WARNING]
 > App is development
@@ -10,20 +10,63 @@ A new Flutter project.
 >
 > `English` / `Multiple` support by `HiAnime`
 
-## Screenshot preview
+---
 
-![1000008167](https://github.com/user-attachments/assets/9fcd09f8-ca21-4a13-ae9a-92dffb67dd36)
-![1000008169](https://github.com/user-attachments/assets/1fe91f68-9beb-4d7b-bf48-ccd00b7ca0ba)
-![1000008171](https://github.com/user-attachments/assets/1f1f64da-d84c-4e1b-a0ee-cb973be30503)
-![1000008173](https://github.com/user-attachments/assets/7f113ae6-99ed-47d7-8de3-a095eaeda119)
-![1000008175](https://github.com/user-attachments/assets/715c5308-87db-4e0e-a24f-36618fdb46d6)
-![1000008186](https://github.com/user-attachments/assets/1370beb7-0885-4717-a4b0-7016235338f6)
-![1000008179](https://github.com/user-attachments/assets/66003d32-a2eb-4347-8a2f-756153441ce3)
-![1000008181](https://github.com/user-attachments/assets/c9c80348-e688-4dad-b46a-a2e15596e2ae)
-![1000008178](https://github.com/user-attachments/assets/fc761863-f1b3-4397-a508-29ecbdc9641e)
-![1000008182](https://github.com/user-attachments/assets/99d4ae8b-a413-4fff-9d34-d69f8aaa1cbd)
-![1000008183](https://github.com/user-attachments/assets/2dfc89c9-3c67-48e6-aa8e-c3f2cfdc5931)
-![1000008184](https://github.com/user-attachments/assets/581a25c7-5b63-498b-8ec7-93ee2dc9e738)
+### ✨ Features
+
+- 🎥 **Stream anime** with subtitle support (custom fonts, colors, styles)
+- 📚 **Read manga** from multiple sources in a clean, scrollable reader
+- 🌐 **Multi-platform**: Mobile, desktop & web support out of the box
+- 🎨 **Highly customizable UI**: Dark/light themes, font settings, subtitle styles
+- 💬 **Offline support**: Cache and view anime/manga offline `(development)`
+- 🧩 **Plugin-friendly**: Extend functionality with community-built integrations
+- 🔐 **Privacy first**: No tracking, no ads, no data collection
+
+---
+
+### 🛡️ Open Source & Community Driven
+
+Hoyomi is fully open-source, actively maintained by the community. We welcome contributions and ideas. You’re not just a user — you’re part of the project.
+
+- GitHub: [https://github.com/tachibana-shin/hoyomi](https://github.com/tachibana-shin/hoyomi)
+
+---
+
+### 📦 Available On
+
+- ✅ Android
+- ✅ iOS
+- ✅ Windows (.exe)
+- ✅ Linux (.deb, .AppImage)
+- ✅ macOS (.dmg)
+- ✅ Web (PWA)
+
+---
+
+### 📝 Privacy & EULA
+
+Hoyomi does **not collect**, **store**, or **share** your personal data. Your activity stays on your device. See our full [Privacy Policy](https://github.com/tachibana-shin/hoyomi/blob/main/privacy-policy.md) and [EULA](https://github.com/tachibana-shin/hoyomi/blob/main/EULA.md) for details.
+
+---
+
+### ❤️ Built with Flutter. Made with love in Japan-inspired spirit.
+
+## Screenshot preview
+<img src="https://github.com/user-attachments/assets/bc0df2fb-91d7-4a49-bfcc-23c576fc9c61" width="120px">
+<img src="https://github.com/user-attachments/assets/31e19481-b8c2-423c-be62-1e7322605c50" width="120px">
+<img src="https://github.com/user-attachments/assets/3a91eac8-fa1f-403e-b3af-1ba2a83b4ff5" width="120px">
+<img src="https://github.com/user-attachments/assets/f2c8a6f5-b510-4376-920e-cab94a921ad6" width="120px">
+<img src="https://github.com/user-attachments/assets/c49ce47d-bd98-438b-b166-7680606ee400" width="120px">
+<img src="https://github.com/user-attachments/assets/9a8e5175-b07f-4c7a-8624-ac1c6bf1237b" width="120px">
+<img src="https://github.com/user-attachments/assets/f9af1188-c57f-4131-a60f-e66c0e3d25e1" width="120px">
+<img src="https://github.com/user-attachments/assets/b3f0162f-1c20-4d1f-95c1-e7998cdeb89a" width="120px">
+<img src="https://github.com/user-attachments/assets/3c281173-e317-4d4d-98c6-8b18b8a6b438" width="120px">
+<img src="https://github.com/user-attachments/assets/0e62df4b-984d-4b27-a22c-ca98a37cedee" width="120px">
+<img src="https://github.com/user-attachments/assets/d38e708b-d2f9-4379-a9cd-8de985100f7a" width="120px">
+<img src="https://github.com/user-attachments/assets/00c394f7-13ae-4bdb-9119-21e0d78770b7" width="120px">
+<img src="https://github.com/user-attachments/assets/d0b7c834-797f-41c1-b253-8cfe753429eb" width="120px">
+<img src="https://github.com/user-attachments/assets/0fc95982-e8c8-4dd2-8c58-9c5069152075" width="120px">
+
 
 ## Support platform
 - [x] Android
