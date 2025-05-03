@@ -204,6 +204,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
   late final Dio dio;
 
   bool _initialize = false;
+  bool _tempHeadless = false;
 
   @override
   Future<void> initState() async {
@@ -398,6 +399,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
     } on DioException catch (error) {
       if ([429, 503, 403].contains(error.response?.statusCode)) {
         // return Future.error(response);
+        _tempHeadless = true;
         final error = CaptchaRequiredException(getService(uid));
 
         // // required captcha resolve
@@ -456,7 +458,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
     bool headless = false,
     bool cache = true,
   }) async {
-    if (init.fetchHeadless) headless = init.fetchHeadless;
+    if (init.fetchHeadless || _tempHeadless) headless = init.fetchHeadless;
 
     final record = await ServiceSettingsController.instance.get(uid);
     String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;

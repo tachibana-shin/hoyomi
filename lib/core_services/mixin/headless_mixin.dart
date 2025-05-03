@@ -18,7 +18,7 @@ mixin HeadlessMixin on BaseService {
     final headless = HeadlessInAppWebView(
       initialUrlRequest: URLRequest(url: WebUri('$baseUrl/favicon.ico')),
       initialSettings: InAppWebViewSettings(
-        incognito: true,
+        incognito: false,
         javaScriptCanOpenWindowsAutomatically: true,
         blockNetworkImage: true,
         geolocationEnabled: true,
