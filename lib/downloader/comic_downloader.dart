@@ -7,9 +7,9 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
+import 'package:hoyomi/plugins/export.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:retry/retry.dart';
 import 'package:pool/pool.dart';
 import 'package:sqlite_async/sqlite_async.dart';
@@ -64,7 +64,7 @@ sealed class LoadedPage with _$LoadedPage {
 ///         page-7.jpg
 ///
 class ComicDownloader {
-  final migrations =
+  static final migrations =
       SqliteMigrations()..add(
         SqliteMigration(1, (tx) async {
           // comics table
@@ -112,10 +112,29 @@ class ComicDownloader {
         }),
       );
 
+  static String expectedPosterPath(ABComicService service, String comicId) {
+    return join('comic_offline', service.uid, comicId, 'poster');
+  }
+
+  static String expectedPagePath(
+    ABComicService service,
+    String comicId,
+    String chapterId,
+    int pageIndex,
+  ) {
+    return join(
+      'comic_offline',
+      service.uid,
+      comicId,
+      chapterId,
+      'page-$pageIndex',
+    );
+  }
+
   final _storeInsertComicFuture = <String, Future<String>>{};
   final _storeChaptersDownload = Ref(<String, Ref<DownloaderChapterReturn>>{});
 
-  late final Directory _document;
+  late final Directory _document = applicationDocumentDirectory;
   late final SqliteDatabase _db;
 
   static ComicDownloader? _instance;
@@ -140,15 +159,13 @@ class ComicDownloader {
     }
 
     Future<void> init() async {
-      _document = await getApplicationDocumentsDirectory();
-
       _db = SqliteDatabase(path: '${_document.path}/comic_offline.sqlite');
       await migrations.migrate(_db);
     }
 
     _initDatabaseFuture = init();
 
-    return await  _initDatabaseFuture!.then((_) {
+    return await _initDatabaseFuture!.then((_) {
       _initdDatabase = true;
       _initDatabaseFuture = null;
     });
@@ -324,7 +341,7 @@ class ComicDownloader {
       final List<InsertPageReturn> results = [];
       for (var i = 0; i < pages.length; i++) {
         final oImageJson = jsonEncode(pages[i].toJson());
-        final path = _expectedPagePath(service, comicId, chapterId, i);
+        final path = expectedPagePath(service, comicId, chapterId, i);
 
         final pageId =
             sha256.convert(utf8.encode('$chapterDbId@$i')).toString();
@@ -358,21 +375,6 @@ class ComicDownloader {
       debugPrint('Failed to insert chapter: $e');
       rethrow;
     }
-  }
-
-  String _expectedPagePath(
-    ABComicService service,
-    String comicId,
-    String chapterId,
-    int pageIndex,
-  ) {
-    return join(
-      'comic_offline',
-      service.uid,
-      comicId,
-      chapterId,
-      'page-$pageIndex',
-    );
   }
 
   Ref<DownloaderChapterReturn>? getDownloaderState({

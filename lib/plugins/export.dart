@@ -2,6 +2,7 @@
 // 再生成するには scripts/auto_export.dart を実行してください。
 
 export 'android_sdk_int.dart';
+export 'application_document_directory.dart';
 export 'brightness_controller.dart';
 export 'create_dio_client.dart';
 export 'event_bus.dart';

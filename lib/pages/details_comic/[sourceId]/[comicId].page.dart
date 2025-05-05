@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
@@ -8,7 +9,6 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user_async.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
-import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/export.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
@@ -19,6 +19,10 @@ import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
+import 'package:path/path.dart' show join;
+
+import '../../../downloader/comic_downloader.dart';
+import '../../../plugins/export.dart';
 
 class DetailsComic extends StatefulWidget {
   final String sourceId;
@@ -214,11 +218,24 @@ class _DetailsComicState extends State<DetailsComic>
                 aspectRatio: 2 / 3,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
-                  child: OImage.network(
-                    comic.image.src,
-                    sourceId: widget.sourceId,
-                    headers: comic.image.headers,
+                  child: Image.file(
+                    File(
+                      join(
+                        applicationDocumentDirectory.path,
+                        ComicDownloader.expectedPosterPath(
+                          _service,
+                          widget.comicId,
+                        ),
+                      ),
+                    ),
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return OImage.oNetwork(
+                        comic.image,
+                        sourceId: widget.sourceId,
+                        fit: BoxFit.cover,
+                      );
+                    },
                   ),
                 ),
               ),
