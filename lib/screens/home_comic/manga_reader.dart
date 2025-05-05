@@ -619,38 +619,35 @@ class _MangaReaderState extends State<MangaReader>
       return cache;
     }
 
-    try {
-      if (_serviceSupportFetchPage[widget.service] == false) {
-        throw UnimplementedError();
-      }
+    _pageMemoryCacheStore[item.image] = FutureCache(
+      widget.service.dioCache
+          .get(
+            item.image.src,
+            options: Options(
+              headers: item.image.headers?.toMap(),
+              responseType: ResponseType.bytes,
+            ),
+            onReceiveProgress: (count, total) {
+              progress.value = (count / total);
+            },
+          )
+          .then((res) => Uint8List.fromList(res.data))
+          .then((buffer) async {
+            if (_serviceSupportFetchPage[widget.service] != false) {
+              try {
+                return await widget.service.fetchPage(buffer, item.image);
+              } on UnimplementedError {
+                _serviceSupportFetchPage[widget.service] = false;
 
-      _pageMemoryCacheStore[item.image] = FutureCache(
-        widget.service.fetchPage(item.image, (count, total) {
-          progress.value = (count / total);
-        }),
-      );
+                return buffer;
+              }
+            }
 
-      await _pageMemoryCacheStore[item.image]!.future;
-    } on UnimplementedError {
-      _serviceSupportFetchPage[widget.service] = false;
+            return buffer;
+          }),
+    );
 
-      _pageMemoryCacheStore[item.image] = FutureCache(
-        widget.service.dioCache
-            .get(
-              item.image.src,
-              options: Options(
-                headers: item.image.headers?.toMap(),
-                responseType: ResponseType.bytes,
-              ),
-              onReceiveProgress: (count, total) {
-                progress.value = (count / total);
-              },
-            )
-            .then((res) => Uint8List.fromList(res.data)),
-      );
-
-      await _pageMemoryCacheStore[item.image]!.future;
-    }
+    await _pageMemoryCacheStore[item.image]!.future;
 
     final image = MemoryImage(_pageMemoryCacheStore[item.image]!.data!);
 
@@ -1011,7 +1008,7 @@ class _MangaReaderState extends State<MangaReader>
           (context) => Watch(
             () => SheetChapters(
               comic: widget.comic,
-              sourceId: widget.service.uid,
+              service: widget.service,
               comicId: widget.comicId,
               currentChapterId: _chapterId.value,
               initialChildSize: 0.6,

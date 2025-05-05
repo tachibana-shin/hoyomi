@@ -768,7 +768,7 @@ class _DetailsComicState extends State<DetailsComic>
   void _handleMenuSelection(BuildContext context, String id) {
     switch (id) {
       case 'download':
-        // _downloadContent(context);
+        _downloadContent();
         break;
       case 'find_similar':
         context.push(
@@ -786,6 +786,53 @@ class _DetailsComicState extends State<DetailsComic>
     }
   }
 
+  void _downloadContent() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Download'),
+          content: const Text('Download content'),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+              child: const Text('Download'),
+              onPressed: () async {
+                // final downloader = ComicDownloader();
+
+                // await downloader.initDatabase();
+
+                // final pages = await _service.getPages(
+                //   widget.comicId,
+                //   _comic.value.chapters.first.chapterId,
+                // );
+
+                // final result = await downloader.downloadChapter(
+                //   service: _service,
+                //   comicId: widget.comicId,
+                //   metaComic: _comic.value,
+                //   chapterId:
+                //       _comic.value.chapters.first.chapterId, // chapterId,
+                //   chapter: _comic.value.chapters.first,
+                //   pages: pages,
+                // );
+
+                // watch$([result.progress, result.error, result.done], () {
+                //   print(
+                //     'progress: ${result.progress.value}, error: ${result.error.value}, done: ${result.done.value}',
+                //   );
+                // }, immediate: true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildSheetChapters() {
     return Watch(
       () => FutureBuilder(
@@ -793,7 +840,7 @@ class _DetailsComicState extends State<DetailsComic>
         builder:
             (context, snapshot) => SheetChapters(
               comic: _comic.value,
-              sourceId: widget.sourceId,
+              service: _service,
               comicId: widget.comicId,
               watchPageChapters:
                   snapshot.data?.first as Map<String, WatchPageUpdated>? ??

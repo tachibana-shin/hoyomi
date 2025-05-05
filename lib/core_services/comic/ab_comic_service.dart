@@ -19,8 +19,8 @@ abstract class ABComicService extends Service {
   Future<MetaComic> getDetails(String comicId);
   Future<List<OImage>> getPages(String manga, String chap);
   Future<Uint8List> fetchPage(
+    Uint8List buffer,
     OImage source,
-    void Function(int count, int total) onReceiveProgress,
   ) {
     throw UnimplementedError();
   }
