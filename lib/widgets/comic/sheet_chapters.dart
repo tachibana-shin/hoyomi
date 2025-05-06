@@ -293,59 +293,66 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                                                   '$error',
                                                   maxLines: 1,
                                                 ).expanded(),
-                                        loading: () => SizedBox(width: 4, height: 4),
-                                        data:
-                                            (downloadedChapter, _) => Watch(() {
-                                              if (downloadedChapter.value !=
-                                                  null) {
-                                                return Iconify(Fluent.save24);
-                                              }
+                                        loading:
+                                            () => SizedBox(width: 4, height: 4),
+                                        data: (downloadedChapter, _) {
+                                          if (downloadedChapter != null &&
+                                              downloadedChapter.doneAt > 0) {
+                                            return Iconify(Fluent.save24);
+                                          }
 
-                                              final downloadState =
-                                                  ComicDownloader.instance
-                                                      .getDownloaderState(
-                                                        service: widget.service,
-                                                        comicId: widget.comicId,
-                                                        chapterId:
-                                                            chapter.chapterId,
-                                                      );
-                                              if (downloadState != null) {
-                                                return Watch(() {
-                                                  if (downloadState
-                                                          .value
-                                                          .done ==
-                                                      true) {
-                                                    return Iconify(
-                                                      Fluent.save24,
+                                          return Watch(() {
+                                            final downloadState =
+                                                ComicDownloader.instance
+                                                    .getDownloaderState(
+                                                      service: widget.service,
+                                                      comicId: widget.comicId,
+                                                      chapterId:
+                                                          chapter.chapterId,
                                                     );
-                                                  }
-                                                  return Text(
-                                                    'DL.${(downloadState.value.progress * 100).round()}%',
-                                                  );
-                                                });
-                                              }
+                                            if (downloadState != null) {
+                                              return Watch(() {
+                                                if (downloadState.value.done ==
+                                                    true) {
+                                                  return Iconify(Fluent.save24);
+                                                }
+                                                return Text(
+                                                  'DL.${(downloadState.value.progress * 100).round()}%',
+                                                );
+                                              });
+                                            }
 
-                                              return IconButton(
-                                                icon: Iconify(Ion.download),
-                                                onPressed: () async {
-                                                  ComicDownloader.instance
-                                                      .downloadChapter(
-                                                        service: widget.service,
-                                                        comicId: widget.comicId,
-                                                        metaComic: widget.comic,
-                                                        chapterId:
+                                            return IconButton(
+                                              icon: Row(
+                                                children: [
+                                                  if (downloadedChapter != null)
+                                                    Text(
+                                                      '${(downloadedChapter.count / downloadedChapter.pageCount) * 100}%',
+                                                      maxLines: 1,
+                                                    ),
+                                                  Iconify(Ion.download),
+                                                ],
+                                              ),
+                                              onPressed: () async {
+                                                ComicDownloader.instance
+                                                    .downloadChapter(
+                                                      service: widget.service,
+                                                      comicId: widget.comicId,
+                                                      metaComic: widget.comic,
+                                                      chapterId:
+                                                          chapter.chapterId,
+                                                      chapter: chapter,
+                                                      pages: await widget
+                                                          .service
+                                                          .getPages(
+                                                            widget.comicId,
                                                             chapter.chapterId,
-                                                        chapter: chapter,
-                                                        pages: await widget
-                                                            .service
-                                                            .getPages(
-                                                              widget.comicId,
-                                                              chapter.chapterId,
-                                                            ),
-                                                      );
-                                                },
-                                              );
-                                            }),
+                                                          ),
+                                                    );
+                                              },
+                                            );
+                                          });
+                                        },
                                       ),
                                 ),
                               ],

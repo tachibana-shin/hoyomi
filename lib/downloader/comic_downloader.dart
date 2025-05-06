@@ -17,7 +17,8 @@ import 'package:sqlite_async/sqlite_async.dart';
 part 'comic_downloader.freezed.dart';
 
 typedef DownloaderChapterReturn = ({bool done, Object? error, double progress});
-typedef InsertPageReturn = ({OImage image, String pageId, String path});
+typedef InsertPageReturn =
+    ({OImage image, String pageId, String path, bool done});
 typedef InsertChapterReturn =
     ({String chapterDbId, List<InsertPageReturn> pages});
 
@@ -35,6 +36,7 @@ sealed class LoadedChapter with _$LoadedChapter {
     required String id,
     required String chapterId,
     required int pageCount,
+    required int count,
     required int doneAt,
     required List<LoadedPage> pages,
   }) = _LoadedChapter;
@@ -131,6 +133,13 @@ class ComicDownloader {
     );
   }
 
+  static String generateComicDbId(Service service, String comicId) {
+    final comicDbId =
+        sha256.convert(utf8.encode('${service.uid}@$comicId')).toString();
+
+    return comicDbId;
+  }
+
   final _storeInsertComicFuture = <String, Future<String>>{};
   final _storeChaptersDownload = Ref(<String, Ref<DownloaderChapterReturn>>{});
 
@@ -171,25 +180,14 @@ class ComicDownloader {
     });
   }
 
-  Future<Ref<LoadedChapter?>> getDownloadedChapter({
+  Future<LoadedChapter?> getDownloadedChapter({
     required ABComicService service,
     required String comicId,
     required String chapterId,
   }) async {
     await initDatabase();
 
-    final row = await _db.getOptional(
-      '''
-        SELECT * FROM comics
-        WHERE service_id = ?
-        AND comic_id = ?
-        LIMIT 1
-      ''',
-      [service.uid, comicId],
-    );
-    if (row == null) return Ref(null);
-
-    final comicDbId = row['id'] as String;
+    final comicDbId = generateComicDbId(service, comicId);
     // final meta = MetaComic.fromJson(jsonDecode(row['meta_json'] as String));
 
     final chapter = await _db.getOptional(
@@ -200,7 +198,7 @@ class ComicDownloader {
       ''',
       [comicDbId, chapterId],
     );
-    if (chapter == null) return Ref(null);
+    if (chapter == null) return null;
 
     final pages = await _db.getAll(
       '''
@@ -219,14 +217,13 @@ class ComicDownloader {
           return LoadedPage(image: oImage, path: path, downloaded: downloaded);
         }).toList();
 
-    return Ref(
-      LoadedChapter(
-        id: chapter['id'] as String,
-        chapterId: chapter['chapter_id'] as String,
-        pageCount: chapter['page_count'] as int,
-        doneAt: chapter['done_at'] as int,
-        pages: images,
-      ),
+    return LoadedChapter(
+      id: chapter['id'] as String,
+      chapterId: chapter['chapter_id'] as String,
+      pageCount: chapter['page_count'] as int,
+      count: pages.fold(0, (prev, page) => prev + page['downloaded'] as int),
+      doneAt: chapter['done_at'] as int,
+      pages: images,
     );
   }
 
@@ -290,8 +287,7 @@ class ComicDownloader {
     required String comicId,
     required MetaComic metaComic,
   }) {
-    final comicDbId =
-        sha256.convert(utf8.encode('${service.uid}@$comicId')).toString();
+    final comicDbId = generateComicDbId(service, comicId);
 
     return _storeInsertComicFuture[comicDbId] ??= _insertComic$(
       comicDbId,
@@ -304,7 +300,7 @@ class ComicDownloader {
     });
   }
 
-  Future<InsertChapterReturn?> _insertChapter({
+  Future<InsertChapterReturn> _insertChapter({
     required ABComicService service,
     required String comicId,
     required MetaComic metaComic,
@@ -320,16 +316,6 @@ class ComicDownloader {
 
     final chapterDbId =
         sha256.convert(utf8.encode('$comicDbId@$chapterId')).toString();
-
-    final row = await _db.getOptional(
-      '''
-        SELECT * FROM chapters
-        WHERE id = ?
-        LIMIT 1
-      ''',
-      [chapterDbId],
-    );
-    if (row != null) return null;
 
     final now = DateTime.now().millisecondsSinceEpoch;
 
@@ -357,28 +343,50 @@ class ComicDownloader {
         final pageId =
             sha256.convert(utf8.encode('$chapterDbId@$i')).toString();
 
-        await _db.execute(
+        final page = await _db.getOptional(
           '''
-            INSERT OR IGNORE INTO pages (
-              id,
-              chapter_db_id,
-              index_order,
-              o_image,
-              path,
-              downloaded
-            ) VALUES (?, ?, ?, ?, ?, ?)
+            SELECT downloaded FROM pages
+            WHERE id = ?
           ''',
-          [
-            pageId,
-            chapterDbId,
-            i,
-            oImageJson,
-            path,
-            0, // Not downloaded yet
-          ],
+          [pageId],
         );
 
-        results.add((image: pages[i], pageId: pageId, path: path));
+        if (page != null && page['downloaded'] == 1) {
+          results.add((
+            image: pages[i],
+            pageId: pageId,
+            path: path,
+            done: true,
+          ));
+        } else {
+          await _db.execute(
+            '''
+              INSERT OR IGNORE INTO pages (
+                id,
+                chapter_db_id,
+                index_order,
+                o_image,
+                path,
+                downloaded
+              ) VALUES (?, ?, ?, ?, ?, ?)
+            ''',
+            [
+              pageId,
+              chapterDbId,
+              i,
+              oImageJson,
+              path,
+              0, // Not downloaded yet
+            ],
+          );
+
+          results.add((
+            image: pages[i],
+            pageId: pageId,
+            path: path,
+            done: true,
+          ));
+        }
       }
 
       return (chapterDbId: chapterDbId, pages: results);
@@ -420,7 +428,14 @@ class ComicDownloader {
     );
     if (cache != null) return cache.value;
 
-    final out = await _insertChapter(
+    final out = await getDownloadedChapter(
+      service: service,
+      comicId: comicId,
+      chapterId: chapterId,
+    );
+    if (out != null && out.doneAt > 0) return null;
+
+    final (chapterDbId: chapterDbId, pages: results) = await _insertChapter(
       service: service,
       comicId: comicId,
       metaComic: metaComic,
@@ -428,9 +443,6 @@ class ComicDownloader {
       chapter: chapter,
       pages: pages,
     );
-    if (out == null) return null;
-
-    final (chapterDbId: chapterDbId, pages: results) = out;
 
     final $mapProgress = List.generate(pages.length, (_) => 0.0);
     final result = Ref<DownloaderChapterReturn>((
@@ -458,6 +470,13 @@ class ComicDownloader {
           results.indexed.map(
             (entry) => pool.withResource(
               () => retry.retry<void>(() async {
+                if (entry.$2.done) {
+                  $mapProgress[entry.$1] = 1;
+                  computeTotalProgress();
+
+                  return;
+                }
+
                 final file = File(join(_document.path, entry.$2.path));
 
                 final (baseDirectory, directory, filename) = await Task.split(
@@ -560,8 +579,7 @@ class ComicDownloader {
     ABComicService service,
     String comicId,
   ) async {
-    final comicDbId =
-        sha256.convert(utf8.encode('${service.uid}@$comicId')).toString();
+    final comicDbId = generateComicDbId(service, comicId);
 
     final row = await _db.getOptional(
       '''
