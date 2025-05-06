@@ -304,7 +304,7 @@ class ComicDownloader {
     });
   }
 
-  Future<InsertChapterReturn> _insertChapter({
+  Future<InsertChapterReturn?> _insertChapter({
     required ABComicService service,
     required String comicId,
     required MetaComic metaComic,
@@ -320,6 +320,17 @@ class ComicDownloader {
 
     final chapterDbId =
         sha256.convert(utf8.encode('$comicDbId@$chapterId')).toString();
+
+    final row = await _db.getOptional(
+      '''
+        SELECT * FROM chapters
+        WHERE id = ?
+        LIMIT 1
+      ''',
+      [chapterDbId],
+    );
+    if (row != null) return null;
+
     final now = DateTime.now().millisecondsSinceEpoch;
 
     try {
@@ -391,7 +402,7 @@ class ComicDownloader {
     return null;
   }
 
-  Future<DownloaderChapterReturn> downloadChapter({
+  Future<DownloaderChapterReturn?> downloadChapter({
     required ABComicService service,
     required String comicId,
     required MetaComic metaComic,
@@ -408,6 +419,18 @@ class ComicDownloader {
       chapterId: chapterId,
     );
     if (cache != null) return cache.value;
+
+    final out = await _insertChapter(
+      service: service,
+      comicId: comicId,
+      metaComic: metaComic,
+      chapterId: chapterId,
+      chapter: chapter,
+      pages: pages,
+    );
+    if (out == null) return null;
+
+    final (chapterDbId: chapterDbId, pages: results) = out;
 
     final $mapProgress = List.generate(pages.length, (_) => 0.0);
     final result = Ref<DownloaderChapterReturn>((
@@ -428,15 +451,6 @@ class ComicDownloader {
 
     final pool = Pool(10);
     final retry = RetryOptions();
-
-    final (chapterDbId: chapterDbId, pages: results) = await _insertChapter(
-      service: service,
-      comicId: comicId,
-      metaComic: metaComic,
-      chapterId: chapterId,
-      chapter: chapter,
-      pages: pages,
-    );
 
     bool notSupportFetchPage = false;
 
@@ -466,8 +480,6 @@ class ComicDownloader {
                 switch (result.status) {
                   case TaskStatus.complete:
                     {
-                      print('Success!');
-
                       if (!notSupportFetchPage) {
                         try {
                           Uint8List buffer = await file.readAsBytes();
