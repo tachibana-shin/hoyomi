@@ -1,18 +1,18 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'watch_time_schema.dart';
+part of 'watch_page_schema.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_WatchTimeSchema _$WatchTimeSchemaFromJson(Map<String, dynamic> json) =>
-    _WatchTimeSchema(
+_WatchPageSchema _$WatchPageSchemaFromJson(Map<String, dynamic> json) =>
+    _WatchPageSchema(
       data:
           json['data'] == null
               ? null
-              : Data5.fromJson(json['data'] as Map<String, dynamic>),
+              : Data3.fromJson(json['data'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$WatchTimeSchemaToJson(_WatchTimeSchema instance) =>
+Map<String, dynamic> _$WatchPageSchemaToJson(_WatchPageSchema instance) =>
     <String, dynamic>{'data': instance.data};

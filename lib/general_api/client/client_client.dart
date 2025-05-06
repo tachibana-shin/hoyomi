@@ -12,6 +12,7 @@ import '../models/post_api_comic_set_watch_page_response.dart';
 import '../models/post_api_eiga_set_watch_time_response.dart';
 import '../models/set_watch_page_body_schema.dart';
 import '../models/set_watch_time_body_schema.dart';
+import '../models/watch_page_schema.dart';
 import '../models/watch_time_schema.dart';
 
 part 'client_client.g.dart';
@@ -35,7 +36,7 @@ abstract class ClientClient {
   });
 
   @GET('/api/comic/get-watch-page')
-  Future<WatchTimeSchema> getApiComicGetWatchPage({
+  Future<WatchPageSchema> getApiComicGetWatchPage({
     @Query('sourceId') required String sourceId,
     @Query('comic_text_id') required String comicTextId,
     @Query('chap_id') required String chapId,
@@ -63,7 +64,7 @@ abstract class ClientClient {
   });
 
   @GET('/api/eiga/get-watch-time')
-  Future<dynamic> getApiEigaGetWatchTime({
+  Future<WatchTimeSchema> getApiEigaGetWatchTime({
     @Query('sourceId') required String sourceId,
     @Query('eiga_text_id') required String eigaTextId,
     @Query('chap_id') required String chapId,

@@ -4,7 +4,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'watch_time_schema.dart';
+part of 'watch_page_schema.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,22 +14,22 @@ part of 'watch_time_schema.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$WatchTimeSchema {
+mixin _$WatchPageSchema {
 
- Data5? get data;
-/// Create a copy of WatchTimeSchema
+ Data3? get data;
+/// Create a copy of WatchPageSchema
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$WatchTimeSchemaCopyWith<WatchTimeSchema> get copyWith => _$WatchTimeSchemaCopyWithImpl<WatchTimeSchema>(this as WatchTimeSchema, _$identity);
+$WatchPageSchemaCopyWith<WatchPageSchema> get copyWith => _$WatchPageSchemaCopyWithImpl<WatchPageSchema>(this as WatchPageSchema, _$identity);
 
-  /// Serializes this WatchTimeSchema to a JSON map.
+  /// Serializes this WatchPageSchema to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchTimeSchema&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchPageSchema&&(identical(other.data, data) || other.data == data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -38,50 +38,50 @@ int get hashCode => Object.hash(runtimeType,data);
 
 @override
 String toString() {
-  return 'WatchTimeSchema(data: $data)';
+  return 'WatchPageSchema(data: $data)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $WatchTimeSchemaCopyWith<$Res>  {
-  factory $WatchTimeSchemaCopyWith(WatchTimeSchema value, $Res Function(WatchTimeSchema) _then) = _$WatchTimeSchemaCopyWithImpl;
+abstract mixin class $WatchPageSchemaCopyWith<$Res>  {
+  factory $WatchPageSchemaCopyWith(WatchPageSchema value, $Res Function(WatchPageSchema) _then) = _$WatchPageSchemaCopyWithImpl;
 @useResult
 $Res call({
- Data5? data
+ Data3? data
 });
 
 
-$Data5CopyWith<$Res>? get data;
+$Data3CopyWith<$Res>? get data;
 
 }
 /// @nodoc
-class _$WatchTimeSchemaCopyWithImpl<$Res>
-    implements $WatchTimeSchemaCopyWith<$Res> {
-  _$WatchTimeSchemaCopyWithImpl(this._self, this._then);
+class _$WatchPageSchemaCopyWithImpl<$Res>
+    implements $WatchPageSchemaCopyWith<$Res> {
+  _$WatchPageSchemaCopyWithImpl(this._self, this._then);
 
-  final WatchTimeSchema _self;
-  final $Res Function(WatchTimeSchema) _then;
+  final WatchPageSchema _self;
+  final $Res Function(WatchPageSchema) _then;
 
-/// Create a copy of WatchTimeSchema
+/// Create a copy of WatchPageSchema
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? data = freezed,}) {
   return _then(_self.copyWith(
 data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as Data5?,
+as Data3?,
   ));
 }
-/// Create a copy of WatchTimeSchema
+/// Create a copy of WatchPageSchema
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$Data5CopyWith<$Res>? get data {
+$Data3CopyWith<$Res>? get data {
     if (_self.data == null) {
     return null;
   }
 
-  return $Data5CopyWith<$Res>(_self.data!, (value) {
+  return $Data3CopyWith<$Res>(_self.data!, (value) {
     return _then(_self.copyWith(data: value));
   });
 }
@@ -91,26 +91,26 @@ $Data5CopyWith<$Res>? get data {
 /// @nodoc
 @JsonSerializable()
 
-class _WatchTimeSchema implements WatchTimeSchema {
-  const _WatchTimeSchema({required this.data});
-  factory _WatchTimeSchema.fromJson(Map<String, dynamic> json) => _$WatchTimeSchemaFromJson(json);
+class _WatchPageSchema implements WatchPageSchema {
+  const _WatchPageSchema({required this.data});
+  factory _WatchPageSchema.fromJson(Map<String, dynamic> json) => _$WatchPageSchemaFromJson(json);
 
-@override final  Data5? data;
+@override final  Data3? data;
 
-/// Create a copy of WatchTimeSchema
+/// Create a copy of WatchPageSchema
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$WatchTimeSchemaCopyWith<_WatchTimeSchema> get copyWith => __$WatchTimeSchemaCopyWithImpl<_WatchTimeSchema>(this, _$identity);
+_$WatchPageSchemaCopyWith<_WatchPageSchema> get copyWith => __$WatchPageSchemaCopyWithImpl<_WatchPageSchema>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$WatchTimeSchemaToJson(this, );
+  return _$WatchPageSchemaToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchTimeSchema&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchPageSchema&&(identical(other.data, data) || other.data == data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -119,51 +119,51 @@ int get hashCode => Object.hash(runtimeType,data);
 
 @override
 String toString() {
-  return 'WatchTimeSchema(data: $data)';
+  return 'WatchPageSchema(data: $data)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$WatchTimeSchemaCopyWith<$Res> implements $WatchTimeSchemaCopyWith<$Res> {
-  factory _$WatchTimeSchemaCopyWith(_WatchTimeSchema value, $Res Function(_WatchTimeSchema) _then) = __$WatchTimeSchemaCopyWithImpl;
+abstract mixin class _$WatchPageSchemaCopyWith<$Res> implements $WatchPageSchemaCopyWith<$Res> {
+  factory _$WatchPageSchemaCopyWith(_WatchPageSchema value, $Res Function(_WatchPageSchema) _then) = __$WatchPageSchemaCopyWithImpl;
 @override @useResult
 $Res call({
- Data5? data
+ Data3? data
 });
 
 
-@override $Data5CopyWith<$Res>? get data;
+@override $Data3CopyWith<$Res>? get data;
 
 }
 /// @nodoc
-class __$WatchTimeSchemaCopyWithImpl<$Res>
-    implements _$WatchTimeSchemaCopyWith<$Res> {
-  __$WatchTimeSchemaCopyWithImpl(this._self, this._then);
+class __$WatchPageSchemaCopyWithImpl<$Res>
+    implements _$WatchPageSchemaCopyWith<$Res> {
+  __$WatchPageSchemaCopyWithImpl(this._self, this._then);
 
-  final _WatchTimeSchema _self;
-  final $Res Function(_WatchTimeSchema) _then;
+  final _WatchPageSchema _self;
+  final $Res Function(_WatchPageSchema) _then;
 
-/// Create a copy of WatchTimeSchema
+/// Create a copy of WatchPageSchema
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? data = freezed,}) {
-  return _then(_WatchTimeSchema(
+  return _then(_WatchPageSchema(
 data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as Data5?,
+as Data3?,
   ));
 }
 
-/// Create a copy of WatchTimeSchema
+/// Create a copy of WatchPageSchema
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$Data5CopyWith<$Res>? get data {
+$Data3CopyWith<$Res>? get data {
     if (_self.data == null) {
     return null;
   }
 
-  return $Data5CopyWith<$Res>(_self.data!, (value) {
+  return $Data3CopyWith<$Res>(_self.data!, (value) {
     return _then(_self.copyWith(data: value));
   });
 }

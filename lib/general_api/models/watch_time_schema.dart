@@ -4,16 +4,16 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'data3.dart';
+import 'data5.dart';
 
 part 'watch_time_schema.freezed.dart';
 part 'watch_time_schema.g.dart';
 
-/// The watch page object, which can be null if no data is available.
+/// The watch time object, which can be null if no data is available.
 @Freezed()
 abstract class WatchTimeSchema with _$WatchTimeSchema {
   const factory WatchTimeSchema({
-    required Data3? data,
+    required Data5? data,
   }) = _WatchTimeSchema;
   
   factory WatchTimeSchema.fromJson(Map<String, Object?> json) => _$WatchTimeSchemaFromJson(json);
