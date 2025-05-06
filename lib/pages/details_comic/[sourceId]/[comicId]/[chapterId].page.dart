@@ -10,6 +10,8 @@ import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:kaeru/kaeru.dart';
 
+import '../../../../downloader/comic_downloader.dart';
+
 class DetailsComicReader extends StatefulWidget {
   final String sourceId;
   final String comicId;
@@ -40,12 +42,32 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
   @override
   void initState() {
     _service = getComicService(widget.sourceId);
-    _pagesFuture = _service.getPages(widget.comicId, widget.chapterId);
+    final downloadedChapter = ComicDownloader.instance.getDownloadedChapter(
+      service: _service,
+      comicId: widget.comicId,
+      chapterId: widget.chapterId,
+    );
+
+    _pagesFuture = downloadedChapter.then((downloaded) {
+      if (downloaded != null && downloaded.doneAt > 0) {
+        return ComicDownloader.getPagesWithOffline(downloaded);
+      }
+
+      return _service.getPages(widget.comicId, widget.chapterId);
+    });
 
     _metaComicFuture =
         widget.comic != null
             ? Future.value(widget.comic)
-            : _service.getDetails(widget.comicId);
+            : _service.getDetails(widget.comicId).catchError((error) async {
+              final meta = await ComicDownloader.instance.getMetaOffline(
+                _service,
+                widget.comicId,
+              );
+              if (meta != null) return meta.copyWith(offlineMode: true);
+
+              throw error;
+            });
     _metaComicFuture.then((comic) {
       _chapter.value = comic.chapters.firstWhere(
         (element) => element.chapterId == widget.chapterId,

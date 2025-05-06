@@ -140,6 +140,35 @@ class ComicDownloader {
     return comicDbId;
   }
 
+  static List<OImage> getPagesWithOffline(LoadedChapter downloaded) {
+    return downloaded.pages
+        .map(
+          (page) =>
+              page.downloaded
+                  ? OImage(
+                    src: 'file:${page.path}',
+                    headers: page.image.headers,
+                    extra: page.image.extra,
+                  )
+                  : page.image,
+        )
+        .toList();
+  }
+
+  static Future<Uint8List?> getPage(OImage image) async {
+    if (image.src.startsWith('file:')) {
+      final file = File(
+        join(applicationDocumentDirectory.path, image.src.substring(5)),
+      );
+
+      if (!await file.exists()) return null;
+
+      return file.readAsBytes();
+    } else {
+      return null;
+    }
+  }
+
   final _storeInsertComicFuture = <String, Future<String>>{};
   final _storeChaptersDownload = Ref(<String, Ref<DownloaderChapterReturn>>{});
 
@@ -384,7 +413,7 @@ class ComicDownloader {
             image: pages[i],
             pageId: pageId,
             path: path,
-            done: true,
+            done: false,
           ));
         }
       }
@@ -516,6 +545,9 @@ class ComicDownloader {
 
                       $mapProgress[entry.$1] = 1;
                       computeTotalProgress();
+
+                      print('ok');
+                      await Future.delayed(Duration(seconds: 3));
 
                       await _db.execute(
                         '''

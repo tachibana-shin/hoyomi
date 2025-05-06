@@ -334,21 +334,29 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                                                 ],
                                               ),
                                               onPressed: () async {
-                                                ComicDownloader.instance
-                                                    .downloadChapter(
-                                                      service: widget.service,
-                                                      comicId: widget.comicId,
-                                                      metaComic: widget.comic,
-                                                      chapterId:
-                                                          chapter.chapterId,
-                                                      chapter: chapter,
-                                                      pages: await widget
-                                                          .service
-                                                          .getPages(
-                                                            widget.comicId,
+                                                try {
+                                                  await ComicDownloader.instance
+                                                      .downloadChapter(
+                                                        service: widget.service,
+                                                        comicId: widget.comicId,
+                                                        metaComic: widget.comic,
+                                                        chapterId:
                                                             chapter.chapterId,
-                                                          ),
-                                                    );
+                                                        chapter: chapter,
+                                                        pages: await widget
+                                                            .service
+                                                            .getPages(
+                                                              widget.comicId,
+                                                              chapter.chapterId,
+                                                            ),
+                                                      );
+                                                } catch (error) {
+                                                  showSnackBar(
+                                                    Text(
+                                                      'Download error: $error',
+                                                    ),
+                                                  );
+                                                }
                                               },
                                             );
                                           });

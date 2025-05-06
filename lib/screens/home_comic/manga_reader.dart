@@ -25,6 +25,8 @@ import 'package:intl/intl.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
+import '../../downloader/comic_downloader.dart';
+
 class ImageWithGroup {
   final OImage image;
   final ComicChapter chapter;
@@ -273,9 +275,22 @@ class _MangaReaderState extends State<MangaReader>
             if (chaptersLoadedStore[nextChapter.chapterId] == true) return;
 
             final currentChapter = _pages.value.last.chapter;
-            final $pages = (await widget.getPages(
-              nextChapter.chapterId,
-            )).indexed.map(
+
+            final List<OImage> pages$$ = await ComicDownloader.instance
+                .getDownloadedChapter(
+                  service: widget.service,
+                  comicId: widget.comicId,
+                  chapterId: widget.chapterId,
+                )
+                .then((downloaded) async {
+                  if (downloaded != null && downloaded.doneAt > 0) {
+                    return ComicDownloader.getPagesWithOffline(downloaded);
+                  }
+
+                  return await widget.getPages(nextChapter.chapterId);
+                });
+
+            final $pages = pages$$.indexed.map(
               (params) => ImageWithGroup(
                 chapter: nextChapter,
                 index: params.$1,
@@ -620,31 +635,34 @@ class _MangaReaderState extends State<MangaReader>
     }
 
     _pageMemoryCacheStore[item.image] = FutureCache(
-      widget.service.dioCache
-          .get(
-            item.image.src,
-            options: Options(
-              headers: item.image.headers?.toMap(),
-              responseType: ResponseType.bytes,
-            ),
-            onReceiveProgress: (count, total) {
-              progress.value = (count / total);
-            },
-          )
-          .then((res) => Uint8List.fromList(res.data))
-          .then((buffer) async {
-            if (_serviceSupportFetchPage[widget.service] != false) {
-              try {
-                return await widget.service.fetchPage(buffer, item.image);
-              } on UnimplementedError {
-                _serviceSupportFetchPage[widget.service] = false;
+      ComicDownloader.getPage(item.image).then((buffer) {
+        if (buffer != null) return buffer;
+        return widget.service.dioCache
+            .get(
+              item.image.src,
+              options: Options(
+                headers: item.image.headers?.toMap(),
+                responseType: ResponseType.bytes,
+              ),
+              onReceiveProgress: (count, total) {
+                progress.value = (count / total);
+              },
+            )
+            .then((res) => Uint8List.fromList(res.data))
+            .then((buffer) async {
+              if (_serviceSupportFetchPage[widget.service] != false) {
+                try {
+                  return await widget.service.fetchPage(buffer, item.image);
+                } on UnimplementedError {
+                  _serviceSupportFetchPage[widget.service] = false;
 
-                return buffer;
+                  return buffer;
+                }
               }
-            }
 
-            return buffer;
-          }),
+              return buffer;
+            });
+      }),
     );
 
     await _pageMemoryCacheStore[item.image]!.future;
