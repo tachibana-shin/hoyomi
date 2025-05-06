@@ -89,11 +89,12 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
 
     return PullRefreshPage(
       onLoadData: () async {
-        return [0x0, 0x0];
+        return UniqueKey();
       },
-      onLoadFake: () => [0x0, 0x0],
+      onLoadFake: () => UniqueKey(),
       builder: (data, _) {
         return ListView(
+          key: data,
           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           children: [
             if (_service is EigaWatchTimeMixin)
