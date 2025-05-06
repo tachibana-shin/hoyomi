@@ -544,6 +544,29 @@ class ComicDownloader {
     return result.value;
   }
 
+  Future<MetaComic?> getMetaOffline(
+    ABComicService service,
+    String comicId,
+  ) async {
+    final comicDbId =
+        sha256.convert(utf8.encode('${service.uid}@$comicId')).toString();
+
+    final row = await _db.getOptional(
+      '''
+        SELECT meta_json FROM comics
+        WHERE id = ?
+        LIMIT 1
+      ''',
+      [comicDbId],
+    );
+    if (row == null) return null;
+
+    return compute(
+      (json) => MetaComic.fromJson(jsonDecode(json)),
+      row['meta_json'],
+    );
+  }
+
   Future<void> deleteChapter(String chapterDbId) async {
     try {
       final pages = await _db.getAll(

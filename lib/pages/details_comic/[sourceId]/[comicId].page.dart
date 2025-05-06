@@ -127,7 +127,16 @@ class _DetailsComicState extends State<DetailsComic>
       onLoadData:
           () => _service
               .getDetails(widget.comicId)
-              .then((comic) => _comic.value = comic),
+              .then((comic) => _comic.value = comic)
+              .catchError((error) async {
+                final meta = await ComicDownloader.instance.getMetaOffline(
+                  _service,
+                  widget.comicId,
+                );
+                if (meta != null) return meta.copyWith(offlineMode: true);
+
+                throw error;
+              }),
       onLoadFake: () => _comic.value = MetaComic.createFakeData(),
       builderError:
           (body) => Scaffold(
@@ -346,7 +355,7 @@ class _DetailsComicState extends State<DetailsComic>
         // const SizedBox(height: 20.0),
 
         // Comment
-        if (_service is ComicCommentMixin)
+        if (_service is ComicCommentMixin && !comic.offlineMode)
           Padding(
             padding: EdgeInsets.only(bottom: 16),
             child: Comments(
@@ -414,7 +423,7 @@ class _DetailsComicState extends State<DetailsComic>
               }).toList(),
         ),
         SizedBox(height: 24.0),
-        _buildSuggest(comic),
+        if (!comic.offlineMode) _buildSuggest(comic),
       ],
     );
   }
@@ -440,6 +449,12 @@ class _DetailsComicState extends State<DetailsComic>
                 },
                 defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                 children: [
+                  if (comic.offlineMode)
+                    _buildTableRow(
+                      'Status',
+                      null,
+                      Text('Offline', style: TextStyle(color: Colors.red[500])),
+                    ),
                   _buildTableRow(
                     'Source',
                     null,
@@ -546,7 +561,12 @@ class _DetailsComicState extends State<DetailsComic>
                                       ? '(No data)'
                                       : '${lastReadChapter.chapter.name} of ${comic.chapters.length}',
                                 ),
-                            error: (error, stack) => Text('Error: $error'),
+                            error:
+                                (error, stack) => Text(
+                                  'Error: $error',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                             loading: () => Text('Loading...'),
                           ),
                     ),
@@ -581,7 +601,12 @@ class _DetailsComicState extends State<DetailsComic>
                                       fontSize: 14,
                                     ),
                                   ),
-                              error: (error, stack) => Text('Error: $error'),
+                              error:
+                                  (error, stack) => Text(
+                                    'Error: $error',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                               loading: () => Text('Loading...'),
                             ),
                       ),

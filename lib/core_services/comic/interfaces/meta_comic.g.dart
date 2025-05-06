@@ -30,6 +30,7 @@ _MetaComic _$MetaComicFromJson(Map<String, dynamic> json) => _MetaComic(
           .toList(),
   lastModified: DateTime.parse(json['lastModified'] as String),
   fake: json['fake'] as bool? ?? false,
+  offlineMode: json['offlineMode'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$MetaComicToJson(_MetaComic instance) =>
@@ -48,6 +49,7 @@ Map<String, dynamic> _$MetaComicToJson(_MetaComic instance) =>
       'chapters': instance.chapters,
       'lastModified': instance.lastModified.toIso8601String(),
       'fake': instance.fake,
+      'offlineMode': instance.offlineMode,
     };
 
 const _$StatusEnumEnumMap = {

@@ -25,6 +25,7 @@ sealed class MetaComic with _$MetaComic {
     required List<ComicChapter> chapters,
     required DateTime lastModified,
     @Default(false) bool fake,
+    @Default(false) bool offlineMode,
   }) = _MetaComic;
 
   factory MetaComic.fromJson(Map<String, dynamic> json) =>
