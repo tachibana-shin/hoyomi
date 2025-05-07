@@ -794,9 +794,7 @@ Future<List<Map<String, int>>> _decodeDrm(
 }
 
 // Load image from URL as ui.Image
-Future<ui.Image> _loadImageFromBuffer(
-  Uint8List buffer
-) async {
+Future<ui.Image> _loadImageFromBuffer(Uint8List buffer) async {
   final completer = Completer<ui.Image>();
   ui.decodeImageFromList(buffer, completer.complete);
   return completer.future;
@@ -845,10 +843,7 @@ Future<Uint8List> _imageFromUiImage(ui.Image uiImage) async {
 
 // Main function to call
 final _encryptedKey = Env.niceTruyenKey;
-Future<Uint8List> _decodeAndBuildImage(
- Uint8List buffer,
-  String drmData,
-) async {
+Future<Uint8List> _decodeAndBuildImage(Uint8List buffer, String drmData) async {
   final key = utf8.decode(
     base64.decode('${_encryptedKey.substring(0, _encryptedKey.length - 2)}=='),
   );

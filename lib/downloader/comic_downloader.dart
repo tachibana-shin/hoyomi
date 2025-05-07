@@ -669,8 +669,8 @@ class ComicDownloader {
 
   /// すべてのダウンロード済みのコミックの詳細情報を取得する関数
   Future<List<DownloadedComicInfo>> getAllDownloadedComics() async {
-     _storeChaptersDownload.value;
-     
+    _storeChaptersDownload.value;
+
     await initDatabase();
 
     // 取得対象: comics テーブルに登録された全てのエントリ
@@ -686,7 +686,7 @@ class ComicDownloader {
           (await _db.getAll('SELECT * from chapters WHERE comic_db_id = ?', [
             row['id'] as String,
           ])).map((chapter) async {
-    final uid = '${chapter['chapter_id']}@$comicId@$sourceId';
+            final uid = '${chapter['chapter_id']}@$comicId@$sourceId';
 
             final pages = await _db.getAll(
               '''
@@ -725,7 +725,6 @@ class ComicDownloader {
             );
           }).toList(),
         );
-        
 
         return (
           sourceId: sourceId,
