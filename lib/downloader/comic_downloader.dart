@@ -16,11 +16,28 @@ import 'package:sqlite_async/sqlite_async.dart';
 
 part 'comic_downloader.freezed.dart';
 
-typedef DownloaderChapterReturn = ({bool done, Object? error, double progress});
+typedef DownloaderChapterReturn =
+    ({
+      Service service,
+      MetaComic comic,
+      ComicChapter chapter,
+      bool done,
+      Object? error,
+      double progress,
+    });
 typedef InsertPageReturn =
     ({OImage image, String pageId, String path, bool done});
 typedef InsertChapterReturn =
     ({String chapterDbId, List<InsertPageReturn> pages});
+
+typedef DownloadedComicInfo =
+    ({
+      String sourceId,
+      String comicId,
+      MetaComic meta,
+      String imagePath,
+      Map<String, LoadedChapter> chapters,
+    });
 
 @freezed
 sealed class LoadedComic with _$LoadedComic {
@@ -39,6 +56,7 @@ sealed class LoadedChapter with _$LoadedChapter {
     required int count,
     required int doneAt,
     required List<LoadedPage> pages,
+    required Ref<DownloaderChapterReturn>? progress,
   }) = _LoadedChapter;
 }
 
@@ -253,6 +271,7 @@ class ComicDownloader {
       count: pages.fold(0, (prev, page) => prev + page['downloaded'] as int),
       doneAt: chapter['done_at'] as int,
       pages: images,
+      progress: null,
     );
   }
 
@@ -439,6 +458,10 @@ class ComicDownloader {
     return null;
   }
 
+  List<Ref<DownloaderChapterReturn>> getAllDownloaderState() {
+    return _storeChaptersDownload.value.values.toList();
+  }
+
   Future<DownloaderChapterReturn?> downloadChapter({
     required ABComicService service,
     required String comicId,
@@ -475,6 +498,9 @@ class ComicDownloader {
 
     final $mapProgress = List.generate(pages.length, (_) => 0.0);
     final result = Ref<DownloaderChapterReturn>((
+      service: service,
+      comic: metaComic,
+      chapter: chapter,
       progress: 0.0,
       done: false,
       error: null,
@@ -482,6 +508,9 @@ class ComicDownloader {
 
     void computeTotalProgress() {
       result.value = (
+        service: service,
+        comic: metaComic,
+        chapter: chapter,
         done: false,
         error: null,
         progress:
@@ -546,7 +575,6 @@ class ComicDownloader {
                       $mapProgress[entry.$1] = 1;
                       computeTotalProgress();
 
-                      print('ok');
                       await Future.delayed(Duration(seconds: 3));
 
                       await _db.execute(
@@ -580,7 +608,14 @@ class ComicDownloader {
           ),
         )
         .then((_) async {
-          result.value = (progress: 1, done: true, error: null);
+          result.value = (
+            service: service,
+            comic: metaComic,
+            chapter: chapter,
+            progress: 1,
+            done: true,
+            error: null,
+          );
 
           await _db.execute(
             '''
@@ -593,6 +628,9 @@ class ComicDownloader {
         })
         .catchError((err) {
           result.value = (
+            service: service,
+            comic: metaComic,
+            chapter: chapter,
             progress: result.value.progress,
             error: err,
             done: false,
@@ -626,6 +664,79 @@ class ComicDownloader {
     return compute(
       (json) => MetaComic.fromJson(jsonDecode(json)),
       row['meta_json'],
+    );
+  }
+
+  /// すべてのダウンロード済みのコミックの詳細情報を取得する関数
+  Future<List<DownloadedComicInfo>> getAllDownloadedComics() async {
+     _storeChaptersDownload.value;
+     
+    await initDatabase();
+
+    // 取得対象: comics テーブルに登録された全てのエントリ
+    final comicRows = await _db.getAll('SELECT * FROM comics');
+
+    return Future.wait(
+      comicRows.map((row) async {
+        final meta = MetaComic.fromJson(jsonDecode(row['meta_json'] as String));
+        final sourceId = row['service_id'] as String;
+        final comicId = row['comic_id'] as String;
+        final imagePath = row['image_path'] as String;
+        final chapters = await Future.wait(
+          (await _db.getAll('SELECT * from chapters WHERE comic_db_id = ?', [
+            row['id'] as String,
+          ])).map((chapter) async {
+    final uid = '${chapter['chapter_id']}@$comicId@$sourceId';
+
+            final pages = await _db.getAll(
+              '''
+                SELECT * FROM pages
+                WHERE chapter_db_id = ?
+                ORDER BY index_order
+              ''',
+              [chapter['id'] as String],
+            );
+
+            final images =
+                pages.map((p) {
+                  final oImage = OImage.fromJson(
+                    jsonDecode(p['o_image'] as String),
+                  );
+                  final path = p['path'] as String;
+                  final downloaded = (p['downloaded'] as int) == 1;
+                  return LoadedPage(
+                    image: oImage,
+                    path: path,
+                    downloaded: downloaded,
+                  );
+                }).toList();
+
+            return LoadedChapter(
+              id: chapter['id'] as String,
+              chapterId: chapter['chapter_id'] as String,
+              pageCount: chapter['page_count'] as int,
+              count: pages.fold(
+                0,
+                (prev, page) => prev + page['downloaded'] as int,
+              ),
+              doneAt: chapter['done_at'] as int,
+              pages: images,
+              progress: _storeChaptersDownload.value[uid],
+            );
+          }).toList(),
+        );
+        
+
+        return (
+          sourceId: sourceId,
+          comicId: comicId,
+          meta: meta,
+          imagePath: imagePath,
+          chapters: Map.fromEntries(
+            chapters.map((chapter) => MapEntry(chapter.chapterId, chapter)),
+          ),
+        );
+      }),
     );
   }
 

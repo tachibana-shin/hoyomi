@@ -7,6 +7,7 @@ export 'details_comic/[sourceId]/[comicId]/similar/similar_page.dart';
 export 'details_comic/[sourceId]/[comicId]/[chapterId].page.dart';
 export 'details_comic/[sourceId]/[comicId].page.dart';
 export 'details_eiga/[sourceId]/[eigaId].page.dart';
+export 'downloader/comic_page.dart';
 export 'home_comic/home_comic_page.dart';
 export 'home_eiga/home_eiga_page.dart';
 export 'library/follow/eiga/[sourceId].page.dart';

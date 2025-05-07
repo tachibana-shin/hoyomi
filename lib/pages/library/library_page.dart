@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/eiga/main.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/export.dart';
+import 'package:iconify_flutter/icons/ion.dart';
 import 'package:kaeru/kaeru.dart';
 
 class LibraryPage extends StatefulWidget {
@@ -34,8 +36,12 @@ class _LibraryPageState extends State<LibraryPage>
           // snap: _overlayQuickSearch == null,
           // pinned: _overlayQuickSearch == null,
           title: Text('Library'),
-          centerTitle: true,
-          titleSpacing: 0.0,
+          actions: [
+            IconButton(
+              icon: Iconify(Ion.download),
+              onPressed: () => context.pushNamed('downloader_comic'),
+            ),
+          ],
           bottom: TabBar(
             controller: _tabController,
             isScrollable: true,

@@ -181,7 +181,7 @@ $MetaComicCopyWith<$Res> get meta {
 /// @nodoc
 mixin _$LoadedChapter implements DiagnosticableTreeMixin {
 
- String get id; String get chapterId; int get pageCount; int get count; int get doneAt; List<LoadedPage> get pages;
+ String get id; String get chapterId; int get pageCount; int get count; int get doneAt; List<LoadedPage> get pages; Ref<DownloaderChapterReturn>? get progress;
 /// Create a copy of LoadedChapter
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -193,21 +193,21 @@ $LoadedChapterCopyWith<LoadedChapter> get copyWith => _$LoadedChapterCopyWithImp
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'LoadedChapter'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('chapterId', chapterId))..add(DiagnosticsProperty('pageCount', pageCount))..add(DiagnosticsProperty('count', count))..add(DiagnosticsProperty('doneAt', doneAt))..add(DiagnosticsProperty('pages', pages));
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('chapterId', chapterId))..add(DiagnosticsProperty('pageCount', pageCount))..add(DiagnosticsProperty('count', count))..add(DiagnosticsProperty('doneAt', doneAt))..add(DiagnosticsProperty('pages', pages))..add(DiagnosticsProperty('progress', progress));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedChapter&&(identical(other.id, id) || other.id == id)&&(identical(other.chapterId, chapterId) || other.chapterId == chapterId)&&(identical(other.pageCount, pageCount) || other.pageCount == pageCount)&&(identical(other.count, count) || other.count == count)&&(identical(other.doneAt, doneAt) || other.doneAt == doneAt)&&const DeepCollectionEquality().equals(other.pages, pages));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedChapter&&(identical(other.id, id) || other.id == id)&&(identical(other.chapterId, chapterId) || other.chapterId == chapterId)&&(identical(other.pageCount, pageCount) || other.pageCount == pageCount)&&(identical(other.count, count) || other.count == count)&&(identical(other.doneAt, doneAt) || other.doneAt == doneAt)&&const DeepCollectionEquality().equals(other.pages, pages)&&(identical(other.progress, progress) || other.progress == progress));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,chapterId,pageCount,count,doneAt,const DeepCollectionEquality().hash(pages));
+int get hashCode => Object.hash(runtimeType,id,chapterId,pageCount,count,doneAt,const DeepCollectionEquality().hash(pages),progress);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'LoadedChapter(id: $id, chapterId: $chapterId, pageCount: $pageCount, count: $count, doneAt: $doneAt, pages: $pages)';
+  return 'LoadedChapter(id: $id, chapterId: $chapterId, pageCount: $pageCount, count: $count, doneAt: $doneAt, pages: $pages, progress: $progress)';
 }
 
 
@@ -218,7 +218,7 @@ abstract mixin class $LoadedChapterCopyWith<$Res>  {
   factory $LoadedChapterCopyWith(LoadedChapter value, $Res Function(LoadedChapter) _then) = _$LoadedChapterCopyWithImpl;
 @useResult
 $Res call({
- String id, String chapterId, int pageCount, int count, int doneAt, List<LoadedPage> pages
+ String id, String chapterId, int pageCount, int count, int doneAt, List<LoadedPage> pages, Ref<DownloaderChapterReturn>? progress
 });
 
 
@@ -235,7 +235,7 @@ class _$LoadedChapterCopyWithImpl<$Res>
 
 /// Create a copy of LoadedChapter
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? chapterId = null,Object? pageCount = null,Object? count = null,Object? doneAt = null,Object? pages = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? chapterId = null,Object? pageCount = null,Object? count = null,Object? doneAt = null,Object? pages = null,Object? progress = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,chapterId: null == chapterId ? _self.chapterId : chapterId // ignore: cast_nullable_to_non_nullable
@@ -243,7 +243,8 @@ as String,pageCount: null == pageCount ? _self.pageCount : pageCount // ignore: 
 as int,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
 as int,doneAt: null == doneAt ? _self.doneAt : doneAt // ignore: cast_nullable_to_non_nullable
 as int,pages: null == pages ? _self.pages : pages // ignore: cast_nullable_to_non_nullable
-as List<LoadedPage>,
+as List<LoadedPage>,progress: freezed == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
+as Ref<DownloaderChapterReturn>?,
   ));
 }
 
@@ -254,7 +255,7 @@ as List<LoadedPage>,
 
 
 class _LoadedChapter with DiagnosticableTreeMixin implements LoadedChapter {
-  const _LoadedChapter({required this.id, required this.chapterId, required this.pageCount, required this.count, required this.doneAt, required final  List<LoadedPage> pages}): _pages = pages;
+  const _LoadedChapter({required this.id, required this.chapterId, required this.pageCount, required this.count, required this.doneAt, required final  List<LoadedPage> pages, required this.progress}): _pages = pages;
   
 
 @override final  String id;
@@ -269,6 +270,7 @@ class _LoadedChapter with DiagnosticableTreeMixin implements LoadedChapter {
   return EqualUnmodifiableListView(_pages);
 }
 
+@override final  Ref<DownloaderChapterReturn>? progress;
 
 /// Create a copy of LoadedChapter
 /// with the given fields replaced by the non-null parameter values.
@@ -281,21 +283,21 @@ _$LoadedChapterCopyWith<_LoadedChapter> get copyWith => __$LoadedChapterCopyWith
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'LoadedChapter'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('chapterId', chapterId))..add(DiagnosticsProperty('pageCount', pageCount))..add(DiagnosticsProperty('count', count))..add(DiagnosticsProperty('doneAt', doneAt))..add(DiagnosticsProperty('pages', pages));
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('chapterId', chapterId))..add(DiagnosticsProperty('pageCount', pageCount))..add(DiagnosticsProperty('count', count))..add(DiagnosticsProperty('doneAt', doneAt))..add(DiagnosticsProperty('pages', pages))..add(DiagnosticsProperty('progress', progress));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadedChapter&&(identical(other.id, id) || other.id == id)&&(identical(other.chapterId, chapterId) || other.chapterId == chapterId)&&(identical(other.pageCount, pageCount) || other.pageCount == pageCount)&&(identical(other.count, count) || other.count == count)&&(identical(other.doneAt, doneAt) || other.doneAt == doneAt)&&const DeepCollectionEquality().equals(other._pages, _pages));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadedChapter&&(identical(other.id, id) || other.id == id)&&(identical(other.chapterId, chapterId) || other.chapterId == chapterId)&&(identical(other.pageCount, pageCount) || other.pageCount == pageCount)&&(identical(other.count, count) || other.count == count)&&(identical(other.doneAt, doneAt) || other.doneAt == doneAt)&&const DeepCollectionEquality().equals(other._pages, _pages)&&(identical(other.progress, progress) || other.progress == progress));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,chapterId,pageCount,count,doneAt,const DeepCollectionEquality().hash(_pages));
+int get hashCode => Object.hash(runtimeType,id,chapterId,pageCount,count,doneAt,const DeepCollectionEquality().hash(_pages),progress);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'LoadedChapter(id: $id, chapterId: $chapterId, pageCount: $pageCount, count: $count, doneAt: $doneAt, pages: $pages)';
+  return 'LoadedChapter(id: $id, chapterId: $chapterId, pageCount: $pageCount, count: $count, doneAt: $doneAt, pages: $pages, progress: $progress)';
 }
 
 
@@ -306,7 +308,7 @@ abstract mixin class _$LoadedChapterCopyWith<$Res> implements $LoadedChapterCopy
   factory _$LoadedChapterCopyWith(_LoadedChapter value, $Res Function(_LoadedChapter) _then) = __$LoadedChapterCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String chapterId, int pageCount, int count, int doneAt, List<LoadedPage> pages
+ String id, String chapterId, int pageCount, int count, int doneAt, List<LoadedPage> pages, Ref<DownloaderChapterReturn>? progress
 });
 
 
@@ -323,7 +325,7 @@ class __$LoadedChapterCopyWithImpl<$Res>
 
 /// Create a copy of LoadedChapter
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? chapterId = null,Object? pageCount = null,Object? count = null,Object? doneAt = null,Object? pages = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? chapterId = null,Object? pageCount = null,Object? count = null,Object? doneAt = null,Object? pages = null,Object? progress = freezed,}) {
   return _then(_LoadedChapter(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,chapterId: null == chapterId ? _self.chapterId : chapterId // ignore: cast_nullable_to_non_nullable
@@ -331,7 +333,8 @@ as String,pageCount: null == pageCount ? _self.pageCount : pageCount // ignore: 
 as int,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
 as int,doneAt: null == doneAt ? _self.doneAt : doneAt // ignore: cast_nullable_to_non_nullable
 as int,pages: null == pages ? _self._pages : pages // ignore: cast_nullable_to_non_nullable
-as List<LoadedPage>,
+as List<LoadedPage>,progress: freezed == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
+as Ref<DownloaderChapterReturn>?,
   ));
 }
 
