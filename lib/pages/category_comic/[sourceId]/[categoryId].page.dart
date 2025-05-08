@@ -80,9 +80,9 @@ class _CategoryComicPageState extends State<CategoryComicPage> with KaeruMixin {
 
   @override
   Widget build(BuildContext context) {
-    return PullRefreshPage<List<Comic>>(
-      onLoadData: () => _fetchComics(1).then((param) => param.data),
-      onLoadFake: () => List.generate(30, (_) => Comic.createFakeData()),
+    return PullRefreshPage(
+      onLoadData: () => _fetchComics(1),
+      onLoadFake: () => (data: List.generate(30, (_) => Comic.createFakeData()), isLastPage: true),
       builderError:
           (body) => Watch(
             () => Scaffold(appBar: _buildAppBar(() async {}), body: body),
@@ -274,12 +274,13 @@ class _CategoryComicPageState extends State<CategoryComicPage> with KaeruMixin {
     );
   }
 
-  Widget _buildBody(List<Comic> data) {
+  Widget _buildBody(({List<Comic> data, bool isLastPage}) data) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       child: InfiniteGrid(
         key: Key(jsonEncode(_selectFilters)),
-        data: data,
+        data: data.data,
+        hasReachedMax: data.isLastPage,
         crossAxisCount: VerticalList.getCrossAxisCount(context),
         crossAxisSpacing: 4.0,
         mainAxisSpacing: 4.0,

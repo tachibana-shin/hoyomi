@@ -76,9 +76,9 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PullRefreshPage<List<Eiga>>(
-      onLoadData: () => _fetchComics(1).then((param) => param.data),
-      onLoadFake: () => List.generate(30, (_) => Eiga.createFakeData()),
+    return PullRefreshPage(
+      onLoadData: () => _fetchComics(1),
+      onLoadFake: () => (data: List.generate(30, (_) => Eiga.createFakeData()), isLastPage: true),
       builderError:
           (body) => Scaffold(appBar: _buildAppBar(() async {}), body: body),
       builder:
@@ -257,12 +257,13 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
     );
   }
 
-  Widget _buildBody(List<Eiga> data) {
+  Widget _buildBody(({List<Eiga> data, bool isLastPage}) data) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       child: InfiniteGrid(
         key: Key(jsonEncode(_selectFilters)),
-        data: data,
+        data: data.data,
+        hasReachedMax: data.isLastPage,
         crossAxisCount: VerticalList.getCrossAxisCount(context),
         crossAxisSpacing: 4.0,
         mainAxisSpacing: 4.0,

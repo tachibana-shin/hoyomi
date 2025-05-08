@@ -5,6 +5,7 @@ import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
 class InfiniteGrid<T> extends StatefulWidget {
   final List<T> data;
+  final bool hasReachedMax;
   final int crossAxisCount;
   final double crossAxisSpacing;
   final double mainAxisSpacing;
@@ -15,6 +16,7 @@ class InfiniteGrid<T> extends StatefulWidget {
   const InfiniteGrid({
     super.key,
     required this.data,
+    required this.hasReachedMax,
     required this.crossAxisCount,
     this.crossAxisSpacing = 8,
     this.mainAxisSpacing = 8,
@@ -40,6 +42,7 @@ class _InfiniteGridState<T> extends State<InfiniteGrid<T>> {
     super.initState();
 
     _data = widget.data;
+    _hasReachedMax = widget.hasReachedMax;
   }
 
   int columnLength(int itemCount) {

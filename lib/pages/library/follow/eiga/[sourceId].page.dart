@@ -49,6 +49,7 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
             child: InfiniteGrid(
               data: data.items,
+              hasReachedMax: data.page >= data.totalPages,
               crossAxisCount: VerticalList.getCrossAxisCount(context),
               crossAxisSpacing: 4.0,
               mainAxisSpacing: 4.0,
