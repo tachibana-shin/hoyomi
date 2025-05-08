@@ -60,6 +60,7 @@ class _InfiniteGridState<T> extends State<InfiniteGrid<T>> {
       centerLoading: true,
       centerError: true,
       onFetchData: () async {
+        if (_hasReachedMax) return;
         if (_firstSetup) {
           _firstSetup = false;
           return;
