@@ -783,7 +783,7 @@ class ComicDownloader {
         await deleteChapter(chapterDbId);
       }
 
-      _db.execute('DELETE FROM comics WHERE id = ?', [comicDbId]);
+      await _db.execute('DELETE FROM comics WHERE id = ?', [comicDbId]);
 
       final parts = comicDbId.split('@');
       if (parts.length >= 2) {
