@@ -575,7 +575,6 @@ class ComicDownloader {
                       $mapProgress[entry.$1] = 1;
                       computeTotalProgress();
 
-
                       await _db.execute(
                         '''
                           UPDATE pages
