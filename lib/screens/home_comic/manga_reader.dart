@@ -280,7 +280,7 @@ class _MangaReaderState extends State<MangaReader>
                 .getDownloadedChapter(
                   service: widget.service,
                   comicId: widget.comicId,
-                  chapterId: widget.chapterId,
+                  chapterId: nextChapter.chapterId,
                 )
                 .then((downloaded) async {
                   if (downloaded != null && downloaded.doneAt > 0) {
