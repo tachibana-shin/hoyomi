@@ -365,7 +365,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                   context,
                                 ).textTheme.bodyMedium?.copyWith(
                                   fontSize: 14.0,
-                                  color: colorScheme.tertiary,
+                                  color: Colors.greenAccent.shade400,
                                 ),
                               ),
                             );
@@ -405,7 +405,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                   context,
                                 ).textTheme.bodyMedium?.copyWith(
                                   fontSize: 14.0,
-                                  color: colorScheme.tertiary,
+                                  color: Colors.greenAccent.shade400,
                                 ),
                               ),
                             );
@@ -570,7 +570,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                             : country.name,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontSize: 14.0,
-                          color: Theme.of(context).colorScheme.tertiary,
+                          color: Colors.greenAccent.shade400,
                         ),
                       ),
                     ),
@@ -627,7 +627,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         color:
                             metaEiga.movieSeason!.genreId == Genre.noId
                                 ? null
-                                : colorScheme.tertiary,
+                                : Colors.greenAccent.shade400,
                       ),
                     ),
                   ),
@@ -657,7 +657,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         color:
                             genre.genreId == Genre.noId
                                 ? null
-                                : colorScheme.tertiary,
+                                : Colors.greenAccent.shade400,
                       ),
                     ),
                   );
