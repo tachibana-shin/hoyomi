@@ -44,10 +44,10 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
     _service = getComicService(widget.sourceId);
     final downloadedChapter = ComicDownloader.instance
         .getDownloadedChapter(
-      service: _service,
-      comicId: widget.comicId,
-      chapterId: widget.chapterId,
-    )
+          service: _service,
+          comicId: widget.comicId,
+          chapterId: widget.chapterId,
+        )
         .catchError((_) => null); // tolerate local DB errors
 
     _pagesFuture = downloadedChapter.then((downloaded) {
