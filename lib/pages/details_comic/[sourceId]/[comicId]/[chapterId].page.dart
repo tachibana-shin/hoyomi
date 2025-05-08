@@ -42,11 +42,13 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
   @override
   void initState() {
     _service = getComicService(widget.sourceId);
-    final downloadedChapter = ComicDownloader.instance.getDownloadedChapter(
+    final downloadedChapter = ComicDownloader.instance
+        .getDownloadedChapter(
       service: _service,
       comicId: widget.comicId,
       chapterId: widget.chapterId,
-    );
+    )
+        .catchError((_) => null); // tolerate local DB errors
 
     _pagesFuture = downloadedChapter.then((downloaded) {
       if (downloaded != null && downloaded.doneAt > 0) {
@@ -55,7 +57,6 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
 
       return _service.getPages(widget.comicId, widget.chapterId);
     });
-
     _metaComicFuture =
         widget.comic != null
             ? Future.value(widget.comic)
