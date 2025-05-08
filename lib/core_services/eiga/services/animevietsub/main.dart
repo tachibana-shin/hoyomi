@@ -361,7 +361,7 @@ class AnimeVietsubService extends ABEigaService
         (params == null
             ? '$baseUrl/${categoryId.replaceAll('_', '/')}'
             : '$baseUrl/$params') +
-        (page > 1 ? '/trang-$page' : '') +
+        (page > 1 ? '/trang-$page.html' : '') +
         (filters['sort'] == null ? '' : '?sort=${filters['sort']}');
     final $ = await fetch$(url);
 
