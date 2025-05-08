@@ -17,7 +17,6 @@ final List<String> routeIgnoreLayoutDefault = [
   '/details_comic',
   '/details_eiga',
   '/webview',
-  '/search/',
   '/search?q=',
   '/category_comic',
   '/category_eiga',
@@ -139,6 +138,22 @@ final router = GoRouter(
                       (context, state) => FollowsEigaPage(
                         sourceId: state.pathParameters['sourceId']!,
                       ),
+                ),
+                GoRoute(
+                  path: 'downloader',
+                  pageBuilder: pageBuilder,
+                  builder: (context, state) {
+                    context.replaceNamed('downloader_comic');
+                    return SizedBox.shrink();
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'comic',
+                      name: 'downloader_comic',
+                      pageBuilder: pageBuilder,
+                      builder: (context, state) => DownloaderComicPage(),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -297,15 +312,18 @@ bool shouldShowToolbar(String uriString) {
     '/library',
     '/manager',
   ];
-  const excludeRoutes = ['/search/'];
 
-  if (excludeRoutes.every((exclude) => !uriString.startsWith(exclude))) {
-    for (final route in mainRoutes) {
-      if (uriString == route || uriString.startsWith('$route/')) {
+  for (final route in mainRoutes) {
+    if (uriString.startsWith(route) || uriString.startsWith('$route/')) {
+      if (route == '/search'
+          ? (Uri.parse(uriString).queryParameters['q']?.trim().isNotEmpty !=
+              true)
+          : true) {
         return true;
       }
     }
   }
+
   return false;
 }
 

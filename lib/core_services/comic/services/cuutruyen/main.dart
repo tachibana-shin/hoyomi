@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
@@ -209,8 +208,8 @@ class CuuTruyenService extends ABComicService
   }
 
   @override
-  fetchPage(source, onReceiveProgress) async {
-    return _decodeAndBuildImage(source.src, source.extra!, onReceiveProgress);
+  fetchPage(buffer, source) async {
+    return _decodeAndBuildImage(buffer, source.extra!);
   }
 
   @override
@@ -795,18 +794,9 @@ Future<List<Map<String, int>>> _decodeDrm(
 }
 
 // Load image from URL as ui.Image
-final _dio = Dio();
-Future<ui.Image> _loadImageFromUrl(
-  String url,
-  void Function(int count, int total) onReceiveProgress,
-) async {
-  final response = await _dio.get(
-    url,
-    options: Options(responseType: ResponseType.bytes),
-    onReceiveProgress: onReceiveProgress,
-  );
+Future<ui.Image> _loadImageFromBuffer(Uint8List buffer) async {
   final completer = Completer<ui.Image>();
-  ui.decodeImageFromList(response.data, completer.complete);
+  ui.decodeImageFromList(buffer, completer.complete);
   return completer.future;
 }
 
@@ -853,17 +843,13 @@ Future<Uint8List> _imageFromUiImage(ui.Image uiImage) async {
 
 // Main function to call
 final _encryptedKey = Env.niceTruyenKey;
-Future<Uint8List> _decodeAndBuildImage(
-  String url,
-  String drmData,
-  void Function(int count, int total) onReceiveProgress,
-) async {
+Future<Uint8List> _decodeAndBuildImage(Uint8List buffer, String drmData) async {
   final key = utf8.decode(
     base64.decode('${_encryptedKey.substring(0, _encryptedKey.length - 2)}=='),
   );
 
   final blocks = await _decodeDrm(drmData.trim(), key);
-  final srcImage = await _loadImageFromUrl(url, onReceiveProgress);
+  final srcImage = await _loadImageFromBuffer(buffer);
   final decodedImage = await _unscrambleImage(srcImage, blocks);
   return await _imageFromUiImage(decodedImage);
 }

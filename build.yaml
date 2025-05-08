@@ -14,6 +14,7 @@ targets:
           - lib/core_services/**/*.dart
           - lib/general_api/**/*.dart
           - lib/database/**/*.dart
+          - lib/downloader/*.dart
       json_serializable:
         generate_for:
           - lib/core_services/**/*.dart

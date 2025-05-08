@@ -88,7 +88,7 @@ class _ClientClient implements ClientClient {
   }
 
   @override
-  Future<WatchTimeSchema> getApiComicGetWatchPage({
+  Future<WatchPageSchema> getApiComicGetWatchPage({
     required String sourceId,
     required String comicTextId,
     required String chapId,
@@ -103,7 +103,7 @@ class _ClientClient implements ClientClient {
     final _headers = <String, dynamic>{r'Authorization': authorization};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<WatchTimeSchema>(
+    final _options = _setStreamType<WatchPageSchema>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -114,9 +114,9 @@ class _ClientClient implements ClientClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late WatchTimeSchema _value;
+    late WatchPageSchema _value;
     try {
-      _value = WatchTimeSchema.fromJson(_result.data!);
+      _value = WatchPageSchema.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -221,7 +221,7 @@ class _ClientClient implements ClientClient {
   }
 
   @override
-  Future<dynamic> getApiEigaGetWatchTime({
+  Future<WatchTimeSchema> getApiEigaGetWatchTime({
     required String sourceId,
     required String eigaTextId,
     required String chapId,
@@ -236,7 +236,7 @@ class _ClientClient implements ClientClient {
     final _headers = <String, dynamic>{r'Authorization': authorization};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<dynamic>(
+    final _options = _setStreamType<WatchTimeSchema>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -246,8 +246,14 @@ class _ClientClient implements ClientClient {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch(_options);
-    final _value = _result.data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late WatchTimeSchema _value;
+    try {
+      _value = WatchTimeSchema.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
     return _value;
   }
 

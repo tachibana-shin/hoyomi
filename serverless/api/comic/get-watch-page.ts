@@ -23,7 +23,7 @@ const GetWatchPageQuerySchema = z
   })
   .openapi("GetWatchPageQuerySchema")
 
-const WatchTimeSchema = z
+const WatchPageSchema = z
   .object({
     data: z
       .object({
@@ -52,7 +52,7 @@ const WatchTimeSchema = z
       })
       .nullable()
   })
-  .openapi("WatchTimeSchema", {
+  .openapi("WatchPageSchema", {
     description:
       "The watch page object, which can be null if no data is available."
   })
@@ -68,7 +68,7 @@ const route = createRoute({
     200: {
       content: {
         "application/json": {
-          schema: WatchTimeSchema
+          schema: WatchPageSchema
         }
       },
       description:
@@ -83,10 +83,10 @@ app.openapi(route, async (c) => {
 
   const user = useUser(c)
 
-  const watchTime = await Comic.getWatchTime(params.sourceId, {
+  const watchPage = await Comic.getWatchTime(params.sourceId, {
     user_id: user.userId,
     ...params
   })
 
-  return c.json({ data: watchTime })
+  return c.json({ data: watchPage })
 })

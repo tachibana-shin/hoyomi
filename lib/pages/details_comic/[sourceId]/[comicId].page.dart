@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
@@ -8,7 +9,6 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user_async.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
-import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/export.dart';
 import 'package:hoyomi/errors/captcha_required_exception.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
@@ -19,6 +19,10 @@ import 'package:iconify_flutter/icons/ion.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
+import 'package:path/path.dart' show join;
+
+import '../../../downloader/comic_downloader.dart';
+import '../../../plugins/export.dart';
 
 class DetailsComic extends StatefulWidget {
   final String sourceId;
@@ -123,7 +127,16 @@ class _DetailsComicState extends State<DetailsComic>
       onLoadData:
           () => _service
               .getDetails(widget.comicId)
-              .then((comic) => _comic.value = comic),
+              .then((comic) => _comic.value = comic)
+              .catchError((error) async {
+                final meta = await ComicDownloader.instance.getMetaOffline(
+                  _service,
+                  widget.comicId,
+                );
+                if (meta != null) return meta.copyWith(offlineMode: true);
+
+                throw error;
+              }),
       onLoadFake: () => _comic.value = MetaComic.createFakeData(),
       builderError:
           (body) => Scaffold(
@@ -214,11 +227,24 @@ class _DetailsComicState extends State<DetailsComic>
                 aspectRatio: 2 / 3,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
-                  child: OImage.network(
-                    comic.image.src,
-                    sourceId: widget.sourceId,
-                    headers: comic.image.headers,
+                  child: Image.file(
+                    File(
+                      join(
+                        applicationDocumentDirectory.path,
+                        ComicDownloader.expectedPosterPath(
+                          _service,
+                          widget.comicId,
+                        ),
+                      ),
+                    ),
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return OImage.oNetwork(
+                        comic.image,
+                        sourceId: widget.sourceId,
+                        fit: BoxFit.cover,
+                      );
+                    },
                   ),
                 ),
               ),
@@ -329,7 +355,7 @@ class _DetailsComicState extends State<DetailsComic>
         // const SizedBox(height: 20.0),
 
         // Comment
-        if (_service is ComicCommentMixin)
+        if (_service is ComicCommentMixin && !comic.offlineMode)
           Padding(
             padding: EdgeInsets.only(bottom: 16),
             child: Comments(
@@ -397,7 +423,7 @@ class _DetailsComicState extends State<DetailsComic>
               }).toList(),
         ),
         SizedBox(height: 24.0),
-        _buildSuggest(comic),
+        if (!comic.offlineMode) _buildSuggest(comic),
       ],
     );
   }
@@ -423,6 +449,12 @@ class _DetailsComicState extends State<DetailsComic>
                 },
                 defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                 children: [
+                  if (comic.offlineMode)
+                    _buildTableRow(
+                      'Status',
+                      null,
+                      Text('Offline', style: TextStyle(color: Colors.red[500])),
+                    ),
                   _buildTableRow(
                     'Source',
                     null,
@@ -529,7 +561,12 @@ class _DetailsComicState extends State<DetailsComic>
                                       ? '(No data)'
                                       : '${lastReadChapter.chapter.name} of ${comic.chapters.length}',
                                 ),
-                            error: (error, stack) => Text('Error: $error'),
+                            error:
+                                (error, stack) => Text(
+                                  'Error: $error',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                             loading: () => Text('Loading...'),
                           ),
                     ),
@@ -564,7 +601,12 @@ class _DetailsComicState extends State<DetailsComic>
                                       fontSize: 14,
                                     ),
                                   ),
-                              error: (error, stack) => Text('Error: $error'),
+                              error:
+                                  (error, stack) => Text(
+                                    'Error: $error',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                               loading: () => Text('Loading...'),
                             ),
                       ),
@@ -768,7 +810,7 @@ class _DetailsComicState extends State<DetailsComic>
   void _handleMenuSelection(BuildContext context, String id) {
     switch (id) {
       case 'download':
-        // _downloadContent(context);
+        _downloadContent();
         break;
       case 'find_similar':
         context.push(
@@ -786,6 +828,53 @@ class _DetailsComicState extends State<DetailsComic>
     }
   }
 
+  void _downloadContent() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Download'),
+          content: const Text('Download content'),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+              child: const Text('Download'),
+              onPressed: () async {
+                // final downloader = ComicDownloader();
+
+                // await downloader.initDatabase();
+
+                // final pages = await _service.getPages(
+                //   widget.comicId,
+                //   _comic.value.chapters.first.chapterId,
+                // );
+
+                // final result = await downloader.downloadChapter(
+                //   service: _service,
+                //   comicId: widget.comicId,
+                //   metaComic: _comic.value,
+                //   chapterId:
+                //       _comic.value.chapters.first.chapterId, // chapterId,
+                //   chapter: _comic.value.chapters.first,
+                //   pages: pages,
+                // );
+
+                // watch$([result.progress, result.error, result.done], () {
+                //   print(
+                //     'progress: ${result.progress.value}, error: ${result.error.value}, done: ${result.done.value}',
+                //   );
+                // }, immediate: true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildSheetChapters() {
     return Watch(
       () => FutureBuilder(
@@ -793,7 +882,7 @@ class _DetailsComicState extends State<DetailsComic>
         builder:
             (context, snapshot) => SheetChapters(
               comic: _comic.value,
-              sourceId: widget.sourceId,
+              service: _service,
               comicId: widget.comicId,
               watchPageChapters:
                   snapshot.data?.first as Map<String, WatchPageUpdated>? ??

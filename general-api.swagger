@@ -135,7 +135,7 @@
                 ],
                 "description": "A list of watch page entries, each representing the page watched for a specific episode."
             },
-            "WatchTimeSchema": {
+            "WatchPageSchema": {
                 "type": "object",
                 "properties": {
                     "data": {
@@ -332,6 +332,53 @@
                     "data"
                 ],
                 "description": "An array of watch history items. Schema representing an individual watch history item."
+            },
+            "WatchTimeSchema": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                            "cur": {
+                                "type": "number",
+                                "description": "The current time in seconds for the episode.",
+                                "example": 120
+                            },
+                            "dur": {
+                                "type": "number",
+                                "description": "The total duration of the episode in seconds.",
+                                "example": 1500
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "The name of the episode.",
+                                "example": "Episode 1"
+                            },
+                            "createdAt": {
+                                "type": "string",
+                                "description": "ISO 8601 format timestamp when the watch time was recorded.",
+                                "example": "2025-04-06T12:34:56Z"
+                            },
+                            "updatedAt": {
+                                "type": "string",
+                                "description": "ISO 8601 format timestamp when the watch time was last updated.",
+                                "example": "2025-04-06T13:00:00Z"
+                            }
+                        },
+                        "required": [
+                            "cur",
+                            "dur",
+                            "name",
+                            "createdAt",
+                            "updatedAt"
+                        ]
+                    }
+                },
+                "required": [
+                    "data"
+                ],
+                "description": "The watch time object, which can be null if no data is available."
             },
             "SetWatchTimeBodySchema": {
                 "type": "object",
@@ -573,7 +620,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WatchTimeSchema"
+                                    "$ref": "#/components/schemas/WatchPageSchema"
                                 }
                             }
                         }
@@ -845,54 +892,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/WatchTimeSchema"
-                                        },
-                                        {
-                                            "properties": {
-                                                "data": {
-                                                    "type": "object",
-                                                    "nullable": true,
-                                                    "properties": {
-                                                        "cur": {
-                                                            "type": "number",
-                                                            "description": "The current time in seconds for the episode.",
-                                                            "example": 120
-                                                        },
-                                                        "dur": {
-                                                            "type": "number",
-                                                            "description": "The total duration of the episode in seconds.",
-                                                            "example": 1500
-                                                        },
-                                                        "name": {
-                                                            "type": "string",
-                                                            "description": "The name of the episode.",
-                                                            "example": "Episode 1"
-                                                        },
-                                                        "createdAt": {
-                                                            "type": "string",
-                                                            "description": "ISO 8601 format timestamp when the watch time was recorded.",
-                                                            "example": "2025-04-06T12:34:56Z"
-                                                        },
-                                                        "updatedAt": {
-                                                            "type": "string",
-                                                            "description": "ISO 8601 format timestamp when the watch time was last updated.",
-                                                            "example": "2025-04-06T13:00:00Z"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "cur",
-                                                        "dur",
-                                                        "name",
-                                                        "createdAt",
-                                                        "updatedAt"
-                                                    ]
-                                                }
-                                            },
-                                            "description": "The watch time object, which can be null if no data is available."
-                                        }
-                                    ]
+                                    "$ref": "#/components/schemas/WatchTimeSchema"
                                 }
                             }
                         }
