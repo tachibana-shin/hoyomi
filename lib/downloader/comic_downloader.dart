@@ -575,7 +575,6 @@ class ComicDownloader {
                       $mapProgress[entry.$1] = 1;
                       computeTotalProgress();
 
-                      await Future.delayed(Duration(seconds: 3));
 
                       await _db.execute(
                         '''
