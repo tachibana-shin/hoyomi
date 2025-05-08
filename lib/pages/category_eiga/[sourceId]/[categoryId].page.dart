@@ -78,7 +78,11 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
   Widget build(BuildContext context) {
     return PullRefreshPage(
       onLoadData: () => _fetchComics(1),
-      onLoadFake: () => (data: List.generate(30, (_) => Eiga.createFakeData()), isLastPage: true),
+      onLoadFake:
+          () => (
+            data: List.generate(30, (_) => Eiga.createFakeData()),
+            isLastPage: true,
+          ),
       builderError:
           (body) => Scaffold(appBar: _buildAppBar(() async {}), body: body),
       builder:

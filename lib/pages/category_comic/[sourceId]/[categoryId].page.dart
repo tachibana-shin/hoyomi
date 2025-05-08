@@ -82,7 +82,11 @@ class _CategoryComicPageState extends State<CategoryComicPage> with KaeruMixin {
   Widget build(BuildContext context) {
     return PullRefreshPage(
       onLoadData: () => _fetchComics(1),
-      onLoadFake: () => (data: List.generate(30, (_) => Comic.createFakeData()), isLastPage: true),
+      onLoadFake:
+          () => (
+            data: List.generate(30, (_) => Comic.createFakeData()),
+            isLastPage: true,
+          ),
       builderError:
           (body) => Watch(
             () => Scaffold(appBar: _buildAppBar(() async {}), body: body),
