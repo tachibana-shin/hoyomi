@@ -16,7 +16,12 @@ class HorizontalEigaHistoryList extends StatefulWidget {
   final String? more;
   final Future<List<types.EigaHistory>> Function({required int page}) fn;
 
-  const HorizontalEigaHistoryList({super.key, required this.sourceId, this.more, required this.fn});
+  const HorizontalEigaHistoryList({
+    super.key,
+    required this.sourceId,
+    this.more,
+    required this.fn,
+  });
 
   @override
   createState() => _HorizontalEigaHistoryState();

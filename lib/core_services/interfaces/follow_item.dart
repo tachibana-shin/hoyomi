@@ -6,7 +6,12 @@ class FollowItem<T> {
   final DateTime? updatedAt;
   final EigaEpisode? lastEpisode;
 
-  const FollowItem({required this.sourceId, required this.item, this.updatedAt, this.lastEpisode});
+  const FollowItem({
+    required this.sourceId,
+    required this.item,
+    this.updatedAt,
+    this.lastEpisode,
+  });
 
   factory FollowItem.createFakeData(T item) {
     return FollowItem(
