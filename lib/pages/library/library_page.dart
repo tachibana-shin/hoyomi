@@ -197,7 +197,10 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
             if (widget.source.isComic && widget.source.history != null)
               HorizontalComicHistoryList(
                 sourceId: widget.source.sourceId,
-                more: !widget.source.isGeneral ? null : '/library/history/comic/general',
+                more:
+                    !widget.source.isGeneral
+                        ? null
+                        : '/library/history/comic/general',
                 fn: widget.source.history as dynamic,
               ),
             // if (_service is ComicFollowMixin)
@@ -205,13 +208,19 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
             if (!widget.source.isComic && widget.source.history != null)
               HorizontalEigaHistoryList(
                 sourceId: widget.source.sourceId,
-                more: !widget.source.isGeneral ? null : '/library/history/eiga/general',
+                more:
+                    !widget.source.isGeneral
+                        ? null
+                        : '/library/history/eiga/general',
                 fn: widget.source.history as dynamic,
               ),
             if (!widget.source.isComic && widget.source.follow != null)
               HorizontalEigaFollowList(
                 sourceId: widget.source.sourceId,
-                more: !widget.source.isGeneral ? null : '/library/follow/eiga/general',
+                more:
+                    !widget.source.isGeneral
+                        ? null
+                        : '/library/follow/eiga/general',
                 fn: widget.source.follow as dynamic,
               ),
           ],
