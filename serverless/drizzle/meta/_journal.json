@@ -50,6 +50,20 @@
       "when": 1745223466667,
       "tag": "0006_glorious_puppet_master",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1746769772996,
+      "tag": "0007_black_smasher",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1746770090023,
+      "tag": "0008_majestic_pretty_boy",
+      "breakpoints": true
     }
   ]
 }

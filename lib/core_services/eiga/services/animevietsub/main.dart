@@ -940,6 +940,7 @@ class AnimeVietsubService extends ABEigaService
 
     return data.map((item) {
       return EigaHistory(
+        sourceId: uid,
         item: Eiga(
           name: item.name,
           eigaId: item.season,
@@ -976,7 +977,9 @@ class AnimeVietsubService extends ABEigaService
       filters: {},
     );
     final items =
-        category.items.map((item) => FollowItem<Eiga>(item: item)).toList();
+        category.items
+            .map((item) => FollowItem<Eiga>(sourceId: uid, item: item))
+            .toList();
 
     return Paginate(
       items: items,

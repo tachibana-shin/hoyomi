@@ -7,8 +7,15 @@ import 'package:hoyomi/utils/authentication.dart';
 import '../main.dart';
 
 mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
-  final _baseApiGeneral = Env.baseApiGeneral;
-  GeneralApiClient? _client;
+  static final _baseApiGeneral = Env.baseApiGeneral;
+  static GeneralApiClient? _client;
+
+  static GeneralApiClient _getClient() {
+    return _client ??= GeneralApiClient(
+      Dio(BaseOptions(contentType: 'application/json')),
+      baseUrl: _baseApiGeneral,
+    );
+  }
 
   /// General watch page support but service not auth
   @override
@@ -19,11 +26,40 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
     throw UnimplementedError();
   }
 
-  GeneralApiClient _getClient() {
-    return _client ??= GeneralApiClient(
-      Dio(BaseOptions(contentType: 'application/json')),
-      baseUrl: _baseApiGeneral,
+  static Future<List<ComicHistory>> getAllWatchHistory({
+    required int page,
+  }) async {
+    final user = await Authentication.instance.getUserAsync();
+    if (user == null) throw UserNotFoundException();
+
+    final idToken = await user.getIdTokenResult();
+
+    final body = await _getClient().client.getApiComicGetWatchHistory(
+      page: page,
+      authorization: 'Bearer ${idToken.token}',
+      sourceId: '',
     );
+
+    return body.data.map((history) {
+      return ComicHistory(
+        sourceId: history.sourceId,
+        item: Comic(
+          name: history.name,
+          comicId: history.comicTextId,
+          originalName: history.seasonName,
+          image: OImage(src: history.poster),
+        ),
+        watchUpdatedAt: DateTime.parse(history.createdAt),
+        lastChapter: ComicChapter(
+          name: history.watchName,
+          chapterId: history.watchId,
+        ),
+        watchPage: WatchPage(
+          currentPage: history.watchCur.toInt(),
+          totalPage: history.watchDur.toInt(),
+        ),
+      );
+    }).toList();
   }
 
   @override
@@ -41,6 +77,7 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
 
     return body.data.map((history) {
       return ComicHistory(
+        sourceId: history.sourceId,
         item: Comic(
           name: history.name,
           comicId: history.comicTextId,
@@ -48,7 +85,7 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
           image: OImage(src: history.poster),
         ),
         watchUpdatedAt: DateTime.parse(history.createdAt),
-        lastEpisode: ComicChapter(
+        lastChapter: ComicChapter(
           name: history.watchName,
           chapterId: history.watchId,
         ),

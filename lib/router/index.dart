@@ -122,6 +122,24 @@ final router = GoRouter(
               builder: (context, state) => LibraryPage(),
               routes: [
                 GoRoute(
+                  path: 'history/comic/:sourceId',
+                  name: 'history_comic',
+                  pageBuilder: pageBuilder,
+                  builder:
+                      (context, state) => HistoryComicPage(
+                        sourceId: state.pathParameters['sourceId']!,
+                      ),
+                ),
+                GoRoute(
+                  path: 'follow/comic/:sourceId',
+                  name: 'follow_comic',
+                  pageBuilder: pageBuilder,
+                  builder:
+                      (context, state) => FollowsComicPage(
+                        sourceId: state.pathParameters['sourceId']!,
+                      ),
+                ),
+                GoRoute(
                   path: 'history/eiga/:sourceId',
                   name: 'history_eiga',
                   pageBuilder: pageBuilder,

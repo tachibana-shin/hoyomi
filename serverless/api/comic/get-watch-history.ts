@@ -5,7 +5,7 @@ import { AuthorizationSchema } from "../../schema/authorization.ts"
 
 const GetWatchHistoryQuerySchema = z
   .object({
-    sourceId: z.string().min(1).openapi({
+    sourceId: z.string().openapi({
       example: "tonikaku-kawaii-season-2",
       description:
         "The unique identifier for the source (e.g., the series or season)."
@@ -17,7 +17,7 @@ const GetWatchHistoryQuerySchema = z
   })
   .openapi("GetWatchHistoryQuerySchema")
 
-const ComicListWatchHistorySchema = z
+export const ComicListWatchHistorySchema = z
   .object({
     data: z.array(
       z.object({
@@ -34,7 +34,7 @@ const ComicListWatchHistorySchema = z
         poster: z.string().openapi({
           description: "The URL for the poster image of the episode."
         }),
-        season_name: z.string().openapi({
+        season_name: z.string().optional().default("").openapi({
           description: "The name of the season the episode belongs to."
         }),
         source_id: z.string().openapi({

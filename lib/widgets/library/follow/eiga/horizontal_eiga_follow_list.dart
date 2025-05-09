@@ -8,8 +8,15 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 class HorizontalEigaFollowList extends StatefulWidget {
   final String sourceId;
+  final String? more;
+  final Future<Paginate<FollowItem<Eiga>>> Function({required int page}) fn;
 
-  const HorizontalEigaFollowList({super.key, required this.sourceId});
+  const HorizontalEigaFollowList({
+    super.key,
+    required this.sourceId,
+    this.more,
+    required this.fn,
+  });
 
   @override
   createState() => _HorizontalEigaHistoryState();
@@ -22,7 +29,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
   @override
   void initState() {
     _service = getEigaService(widget.sourceId) as EigaFollowMixin;
-    _followsFuture = _service.getFollows(page: 1).then((data) => data.items);
+    _followsFuture = widget.fn(page: 1).then((data) => data.items);
 
     super.initState();
   }
@@ -34,7 +41,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
       builder: (context, snapshot) {
         final title = 'Follow';
         final subtitle = null;
-        final more = '/library/follow/eiga/${widget.sourceId}';
+        final more = widget.more ?? '/library/follow/eiga/${widget.sourceId}';
 
         if (snapshot.hasError) {
           return HorizontalList.buildContainer(
@@ -104,7 +111,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
                 ) !=
                 null,
             builder: (context, follow, index) {
-              return VerticalEiga(sourceId: widget.sourceId, eiga: follow.item);
+              return VerticalEiga(sourceId: follow.sourceId, eiga: follow.item);
             },
           ),
         );

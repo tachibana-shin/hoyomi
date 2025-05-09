@@ -22,6 +22,7 @@ export 'interfaces/watch_page_updated.dart';
 export 'main.dart';
 export 'mixin/comic_auth_mixin.dart';
 export 'mixin/comic_comment_mixin.dart';
+export 'mixin/comic_follow_mixin.dart';
 export 'mixin/comic_like_mixin.dart';
 export 'mixin/comic_watch_page_general_mixin.dart';
 export 'mixin/comic_watch_page_mixin.dart';

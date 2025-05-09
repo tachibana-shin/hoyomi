@@ -7,7 +7,7 @@ import { single } from "../logic/single.ts"
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Eiga {
   static async getWatchHistory(
-    sourceId: string,
+    sourceId: string | void,
     params: {
       user_id: number
       page: number
@@ -15,7 +15,7 @@ export class Eiga {
     }
   ) {
     // const pgDialect = new PgDialect()
-    const query = sql`
+    const query = sourceId ? sql`
 select
   ${eigaHistories.sourceId} as source_id,
   ${eigaHistories.eigaTextId} as eiga_text_id,
@@ -56,14 +56,55 @@ order by
   ${eigaHistories.createdAt} desc
 limit
   ${params.limit} offset ${(params.page - 1) * params.limit}
+`: sql`
+select
+  ${eigaHistories.sourceId} as source_id,
+  ${eigaHistories.eigaTextId} as eiga_text_id,
+  ${eigaHistories.name} as name,
+  ${eigaHistories.poster} as poster,
+  ${eigaHistories.seasonName} as season_name,
+  ${eigaHistories.createdAt} as created_at,
+  ${eigaHistoryChapters.updatedAt} as watch_updated_at,
+  ${eigaHistoryChapters.name} as watch_name,
+  ${eigaHistoryChapters.chapId} as watch_id,
+  ${eigaHistoryChapters.cur} as watch_cur,
+  ${eigaHistoryChapters.dur} as watch_dur
+from
+  ${eigaHistories}
+left join lateral (
+  select
+    *
+  from
+    ${eigaHistoryChapters}
+  where
+    (${eigaHistories.vChap} is not null and  ${eigaHistoryChapters.id} = ${
+      eigaHistories.vChap
+    }) or
+    (${eigaHistories.vChap} is     null and (${
+      eigaHistoryChapters.eigaHistoryId
+    } = ${eigaHistories.forTo} or ${eigaHistoryChapters.eigaHistoryId} = ${
+      eigaHistories.id
+    }))
+  order by
+    ${eigaHistoryChapters.updatedAt} desc
+  limit
+    1
+) ${eigaHistoryChapters} on TRUE
+where
+  ${eigaHistories.userId}   = ${params.user_id}
+order by
+  ${eigaHistories.createdAt} desc
+limit
+  ${params.limit} offset ${(params.page - 1) * params.limit}
 `
+
 
     return (await db.execute(query)).rows as {
       created_at: string
       eiga_text_id: string
       name: string
       poster: string
-      season_name: string
+      season_name?: string
       source_id: string
       watch_cur: number
       watch_dur: number

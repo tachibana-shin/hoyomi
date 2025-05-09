@@ -34,6 +34,8 @@ export 'image_picker.dart';
 export 'infinite_grid.dart';
 export 'infinite_list.dart';
 export 'library/follow/eiga/horizontal_eiga_follow_list.dart';
+export 'library/history/comic/comic_history.dart';
+export 'library/history/comic/horizontal_comic_history_list.dart';
 export 'library/history/eiga/eiga_history.dart';
 export 'library/history/eiga/horizontal_eiga_history_list.dart';
 export 'manager/account_service.dart';

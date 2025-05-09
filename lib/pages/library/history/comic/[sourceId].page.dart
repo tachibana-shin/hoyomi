@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart' hide TimeOfDay;
-import 'package:hoyomi/core_services/eiga/main.dart' hide EigaHistory;
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_history.dart'
+import 'package:hoyomi/core_services/comic/main.dart' hide ComicHistory;
+import 'package:hoyomi/core_services/comic/interfaces/comic_history.dart'
     as types;
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/utils/export.dart';
 import 'package:hoyomi/widgets/export.dart';
 
-class HistoryEigaPage extends StatefulWidget {
+class HistoryComicPage extends StatefulWidget {
   final String sourceId;
 
-  const HistoryEigaPage({super.key, required this.sourceId});
+  const HistoryComicPage({super.key, required this.sourceId});
 
   @override
-  State<HistoryEigaPage> createState() => _HistoryEigaPageState();
+  State<HistoryComicPage> createState() => _HistoryComicPageState();
 }
 
-class _HistoryEigaPageState extends State<HistoryEigaPage> {
+class _HistoryComicPageState extends State<HistoryComicPage> {
   int _pageKey = 2;
-  late final EigaWatchTimeMixin? _service;
+  late final ComicWatchPageMixin? _service;
 
   @override
   void initState() {
     _service =
         widget.sourceId == 'general'
             ? null
-            : getEigaService(widget.sourceId) as EigaWatchTimeMixin;
+            : getComicService(widget.sourceId) as ComicWatchPageMixin;
     super.initState();
   }
 
@@ -47,10 +47,10 @@ class _HistoryEigaPageState extends State<HistoryEigaPage> {
       onLoadData:
           () =>
               _service == null
-                  ? EigaWatchTimeGeneralMixin.getAllWatchHistory(page: 1)
+                  ? ComicWatchPageGeneralMixin.getAllWatchHistory(page: 1)
                   : _service.getWatchHistory(page: 1),
       onLoadFake:
-          () => List.generate(30, (_) => types.EigaHistory.createFakeData()),
+          () => List.generate(30, (_) => types.ComicHistory.createFakeData()),
       builder:
           (data, _) => Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -59,7 +59,7 @@ class _HistoryEigaPageState extends State<HistoryEigaPage> {
               fetchData: () async {
                 final result =
                     await (_service == null
-                        ? EigaWatchTimeGeneralMixin.getAllWatchHistory(
+                        ? ComicWatchPageGeneralMixin.getAllWatchHistory(
                           page: _pageKey,
                         )
                         : _service.getWatchHistory(page: _pageKey));
@@ -70,7 +70,7 @@ class _HistoryEigaPageState extends State<HistoryEigaPage> {
                 return (isLastPage, result);
               },
               itemBuilder: (context, history, index, historyPrev) {
-                final main = EigaHistory(
+                final main = ComicHistory(
                   sourceId: history.sourceId,
                   history: history,
                 );

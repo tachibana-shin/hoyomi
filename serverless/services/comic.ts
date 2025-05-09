@@ -7,7 +7,7 @@ import { single } from "../logic/single.ts"
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Comic {
   static async getWatchHistory(
-    sourceId: string,
+    sourceId: string | void,
     params: {
       user_id: number
       page: number
@@ -15,7 +15,7 @@ export class Comic {
     }
   ) {
     // const pgDialect = new PgDialect()
-    const query = sql`
+    const query = sourceId ? sql`
 select
   ${comicHistories.sourceId} as source_id,
   ${comicHistories.comicTextId} as comic_text_id,
@@ -56,6 +56,46 @@ order by
   ${comicHistories.createdAt} desc
 limit
   ${params.limit} offset ${(params.page - 1) * params.limit}
+` : sql`
+select
+  ${comicHistories.sourceId} as source_id,
+  ${comicHistories.comicTextId} as comic_text_id,
+  ${comicHistories.name} as name,
+  ${comicHistories.poster} as poster,
+  ${comicHistories.seasonName} as season_name,
+  ${comicHistories.createdAt} as created_at,
+  ${comicHistoryChapters.updatedAt} as watch_updated_at,
+  ${comicHistoryChapters.name} as watch_name,
+  ${comicHistoryChapters.chapId} as watch_id,
+  ${comicHistoryChapters.cur} as watch_cur,
+  ${comicHistoryChapters.dur} as watch_dur
+from
+  ${comicHistories}
+left join lateral (
+  select
+    *
+  from
+    ${comicHistoryChapters}
+  where
+    (${comicHistories.vChap} is not null and  ${comicHistoryChapters.id} = ${
+      comicHistories.vChap
+    }) or
+    (${comicHistories.vChap} is     null and (${
+      comicHistoryChapters.comicHistoryId
+    } = ${comicHistories.forTo} or ${comicHistoryChapters.comicHistoryId} = ${
+      comicHistories.id
+    }))
+  order by
+    ${comicHistoryChapters.updatedAt} desc
+  limit
+    1
+) ${comicHistoryChapters} on TRUE
+where
+  ${comicHistories.userId}   = ${params.user_id}
+order by
+  ${comicHistories.createdAt} desc
+limit
+  ${params.limit} offset ${(params.page - 1) * params.limit}
 `
 
     return (await db.execute(query)).rows as {
@@ -63,7 +103,7 @@ limit
       comic_text_id: string
       name: string
       poster: string
-      season_name: string
+      season_name?: string
       source_id: string
       watch_cur: number
       watch_dur: number

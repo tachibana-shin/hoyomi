@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart' hide TimeOfDay;
-import 'package:hoyomi/core_services/eiga/main.dart';
+import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/export.dart';
 
-class FollowsEigaPage extends StatefulWidget {
+class FollowsComicPage extends StatefulWidget {
   final String sourceId;
 
-  const FollowsEigaPage({super.key, required this.sourceId});
+  const FollowsComicPage({super.key, required this.sourceId});
 
   @override
-  State<FollowsEigaPage> createState() => _FollowsEigaPageState();
+  State<FollowsComicPage> createState() => _FollowsComicPageState();
 }
 
-class _FollowsEigaPageState extends State<FollowsEigaPage> {
+class _FollowsComicPageState extends State<FollowsComicPage> {
   int _pageKey = 2;
-  late final EigaFollowMixin _service;
+  late final ComicFollowMixin _service;
 
   @override
   void initState() {
-    _service = getEigaService(widget.sourceId) as EigaFollowMixin;
+    _service = getComicService(widget.sourceId) as ComicFollowMixin;
     super.initState();
   }
 
@@ -35,13 +35,13 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
   }
 
   Widget _buildBody() {
-    return PullRefreshPage<Paginate<FollowItem<Eiga>>>(
+    return PullRefreshPage<Paginate<FollowItem<Comic>>>(
       onLoadData: () => _service.getFollows(page: 1),
       onLoadFake:
           () => Paginate.createFakeData(
             List.generate(
               30,
-              (_) => FollowItem.createFakeData(Eiga.createFakeData()),
+              (_) => FollowItem.createFakeData(Comic.createFakeData()),
             ),
           ),
       builder:
@@ -61,8 +61,8 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
                 return (isLastPage: isLastPage, data: result.items);
               },
               itemBuilder: (context, follow, index) {
-                return VerticalEiga(
-                  eiga: follow.item,
+                return VerticalComic(
+                  comic: follow.item,
                   sourceId: follow.sourceId,
                 );
               },

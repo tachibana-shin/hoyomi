@@ -24,10 +24,6 @@ abstract class Data4 with _$Data4 {
     /// The URL for the poster image of the episode.
     required String poster,
 
-    /// The name of the season the episode belongs to.
-    @JsonKey(name: 'season_name')
-    required String seasonName,
-
     /// The source ID associated with the episode.
     @JsonKey(name: 'source_id')
     required String sourceId,
@@ -51,6 +47,11 @@ abstract class Data4 with _$Data4 {
     /// The timestamp when the watch history entry was last updated.
     @JsonKey(name: 'watch_updated_at')
     required String watchUpdatedAt,
+
+    /// The name of the season the episode belongs to.
+    @JsonKey(name: 'season_name')
+    @Default('')
+    String seasonName,
   }) = _Data4;
   
   factory Data4.fromJson(Map<String, Object?> json) => _$Data4FromJson(json);

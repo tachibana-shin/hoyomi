@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_history.dart'
+import 'package:hoyomi/core_services/comic/interfaces/comic_history.dart'
     as types;
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/format_watch_update_at.dart';
-import 'package:hoyomi/widgets/library/history/eiga/eiga_history.dart';
+import 'package:hoyomi/widgets/export.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class HorizontalEigaHistoryList extends StatefulWidget {
+class HorizontalComicHistoryList extends StatefulWidget {
   final String sourceId;
   final String? more;
-  final Future<List<types.EigaHistory>> Function({required int page}) fn;
+  final Future<List<types.ComicHistory>> Function({required int page}) fn;
 
-  const HorizontalEigaHistoryList({super.key, required this.sourceId, this.more, required this.fn});
+  const HorizontalComicHistoryList({
+    super.key,
+    required this.sourceId,
+    this.more,
+    required this.fn,
+  });
 
   @override
-  createState() => _HorizontalEigaHistoryState();
+  createState() => _HorizontalComicHistoryState();
 }
 
-class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
-  late final EigaWatchTimeMixin _service;
-  late final Future<List<types.EigaHistory>> _historyFuture;
+class _HorizontalComicHistoryState extends State<HorizontalComicHistoryList> {
+  late final Future<List<types.ComicHistory>> _historyFuture;
 
   @override
   void initState() {
-    _service = getEigaService(widget.sourceId) as EigaWatchTimeMixin;
     _historyFuture = widget.fn(page: 1);
 
     super.initState();
@@ -72,11 +74,11 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
         double crossAxisCount;
 
         if (screenWidth <= 600) {
-          crossAxisCount = 2.5;
-        } else if (screenWidth <= 900) {
           crossAxisCount = 3.5;
+        } else if (screenWidth <= 900) {
+          crossAxisCount = 4.5;
         } else {
-          crossAxisCount = 5.5;
+          crossAxisCount = 6.5;
         }
 
         final childAspectRatio = 16 / 9;
@@ -106,7 +108,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
       future: _historyFuture,
       builder: (context, snapshot) {
         final title = 'History';
-        final more = widget.more ?? '/library/history/eiga/${widget.sourceId}';
+        final more = widget.more ?? '/library/history/comic/${widget.sourceId}';
 
         if (snapshot.hasError) {
           return _buildContainer(
@@ -119,7 +121,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
                   child: Service.errorWidgetBuilder(
                     context,
                     error: snapshot.error,
-                    service: _service as Service,
+                    service: getService(widget.sourceId),
                     orElse: (error) => Text('Error: $error'),
                   ),
                 ),
@@ -141,7 +143,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
 
         final data =
             loading
-                ? List.generate(30, (_) => types.EigaHistory.createFakeData())
+                ? List.generate(30, (_) => types.ComicHistory.createFakeData())
                 : snapshot.data!;
 
         final subtitle =
@@ -151,7 +153,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
         final items = data;
         final needSubtitle =
             data.firstWhereOrNull(
-              (eiga) => eiga.lastEpisode.description?.isNotEmpty == true,
+              (comic) => comic.lastChapter.fullName?.isNotEmpty == true,
             ) !=
             null;
 
@@ -161,12 +163,16 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildContainer(
+              HorizontalList.buildContainer(
                 context,
                 title: title,
+                titleLength: items
+                    .map((item) => item.item.name.length)
+                    .reduce((max, length) => length > max ? length : max),
                 subtitle: subtitle,
                 more: more,
-                needSubtitle: needSubtitle,
+                itemSubtitle: needSubtitle,
+                itemTimeAgo: false,
                 builder:
                     (viewportFraction) => PageView.builder(
                       itemCount: items.length,
@@ -177,7 +183,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
                         initialPage: 0,
                       ),
                       itemBuilder:
-                          (context, index) => EigaHistory(
+                          (context, index) => ComicHistory(
                             sourceId: items.elementAt(index).sourceId,
                             history: items.elementAt(index),
                             width: 100.w(context) / 1 / viewportFraction,

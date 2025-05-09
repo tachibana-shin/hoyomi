@@ -32,6 +32,7 @@
                                 },
                                 "season_name": {
                                     "type": "string",
+                                    "default": "",
                                     "description": "The name of the season the episode belongs to."
                                 },
                                 "source_id": {
@@ -64,7 +65,6 @@
                                 "comic_text_id",
                                 "name",
                                 "poster",
-                                "season_name",
                                 "source_id",
                                 "watch_cur",
                                 "watch_dur",
@@ -285,6 +285,7 @@
                                 },
                                 "season_name": {
                                     "type": "string",
+                                    "default": "",
                                     "description": "The name of the season the episode belongs to."
                                 },
                                 "source_id": {
@@ -317,7 +318,6 @@
                                 "eiga_text_id",
                                 "name",
                                 "poster",
-                                "season_name",
                                 "source_id",
                                 "watch_cur",
                                 "watch_dur",
@@ -467,7 +467,6 @@
                     {
                         "schema": {
                             "type": "string",
-                            "minLength": 1,
                             "description": "The unique identifier for the source (e.g., the series or season).",
                             "example": "tonikaku-kawaii-season-2"
                         },
@@ -684,7 +683,6 @@
                     {
                         "schema": {
                             "type": "string",
-                            "minLength": 1,
                             "description": "The unique identifier for the source (e.g., the series or season).",
                             "example": "tonikaku-kawaii-season-2"
                         },
