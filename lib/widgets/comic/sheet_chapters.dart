@@ -249,121 +249,137 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                               ],
                             ).expanded(),
 
-                            Row(
-                              children: [
-                                if (watchPage != null)
-                                  SizedBox(
-                                    width: 30,
-                                    height: 30,
-                                    child: DashedCircularProgressBar.aspectRatio(
-                                      aspectRatio: 1,
-                                      progress:
-                                          (watchPage.currentPage + 1) /
-                                          watchPage.totalPage *
-                                          100,
-                                      startAngle: 225,
-                                      sweepAngle: 270,
-                                      foregroundColor: Colors.green,
-                                      backgroundColor: const Color(0xffeeeeee),
-                                      foregroundStrokeWidth: 3,
-                                      backgroundStrokeWidth: 3,
-                                      animation: true,
-                                      seekSize: 3,
-                                      seekColor: const Color(0xffeeeeee),
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              '${((watchPage.currentPage + 1) / watchPage.totalPage * 100).toInt()}',
-                                            ).fontSize(12.0),
-                                          ],
+                            FractionallySizedBox(
+                              widthFactor: 0.4,
+                              child: Row(
+                                children: [
+                                  if (watchPage != null)
+                                    SizedBox(
+                                      width: 30,
+                                      height: 30,
+                                      child: DashedCircularProgressBar.aspectRatio(
+                                        aspectRatio: 1,
+                                        progress:
+                                            (watchPage.currentPage + 1) /
+                                            watchPage.totalPage *
+                                            100,
+                                        startAngle: 225,
+                                        sweepAngle: 270,
+                                        foregroundColor: Colors.green,
+                                        backgroundColor: const Color(
+                                          0xffeeeeee,
+                                        ),
+                                        foregroundStrokeWidth: 3,
+                                        backgroundStrokeWidth: 3,
+                                        animation: true,
+                                        seekSize: 3,
+                                        seekColor: const Color(0xffeeeeee),
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                '${((watchPage.currentPage + 1) / watchPage.totalPage * 100).toInt()}',
+                                              ).fontSize(12.0),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
 
-                                FutureBuilder(
-                                  future: downloadedChapter,
-                                  builder:
-                                      (context, snapshot) => snapshot.when(
-                                        error:
-                                            (error, _) =>
-                                                Text(
-                                                  '$error',
-                                                  maxLines: 1,
-                                                ).expanded(),
-                                        loading:
-                                            () => SizedBox(width: 4, height: 4),
-                                        data: (downloadedChapter, _) {
-                                          if (downloadedChapter != null &&
-                                              downloadedChapter.doneAt > 0) {
-                                            return Iconify(Fluent.save24);
-                                          }
-
-                                          return Watch(() {
-                                            final downloadState =
-                                                ComicDownloader.instance
-                                                    .getDownloaderState(
-                                                      service: widget.service,
-                                                      comicId: widget.comicId,
-                                                      chapterId:
-                                                          chapter.chapterId,
-                                                    );
-                                            if (downloadState != null) {
-                                              return Watch(() {
-                                                if (downloadState.value.done ==
-                                                    true) {
-                                                  return Iconify(Fluent.save24);
-                                                }
-                                                return Text(
-                                                  'DL.${(downloadState.value.progress * 100).round()}%',
-                                                );
-                                              });
+                                  FutureBuilder(
+                                    future: downloadedChapter,
+                                    builder:
+                                        (context, snapshot) => snapshot.when(
+                                          error:
+                                              (error, _) =>
+                                                  Text(
+                                                    '$error',
+                                                    maxLines: 1,
+                                                  ).expanded(),
+                                          loading:
+                                              () =>
+                                                  SizedBox(width: 4, height: 4),
+                                          data: (downloadedChapter, _) {
+                                            if (downloadedChapter != null &&
+                                                downloadedChapter.doneAt > 0) {
+                                              return Iconify(Fluent.save24);
                                             }
 
-                                            return IconButton(
-                                              icon: Row(
-                                                children: [
-                                                  if (downloadedChapter != null)
-                                                    Text(
-                                                      '${(downloadedChapter.count / downloadedChapter.pageCount) * 100}%',
-                                                      maxLines: 1,
-                                                    ),
-                                                  Iconify(Ion.download),
-                                                ],
-                                              ),
-                                              onPressed: () async {
-                                                try {
-                                                  await ComicDownloader.instance
-                                                      .downloadChapter(
+                                            return Watch(() {
+                                              final downloadState =
+                                                  ComicDownloader.instance
+                                                      .getDownloaderState(
                                                         service: widget.service,
                                                         comicId: widget.comicId,
-                                                        metaComic: widget.comic,
                                                         chapterId:
                                                             chapter.chapterId,
-                                                        chapter: chapter,
-                                                        pages: await widget
-                                                            .service
-                                                            .getPages(
-                                                              widget.comicId,
-                                                              chapter.chapterId,
-                                                            ),
                                                       );
-                                                } catch (error) {
-                                                  showSnackBar(
-                                                    Text(
-                                                      'Download error: $error',
-                                                    ),
+                                              if (downloadState != null) {
+                                                return Watch(() {
+                                                  if (downloadState
+                                                          .value
+                                                          .done ==
+                                                      true) {
+                                                    return Iconify(
+                                                      Fluent.save24,
+                                                    );
+                                                  }
+                                                  return Text(
+                                                    'DL.${(downloadState.value.progress * 100).round()}%',
                                                   );
-                                                }
-                                              },
-                                            );
-                                          });
-                                        },
-                                      ),
-                                ),
-                              ],
+                                                });
+                                              }
+
+                                              return IconButton(
+                                                icon: Row(
+                                                  children: [
+                                                    if (downloadedChapter !=
+                                                        null)
+                                                      Text(
+                                                        '${(downloadedChapter.count / downloadedChapter.pageCount) * 100}%',
+                                                        maxLines: 1,
+                                                      ),
+                                                    Iconify(Ion.download),
+                                                  ],
+                                                ),
+                                                onPressed: () async {
+                                                  try {
+                                                    await ComicDownloader
+                                                        .instance
+                                                        .downloadChapter(
+                                                          service:
+                                                              widget.service,
+                                                          comicId:
+                                                              widget.comicId,
+                                                          metaComic:
+                                                              widget.comic,
+                                                          chapterId:
+                                                              chapter.chapterId,
+                                                          chapter: chapter,
+                                                          pages: await widget
+                                                              .service
+                                                              .getPages(
+                                                                widget.comicId,
+                                                                chapter
+                                                                    .chapterId,
+                                                              ),
+                                                        );
+                                                  } catch (error) {
+                                                    showSnackBar(
+                                                      Text(
+                                                        'Download error: $error',
+                                                      ),
+                                                    );
+                                                  }
+                                                },
+                                              );
+                                            });
+                                          },
+                                        ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ).paddingSymmetric(vertical: 16.0, horizontal: 16.0),
