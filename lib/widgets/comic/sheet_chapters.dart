@@ -249,9 +249,10 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                               ],
                             ).expanded(),
 
-                            FractionallySizedBox(
-                              widthFactor: 0.4,
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 200),
                               child: Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   if (watchPage != null)
                                     SizedBox(
