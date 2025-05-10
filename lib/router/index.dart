@@ -30,6 +30,7 @@ final pageBuilder =
         ? GoTransitions.zoom.call
         : null;
 final router = GoRouter(
+  restorationScopeId: 'router',
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/home_eiga',
   observers: [GoTransition.observer],

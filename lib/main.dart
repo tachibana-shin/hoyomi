@@ -56,6 +56,7 @@ class MainApp extends StatelessWidget {
     }
 
     return MaterialApp.router(
+      restorationScopeId : 'app',
       title: 'Hoyomi',
       scaffoldMessengerKey: snackbarKey,
       theme: ThemeData(useMaterial3: true),
