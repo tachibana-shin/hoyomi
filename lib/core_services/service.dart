@@ -172,7 +172,10 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
 
   @override
   String get baseUrl {
-    return getSetting(key: 'url') ?? init.rootUrl;
+    return (getSetting(key: 'url') ?? init.rootUrl).replaceFirst(
+      RegExp(r'/$'),
+      '',
+    );
   }
 
   OImage? _faviconUrl;
@@ -474,7 +477,14 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
             ? Uri.parse(url)
             : Uri.parse(_fetchBaseUrl!).resolve(url);
     if (query != null) {
-      uri = uri.replace(queryParameters: {...uri.queryParametersAll, ...query});
+      uri = uri.replace(
+        queryParameters: {
+          ...uri.queryParametersAll,
+          ...Map.fromEntries(
+            query.entries.where(((entry) => entry.value != null)),
+          ),
+        },
+      );
     }
     final $headers = Headers({
       'accept':

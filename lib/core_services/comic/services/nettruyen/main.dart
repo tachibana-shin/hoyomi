@@ -12,33 +12,26 @@ final List<Filter> globalFilters = [
     key: 'status',
     multiple: false,
     options: [
-      Option(name: 'Đang tiến hành', value: '0'),
-      Option(name: 'Hoàn thành', value: '1'),
+      Option(name: 'Tất cả', value: '-1'),
+      Option(name: 'Hoàn thành', value: '2'),
+      Option(name: 'Đang tiến hành', value: '1'),
     ],
   ),
   Filter(
-    name: 'Quốc Gia',
-    key: 'country',
-    multiple: false,
-    options: [
-      Option(name: 'Trung Quốc', value: '1'),
-      Option(name: 'Hàn Quốc', value: '2'),
-      Option(name: 'Nhật Bản', value: '3'),
-      Option(name: 'Việt Nam', value: '4'),
-      Option(name: 'Hoa Kỳ', value: '5'),
-    ],
-  ),
-  Filter(
-    name: 'Sắp Xếp',
+    name: 'Sắp xếp',
     key: 'sort',
     multiple: false,
     options: [
-      Option(name: 'Ngày đăng giảm dần', value: '0'),
-      Option(name: 'Ngày đăng tăng dần', value: '1'),
-      Option(name: 'Ngày cập nhật giảm dần', value: '2'),
-      Option(name: 'Ngày cập nhật tăng dần', value: '3'),
-      Option(name: 'Lượt xem giảm dần', value: '4'),
-      Option(name: 'Lượt xem tăng dần', value: '5'),
+      Option(name: 'Ngày cập nhật', value: ''),
+      Option(name: 'Truyện mới', value: '15'),
+      Option(name: 'Top all', value: '10'),
+      Option(name: 'Top tháng', value: '11'),
+      Option(name: 'Top tuần', value: '12'),
+      Option(name: 'Top ngày', value: '13'),
+      Option(name: 'Theo dõi', value: '20'),
+      Option(name: 'Bình luận', value: '25'),
+      Option(name: 'Số chapter', value: '30'),
+      Option(name: 'Top follow', value: '19'),
     ],
   ),
 ];
@@ -324,75 +317,75 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
     required filters,
     required quick,
   }) async {
-    final url =
-        '$baseUrl/tim-kiem${page > 1 ? '/trang-$page' : ''}.html?q=$keyword';
-
-    final $ = await fetch$(url);
-
-    final categories = $('.list_item_home');
-
-    final data = categories
-        .first()
-        .query('.item_home')
-        .map((element) => _parseComic(element, baseUrl));
-
-    final lastPageLink = $('.pagination > a:last-child', single: true);
-    final lastPageLinkText =
-        lastPageLink.attrRaw('href') ?? lastPageLink.textRaw();
-    final maxPage =
-        lastPageLinkText?.isNotEmpty == true
-            ? int.parse(
-              !lastPageLinkText!.contains('javascript')
-                  ? RegExp(
-                    r'trang-(\d+)',
-                  ).firstMatch(lastPageLinkText)!.group(1)!
-                  : lastPageLink.textRaw() ?? '1',
-            )
-            : 1;
-
-    return ComicCategory(
-      name: '',
-      url: url,
-      items: data.toList(),
+    return getCategory(
+      categoryId: 'tim-truyen',
       page: page,
-      totalItems: data.length * maxPage,
-      totalPages: maxPage,
+      filters: {
+        'keyword': [keyword],
+      },
     );
   }
 
   @override
   getCategory({required categoryId, required page, required filters}) async {
-    final url =
-        '$baseUrl/${categoryId.replaceAll('*', '/')}${page > 1 ? '/trang-$page' : ''}.html';
+    if (filters['category']?.firstOrNull != null) {
+      categoryId = 'tim-truyen/${filters['category']!.first}';
+    }
 
-    final $ = await fetch$(buildQueryUri(url, filters: filters).toString());
+    final url =
+        '$baseUrl/${categoryId.replaceAll('_', '/')}${page > 1 ? '?page=$page' : ''}';
+
+    final $ = await fetch$(
+      buildQueryUri(url, filters: filters).toString(),
+      headless: true,
+      query: {
+        'sort': filters['sort'],
+        'status': filters['status'],
+        'keyword': filters['keyword'],
+      },
+    );
 
     final data = $(
-      '.list_item_home, .list_grid',
-      single: true,
-    ).query('.item_home').map((element) => _parseComic(element, baseUrl));
+      '.row > .item',
+    ).map((element) => _parseComic(element, baseUrl));
 
-    final lastPageLink = $(
-      '.pagination > a:last-child',
-      single: true,
-    ).attr('href');
+    final lastPageLink = $('.pagination li a').eq(-2).attr('href');
     final maxPage =
         lastPageLink.isNotEmpty
             ? int.tryParse(
-                  RegExp(r'trang-(\d+)').firstMatch(lastPageLink)?.group(1) ??
+                  RegExp(r'page=(\d+)').firstMatch(lastPageLink)?.group(1) ??
                       '1',
                 ) ??
                 1
             : 1;
 
     return ComicCategory(
-      name: $('.title_cate', single: true).text(),
+      name: $('h1', single: true).text(),
       url: url,
       items: data.toList(),
       page: page,
       totalItems: data.length * maxPage,
       totalPages: maxPage,
-      filters: globalFilters,
+      filters: [
+        Filter(
+          name: 'Thể loại',
+          key: 'category',
+          multiple: false,
+          options:
+              $('.dropdown-genres option').map((option) {
+                final name = option.text();
+                var value = option.attr('value').split('/').last;
+                if (value == 'tim-truyen') value = '';
+
+                return Option(
+                  name: name,
+                  value: value,
+                  selected: filters['category']?.first == value,
+                );
+              }).toList(),
+        ),
+        ...globalFilters,
+      ],
     );
   }
 
