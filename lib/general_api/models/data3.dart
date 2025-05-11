@@ -25,6 +25,6 @@ abstract class Data3 with _$Data3 {
     /// ISO 8601 format pagestamp when the watch page was last updated.
     required String updatedAt,
   }) = _Data3;
-  
+
   factory Data3.fromJson(Map<String, Object?> json) => _$Data3FromJson(json);
 }

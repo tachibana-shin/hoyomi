@@ -66,6 +66,7 @@ class VerticalEigaList extends StatelessWidget {
             child: Service.errorWidgetBuilder(
               context,
               error: snapshot.error,
+              trace: snapshot.stackTrace,
               service: null,
               orElse: (error) => Text('Error: $error'),
             ),

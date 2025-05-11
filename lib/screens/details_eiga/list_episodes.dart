@@ -132,6 +132,7 @@ class _ListEpisodesState extends State<ListEpisodes>
               child: Service.errorWidgetBuilder(
                 context,
                 error: snapshot.error,
+                trace: snapshot.stackTrace,
                 service: null,
                 orElse: (error) => Text('Error: $error'),
               ),

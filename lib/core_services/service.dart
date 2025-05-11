@@ -223,6 +223,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
     BuildContext? context, {
     String? url,
     required CaptchaRequiredException error,
+    required StackTrace trace,
   }) {
     showSnackBar(
       errorWidgetBuilder(
@@ -230,6 +231,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
         isSnackbar: true,
         url: url,
         error: error,
+        trace: trace,
         service: null,
         orElse: (error) => Text('An error occurred: $error'),
       ),
@@ -241,11 +243,13 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
     bool isSnackbar = false,
     String? url,
     required Object? error,
+    required StackTrace? trace,
     required Service? service,
     required Widget Function(Object? error) orElse,
   }) {
     if (kDebugMode) {
       print(error);
+      print(trace);
     }
 
     if (error is CaptchaRequiredException) {
@@ -396,7 +400,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
           print('📥 Response Cookie: ${response.headers['set-cookie']}');
         }
       }
-    } on DioException catch (error) {
+    } on DioException catch (error, trace) {
       if ([429, 503, 403].contains(error.response?.statusCode)) {
         // return Future.error(response);
         _tempHeadless = true;
@@ -404,7 +408,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
 
         // // required captcha resolve
         if (notify) {
-          showCaptchaResolve(null, url: url, error: error);
+          showCaptchaResolve(null, url: url, error: error, trace: trace);
         }
         // try {
         //   final start = DateTime.now();
