@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SourceContent {
 
- String get content; Uri get url; Headers? get headers;
+ String get content; Uri get url; String get type; Headers? get headers;
 /// Create a copy of SourceContent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $SourceContentCopyWith<SourceContent> get copyWith => _$SourceContentCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SourceContent&&(identical(other.content, content) || other.content == content)&&(identical(other.url, url) || other.url == url)&&(identical(other.headers, headers) || other.headers == headers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SourceContent&&(identical(other.content, content) || other.content == content)&&(identical(other.url, url) || other.url == url)&&(identical(other.type, type) || other.type == type)&&(identical(other.headers, headers) || other.headers == headers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,content,url,headers);
+int get hashCode => Object.hash(runtimeType,content,url,type,headers);
 
 @override
 String toString() {
-  return 'SourceContent(content: $content, url: $url, headers: $headers)';
+  return 'SourceContent(content: $content, url: $url, type: $type, headers: $headers)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $SourceContentCopyWith<$Res>  {
   factory $SourceContentCopyWith(SourceContent value, $Res Function(SourceContent) _then) = _$SourceContentCopyWithImpl;
 @useResult
 $Res call({
- String content, Uri url, Headers? headers
+ String content, Uri url, String type, Headers? headers
 });
 
 
@@ -66,11 +66,12 @@ class _$SourceContentCopyWithImpl<$Res>
 
 /// Create a copy of SourceContent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? content = null,Object? url = null,Object? headers = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? content = null,Object? url = null,Object? type = null,Object? headers = freezed,}) {
   return _then(_self.copyWith(
 content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as Uri,headers: freezed == headers ? _self.headers : headers // ignore: cast_nullable_to_non_nullable
+as Uri,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,headers: freezed == headers ? _self.headers : headers // ignore: cast_nullable_to_non_nullable
 as Headers?,
   ));
 }
@@ -94,11 +95,12 @@ $HeadersCopyWith<$Res>? get headers {
 @JsonSerializable()
 
 class _SourceContent implements SourceContent {
-  const _SourceContent({required this.content, required this.url, this.headers});
+  const _SourceContent({required this.content, required this.url, this.type = 'hls', this.headers});
   factory _SourceContent.fromJson(Map<String, dynamic> json) => _$SourceContentFromJson(json);
 
 @override final  String content;
 @override final  Uri url;
+@override@JsonKey() final  String type;
 @override final  Headers? headers;
 
 /// Create a copy of SourceContent
@@ -114,16 +116,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SourceContent&&(identical(other.content, content) || other.content == content)&&(identical(other.url, url) || other.url == url)&&(identical(other.headers, headers) || other.headers == headers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SourceContent&&(identical(other.content, content) || other.content == content)&&(identical(other.url, url) || other.url == url)&&(identical(other.type, type) || other.type == type)&&(identical(other.headers, headers) || other.headers == headers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,content,url,headers);
+int get hashCode => Object.hash(runtimeType,content,url,type,headers);
 
 @override
 String toString() {
-  return 'SourceContent(content: $content, url: $url, headers: $headers)';
+  return 'SourceContent(content: $content, url: $url, type: $type, headers: $headers)';
 }
 
 
@@ -134,7 +136,7 @@ abstract mixin class _$SourceContentCopyWith<$Res> implements $SourceContentCopy
   factory _$SourceContentCopyWith(_SourceContent value, $Res Function(_SourceContent) _then) = __$SourceContentCopyWithImpl;
 @override @useResult
 $Res call({
- String content, Uri url, Headers? headers
+ String content, Uri url, String type, Headers? headers
 });
 
 
@@ -151,11 +153,12 @@ class __$SourceContentCopyWithImpl<$Res>
 
 /// Create a copy of SourceContent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? content = null,Object? url = null,Object? headers = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? content = null,Object? url = null,Object? type = null,Object? headers = freezed,}) {
   return _then(_SourceContent(
 content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as Uri,headers: freezed == headers ? _self.headers : headers // ignore: cast_nullable_to_non_nullable
+as Uri,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,headers: freezed == headers ? _self.headers : headers // ignore: cast_nullable_to_non_nullable
 as Headers?,
   ));
 }

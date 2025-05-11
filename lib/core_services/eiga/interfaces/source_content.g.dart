@@ -10,6 +10,7 @@ _SourceContent _$SourceContentFromJson(Map<String, dynamic> json) =>
     _SourceContent(
       content: json['content'] as String,
       url: Uri.parse(json['url'] as String),
+      type: json['type'] as String? ?? 'hls',
       headers:
           json['headers'] == null
               ? null
@@ -20,5 +21,6 @@ Map<String, dynamic> _$SourceContentToJson(_SourceContent instance) =>
     <String, dynamic>{
       'content': instance.content,
       'url': instance.url.toString(),
+      'type': instance.type,
       'headers': instance.headers,
     };

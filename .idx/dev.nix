@@ -3,6 +3,19 @@
   packages = [
     pkgs.jdk19
     pkgs.unzip
+    pkgs.cmake
+    pkgs.ninja
+    pkgs.gtk3
+    pkgs.clang
+    pkgs.rustup
+    pkgs.pkg-config
+    pkgs.gcc
+    pkgs.gtk3  # GTK for Flutter desktop
+    pkgs.gtk3-x11  # Some distros require this explicitly
+    pkgs.libepoxy  # (GTK dependency)
+    pkgs.at-spi2-core  # Accessibility bridge lib needed in some builds
+    pkgs.xorg.libX11
+    pkgs.gtk-sharp-3_0
   ];
   idx.extensions = [
     pkgs.gh

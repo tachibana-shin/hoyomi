@@ -10,6 +10,7 @@ sealed class SourceContent with _$SourceContent {
   const factory SourceContent({
     required String content,
     required Uri url,
+    @Default('hls') String type,
     Headers? headers,
   }) = _SourceContent;
 

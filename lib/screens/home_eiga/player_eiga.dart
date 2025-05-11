@@ -702,12 +702,12 @@ class _PlayerEigaState extends State<PlayerEiga>
       url = source.url; // Uri.parse(source.url);
     }
 
-    content ??= await widget.service.fetch(
-      url.toString(),
-      headers: source.headers,
-    );
-
     if (parseQuality && source.type == 'hls') {
+      content ??= await widget.service.fetch(
+        url.toString(),
+        headers: source.headers,
+      );
+
       final isMediaPlaylist = await _initializeHls(
         content: content,
         url: url,

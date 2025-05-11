@@ -852,6 +852,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  fs_shim:
+    dependency: "direct main"
+    description:
+      name: fs_shim
+      sha256: "5db6e08f4c8a19b927aa6f282bb5478c75afa924c4e7a291751c8789c9b93bd1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.4"
   fwfh_cached_network_image:
     dependency: transitive
     description:
@@ -1108,6 +1116,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.7"
+  idb_shim:
+    dependency: transitive
+    description:
+      name: idb_shim
+      sha256: d3dae2085f2dcc9d05b851331fddb66d57d3447ff800de9676b396795436e135
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.6.5+1"
   image:
     dependency: transitive
     description:
@@ -1716,6 +1732,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  sembast:
+    dependency: transitive
+    description:
+      name: sembast
+      sha256: d3f0d0ba501a5f1fd7d6c8532ee01385977c8a069c334635dae390d059ae3d6d
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.8.5"
   share_plus:
     dependency: "direct main"
     description:
