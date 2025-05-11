@@ -480,6 +480,7 @@ class _DownloaderComicPageState extends State<DownloaderComicPage> {
                                   child: Service.errorWidgetBuilder(
                                     context,
                                     error: snapshot.error,
+                                    trace: snapshot.stackTrace,
                                     service: null,
                                     orElse:
                                         (err) => Text(

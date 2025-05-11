@@ -9,6 +9,7 @@ import 'package:hoyomi/plugins/install_web_rules.dart';
 import 'package:kaeru/kaeru.dart';
 
 import 'comic/services/cuutruyen/main.dart';
+import 'comic/services/nettruyen/main.dart';
 import 'comic/services/truyengg/main.dart';
 import 'comic/services/truyenqq/main.dart';
 
@@ -20,8 +21,9 @@ import 'eiga/services/ophim/main.dart';
 
 final _allComicServices = Map.fromEntries(
   <ABComicService>[
-    TruyenGGService(),
     CuuTruyenService(),
+    NetTruyenService(),
+    TruyenGGService(),
     TruyenQQService(),
   ].map((service) => MapEntry(service.uid, service)),
 );

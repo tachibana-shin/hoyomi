@@ -339,6 +339,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
               child: Service.errorWidgetBuilder(
                 context,
                 error: snapshot.error,
+                trace: snapshot.stackTrace,
                 service: null,
                 orElse: (err) => Text('Error: $err'),
               ),
@@ -389,6 +390,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
               child: Service.errorWidgetBuilder(
                 context,
                 error: snapshot.error,
+                trace: snapshot.stackTrace,
                 service: null,
                 orElse: (err) => Text('Error: $err'),
               ),

@@ -54,10 +54,11 @@ class _CustomWebViewState extends State<CustomWebView> {
       showSnackBar(Text('Signed in to ${_service.name} as ${user.fullName}'));
     } on UserNotFoundException catch (_) {
       showSnackBar(Text('Sign in ${_service.name} failed.'));
+    } on UnimplementedError catch (_) {
+      /// pass
     } catch (e) {
       showSnackBar(Text('Error while collecting cookies: $e'));
       debugPrint('Error: $e');
-      rethrow;
     }
   }
 

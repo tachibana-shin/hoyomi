@@ -121,6 +121,7 @@ class _HorizontalComicHistoryState extends State<HorizontalComicHistoryList> {
                   child: Service.errorWidgetBuilder(
                     context,
                     error: snapshot.error,
+                    trace: snapshot.stackTrace,
                     service: getService(widget.sourceId),
                     orElse: (error) => Text('Error: $error'),
                   ),

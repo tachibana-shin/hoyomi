@@ -149,7 +149,12 @@ return await fetch(url, {
 
         // // required captcha resolve
         if (notify) {
-          Service.showCaptchaResolve(null, url: url, error: error);
+          Service.showCaptchaResolve(
+            null,
+            url: url,
+            error: error,
+            trace: StackTrace.current,
+          );
         }
         // try {
         //   final start = DateTime.now();

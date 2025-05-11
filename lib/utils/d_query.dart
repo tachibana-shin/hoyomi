@@ -98,6 +98,16 @@ class DQuery {
   }
 
   /// Gets the immediately following sibling of each element in the set of matched elements.
+  DQuery prev() {
+    final prevElements =
+        _elements
+            .map((e) => e.previousElementSibling)
+            .whereType<Element>()
+            .toList();
+    return DQuery(prevElements);
+  }
+
+  /// Gets the immediately following sibling of each element in the set of matched elements.
   DQuery next() {
     final nextElements =
         _elements

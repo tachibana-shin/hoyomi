@@ -70,6 +70,7 @@ class _CommentsState extends State<Comments> {
               child: Service.errorWidgetBuilder(
                 context,
                 error: snapshot.error,
+                trace: snapshot.stackTrace,
                 service: null,
                 orElse: (err) => Text('Error: $err'),
               ),
@@ -98,6 +99,7 @@ class _CommentsState extends State<Comments> {
               child: Service.errorWidgetBuilder(
                 context,
                 error: snapshot.error,
+                trace: snapshot.stackTrace,
                 service: null,
                 orElse: (err) => Text('Error: $err'),
               ),

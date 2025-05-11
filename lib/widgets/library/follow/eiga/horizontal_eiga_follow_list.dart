@@ -54,6 +54,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
                   child: Service.errorWidgetBuilder(
                     context,
                     error: snapshot.error,
+                    trace: snapshot.stackTrace,
                     service: _service as Service,
                     orElse: (error) => Text('Error: $error'),
                   ),

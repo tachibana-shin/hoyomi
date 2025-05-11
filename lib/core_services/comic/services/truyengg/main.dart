@@ -89,9 +89,14 @@ class TruyenGGService extends ABComicService
           headers: headers,
           notify: false,
         );
-      } on CaptchaRequiredException catch (error) {
+      } on CaptchaRequiredException catch (error, stack) {
         if (i == 4) {
-          Service.showCaptchaResolve(null, url: url, error: error);
+          Service.showCaptchaResolve(
+            null,
+            url: url,
+            error: error,
+            trace: stack,
+          );
 
           rethrow;
         } else {

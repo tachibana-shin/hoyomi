@@ -12,9 +12,8 @@ part 'watch_time_schema.g.dart';
 /// The watch time object, which can be null if no data is available.
 @Freezed()
 abstract class WatchTimeSchema with _$WatchTimeSchema {
-  const factory WatchTimeSchema({
-    required Data5? data,
-  }) = _WatchTimeSchema;
-  
-  factory WatchTimeSchema.fromJson(Map<String, Object?> json) => _$WatchTimeSchemaFromJson(json);
+  const factory WatchTimeSchema({required Data5? data}) = _WatchTimeSchema;
+
+  factory WatchTimeSchema.fromJson(Map<String, Object?> json) =>
+      _$WatchTimeSchemaFromJson(json);
 }

@@ -108,6 +108,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
                   child: Service.errorWidgetBuilder(
                     context,
                     error: snapshot.error,
+                    trace: snapshot.stackTrace,
                     service: _service,
                     orElse: (error) => Text('Error: $error'),
                   ),

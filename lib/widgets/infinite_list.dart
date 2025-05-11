@@ -84,6 +84,7 @@ class _InfiniteListState<T> extends State<InfiniteList<T>> {
           (context) => Service.errorWidgetBuilder(
             context,
             error: _error,
+            trace: StackTrace.current,
             service: null,
             orElse: (error) => Text('Error: $error'),
           ),
