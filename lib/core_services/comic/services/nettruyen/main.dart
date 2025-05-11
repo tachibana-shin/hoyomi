@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/utils/d_query.dart';
@@ -68,11 +67,14 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
         itemComic.queryOne('h3').textRaw() ??
         itemComic.queryOne('img').attr('alt');
 
-    final chapter$ = itemComic.queryOne('.slide-caption > a');
-    final lastChap = ComicChapter(
-      name: chapter$.text().trim(),
-      chapterId: chapter$.attr('href').split('/').last,
-    );
+    final chapter$ = itemComic.queryOne('.slide-caption > a, .chapter > a');
+    final lastChap =
+        chapter$.isNotEmpty
+            ? ComicChapter(
+              name: chapter$.text().trim(),
+              chapterId: chapter$.attr('href').split('/').last,
+            )
+            : null;
 
     final timeAgoElement = itemComic.queryOne('.time');
     final timeAgo =
@@ -111,11 +113,36 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
     final $ = await fetch$(baseUrl);
 
     return ComicHome(
+      // carousel: ComicCarousel(
+      //   aspectRatio: 679 / 350,
+      //   maxHeightBuilder: 0.4,
+      //   items:
+      //       $('#ctl00_divAlt1 .item').map((element) {
+      //         final item = _parseComic(element, baseUrl);
+
+      //         return ComicCarouselItem(
+      //           image: item.image,
+      //           description: item.description,
+      //           notice: item.notice,
+      //           comicId: item.comicId,
+      //           name: item.name,
+      //           originalName: item.originalName,
+      //         );
+      //       }).toList(),
+      // ),
       categories: [
         HomeComicCategory(
           items:
               $(
-                '.ctl00_divCenter .row > .item',
+                '#ctl00_divAlt1 .item',
+              ).map((element) => _parseComic(element, baseUrl)).toList(),
+          // gridView: true,
+          name: 'Đề cử',
+        ),
+        HomeComicCategory(
+          items:
+              $(
+                '#ctl00_divCenter .row > .item',
               ).map((element) => _parseComic(element, baseUrl)).toList(),
           gridView: true,
           name: 'Mới Cập Nhật',
@@ -191,9 +218,9 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
     //         as Map<String, dynamic>;
 
     final rate = RateValue(
-      best: int.parse($('.bestRating').text()),
-      count: int.parse($('.ratingValue').text()),
-      value: double.parse($('.ratingCount').text()),
+      best: int.parse($('[itemprop="bestRating"]').text()),
+      count: int.parse($('[itemprop="ratingCount"]').text()),
+      value: double.parse($('[itemprop="ratingValue"]').text()),
     );
 
     final genres = tales
@@ -205,14 +232,14 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
             genreId: 'tim-truyen_${anchor.attr('href').split('/').last}',
           ),
         );
-    final description = $('.detail-content', single: true).text();
+    final description = $('.detail-content', single: true).html();
 
     final chaptersJson =
         jsonDecode(
               await fetch(
                 '$baseUrl/Comic/Services/ComicService.asmx/ChapterList?slug=$comicId',
               ),
-            )
+            )['data']
             as List;
 
     final chaps = chaptersJson.map((chapter) {
@@ -227,7 +254,7 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
     });
     final lastModified = DateFormat(
       'yyyy-MM-dd hh:mm:ss',
-    ).parse($('time').text());
+    ).parse($('time').text().split(': ').last.split(']').first.trim());
 
     return MetaComic(
       name: name,
@@ -259,7 +286,7 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
 
   @override
   String getURL(comicId, {chapterId}) {
-    return '$baseUrl/truyen-tranh/$comicId${chapterId != null ? '-$chapterId' : ''}.html';
+    return '${baseUrl}truyen-tranh/$comicId${chapterId != null ? '/$chapterId' : ''}';
   }
 
   @override
@@ -276,18 +303,18 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
 
   @override
   getSuggest(comic, {page = 1}) async {
-    return (await getCategory(
-      categoryId: 'tim-kiem-nang-cao',
-      page: page!,
-      filters: {
-        'category':
-            comic.genres
-                .toList()
-                .sublist(0, min(3, comic.genres.length))
-                .map((e) => RegExp(r'\d+').allMatches(e.genreId).last.group(0)!)
-                .toList(),
-      },
-    )).items;
+    final metaSlugs =
+        comic.genres
+            .map((c) => c.genreId.replaceFirst('tim-truyen_', ''))
+            .toSet();
+
+    final pageData = await getCategory(
+      categoryId: metaSlugs.first,
+      page: 1,
+      filters: {},
+    );
+
+    return pageData.items.take(30).toList();
   }
 
   @override
