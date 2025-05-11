@@ -43,9 +43,8 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
   @override
   final init = ServiceInit(
     name: 'NetTruyen',
-    faviconUrl: OImage(src: '/favicon.ico'),
+    faviconUrl: OImage.from('https://i.imgur.com/idvPTML.png'),
     rootUrl: 'https://nettruyenvio.com/',
-    rss: '/rss.html',
   );
 
   // Utils
