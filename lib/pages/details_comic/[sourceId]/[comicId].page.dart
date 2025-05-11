@@ -124,19 +124,21 @@ class _DetailsComicState extends State<DetailsComic>
   @override
   Widget build(BuildContext context2) {
     return PullRefreshPage(
-      onLoadData:
-          () => _service
+      onLoadData: () async {
+        try {
+          return await _service
               .getDetails(widget.comicId)
-              .then((comic) => _comic.value = comic)
-              .catchError((error) async {
-                final meta = await ComicDownloader.instance.getMetaOffline(
-                  _service,
-                  widget.comicId,
-                );
-                if (meta != null) return meta.copyWith(offlineMode: true);
+              .then((comic) => _comic.value = comic);
+        } catch (error) {
+          final meta = await ComicDownloader.instance.getMetaOffline(
+            _service,
+            widget.comicId,
+          );
+          if (meta != null) return meta.copyWith(offlineMode: true);
 
-                throw error;
-              }),
+          rethrow;
+        }
+      },
       onLoadFake: () => _comic.value = MetaComic.createFakeData(),
       builderError:
           (body) => Scaffold(
