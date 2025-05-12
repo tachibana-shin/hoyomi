@@ -3,6 +3,6 @@ repos:
     hooks:
       - id: flutter-check
         name: Flutter Format + Analyze + Test
-        entry: find . -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -path "./lib/general_api/*"
+        entry: find . -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -path "./lib/general_api/*" ! -path "./.dart_tool/*" -print0 | xargs -0 dart format --set-exit-if-changed
         language: script
         files: \.dart$
