@@ -48,6 +48,7 @@ class _WebToonReaderState extends State<WebToonReader>
       int i = 0;
       while (i++ < 30) {
         if (_lastReportedPage != pageIndex) {
+          if (!mounted) break;
           _scrollToPage(pageIndex);
           await Future.delayed(Duration(milliseconds: 100));
           _onScroll();
