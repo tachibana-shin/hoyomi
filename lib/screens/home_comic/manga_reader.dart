@@ -435,6 +435,9 @@ class _MangaReaderState extends State<MangaReader>
           SystemUiMode.manual,
           overlays: SystemUiOverlay.values,
         );
+        SystemChrome.setSystemUIOverlayStyle(
+          SystemUiOverlayStyle(statusBarColor: Colors.black),
+        );
       } else {
         await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
       }
