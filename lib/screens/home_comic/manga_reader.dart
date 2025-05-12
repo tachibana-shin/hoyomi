@@ -489,7 +489,7 @@ class _MangaReaderState extends State<MangaReader>
     required bool force,
   }) {
     if (DateTime.now().difference(_createdAt) < Duration(seconds: 3)) return;
-    
+
     if (force) {
       _timer?.cancel();
       _timer = null;

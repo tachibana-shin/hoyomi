@@ -60,7 +60,8 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
   @override
   Widget build(BuildContext context) {
     final currentChapterId =
-        widget.currentChapterId ?? widget.comic.chapters.sortAsc.first.chapterId;
+        widget.currentChapterId ??
+        widget.comic.chapters.sortAsc.first.chapterId;
 
     return DraggableScrollableSheet(
       expand: false,

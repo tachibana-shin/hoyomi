@@ -31,6 +31,7 @@ extension ComicChapterListExt on List<ComicChapter> {
   static final _sortedCache = Expando<List<ComicChapter>>();
 
   List<ComicChapter> get sortAsc {
-    return _sortedCache[this] ??= [...this]..sort((a, b) => a.order.compareTo(b.order));
+    return _sortedCache[this] ??= [...this]
+      ..sort((a, b) => a.order.compareTo(b.order));
   }
 }
