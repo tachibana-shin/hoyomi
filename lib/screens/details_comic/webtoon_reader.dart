@@ -45,7 +45,8 @@ class _WebToonReaderState extends State<WebToonReader>
 
     watch([widget.currentPage], () async {
       final pageIndex = widget.currentPage.value.toInt();
-      while (true) {
+      int i = 0;
+      while (i++ < 30) {
         if (_lastReportedPage != pageIndex) {
           _scrollToPage(pageIndex);
           await Future.delayed(Duration(milliseconds: 100));
