@@ -111,6 +111,13 @@ Hoyomi does **not collect**, **store**, or **share** your personal data. Your ac
 
 ## Development
 
+Install pre-commit hooks:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
 ### Prerequisites
 #### Step 1: Set up the Firebase project
 The first step is to set up the Firebase project and enable Google sign-in. if you already have a flutter project, you can skip this step.

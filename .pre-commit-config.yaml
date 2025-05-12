@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: flutter-check
+        name: Flutter Format + Analyze + Test
+        entry: find . -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -path "./lib/general_api/*"
+        language: script
+        files: \.dart$
