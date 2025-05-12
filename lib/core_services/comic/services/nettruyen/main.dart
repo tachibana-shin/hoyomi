@@ -45,7 +45,7 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
     name: 'NetTruyen',
     faviconUrl: OImage.from('https://i.imgur.com/idvPTML.png'),
     rootUrl: 'https://nettruyenvio.com/',
-    captchaUrl: () => '$baseUrl/tim-truyen?keyword=tonikaku'
+    captchaUrl: () => '$baseUrl/tim-truyen?keyword=tonikaku',
   );
 
   // Utils
