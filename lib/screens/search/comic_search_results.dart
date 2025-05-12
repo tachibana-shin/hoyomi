@@ -20,8 +20,6 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
 
   final Map<ABComicService, Widget> _itemsStore = {};
 
-  Widget? _widgetMain;
-
   Widget _itemBuilderCache(ABComicService service) {
     if (_itemsStore[service] != null) return _itemsStore[service]!;
 
@@ -64,8 +62,8 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
     );
   }
 
-  void _buildWidgetMain() {
-    _widgetMain = Watch(
+  Widget _buildWidgetMain() {
+    return Watch(
       () => ListView.builder(
         itemCount: comicServices.value.length,
         itemBuilder: (context, index) {
@@ -90,11 +88,10 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
     return PullRefreshPage(
       onLoadData: () async {
         _itemsStore.clear();
-        _buildWidgetMain();
         return false;
       },
       onLoadFake: () => true,
-      builder: (loading, __) => _widgetMain!,
+      builder: (loading, __) => _buildWidgetMain(),
     );
   }
 }

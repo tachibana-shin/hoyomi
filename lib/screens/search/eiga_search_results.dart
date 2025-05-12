@@ -21,8 +21,6 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
 
   final Map<ABEigaService, Widget> _itemsStore = {};
 
-  Widget? _widgetMain;
-
   Widget _itemBuilderCache(ABEigaService service) {
     if (_itemsStore[service] != null) return _itemsStore[service]!;
 
@@ -65,8 +63,8 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
     );
   }
 
-  void _buildWidgetMain() {
-    _widgetMain = Watch(() {
+  Widget _buildWidgetMain() {
+    return Watch(() {
       _itemsStore.clear();
 
       return ListView.builder(
@@ -93,11 +91,10 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
     return PullRefreshPage(
       onLoadData: () async {
         _itemsStore.clear();
-        _buildWidgetMain();
         return false;
       },
       onLoadFake: () => true,
-      builder: (loading, __) => _widgetMain!,
+      builder: (loading, __) => _buildWidgetMain(),
     );
   }
 }
