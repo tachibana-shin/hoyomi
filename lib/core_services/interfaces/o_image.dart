@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -78,10 +79,20 @@ sealed class OImage with _$OImage {
 
     final service = getService(sourceId);
 
-    return Image.network(
-      src,
+    return Image(
+      image: CachedNetworkImageProvider(
+        src,
+        headers:
+            Headers({
+              'set-cookie': service.getSetting(key: 'cookie') ?? '',
+              'user-agent': service.getSetting(key: 'user_agent') ?? '',
+              'referer': service.baseUrl,
+              ...headers?.toMap() ?? {},
+            }).toMap(),
+      ),
+
       key: key,
-      scale: scale,
+      // scale: scale,
       frameBuilder: frameBuilder,
       loadingBuilder: loadingBuilder,
       errorBuilder: errorBuilder,
@@ -100,15 +111,9 @@ sealed class OImage with _$OImage {
       gaplessPlayback: gaplessPlayback,
       filterQuality: filterQuality,
       isAntiAlias: isAntiAlias,
-      headers:
-          Headers({
-            'set-cookie': service.getSetting(key: 'cookie') ?? '',
-            'user-agent': service.getSetting(key: 'user_agent') ?? '',
-            'referer': service.baseUrl,
-            ...headers?.toMap() ?? {},
-          }).toMap(),
-      cacheWidth: cacheWidth,
-      cacheHeight: cacheHeight,
+
+      // cacheWidth: cacheWidth,
+      // cacheHeight: cacheHeight,
     );
   }
 
