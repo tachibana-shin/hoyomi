@@ -19,10 +19,7 @@ sealed class ComicHistory with _$ComicHistory {
       sourceId: '',
       item: Comic.createFakeData(),
       watchUpdatedAt: DateTime.now(),
-      lastChapter: ComicChapter(
-        chapterId: 'fake_episode_id',
-        name: 'Fake Episode',
-      ),
+      lastChapter: ComicChapter.createFakeData(),
       watchPage: WatchPage(currentPage: 0, totalPage: 10),
     );
   }

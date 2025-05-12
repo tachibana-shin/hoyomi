@@ -135,6 +135,7 @@ class TruyenGGService extends ABComicService
           .last
           .replaceFirst('.html', '')
           .replaceFirst('Chapter', 'chap'),
+      order: -1,
     );
 
     final timeAgoElement = itemComic.queryOne('.time-ago');
@@ -260,7 +261,11 @@ class TruyenGGService extends ABComicService
       ),
     );
     final description = $('.story-detail-info', single: true).text();
-    final chaps = $('.item_chap').map((chap) {
+    final chaps = $('.item_chap').toList().toList().reversed.indexed.map((
+      entry,
+    ) {
+      final (index, chap) = entry;
+
       final name = chap.queryOne('a').text();
       final chapterId = chap
           .queryOne('a')
@@ -273,7 +278,12 @@ class TruyenGGService extends ABComicService
       final time$ = chap.queryOne('.cl99').textRaw();
       final time = time$ != null ? DateFormat('dd/MM/yyyy').parse(time$) : null;
 
-      return ComicChapter(name: name, chapterId: chapterId, time: time);
+      return ComicChapter(
+        name: name,
+        chapterId: chapterId,
+        time: time,
+        order: index,
+      );
     });
     final lastModified =
         rate$.containsKey('dateModified')
@@ -293,7 +303,7 @@ class TruyenGGService extends ABComicService
       rate: rate,
       genres: genres.toList(),
       description: description,
-      chapters: chaps.reversed.toList(),
+      chapters: chaps.toList(),
       lastModified: lastModified,
       originalName: null,
     );

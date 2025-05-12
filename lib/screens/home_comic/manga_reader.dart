@@ -98,7 +98,7 @@ class _MangaReaderState extends State<MangaReader>
   late final _watchPageChapters = asyncComputed<Map<String, WatchPageUpdated>?>(
     () async {
       if (widget.service is ComicWatchPageMixin) {
-        final chapters = widget.comic.chapters;
+        final chapters = widget.comic.chapters.sortAsc;
 
         try {
           return await (widget.service as ComicWatchPageMixin)
@@ -130,13 +130,13 @@ class _MangaReaderState extends State<MangaReader>
   @override
   void initState() {
     _currChapter = computed(() {
-      final index = widget.comic.chapters.indexWhere(
+      final index = widget.comic.chapters.sortAsc.indexWhere(
         (chapter) => chapter.chapterId == _chapterId.value,
       );
 
       if (index == -1) return null;
 
-      return widget.comic.chapters.elementAtOrNull(index);
+      return widget.comic.chapters.sortAsc.elementAtOrNull(index);
     });
 
     _pages = ref(
@@ -204,19 +204,19 @@ class _MangaReaderState extends State<MangaReader>
       final current = _currChapter.value;
       if (current == null) return null;
 
-      final index = widget.comic.chapters.indexOf(current) - 1;
+      final index = widget.comic.chapters.sortAsc.indexOf(current) - 1;
       if (index == -1) return null;
 
-      return widget.comic.chapters.elementAtOrNull(index);
+      return widget.comic.chapters.sortAsc.elementAtOrNull(index);
     });
     _nextChapter = computed(() {
       final current = _currChapter.value;
       if (current == null) return null;
 
-      final index = widget.comic.chapters.indexOf(current) + 1;
-      if (index == widget.comic.chapters.length) return null;
+      final index = widget.comic.chapters.sortAsc.indexOf(current) + 1;
+      if (index == widget.comic.chapters.sortAsc.length) return null;
 
-      return widget.comic.chapters.elementAtOrNull(index);
+      return widget.comic.chapters.sortAsc.elementAtOrNull(index);
     });
 
     // bool prefetchingPrev = false;
@@ -1327,7 +1327,9 @@ class _MangaReaderState extends State<MangaReader>
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          StrokeText('${currChapter.name}/${widget.comic.chapters.length}'),
+          StrokeText(
+            '${currChapter.name}/${widget.comic.chapters.sortAsc.length}',
+          ),
           10.0.widthBox,
           StrokeText(
             'Page.${_realCurrentPage.value.toInt() + 1}/${_realLength.value}',

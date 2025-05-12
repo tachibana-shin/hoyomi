@@ -68,7 +68,7 @@ class _DetailsComicState extends State<DetailsComic>
         if (_comicIsFake.value) return null;
 
         if (_service is ComicWatchPageMixin) {
-          final chapters = _comic.value.chapters;
+          final chapters = _comic.value.chapters.sortAsc;
 
           try {
             return await (_service as ComicWatchPageMixin).getWatchPageEpisodes(
@@ -96,7 +96,7 @@ class _DetailsComicState extends State<DetailsComic>
 
       if (watchPage == null) return null;
 
-      final chapter = _comic.value.chapters.firstWhereOrNull(
+      final chapter = _comic.value.chapters.sortAsc.firstWhereOrNull(
         (chapter) => chapter.chapterId == watchPage.key,
       );
       if (chapter == null) return null;
@@ -561,7 +561,7 @@ class _DetailsComicState extends State<DetailsComic>
                                 (lastReadChapter, isComplete) => Text(
                                   lastReadChapter == null
                                       ? '(No data)'
-                                      : '${lastReadChapter.chapter.name} of ${comic.chapters.length}',
+                                      : '${lastReadChapter.chapter.name} of ${comic.chapters.sortAsc.length}',
                                 ),
                             error:
                                 (error, stack) => Text(
@@ -594,7 +594,7 @@ class _DetailsComicState extends State<DetailsComic>
                                   (watchPageChapters, isComplete) => Text(
                                     watchPageChapters == null
                                         ? '(No data)'
-                                        : '${((watchPageChapters.values.fold(0.0, (prev, item) => prev + item.currentPage / item.totalPage) / comic.chapters.length) * 100).round()}%',
+                                        : '${((watchPageChapters.values.fold(0.0, (prev, item) => prev + item.currentPage / item.totalPage) / comic.chapters.sortAsc.length) * 100).round()}%',
                                     style: TextStyle(
                                       color:
                                           Theme.of(
@@ -665,10 +665,10 @@ class _DetailsComicState extends State<DetailsComic>
   //   final current = null;
   //   final currentEpisodeIndex = current == null
   //       ? null
-  //       : comic.chapters.toList().lastIndexWhere((chapter) {
+  //       : comic.chapters.sortAsc.toList().lastIndexWhere((chapter) {
   //           return current.key == chapter.chapterId;
   //         });
-  //   final totalEpisodes = comic.chapters.length;
+  //   final totalEpisodes = comic.chapters.sortAsc.length;
 
   //   return ClipRRect(
   //     clipBehavior: Clip.antiAlias,
@@ -677,12 +677,12 @@ class _DetailsComicState extends State<DetailsComic>
   //       onTap: () {
   //         if (currentEpisodeIndex != null) {
   //           context.push(
-  //             "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${comic.chapters.elementAt(currentEpisodeIndex).chapterId}",
+  //             "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${comic.chapters.sortAsc.elementAt(currentEpisodeIndex).chapterId}",
   //             extra: {'comic': comic},
   //           );
   //         } else {
   //           context.push(
-  //             "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${comic.chapters.first.chapterId}",
+  //             "/details_comic/${widget.sourceId}/${widget.comicId}/view?chap=${comic.chapters.sortAsc.first.chapterId}",
   //             extra: {'comic': comic},
   //           );
   //         }
@@ -749,7 +749,7 @@ class _DetailsComicState extends State<DetailsComic>
   //                 Text(
   //                   currentEpisodeIndex == null
   //                       ? '$totalEpisodes chapters'
-  //                       : '${comic.chapters.elementAt(currentEpisodeIndex).name} of $totalEpisodes',
+  //                       : '${comic.chapters.sortAsc.elementAt(currentEpisodeIndex).name} of $totalEpisodes',
   //                   style: TextStyle(
   //                     fontSize: 12,
   //                     color: Theme.of(
@@ -851,7 +851,7 @@ class _DetailsComicState extends State<DetailsComic>
 
                 // final pages = await _service.getPages(
                 //   widget.comicId,
-                //   _comic.value.chapters.first.chapterId,
+                //   _comic.value.chapters.sortAsc.first.chapterId,
                 // );
 
                 // final result = await downloader.downloadChapter(
@@ -859,8 +859,8 @@ class _DetailsComicState extends State<DetailsComic>
                 //   comicId: widget.comicId,
                 //   metaComic: _comic.value,
                 //   chapterId:
-                //       _comic.value.chapters.first.chapterId, // chapterId,
-                //   chapter: _comic.value.chapters.first,
+                //       _comic.value.chapters.sortAsc.first.chapterId, // chapterId,
+                //   chapter: _comic.value.chapters.sortAsc.first,
                 //   pages: pages,
                 // );
 

@@ -66,6 +66,7 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
             ? ComicChapter(
               name: chapter$.text().trim(),
               chapterId: chapter$.attr('href').split('/').last,
+              order: -1,
             )
             : null;
 
@@ -243,7 +244,12 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
       final time =
           time$ != null ? DateFormat('yyyy-MM-dd hh:mm:ss').parse(time$) : null;
 
-      return ComicChapter(name: name, chapterId: chapterId, time: time);
+      return ComicChapter(
+        name: name,
+        chapterId: chapterId,
+        time: time,
+        order: (chapter['chapter_num'] as num).toInt(),
+      );
     });
     final lastModified = DateFormat(
       'yyyy-MM-dd hh:mm:ss',

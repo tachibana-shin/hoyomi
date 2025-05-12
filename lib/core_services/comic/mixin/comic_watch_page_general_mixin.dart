@@ -53,6 +53,7 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
         lastChapter: ComicChapter(
           name: history.watchName,
           chapterId: history.watchId,
+          order: -1,
         ),
         watchPage: WatchPage(
           currentPage: history.watchCur.toInt(),
@@ -88,6 +89,7 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
         lastChapter: ComicChapter(
           name: history.watchName,
           chapterId: history.watchId,
+          order: -1,
         ),
         watchPage: WatchPage(
           currentPage: history.watchCur.toInt(),

@@ -70,7 +70,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
               throw error;
             });
     _metaComicFuture.then((comic) {
-      _chapter.value = comic.chapters.firstWhere(
+      _chapter.value = comic.chapters.sortAsc.firstWhere(
         (element) => element.chapterId == widget.chapterId,
       );
 
@@ -81,7 +81,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
   }
 
   void _updateChapter(String chapterId) {
-    _chapter.value = _metaComic.value!.chapters.firstWhere(
+    _chapter.value = _metaComic.value!.chapters.sortAsc.firstWhere(
       (element) => element.chapterId == chapterId,
     );
   }

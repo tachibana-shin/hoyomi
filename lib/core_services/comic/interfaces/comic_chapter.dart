@@ -8,6 +8,7 @@ sealed class ComicChapter with _$ComicChapter {
   const factory ComicChapter({
     required String name,
     String? fullName,
+    required int order,
     required String chapterId,
     DateTime? time,
     String? extra,
@@ -21,6 +22,15 @@ sealed class ComicChapter with _$ComicChapter {
   factory ComicChapter.createFakeData() => ComicChapter(
     name: "Chapter 1: The Beginning",
     chapterId: "ch1",
+    order: -1,
     time: DateTime.now().subtract(const Duration(days: 2)),
   );
+}
+
+extension ComicChapterListExt on List<ComicChapter> {
+  static final _sortedCache = Expando<List<ComicChapter>>();
+
+  List<ComicChapter> get sortAsc {
+    return _sortedCache[this] ??= [...this]..sort((a, b) => a.order.compareTo(b.order));
+  }
 }

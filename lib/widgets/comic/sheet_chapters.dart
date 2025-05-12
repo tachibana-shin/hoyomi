@@ -60,7 +60,7 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
   @override
   Widget build(BuildContext context) {
     final currentChapterId =
-        widget.currentChapterId ?? widget.comic.chapters.first.chapterId;
+        widget.currentChapterId ?? widget.comic.chapters.sortAsc.first.chapterId;
 
     return DraggableScrollableSheet(
       expand: false,
@@ -102,7 +102,7 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                     GFButton(
                       onPressed: () {
                         final url =
-                            "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${lastReadChapter?.chapter.chapterId ?? widget.comic.chapters.first.chapterId}";
+                            "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${lastReadChapter?.chapter.chapterId ?? widget.comic.chapters.sortAsc.first.chapterId}";
                         final extra = {'comic': widget.comic};
 
                         if (widget.replace) {
@@ -140,7 +140,7 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                             comicId: widget.comicId,
                             metaComic: widget.comic,
                             chapterId: chapterId,
-                            chapter: widget.comic.chapters.firstWhere(
+                            chapter: widget.comic.chapters.sortAsc.firstWhere(
                               (element) => element.chapterId == chapterId,
                             ),
                             pages: await widget.service.getPages(
@@ -163,12 +163,12 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
               child: ListView.builder(
                 controller: scrollController,
                 // reverse
-                itemCount: widget.comic.chapters.length,
+                itemCount: widget.comic.chapters.sortAsc.length,
                 itemBuilder: (context2, index) {
-                  final chapter = widget.comic.chapters.elementAt(
+                  final chapter = widget.comic.chapters.sortAsc.elementAt(
                     widget.reverse
                         ? index
-                        : (widget.comic.chapters.length - 1 - index),
+                        : (widget.comic.chapters.sortAsc.length - 1 - index),
                   ); //[index];
                   final bool selected = chapter.chapterId == currentChapterId;
                   if (selected && notSelected) {

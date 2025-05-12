@@ -62,6 +62,7 @@ class CuuTruyenService extends ABComicService
                       lastChap: ComicChapter(
                         name: 'Chapter ${item.newestChapterNumber}',
                         chapterId: item.newestChapterId.toString(),
+                        order: -1,
                       ),
                       lastUpdate: item.newestChapterCreatedAt,
                     ),
@@ -84,6 +85,7 @@ class CuuTruyenService extends ABComicService
                       lastChap: ComicChapter(
                         name: 'Chapter ${item.newestChapterNumber}',
                         chapterId: item.newestChapterId.toString(),
+                        order: -1,
                       ),
                       lastUpdate: DateTime.parse(item.newestChapterCreatedAt),
                     ),
@@ -156,6 +158,7 @@ class CuuTruyenService extends ABComicService
               (chapter) => ComicChapter(
                 name: 'Chapter ${chapter.number}',
                 fullName: chapter.name,
+                order: chapter.order,
                 chapterId: chapter.id.toString(),
                 extra: chapter.id.toString(),
               ),
@@ -180,7 +183,7 @@ class CuuTruyenService extends ABComicService
       // rate: rate,
       genres: genres.toList(),
       description: description,
-      chapters: chaps.reversed.toList(),
+      chapters: chaps.toList(),
       lastModified: lastModified,
     );
   }
@@ -244,6 +247,7 @@ class CuuTruyenService extends ABComicService
                 lastChap: ComicChapter(
                   name: 'Chapter ${item.newestChapterNumber}',
                   chapterId: item.newestChapterId.toString(),
+                  order: -1,
                 ),
                 lastUpdate: item.newestChapterCreatedAt,
               ),
@@ -314,7 +318,7 @@ class CuuTruyenService extends ABComicService
     final data = CommentsResponse.fromJson(
       jsonDecode(
         await fetch(
-          'chapters/${context.chapter?.extra! ?? context.metaComic.chapters.first.extra}/comments',
+          'chapters/${context.chapter?.extra! ?? context.metaComic.chapters.sortAsc.first.extra}/comments',
         ),
       ),
     );

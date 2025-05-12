@@ -319,7 +319,7 @@ class _DownloaderComicPageState extends State<DownloaderComicPage> {
                                                       TableCellVerticalAlignment
                                                           .middle,
                                                   children:
-                                                      comic.chapters
+                                                      comic.chapters.sortAsc
                                                           .where(
                                                             (
                                                               chapter,
@@ -416,7 +416,7 @@ class _DownloaderComicPageState extends State<DownloaderComicPage> {
                                                                               downloader.meta,
                                                                           chapterId:
                                                                               download.chapterId,
-                                                                          chapter: comic.chapters.firstWhere(
+                                                                          chapter: comic.chapters.sortAsc.firstWhere(
                                                                             (
                                                                               chapter,
                                                                             ) =>

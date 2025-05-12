@@ -120,9 +120,9 @@ class ComicChanges {
     }
 
     final oldChaptersSet =
-        oldData.chapters.map((chapter) => chapter.chapterId).toSet();
+        oldData.chapters.sortAsc.map((chapter) => chapter.chapterId).toSet();
 
-    return newData.chapters.where(
+    return newData.chapters.sortAsc.where(
       (chapter) => !oldChaptersSet.contains(chapter.chapterId),
     );
   }

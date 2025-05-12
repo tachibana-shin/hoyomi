@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ComicChapter {
 
- String get name; String? get fullName; String get chapterId; DateTime? get time; String? get extra;
+ String get name; String? get fullName; int get order; String get chapterId; DateTime? get time; String? get extra;
 /// Create a copy of ComicChapter
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $ComicChapterCopyWith<ComicChapter> get copyWith => _$ComicChapterCopyWithImpl<C
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ComicChapter&&(identical(other.name, name) || other.name == name)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.chapterId, chapterId) || other.chapterId == chapterId)&&(identical(other.time, time) || other.time == time)&&(identical(other.extra, extra) || other.extra == extra));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ComicChapter&&(identical(other.name, name) || other.name == name)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.order, order) || other.order == order)&&(identical(other.chapterId, chapterId) || other.chapterId == chapterId)&&(identical(other.time, time) || other.time == time)&&(identical(other.extra, extra) || other.extra == extra));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,fullName,chapterId,time,extra);
+int get hashCode => Object.hash(runtimeType,name,fullName,order,chapterId,time,extra);
 
 @override
 String toString() {
-  return 'ComicChapter(name: $name, fullName: $fullName, chapterId: $chapterId, time: $time, extra: $extra)';
+  return 'ComicChapter(name: $name, fullName: $fullName, order: $order, chapterId: $chapterId, time: $time, extra: $extra)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $ComicChapterCopyWith<$Res>  {
   factory $ComicChapterCopyWith(ComicChapter value, $Res Function(ComicChapter) _then) = _$ComicChapterCopyWithImpl;
 @useResult
 $Res call({
- String name, String? fullName, String chapterId, DateTime? time, String? extra
+ String name, String? fullName, int order, String chapterId, DateTime? time, String? extra
 });
 
 
@@ -66,11 +66,12 @@ class _$ComicChapterCopyWithImpl<$Res>
 
 /// Create a copy of ComicChapter
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? fullName = freezed,Object? chapterId = null,Object? time = freezed,Object? extra = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? fullName = freezed,Object? order = null,Object? chapterId = null,Object? time = freezed,Object? extra = freezed,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,fullName: freezed == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
-as String?,chapterId: null == chapterId ? _self.chapterId : chapterId // ignore: cast_nullable_to_non_nullable
+as String?,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
+as int,chapterId: null == chapterId ? _self.chapterId : chapterId // ignore: cast_nullable_to_non_nullable
 as String,time: freezed == time ? _self.time : time // ignore: cast_nullable_to_non_nullable
 as DateTime?,extra: freezed == extra ? _self.extra : extra // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -84,11 +85,12 @@ as String?,
 @JsonSerializable()
 
 class _ComicChapter implements ComicChapter {
-  const _ComicChapter({required this.name, this.fullName, required this.chapterId, this.time, this.extra});
+  const _ComicChapter({required this.name, this.fullName, required this.order, required this.chapterId, this.time, this.extra});
   factory _ComicChapter.fromJson(Map<String, dynamic> json) => _$ComicChapterFromJson(json);
 
 @override final  String name;
 @override final  String? fullName;
+@override final  int order;
 @override final  String chapterId;
 @override final  DateTime? time;
 @override final  String? extra;
@@ -106,16 +108,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ComicChapter&&(identical(other.name, name) || other.name == name)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.chapterId, chapterId) || other.chapterId == chapterId)&&(identical(other.time, time) || other.time == time)&&(identical(other.extra, extra) || other.extra == extra));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ComicChapter&&(identical(other.name, name) || other.name == name)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.order, order) || other.order == order)&&(identical(other.chapterId, chapterId) || other.chapterId == chapterId)&&(identical(other.time, time) || other.time == time)&&(identical(other.extra, extra) || other.extra == extra));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,fullName,chapterId,time,extra);
+int get hashCode => Object.hash(runtimeType,name,fullName,order,chapterId,time,extra);
 
 @override
 String toString() {
-  return 'ComicChapter(name: $name, fullName: $fullName, chapterId: $chapterId, time: $time, extra: $extra)';
+  return 'ComicChapter(name: $name, fullName: $fullName, order: $order, chapterId: $chapterId, time: $time, extra: $extra)';
 }
 
 
@@ -126,7 +128,7 @@ abstract mixin class _$ComicChapterCopyWith<$Res> implements $ComicChapterCopyWi
   factory _$ComicChapterCopyWith(_ComicChapter value, $Res Function(_ComicChapter) _then) = __$ComicChapterCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String? fullName, String chapterId, DateTime? time, String? extra
+ String name, String? fullName, int order, String chapterId, DateTime? time, String? extra
 });
 
 
@@ -143,11 +145,12 @@ class __$ComicChapterCopyWithImpl<$Res>
 
 /// Create a copy of ComicChapter
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? fullName = freezed,Object? chapterId = null,Object? time = freezed,Object? extra = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? fullName = freezed,Object? order = null,Object? chapterId = null,Object? time = freezed,Object? extra = freezed,}) {
   return _then(_ComicChapter(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,fullName: freezed == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
-as String?,chapterId: null == chapterId ? _self.chapterId : chapterId // ignore: cast_nullable_to_non_nullable
+as String?,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
+as int,chapterId: null == chapterId ? _self.chapterId : chapterId // ignore: cast_nullable_to_non_nullable
 as String,time: freezed == time ? _self.time : time // ignore: cast_nullable_to_non_nullable
 as DateTime?,extra: freezed == extra ? _self.extra : extra // ignore: cast_nullable_to_non_nullable
 as String?,
