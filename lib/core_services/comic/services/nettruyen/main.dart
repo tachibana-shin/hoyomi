@@ -41,10 +41,11 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
   bool? get $isAuth => false;
 
   @override
-  final init = ServiceInit(
+  late final init = ServiceInit(
     name: 'NetTruyen',
     faviconUrl: OImage.from('https://i.imgur.com/idvPTML.png'),
     rootUrl: 'https://nettruyenvio.com/',
+    captchaUrl: () => '$baseUrl/tim-truyen?keyword=tonikaku'
   );
 
   // Utils

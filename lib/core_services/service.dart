@@ -87,6 +87,7 @@ class ServiceInit {
   final String? uid;
   final OImage faviconUrl;
   final String rootUrl;
+  final String Function()? captchaUrl;
   final String? rss;
   final List<SettingField>? settings;
   final List<WebRule>? webRules;
@@ -109,6 +110,7 @@ class ServiceInit {
     this.uid,
     required this.rootUrl,
     required this.faviconUrl,
+    this.captchaUrl,
     this.rss,
     this.settings,
     this.onBeforeInsertCookie,
