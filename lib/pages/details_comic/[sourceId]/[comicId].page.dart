@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hoyomi/composable/use_user_async.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/mixin/export.dart';
-import 'package:hoyomi/errors/captcha_required_exception.dart';
+import 'package:hoyomi/core_services/exception/captcha_required_exception.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/utils/export.dart';
 import 'package:hoyomi/widgets/export.dart';

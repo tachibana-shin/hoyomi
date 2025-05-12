@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 const List<String> targetMainFiles = [
   'lib/core_services/comic/export.dart',
   'lib/core_services/eiga/export.dart',
+  'lib/core_services/exception/export.dart',
   'lib/core_services/interfaces/export.dart',
   'lib/core_services/mixin/export.dart',
   'lib/pages/export.dart',

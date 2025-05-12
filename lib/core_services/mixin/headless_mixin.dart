@@ -5,7 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hoyomi/core_services/interfaces/headers.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/errors/captcha_required_exception.dart';
+import 'package:hoyomi/core_services/exception/captcha_required_exception.dart';
+import 'package:hoyomi/core_services/mixin/export.dart';
 
 import '../service.dart';
 
@@ -149,7 +150,7 @@ return await fetch(url, {
 
         // // required captcha resolve
         if (notify) {
-          Service.showCaptchaResolve(
+          CaptchaResolverMixin.showSnackCaptcha(
             null,
             url: url,
             error: error,

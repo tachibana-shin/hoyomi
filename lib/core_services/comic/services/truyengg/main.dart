@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
-import 'package:hoyomi/errors/captcha_required_exception.dart';
+import 'package:hoyomi/core_services/exception/captcha_required_exception.dart';
 import 'package:hoyomi/utils/d_query.dart';
 import 'package:intl/intl.dart';
 
@@ -89,15 +89,8 @@ class TruyenGGService extends ABComicService
           headers: headers,
           notify: false,
         );
-      } on CaptchaRequiredException catch (error, stack) {
+      } on CaptchaRequiredException {
         if (i == 4) {
-          Service.showCaptchaResolve(
-            null,
-            url: url,
-            error: error,
-            trace: stack,
-          );
-
           rethrow;
         } else {
           await Future.delayed(

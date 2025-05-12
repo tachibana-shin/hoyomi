@@ -10,25 +10,20 @@ import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/service_settings_controller.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
+import 'package:hoyomi/core_services/mixin/export.dart';
 import 'package:hoyomi/database/scheme/service_settings.dart';
-import 'package:hoyomi/errors/captcha_required_exception.dart';
+import 'package:hoyomi/core_services/exception/captcha_required_exception.dart';
 import 'package:hoyomi/plugins/create_dio_client.dart';
 import 'package:hoyomi/utils/d_query.dart';
 import 'package:html/parser.dart';
 
-import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/router/index.dart';
-import 'package:hoyomi/widgets/iconify.dart';
 import 'package:http_cache_file_store/http_cache_file_store.dart';
-import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'interfaces/export.dart';
-import 'mixin/headless_mixin.dart';
-import 'mixin/settings_mixin.dart';
 
 Dio? _dioCache;
 Future<Dio> _createDioClientCache() async {
@@ -221,26 +216,6 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
   }
 
   Future<User>? _userFuture;
-
-  static void showCaptchaResolve(
-    BuildContext? context, {
-    String? url,
-    required CaptchaRequiredException error,
-    required StackTrace trace,
-  }) {
-    showSnackBar(
-      errorWidgetBuilder(
-        context,
-        isSnackbar: true,
-        url: url,
-        error: error,
-        trace: trace,
-        service: null,
-        orElse: (error) => Text('An error occurred: $error'),
-      ),
-    );
-  }
-
   static Widget errorWidgetBuilder(
     BuildContext? context, {
     bool isSnackbar = false,
@@ -256,53 +231,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
     }
 
     if (error is CaptchaRequiredException) {
-      return Padding(
-        padding:
-            isSnackbar
-                ? EdgeInsets.zero
-                : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                Iconify(
-                  Mdi.earth,
-                  color:
-                      isSnackbar || context == null
-                          ? Colors.black
-                          : Theme.of(context).colorScheme.onSurface,
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Please resolve Captcha to continue.'),
-                      if (url != null)
-                        Text(
-                          url,
-                          style: TextStyle(fontSize: 14.0),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 8.0),
-            ElevatedButton(
-              child: Text('Go to Captcha'),
-              onPressed: () async {
-                await router.push('/webview/${error.service.uid}');
-                router.refresh();
-              },
-            ),
-          ],
-        ),
-      );
+      return CaptchaResolverMixin.buildWidget(context, error: error, url: url);
     }
 
     if (error is UserNotFoundException) {
@@ -404,14 +333,20 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
         }
       }
     } on DioException catch (error, trace) {
-      if ([429, 503, 403].contains(error.response?.statusCode)) {
+      if (error.response != null &&
+          CaptchaResolverMixin.responseIsCaptchaResolve(error.response!)) {
         // return Future.error(response);
         _tempHeadless = true;
         final error = CaptchaRequiredException(getService(uid));
 
         // // required captcha resolve
         if (notify) {
-          showCaptchaResolve(null, url: url, error: error, trace: trace);
+          CaptchaResolverMixin.showSnackCaptcha(
+            null,
+            url: url,
+            error: error,
+            trace: trace,
+          );
         }
         // try {
         //   final start = DateTime.now();
