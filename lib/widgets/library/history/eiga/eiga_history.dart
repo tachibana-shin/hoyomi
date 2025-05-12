@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_history.dart'
     as types;
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
@@ -46,10 +47,9 @@ class _EigaHistoryState extends State<EigaHistory> {
         children: [
           AspectRatio(
             aspectRatio: 16 / 9,
-            child: OImage.network(
-              eiga.image.src,
+            child: OImage.oNetwork(
+              eiga.image,
               sourceId: widget.sourceId,
-              headers: eiga.image.headers,
               fit: BoxFit.cover,
             ),
           ),
@@ -137,6 +137,17 @@ class _EigaHistoryState extends State<EigaHistory> {
 
     return InkWell(
       borderRadius: BorderRadius.circular(7),
+      onTap:
+          () => context.pushNamed(
+            'details_eiga',
+            pathParameters: {
+              'sourceId': widget.history.sourceId,
+              'eigaId': widget.history.item.eigaId,
+            },
+            queryParameters: {
+              'episodeId': widget.history.lastEpisode.episodeId,
+            },
+          ),
       child: Container(
         decoration: BoxDecoration(
           color: null,

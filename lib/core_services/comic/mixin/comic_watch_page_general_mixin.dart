@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' hide Headers;
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/env.dart';
 import 'package:hoyomi/general_api/export.dart';
@@ -83,7 +83,10 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
           name: history.name,
           comicId: history.comicTextId,
           originalName: history.seasonName,
-          image: OImage(src: history.poster),
+          image: OImage(
+            src: history.poster,
+            headers: Headers({'referer': baseUrl}),
+          ),
         ),
         watchUpdatedAt: DateTime.parse(history.createdAt),
         lastChapter: ComicChapter(

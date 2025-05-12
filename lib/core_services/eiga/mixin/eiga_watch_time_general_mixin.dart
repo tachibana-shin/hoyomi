@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' hide Headers;
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/env.dart';
@@ -84,7 +84,10 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
           name: history.name,
           eigaId: history.eigaTextId,
           originalName: history.seasonName,
-          image: OImage(src: history.poster),
+          image: OImage(
+            src: history.poster,
+            headers: Headers({'referer': baseUrl}),
+          ),
         ),
         watchUpdatedAt: DateTime.parse(history.createdAt),
         lastEpisode: EigaEpisode(

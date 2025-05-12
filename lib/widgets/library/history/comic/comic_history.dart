@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_history.dart'
     as types;
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
@@ -45,10 +46,9 @@ class _ComicHistoryState extends State<ComicHistory> {
         children: [
           AspectRatio(
             aspectRatio: 2 / 3,
-            child: OImage.network(
-              comic.image.src,
+            child: OImage.oNetwork(
+              comic.image,
               sourceId: widget.sourceId,
-              headers: comic.image.headers,
               fit: BoxFit.cover,
             ),
           ),
@@ -134,6 +134,17 @@ class _ComicHistoryState extends State<ComicHistory> {
 
     return InkWell(
       borderRadius: BorderRadius.circular(7),
+      onTap:
+          () => context.pushNamed(
+            'details_comic_reader',
+            pathParameters: {
+              'sourceId': widget.history.sourceId,
+              'comicId': widget.history.item.comicId,
+            },
+            queryParameters: {
+              'chap': widget.history.lastChapter.chapterId,
+            },
+          ),
       child: Container(
         decoration: BoxDecoration(
           color: null,

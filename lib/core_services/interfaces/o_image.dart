@@ -104,6 +104,7 @@ sealed class OImage with _$OImage {
           Headers({
             'set-cookie': service.getSetting(key: 'cookie') ?? '',
             'user-agent': service.getSetting(key: 'user_agent') ?? '',
+            'referer': service.baseUrl,
             ...headers?.toMap() ?? {},
           }).toMap(),
       cacheWidth: cacheWidth,
