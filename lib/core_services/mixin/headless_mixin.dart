@@ -52,7 +52,7 @@ mixin HeadlessMixin on BaseService {
         debugPrint(
           '[headless]: WebView error with $request and $error but controller ready',
         );
-        completer.completeError(error);
+        if (!completer.isCompleted) completer.completeError(error);
       },
       onConsoleMessage: (controller, consoleMessage) async {
         debugPrint(consoleMessage.toString());
