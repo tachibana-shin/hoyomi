@@ -127,6 +127,9 @@ class _MangaReaderState extends State<MangaReader>
   late final _pageMemoryCacheStore = <OImage, FutureCache<Uint8List>>{};
   late final _progressCacheStore = <OImage, Ref<double>>{};
 
+  // created at
+  late final _createdAt = DateTime.now();
+
   @override
   void initState() {
     _currChapter = computed(() {
@@ -482,6 +485,8 @@ class _MangaReaderState extends State<MangaReader>
     required WatchPage watchPage,
     required bool force,
   }) {
+    if (DateTime.now().difference(_createdAt) < Duration(seconds: 3)) return;
+    
     if (force) {
       _timer?.cancel();
       _timer = null;

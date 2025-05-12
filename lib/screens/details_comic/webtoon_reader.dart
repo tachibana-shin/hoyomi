@@ -43,10 +43,16 @@ class _WebToonReaderState extends State<WebToonReader>
 
     watch([widget.pages], () => _itemKeys.clear());
 
-    watch([widget.currentPage], () {
+    watch([widget.currentPage], () async {
       final pageIndex = widget.currentPage.value.toInt();
-      if (_lastReportedPage != pageIndex) {
-        _scrollToPage(pageIndex);
+      while (true) {
+        if (_lastReportedPage != pageIndex) {
+          _scrollToPage(pageIndex);
+          await Future.delayed(Duration(milliseconds: 100));
+          continue;
+        }
+
+        break;
       }
     }, immediate: true);
   }
@@ -82,7 +88,7 @@ class _WebToonReaderState extends State<WebToonReader>
 
     _scrollController.animateTo(
       100.h(context) * (index - (befIndex + 1)) + bef,
-      duration: Duration.zero,
+      duration: Duration(milliseconds: 10),
       curve: Curves.linear,
     );
   }
