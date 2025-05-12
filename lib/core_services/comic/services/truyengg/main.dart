@@ -72,7 +72,7 @@ class TruyenGGService extends ABComicService
   fetch(
     String url, {
     String? cookie,
-    Map<String, dynamic>? query,
+    UrlSearchParams? query,
     Map<String, dynamic>? body,
     Headers? headers,
     bool notify = true,

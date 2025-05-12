@@ -210,9 +210,7 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
   @override
   getCategory({required categoryId, required page, required filters}) async {
     final url = '$baseUrl/${categoryId.replaceAll(r'_', '/')}';
-    final Map<String, List<String>> query = Map.from(filters);
-
-    query['page'] = [page.toString()];
+    final query = UrlSearchParams.fromMap(filters).set('page', page.toString());
 
     final $ = await fetch$(url, query: query);
 

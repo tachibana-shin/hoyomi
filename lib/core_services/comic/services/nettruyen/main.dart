@@ -337,11 +337,11 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
     final $ = await fetch$(
       buildQueryUri(url, filters: filters).toString(),
       headless: true,
-      query: {
+      query: UrlSearchParams.fromMap( {
         'sort': filters['sort'],
         'status': filters['status'],
         'keyword': filters['keyword'],
-      },
+      }),
     );
 
     final data = $(

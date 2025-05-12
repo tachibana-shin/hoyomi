@@ -26,7 +26,7 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'interfaces/main.dart';
+import 'interfaces/export.dart';
 import 'mixin/headless_mixin.dart';
 import 'mixin/settings_mixin.dart';
 
@@ -458,7 +458,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
   Future<String> fetch(
     String url, {
     String? cookie,
-    Map<String, dynamic>? query,
+    UrlSearchParams? query,
     Map<String, dynamic>? body,
     Headers? headers,
     bool notify = true,
@@ -476,16 +476,8 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
         _fetchBaseUrl == null
             ? Uri.parse(url)
             : Uri.parse(_fetchBaseUrl!).resolve(url);
-    if (query != null) {
-      uri = uri.replace(
-        queryParameters: {
-          ...uri.queryParametersAll,
-          ...Map.fromEntries(
-            query.entries.where(((entry) => entry.value != null)),
-          ),
-        },
-      );
-    }
+    if (query != null) uri = query.joinTo(uri);
+
     final $headers = Headers({
       'accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -525,7 +517,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
     String url, {
     Duration? expires,
     String? cookie,
-    Map<String, dynamic>? query,
+    UrlSearchParams? query,
     Map<String, dynamic>? body,
     Headers? headers,
   }) async {
@@ -569,7 +561,7 @@ abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
   Future<DollarFunction> fetch$(
     String url, {
     String? cookie,
-    Map<String, dynamic>? query,
+    UrlSearchParams? query,
     Map<String, dynamic>? body,
     Headers? headers,
     bool headless = false,
