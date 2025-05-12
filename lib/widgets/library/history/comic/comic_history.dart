@@ -105,7 +105,7 @@ class _ComicHistoryState extends State<ComicHistory> {
         ),
 
         Text(
-          'Episode ${chapter.name}',
+          chapter.name,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontSize: isVertical ? 12.0 : 14.0,
             fontWeight: FontWeight.w400,
@@ -141,9 +141,7 @@ class _ComicHistoryState extends State<ComicHistory> {
               'sourceId': widget.history.sourceId,
               'comicId': widget.history.item.comicId,
             },
-            queryParameters: {
-              'chap': widget.history.lastChapter.chapterId,
-            },
+            queryParameters: {'chap': widget.history.lastChapter.chapterId},
           ),
       child: Container(
         decoration: BoxDecoration(
