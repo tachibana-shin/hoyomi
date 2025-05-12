@@ -10,6 +10,14 @@
 >
 > `English` / `Multiple` support by `HiAnime`
 
+> [!TIP]
+> Multiple service support. Please check this:
+> 
+> - [lib/core_services/comic/services](lib/core_services/comic/services) - Service for comic, manga...
+> - [lib/core_services/eiga/services](lib/core_services/eiga/services) - Service for eiga, film...
+>
+> *Load service online comming soon*
+
 ---
 
 ### ✨ Features
