@@ -13,6 +13,8 @@ import 'package:hoyomi/widgets/navigation_app.dart';
 
 import '../pages/export.dart';
 
+final shellRouteKey = GlobalKey<State<StatefulWidget>>();
+
 final List<String> routeIgnoreLayoutDefault = [
   '/details_comic',
   '/details_eiga',
@@ -41,6 +43,7 @@ final router = GoRouter(
         // Decide immediately whether to show the toolbar.
         final showToolbar = shouldShowToolbar(state.uri.toString());
         return PersistentScaffold(
+          key: shellRouteKey,
           navigationShell: navigationShell,
           showToolbar: showToolbar,
         );

@@ -127,7 +127,8 @@ abstract class BaseService {
   String get baseUrl;
 }
 
-abstract class Service extends BaseService with SettingsMixin, HeadlessMixin {
+abstract class Service extends BaseService
+    with SettingsMixin, HeadlessMixin, CaptchaResolverMixin {
   static final List<SettingField> settingsDefault = [
     FieldInput(
       name: 'URL',
