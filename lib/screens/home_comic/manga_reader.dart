@@ -95,26 +95,24 @@ class _MangaReaderState extends State<MangaReader>
 
   late final Map<Service, bool> _serviceSupportFetchPage = {};
 
-  late final _watchPageChapters = asyncComputed<Map<String, WatchPageUpdated>?>(
-    () async {
-      if (widget.service is ComicWatchPageMixin) {
-        final chapters = widget.comic.chapters.sortAsc;
+  late final _watchPageChapters =
+      computed<Future<Map<String, WatchPageUpdated>?>>(() async {
+        if (widget.service is ComicWatchPageMixin) {
+          final chapters = widget.comic.chapters.sortAsc;
 
-        try {
-          return await (widget.service as ComicWatchPageMixin)
-              .getWatchPageEpisodes(
-                comicId: widget.comicId,
-                chapters: chapters,
-              );
-        } on UnimplementedError {
-          return null;
+          try {
+            return await (widget.service as ComicWatchPageMixin)
+                .getWatchPageEpisodes(
+                  comicId: widget.comicId,
+                  chapters: chapters,
+                );
+          } on UnimplementedError {
+            return null;
+          }
         }
-      }
 
-      return null;
-    },
-    beforeUpdate: () => null,
-  );
+        return null;
+      });
 
   // tiny status system
   late final _batteryLevel = ref<int?>(null);
@@ -1031,19 +1029,15 @@ class _MangaReaderState extends State<MangaReader>
       isScrollControlled: true,
       showDragHandle: true,
       builder:
-          (context) => Watch(
-            () => SheetChapters(
-              comic: widget.comic,
-              service: widget.service,
-              comicId: widget.comicId,
-              currentChapterId: _chapterId.value,
-              initialChildSize: 0.6,
-              watchPageChapters:
-                  _watchPageChapters.value ??
-                  const <String, WatchPageUpdated>{},
-              lastReadChapter: null,
-              replace: true,
-            ),
+          (context) => SheetChapters(
+            comic: widget.comic,
+            service: widget.service,
+            comicId: widget.comicId,
+            currentChapterId: _chapterId.value,
+            initialChildSize: 0.6,
+            watchPageChapters: _watchPageChapters,
+            lastReadChapter: null,
+            replace: true,
           ),
     );
   }

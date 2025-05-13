@@ -878,25 +878,15 @@ class _DetailsComicState extends State<DetailsComic>
   }
 
   Widget _buildSheetChapters() {
-    return Watch(
-      () => FutureBuilder(
-        future: Future.wait([_watchPageChapters.value, _lastReadChapter.value]),
-        builder:
-            (context, snapshot) => SheetChapters(
-              comic: _comic.value,
-              service: _service,
-              comicId: widget.comicId,
-              watchPageChapters:
-                  snapshot.data?.first as Map<String, WatchPageUpdated>? ??
-                  const <String, WatchPageUpdated>{},
-              lastReadChapter:
-                  snapshot.data?.last
-                      as ({ComicChapter chapter, WatchPageUpdated watchPage})?,
-              reverse: true,
-              // histories: _historyChapters.value,
-              initialChildSize: 0.15,
-            ),
-      ),
+    return SheetChapters(
+      comic: _comic.value,
+      service: _service,
+      comicId: widget.comicId,
+      watchPageChapters: _watchPageChapters,
+      lastReadChapter: _lastReadChapter,
+      reverse: true,
+      // histories: _historyChapters.value,
+      initialChildSize: 0.15,
     );
   }
 }
