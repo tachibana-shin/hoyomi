@@ -52,7 +52,7 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AvatarService(widget.service, radius: 14.0),
+            AvatarService(widget.service, radius: 18.0),
             const SizedBox(width: 5.0),
             Watch(() => _buildUserAvatar()),
           ],
@@ -69,6 +69,7 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
       case "NOT_SUPPORT":
         return CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.onSecondary,
+          radius: 18.0,
           child: const Iconify(
             Mdi.block_helper,
             // color: Colors.red,
@@ -77,6 +78,7 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
       case "LOADING":
         return CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.onSecondary,
+          radius: 18.0,
           child: SpinKitFadingCircle(
             color: Theme.of(context).colorScheme.secondary,
             size: 25.0,
@@ -85,16 +87,19 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
       case "NOT_SIGN":
         return CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.onSecondary,
+          radius: 18.0,
           child: const Iconify(Mdi.help),
         );
       case "ERROR":
         return CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.onSecondary,
+          radius: 18.0,
           child: const Iconify(Mdi.alert_circle_outline, color: Colors.orange),
         );
       default:
         return CircleAvatar(
           backgroundColor: Colors.grey.shade300,
+          radius: 18.0,
           backgroundImage: CachedNetworkImageProvider(
             _user!.user.value!.photoUrl,
           ),
