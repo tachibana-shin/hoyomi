@@ -95,5 +95,6 @@ extension HeadersExtension on Headers {
   }
 
   /// merge
-  Headers merge(Headers other) => Headers._(headers: {...headers, ...other.headers});
+  Headers merge(Headers other) =>
+      Headers._(headers: {...headers, ...other.headers});
 }

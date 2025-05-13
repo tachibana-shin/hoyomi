@@ -73,7 +73,7 @@ class _HistoryComicPageState extends State<HistoryComicPage> {
                 final main = ComicHistory(
                   sourceId: history.sourceId,
                   history: history,
-                  showService: _service != null // this page is show general
+                  showService: _service != null, // this page is show general
                 );
 
                 if (history.watchUpdatedAt.day !=
