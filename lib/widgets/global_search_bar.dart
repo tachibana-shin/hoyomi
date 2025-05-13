@@ -181,10 +181,10 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
     _controller = TextEditingController(text: globalKeyword.value);
   }
 
-  void _showSearchLayer() {
+  void _showSearchLayer() async {
     if (_showingSearchLayer) _closeSearchLayer();
     _showingSearchLayer = true;
-    showGeneralDialog(
+    await showGeneralDialog(
       context: context,
       useRootNavigator: true,
       pageBuilder: (context, anim, anim2) {
@@ -236,6 +236,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         );
       },
     );
+    _showingSearchLayer = false;
   }
 
   void _closeSearchLayer({bool changeMode = false}) {
