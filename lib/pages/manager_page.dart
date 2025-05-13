@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -241,7 +242,9 @@ class _AccountMainTile extends StatelessWidget {
               radius: 24,
               backgroundColor: Colors.grey.shade300,
               backgroundImage:
-                  user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
+                  user?.photoURL != null
+                      ? CachedNetworkImageProvider(user!.photoURL!)
+                      : null,
               child:
                   user?.photoURL == null
                       ? Text(
@@ -311,7 +314,7 @@ class _AccountMainTile extends StatelessWidget {
                 leading: CircleAvatar(
                   backgroundImage:
                       user?.photoURL != null
-                          ? NetworkImage(user!.photoURL!)
+                          ? CachedNetworkImageProvider(user!.photoURL!)
                           : null,
                   child:
                       user?.photoURL == null

@@ -463,24 +463,13 @@ class _DetailsComicState extends State<DetailsComic>
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircleAvatar(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.onSecondary,
-                            child: OImage.oNetwork(
-                              _service.faviconUrl,
-                              sourceId: _service.uid,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
+                        AvatarService(_service, radius: 10.0),
+                        4.0.widthBox,
                         Text(
                           _service.name,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.secondary,
-                            fontSize: 14,
+                            fontSize: 16,
                           ),
                           textAlign: TextAlign.start,
                         ),

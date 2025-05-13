@@ -1,8 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hoyomi/composable/use_user.dart';
-import 'package:hoyomi/core_services/interfaces/main.dart';
+import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/widgets/iconify.dart';
@@ -51,15 +52,7 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.onSecondary,
-              child: OImage.oNetwork(
-                widget.service.faviconUrl,
-                sourceId: widget.service.uid,
-                headers: Headers({"referer": widget.service.baseUrl}),
-                fit: BoxFit.cover,
-              ),
-            ),
+            AvatarService(widget.service, radius: 14.0),
             const SizedBox(width: 5.0),
             Watch(() => _buildUserAvatar()),
           ],
@@ -102,10 +95,8 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
       default:
         return CircleAvatar(
           backgroundColor: Colors.grey.shade300,
-          child: OImage.network(
+          backgroundImage: CachedNetworkImageProvider(
             _user!.user.value!.photoUrl,
-            sourceId: widget.service.uid,
-            fit: BoxFit.cover,
           ),
         );
     }

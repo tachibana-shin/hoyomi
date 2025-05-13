@@ -10,6 +10,7 @@ import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 
+import '../widget/avatar_service.dart';
 import 'headless_mixin.dart';
 
 const _statusCaptchaResolve = [429, 503, 403];
@@ -104,13 +105,7 @@ mixin CaptchaResolverMixin on HeadlessMixin {
                   focusColor: Colors.transparent,
                   child: Row(
                     children: [
-                      CircleAvatar(
-                        child: OImage.oNetwork(
-                          service.faviconUrl,
-                          sourceId: service.uid,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                      AvatarService(service, radius: 7.0),
 
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

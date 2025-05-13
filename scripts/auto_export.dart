@@ -10,6 +10,7 @@ const List<String> targetMainFiles = [
   'lib/core_services/exception/export.dart',
   'lib/core_services/interfaces/export.dart',
   'lib/core_services/mixin/export.dart',
+  'lib/core_services/widget/export.dart',
   'lib/pages/export.dart',
   'lib/plugins/export.dart',
   'lib/screens/export.dart',

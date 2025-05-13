@@ -19,6 +19,8 @@ import 'eiga/services/kkphim/main.dart';
 import 'eiga/services/nguonc/main.dart';
 import 'eiga/services/ophim/main.dart';
 
+export 'widget/export.dart';
+
 final _allComicServices = Map.fromEntries(
   <ABComicService>[
     CuuTruyenService(),

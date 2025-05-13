@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:iconify_flutter/icons/ic.dart';
@@ -40,13 +39,7 @@ void showServiceManagerDialog<T extends Service>(
                       key: ValueKey(dialogItems[i]),
                       index: i,
                       child: ListTile(
-                        leading: CircleAvatar(
-                          child: OImage.oNetwork(
-                            dialogItems[i].faviconUrl,
-                            sourceId: dialogItems[i].uid,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                        leading: AvatarService(dialogItems[i], radius: 10.0),
                         title: Text(dialogItems[i].name),
                         subtitle: Text(dialogItems[i].baseUrl),
                         trailing: const Iconify(

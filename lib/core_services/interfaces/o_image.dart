@@ -176,6 +176,9 @@ sealed class OImage with _$OImage {
   static ImageProvider oImageProvider(OImage image) {
     if (image.src == fake) return ExactAssetImage(blank);
 
-    return NetworkImage(image.src, headers: image.headers?.toMap());
+    return CachedNetworkImageProvider(
+      image.src,
+      headers: image.headers?.toMap(),
+    );
   }
 }

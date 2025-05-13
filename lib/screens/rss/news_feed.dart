@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
 import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:intl/intl.dart';
@@ -16,7 +17,7 @@ class RssItem {
   final OImage? image;
   final OImage? avatar;
   final String? creator;
-  final Service? service;
+  final Service service;
 
   factory RssItem.createFakeData() {
     return RssItem(
@@ -27,7 +28,7 @@ class RssItem {
       image: OImage.createFakeData(),
       avatar: OImage.createFakeData(),
       creator: "Fake Creator",
-      service: null,
+      service: allServices.value.first,
     );
   }
 
@@ -162,7 +163,6 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
                 elevation: 4,
                 child: InkWell(
                   onTap: () {
-                    if (item.service == null) return;
                     final param =
                         item.service is ABComicService
                             ? (item.service as ABComicService).parseURL(
@@ -172,7 +172,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
 
                     if (param != null) {
                       context.push(
-                        "/details_comic/${item.service!.uid}/${param.comicId}${param.chapterId == null ? '' : '/view?chap=${param.chapterId}'}",
+                        "/details_comic/${item.service.uid}/${param.comicId}${param.chapterId == null ? '' : '/view?chap=${param.chapterId}'}",
                       );
                     }
                   },
@@ -213,17 +213,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
                                 ),
                                 child: Row(
                                   children: [
-                                    CircleAvatar(
-                                      backgroundColor:
-                                          Theme.of(context).colorScheme.surface,
-                                      radius: 10.0,
-                                      child: OImage.network(
-                                        item.avatar!.src,
-                                        sourceId: item.service?.uid ?? '',
-                                        headers: item.avatar!.headers,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
+                                    AvatarService(item.service, radius: 10.0),
                                     Text(
                                       item.creator ?? 'Unknown',
                                       style: const TextStyle(fontSize: 12.0),
@@ -243,10 +233,9 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
                               height: 100,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
-                                child: OImage.network(
-                                  item.image!.src,
-                                  sourceId: item.service?.uid ?? '',
-                                  headers: item.image!.headers,
+                                child: OImage.oNetwork(
+                                  item.image!,
+                                  sourceId: item.service.uid,
                                   fit: BoxFit.cover,
                                 ),
                               ),
