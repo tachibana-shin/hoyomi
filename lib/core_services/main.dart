@@ -140,6 +140,14 @@ Service getService(String uid) {
   }
 }
 
+Service? getServiceOrNull(String uid) {
+  try {
+    return getService(uid);
+  } catch (err) {
+    return null;
+  }
+}
+
 final allServices = Computed<List<Service>>(
   () => [...comicServices.value, ...eigaServices.value],
 );

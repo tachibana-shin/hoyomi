@@ -1,10 +1,13 @@
 import 'dart:math';
 
+import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_history.dart'
     as types;
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/core_services/widget/avatar_service.dart';
 import 'package:hoyomi/widgets/blurred_part_background.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
@@ -13,6 +16,7 @@ class ComicHistory extends StatefulWidget {
   final types.ComicHistory history;
   final double? width;
   final Axis direction;
+  final bool showService;
 
   const ComicHistory({
     super.key,
@@ -20,6 +24,7 @@ class ComicHistory extends StatefulWidget {
     required this.history,
     this.width,
     this.direction = Axis.horizontal,
+    required this.showService,
   });
 
   @override
@@ -29,6 +34,8 @@ class ComicHistory extends StatefulWidget {
 class _ComicHistoryState extends State<ComicHistory> {
   @override
   Widget build(context) {
+    final service = getServiceOrNull(widget.sourceId);
+
     final comic = widget.history.item;
     final chapter = widget.history.lastChapter;
     final watchPage = widget.history.watchPage;
@@ -128,6 +135,23 @@ class _ComicHistoryState extends State<ComicHistory> {
               context,
             ).textTheme.bodySmall?.copyWith(fontSize: isVertical ? 11.0 : 12.0),
             maxLines: 2,
+          ),
+
+        if (widget.showService)
+          Row(
+            children: [
+              service != null
+                  ? AvatarService(service, radius: isVertical ? 6.0 : 10.0)
+                  : CircleAvatar(radius: isVertical ? 6.0 : 10.0),
+              4.0.widthBox,
+              Text(
+                service?.name ?? 'Service',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: isVertical ? 11.0 : 12.0,
+                ),
+                maxLines: 1,
+              ),
+            ],
           ),
       ],
     );

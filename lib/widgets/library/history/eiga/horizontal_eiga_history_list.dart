@@ -15,12 +15,14 @@ class HorizontalEigaHistoryList extends StatefulWidget {
   final String sourceId;
   final String? more;
   final Future<List<types.EigaHistory>> Function({required int page}) fn;
+  final bool isGeneral;
 
   const HorizontalEigaHistoryList({
     super.key,
     required this.sourceId,
     this.more,
     required this.fn,
+    required this.isGeneral,
   });
 
   @override
@@ -45,6 +47,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
     required String subtitle,
     required String more,
     required bool needSubtitle,
+    required bool needTimeAgo,
     required Widget Function(double viewFraction) builder,
   }) {
     final header = ListTile(
@@ -93,7 +96,8 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
             12.0 * 2 +
             2.0 +
             5.0 +
-            (needSubtitle ? 11.0 * 2 : 0);
+            (needSubtitle ? 11.0 * 2 : 0) +
+            (needTimeAgo ? 11.0 * 2 : 0);
 
         return SizedBox(height: height, child: builder(viewportFraction));
       },
@@ -130,6 +134,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
                   ),
                 ),
             needSubtitle: false,
+            needTimeAgo: false,
           );
         }
 
@@ -142,6 +147,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
             more: more,
             builder: (viewFraction) => Center(child: Text('No data available')),
             needSubtitle: false,
+            needTimeAgo: false,
           );
         }
 
@@ -173,6 +179,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
                 subtitle: subtitle,
                 more: more,
                 needSubtitle: needSubtitle,
+                needTimeAgo: widget.isGeneral,
                 builder:
                     (viewportFraction) => PageView.builder(
                       itemCount: items.length,
@@ -188,6 +195,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
                             history: items.elementAt(index),
                             width: 100.w(context) / 1 / viewportFraction,
                             direction: Axis.vertical,
+                            showService: widget.isGeneral,
                           ),
                     ),
               ),

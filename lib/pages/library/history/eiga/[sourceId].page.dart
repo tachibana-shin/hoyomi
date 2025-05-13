@@ -73,6 +73,7 @@ class _HistoryEigaPageState extends State<HistoryEigaPage> {
                 final main = EigaHistory(
                   sourceId: history.sourceId,
                   history: history,
+                  showService: _service != null // _service == null is page show general
                 );
 
                 if (history.watchUpdatedAt.day !=

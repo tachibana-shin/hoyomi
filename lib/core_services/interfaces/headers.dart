@@ -93,4 +93,7 @@ extension HeadersExtension on Headers {
   Map<String, dynamic> toJson() {
     return toMap();
   }
+
+  /// merge
+  Headers merge(Headers other) => Headers._(headers: {...headers, ...other.headers});
 }

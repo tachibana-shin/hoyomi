@@ -180,7 +180,9 @@ abstract class Service extends BaseService
   OImage get faviconUrl =>
       _faviconUrl ??= OImage(
         src: Uri.parse(baseUrl).resolve(init.faviconUrl.src).toString(),
-        headers: init.faviconUrl.headers,
+        headers: Headers({
+          'referer': baseUrl,
+        }).merge(init.faviconUrl.headers ?? Headers({})),
       );
   String? _rss;
   String? get rss =>

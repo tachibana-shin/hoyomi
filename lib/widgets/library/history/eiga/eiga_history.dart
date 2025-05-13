@@ -1,10 +1,13 @@
 import 'dart:math';
 
+import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_history.dart'
     as types;
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/core_services/widget/avatar_service.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:hoyomi/widgets/blurred_part_background.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
@@ -14,6 +17,7 @@ class EigaHistory extends StatefulWidget {
   final types.EigaHistory history;
   final double? width;
   final Axis direction;
+  final bool showService;
 
   const EigaHistory({
     super.key,
@@ -21,6 +25,7 @@ class EigaHistory extends StatefulWidget {
     required this.history,
     this.width,
     this.direction = Axis.horizontal,
+    required this.showService,
   });
 
   @override
@@ -30,6 +35,7 @@ class EigaHistory extends StatefulWidget {
 class _EigaHistoryState extends State<EigaHistory> {
   @override
   Widget build(context) {
+    final service = getServiceOrNull(widget.sourceId);
     final eiga = widget.history.item;
     final episode = widget.history.lastEpisode;
     final watchTime = widget.history.watchTime;
@@ -131,6 +137,23 @@ class _EigaHistoryState extends State<EigaHistory> {
               context,
             ).textTheme.bodySmall?.copyWith(fontSize: isVertical ? 11.0 : 12.0),
             maxLines: 2,
+          ),
+
+        if (widget.showService)
+          Row(
+            children: [
+              service != null
+                  ? AvatarService(service, radius: isVertical ? 6.0 : 10.0)
+                  : CircleAvatar(radius: isVertical ? 6.0 : 10.0),
+              4.0.widthBox,
+              Text(
+                service?.name ?? 'Service',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: isVertical ? 11.0 : 12.0,
+                ),
+                maxLines: 1,
+              ),
+            ],
           ),
       ],
     );

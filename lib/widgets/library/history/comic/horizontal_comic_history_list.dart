@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_history.dart'
     as types;
 import 'package:hoyomi/core_services/main.dart';
@@ -13,12 +12,14 @@ import 'package:skeletonizer/skeletonizer.dart';
 class HorizontalComicHistoryList extends StatefulWidget {
   final String sourceId;
   final String? more;
+  final bool isGeneral;
   final Future<List<types.ComicHistory>> Function({required int page}) fn;
 
   const HorizontalComicHistoryList({
     super.key,
     required this.sourceId,
     this.more,
+    required this.isGeneral,
     required this.fn,
   });
 
@@ -36,72 +37,6 @@ class _HorizontalComicHistoryState extends State<HorizontalComicHistoryList> {
     super.initState();
   }
 
-  Widget _buildContainer(
-    BuildContext context, {
-    required String title,
-    required String subtitle,
-    required String more,
-    required bool needSubtitle,
-    required Widget Function(double viewFraction) builder,
-  }) {
-    final header = ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(
-        title,
-        style: TextStyle(
-          // fontSize: 18.0,
-          // fontWeight: FontWeight.w600,
-          // color: Theme.of(context).colorScheme.onSurface,
-        ),
-      ),
-      subtitle:
-          subtitle.isNotEmpty
-              ? Text(
-                subtitle,
-                style: TextStyle(fontSize: 14, color: Colors.white70),
-              )
-              : null,
-      trailing: ElevatedButton(
-        onPressed: () {
-          context.push(more);
-        },
-        child: Text('More'),
-      ),
-    );
-    final main = LayoutBuilder(
-      builder: (context, constraints) {
-        double screenWidth = constraints.biggest.width;
-        double crossAxisCount;
-
-        if (screenWidth <= 600) {
-          crossAxisCount = 3.5;
-        } else if (screenWidth <= 900) {
-          crossAxisCount = 4.5;
-        } else {
-          crossAxisCount = 6.5;
-        }
-
-        final childAspectRatio = 16 / 9;
-        final viewportFraction = 1 / crossAxisCount;
-        final height =
-            1 / childAspectRatio * (screenWidth * viewportFraction - 8.0) +
-            3.0 +
-            14.0 * 2 +
-            12.0 * 2 +
-            2.0 +
-            5.0 +
-            (needSubtitle ? 11.0 * 2 : 0);
-
-        return SizedBox(height: height, child: builder(viewportFraction));
-      },
-    );
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [header, main],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -111,7 +46,7 @@ class _HorizontalComicHistoryState extends State<HorizontalComicHistoryList> {
         final more = widget.more ?? '/library/history/comic/${widget.sourceId}';
 
         if (snapshot.hasError) {
-          return _buildContainer(
+          return HorizontalList.buildContainer(
             context,
             title: title,
             subtitle: '',
@@ -126,19 +61,23 @@ class _HorizontalComicHistoryState extends State<HorizontalComicHistoryList> {
                     orElse: (error) => Text('Error: $error'),
                   ),
                 ),
-            needSubtitle: false,
+            titleLength: 1,
+            itemSubtitle: false,
+            itemTimeAgo: false,
           );
         }
 
         final loading = snapshot.connectionState == ConnectionState.waiting;
         if (!loading && (!snapshot.hasData || snapshot.data!.isEmpty)) {
-          return _buildContainer(
+          return HorizontalList.buildContainer(
             context,
             title: title,
             subtitle: '',
             more: more,
             builder: (viewFraction) => Center(child: Text('No data available')),
-            needSubtitle: false,
+            titleLength: 1,
+            itemSubtitle: false,
+            itemTimeAgo: false,
           );
         }
 
@@ -173,7 +112,7 @@ class _HorizontalComicHistoryState extends State<HorizontalComicHistoryList> {
                 subtitle: subtitle,
                 more: more,
                 itemSubtitle: needSubtitle,
-                itemTimeAgo: false,
+                itemTimeAgo: widget.isGeneral,
                 builder:
                     (viewportFraction) => PageView.builder(
                       itemCount: items.length,
@@ -189,6 +128,7 @@ class _HorizontalComicHistoryState extends State<HorizontalComicHistoryList> {
                             history: items.elementAt(index),
                             width: 100.w(context) / 1 / viewportFraction,
                             direction: Axis.vertical,
+                            showService: widget.isGeneral,
                           ),
                     ),
               ),
