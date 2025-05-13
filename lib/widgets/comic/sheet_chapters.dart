@@ -225,11 +225,7 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    [
-                                      chapter.name,
-                                      if (chapter.fullName != null)
-                                        ' - ${chapter.fullName}',
-                                    ].join(''),
+                                    chapter.name,
                                     style: TextStyle(
                                       fontSize: 14.0,
                                       fontWeight:
@@ -238,13 +234,30 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                                           selected
                                               ? Theme.of(
                                                 context,
-                                              ).colorScheme.onSurface
-                                              : Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface
-                                                  .withValues(alpha: 0.85),
+                                              ).colorScheme.tertiary
+                                              : Theme.of(
+                                                context,
+                                              ).colorScheme.onSurface,
                                     ),
                                   ),
+                                  if (chapter.fullName != null)
+                                    Text(
+                                      chapter.fullName!,
+                                      style: TextStyle(
+                                        fontSize: 13.0,
+                                        fontWeight:
+                                            selected ? FontWeight.w500 : null,
+                                        color:
+                                            selected
+                                                ? Theme.of(
+                                                  context,
+                                                ).colorScheme.secondary
+                                                : Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary
+                                                    .withValues(alpha: 0.7),
+                                      ),
+                                    ),
                                   if (chapter.time != null)
                                     Text(
                                       formatTimeAgo(chapter.time!),
