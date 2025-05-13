@@ -284,7 +284,7 @@ class ComicDownloader {
     final metaJson = jsonEncode(metaComic.toJson());
 
     // download image
-    final pathPoster = join('comic_offline', service.uid, comicId, 'poster');
+    final pathPoster = expectedPosterPath(service as ABComicService, comicId);
     final filePoster = File(join(_document.path, pathPoster));
     if (!await filePoster.exists()) {
       final (baseDirectory, directory, filename) = await Task.split(
