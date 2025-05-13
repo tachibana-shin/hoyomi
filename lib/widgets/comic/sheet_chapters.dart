@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:dashed_circular_progress_bar/dashed_circular_progress_bar.dart';
@@ -11,6 +12,7 @@ import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:kaeru/kaeru.dart';
+import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
 import '../../core_services/comic/main.dart';
 import '../../downloader/comic_downloader.dart';
@@ -66,12 +68,13 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
 
   @override
   Widget build(BuildContext context) {
+    final minChildSize = (40.0 / 100.h(context)) + .15;
     return DraggableScrollableSheet(
       expand: false,
       snap: true,
-      snapSizes: [0.15, 0.5, 0.9],
-      initialChildSize: widget.initialChildSize,
-      minChildSize: .15,
+      snapSizes: [minChildSize, 0.5, 0.9],
+      initialChildSize: max(widget.initialChildSize, minChildSize),
+      minChildSize: minChildSize,
       maxChildSize: 0.9,
       builder: (context2, scrollController) {
         return Watch(() {
@@ -101,7 +104,7 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
           return Column(
             children: [
               // Header
-              Watch(() {
+              Watch(key: UniqueKey(), () {
                 if (_itemSelected.value.isEmpty) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,7 +112,7 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                       Text(
                         lastReadChapter == null
                             ? 'Get start'
-                            : 'Continue ${lastReadChapter.chapter.name}',
+                            : lastReadChapter.chapter.name,
                       ).fontSize(20.0),
                       GFButton(
                         onPressed: () {
@@ -170,6 +173,7 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                   ],
                 ).paddingHorizontal(16.0);
               }),
+
               // Chapters List
               FractionallySizedBox(
                 heightFactor: 1.0,
