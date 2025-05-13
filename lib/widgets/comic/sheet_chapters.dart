@@ -61,6 +61,7 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
   Widget build(BuildContext context) {
     final currentChapterId =
         widget.currentChapterId ??
+        widget.lastReadChapter?.chapter.chapterId ??
         widget.comic.chapters.sortAsc.first.chapterId;
 
     return DraggableScrollableSheet(
@@ -86,6 +87,8 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
             }
           });
         });
+
+        final chapters = widget.comic.chapters.sortAsc.reversed;
 
         return Column(
           children: [
@@ -164,12 +167,10 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
               child: ListView.builder(
                 controller: scrollController,
                 // reverse
-                itemCount: widget.comic.chapters.sortAsc.length,
+                itemCount: chapters.length,
                 itemBuilder: (context2, index) {
-                  final chapter = widget.comic.chapters.sortAsc.elementAt(
-                    widget.reverse
-                        ? index
-                        : (widget.comic.chapters.sortAsc.length - 1 - index),
+                  final chapter = chapters.elementAt(
+                    widget.reverse ? index : (chapters.length - 1 - index),
                   ); //[index];
                   final bool selected = chapter.chapterId == currentChapterId;
                   if (selected && notSelected) {
