@@ -176,8 +176,6 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                     notSelected = false;
                   }
 
-                  final watchPage = widget.watchPageChapters[chapter.chapterId];
-
                   final downloadedChapter = ComicDownloader.instance
                       .getDownloadedChapter(
                         service: widget.service,
@@ -186,6 +184,9 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                       );
 
                   return Watch(() {
+                    final watchPage =
+                        widget.watchPageChapters[chapter.chapterId];
+
                     return Container(
                       key: selected && notSelected ? activeKey : null,
                       color:
