@@ -344,7 +344,7 @@ as Ref<DownloaderChapterReturn>?,
 /// @nodoc
 mixin _$LoadedPage implements DiagnosticableTreeMixin {
 
- OImage get image; String get path; bool get downloaded;
+ OImage get image; String get path; bool get downloaded; int get size;
 /// Create a copy of LoadedPage
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -356,21 +356,21 @@ $LoadedPageCopyWith<LoadedPage> get copyWith => _$LoadedPageCopyWithImpl<LoadedP
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'LoadedPage'))
-    ..add(DiagnosticsProperty('image', image))..add(DiagnosticsProperty('path', path))..add(DiagnosticsProperty('downloaded', downloaded));
+    ..add(DiagnosticsProperty('image', image))..add(DiagnosticsProperty('path', path))..add(DiagnosticsProperty('downloaded', downloaded))..add(DiagnosticsProperty('size', size));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedPage&&(identical(other.image, image) || other.image == image)&&(identical(other.path, path) || other.path == path)&&(identical(other.downloaded, downloaded) || other.downloaded == downloaded));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedPage&&(identical(other.image, image) || other.image == image)&&(identical(other.path, path) || other.path == path)&&(identical(other.downloaded, downloaded) || other.downloaded == downloaded)&&(identical(other.size, size) || other.size == size));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,image,path,downloaded);
+int get hashCode => Object.hash(runtimeType,image,path,downloaded,size);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'LoadedPage(image: $image, path: $path, downloaded: $downloaded)';
+  return 'LoadedPage(image: $image, path: $path, downloaded: $downloaded, size: $size)';
 }
 
 
@@ -381,7 +381,7 @@ abstract mixin class $LoadedPageCopyWith<$Res>  {
   factory $LoadedPageCopyWith(LoadedPage value, $Res Function(LoadedPage) _then) = _$LoadedPageCopyWithImpl;
 @useResult
 $Res call({
- OImage image, String path, bool downloaded
+ OImage image, String path, bool downloaded, int size
 });
 
 
@@ -398,12 +398,13 @@ class _$LoadedPageCopyWithImpl<$Res>
 
 /// Create a copy of LoadedPage
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? image = null,Object? path = null,Object? downloaded = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? image = null,Object? path = null,Object? downloaded = null,Object? size = null,}) {
   return _then(_self.copyWith(
 image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
 as OImage,path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,downloaded: null == downloaded ? _self.downloaded : downloaded // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,size: null == size ? _self.size : size // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 /// Create a copy of LoadedPage
@@ -423,12 +424,13 @@ $OImageCopyWith<$Res> get image {
 
 
 class _LoadedPage with DiagnosticableTreeMixin implements LoadedPage {
-  const _LoadedPage({required this.image, required this.path, required this.downloaded});
+  const _LoadedPage({required this.image, required this.path, required this.downloaded, required this.size});
   
 
 @override final  OImage image;
 @override final  String path;
 @override final  bool downloaded;
+@override final  int size;
 
 /// Create a copy of LoadedPage
 /// with the given fields replaced by the non-null parameter values.
@@ -441,21 +443,21 @@ _$LoadedPageCopyWith<_LoadedPage> get copyWith => __$LoadedPageCopyWithImpl<_Loa
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'LoadedPage'))
-    ..add(DiagnosticsProperty('image', image))..add(DiagnosticsProperty('path', path))..add(DiagnosticsProperty('downloaded', downloaded));
+    ..add(DiagnosticsProperty('image', image))..add(DiagnosticsProperty('path', path))..add(DiagnosticsProperty('downloaded', downloaded))..add(DiagnosticsProperty('size', size));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadedPage&&(identical(other.image, image) || other.image == image)&&(identical(other.path, path) || other.path == path)&&(identical(other.downloaded, downloaded) || other.downloaded == downloaded));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadedPage&&(identical(other.image, image) || other.image == image)&&(identical(other.path, path) || other.path == path)&&(identical(other.downloaded, downloaded) || other.downloaded == downloaded)&&(identical(other.size, size) || other.size == size));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,image,path,downloaded);
+int get hashCode => Object.hash(runtimeType,image,path,downloaded,size);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'LoadedPage(image: $image, path: $path, downloaded: $downloaded)';
+  return 'LoadedPage(image: $image, path: $path, downloaded: $downloaded, size: $size)';
 }
 
 
@@ -466,7 +468,7 @@ abstract mixin class _$LoadedPageCopyWith<$Res> implements $LoadedPageCopyWith<$
   factory _$LoadedPageCopyWith(_LoadedPage value, $Res Function(_LoadedPage) _then) = __$LoadedPageCopyWithImpl;
 @override @useResult
 $Res call({
- OImage image, String path, bool downloaded
+ OImage image, String path, bool downloaded, int size
 });
 
 
@@ -483,12 +485,13 @@ class __$LoadedPageCopyWithImpl<$Res>
 
 /// Create a copy of LoadedPage
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? image = null,Object? path = null,Object? downloaded = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? image = null,Object? path = null,Object? downloaded = null,Object? size = null,}) {
   return _then(_LoadedPage(
 image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
 as OImage,path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,downloaded: null == downloaded ? _self.downloaded : downloaded // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,size: null == size ? _self.size : size // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

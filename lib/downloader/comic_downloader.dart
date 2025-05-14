@@ -66,6 +66,7 @@ sealed class LoadedPage with _$LoadedPage {
     required OImage image,
     required String path,
     required bool downloaded,
+    required int size,
   }) = _LoadedPage;
 }
 
@@ -125,6 +126,7 @@ class ComicDownloader {
               o_image TEXT NOT NULL,
               path TEXT NOT NULL,
               downloaded INTEGER NOT NULL DEFAULT 0,
+              size INTEGER NOT NULL DEFAULT -1,
               PRIMARY KEY (id, chapter_db_id, index_order),
               UNIQUE (chapter_db_id, index_order)
             );
@@ -261,7 +263,7 @@ class ComicDownloader {
           final oImage = OImage.fromJson(jsonDecode(p['o_image'] as String));
           final path = p['path'] as String;
           final downloaded = (p['downloaded'] as int) == 1;
-          return LoadedPage(image: oImage, path: path, downloaded: downloaded);
+          return LoadedPage(image: oImage, path: path, downloaded: downloaded, size: (p['size'] as num).toInt());
         }).toList();
 
     return LoadedChapter(
@@ -578,10 +580,10 @@ class ComicDownloader {
                       await _db.execute(
                         '''
                           UPDATE pages
-                          SET downloaded = 1
+                          SET downloaded = 1, size = ?
                           WHERE id = ?
                         ''',
-                        [entry.$2.pageId],
+                        [await file.length(), entry.$2.pageId],
                       );
 
                       return;
@@ -706,6 +708,7 @@ class ComicDownloader {
                     image: oImage,
                     path: path,
                     downloaded: downloaded,
+                    size: (p['size'] as num).toInt(),
                   );
                 }).toList();
 

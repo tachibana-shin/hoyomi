@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/export.dart';
@@ -192,9 +193,26 @@ class _DownloaderComicPageState extends State<DownloaderComicPage> {
                                                           ),
                                                           downloader.comicId,
                                                         ),
+                                                      ).replaceAll(
+                                                        RegExp(r'\\'),
+                                                        '/',
                                                       ),
                                                     ),
                                                     fit: BoxFit.cover,
+                                                    errorBuilder: (
+                                                      context,
+                                                      error,
+                                                      stack,
+                                                    ) {
+                                                      if (kDebugMode) {
+                                                        print('Error: $error');
+                                                        print(stack);
+                                                      }
+                                                      return Image.asset(
+                                                        'assets/images/blank.png',
+                                                        fit: BoxFit.cover,
+                                                      );
+                                                    },
                                                   ),
                                                 ),
                                               ),
