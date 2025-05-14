@@ -106,7 +106,7 @@ class _WebToonReaderState extends State<WebToonReader>
         child: ListView.builder(
           controller: _scrollController,
           itemCount: widget.pages.value.length,
-          shrinkWrap: true,
+          cacheExtent: 3,
           itemBuilder: (context, index) {
             final key = widget.pages.value.elementAt(index).image.src;
             return Container(
