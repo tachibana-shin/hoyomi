@@ -56,7 +56,10 @@ final router = GoRouter(
               path: '/home_comic',
               name: 'home_comic',
               pageBuilder: pageBuilder,
-              builder: (context, state) => HomeComicPage(),
+              builder:
+                  (context, state) => HomeComicPage(
+                    service: state.uri.queryParameters['service'],
+                  ),
             ),
           ],
         ),
@@ -67,7 +70,10 @@ final router = GoRouter(
               path: '/home_eiga',
               name: 'home_eiga',
               pageBuilder: pageBuilder,
-              builder: (context, state) => HomeEigaPage(),
+              builder:
+                  (context, state) => HomeEigaPage(
+                    service: state.uri.queryParameters['service'],
+                  ),
             ),
           ],
         ),

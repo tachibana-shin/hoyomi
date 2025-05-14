@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/screens/export.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:kaeru/kaeru.dart';
 
 class HomeComicPage extends StatefulWidget {
-  const HomeComicPage({super.key});
+  final String? service;
+
+  const HomeComicPage({super.key, required this.service});
 
   @override
   State<HomeComicPage> createState() => _HomeComicPageState();
@@ -21,9 +24,21 @@ class _HomeComicPageState extends State<HomeComicPage>
       if (_tabController?.length != comicServices.value.length) {
         _tabController?.dispose();
         _tabController = TabController(
+          initialIndex: comicServices.value
+              .indexWhere((service) => service.uid == widget.service)
+              .clamp(0, comicServices.value.length - 1),
           length: comicServices.value.length,
           vsync: this,
         );
+        
+        _tabController!.addListener(() {
+          context.replaceNamed(
+            'home_comic',
+            queryParameters: {
+              'service': comicServices.value[_tabController!.index].uid,
+            },
+          );
+        });
       }
 
       return Scaffold(
