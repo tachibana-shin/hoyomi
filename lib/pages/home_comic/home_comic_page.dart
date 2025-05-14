@@ -30,7 +30,7 @@ class _HomeComicPageState extends State<HomeComicPage>
           length: comicServices.value.length,
           vsync: this,
         );
-        
+
         _tabController!.addListener(() {
           context.replaceNamed(
             'home_comic',
