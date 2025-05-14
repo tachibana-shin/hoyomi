@@ -11,6 +11,7 @@ import 'package:hoyomi/plugins/android_sdk_int.dart';
 import 'package:hoyomi/stores.dart';
 
 import 'package:hoyomi/widgets/navigation_app.dart';
+import 'package:kaeru/kaeru.dart';
 
 import '../pages/export.dart';
 
@@ -198,6 +199,8 @@ final routes = [
   ),
 
   // --- Top-level routes ---
+  // Index Route
+  GoRoute(path: '/', name: 'home', redirect: (context, state) => '/home_eiga'),
   // Details Comic Route
   GoRoute(
     path: '/details_comic/:sourceId/:comicId',
@@ -362,6 +365,9 @@ bool shouldShowToolbar(String uriString) {
 }
 
 class PersistentScaffold extends StatelessWidget {
+  static final tabComic = Ref<String?>(null);
+  static final tabEiga = Ref<String?>(null);
+
   final StatefulNavigationShell navigationShell;
   final bool showToolbar;
 
@@ -377,7 +383,12 @@ class PersistentScaffold extends StatelessWidget {
       initialLocation: index == navigationShell.currentIndex,
     );
     lastTabActiveApp.value =
-        navigationShell.shellRouteContext.routerState.fullPath;
+        navigationShell.shellRouteContext.routerState.fullPath! +
+        (switch (navigationShell.shellRouteContext.routerState.name) {
+          == 'home_comic' => '?service=${tabComic.value}',
+          == 'home_eiga' => '?service=${tabEiga.value}',
+          _ => '',
+        });
   }
 
   @override

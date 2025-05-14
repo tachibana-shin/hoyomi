@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/screens/export.dart';
 import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/widgets/export.dart';
@@ -39,7 +40,10 @@ class _HomeComicPageState extends State<HomeComicPage>
               'service': comicServices.value[_tabController!.index].uid,
             },
           );
-          lastTabActiveApp.value = GoRouter.of(context).state.fullPath;
+          lastTabActiveApp.value =
+              '/home_comic?service=${comicServices.value[_tabController!.index].uid}';
+          PersistentScaffold.tabComic.value =
+              comicServices.value[_tabController!.index].uid;
         });
       }
 
