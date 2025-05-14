@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ListWatchTimeSchema {
 
- List<Data2> get data;
+ List<Data5> get data;
 /// Create a copy of ListWatchTimeSchema
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $ListWatchTimeSchemaCopyWith<$Res>  {
   factory $ListWatchTimeSchemaCopyWith(ListWatchTimeSchema value, $Res Function(ListWatchTimeSchema) _then) = _$ListWatchTimeSchemaCopyWithImpl;
 @useResult
 $Res call({
- List<Data2> data
+ List<Data5> data
 });
 
 
@@ -69,7 +69,7 @@ class _$ListWatchTimeSchemaCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? data = null,}) {
   return _then(_self.copyWith(
 data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as List<Data2>,
+as List<Data5>,
   ));
 }
 
@@ -80,11 +80,11 @@ as List<Data2>,
 @JsonSerializable()
 
 class _ListWatchTimeSchema implements ListWatchTimeSchema {
-  const _ListWatchTimeSchema({required final  List<Data2> data}): _data = data;
+  const _ListWatchTimeSchema({required final  List<Data5> data}): _data = data;
   factory _ListWatchTimeSchema.fromJson(Map<String, dynamic> json) => _$ListWatchTimeSchemaFromJson(json);
 
- final  List<Data2> _data;
-@override List<Data2> get data {
+ final  List<Data5> _data;
+@override List<Data5> get data {
   if (_data is EqualUnmodifiableListView) return _data;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_data);
@@ -124,7 +124,7 @@ abstract mixin class _$ListWatchTimeSchemaCopyWith<$Res> implements $ListWatchTi
   factory _$ListWatchTimeSchemaCopyWith(_ListWatchTimeSchema value, $Res Function(_ListWatchTimeSchema) _then) = __$ListWatchTimeSchemaCopyWithImpl;
 @override @useResult
 $Res call({
- List<Data2> data
+ List<Data5> data
 });
 
 
@@ -144,7 +144,7 @@ class __$ListWatchTimeSchemaCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? data = null,}) {
   return _then(_ListWatchTimeSchema(
 data: null == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
-as List<Data2>,
+as List<Data5>,
   ));
 }
 

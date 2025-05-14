@@ -80,7 +80,7 @@
                 ],
                 "description": "An array of watch history items. Schema representing an individual watch history item."
             },
-            "ListWatchTimeSchema": {
+            "ListWatchPageSchema": {
                 "type": "object",
                 "properties": {
                     "data": {
@@ -105,12 +105,12 @@
                                 },
                                 "createdAt": {
                                     "type": "string",
-                                    "description": "Timestamp when the watch page was recorded, in ISO 8601 format.",
+                                    "description": "Page when the watch page was recorded, in ISO 8601 format.",
                                     "example": "2025-04-06T12:34:56Z"
                                 },
                                 "updatedAt": {
                                     "type": "string",
-                                    "description": "Timestamp when the watch page was last updated, in ISO 8601 format.",
+                                    "description": "Page when the watch page was last updated, in ISO 8601 format.",
                                     "example": "2025-04-06T13:00:00Z"
                                 },
                                 "chapId": {
@@ -332,6 +332,61 @@
                     "data"
                 ],
                 "description": "An array of watch history items. Schema representing an individual watch history item."
+            },
+            "ListWatchTimeSchema": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "cur": {
+                                    "type": "number",
+                                    "description": "The current position in the episode in seconds.",
+                                    "example": 120
+                                },
+                                "dur": {
+                                    "type": "number",
+                                    "description": "The total duration of the episode in seconds.",
+                                    "example": 1500
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "The name of the episode.",
+                                    "example": "Episode 1"
+                                },
+                                "createdAt": {
+                                    "type": "string",
+                                    "description": "Timestamp when the watch time was recorded, in ISO 8601 format.",
+                                    "example": "2025-04-06T12:34:56Z"
+                                },
+                                "updatedAt": {
+                                    "type": "string",
+                                    "description": "Timestamp when the watch time was last updated, in ISO 8601 format.",
+                                    "example": "2025-04-06T13:00:00Z"
+                                },
+                                "chapId": {
+                                    "type": "string",
+                                    "description": "The unique identifier for the chapter within the episode or series.",
+                                    "example": "chap-001"
+                                }
+                            },
+                            "required": [
+                                "cur",
+                                "dur",
+                                "name",
+                                "createdAt",
+                                "updatedAt",
+                                "chapId"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "data"
+                ],
+                "description": "A list of watch time entries, each representing the time watched for a specific episode."
             },
             "WatchTimeSchema": {
                 "type": "object",
@@ -556,7 +611,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ListWatchTimeSchema"
+                                    "$ref": "#/components/schemas/ListWatchPageSchema"
                                 }
                             }
                         }
@@ -772,62 +827,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/ListWatchTimeSchema"
-                                        },
-                                        {
-                                            "properties": {
-                                                "data": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "cur": {
-                                                                "type": "number",
-                                                                "description": "The current position in the episode in seconds.",
-                                                                "example": 120
-                                                            },
-                                                            "dur": {
-                                                                "type": "number",
-                                                                "description": "The total duration of the episode in seconds.",
-                                                                "example": 1500
-                                                            },
-                                                            "name": {
-                                                                "type": "string",
-                                                                "description": "The name of the episode.",
-                                                                "example": "Episode 1"
-                                                            },
-                                                            "createdAt": {
-                                                                "type": "string",
-                                                                "description": "Timestamp when the watch time was recorded, in ISO 8601 format.",
-                                                                "example": "2025-04-06T12:34:56Z"
-                                                            },
-                                                            "updatedAt": {
-                                                                "type": "string",
-                                                                "description": "Timestamp when the watch time was last updated, in ISO 8601 format.",
-                                                                "example": "2025-04-06T13:00:00Z"
-                                                            },
-                                                            "chapId": {
-                                                                "type": "string",
-                                                                "description": "The unique identifier for the chapter within the episode or series.",
-                                                                "example": "chap-001"
-                                                            }
-                                                        },
-                                                        "required": [
-                                                            "cur",
-                                                            "dur",
-                                                            "name",
-                                                            "createdAt",
-                                                            "updatedAt",
-                                                            "chapId"
-                                                        ]
-                                                    }
-                                                }
-                                            },
-                                            "description": "A list of watch time entries, each representing the time watched for a specific episode."
-                                        }
-                                    ]
+                                    "$ref": "#/components/schemas/ListWatchTimeSchema"
                                 }
                             }
                         }

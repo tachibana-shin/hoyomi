@@ -19,8 +19,8 @@ mixin _$Data2 {
 /// The current page in the episode in seconds.
  num get cur;/// The total page of the episode in seconds.
  num get dur;/// The name of the episode.
- String get name;/// Timestamp when the watch page was recorded, in ISO 8601 format.
- String get createdAt;/// Timestamp when the watch page was last updated, in ISO 8601 format.
+ String get name;/// Page when the watch page was recorded, in ISO 8601 format.
+ String get createdAt;/// Page when the watch page was last updated, in ISO 8601 format.
  String get updatedAt;/// The unique identifier for the chapter within the episode or series.
  String get chapId;
 /// Create a copy of Data2
@@ -100,9 +100,9 @@ class _Data2 implements Data2 {
 @override final  num dur;
 /// The name of the episode.
 @override final  String name;
-/// Timestamp when the watch page was recorded, in ISO 8601 format.
+/// Page when the watch page was recorded, in ISO 8601 format.
 @override final  String createdAt;
-/// Timestamp when the watch page was last updated, in ISO 8601 format.
+/// Page when the watch page was last updated, in ISO 8601 format.
 @override final  String updatedAt;
 /// The unique identifier for the chapter within the episode or series.
 @override final  String chapId;

@@ -19,15 +19,15 @@ abstract class Data2 with _$Data2 {
     /// The name of the episode.
     required String name,
 
-    /// Timestamp when the watch page was recorded, in ISO 8601 format.
+    /// Page when the watch page was recorded, in ISO 8601 format.
     required String createdAt,
 
-    /// Timestamp when the watch page was last updated, in ISO 8601 format.
+    /// Page when the watch page was last updated, in ISO 8601 format.
     required String updatedAt,
 
     /// The unique identifier for the chapter within the episode or series.
     required String chapId,
   }) = _Data2;
-
+  
   factory Data2.fromJson(Map<String, Object?> json) => _$Data2FromJson(json);
 }

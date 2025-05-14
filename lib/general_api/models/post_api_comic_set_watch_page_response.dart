@@ -8,14 +8,11 @@ part 'post_api_comic_set_watch_page_response.freezed.dart';
 part 'post_api_comic_set_watch_page_response.g.dart';
 
 @Freezed()
-abstract class PostApiComicSetWatchPageResponse
-    with _$PostApiComicSetWatchPageResponse {
+abstract class PostApiComicSetWatchPageResponse with _$PostApiComicSetWatchPageResponse {
   const factory PostApiComicSetWatchPageResponse({
     /// Indicates whether the watch page was successfully set.
     required bool success,
   }) = _PostApiComicSetWatchPageResponse;
-
-  factory PostApiComicSetWatchPageResponse.fromJson(
-    Map<String, Object?> json,
-  ) => _$PostApiComicSetWatchPageResponseFromJson(json);
+  
+  factory PostApiComicSetWatchPageResponse.fromJson(Map<String, Object?> json) => _$PostApiComicSetWatchPageResponseFromJson(json);
 }

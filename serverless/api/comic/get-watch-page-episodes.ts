@@ -18,7 +18,7 @@ const GetWatchPageEpisodesQuerySchema = z
   })
   .openapi("GetWatchPageEpisodesQuerySchema")
 
-const ListWatchTimeSchema = z
+const ListWatchPageSchema = z
   .object({
     data: z.array(
       z.object({
@@ -37,12 +37,12 @@ const ListWatchTimeSchema = z
         createdAt: z.string().openapi({
           example: "2025-04-06T12:34:56Z",
           description:
-            "Timestamp when the watch page was recorded, in ISO 8601 format."
+            "Page when the watch page was recorded, in ISO 8601 format."
         }),
         updatedAt: z.string().openapi({
           example: "2025-04-06T13:00:00Z",
           description:
-            "Timestamp when the watch page was last updated, in ISO 8601 format."
+            "Page when the watch page was last updated, in ISO 8601 format."
         }),
         chapId: z.string().openapi({
           example: "chap-001",
@@ -52,7 +52,7 @@ const ListWatchTimeSchema = z
       })
     )
   })
-  .openapi("ListWatchTimeSchema", {
+  .openapi("ListWatchPageSchema", {
     description:
       "A list of watch page entries, each representing the page watched for a specific episode."
   })
@@ -68,7 +68,7 @@ const route = createRoute({
     200: {
       content: {
         "application/json": {
-          schema: ListWatchTimeSchema
+          schema: ListWatchPageSchema
         }
       },
       description:
@@ -83,10 +83,10 @@ app.openapi(route, async (c) => {
 
   const user = useUser(c)
 
-  const watchTime = await Comic.getWatchTimeEpisodes(params.sourceId, {
+  const watchPage = await Comic.getWatchTimeEpisodes(params.sourceId, {
     user_id: user.userId,
     ...params
   })
 
-  return c.json({ data: watchTime })
+  return c.json({ data: watchPage })
 })

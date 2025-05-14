@@ -7,6 +7,7 @@ import 'package:retrofit/retrofit.dart';
 
 import '../models/comic_list_watch_history.dart';
 import '../models/eiga_list_watch_history.dart';
+import '../models/list_watch_page_schema.dart';
 import '../models/list_watch_time_schema.dart';
 import '../models/post_api_comic_set_watch_page_response.dart';
 import '../models/post_api_eiga_set_watch_time_response.dart';
@@ -29,7 +30,7 @@ abstract class ClientClient {
   });
 
   @GET('/api/comic/get-watch-page-episodes')
-  Future<ListWatchTimeSchema> getApiComicGetWatchPageEpisodes({
+  Future<ListWatchPageSchema> getApiComicGetWatchPageEpisodes({
     @Query('sourceId') required String sourceId,
     @Query('comic_text_id') required String comicTextId,
     @Header('Authorization') required String authorization,
@@ -57,7 +58,7 @@ abstract class ClientClient {
   });
 
   @GET('/api/eiga/get-watch-time-episodes')
-  Future<dynamic> getApiEigaGetWatchTimeEpisodes({
+  Future<ListWatchTimeSchema> getApiEigaGetWatchTimeEpisodes({
     @Query('sourceId') required String sourceId,
     @Query('eiga_text_id') required String eigaTextId,
     @Header('Authorization') required String authorization,

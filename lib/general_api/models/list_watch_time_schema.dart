@@ -4,17 +4,17 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'data2.dart';
+import 'data5.dart';
 
 part 'list_watch_time_schema.freezed.dart';
 part 'list_watch_time_schema.g.dart';
 
-/// A list of watch page entries, each representing the page watched for a specific episode.
+/// A list of watch time entries, each representing the time watched for a specific episode.
 @Freezed()
 abstract class ListWatchTimeSchema with _$ListWatchTimeSchema {
-  const factory ListWatchTimeSchema({required List<Data2> data}) =
-      _ListWatchTimeSchema;
-
-  factory ListWatchTimeSchema.fromJson(Map<String, Object?> json) =>
-      _$ListWatchTimeSchemaFromJson(json);
+  const factory ListWatchTimeSchema({
+    required List<Data5> data,
+  }) = _ListWatchTimeSchema;
+  
+  factory ListWatchTimeSchema.fromJson(Map<String, Object?> json) => _$ListWatchTimeSchemaFromJson(json);
 }

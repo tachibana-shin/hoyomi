@@ -16,12 +16,13 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Data5 {
 
-/// The current time in seconds for the episode.
+/// The current position in the episode in seconds.
  num get cur;/// The total duration of the episode in seconds.
  num get dur;/// The name of the episode.
- String get name;/// ISO 8601 format timestamp when the watch time was recorded.
- String get createdAt;/// ISO 8601 format timestamp when the watch time was last updated.
- String get updatedAt;
+ String get name;/// Timestamp when the watch time was recorded, in ISO 8601 format.
+ String get createdAt;/// Timestamp when the watch time was last updated, in ISO 8601 format.
+ String get updatedAt;/// The unique identifier for the chapter within the episode or series.
+ String get chapId;
 /// Create a copy of Data5
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -34,16 +35,16 @@ $Data5CopyWith<Data5> get copyWith => _$Data5CopyWithImpl<Data5>(this as Data5, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Data5&&(identical(other.cur, cur) || other.cur == cur)&&(identical(other.dur, dur) || other.dur == dur)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Data5&&(identical(other.cur, cur) || other.cur == cur)&&(identical(other.dur, dur) || other.dur == dur)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.chapId, chapId) || other.chapId == chapId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,cur,dur,name,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,cur,dur,name,createdAt,updatedAt,chapId);
 
 @override
 String toString() {
-  return 'Data5(cur: $cur, dur: $dur, name: $name, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Data5(cur: $cur, dur: $dur, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, chapId: $chapId)';
 }
 
 
@@ -54,7 +55,7 @@ abstract mixin class $Data5CopyWith<$Res>  {
   factory $Data5CopyWith(Data5 value, $Res Function(Data5) _then) = _$Data5CopyWithImpl;
 @useResult
 $Res call({
- num cur, num dur, String name, String createdAt, String updatedAt
+ num cur, num dur, String name, String createdAt, String updatedAt, String chapId
 });
 
 
@@ -71,13 +72,14 @@ class _$Data5CopyWithImpl<$Res>
 
 /// Create a copy of Data5
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? cur = null,Object? dur = null,Object? name = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? cur = null,Object? dur = null,Object? name = null,Object? createdAt = null,Object? updatedAt = null,Object? chapId = null,}) {
   return _then(_self.copyWith(
 cur: null == cur ? _self.cur : cur // ignore: cast_nullable_to_non_nullable
 as num,dur: null == dur ? _self.dur : dur // ignore: cast_nullable_to_non_nullable
 as num,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as String,chapId: null == chapId ? _self.chapId : chapId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -89,19 +91,21 @@ as String,
 @JsonSerializable()
 
 class _Data5 implements Data5 {
-  const _Data5({required this.cur, required this.dur, required this.name, required this.createdAt, required this.updatedAt});
+  const _Data5({required this.cur, required this.dur, required this.name, required this.createdAt, required this.updatedAt, required this.chapId});
   factory _Data5.fromJson(Map<String, dynamic> json) => _$Data5FromJson(json);
 
-/// The current time in seconds for the episode.
+/// The current position in the episode in seconds.
 @override final  num cur;
 /// The total duration of the episode in seconds.
 @override final  num dur;
 /// The name of the episode.
 @override final  String name;
-/// ISO 8601 format timestamp when the watch time was recorded.
+/// Timestamp when the watch time was recorded, in ISO 8601 format.
 @override final  String createdAt;
-/// ISO 8601 format timestamp when the watch time was last updated.
+/// Timestamp when the watch time was last updated, in ISO 8601 format.
 @override final  String updatedAt;
+/// The unique identifier for the chapter within the episode or series.
+@override final  String chapId;
 
 /// Create a copy of Data5
 /// with the given fields replaced by the non-null parameter values.
@@ -116,16 +120,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Data5&&(identical(other.cur, cur) || other.cur == cur)&&(identical(other.dur, dur) || other.dur == dur)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Data5&&(identical(other.cur, cur) || other.cur == cur)&&(identical(other.dur, dur) || other.dur == dur)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.chapId, chapId) || other.chapId == chapId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,cur,dur,name,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,cur,dur,name,createdAt,updatedAt,chapId);
 
 @override
 String toString() {
-  return 'Data5(cur: $cur, dur: $dur, name: $name, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Data5(cur: $cur, dur: $dur, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, chapId: $chapId)';
 }
 
 
@@ -136,7 +140,7 @@ abstract mixin class _$Data5CopyWith<$Res> implements $Data5CopyWith<$Res> {
   factory _$Data5CopyWith(_Data5 value, $Res Function(_Data5) _then) = __$Data5CopyWithImpl;
 @override @useResult
 $Res call({
- num cur, num dur, String name, String createdAt, String updatedAt
+ num cur, num dur, String name, String createdAt, String updatedAt, String chapId
 });
 
 
@@ -153,13 +157,14 @@ class __$Data5CopyWithImpl<$Res>
 
 /// Create a copy of Data5
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? cur = null,Object? dur = null,Object? name = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? cur = null,Object? dur = null,Object? name = null,Object? createdAt = null,Object? updatedAt = null,Object? chapId = null,}) {
   return _then(_Data5(
 cur: null == cur ? _self.cur : cur // ignore: cast_nullable_to_non_nullable
 as num,dur: null == dur ? _self.dur : dur // ignore: cast_nullable_to_non_nullable
 as num,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as String,chapId: null == chapId ? _self.chapId : chapId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

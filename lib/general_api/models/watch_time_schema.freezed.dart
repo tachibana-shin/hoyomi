@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WatchTimeSchema {
 
- Data5? get data;
+ Data6? get data;
 /// Create a copy of WatchTimeSchema
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,11 +49,11 @@ abstract mixin class $WatchTimeSchemaCopyWith<$Res>  {
   factory $WatchTimeSchemaCopyWith(WatchTimeSchema value, $Res Function(WatchTimeSchema) _then) = _$WatchTimeSchemaCopyWithImpl;
 @useResult
 $Res call({
- Data5? data
+ Data6? data
 });
 
 
-$Data5CopyWith<$Res>? get data;
+$Data6CopyWith<$Res>? get data;
 
 }
 /// @nodoc
@@ -69,19 +69,19 @@ class _$WatchTimeSchemaCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? data = freezed,}) {
   return _then(_self.copyWith(
 data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as Data5?,
+as Data6?,
   ));
 }
 /// Create a copy of WatchTimeSchema
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$Data5CopyWith<$Res>? get data {
+$Data6CopyWith<$Res>? get data {
     if (_self.data == null) {
     return null;
   }
 
-  return $Data5CopyWith<$Res>(_self.data!, (value) {
+  return $Data6CopyWith<$Res>(_self.data!, (value) {
     return _then(_self.copyWith(data: value));
   });
 }
@@ -95,7 +95,7 @@ class _WatchTimeSchema implements WatchTimeSchema {
   const _WatchTimeSchema({required this.data});
   factory _WatchTimeSchema.fromJson(Map<String, dynamic> json) => _$WatchTimeSchemaFromJson(json);
 
-@override final  Data5? data;
+@override final  Data6? data;
 
 /// Create a copy of WatchTimeSchema
 /// with the given fields replaced by the non-null parameter values.
@@ -130,11 +130,11 @@ abstract mixin class _$WatchTimeSchemaCopyWith<$Res> implements $WatchTimeSchema
   factory _$WatchTimeSchemaCopyWith(_WatchTimeSchema value, $Res Function(_WatchTimeSchema) _then) = __$WatchTimeSchemaCopyWithImpl;
 @override @useResult
 $Res call({
- Data5? data
+ Data6? data
 });
 
 
-@override $Data5CopyWith<$Res>? get data;
+@override $Data6CopyWith<$Res>? get data;
 
 }
 /// @nodoc
@@ -150,7 +150,7 @@ class __$WatchTimeSchemaCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? data = freezed,}) {
   return _then(_WatchTimeSchema(
 data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as Data5?,
+as Data6?,
   ));
 }
 
@@ -158,12 +158,12 @@ as Data5?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$Data5CopyWith<$Res>? get data {
+$Data6CopyWith<$Res>? get data {
     if (_self.data == null) {
     return null;
   }
 
-  return $Data5CopyWith<$Res>(_self.data!, (value) {
+  return $Data6CopyWith<$Res>(_self.data!, (value) {
     return _then(_self.copyWith(data: value));
   });
 }

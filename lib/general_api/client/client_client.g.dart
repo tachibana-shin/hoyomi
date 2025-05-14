@@ -53,7 +53,7 @@ class _ClientClient implements ClientClient {
   }
 
   @override
-  Future<ListWatchTimeSchema> getApiComicGetWatchPageEpisodes({
+  Future<ListWatchPageSchema> getApiComicGetWatchPageEpisodes({
     required String sourceId,
     required String comicTextId,
     required String authorization,
@@ -66,7 +66,7 @@ class _ClientClient implements ClientClient {
     final _headers = <String, dynamic>{r'Authorization': authorization};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ListWatchTimeSchema>(
+    final _options = _setStreamType<ListWatchPageSchema>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -77,9 +77,9 @@ class _ClientClient implements ClientClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ListWatchTimeSchema _value;
+    late ListWatchPageSchema _value;
     try {
-      _value = ListWatchTimeSchema.fromJson(_result.data!);
+      _value = ListWatchPageSchema.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -192,7 +192,7 @@ class _ClientClient implements ClientClient {
   }
 
   @override
-  Future<dynamic> getApiEigaGetWatchTimeEpisodes({
+  Future<ListWatchTimeSchema> getApiEigaGetWatchTimeEpisodes({
     required String sourceId,
     required String eigaTextId,
     required String authorization,
@@ -205,7 +205,7 @@ class _ClientClient implements ClientClient {
     final _headers = <String, dynamic>{r'Authorization': authorization};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<dynamic>(
+    final _options = _setStreamType<ListWatchTimeSchema>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -215,8 +215,14 @@ class _ClientClient implements ClientClient {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch(_options);
-    final _value = _result.data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ListWatchTimeSchema _value;
+    try {
+      _value = ListWatchTimeSchema.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
     return _value;
   }
 

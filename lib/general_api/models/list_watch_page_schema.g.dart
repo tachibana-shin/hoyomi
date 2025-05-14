@@ -1,19 +1,19 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'list_watch_time_schema.dart';
+part of 'list_watch_page_schema.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_ListWatchTimeSchema _$ListWatchTimeSchemaFromJson(Map<String, dynamic> json) =>
-    _ListWatchTimeSchema(
+_ListWatchPageSchema _$ListWatchPageSchemaFromJson(Map<String, dynamic> json) =>
+    _ListWatchPageSchema(
       data:
           (json['data'] as List<dynamic>)
-              .map((e) => Data5.fromJson(e as Map<String, dynamic>))
+              .map((e) => Data2.fromJson(e as Map<String, dynamic>))
               .toList(),
     );
 
-Map<String, dynamic> _$ListWatchTimeSchemaToJson(
-  _ListWatchTimeSchema instance,
+Map<String, dynamic> _$ListWatchPageSchemaToJson(
+  _ListWatchPageSchema instance,
 ) => <String, dynamic>{'data': instance.data};
