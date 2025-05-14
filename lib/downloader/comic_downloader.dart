@@ -263,7 +263,12 @@ class ComicDownloader {
           final oImage = OImage.fromJson(jsonDecode(p['o_image'] as String));
           final path = p['path'] as String;
           final downloaded = (p['downloaded'] as int) == 1;
-          return LoadedPage(image: oImage, path: path, downloaded: downloaded, size: (p['size'] as num).toInt());
+          return LoadedPage(
+            image: oImage,
+            path: path,
+            downloaded: downloaded,
+            size: (p['size'] as num).toInt(),
+          );
         }).toList();
 
     return LoadedChapter(
