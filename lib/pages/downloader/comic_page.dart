@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
+import 'package:filesize/filesize.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -321,152 +322,157 @@ class _DownloaderComicPageState extends State<DownloaderComicPage> {
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(16.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Watch(() {
-                                                return Table(
-                                                  columnWidths: const {
-                                                    0: FixedColumnWidth(100),
-                                                    1: FlexColumnWidth(),
-                                                    2: FixedColumnWidth(25),
-                                                    3: FixedColumnWidth(40),
-                                                  },
-                                                  defaultVerticalAlignment:
-                                                      TableCellVerticalAlignment
-                                                          .middle,
-                                                  children:
-                                                      comic.chapters.sortAsc
-                                                          .where(
-                                                            (
-                                                              chapter,
-                                                            ) => downloader
-                                                                .chapters
-                                                                .containsKey(
-                                                                  chapter
-                                                                      .chapterId,
-                                                                ),
-                                                          )
-                                                          .map((chapter) {
-                                                            final download =
-                                                                downloader
-                                                                    .chapters[chapter
-                                                                    .chapterId]!;
+                                          child: Watch(() {
+                                            return Column(
+                                              children:
+                                                  comic.chapters.sortAsc
+                                                      .where(
+                                                        (chapter) => downloader
+                                                            .chapters
+                                                            .containsKey(
+                                                              chapter.chapterId,
+                                                            ),
+                                                      )
+                                                      .map((chapter) {
+                                                        final download =
+                                                            downloader
+                                                                .chapters[chapter
+                                                                .chapterId]!;
 
-                                                            final progress =
-                                                                download.progress !=
-                                                                        null
-                                                                    ? download
-                                                                        .progress!
-                                                                        .value
-                                                                        .progress
-                                                                    : download.pages.fold(
-                                                                          0,
-                                                                          (
-                                                                            prev,
-                                                                            page,
-                                                                          ) =>
-                                                                              prev +
-                                                                              (page.downloaded
-                                                                                  ? 1
-                                                                                  : 0),
-                                                                        ) /
-                                                                        download
-                                                                            .pages
-                                                                            .length;
+                                                        final progress =
+                                                            download.progress !=
+                                                                    null
+                                                                ? download
+                                                                    .progress!
+                                                                    .value
+                                                                    .progress
+                                                                : download.pages.fold(
+                                                                      0,
+                                                                      (
+                                                                        prev,
+                                                                        page,
+                                                                      ) =>
+                                                                          prev +
+                                                                          (page.downloaded
+                                                                              ? 1
+                                                                              : 0),
+                                                                    ) /
+                                                                    download
+                                                                        .pages
+                                                                        .length;
+                                                        final totalByteSize =
+                                                            download.pages.fold(
+                                                              0,
+                                                              (prev, item) =>
+                                                                  prev +
+                                                                  item.size,
+                                                            );
 
-                                                            return TableRow(
-                                                              children: [
-                                                                Text(
-                                                                  chapter.name,
-                                                                  maxLines: 1,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                  style: TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    color:
-                                                                        Theme.of(
+                                                        return Row(
+                                                          children: [
+                                                            Text(
+                                                              chapter.name,
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color:
+                                                                    Theme.of(
                                                                           context,
-                                                                        ).colorScheme.onSurface,
+                                                                        )
+                                                                        .colorScheme
+                                                                        .onSurface,
+                                                              ),
+                                                            ).paddingOnly(
+                                                              right: 4.0,
+                                                              top: 4.0,
+                                                              bottom: 4.0,
+                                                            ),
+                                                            LinearProgressIndicator(
+                                                              value: progress,
+                                                            ).expanded(),
+                                                            4.0.widthBox,
+                                                            if (download.progress !=
+                                                                    null
+                                                                ? !download
+                                                                    .progress!
+                                                                    .value
+                                                                    .done
+                                                                : download
+                                                                        .doneAt <=
+                                                                    0) ...[
+                                                              Text(
+                                                                '${(progress * 100).round()}',
+                                                              ).paddingOnly(
+                                                                left: 2.0,
+                                                              ),
+                                                              if (download
+                                                                      .progress ==
+                                                                  null)
+                                                                IconButton(
+                                                                  icon: Iconify(
+                                                                    Ion.download,
                                                                   ),
-                                                                ).paddingOnly(
-                                                                  right: 4.0,
-                                                                  top: 4.0,
-                                                                  bottom: 4.0,
-                                                                ),
-                                                                LinearProgressIndicator(
-                                                                  value:
-                                                                      progress,
-                                                                ),
-                                                                if (download.progress !=
-                                                                        null
-                                                                    ? !download
-                                                                        .progress!
-                                                                        .value
-                                                                        .done
-                                                                    : download
-                                                                            .doneAt <=
-                                                                        0) ...[
-                                                                  Text(
-                                                                    '${(progress * 100).round()}',
-                                                                  ).paddingOnly(
-                                                                    left: 2.0,
-                                                                  ),
-                                                                  if (download
-                                                                          .progress ==
-                                                                      null)
-                                                                    IconButton(
-                                                                      icon: Iconify(
-                                                                        Ion.download,
+                                                                  onPressed: () {
+                                                                    ComicDownloader.instance.downloadChapter(
+                                                                      service: getComicService(
+                                                                        downloader
+                                                                            .sourceId,
                                                                       ),
-                                                                      onPressed: () {
-                                                                        ComicDownloader.instance.downloadChapter(
-                                                                          service: getComicService(
-                                                                            downloader.sourceId,
-                                                                          ),
-                                                                          comicId:
-                                                                              downloader.comicId,
-                                                                          metaComic:
-                                                                              downloader.meta,
-                                                                          chapterId:
-                                                                              download.chapterId,
-                                                                          chapter: comic.chapters.sortAsc.firstWhere(
+                                                                      comicId:
+                                                                          downloader
+                                                                              .comicId,
+                                                                      metaComic:
+                                                                          downloader
+                                                                              .meta,
+                                                                      chapterId:
+                                                                          download
+                                                                              .chapterId,
+                                                                      chapter: comic
+                                                                          .chapters
+                                                                          .sortAsc
+                                                                          .firstWhere(
                                                                             (
                                                                               chapter,
                                                                             ) =>
                                                                                 chapter.chapterId ==
                                                                                 download.chapterId,
                                                                           ),
-                                                                          pages:
-                                                                              download.pages
-                                                                                  .map(
-                                                                                    (
-                                                                                      page,
-                                                                                    ) =>
-                                                                                        page.image,
-                                                                                  )
-                                                                                  .toList(),
-                                                                        );
-                                                                      },
-                                                                    )
-                                                                  else
-                                                                    Text(''),
-                                                                ] else ...[
-                                                                  Text(''),
-                                                                  Text(''),
-                                                                ],
-                                                              ],
-                                                            );
-                                                          })
-                                                          .toList(),
-                                                );
-                                              }),
-                                            ],
-                                          ),
+                                                                      pages:
+                                                                          download
+                                                                              .pages
+                                                                              .map(
+                                                                                (
+                                                                                  page,
+                                                                                ) =>
+                                                                                    page.image,
+                                                                              )
+                                                                              .toList(),
+                                                                    );
+                                                                  },
+                                                                ),
+                                                            ] else
+                                                              Text(
+                                                                filesize(
+                                                                  totalByteSize,
+                                                                ),
+                                                                style:
+                                                                    TextStyle(
+                                                                      fontSize:
+                                                                          12.0,
+                                                                    ),
+                                                                maxLines: 1,
+                                                              ),
+                                                          ],
+                                                        );
+                                                      })
+                                                      .toList(),
+                                            );
+                                          }),
                                         ),
                                       );
 
