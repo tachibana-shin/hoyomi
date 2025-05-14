@@ -8,6 +8,7 @@ import 'package:hoyomi/controller/update_available.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 
 import 'package:hoyomi/plugins/android_sdk_int.dart';
+import 'package:hoyomi/stores.dart';
 
 import 'package:hoyomi/widgets/navigation_app.dart';
 
@@ -31,305 +32,310 @@ final pageBuilder =
             (androidSdkInt != null && androidSdkInt! < 29)
         ? GoTransitions.zoom.call
         : null;
-final router = GoRouter(
-  restorationScopeId: 'router',
-  navigatorKey: _rootNavigatorKey,
-  initialLocation: '/home_eiga',
-  observers: [GoTransition.observer],
-  routes: [
-    // --- Shell route cho bottom navigation (5 items) ---
-    StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) {
-        // Decide immediately whether to show the toolbar.
-        final showToolbar = shouldShowToolbar(state.uri.toString());
-        return PersistentScaffold(
-          key: shellRouteKey,
-          navigationShell: navigationShell,
-          showToolbar: showToolbar,
-        );
-      },
-      branches: [
-        // Bottom Navigation Item: Home Comic
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/home_comic',
-              name: 'home_comic',
-              pageBuilder: pageBuilder,
-              builder:
-                  (context, state) => HomeComicPage(
-                    service: state.uri.queryParameters['service'],
-                  ),
-            ),
-          ],
-        ),
-        // Bottom Navigation Item: Home Eiga
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/home_eiga',
-              name: 'home_eiga',
-              pageBuilder: pageBuilder,
-              builder:
-                  (context, state) => HomeEigaPage(
-                    service: state.uri.queryParameters['service'],
-                  ),
-            ),
-          ],
-        ),
-        // Bottom Navigation Item: Search
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/search',
-              name: 'search',
-              pageBuilder: pageBuilder,
-              builder:
-                  (context, state) =>
-                      SearchPage(from: state.uri.queryParameters['from']),
-              routes: [
-                GoRoute(
-                  path: 'comic/:sourceId',
-                  name: 'search_comic',
-                  pageBuilder: pageBuilder,
-                  builder: (context, state) {
-                    if (state.uri.queryParameters['q'] == null) {
-                      context.pushReplacement("/search");
-                      return const SizedBox();
-                    }
-                    return SearchComicPage(
-                      sourceId: state.pathParameters['sourceId']!,
-                      keyword: state.uri.queryParameters['q']!,
-                    );
-                  },
-                ),
-                GoRoute(
-                  path: 'eiga/:sourceId',
-                  name: 'search_eiga',
-                  pageBuilder: pageBuilder,
-                  builder: (context, state) {
-                    if (state.uri.queryParameters['q'] == null) {
-                      context.pushReplacement("/search");
-                      return const SizedBox();
-                    }
-                    return SearchEigaPage(
-                      sourceId: state.pathParameters['sourceId']!,
-                      keyword: state.uri.queryParameters['q']!,
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-        // Bottom Navigation Item: Library
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/library',
-              name: 'library',
-              pageBuilder: pageBuilder,
-              builder: (context, state) => LibraryPage(),
-              routes: [
-                GoRoute(
-                  path: 'history/comic/:sourceId',
-                  name: 'history_comic',
-                  pageBuilder: pageBuilder,
-                  builder:
-                      (context, state) => HistoryComicPage(
-                        sourceId: state.pathParameters['sourceId']!,
-                      ),
-                ),
-                GoRoute(
-                  path: 'follow/comic/:sourceId',
-                  name: 'follow_comic',
-                  pageBuilder: pageBuilder,
-                  builder:
-                      (context, state) => FollowsComicPage(
-                        sourceId: state.pathParameters['sourceId']!,
-                      ),
-                ),
-                GoRoute(
-                  path: 'history/eiga/:sourceId',
-                  name: 'history_eiga',
-                  pageBuilder: pageBuilder,
-                  builder:
-                      (context, state) => HistoryEigaPage(
-                        sourceId: state.pathParameters['sourceId']!,
-                      ),
-                ),
-                GoRoute(
-                  path: 'follow/eiga/:sourceId',
-                  name: 'follow_eiga',
-                  pageBuilder: pageBuilder,
-                  builder:
-                      (context, state) => FollowsEigaPage(
-                        sourceId: state.pathParameters['sourceId']!,
-                      ),
-                ),
-                GoRoute(
-                  path: 'downloader',
-                  pageBuilder: pageBuilder,
-                  builder: (context, state) {
-                    context.replaceNamed('downloader_comic');
-                    return SizedBox.shrink();
-                  },
-                  routes: [
-                    GoRoute(
-                      path: 'comic',
-                      name: 'downloader_comic',
-                      pageBuilder: pageBuilder,
-                      builder: (context, state) => DownloaderComicPage(),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-        // Bottom Navigation Item: Manager
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/manager',
-              name: 'manager',
-              pageBuilder: pageBuilder,
-              builder: (context, state) => ManagerPage(),
-            ),
-          ],
-        ),
-      ],
-    ),
 
-    // --- Top-level routes ---
-    // Details Comic Route
-    GoRoute(
-      path: '/details_comic/:sourceId/:comicId',
-      name: 'details_comic',
-      pageBuilder: pageBuilder,
-      parentNavigatorKey: _rootNavigatorKey,
-      builder:
-          (context, state) => DetailsComic(
+final routes = [
+  // --- Shell route cho bottom navigation (5 items) ---
+  StatefulShellRoute.indexedStack(
+    builder: (context, state, navigationShell) {
+      // Decide immediately whether to show the toolbar.
+      final showToolbar = shouldShowToolbar(state.uri.toString());
+      return PersistentScaffold(
+        key: shellRouteKey,
+        navigationShell: navigationShell,
+        showToolbar: showToolbar,
+      );
+    },
+    branches: [
+      // Bottom Navigation Item: Home Comic
+      StatefulShellBranch(
+        routes: [
+          GoRoute(
+            path: '/home_comic',
+            name: 'home_comic',
+            pageBuilder: pageBuilder,
+            builder:
+                (context, state) => HomeComicPage(
+                  service: state.uri.queryParameters['service'],
+                ),
+          ),
+        ],
+      ),
+      // Bottom Navigation Item: Home Eiga
+      StatefulShellBranch(
+        routes: [
+          GoRoute(
+            path: '/home_eiga',
+            name: 'home_eiga',
+            pageBuilder: pageBuilder,
+            builder:
+                (context, state) =>
+                    HomeEigaPage(service: state.uri.queryParameters['service']),
+          ),
+        ],
+      ),
+      // Bottom Navigation Item: Search
+      StatefulShellBranch(
+        routes: [
+          GoRoute(
+            path: '/search',
+            name: 'search',
+            pageBuilder: pageBuilder,
+            builder:
+                (context, state) =>
+                    SearchPage(from: state.uri.queryParameters['from']),
+            routes: [
+              GoRoute(
+                path: 'comic/:sourceId',
+                name: 'search_comic',
+                pageBuilder: pageBuilder,
+                builder: (context, state) {
+                  if (state.uri.queryParameters['q'] == null) {
+                    context.pushReplacement("/search");
+                    return const SizedBox();
+                  }
+                  return SearchComicPage(
+                    sourceId: state.pathParameters['sourceId']!,
+                    keyword: state.uri.queryParameters['q']!,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'eiga/:sourceId',
+                name: 'search_eiga',
+                pageBuilder: pageBuilder,
+                builder: (context, state) {
+                  if (state.uri.queryParameters['q'] == null) {
+                    context.pushReplacement("/search");
+                    return const SizedBox();
+                  }
+                  return SearchEigaPage(
+                    sourceId: state.pathParameters['sourceId']!,
+                    keyword: state.uri.queryParameters['q']!,
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+      // Bottom Navigation Item: Library
+      StatefulShellBranch(
+        routes: [
+          GoRoute(
+            path: '/library',
+            name: 'library',
+            pageBuilder: pageBuilder,
+            builder: (context, state) => LibraryPage(),
+            routes: [
+              GoRoute(
+                path: 'history/comic/:sourceId',
+                name: 'history_comic',
+                pageBuilder: pageBuilder,
+                builder:
+                    (context, state) => HistoryComicPage(
+                      sourceId: state.pathParameters['sourceId']!,
+                    ),
+              ),
+              GoRoute(
+                path: 'follow/comic/:sourceId',
+                name: 'follow_comic',
+                pageBuilder: pageBuilder,
+                builder:
+                    (context, state) => FollowsComicPage(
+                      sourceId: state.pathParameters['sourceId']!,
+                    ),
+              ),
+              GoRoute(
+                path: 'history/eiga/:sourceId',
+                name: 'history_eiga',
+                pageBuilder: pageBuilder,
+                builder:
+                    (context, state) => HistoryEigaPage(
+                      sourceId: state.pathParameters['sourceId']!,
+                    ),
+              ),
+              GoRoute(
+                path: 'follow/eiga/:sourceId',
+                name: 'follow_eiga',
+                pageBuilder: pageBuilder,
+                builder:
+                    (context, state) => FollowsEigaPage(
+                      sourceId: state.pathParameters['sourceId']!,
+                    ),
+              ),
+              GoRoute(
+                path: 'downloader',
+                pageBuilder: pageBuilder,
+                builder: (context, state) {
+                  context.replaceNamed('downloader_comic');
+                  return SizedBox.shrink();
+                },
+                routes: [
+                  GoRoute(
+                    path: 'comic',
+                    name: 'downloader_comic',
+                    pageBuilder: pageBuilder,
+                    builder: (context, state) => DownloaderComicPage(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+      // Bottom Navigation Item: Manager
+      StatefulShellBranch(
+        routes: [
+          GoRoute(
+            path: '/manager',
+            name: 'manager',
+            pageBuilder: pageBuilder,
+            builder: (context, state) => ManagerPage(),
+          ),
+        ],
+      ),
+    ],
+  ),
+
+  // --- Top-level routes ---
+  // Details Comic Route
+  GoRoute(
+    path: '/details_comic/:sourceId/:comicId',
+    name: 'details_comic',
+    pageBuilder: pageBuilder,
+    parentNavigatorKey: _rootNavigatorKey,
+    builder:
+        (context, state) => DetailsComic(
+          sourceId: state.pathParameters['sourceId']!,
+          comicId: state.pathParameters['comicId']!,
+        ),
+    routes: [
+      GoRoute(
+        path: 'view',
+        name: 'details_comic_reader',
+        pageBuilder: pageBuilder,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final chapterId = state.uri.queryParameters['chap']!;
+          return DetailsComicReader(
+            key: Key(state.pathParameters['comicId']!),
             sourceId: state.pathParameters['sourceId']!,
             comicId: state.pathParameters['comicId']!,
-          ),
-      routes: [
-        GoRoute(
-          path: 'view',
-          name: 'details_comic_reader',
-          pageBuilder: pageBuilder,
-          parentNavigatorKey: _rootNavigatorKey,
-          builder: (context, state) {
-            final chapterId = state.uri.queryParameters['chap']!;
-            return DetailsComicReader(
-              key: Key(state.pathParameters['comicId']!),
+            chapterId: chapterId,
+            comic:
+                state.extra != null
+                    ? (state.extra as Map)['comic'] as MetaComic
+                    : null,
+          );
+        },
+      ),
+      GoRoute(
+        path: 'similar',
+        name: 'similar_comic',
+        pageBuilder: pageBuilder,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder:
+            (context, state) => SimilarPage(
               sourceId: state.pathParameters['sourceId']!,
               comicId: state.pathParameters['comicId']!,
-              chapterId: chapterId,
               comic:
-                  state.extra != null
-                      ? (state.extra as Map)['comic'] as MetaComic
+                  (state.extra is Map &&
+                          (state.extra as Map).containsKey('comic'))
+                      ? (state.extra as Map)['comic']
                       : null,
-            );
-          },
+            ),
+      ),
+    ],
+  ),
+
+  // Details Eiga Route
+  GoRoute(
+    path: '/details_eiga/:sourceId/:eigaId',
+    name: 'details_eiga',
+    pageBuilder: pageBuilder,
+    parentNavigatorKey: _rootNavigatorKey,
+    builder: (context, state) {
+      final sourceId = state.pathParameters['sourceId']!;
+      final eigaId = state.pathParameters['eigaId']!;
+      final episodeId = state.uri.queryParameters['episodeId'];
+
+      return DetailsEigaPage(
+        key: ValueKey('$sourceId/$eigaId'),
+        sourceId: sourceId,
+        eigaId: eigaId,
+        episodeId: episodeId,
+      );
+    },
+  ),
+
+  // Sign In Route
+  GoRoute(
+    path: '/sign_in/main',
+    name: 'sign_in_main',
+    pageBuilder: pageBuilder,
+    parentNavigatorKey: _rootNavigatorKey,
+    builder: (context, state) => SignInMainPage(),
+  ),
+
+  // Webview Route
+  GoRoute(
+    path: '/webview/:sourceId',
+    name: 'webview',
+    pageBuilder: pageBuilder,
+    parentNavigatorKey: _rootNavigatorKey,
+    builder:
+        (context, state) =>
+            WebviewPage(sourceId: state.pathParameters['sourceId']!),
+  ),
+
+  // Category Comic Route
+  GoRoute(
+    path: '/category_comic/:sourceId/:categoryId',
+    name: 'category_comic',
+    pageBuilder: pageBuilder,
+    parentNavigatorKey: _rootNavigatorKey,
+    builder:
+        (context, state) => CategoryComicPage(
+          sourceId: state.pathParameters['sourceId']!,
+          categoryId: state.pathParameters['categoryId']!,
         ),
-        GoRoute(
-          path: 'similar',
-          name: 'similar_comic',
-          pageBuilder: pageBuilder,
-          parentNavigatorKey: _rootNavigatorKey,
-          builder:
-              (context, state) => SimilarPage(
-                sourceId: state.pathParameters['sourceId']!,
-                comicId: state.pathParameters['comicId']!,
-                comic:
-                    (state.extra is Map &&
-                            (state.extra as Map).containsKey('comic'))
-                        ? (state.extra as Map)['comic']
-                        : null,
-              ),
+  ),
+
+  // Category Eiga Route
+  GoRoute(
+    path: '/category_eiga/:sourceId/:categoryId',
+    name: 'category_eiga',
+    pageBuilder: pageBuilder,
+    parentNavigatorKey: _rootNavigatorKey,
+    builder:
+        (context, state) => CategoryEigaPage(
+          sourceId: state.pathParameters['sourceId']!,
+          categoryId: state.pathParameters['categoryId']!,
         ),
-      ],
-    ),
+  ),
 
-    // Details Eiga Route
-    GoRoute(
-      path: '/details_eiga/:sourceId/:eigaId',
-      name: 'details_eiga',
-      pageBuilder: pageBuilder,
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) {
-        final sourceId = state.pathParameters['sourceId']!;
-        final eigaId = state.pathParameters['eigaId']!;
-        final episodeId = state.uri.queryParameters['episodeId'];
+  // Category Service Setting Route
+  GoRoute(
+    path: '/service_settings/:sourceId',
+    name: 'service_settings',
+    pageBuilder: pageBuilder,
+    parentNavigatorKey: _rootNavigatorKey,
+    builder:
+        (context, state) =>
+            ServiceSettingsPage(sourceId: state.pathParameters['sourceId']!),
+  ),
+];
 
-        return DetailsEigaPage(
-          key: ValueKey('$sourceId/$eigaId'),
-          sourceId: sourceId,
-          eigaId: eigaId,
-          episodeId: episodeId,
-        );
-      },
-    ),
-
-    // Sign In Route
-    GoRoute(
-      path: '/sign_in/main',
-      name: 'sign_in_main',
-      pageBuilder: pageBuilder,
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => SignInMainPage(),
-    ),
-
-    // Webview Route
-    GoRoute(
-      path: '/webview/:sourceId',
-      name: 'webview',
-      pageBuilder: pageBuilder,
-      parentNavigatorKey: _rootNavigatorKey,
-      builder:
-          (context, state) =>
-              WebviewPage(sourceId: state.pathParameters['sourceId']!),
-    ),
-
-    // Category Comic Route
-    GoRoute(
-      path: '/category_comic/:sourceId/:categoryId',
-      name: 'category_comic',
-      pageBuilder: pageBuilder,
-      parentNavigatorKey: _rootNavigatorKey,
-      builder:
-          (context, state) => CategoryComicPage(
-            sourceId: state.pathParameters['sourceId']!,
-            categoryId: state.pathParameters['categoryId']!,
-          ),
-    ),
-
-    // Category Eiga Route
-    GoRoute(
-      path: '/category_eiga/:sourceId/:categoryId',
-      name: 'category_eiga',
-      pageBuilder: pageBuilder,
-      parentNavigatorKey: _rootNavigatorKey,
-      builder:
-          (context, state) => CategoryEigaPage(
-            sourceId: state.pathParameters['sourceId']!,
-            categoryId: state.pathParameters['categoryId']!,
-          ),
-    ),
-
-    // Category Service Setting Route
-    GoRoute(
-      path: '/service_settings/:sourceId',
-      name: 'service_settings',
-      pageBuilder: pageBuilder,
-      parentNavigatorKey: _rootNavigatorKey,
-      builder:
-          (context, state) =>
-              ServiceSettingsPage(sourceId: state.pathParameters['sourceId']!),
-    ),
-  ],
-);
+late final GoRouter router;
+void initializeRouter() {
+  router = GoRouter(
+    restorationScopeId: 'router',
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: lastTabActiveApp.value ?? '/home_eiga',
+    observers: [GoTransition.observer],
+    routes: routes,
+  );
+}
 
 /// 日本語のコメント: 現在のURIに基づいてボトムツールバーを表示するかどうかを判定する関数。
 bool shouldShowToolbar(String uriString) {
@@ -365,6 +371,15 @@ class PersistentScaffold extends StatelessWidget {
     required this.showToolbar,
   });
 
+  void _onDestinationSelected(int index) {
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
+    lastTabActiveApp.value =
+        navigationShell.shellRouteContext.routerState.fullPath;
+  }
+
   @override
   Widget build(BuildContext context) {
     // 日本語のコメント:
@@ -390,12 +405,7 @@ class PersistentScaffold extends StatelessWidget {
             NavigationApp(
               selectedIndex: navigationShell.currentIndex,
               rail: true,
-              onDestinationSelected: (index) {
-                navigationShell.goBranch(
-                  index,
-                  initialLocation: index == navigationShell.currentIndex,
-                );
-              },
+              onDestinationSelected: _onDestinationSelected,
             ),
             const VerticalDivider(thickness: 1, width: 1),
           ],
@@ -413,12 +423,7 @@ class PersistentScaffold extends StatelessWidget {
               ? NavigationApp(
                 selectedIndex: navigationShell.currentIndex,
                 rail: false,
-                onDestinationSelected: (index) {
-                  navigationShell.goBranch(
-                    index,
-                    initialLocation: index == navigationShell.currentIndex,
-                  );
-                },
+                onDestinationSelected: _onDestinationSelected,
               )
               : null,
     );

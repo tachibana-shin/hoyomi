@@ -13,6 +13,7 @@ sealed class GeneralSettings with _$GeneralSettings {
     @Default(false) bool showListEpisodeWithGrid,
     @Default(null) List<String>? sortComicService,
     @Default(null) List<String>? sortEigaService,
+    @Default(null) String? lastTabActiveApp,
   }) = _GeneralSettings;
 
   factory GeneralSettings.fromJson(Map<String, Object?> json) =>

@@ -26,6 +26,7 @@ Future<void> main() async {
   await initializeServices();
   await initializeFullscreen();
   await initializeStore();
+  initializeRouter();
 
   runApp(MainApp());
 
