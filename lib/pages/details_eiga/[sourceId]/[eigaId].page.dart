@@ -285,6 +285,14 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       },
       onWatchTimeChanged: (watchTimeData) {
         _eventBus.fire(WatchTimeDataEvent(watchTimeData));
+        _cacheWatchTimeStore[_eigaId.value] = {
+          ..._cacheWatchTimeStore[_eigaId.value] ?? {},
+          watchTimeData.episodeId: WatchTimeUpdated(
+            position: watchTimeData.watchTime!.position,
+            duration: watchTimeData.watchTime!.duration,
+            updatedAt: DateTime.now(),
+          ),
+        };
       },
       aspectRatio: _aspectRatio,
       onPrev: _onPrevNotifier,
