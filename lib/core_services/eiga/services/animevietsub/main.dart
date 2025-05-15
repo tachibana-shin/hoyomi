@@ -89,7 +89,7 @@ class AnimeVietsubService extends ABEigaService
       ),
       WebRule(
         shortRegexFilter: 'stream\\.googleapiscdn\\.com',
-        referer: 'https://stream.googleapiscdn.com'
+        referer: 'https://stream.googleapiscdn.com',
       ),
     ],
   );
