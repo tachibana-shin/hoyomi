@@ -13,7 +13,7 @@ class AvatarService extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-      backgroundColor: Theme.of(context).colorScheme.onSecondary,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
       radius: radius,
       backgroundImage: CachedNetworkImageProvider(
         service.faviconUrl.src,
