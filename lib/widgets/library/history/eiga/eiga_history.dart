@@ -7,7 +7,6 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga_history.dart'
     as types;
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/core_services/widget/avatar_service.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:hoyomi/widgets/blurred_part_background.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
