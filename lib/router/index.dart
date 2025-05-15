@@ -37,6 +37,7 @@ final pageBuilder =
 final routes = [
   // --- Shell route cho bottom navigation (5 items) ---
   StatefulShellRoute.indexedStack(
+    restorationScopeId: 'root',
     builder: (context, state, navigationShell) {
       // Decide immediately whether to show the toolbar.
       final showToolbar = shouldShowToolbar(state.uri.toString());
@@ -49,6 +50,7 @@ final routes = [
     branches: [
       // Bottom Navigation Item: Home Comic
       StatefulShellBranch(
+        restorationScopeId: 'home_comic',
         routes: [
           GoRoute(
             path: '/home_comic',
@@ -63,6 +65,7 @@ final routes = [
       ),
       // Bottom Navigation Item: Home Eiga
       StatefulShellBranch(
+        restorationScopeId: 'home_eiga',
         routes: [
           GoRoute(
             path: '/home_eiga',
@@ -76,6 +79,7 @@ final routes = [
       ),
       // Bottom Navigation Item: Search
       StatefulShellBranch(
+        restorationScopeId: 'search',
         routes: [
           GoRoute(
             path: '/search',
@@ -121,6 +125,7 @@ final routes = [
       ),
       // Bottom Navigation Item: Library
       StatefulShellBranch(
+        restorationScopeId: 'library',
         routes: [
           GoRoute(
             path: '/library',
@@ -186,6 +191,7 @@ final routes = [
       ),
       // Bottom Navigation Item: Manager
       StatefulShellBranch(
+        restorationScopeId: 'manager',
         routes: [
           GoRoute(
             path: '/manager',
@@ -368,6 +374,14 @@ class PersistentScaffold extends StatelessWidget {
   static final tabComic = Ref<String?>(null);
   static final tabEiga = Ref<String?>(null);
 
+  static const branches = [
+    '/home_comic',
+    '/home_eiga',
+    '/search',
+    '/library',
+    '/manager',
+  ];
+
   final StatefulNavigationShell navigationShell;
   final bool showToolbar;
 
@@ -383,7 +397,7 @@ class PersistentScaffold extends StatelessWidget {
       initialLocation: index == navigationShell.currentIndex,
     );
     lastTabActiveApp.value =
-        navigationShell.shellRouteContext.routerState.fullPath! +
+        branches[index] +
         (switch (navigationShell.shellRouteContext.routerState.name) {
           == 'home_comic' => '?service=${tabComic.value}',
           == 'home_eiga' => '?service=${tabEiga.value}',
