@@ -4,4 +4,5 @@ hosts:
   - hoyomi.pages.dev
   - hoyomi.nuxt.dev
   - hoyomi.web.dev
-  
+  - localhost:3032
+  - localhost

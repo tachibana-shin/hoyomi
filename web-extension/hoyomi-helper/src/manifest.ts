@@ -27,15 +27,23 @@ export async function getManifest() {
       48: "./assets/logo-512.png",
       128: "./assets/logo-512.png"
     },
-    permissions: ["tabs", "storage", "activeTab", "cookies", "declarativeNetRequest"],
+    permissions: [
+      "tabs",
+      "storage",
+      "activeTab",
+      "cookies",
+      "declarativeNetRequest"
+    ],
     host_permissions: ["*://*/*"],
     content_scripts: [
       {
-        matches: Yaml.parse(await fs.readFile(r("allowlist.yaml"), "utf8"))
-          .hosts.map((host: string) => {
-            return [`http://${host}/*`, `https://${host}/*`]
-          })
-          .flat(1),
+        matches: isDev
+          ? ["<all_urls>"]
+          : Yaml.parse(await fs.readFile(r("allowlist.yaml"), "utf8"))
+              .hosts.map((host: string) => {
+                return [`http://${host}/*`, `https://${host}/*`]
+              })
+              .flat(1),
         all_frames: true,
         run_at: "document_start",
         js: ["dist/contentScripts/index.global.js"]
