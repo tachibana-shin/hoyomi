@@ -1,4 +1,5 @@
 import fs from "fs-extra"
+import Yaml from "yaml"
 import type { Manifest } from "webextension-polyfill"
 import type PkgType from "../package.json"
 import { isDev, isFirefox, port, r } from "../scripts/utils"
@@ -22,15 +23,21 @@ export async function getManifest() {
           service_worker: "./dist/background/index.mjs"
         },
     icons: {
-      16: "./assets/icon-512.png",
-      48: "./assets/icon-512.png",
-      128: "./assets/icon-512.png"
+      16: "./assets/logo-512.png",
+      48: "./assets/logo-512.png",
+      128: "./assets/logo-512.png"
     },
     permissions: ["tabs", "storage", "activeTab", "cookies", "declarativeNetRequest"],
     host_permissions: ["*://*/*"],
     content_scripts: [
       {
-        matches: ["<all_urls>"],
+        matches: Yaml.parse(await fs.readFile(r("allowlist.yaml"), "utf8"))
+          .hosts.map((host: string) => {
+            return [`http://${host}/*`, `https://${host}/*`]
+          })
+          .flat(1),
+        all_frames: true,
+        run_at: "document_start",
         js: ["dist/contentScripts/index.global.js"]
       }
     ],

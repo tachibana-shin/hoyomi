@@ -1,9 +1,9 @@
 {
   "name": "hoyomi-helper",
-  "displayName": "Vitesse WebExt",
+  "displayName": "Hoyomi Helper",
   "version": "0.0.1",
   "private": true,
-  "description": "[description]",
+  "description": "Extension add API helper for Hoyomi",
   "scripts": {
     "dev": "bun run clear && cross-env NODE_ENV=development run-p dev:*",
     "dev-firefox": "bun run clear && cross-env NODE_ENV=development EXTENSION=firefox run-p dev:*",
@@ -59,7 +59,8 @@
     "vue": "^3.4.38",
     "vue-demi": "^0.14.10",
     "web-ext": "^8.2.0",
-    "webextension-polyfill": "^0.12.0"
+    "webextension-polyfill": "^0.12.0",
+    "yaml": "^2.8.0"
   },
   "dependencies": {
     "webext-bridge": "^6.0.1"
