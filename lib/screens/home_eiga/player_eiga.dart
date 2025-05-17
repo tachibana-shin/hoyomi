@@ -1227,9 +1227,9 @@ class _PlayerEigaState extends State<PlayerEiga>
           }),
           Watch(
             () => IgnorePointer(
-              ignoring: _loading.value,
+              ignoring: _loading.value && !_playing.value,
               child: Opacity(
-                opacity: _loading.value ? 0 : 1,
+                opacity: _loading.value && !_playing.value ? 0 : 1,
                 child: ElevatedButton(
                   onPressed: () {
                     _activeTime = DateTime.now();

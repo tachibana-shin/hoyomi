@@ -387,8 +387,10 @@ class _MangaReaderState extends State<MangaReader>
     watch([_currChapter], () {});
     // save watch page if exit reader
     onBeforeUnmount(() {
-      _forceUpdateWatchPage();
-      debugPrint('save watch page because exit reader');
+      if ((_realCurrentPage.value - _realLength.value).abs() <= 1) {
+        _forceUpdateWatchPage();
+        debugPrint('save watch page because exit reader');
+      }
     });
 
     watchEffect(() async {
