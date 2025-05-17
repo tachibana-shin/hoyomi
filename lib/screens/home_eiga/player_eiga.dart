@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart' show Response;
 import 'package:flutter/foundation.dart';
@@ -56,6 +57,8 @@ class PlayerEiga extends StatefulWidget {
 
   final Ref<Season?> season;
 
+  final Ref<bool> fullscreen;
+
   final Computed<String> title;
   final Computed<String> subtitle;
 
@@ -81,6 +84,7 @@ class PlayerEiga extends StatefulWidget {
     required this.episodeId,
     required this.episode,
     required this.season,
+    required this.fullscreen,
     required this.title,
     required this.subtitle,
     required this.aspectRatio,
@@ -158,7 +162,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   late final _subtitleCode = ref<String?>(null);
   late final _playbackSpeed = ref(1.0);
   late final _qualityCode = ref<String?>(null);
-  late final _fullscreen = ref(false);
+  late final _fullscreen = widget.fullscreen;
 
   late final _error = ref<String?>(null);
   late final _position = ref(Duration());
@@ -454,18 +458,10 @@ class _PlayerEigaState extends State<PlayerEiga>
               : opening.start <= _position.value &&
                   opening.end > _position.value;
       if (inOpening) {
-        if (_stateOpeningEnding.value == _StateOpeningEnding.opening ||
-            _stateOpeningEnding.value == _StateOpeningEnding.skip) {
-          return _stateOpeningEnding.value;
-        }
         return _StateOpeningEnding.opening;
       } else if (ending == null
           ? false
           : ending.start <= _position.value && ending.end > _position.value) {
-        if (_stateOpeningEnding.value == _StateOpeningEnding.ending ||
-            _stateOpeningEnding.value == _StateOpeningEnding.skip) {
-          return _stateOpeningEnding.value;
-        }
         return _StateOpeningEnding.ending;
       } else {
         return _StateOpeningEnding.none;
@@ -932,7 +928,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     return Watch(
       () =>
           _fullscreen.value
-              ? SizedBox.shrink()
+              ? _buildStack(context, isFullscreen: true)
               : Stack(
                 children: [
                   Padding(
@@ -949,26 +945,8 @@ class _PlayerEigaState extends State<PlayerEiga>
   }
 
   Widget _buildStack(BuildContext context, {required bool isFullscreen}) {
-    return Stack(
+    final stack = Stack(
       children: [
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: GestureDetector(
-            onTap: _onTapToggleControls,
-            onDoubleTapDown: _onDoubleTapPlayer,
-            onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
-            onVerticalDragEnd: (_) => _hideAllSlider(),
-            onVerticalDragCancel: _hideAllSlider,
-            onHorizontalDragStart: _onHorizontalDragStart,
-            onHorizontalDragUpdate: _onHorizontalDragUpdate,
-            onHorizontalDragEnd: _onHorizontalDragEnd,
-            onHorizontalDragCancel: _hideAllSlider,
-            child: Container(color: Colors.black),
-          ),
-        ),
         GestureDetector(
           onTap: _onTapToggleControls,
           onDoubleTapDown: _onDoubleTapPlayer,
@@ -1048,7 +1026,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                       ),
                     ),
                   )
-                  : SizedBox.shrink();
+                  : nil;
 
           if (_error.value != null) return child;
 
@@ -1097,6 +1075,19 @@ class _PlayerEigaState extends State<PlayerEiga>
             },
           ),
       ],
+    );
+
+    return GestureDetector(
+      onTap: _onTapToggleControls,
+      onDoubleTapDown: _onDoubleTapPlayer,
+      onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
+      onVerticalDragEnd: (_) => _hideAllSlider(),
+      onVerticalDragCancel: _hideAllSlider,
+      onHorizontalDragStart: _onHorizontalDragStart,
+      onHorizontalDragUpdate: _onHorizontalDragUpdate,
+      onHorizontalDragEnd: _onHorizontalDragEnd,
+      onHorizontalDragCancel: _hideAllSlider,
+      child: Container(color: Colors.black, child: stack),
     );
   }
 
@@ -1403,8 +1394,8 @@ class _PlayerEigaState extends State<PlayerEiga>
         bottom: _fullscreen.value ? kToolbarHeight : 0,
         left: _fullscreen.value ? 16.0 : 0,
         right: _fullscreen.value ? 16.0 : 0,
-        child: FractionallySizedBox(
-          widthFactor: 1.0,
+        child: SizedBox(
+          width: (100.w(context) - 16.0 * 2),
           child: AnimatedOpacity(
             duration: _durationAnimate,
             opacity:
@@ -1774,35 +1765,32 @@ class _PlayerEigaState extends State<PlayerEiga>
     _fullscreen.value = value;
 
     if (value) {
-      showGeneralDialog(
-        context: context,
-        transitionDuration: Duration(milliseconds: 300),
-        pageBuilder: (
-          BuildContext context,
-          Animation<double> animation,
-          Animation<double> secondaryAnimation,
-        ) {
-          return MediaQuery(
-            data: MediaQuery.of(
-              context,
-            ).copyWith(textScaler: TextScaler.linear(1.2)),
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              extendBodyBehindAppBar: true,
-              body: _buildStack(context, isFullscreen: true),
-            ),
-          );
-        },
-      );
+      // showGeneralDialog(
+      //   context: context,
+      //   transitionDuration: Duration(milliseconds: 300),
+      //   pageBuilder: (
+      //     BuildContext context,
+      //     Animation<double> animation,
+      //     Animation<double> secondaryAnimation,
+      //   ) {
+      //     return MediaQuery(
+      //       data: MediaQuery.of(
+      //         context,
+      //       ).copyWith(textScaler: TextScaler.linear(1.2)),
+      //       child: Scaffold(
+      //         backgroundColor: Colors.transparent,
+      //         extendBodyBehindAppBar: true,
+      //         body: _buildStack(context, isFullscreen: true),
+      //       ),
+      //     );
+      //   },
+      // );
       if (XPlatform.isAndroid || XPlatform.isIOS) {
         await SystemChrome.setPreferredOrientations([
           DeviceOrientation.landscapeRight,
           DeviceOrientation.landscapeLeft,
         ]);
         await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-        if (mounted) {
-          setState(() {});
-        }
       } else {
         setFullScreen(true);
       }
@@ -1815,16 +1803,13 @@ class _PlayerEigaState extends State<PlayerEiga>
           SystemUiMode.manual,
           overlays: SystemUiOverlay.values,
         );
-        if (mounted) {
-          setState(() {});
-        }
       } else {
         setFullScreen(false);
       }
 
-      if (mounted) {
-        Navigator.pop(context);
-      }
+      // if (mounted) {
+      //   Navigator.pop(context);
+      // }
     }
   }
 

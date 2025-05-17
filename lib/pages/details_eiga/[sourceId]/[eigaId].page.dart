@@ -55,7 +55,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final _metaIsFake = _metaEiga.select((meta) => meta.fake);
   late final _loading = _metaIsFake;
 
-  double _aspectRatio = 16 / 9;
+  final double _aspectRatio = 16 / 9;
 
   final Map<String, EigaEpisodes> _cacheEpisodesStore = {};
   final Map<String, Map<String, WatchTimeUpdated>> _cacheWatchTimeStore = {};
@@ -108,6 +108,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       return null;
     }
   });
+
+  // state player
+  late final _fullscreen = ref(false);
 
   final _eventBus = EventBus();
 
@@ -184,94 +187,111 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Widget _buildAll() {
-    final size = MediaQuery.of(context).size;
+    // final size = MediaQuery.of(context).size;
 
-    var aspectRatio = 16 / 9;
+    // var aspectRatio = 16 / 9;
 
-    final heightPlayer = 1 / aspectRatio /* = width / height */ * size.width;
-    if (size.height * 0.65 < heightPlayer) {
-      aspectRatio = size.width / (size.height * 0.65);
-    }
+    // final heightPlayer = 1 / aspectRatio /* = width / height */ * size.width;
+    // if (size.height * 0.65 < heightPlayer) {
+    //   aspectRatio = size.width / (size.height * 0.65);
+    // }
 
-    _aspectRatio = aspectRatio;
+    // _aspectRatio = aspectRatio;
 
     return SafeArea(child: Scaffold(body: _buildBody()));
   }
 
   Widget _buildBody() {
-    return Stack(
-      children: [
-        Column(
-          children: [
-            AspectRatio(aspectRatio: _aspectRatio),
-            Expanded(
-              child: PullRefreshPage(
-                onLoadData: () => _getDetails(_eigaId.value),
-                onLoadFake: () => _metaEiga.value = MetaEiga.createFakeData(),
-                builderError:
-                    (body) => Scaffold(
-                      appBar: AppBar(
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
-                        scrolledUnderElevation: 0.0,
-                        leading: IconButton(
-                          icon: const Iconify(Ion.chevron_left),
-                          onPressed: () {
-                            context.pop();
-                          },
-                        ),
-                      ),
-                      body: body,
-                    ),
-                builder: (data, param) {
-                  return Watch(() {
-                    final loading = _loading.value;
+    final player = _buildPlayer();
 
-                    return SingleChildScrollView(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 8.0,
+    return Watch(() {
+      return Column(
+        children: [
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return ClipRect(
+                child: SizedBox(
+                  height: _fullscreen.value ? 100.h(context) : null,
+                  child: player,
+                ),
+              );
+            },
+          ),
+          ClipRect(
+            child: SizedBox(
+              height: _fullscreen.value ? 0 : double.infinity,
+              child: Offstage(
+                offstage: _fullscreen.value,
+                child: PullRefreshPage(
+                  onLoadData: () => _getDetails(_eigaId.value),
+                  onLoadFake: () => _metaEiga.value = MetaEiga.createFakeData(),
+                  builderError:
+                      (body) => Scaffold(
+                        appBar: AppBar(
+                          backgroundColor:
+                              Theme.of(context).scaffoldBackgroundColor,
+                          scrolledUnderElevation: 0.0,
+                          leading: IconButton(
+                            icon: const Iconify(Ion.chevron_left),
+                            onPressed: () {
+                              context.pop();
+                            },
+                          ),
+                        ),
+                        body: body,
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildInfo(),
-                          SizedBox(height: 10.0),
-                          // button group
-                          _buildButtonGroup(),
-                          SizedBox(height: 5.0),
-                          if (!loading) _buildSchedule(),
-                          _buildServers(),
-                          _buildSeasonHeader(),
-                          SizedBox(height: 5.0),
-                          if (loading)
-                            ListEpisodesSkeleton()
-                          else
-                            _buildSeasonArea(),
-                          SizedBox(height: 12.0),
-                          _buildSuggest(),
-                        ],
-                      ),
-                    );
-                  });
-                },
+                  builder: (data, param) {
+                    return Watch(() {
+                      final loading = _loading.value;
+
+                      return SingleChildScrollView(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 8.0,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildInfo(),
+                            SizedBox(height: 10.0),
+                            // button group
+                            _buildButtonGroup(),
+                            SizedBox(height: 5.0),
+                            if (!loading) _buildSchedule(),
+                            _buildServers(),
+                            _buildSeasonHeader(),
+                            SizedBox(height: 5.0),
+                            if (loading)
+                              ListEpisodesSkeleton()
+                            else
+                              _buildSeasonArea(),
+                            SizedBox(height: 12.0),
+                            _buildSuggest(),
+                          ],
+                        ),
+                      );
+                    });
+                  },
+                ),
               ),
             ),
-          ],
-        ),
-        Positioned(top: 0, left: 0, right: 0, child: _buildPlayer()),
-      ],
-    );
+          ).expanded(),
+        ],
+      );
+    });
   }
 
   Widget _buildPlayer() {
     return PlayerEiga(
+      key: ValueKey('player'),
       service: _service,
       eigaId: _eigaId,
       metaEiga: _metaEiga,
       episodeId: _episodeId,
       episode: _episode,
       season: _currentSeason,
+
+      fullscreen: _fullscreen,
 
       /// ===============
       title: _title,
