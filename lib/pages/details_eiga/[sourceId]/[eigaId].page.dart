@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/bottom_sheet_no_scrim.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/eiga/export.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/extensions/iterable_extension.dart';
@@ -812,7 +813,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     final query = MediaQuery.of(context);
     final size = query.size;
     final heightPlayer =
-        size.height - query.padding.top - (size.width * 1 / _aspectRatio);
+        size.height -
+        (XPlatform.isAndroid || XPlatform.isIOS ? query.padding.top : 0) -
+        (size.width * 1 / _aspectRatio);
 
     _initialBottomSheet = max(0.5, heightPlayer / size.height);
     showModalBottomSheetNoScrim(
@@ -1038,7 +1041,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     final query = MediaQuery.of(context);
     final size = query.size;
     final heightPlayer =
-        size.height - query.padding.top - (size.width * 1 / _aspectRatio);
+        100.h(context) -
+        (XPlatform.isAndroid || XPlatform.isIOS ? query.padding.top : 0) -
+        (size.width * 1 / _aspectRatio);
 
     _initialBottomSheet = max(0.5, heightPlayer / size.height);
     showModalBottomSheetNoScrim(
