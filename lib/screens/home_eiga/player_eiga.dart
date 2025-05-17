@@ -1784,7 +1784,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           DeviceOrientation.landscapeRight,
           DeviceOrientation.landscapeLeft,
         ]);
-        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
       } else {
         setFullScreen(true);
       }
