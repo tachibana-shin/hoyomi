@@ -1227,9 +1227,9 @@ class _PlayerEigaState extends State<PlayerEiga>
           }),
           Watch(
             () => IgnorePointer(
-              ignoring: _loading.value && !_playing.value,
+              ignoring: _loading.value,
               child: Opacity(
-                opacity: _loading.value && !_playing.value ? 0 : 1,
+                opacity: _loading.value ? 0 : 1,
                 child: ElevatedButton(
                   onPressed: () {
                     _activeTime = DateTime.now();
@@ -1282,7 +1282,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   Widget _buildIndicator() {
     return Watch(() {
-      if (!_loading.value || !_playing.value) return SizedBox.shrink();
+      if (!_loading.value) return SizedBox.shrink();
 
       return Positioned(
         top: 0,
