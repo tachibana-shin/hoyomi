@@ -196,10 +196,8 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   String get uid => '${widget.episodeId.value}@${widget.eigaId.value}';
 
-  bool _positionChangedByUser = false;
   void _resetPositionChangedByUser() {
     if (!mounted) return;
-    _positionChangedByUser = false;
   }
 
   @override
@@ -602,7 +600,6 @@ class _PlayerEigaState extends State<PlayerEiga>
     VideoPlayerController controller,
     Duration position,
   ) async {
-    _positionChangedByUser = true;
     await controller.seekTo(position);
     Future.microtask(_resetPositionChangedByUser);
   }
@@ -762,7 +759,6 @@ class _PlayerEigaState extends State<PlayerEiga>
     }
 
     if (controller != null && controller.value.isInitialized) {
-      final positionChanged = _position.value != controller.value.position;
       _position.value = controller.value.position;
       _duration.value = controller.value.duration;
       _buffered.value = controller.value.buffered.fold(Duration.zero, (
@@ -773,9 +769,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       });
       _loading.value =
           controller.value.isInitialized != true ||
-          (controller.value.isBuffering &&
-              _playing.value &&
-              !(positionChanged && !_positionChangedByUser));
+          controller.value.isBuffering && !controller.value.isPlaying;
       final playing = controller.value.isPlaying;
       if (_playing.value != playing) {
         _playing.value = playing;
@@ -1288,7 +1282,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   Widget _buildIndicator() {
     return Watch(() {
-      if (!_loading.value) return SizedBox.shrink();
+      if (!_loading.value || !_playing.value) return SizedBox.shrink();
 
       return Positioned(
         top: 0,
