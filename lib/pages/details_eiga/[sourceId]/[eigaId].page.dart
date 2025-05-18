@@ -841,6 +841,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 controller: scrollController,
                 padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 16.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
