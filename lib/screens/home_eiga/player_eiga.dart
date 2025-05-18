@@ -197,6 +197,8 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   String get uid => '${widget.episodeId.value}@${widget.eigaId.value}';
 
+  bool _acceptVerticalDrag = false;
+
   void _resetPositionChangedByUser() {
     if (!mounted) return;
   }
@@ -845,8 +847,40 @@ class _PlayerEigaState extends State<PlayerEiga>
     }
   }
 
+  void _onVerticalDragStartPlayer(DragStartDetails details) {
+    _acceptVerticalDrag = false;
+
+    final double screenWidth = 100.w(context);
+    final double screenHeight =
+        _fullscreen.value
+            ? 100.h(context)
+            : min(
+              100.h(context),
+              100.w(context) / widget.aspectRatio,
+            ); // ratio = w / h
+    final bool isLeftSide = details.globalPosition.dx < screenWidth / 2;
+
+    // in 4/5 1/2
+    if (isLeftSide && details.globalPosition.dx > (screenWidth / 2 * 4 / 5)) {
+      return;
+    }
+    if (!isLeftSide &&
+        details.globalPosition.dx <
+            (screenWidth / 2 + screenWidth / 2 * 1 / 5)) {
+      return;
+    }
+
+    // y in 3/4
+    if (details.globalPosition.dy < screenHeight * 1 / 5) return;
+    if (details.globalPosition.dy > screenHeight * 4 / 5) return;
+
+    _acceptVerticalDrag = true;
+  }
+
   void _onVerticalDragUpdatePlayer(DragUpdateDetails details) {
-    final double screenWidth = MediaQuery.of(context).size.width;
+    if (!_acceptVerticalDrag) return;
+
+    final double screenWidth = 100.w(context);
     final bool isLeftSide = details.globalPosition.dx < screenWidth / 2;
 
     if (details.primaryDelta != null) {
@@ -944,6 +978,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         GestureDetector(
           onTap: _onTapToggleControls,
           onDoubleTapDown: _onDoubleTapPlayer,
+          onVerticalDragStart: _onVerticalDragStartPlayer,
           onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
           onVerticalDragEnd: (_) => _hideAllSlider(),
           onVerticalDragCancel: _hideAllSlider,

@@ -56,7 +56,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final _metaIsFake = _metaEiga.select((meta) => meta.fake);
   late final _loading = _metaIsFake;
 
-  final double _aspectRatio = 16 / 9;
+  final _defaultAspectRatio = 16 / 9;
+  double? _aspectRatio;
 
   final Map<String, EigaEpisodes> _cacheEpisodesStore = {};
   final Map<String, Map<String, WatchTimeUpdated>> _cacheWatchTimeStore = {};
@@ -188,16 +189,18 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Widget _buildAll() {
-    // final size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
-    // var aspectRatio = 16 / 9;
+    if (_aspectRatio == null) {
+      var aspectRatio = _defaultAspectRatio;
 
-    // final heightPlayer = 1 / aspectRatio /* = width / height */ * size.width;
-    // if (size.height * 0.65 < heightPlayer) {
-    //   aspectRatio = size.width / (size.height * 0.65);
-    // }
+      final heightPlayer = size.width / aspectRatio;
+      if (size.height * 0.65 < heightPlayer) {
+        aspectRatio = size.width / (size.height * 0.65);
+      }
 
-    // _aspectRatio = aspectRatio;
+      _aspectRatio = aspectRatio;
+    }
 
     return SafeArea(child: Scaffold(body: _buildBody()));
   }
@@ -315,7 +318,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           ),
         };
       },
-      aspectRatio: _aspectRatio,
+      aspectRatio: _aspectRatio!,
       onPrev: _onPrevNotifier,
       onNext: _onNextNotifier,
 
@@ -815,7 +818,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     final heightPlayer =
         size.height -
         (XPlatform.isAndroid || XPlatform.isIOS ? query.padding.top : 0) -
-        (size.width * 1 / _aspectRatio);
+        (size.width * 1 / _aspectRatio!);
 
     _initialBottomSheet = max(0.5, heightPlayer / size.height);
     showModalBottomSheetNoScrim(
@@ -1043,7 +1046,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     final heightPlayer =
         100.h(context) -
         (XPlatform.isAndroid || XPlatform.isIOS ? query.padding.top : 0) -
-        (size.width * 1 / _aspectRatio);
+        (size.width * 1 / _aspectRatio!);
 
     _initialBottomSheet = max(0.5, heightPlayer / size.height);
     showModalBottomSheetNoScrim(
