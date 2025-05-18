@@ -29,7 +29,7 @@ Future<void> main() async {
   await initializeStore();
   initializeRouter();
 
- final savedThemeMode = await AdaptiveTheme.getThemeMode();
+  final savedThemeMode = await AdaptiveTheme.getThemeMode();
 
   runApp(MainApp(theme: savedThemeMode));
 
