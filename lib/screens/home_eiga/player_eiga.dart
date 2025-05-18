@@ -229,7 +229,10 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     /// Server
     _server = computed(() {
-      if (metaIsFake.value || widget.episode.value == null) return null;
+      if (metaIsFake.value ||
+          usePick(widget.episode, (value) => value == null).value) {
+        return null;
+      }
 
       final servers = _servers.value;
       if (servers == null || servers.isEmpty) return null;
@@ -1200,23 +1203,20 @@ class _PlayerEigaState extends State<PlayerEiga>
                         _subtitles,
                         (value) => value?.isNotEmpty == true,
                       ).value;
-                  return Opacity(
-                    opacity: isEnabled ? 1.0 : 0.5,
-                    child: IgnorePointer(
-                      ignoring: !isEnabled,
-                      child: IconButton(
-                        icon: Iconify(
-                          _subtitleCode.value == null
-                              ? Mdi.subtitles_outline
-                              : Mdi.subtitles,
-                        ),
-                        color: Colors.white,
-                        onPressed:
-                            () =>
-                                _subtitleCode.value == null
-                                    ? _showSubtitleOptions()
-                                    : (_subtitleCode.value = null),
+                  return Disabled(
+                    disabled: !isEnabled,
+                    child: IconButton(
+                      icon: Iconify(
+                        _subtitleCode.value == null
+                            ? Mdi.subtitles_outline
+                            : Mdi.subtitles,
                       ),
+                      color: Colors.white,
+                      onPressed:
+                          () =>
+                              _subtitleCode.value == null
+                                  ? _showSubtitleOptions()
+                                  : (_subtitleCode.value = null),
                     ),
                   );
                 }),
@@ -1243,48 +1243,43 @@ class _PlayerEigaState extends State<PlayerEiga>
           Watch(() {
             final onPrev = widget.onPrev.value;
 
-            return Opacity(
-              opacity: onPrev == null ? 0.5 : 1.0,
-              child: IgnorePointer(
-                ignoring: onPrev == null,
-                child: ElevatedButton(
-                  onPressed: onPrev,
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
-                    padding: EdgeInsets.all(15),
-                    backgroundColor: Colors.black.withAlpha(20),
-                    shadowColor: Colors.transparent,
-                  ),
-                  child: const Iconify(
-                    Mdi.skip_previous,
-                    color: Colors.white,
-                    size: 25.0,
-                  ),
+            return Disabled(
+              disabled: onPrev == null,
+              child: ElevatedButton(
+                onPressed: onPrev,
+                style: ElevatedButton.styleFrom(
+                  shape: CircleBorder(),
+                  padding: EdgeInsets.all(15),
+                  backgroundColor: Colors.black.withAlpha(20),
+                  shadowColor: Colors.transparent,
+                ),
+                child: const Iconify(
+                  Mdi.skip_previous,
+                  color: Colors.white,
+                  size: 25.0,
                 ),
               ),
             );
           }),
           Watch(
-            () => IgnorePointer(
-              ignoring: _loading.value,
-              child: Opacity(
-                opacity: _loading.value ? 0 : 1,
-                child: ElevatedButton(
-                  onPressed: () {
-                    _activeTime = DateTime.now();
-                    _setPlaying(!_playing.value);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
-                    padding: EdgeInsets.all(15),
-                    backgroundColor: Colors.grey.shade300.withAlpha(20),
-                    shadowColor: Colors.transparent,
-                  ),
-                  child: Icon(
-                    _playing.value ? Icons.pause : Icons.play_arrow,
-                    color: Colors.white,
-                    size: 42.0,
-                  ),
+            () => Disabled(
+              disabled: _loading.value,
+              opacity: 0,
+              child: ElevatedButton(
+                onPressed: () {
+                  _activeTime = DateTime.now();
+                  _setPlaying(!_playing.value);
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: CircleBorder(),
+                  padding: EdgeInsets.all(15),
+                  backgroundColor: Colors.grey.shade300.withAlpha(20),
+                  shadowColor: Colors.transparent,
+                ),
+                child: Icon(
+                  _playing.value ? Icons.pause : Icons.play_arrow,
+                  color: Colors.white,
+                  size: 42.0,
                 ),
               ),
             ),
@@ -1292,23 +1287,20 @@ class _PlayerEigaState extends State<PlayerEiga>
           Watch(() {
             final onNext = widget.onNext.value;
 
-            return Opacity(
-              opacity: onNext == null ? 0.5 : 1.0,
-              child: IgnorePointer(
-                ignoring: onNext == null,
-                child: ElevatedButton(
-                  onPressed: onNext,
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
-                    padding: EdgeInsets.all(15),
-                    backgroundColor: Colors.grey.shade300.withAlpha(20),
-                    shadowColor: Colors.transparent,
-                  ),
-                  child: const Iconify(
-                    Mdi.skip_next,
-                    color: Colors.white,
-                    size: 25.0,
-                  ),
+            return Disabled(
+              disabled: onNext == null,
+              child: ElevatedButton(
+                onPressed: onNext,
+                style: ElevatedButton.styleFrom(
+                  shape: CircleBorder(),
+                  padding: EdgeInsets.all(15),
+                  backgroundColor: Colors.grey.shade300.withAlpha(20),
+                  shadowColor: Colors.transparent,
+                ),
+                child: const Iconify(
+                  Mdi.skip_next,
+                  color: Colors.white,
+                  size: 25.0,
                 ),
               ),
             );
@@ -2114,43 +2106,46 @@ class _PlayerEigaState extends State<PlayerEiga>
                   _showPlaybackOptions();
                 },
               ),
-              Opacity(
-                opacity: _subtitles.value?.isNotEmpty == true ? 1.0 : 0.5,
-                child: IgnorePointer(
-                  ignoring: _subtitles.value?.isNotEmpty != true,
-                  child: ListTile(
-                    leading: Icon(Icons.subtitles_outlined),
-                    title: Text('Subtitle', style: TextStyle(fontSize: 14.0)),
-                    trailing:
-                        _subtitle.value == null
-                            ? null
-                            : Text(
-                              _subtitle.value!.language,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
+              Disabled(
+                disabled: _subtitles.value?.isNotEmpty != true,
+                child: ListTile(
+                  leading: Icon(Icons.subtitles_outlined),
+                  title: Text('Subtitle', style: TextStyle(fontSize: 14.0)),
+                  trailing:
+                      _subtitle.value == null
+                          ? null
+                          : Text(
+                            _subtitle.value!.language,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
                             ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      _showSubtitleOptions();
-                    },
-                  ),
-                ),
-              ),
-              Watch(
-                () => ListTile(
-                  leading: Icon(Icons.cloud_outlined),
-                  title: Text('Server play', style: TextStyle(fontSize: 14.0)),
-                  trailing: Text(
-                    _server.value?.name ?? '',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
+                          ),
                   onTap: () {
                     Navigator.pop(context);
-                    _showServerOptions();
+                    _showSubtitleOptions();
                   },
+                ),
+              ),
+              Disabled(
+                disabled: _servers.value?.isNotEmpty != true,
+                child: Watch(
+                  () => ListTile(
+                    leading: Icon(Icons.cloud_outlined),
+                    title: Text(
+                      'Server play',
+                      style: TextStyle(fontSize: 14.0),
+                    ),
+                    trailing: Text(
+                      _server.value?.name ?? '',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _showServerOptions();
+                    },
+                  ),
                 ),
               ),
               ListTile(

@@ -9,6 +9,7 @@ import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_package_installer/flutter_package_installer.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:hoyomi/widgets/export.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:markdown/markdown.dart' as markdown;
 import 'package:package_info_plus/package_info_plus.dart';
@@ -428,36 +429,31 @@ class UpdateAvailableController {
                   },
                 ),
                 Watch(
-                  () => Opacity(
-                    opacity: downloading.value ? 0.5 : 1.0,
-                    child: IgnorePointer(
-                      ignoring: downloading.value,
-                      child: FilledButton(
-                        child: Text(
-                          installing.value ? 'Installing' : 'Download',
-                        ),
-                        onPressed: () async {
-                          if (XPlatform.isAndroid) {
-                            downloading.value = true;
+                  () => Disabled(
+                    disabled: downloading.value,
+                    child: FilledButton(
+                      child: Text(installing.value ? 'Installing' : 'Download'),
+                      onPressed: () async {
+                        if (XPlatform.isAndroid) {
+                          downloading.value = true;
 
-                            final file = await _downloadRelease(release, (
-                              progress,
-                            ) {
-                              downloadingProgress.value = progress;
-                            });
+                          final file = await _downloadRelease(release, (
+                            progress,
+                          ) {
+                            downloadingProgress.value = progress;
+                          });
 
-                            downloading.value = false;
-                            downloaded.value = true;
-                            installing.value = true;
+                          downloading.value = false;
+                          downloaded.value = true;
+                          installing.value = true;
 
-                            await _installApk(file);
+                          await _installApk(file);
 
-                            installing.value = false;
-                          } else if (XPlatform.isIOS) {
-                            await launchUrl(Uri.parse(release.htmlUrl));
-                          }
-                        },
-                      ),
+                          installing.value = false;
+                        } else if (XPlatform.isIOS) {
+                          await launchUrl(Uri.parse(release.htmlUrl));
+                        }
+                      },
                     ),
                   ),
                 ),

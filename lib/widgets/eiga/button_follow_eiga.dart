@@ -8,7 +8,7 @@ import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/utils/format_number.dart';
-import 'package:hoyomi/widgets/iconify.dart';
+import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 
@@ -82,29 +82,26 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with KaeruMixin {
     final isFollowed = _isFollowed.value;
     final followCount = _followCount.value;
 
-    return Opacity(
-      opacity: (_supportAuth && !_loading.value) ? 1.0 : 0.5,
-      child: IgnorePointer(
-        ignoring: !(_supportAuth && !_loading.value),
-        child: ElevatedButton.icon(
-          onPressed: _onTap,
-          icon: Iconify(
-            isFollowed ? Mdi.bookmark_check : Mdi.bookmark_plus_outline,
-            color: Theme.of(context).textTheme.labelLarge?.color,
+    return Disabled(
+      disabled: !(_supportAuth && !_loading.value),
+      child: ElevatedButton.icon(
+        onPressed: _onTap,
+        icon: Iconify(
+          isFollowed ? Mdi.bookmark_check : Mdi.bookmark_plus_outline,
+          color: Theme.of(context).textTheme.labelLarge?.color,
+        ),
+        label: Text(
+          followCount == null || followCount == 0
+              ? 'Follow'
+              : formatNumber(followCount),
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.normal,
+            fontSize: 12.0,
           ),
-          label: Text(
-            followCount == null || followCount == 0
-                ? 'Follow'
-                : formatNumber(followCount),
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              fontWeight: FontWeight.normal,
-              fontSize: 12.0,
-            ),
-          ),
-          style: ButtonStyle(
-            padding: WidgetStateProperty.all(
-              EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
-            ),
+        ),
+        style: ButtonStyle(
+          padding: WidgetStateProperty.all(
+            EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
           ),
         ),
       ),

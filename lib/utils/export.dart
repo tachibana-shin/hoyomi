@@ -10,6 +10,7 @@ export 'format_number.dart';
 export 'format_time_ago.dart';
 export 'format_watch_update_at.dart';
 export 'future_cache.dart';
+export 'get_is_buffering.dart';
 export 'proxy_cache/proxy_cache.dart';
 export 'throttler.dart';
 export 'time_utils.dart';

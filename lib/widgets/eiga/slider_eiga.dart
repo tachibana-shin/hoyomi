@@ -378,12 +378,14 @@ class _SliderEigaState extends State<SliderEiga>
       return FutureBuilder(
         future: _preview.value,
         builder:
-            (context, snapshot) => Watch(() => builder(
-              context,
-              snapshot.data,
-              snapshot.connectionState != ConnectionState.waiting ||
-                  snapshot.connectionState == ConnectionState.done,
-            )),
+            (context, snapshot) => Watch(
+              () => builder(
+                context,
+                snapshot.data,
+                snapshot.connectionState != ConnectionState.waiting ||
+                    snapshot.connectionState == ConnectionState.done,
+              ),
+            ),
       );
     });
   }

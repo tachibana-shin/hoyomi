@@ -18,6 +18,7 @@ export 'comments/widget/comment.dart';
 export 'comments/widget/comments.dart';
 export 'comments/widget/comments_sheet.dart';
 export 'delayed_widget.dart';
+export 'disabled.dart';
 export 'eiga/button_follow_eiga.dart';
 export 'eiga/button_share_eiga.dart';
 export 'eiga/carousel_eiga.dart';
