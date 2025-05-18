@@ -320,8 +320,6 @@ class _SliderEigaState extends State<SliderEiga>
     return Watch(() {
       if (!_isHovering.value) return SizedBox.shrink();
 
-      _hoverPosition.value;
-
       Widget builder(BuildContext context, _PreviewMeta? preview, bool done) {
         final String text = formatDuration(
           widget.duration.value * _hoverPosition.value,
@@ -380,12 +378,12 @@ class _SliderEigaState extends State<SliderEiga>
       return FutureBuilder(
         future: _preview.value,
         builder:
-            (context, snapshot) => builder(
+            (context, snapshot) => Watch(() => builder(
               context,
               snapshot.data,
               snapshot.connectionState != ConnectionState.waiting ||
                   snapshot.connectionState == ConnectionState.done,
-            ),
+            )),
       );
     });
   }

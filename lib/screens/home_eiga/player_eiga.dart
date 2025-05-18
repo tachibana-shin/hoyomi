@@ -1160,7 +1160,11 @@ class _PlayerEigaState extends State<PlayerEiga>
                 ),
                 // icon subtitle
                 Watch(() {
-                  final isEnabled = _subtitles.value?.isNotEmpty == true;
+                  final isEnabled =
+                      usePick(
+                        _subtitles,
+                        (value) => value?.isNotEmpty == true,
+                      ).value;
                   return Opacity(
                     opacity: isEnabled ? 1.0 : 0.5,
                     child: IgnorePointer(

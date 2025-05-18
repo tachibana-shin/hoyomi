@@ -384,10 +384,7 @@ class _ListEpisodesState extends State<ListEpisodes>
       final episode = episodesEiga.episodes[index];
       final active = !waiting && _checkEpisodeActive(episode, episodesEiga);
 
-      final watchTime =
-          _watchTimeEpisodes.value == null
-              ? null
-              : _watchTimeEpisodes.value![episode.episodeId];
+      final watchTime = usePick(_watchTimeEpisodes, (value) => value?[episode.episodeId]).value;
 
       if (isVertical) {
         return InkWell(
