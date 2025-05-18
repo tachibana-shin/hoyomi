@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
@@ -28,7 +29,9 @@ Future<void> main() async {
   await initializeStore();
   initializeRouter();
 
-  runApp(MainApp());
+ final savedThemeMode = await AdaptiveTheme.getThemeMode();
+
+  runApp(MainApp(theme: savedThemeMode));
 
   // register background service
   // if (XPlatform.isAndroid || XPlatform.isIOS) {
@@ -38,7 +41,9 @@ Future<void> main() async {
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final AdaptiveThemeMode? theme;
+
+  const MainApp({super.key, required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -56,15 +61,21 @@ class MainApp extends StatelessWidget {
       GoRouter.optionURLReflectsImperativeAPIs = true;
     }
 
-    return MaterialApp.router(
-      restorationScopeId: 'app',
-      title: 'Hoyomi',
-      scaffoldMessengerKey: snackbarKey,
-      theme: ThemeData(useMaterial3: true),
-      darkTheme: ThemeData.dark(useMaterial3: true),
-      themeMode: ThemeMode.system,
-      scrollBehavior: AppScrollBehavior(),
-      routerConfig: router,
+    return AdaptiveTheme(
+      light: ThemeData.light(useMaterial3: true),
+      dark: ThemeData.dark(useMaterial3: true),
+      initial: theme ?? AdaptiveThemeMode.system,
+      builder:
+          (theme, darkTheme) => MaterialApp.router(
+            restorationScopeId: 'app',
+            title: 'Hoyomi',
+            scaffoldMessengerKey: snackbarKey,
+            theme: theme,
+            darkTheme: darkTheme,
+            // themeMode: ThemeMode.system,
+            scrollBehavior: AppScrollBehavior(),
+            routerConfig: router,
+          ),
     );
   }
 }

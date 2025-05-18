@@ -8,6 +8,7 @@ environment:
   flutter: ^3.29.3
 
 dependencies:
+  adaptive_theme: ^3.7.0
   analyzer: ^7.4.4
   animations: ^2.0.11
   archive: ^4.0.2

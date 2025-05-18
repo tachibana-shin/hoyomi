@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
@@ -195,6 +196,86 @@ class ManagerPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          /// icon toggle theme
+          ValueListenableBuilder(
+            valueListenable: AdaptiveTheme.of(context).modeChangeNotifier,
+            builder: (_, mode, child) {
+              return IconButton(
+                icon: Icon(
+                  {
+                    AdaptiveThemeMode.light: Icons.light_mode_rounded,
+                    AdaptiveThemeMode.dark: Icons.dark_mode_rounded,
+                    AdaptiveThemeMode.system: Icons.brightness_auto,
+                  }[mode],
+                ),
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      var selectedMode = AdaptiveTheme.of(context).mode;
+
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children:
+                                AdaptiveThemeMode.values.map((mode) {
+                                  final icon =
+                                      {
+                                        AdaptiveThemeMode.light:
+                                            Icons.light_mode_rounded,
+                                        AdaptiveThemeMode.dark:
+                                            Icons.dark_mode_rounded,
+                                        AdaptiveThemeMode.system:
+                                            Icons.brightness_auto,
+                                      }[mode];
+
+                                  final label =
+                                      {
+                                        AdaptiveThemeMode.light: 'Light Theme',
+                                        AdaptiveThemeMode.dark: 'Dark Theme',
+                                        AdaptiveThemeMode.system:
+                                            'System Default',
+                                      }[mode];
+
+                                  return RadioListTile<AdaptiveThemeMode>(
+                                    value: mode,
+                                    groupValue: selectedMode,
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        setState(() => selectedMode = value);
+
+                                        switch (value) {
+                                          case AdaptiveThemeMode.dark:
+                                            AdaptiveTheme.of(context).setDark();
+                                            break;
+                                          case AdaptiveThemeMode.light:
+                                            AdaptiveTheme.of(
+                                              context,
+                                            ).setLight();
+                                            break;
+                                          case AdaptiveThemeMode.system:
+                                            AdaptiveTheme.of(
+                                              context,
+                                            ).setSystem();
+                                        }
+                                        Navigator.pop(context);
+                                      }
+                                    },
+                                    title: Text(label!),
+                                    secondary: Icon(icon),
+                                  );
+                                }).toList(),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          ),
+
           /// icon search
           IconButton(icon: const Icon(Icons.search), onPressed: () {}),
 
