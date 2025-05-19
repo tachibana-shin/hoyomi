@@ -70,11 +70,11 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga>
 
   @override
   Widget build(BuildContext context) {
-    final isFollowed = _isFollowed.value;
-    final followCount = _followCount.value;
+    return Watch(() {
+      final isFollowed = _isFollowed.value;
+      final followCount = _followCount.value;
 
-    return Watch(
-      () => Disabled(
+      return Disabled(
         disabled: !(_supportAuth && !_loading.value),
         child: ElevatedButton.icon(
           onPressed: _onTap,
@@ -97,8 +97,8 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga>
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   void _onTap() async {
