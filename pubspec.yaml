@@ -57,6 +57,7 @@ dependencies:
   flutter_volume_controller: ^1.3.3
   flutter_widget_from_html: ^0.16.0
   freezed_annotation: ^3.0.0
+  fullscreen_window: ^1.1.0
   get: ^4.6.6
   getwidget: ^6.0.0
   go_router: ^14.8.1
