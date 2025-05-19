@@ -449,6 +449,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                   ),
     );
 
+    bool firstRun = true;
     _stateOpeningEnding = computed(() {
       final opEnd = _openingEnding.value;
       if (opEnd == null) return _StateOpeningEnding.none;
@@ -462,10 +463,24 @@ class _PlayerEigaState extends State<PlayerEiga>
               : opening.start <= _position.value &&
                   opening.end > _position.value;
       if (inOpening) {
+        if (!firstRun &&
+            _stateOpeningEnding.value == _StateOpeningEnding.skip) {
+          return _StateOpeningEnding.skip;
+        } else {
+          firstRun = false;
+        }
+
         return _StateOpeningEnding.opening;
       } else if (ending == null
           ? false
           : ending.start <= _position.value && ending.end > _position.value) {
+        if (!firstRun &&
+            _stateOpeningEnding.value == _StateOpeningEnding.skip) {
+          return _StateOpeningEnding.skip;
+        } else {
+          firstRun = false;
+        }
+
         return _StateOpeningEnding.ending;
       } else {
         return _StateOpeningEnding.none;
