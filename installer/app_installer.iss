@@ -13,4 +13,4 @@ SolidCompression=yes
 Source: "build\windows\runner\Release\*"; DestDir: "{app}"; Flags: recursesubdirs
 
 [Icons]
-Name: "{group}\Hoyomi"; Filename: "{app}\hoyomi.exe"
+Name: "{group}\Hoyomi"; Filename: "{app}\app.png"
