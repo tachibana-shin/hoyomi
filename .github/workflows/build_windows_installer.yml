@@ -1,0 +1,67 @@
+name: Build Windows Installer
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_windows:
+    name: Build Flutter Windows Installer
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.29.3"
+          channel: stable
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Create .env file
+        run: echo -e "${{ secrets.ENV_CONTENT }}" > .env
+
+      - name: Create .env.web file
+        run: echo -e "${{ secrets.ENV_WEB_CONTENT }}" > .env.web
+
+      - name: Build runner
+        run: ./build_bunner.bat
+
+      - name: Build Flutter Windows app
+        run: flutter build windows
+
+      - name: Download Inno Setup
+        run: |
+          Invoke-WebRequest https://jrsoftware.org/download.php/ispack-unicode.exe -OutFile ispack.exe
+          Start-Process ispack.exe -ArgumentList "/VERYSILENT", "/NORESTART" -Wait
+
+      - name: Add Inno Setup to PATH
+        run: echo "C:\Program Files (x86)\Inno Setup 6" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Compile Inno Setup installer
+        run: iscc installer/app_installer.iss
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: installer/output/*.exe
+
+      - name: Setup upterm session (debug if fail)
+        uses: lhotari/action-upterm@v1
+        if: ${{ failure() }}
+        with:
+          wait-timeout-minutes: 5
