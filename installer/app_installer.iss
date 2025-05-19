@@ -5,7 +5,7 @@ AppVersion=1.0.0
 DefaultDirName={pf}\Hoyomi
 DefaultGroupName=Hoyomi
 OutputDir=installer\output
-OutputBaseFilename=HoyomiInstaller
+OutputBaseFilename=app-windows-x64-release
 Compression=lzma
 SolidCompression=yes
 

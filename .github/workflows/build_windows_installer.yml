@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-installer
-          path: installer/output/*.exe
+          path: installer/installer/output/app-windows-x64-release.exe
 
       - name: Setup upterm session (debug if fail)
         uses: lhotari/action-upterm@v1
