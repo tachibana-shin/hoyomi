@@ -23,7 +23,6 @@ import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:hoyomi/logic/search_language.dart';
 import 'package:hoyomi/plugins/export.dart';
 import 'package:hoyomi/utils/export.dart';
-import 'package:hoyomi/utils/get_is_buffering.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
