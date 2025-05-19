@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/composable/use_user.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
@@ -28,7 +27,8 @@ class ButtonFollowEiga extends StatefulWidget {
   createState() => _ButtonFollowEigaState();
 }
 
-class _ButtonFollowEigaState extends State<ButtonFollowEiga> with KaeruMixin {
+class _ButtonFollowEigaState extends State<ButtonFollowEiga>
+    with KaeruMixin, KaeruLifeMixin {
   late final _loading = ref(false);
   late final _isFollowed = ref(false);
   late final _followCount = ref<int?>(null);
@@ -41,39 +41,30 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with KaeruMixin {
   @override
   void initState() {
     super.initState();
-    _onUpdateEigaId();
-    widget.eigaId.addListener(_onUpdateEigaId);
+
+    watch([widget.eigaId], () async {
+      if (!_supportAuth) return;
+      final service = widget.service as EigaAuthMixin;
+
+      _loading.value = true;
+      try {
+        await Future.wait([
+          service.isFollowed(eigaId: widget.eigaId.value).then((value) {
+            if (mounted) _isFollowed.value = value;
+          }),
+          service.getFollowCount(eigaId: widget.eigaId.value).then((value) {
+            if (mounted) _followCount.value = value;
+          }),
+        ]);
+      } finally {
+        if (mounted) _loading.value = false;
+      }
+    }, immediate: true);
 
     if (_supportAuth) {
-      _user = useUser(widget.service as AuthMixin, context: this);
+      _user = widget.service.getUserData();
     } else {
       _user = null;
-    }
-  }
-
-  @override
-  void dispose() {
-    widget.eigaId.removeListener(_onUpdateEigaId);
-
-    super.dispose();
-  }
-
-  void _onUpdateEigaId() async {
-    if (!_supportAuth) return;
-    final service = widget.service as EigaAuthMixin;
-
-    _loading.value = true;
-    try {
-      await Future.wait([
-        service.isFollowed(eigaId: widget.eigaId.value).then((value) {
-          if (mounted) _isFollowed.value = value;
-        }),
-        service.getFollowCount(eigaId: widget.eigaId.value).then((value) {
-          if (mounted) _followCount.value = value;
-        }),
-      ]);
-    } finally {
-      if (mounted) _loading.value = false;
     }
   }
 
@@ -82,26 +73,28 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga> with KaeruMixin {
     final isFollowed = _isFollowed.value;
     final followCount = _followCount.value;
 
-    return Disabled(
-      disabled: !(_supportAuth && !_loading.value),
-      child: ElevatedButton.icon(
-        onPressed: _onTap,
-        icon: Iconify(
-          isFollowed ? Mdi.bookmark_check : Mdi.bookmark_plus_outline,
-          color: Theme.of(context).textTheme.labelLarge?.color,
-        ),
-        label: Text(
-          followCount == null || followCount == 0
-              ? 'Follow'
-              : formatNumber(followCount),
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-            fontWeight: FontWeight.normal,
-            fontSize: 12.0,
+    return Watch(
+      () => Disabled(
+        disabled: !(_supportAuth && !_loading.value),
+        child: ElevatedButton.icon(
+          onPressed: _onTap,
+          icon: Iconify(
+            isFollowed ? Mdi.bookmark_check : Mdi.bookmark_plus_outline,
+            color: Theme.of(context).textTheme.labelLarge?.color,
           ),
-        ),
-        style: ButtonStyle(
-          padding: WidgetStateProperty.all(
-            EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
+          label: Text(
+            followCount == null || followCount == 0
+                ? 'Follow'
+                : formatNumber(followCount),
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.normal,
+              fontSize: 12.0,
+            ),
+          ),
+          style: ButtonStyle(
+            padding: WidgetStateProperty.all(
+              EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
+            ),
           ),
         ),
       ),

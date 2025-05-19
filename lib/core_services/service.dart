@@ -20,6 +20,7 @@ import 'package:html/parser.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/router/index.dart';
 import 'package:http_cache_file_store/http_cache_file_store.dart';
+import 'package:kaeru/kaeru.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -167,6 +168,12 @@ abstract class Service extends BaseService
       maxLines: 5,
     ),
   ];
+
+  final _user = Ref<User?>(null);
+  final _error = Ref<String?>(null);
+  final _fetching = Ref<bool>(true);
+
+  bool _initUserData = false;
 
   @override
   String get baseUrl {
@@ -592,6 +599,9 @@ abstract class Service extends BaseService
       );
 
       _userFuture = Future.value(user);
+      _user.value = user;
+      _error.value = null;
+      _fetching.value = false;
 
       await ServiceSettingsController.instance.save(
         uid,
@@ -599,7 +609,7 @@ abstract class Service extends BaseService
       );
 
       return user;
-    } on UserNotFoundException catch (_) {
+    } on UserNotFoundException catch (err) {
       currentSettings = {...currentSettings, 'cookie': cookie};
 
       currentServiceSettings = currentServiceSettings.copyWith(
@@ -607,6 +617,11 @@ abstract class Service extends BaseService
         settings: currentSettings,
         updatedAt: DateTime.now(),
       );
+
+      _userFuture = Future.error(err);
+      _user.value = null;
+      _error.value = null;
+      _fetching.value = false;
 
       await ServiceSettingsController.instance.save(
         uid,
@@ -673,4 +688,59 @@ abstract class Service extends BaseService
       rethrow;
     }
   }
+
+  /// auth utils
+  ///
+  Future<void> refreshUser() async {
+    _initUserData = true;
+
+    _fetching.value = true;
+    _error.value = null;
+
+    try {
+      _user.value = await fetchUser();
+    } on UserNotFoundException {
+      _user.value = null;
+    } catch (err) {
+      _error.value = '$err';
+      debugPrint('Error: $err (${StackTrace.current})');
+    } finally {
+      _fetching.value = false;
+    }
+  }
+
+  void logout() async {
+    await router.pushNamed(
+      'webview',
+      pathParameters: {'sourceId': uid},
+      queryParameters: {'logout': 'true'},
+    );
+
+    try {
+      await fetchUser();
+      throw Exception('Logout failed');
+    } on UserNotFoundException {
+      _user.value = null;
+      _error.value = null;
+      _fetching.value = false;
+    }
+  }
+
+  UserData getUserData() {
+    if (!_initUserData) refreshUser();
+
+    return UserData(user: _user, error: _error, fetching: _fetching);
+  }
+}
+
+class UserData {
+  final Ref<User?> user;
+  final Ref<String?> error;
+  final Ref<bool> fetching;
+
+  const UserData({
+    required this.user,
+    required this.error,
+    required this.fetching,
+  });
 }

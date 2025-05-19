@@ -293,8 +293,10 @@ final routes = [
     pageBuilder: pageBuilder,
     parentNavigatorKey: _rootNavigatorKey,
     builder:
-        (context, state) =>
-            WebviewPage(sourceId: state.pathParameters['sourceId']!),
+        (context, state) => WebviewPage(
+          sourceId: state.pathParameters['sourceId']!,
+          logout: state.uri.queryParameters['logout'] == 'true',
+        ),
   ),
 
   // Category Comic Route

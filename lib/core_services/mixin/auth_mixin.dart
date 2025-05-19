@@ -1,6 +1,7 @@
 import '../interfaces/user.dart';
+import '../service.dart';
 
-mixin AuthMixin {
+mixin AuthMixin on Service {
   static bool support(Object $mixin) {
     return $mixin is AuthMixin && $mixin.$noAuth == false;
   }

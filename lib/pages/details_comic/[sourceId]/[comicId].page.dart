@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/composable/use_user_async.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/mixin/export.dart';
 import 'package:hoyomi/core_services/exception/captcha_required_exception.dart';
@@ -1036,46 +1035,26 @@ class _AvatarUser extends StatefulWidget {
   createState() => _AvatarUserState();
 }
 
-class _AvatarUserState extends State<_AvatarUser> {
-  Ref<User?>? _user;
-  Future<void> Function()? _refresh;
-  Function()? _onDispose;
+class _AvatarUserState extends State<_AvatarUser> with KaeruMixin {
+  late final UserData _userData;
 
   @override
   void initState() {
     super.initState();
 
-    useUserAsync(widget.service as AuthMixin).then((value) {
-      if (mounted) {
-        setState(() {
-          _user = value.user;
-          _refresh = value.refresh;
+    _userData = widget.service.getUserData();
 
-          value.error.addListener(() {
-            if (value.error.value != null) {
-              showSnackBar(Text('Sign in failed: ${value.error.value}'));
-              value.user.value = null;
-            }
-          });
-        });
+    watch([_userData.error], () {
+      if (_userData.error.value != null) {
+        showSnackBar(Text('Sign in failed: ${_userData.error.value}'));
       }
     });
   }
 
   @override
-  void dispose() {
-    if (_onDispose != null) _onDispose!();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (_user == null) {
-      return SizedBox.shrink();
-    }
-
     return Watch(() {
-      final user = _user?.value;
+      final user = _userData.user.value;
 
       if (user != null) {
         return Tooltip(
@@ -1095,7 +1074,6 @@ class _AvatarUserState extends State<_AvatarUser> {
       return GestureDetector(
         onTap: () async {
           await context.push("/webview/${widget.service.uid}");
-          _refresh!();
         },
         child: CircleAvatar(
           radius: 15,

@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:hoyomi/composable/use_user.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
@@ -39,7 +38,7 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
   void initState() {
     super.initState();
     if (_serviceAccountSupport) {
-      _user = useUser(widget.service as AuthMixin, context: this);
+      _user = widget.service.getUserData();
     } else {
       _user = null;
     }
@@ -128,7 +127,6 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
         oneLine = InkWell(
           onTap: () async {
             await context.push("/webview/${widget.service.uid}");
-            _user?.refresh();
           },
           child: Text(
             "(Tap to sign in)",
@@ -149,7 +147,7 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
             const SizedBox(height: 5.0),
             TextButton(
               onPressed: () {
-                _user?.refresh();
+                widget.service.refreshUser();
               },
               child: const Text('Retry'),
             ),
@@ -184,11 +182,24 @@ class _AccountServiceState extends State<AccountService> with KaeruMixin {
   }
 
   Widget _buildActions() {
-    return IconButton(
-      onPressed: () {
-        context.push("/service_settings/${widget.service.uid}");
-      },
-      icon: Icon(Icons.settings),
+    return Watch(
+      () => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            onPressed: () {
+              context.push("/service_settings/${widget.service.uid}");
+            },
+            icon: const Icon(Icons.settings),
+          ),
+
+          if (_user?.user.value != null)
+            IconButton(
+              onPressed: () => widget.service.logout(),
+              icon: const Icon(Icons.logout_rounded),
+            ),
+        ],
+      ),
     );
   }
 }

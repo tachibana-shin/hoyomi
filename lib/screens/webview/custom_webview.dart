@@ -10,8 +10,13 @@ import 'package:hoyomi/apis/show_snack_bar.dart';
 
 class CustomWebView extends StatefulWidget {
   final String sourceId;
+  final bool logout;
 
-  const CustomWebView({super.key, required this.sourceId});
+  const CustomWebView({
+    super.key,
+    required this.sourceId,
+    required this.logout,
+  });
 
   @override
   State<CustomWebView> createState() => _CustomWebViewState();
@@ -51,9 +56,18 @@ class _CustomWebViewState extends State<CustomWebView> {
 
       final user = await _service.onAfterSignIn(cookie: cookiesText);
 
-      showSnackBar(Text('Signed in to ${_service.name} as ${user.fullName}'));
+      if (widget.logout) {
+        showSnackBar(Text('Signout failed'));
+      } else {
+        showSnackBar(Text('Signed in to ${_service.name} as ${user.fullName}'));
+      }
     } on UserNotFoundException catch (_) {
-      showSnackBar(Text('Sign in ${_service.name} failed.'));
+      if (widget.logout) {
+        // sign out success
+        showSnackBar(Text('Signout success'));
+      } else {
+        showSnackBar(Text('Sign in ${_service.name} failed.'));
+      }
     } on UnimplementedError catch (_) {
       /// pass
     } catch (e) {
