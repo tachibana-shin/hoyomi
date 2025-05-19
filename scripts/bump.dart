@@ -75,9 +75,11 @@ Future<void> bumpFlutter() async {
   if (await installerFile.exists()) {
     final installerContent = await installerFile.readAsString();
     final updatedInstallerContent = installerContent.replaceAll(
-      RegExp(r'AppVersion\s*=\s*"\d+\.\d+\.\d+"'),
-      'AppVersion = "${versionParts.join('.')}.$newBuildNumber"',
+      RegExp(r'AppVersion=\d+\.\d+\.\d+'),
+      'AppVersion=${versionParts.join('.')}.$newBuildNumber',
     );
+    await installerFile.writeAsString(updatedInstallerContent);
+  }
     await installerFile.writeAsString(updatedInstallerContent);
   }
 
