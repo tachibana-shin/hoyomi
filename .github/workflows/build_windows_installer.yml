@@ -38,7 +38,7 @@ jobs:
         run: echo "${{ secrets.ENV_WEB_CONTENT }}" > .env.web
 
       - name: Build runner
-        run: ./build_bunner.bat
+        run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Build Flutter Windows app
         run: flutter build windows
