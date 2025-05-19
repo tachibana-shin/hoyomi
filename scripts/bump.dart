@@ -69,6 +69,18 @@ Future<void> bumpFlutter() async {
 
   await pubspecFile.writeAsString(updatedContent);
 
+  // write version for installer/app_installer.iss
+  final installerPath = path.normalize("installer/app_installer.iss");
+  final installerFile = File(installerPath);
+  if (await installerFile.exists()) {
+    final installerContent = await installerFile.readAsString();
+    final updatedInstallerContent = installerContent.replaceAll(
+      RegExp(r'AppVersion\s*=\s*"\d+\.\d+\.\d+"'),
+      'AppVersion = "${versionParts.join('.')}.$newBuildNumber"',
+    );
+    await installerFile.writeAsString(updatedInstallerContent);
+  }
+
   Process.runSync("git", ["add", pubspecPath]);
   Process.runSync("git", ["commit", "-m", "chore: release v$newVersionString"]);
   Process.runSync("git", ["tag", "v${versionParts.join('.')}_$newBuildNumber"]);

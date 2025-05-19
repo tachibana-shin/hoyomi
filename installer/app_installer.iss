@@ -1,4 +1,4 @@
-; Inno Setup Script Example
+; Inno Setup Script Hoyomi
 [Setup]
 AppName=Hoyomi
 AppVersion=1.0.0
