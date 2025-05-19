@@ -125,11 +125,68 @@ jobs:
         with:
           name: ipa-files
           path: build/ios/iphoneos/*.ipa
+  
+  build_windows:
+    name: Build Release Windows Installer
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.29.3"
+          channel: stable
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Create .env file
+        run: echo "${{ secrets.ENV_CONTENT }}" > .env
+
+      - name: Create .env.web file
+        run: echo "${{ secrets.ENV_WEB_CONTENT }}" > .env.web
+
+      - name: Build runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build Flutter Windows app
+        run: flutter build windows
+
+      - name: Compile .ISS to .EXE Installer
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: installer/app_installer.iss
+          options: /O+
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-files
+          path: installer/installer/output/app-windows-x64-release.exe
+
+      - name: Setup upterm session (debug if fail)
+        uses: lhotari/action-upterm@v1
+        if: ${{ failure() }}
+        with:
+          wait-timeout-minutes: 5
 
   release:
     name: Create Release
     runs-on: ubuntu-latest
-    needs: [build_apk, build_ipa]
+    needs: [build_apk, build_ipa, build_windows]
     steps:
       - uses: actions/checkout@v1
 
@@ -142,6 +199,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ipa-files
+
+      - name: Download Windows Installer artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-files
 
       - name: Generate changelog
         id: changelog
@@ -168,4 +230,5 @@ jobs:
           files: |
             *.apk
             *.ipa
+            *.exe
           body: ${{ steps.changelog.outputs.changelog }}

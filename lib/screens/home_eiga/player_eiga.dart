@@ -23,7 +23,6 @@ import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:hoyomi/logic/search_language.dart';
 import 'package:hoyomi/plugins/export.dart';
 import 'package:hoyomi/utils/export.dart';
-import 'package:hoyomi/utils/get_is_buffering.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
@@ -449,6 +448,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                   ),
     );
 
+    bool firstRun = true;
     _stateOpeningEnding = computed(() {
       final opEnd = _openingEnding.value;
       if (opEnd == null) return _StateOpeningEnding.none;
@@ -462,10 +462,24 @@ class _PlayerEigaState extends State<PlayerEiga>
               : opening.start <= _position.value &&
                   opening.end > _position.value;
       if (inOpening) {
+        if (!firstRun &&
+            _stateOpeningEnding.value == _StateOpeningEnding.skip) {
+          return _StateOpeningEnding.skip;
+        } else {
+          firstRun = false;
+        }
+
         return _StateOpeningEnding.opening;
       } else if (ending == null
           ? false
           : ending.start <= _position.value && ending.end > _position.value) {
+        if (!firstRun &&
+            _stateOpeningEnding.value == _StateOpeningEnding.skip) {
+          return _StateOpeningEnding.skip;
+        } else {
+          firstRun = false;
+        }
+
         return _StateOpeningEnding.ending;
       } else {
         return _StateOpeningEnding.none;
