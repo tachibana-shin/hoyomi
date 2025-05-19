@@ -43,16 +43,11 @@ jobs:
       - name: Build Flutter Windows app
         run: flutter build windows
 
-      - name: Download Inno Setup
-        run: |
-          Invoke-WebRequest https://jrsoftware.org/download.php/ispack-unicode.exe -OutFile ispack.exe
-          Start-Process ispack.exe -ArgumentList "/VERYSILENT", "/NORESTART" -Wait
-
-      - name: Add Inno Setup to PATH
-        run: echo "C:\Program Files (x86)\Inno Setup 6" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-
-      - name: Compile Inno Setup installer
-        run: iscc installer/app_installer.iss
+      - name: Compile .ISS to .EXE Installer
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: installer/app_installer.iss
+          options: /O+
 
       - name: Upload Installer
         uses: actions/upload-artifact@v4
