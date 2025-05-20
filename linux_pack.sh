@@ -15,7 +15,7 @@ rm -rf "$OUT_DIR"
 mkdir -p "$OUT_DIR/DEBIAN"
 mkdir -p "$OUT_DIR/$INSTALL_PREFIX"
 
-cp -r "build/linux/x64/release/bundle/"* "$OUT_DIR/$INSTALL_PREFIX/"
+cp -r build/linux/x64/release/bundle/* "$OUT_DIR/$INSTALL_PREFIX/"
 cp "app.png" "$OUT_DIR/$INSTALL_PREFIX/"
 
 cat > "$OUT_DIR/DEBIAN/control" <<EOF
