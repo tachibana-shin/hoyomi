@@ -52,3 +52,6 @@ app.*.map.json
 /firebase.json
 
 /lib/env.*.g.dart
+
+/deb_output
+/*.deb
