@@ -5,7 +5,6 @@ import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
-import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/utils/format_number.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
