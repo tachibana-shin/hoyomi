@@ -111,10 +111,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga>
         Text('Please sign in to follow eiga.'),
         action: SnackBarAction(
           label: 'Sign in',
-          onPressed: () async {
-            await context.push('/webview/${widget.service.uid}');
-            router.refresh();
-          },
+          onPressed: () => context.push('/webview/${widget.service.uid}'),
         ),
       );
 

@@ -69,7 +69,6 @@ mixin CaptchaResolverMixin on HeadlessMixin {
             child: Text('Go to Captcha'),
             onPressed: () async {
               await router.push('/webview/${error.service.uid}');
-              router.refresh();
             },
           ),
         ],
