@@ -2,6 +2,8 @@ name: Build and Release
 
 on:
   push:
+    tags:
+      - "v*"
 
 jobs:
   build_apk:
@@ -253,57 +255,57 @@ jobs:
           name: deb-files
           path: ./*.deb
 
-  # release:
-  #   name: Create Release
-  #   runs-on: ubuntu-latest
-  #   needs: [build_apk, build_ipa, build_windows, build_linux]
-  #   steps:
-  #     - uses: actions/checkout@v1
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [build_apk, build_ipa, build_windows, build_linux]
+    steps:
+      - uses: actions/checkout@v1
 
-  #     - name: Download APK artifact
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: apk-files
+      - name: Download APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: apk-files
 
-  #     - name: Download IPA artifact
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: ipa-files
+      - name: Download IPA artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ipa-files
 
-  #     - name: Download Windows Installer artifact
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: windows-files
+      - name: Download Windows Installer artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-files
 
-  #     - name: Download DEB artifact
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: deb-files
+      - name: Download DEB artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: deb-files
 
-  #     - name: Generate changelog
-  #       id: changelog
-  #       uses: metcalfc/changelog-generator@v4.0.0
-  #       with:
-  #         myToken: ${{ secrets.GITHUB_TOKEN }}
-  #         fetch: false
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v4.0.0
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+          fetch: false
 
-  #     - name: Setup upterm session
-  #       uses: lhotari/action-upterm@v1
-  #       if: ${{ failure() }}
-  #       with:
-  #         wait-timeout-minutes: 5
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+        if: ${{ failure() }}
+        with:
+          wait-timeout-minutes: 5
 
-  #     - name: Get the changelog
-  #       run: |
-  #         cat << "EOF"
-  #         ${{ steps.changelog.outputs.changelog }}
-  #         EOF
+      - name: Get the changelog
+        run: |
+          cat << "EOF"
+          ${{ steps.changelog.outputs.changelog }}
+          EOF
 
-  #     - name: Release
-  #       uses: softprops/action-gh-release@v0.1.14
-  #       with:
-  #         files: |
-  #           *.apk
-  #           *.ipa
-  #           *.exe
-  #         body: ${{ steps.changelog.outputs.changelog }}
+      - name: Release
+        uses: softprops/action-gh-release@v0.1.14
+        with:
+          files: |
+            *.apk
+            *.ipa
+            *.exe
+          body: ${{ steps.changelog.outputs.changelog }}
