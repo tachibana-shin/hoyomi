@@ -8,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart' as g_native;
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/env.dart';
+import 'package:kaeru/kaeru.dart';
 
 final _googleNativeSupport =
     XPlatform.isAndroid ||
@@ -22,6 +23,7 @@ class Authentication {
   Authentication._internal();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  late final _user = Ref<User?>(_auth.currentUser);
   final _clientId = Env.googleClientId;
   final _clientSecret = Env.googleClientSecret;
   final _redirectPort = Env.googleRedirectPort;
@@ -38,6 +40,30 @@ class Authentication {
               redirectPort: _redirectPort,
             ),
           );
+
+  bool _initializedUser = false;
+
+  Authentication() {
+    if (_auth.currentUser != null) {
+      _user.value = _auth.currentUser;
+    }
+
+    bool firstChanged = false;
+    _auth.userChanges().listen(
+      (user) {
+        if (_initializedUser || firstChanged || user != null) {
+          _user.value = user;
+          if (!_initializedUser) _initializedUser = true;
+        } else {
+          firstChanged = true;
+        }
+      },
+      onError: (error) {
+        _user.value = null;
+        debugPrint('Error: $error');
+      },
+    );
+  }
 
   Future<User?> signInWithGoogle() async {
     assert(
@@ -182,11 +208,13 @@ class Authentication {
     }
   }
 
-  User? get currentUser => _auth.currentUser;
-
-  Future<User?> getUserAsync() {
+  Future<User?> getUserAsync() async {
     if (_auth.currentUser != null) {
-      return Future.value(_auth.currentUser);
+      _user.value = _auth.currentUser;
+    }
+
+    if (_user.value != null || _initializedUser) {
+      return _user.value;
     }
 
     final completer = Completer<User?>();
@@ -197,7 +225,11 @@ class Authentication {
       (user) {
         if (firstChanged || user != null) {
           subscription.cancel();
-          completer.complete(user);
+
+          _user.value = user;
+          if (!_initializedUser) _initializedUser = true;
+
+          completer.complete(_user.value);
         } else {
           firstChanged = true;
         }
