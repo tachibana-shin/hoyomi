@@ -176,7 +176,7 @@ jobs:
         run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Build Flutter Windows app
-        run: flutter build windows -v
+        run: flutter build windows
 
       - name: Compile .ISS to .EXE Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
@@ -189,18 +189,6 @@ jobs:
         with:
           name: windows-files
           path: installer/installer/output/app-windows-x64-release.exe
-
-      - name: Setup upterm session (debug if fail)
-        if: ${{ failure() }}
-        shell: pwsh
-        run: |
-          rustc --version
-          cargo --version
-          cmake --version
-          where cmake
-          echo $env:PATH
-          cl.exe
-          Get-ChildItem Env:
 
   build_linux:
     name: Build Release DEB
