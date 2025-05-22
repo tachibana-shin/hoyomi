@@ -1615,10 +1615,11 @@ packages:
   rhttp_plus:
     dependency: "direct main"
     description:
-      name: rhttp_plus
-      sha256: a4403e4edcd56da40f9d0d5e08f12d6863e5a2de6f4781d4bd79b6ff5edd46e8
-      url: "https://pub.dev"
-    source: hosted
+      path: rhttp_plus
+      ref: main
+      resolved-ref: eb7bb5359bb3b35166952fddf11e58058b448bbf
+      url: "https://github.com/tachibana-shin/rhttp_plus"
+    source: git
     version: "0.11.5"
   rss_feed_parser:
     dependency: "direct main"
