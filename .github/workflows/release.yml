@@ -148,6 +148,10 @@ jobs:
       - name: Add Visual Studio Developer Command Prompt
         uses: ilammy/msvc-dev-cmd@v1
 
+      - name: Install NASM (required for BoringSSL)
+        run: choco install nasm -y
+        shell: pwsh
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
