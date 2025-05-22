@@ -261,8 +261,11 @@ abstract class Service extends BaseService
             ElevatedButton(
               child: Text('Sign in'),
               onPressed: () async {
-                await router.push('/webview/${service!.uid}');
-                router.refresh();
+                if (service is AuthMixin && !service.$noAuth) {
+                  await router.push('/webview/${service.uid}');
+                } else {
+                  await router.pushNamed('sign_in_main');
+                }
               },
             ),
           ],
