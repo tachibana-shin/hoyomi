@@ -82,7 +82,11 @@ dependencies:
   provider: ^6.1.4
   responsive_grid_list: ^1.4.0
   retry: ^3.1.2
-  rhttp_plus: ^0.11.5
+  rhttp_plus:
+    git:
+      url: https://github.com/tachibana-shin/rhttp_plus
+      ref: main
+      path: rhttp_plus
   rss_feed_parser: ^1.0.6
   screen_brightness: ^2.1.2
   scrollable_positioned_list: ^0.3.8
