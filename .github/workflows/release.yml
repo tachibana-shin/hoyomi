@@ -217,7 +217,7 @@ jobs:
       - name: Build runner
         run: sh build_bunner.sh
 
-      - run: flutter build Linux
+      - run: flutter build linux
 
       - name: Pack DEB
         run: sh linux_pack.sh
