@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dio/dio.dart' show Dio, BaseOptions;
+import 'package:dio/dio.dart' show BaseOptions, Dio, DioException;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart' hide FormData, Response;
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
@@ -103,12 +103,21 @@ class AnimeVietsubService extends ABEigaService
 
   @override
   getUser({required cookie}) async {
-    final $ = await fetch$(
-      '$baseUrl/account/info/',
-      cookie: cookie,
-      headers: Headers({'Referer': baseUrl}),
-      cache: false,
-    );
+    late final DollarFunction $;
+    try {
+      $ = await fetch$(
+        '$baseUrl/account/info',
+        cookie: cookie,
+        headers: Headers({'Referer': baseUrl}),
+        cache: false,
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 302 ||
+          error.response?.statusCode == 403) {
+        throw UserNotFoundException();
+      }
+      rethrow;
+    }
 
     if ($('.profile-userpic', single: true).isEmpty) {
       throw UserNotFoundException();

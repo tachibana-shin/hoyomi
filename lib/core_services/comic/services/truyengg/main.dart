@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:dio/dio.dart' show DioException;
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/exception/captcha_required_exception.dart';
@@ -591,11 +592,20 @@ class TruyenGGService extends ABComicService
   // auth service
   @override
   getUser({required cookie}) async {
-    final $ = await fetch$(
-      '$baseUrl/thiet-lap-tai-khoan.html',
-      cookie: cookie,
-      cache: false,
-    );
+    late final DollarFunction $;
+    try {
+      $ = await fetch$(
+        '$baseUrl/thiet-lap-tai-khoan.html',
+        cookie: cookie,
+        cache: false,
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 302 ||
+          error.response?.statusCode == 403) {
+        throw UserNotFoundException();
+      }
+      rethrow;
+    }
 
     if ($('title', single: true).text() != 'Thông Tin Tài Khoản') {
       throw UserNotFoundException(); // Not logged in
