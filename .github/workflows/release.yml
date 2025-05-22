@@ -134,10 +134,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust toolchain (stable)
+        uses: actions-rs/toolchain@v1
         with:
+          profile: minimal
           toolchain: stable
+          override: true
+
+      - name: Install build dependencies (CMake + LLVM)
+        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+        shell: pwsh
+
+      - name: Add Visual Studio Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -182,6 +191,8 @@ jobs:
           rustc --version
           cargo --version
           cmake --version
+          where cmake
+          echo $env:PATH
           cl.exe
           Get-ChildItem Env:
 
