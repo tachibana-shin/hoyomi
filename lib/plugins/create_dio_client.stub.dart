@@ -1,6 +1,9 @@
 import 'package:dio/dio.dart';
 
-Future<Dio> createDioClient(BaseOptions? options, {followRedirects = false}) async {
+Future<Dio> createDioClient(
+  BaseOptions? options, {
+  followRedirects = false,
+}) async {
   throw UnimplementedError();
 }
 
