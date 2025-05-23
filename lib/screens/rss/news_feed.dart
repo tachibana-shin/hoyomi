@@ -225,7 +225,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
                     onTap: () {
                       launchUrl(
                         Uri.parse(item.link),
-                        mode: LaunchMode.inAppWebView,
+                        mode: LaunchMode.inAppBrowserView,
                         webViewConfiguration: const WebViewConfiguration(
                           enableJavaScript: true,
                         ),
