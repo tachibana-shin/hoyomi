@@ -1,6 +1,8 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:choice/choice.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/constraints/fluent.dart';
 import 'package:hoyomi/screens/export.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:kaeru/kaeru.dart';
@@ -17,6 +19,10 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage>
     with SingleTickerProviderStateMixin, KaeruMixin {
   late TabController _tabController;
+
+  final _newsChoices = ['All', 'Comic', 'Eiga'];
+  late final _newsChoice = ref(0);
+  late final _newsSort = ref(false);
 
   @override
   void initState() {
@@ -48,11 +54,41 @@ class _SearchPageState extends State<SearchPage>
         titleSpacing: 0,
         automaticallyImplyLeading: false,
         centerTitle: true,
-        bottom: TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          splashBorderRadius: BorderRadius.circular(35.0),
-          tabs: [Tab(text: 'Comic'), Tab(text: 'Eiga')],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(40),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Watch(
+                () => Choice<int>.inline(
+                  value: ChoiceSingle.value(_newsChoice.value),
+                  onChanged: ChoiceSingle.onChanged(
+                    (value) => _newsChoice.value = value!,
+                  ),
+                  itemCount: _newsChoices.length,
+                  itemBuilder: (state, i) {
+                    return ChoiceChip(
+                      selected: state.selected(i),
+                      onSelected: state.onSelected(i),
+                      label: Text(_newsChoices[i]),
+                    );
+                  },
+                  listBuilder: ChoiceList.createScrollable(
+                    spacing: 10,
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  ),
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  _newsSort.value = !_newsSort.value;
+                },
+                icon: Iconify(Fluent.colorNews24, iconColor: true),
+                label: Watch(() => Text(_newsSort.value ? 'Sort' : 'News')),
+              ).paddingOnly(right: 24.0),
+            ],
+          ),
         ),
       ),
       body: Stack(
@@ -98,13 +134,7 @@ class _SearchPageState extends State<SearchPage>
         horizontal: 8.0,
         vertical: 8.0,
       ).copyWith(bottom: 0),
-      child: TabBarView(
-        controller: _tabController,
-        children: [
-          Watch(() => NewsFeedScreen(services: comicServices.value)),
-          Watch(() => NewsFeedScreen(services: eigaServices.value)),
-        ],
-      ),
+      child: NewsFeedScreen(type: _newsChoice, sort: _newsSort),
     );
   }
 }

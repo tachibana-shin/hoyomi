@@ -4,10 +4,17 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 class Iconify extends StatelessWidget {
   final String icon;
+  final bool iconColor;
   final Color? color;
   final double? size;
 
-  const Iconify(this.icon, {super.key, this.color, this.size});
+  const Iconify(
+    this.icon, {
+    super.key,
+    this.iconColor = false,
+    this.color,
+    this.size,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +28,9 @@ class Iconify extends StatelessWidget {
             : tentativeIconSize;
 
     final double iconOpacity = iconTheme.opacity ?? 1.0;
-    Color? iconColor = color ?? iconTheme.color!;
+    Color? colorIcon = color ?? iconTheme.color!;
     if (iconOpacity != 1.0) {
-      iconColor = iconColor.withAlpha((iconColor.a * iconOpacity).round());
+      colorIcon = colorIcon.withAlpha((colorIcon.a * iconOpacity).round());
     }
 
     return Skeleton.replace(
@@ -37,7 +44,8 @@ class Iconify extends StatelessWidget {
       ),
       child: SvgPicture.string(
         icon,
-        colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+        colorFilter:
+            iconColor ? null : ColorFilter.mode(colorIcon, BlendMode.srcIn),
         width: iconSize,
         height: iconSize,
         alignment: Alignment.center,

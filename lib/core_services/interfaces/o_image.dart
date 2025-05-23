@@ -25,7 +25,7 @@ sealed class OImage with _$OImage {
 
   static Image network(
     String src, {
-    required String sourceId,
+    required String? sourceId,
     Key? key,
     double scale = 1.0,
     Widget Function(BuildContext, Widget, int?, bool)? frameBuilder,
@@ -77,16 +77,18 @@ sealed class OImage with _$OImage {
       );
     }
 
-    final service = getService(sourceId);
+    final service = sourceId != null ? getService(sourceId) : null;
 
     return Image(
       image: CachedNetworkImageProvider(
         src,
         headers:
             Headers({
-              'set-cookie': service.getSetting(key: 'cookie') ?? '',
-              'user-agent': service.getSetting(key: 'user_agent') ?? '',
-              'referer': service.baseUrl,
+              if (service != null) ...{
+                'set-cookie': service.getSetting(key: 'cookie') ?? '',
+                'user-agent': service.getSetting(key: 'user_agent') ?? '',
+                'referer': service.baseUrl,
+              },
               ...headers?.toMap() ?? {},
             }).toMap(),
       ),
@@ -119,7 +121,7 @@ sealed class OImage with _$OImage {
 
   static Image oNetwork(
     OImage img, {
-    required String sourceId,
+    required String? sourceId,
     Key? key,
     double scale = 1.0,
     Widget Function(BuildContext, Widget, int?, bool)? frameBuilder,

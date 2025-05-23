@@ -29,6 +29,16 @@ _GeneralSettings _$GeneralSettingsFromJson(Map<String, dynamic> json) =>
               .toList() ??
           null,
       lastTabActiveApp: json['lastTabActiveApp'] as String? ?? null,
+      newsKeywordComic:
+          (json['newsKeywordComic'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const ['manga'],
+      newsKeywordEiga:
+          (json['newsKeywordEiga'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const ['anime'],
     );
 
 Map<String, dynamic> _$GeneralSettingsToJson(_GeneralSettings instance) =>
@@ -41,4 +51,6 @@ Map<String, dynamic> _$GeneralSettingsToJson(_GeneralSettings instance) =>
       'sortComicService': instance.sortComicService,
       'sortEigaService': instance.sortEigaService,
       'lastTabActiveApp': instance.lastTabActiveApp,
+      'newsKeywordComic': instance.newsKeywordComic,
+      'newsKeywordEiga': instance.newsKeywordEiga,
     };

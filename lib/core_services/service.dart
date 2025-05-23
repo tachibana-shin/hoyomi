@@ -65,7 +65,8 @@ Future<Dio> _createDioClientCache() async {
   );
 
   _dioCache = await createDioClient(
-      BaseOptions(responseType: ResponseType.plain, followRedirects: true),
+      BaseOptions(responseType: ResponseType.plain, followRedirects: true), // only followRedirects for web
+      followRedirects: false, // this skip followRedirects in io
     )
     ..interceptors.add(DioCacheInterceptor(options: options));
 

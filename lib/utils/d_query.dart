@@ -139,12 +139,10 @@ class DQuery {
     if (len == 0) return DQuery([]);
     if (index < 0) {
       index += len;
+    } else if (index >= len) {
+      index = index - len;
     }
-    // Ensure index is within bounds after potential negative adjustment
-    if (index < 0 || index >= len) {
-      // Return empty if index is out of bounds
-      return DQuery([]);
-    }
+
     return DQuery([_elements[index]]);
   }
 
@@ -244,5 +242,70 @@ class DQuery {
   /// Useful for simplifying HTML parsing and manipulation in Dart applications.
   Element get(int index) {
     return _elements[index];
+  }
+
+  /// Gets all following siblings of each element in the set of matched elements.
+  /// Optionally filters the siblings by a CSS [selector].
+  DQuery nextAll([String? selector]) {
+    final result = <Element>[];
+    for (final el in _elements) {
+      Element? sibling = el.nextElementSibling;
+      while (sibling != null) {
+        if (selector == null || sibling.matches(selector)) {
+          result.add(sibling);
+        }
+        sibling = sibling.nextElementSibling;
+      }
+    }
+    return DQuery(result);
+  }
+
+  /// Gets all preceding siblings of each element in the set of matched elements.
+  /// Optionally filters the siblings by a CSS [selector].
+  DQuery prevAll([String? selector]) {
+    final result = <Element>[];
+    for (final el in _elements) {
+      Element? sibling = el.previousElementSibling;
+      while (sibling != null) {
+        if (selector == null || sibling.matches(selector)) {
+          result.insert(0, sibling); // preserve order (closest first)
+        }
+        sibling = sibling.previousElementSibling;
+      }
+    }
+    return DQuery(result);
+  }
+
+  /// Gets the children elements of the matched elements.
+  /// If [index] is provided, returns only the child at that index of the first element.
+  /// If [index] is out of bounds or no elements, returns empty DQuery.
+  DQuery children([int? index]) {
+    if (_elements.isEmpty) return DQuery([]);
+
+    if (index == null) {
+      final allChildren = _elements.expand((e) => e.children).toList();
+      return DQuery(allChildren);
+    } else {
+      final children = _elements.first.children;
+      final len = children.length;
+
+      if (index < 0) {
+        index += len;
+      } else if (index >= len) {
+        index = index - len;
+      }
+
+      return DQuery([children[index]]);
+    }
+  }
+}
+
+extension ElementMatchesExt on Element {
+  bool matches(String selector) {
+    if (parent == null) {
+      return false;
+    }
+
+    return parent!.querySelectorAll(selector).contains(this);
   }
 }

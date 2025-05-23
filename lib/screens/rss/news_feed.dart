@@ -1,53 +1,54 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:dio/dio.dart' show BaseOptions, Dio, ResponseType;
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
 import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
-import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/utils/format_time_ago.dart';
+import 'package:hoyomi/plugins/export.dart';
+import 'package:hoyomi/stores.dart';
+import 'package:hoyomi/utils/export.dart';
+import 'package:hoyomi/widgets/export.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
+import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
-import 'package:xml/xml.dart';
+import 'package:kaeru/kaeru.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class RssItem {
+class _RssItem {
   final String title;
   final String link;
   final String? description;
   final DateTime? pubDate;
   final OImage? image;
-  final OImage? avatar;
-  final String? creator;
-  final Service service;
+  final ({String name, OImage avatar})? creator;
 
-  factory RssItem.createFakeData() {
-    return RssItem(
+  factory _RssItem.createFakeData() {
+    return _RssItem(
       title: "Fake RSS Item Title",
       link: "https://example.com/fake-rss-item",
       description: "This is a fake RSS item for testing purposes.",
       pubDate: DateTime.now().subtract(Duration(days: 1)),
       image: OImage.createFakeData(),
-      avatar: OImage.createFakeData(),
-      creator: "Fake Creator",
-      service: allServices.value.first,
+      creator: (name: "Fake Creator", avatar: OImage.createFakeData()),
     );
   }
 
-  RssItem({
+  _RssItem({
     required this.title,
     required this.link,
     this.description,
     this.pubDate,
     this.image,
-    this.avatar,
     this.creator,
-    required this.service,
   });
 }
 
-class NewsFeedScreen extends StatefulWidget {
-  final List<Service> services;
+enum NewsFeedScreenType { all, comic, eiga }
 
-  const NewsFeedScreen({super.key, required this.services});
+class NewsFeedScreen extends StatefulWidget {
+  final Ref<int> type;
+  final Ref<bool> sort;
+
+  const NewsFeedScreen({super.key, required this.type, required this.sort});
 
   @override
   createState() => _NewsFeedScreenState();
@@ -58,196 +59,274 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
   @override
   bool get wantKeepAlive => true;
 
-  Future<List<RssItem>> fetchAndParseFeeds(List<Service> services) async {
-    final items = <RssItem>[];
+  final Map<String, String> _storeCache = {};
 
-    for (final service in services) {
-      if (service.rss == null) continue;
+  Dio? _dio;
+  Future<Dio> _createClient() async {
+    if (_dio != null) return _dio!;
+
+    return _dio = await createDioClient(
+      BaseOptions(followRedirects: true, responseType: ResponseType.plain),
+      followRedirects: true,
+    );
+  }
+
+  Future<List<_RssItem>> _fetchAndParseFeeds(
+    NewsFeedScreenType type, {
+    int page = 1,
+  }) async {
+    final items = <_RssItem>[];
+
+    final dio = await _createClient();
+
+    final keywords = switch (type) {
+      NewsFeedScreenType.comic => newsKeywordComic.value,
+      NewsFeedScreenType.eiga => newsKeywordEiga.value,
+      _ => [...newsKeywordComic.value, ...newsKeywordEiga.value],
+    };
+
+    for (final keyword in keywords) {
       try {
-        final xml = await service.fetch(Uri.parse(service.rss!).toString());
-        final feed = parseRss(xml, service: service);
+        final xml =
+            _storeCache['$keyword-$page'] ??=
+                (await dio.get(
+                  'https://www.google.com/search?q=$keyword&tbm=nws&gbv=1&start=${page * 10}',
+                )).data;
+        final feed = _parseRss(xml);
 
         items.addAll(feed);
-      } catch (e) {
-        showSnackBar(Text('Error while parsing $service: $e'));
+      } catch (e, stack) {
+        showSnackBar(Text('Error while parsing $keyword: $e'));
         debugPrint("Error: $e");
+        debugPrint('$stack');
       }
     }
 
-    // Sort items by pubDate (from newest to oldest)
-    items.sort((a, b) {
-      if (a.pubDate == null || b.pubDate == null) return 0;
-      return b.pubDate!.compareTo(a.pubDate!);
-    });
+    // // Sort items by pubDate (from newest to oldest)
+    // items.sort((a, b) {
+    //   if (a.pubDate == null || b.pubDate == null) return 0;
+    //   return b.pubDate!.compareTo(a.pubDate!);
+    // });
 
     return items;
   }
 
-  List<RssItem> parseRss(String xmlData, {required Service service}) {
-    final document = XmlDocument.parse(xmlData);
-    final items = <RssItem>[];
+  List<_RssItem> _parseRss(String xmlData) {
+    final $ = DQuery.fromDocument(parse(xmlData));
 
-    final itemElements = document.findAllElements('item');
-    for (final element in itemElements) {
-      final title = element.findElements('title').single.lastChild!.value!;
-      final link = element.findElements('link').single.lastChild!.value!;
-      final description =
-          element.findElements('description').firstOrNull?.lastChild?.value;
+    return $("a[data-ved]").map((item) {
+      final title = item.queryOne('h3').text();
+      final link = item
+          .attr('href')
+          .replaceFirst(RegExp(r'\/url\?q='), '')
+          .replaceFirst('&', '?');
       final pubDateString =
-          element.findElements('pubDate').firstOrNull?.lastChild?.value;
-      final imageUrl =
-          element
-              .findElements('image')
-              .firstOrNull
-              ?.findElements("url")
-              .single
-              .lastChild
-              ?.value;
-      final creator =
-          element.findElements('dc:creator').firstOrNull?.lastChild?.value ??
-          service.name;
+          item
+              .queryOne('img')
+              .parent()
+              .parent()
+              .next()
+              .children(0)
+              .queryOne('span')
+              .text();
+      final description = item
+          .queryOne('img')
+          .parent()
+          .parent()
+          .next()
+          .children(0)
+          .queryOne('span')
+          .parent()
+          .text()
+          .replaceFirst(pubDateString, '');
+      final imageUrl = OImage.from(item.queryOne('img').attr('src'));
+
+      final source$ = item.queryOne('h3').parent().next().text();
+
+      final creator = switch (source$.isNotEmpty) {
+        true => (
+          name: source$,
+          avatar: OImage.from(
+            'https://encrypted-tbn2.gstatic.com/faviconV2?url=${Uri.parse(link).origin}&client=NEWS_360&size=96&type=FAVICON&fallback_opts=TYPE,SIZE,URL',
+          ),
+        ),
+        _ => null,
+      };
 
       // Parse pubDate string to DateTime
       DateTime? pubDate;
-      if (pubDateString != null) {
-        try {
-          pubDate =
-              DateTime.tryParse(pubDateString) ??
-              DateFormat('dd-MM-yyyy').parse(pubDateString);
-        } catch (e) {
-          showSnackBar(Text('Error parsing pubDate: $e'));
-          debugPrint("Error: $e");
-        }
+      try {
+        pubDate =
+            DateTime.tryParse(pubDateString) ??
+            DateFormat('dd-MM-yyyy').tryParse(pubDateString) ??
+            convertTimeAgoToUtc(pubDateString);
+      } catch (e, stack) {
+        debugPrint("Error: $e ($stack)");
       }
 
-      final headers = Headers({"referer": service.baseUrl});
-      items.add(
-        RssItem(
-          title: title,
-          link: link,
-          description: description,
-          pubDate: pubDate,
-          image:
-              imageUrl != null ? OImage(src: imageUrl, headers: headers) : null,
-          avatar: OImage(
-            src: service.faviconUrl.src,
-            headers: service.faviconUrl.headers ?? headers,
-          ),
-          creator: creator,
-          service: service,
-        ),
+      return _RssItem(
+        title: title,
+        link: link,
+        description: description,
+        pubDate: pubDate,
+        image: imageUrl,
+        creator: creator,
       );
-    }
-
-    return items;
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return PullRefreshPage(
-      onLoadData: () => fetchAndParseFeeds(widget.services),
-      onLoadFake: () => List.generate(30, (_) => RssItem.createFakeData()),
-      builder:
-          (items, _) => ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
+    return Watch(
+      () => PullRefreshPage(
+        key: ValueKey(widget.type.value),
+        onLoadData:
+            () => _fetchAndParseFeeds(
+              NewsFeedScreenType.values[widget.type.value],
+            ),
+        onLoadFake: () => List.generate(30, (_) => _RssItem.createFakeData()),
+        builder: (rawItems, _) {
+          int page = 1;
 
-              return Card(
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                clipBehavior: Clip.antiAlias,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 4,
-                child: InkWell(
-                  onTap: () {
-                    final param =
-                        item.service is ABComicService
-                            ? (item.service as ABComicService).parseURL(
-                              item.link,
-                            )
-                            : null;
+          return Watch(() {
+            late final List<_RssItem> items;
+            if (widget.sort.value) {
+              items = rawItems.sublist(0)..sort((a, b) {
+                if (a.pubDate == null || b.pubDate == null) return 0;
+                return b.pubDate!.compareTo(a.pubDate!);
+              });
+            } else {
+              items = rawItems;
+            }
 
-                    if (param != null) {
-                      context.push(
-                        "/details_comic/${item.service.uid}/${param.comicId}${param.chapterId == null ? '' : '/view?chap=${param.chapterId}'}",
+            return InfiniteList(
+              key: ValueKey(widget.sort.value),
+              data: items,
+              fetchData: () async {
+                final items = await _fetchAndParseFeeds(
+                  NewsFeedScreenType.values[widget.type.value],
+                  page: ++page,
+                );
+
+                return (done: items.length < 10, data: items);
+              },
+              itemBuilder: (context, item, _, __) {
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 4,
+                  child: InkWell(
+                    onTap: () {
+                      launchUrl(
+                        Uri.parse(item.link),
+                        mode: LaunchMode.inAppWebView,
+                        webViewConfiguration: const WebViewConfiguration(
+                          enableJavaScript: true,
+                        ),
                       );
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
+                    },
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Left side: Title and Description
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.title,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.merge(const TextStyle(height: 1.2)),
-                              ),
-                              if (item.description != null)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 7.0,
-                                  ),
-                                  child: Text(item.description!),
-                                ),
-                              const SizedBox(height: 7.0),
-                              Text(
-                                item.pubDate != null
-                                    ? formatTimeAgo(item.pubDate!)
-                                    : 'No date',
-                                style: const TextStyle(fontSize: 12.0),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0,
-                                ),
-                                child: Row(
-                                  children: [
-                                    AvatarService(item.service, radius: 10.0),
-                                    Text(
-                                      item.creator ?? 'Unknown',
-                                      style: const TextStyle(fontSize: 12.0),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                        Text(
+                          item.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium?.merge(
+                            const TextStyle(height: 1.2),
                           ),
                         ),
-                        // Right side: Image
-                        if (item.image != null)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16.0),
-                            child: SizedBox(
-                              width: 100,
-                              height: 100,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: OImage.oNetwork(
-                                  item.image!,
-                                  sourceId: item.service.uid,
-                                  fit: BoxFit.cover,
-                                ),
+                        5.0.heightBox,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Left side: Title and Description
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (item.description != null)
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 7.0,
+                                      ),
+                                      child: Text(item.description!),
+                                    ),
+                                  const SizedBox(height: 7.0),
+                                  Text(
+                                    item.pubDate != null
+                                        ? formatTimeAgo(item.pubDate!)
+                                        : 'No date',
+                                    style: const TextStyle(fontSize: 12.0),
+                                  ),
+                                  if (item.creator != null)
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            backgroundColor:
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .surfaceContainerHigh,
+                                            radius: 10,
+                                            backgroundImage:
+                                                OImage.oImageProvider(
+                                                  item.creator!.avatar,
+                                                ),
+                                          ),
+                                          4.0.widthBox,
+                                          Text(
+                                            item.creator!.name,
+                                            style: const TextStyle(
+                                              fontSize: 12.0,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ).expanded(),
+                                        ],
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
-                          ),
+                            // Right side: Image
+                            if (item.image != null)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16.0),
+                                child: SizedBox(
+                                  width: 120,
+                                  height: 68,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: OImage.oNetwork(
+                                      item.image!,
+                                      sourceId: null,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                       ],
-                    ),
+                    ).paddingAll(16.0),
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              },
+            );
+          });
+        },
+      ),
     );
   }
 }

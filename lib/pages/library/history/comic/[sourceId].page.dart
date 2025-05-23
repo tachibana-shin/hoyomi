@@ -67,7 +67,7 @@ class _HistoryComicPageState extends State<HistoryComicPage> {
 
                 final isLastPage = result.isEmpty;
 
-                return (isLastPage, result);
+                return (done: isLastPage, data: result);
               },
               itemBuilder: (context, history, index, historyPrev) {
                 final main = ComicHistory(

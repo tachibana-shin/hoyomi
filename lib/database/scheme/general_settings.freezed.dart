@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GeneralSettings {
 
- bool get mangaReadLazyPage; DateTime? get lastCheckUpdateApp; double? get brightnessApp; int get pollingIntervalComic; bool get showListEpisodeWithGrid; List<String>? get sortComicService; List<String>? get sortEigaService; String? get lastTabActiveApp;
+ bool get mangaReadLazyPage; DateTime? get lastCheckUpdateApp; double? get brightnessApp; int get pollingIntervalComic; bool get showListEpisodeWithGrid; List<String>? get sortComicService; List<String>? get sortEigaService; String? get lastTabActiveApp; List<String> get newsKeywordComic; List<String> get newsKeywordEiga;
 /// Create a copy of GeneralSettings
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $GeneralSettingsCopyWith<GeneralSettings> get copyWith => _$GeneralSettingsCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GeneralSettings&&(identical(other.mangaReadLazyPage, mangaReadLazyPage) || other.mangaReadLazyPage == mangaReadLazyPage)&&(identical(other.lastCheckUpdateApp, lastCheckUpdateApp) || other.lastCheckUpdateApp == lastCheckUpdateApp)&&(identical(other.brightnessApp, brightnessApp) || other.brightnessApp == brightnessApp)&&(identical(other.pollingIntervalComic, pollingIntervalComic) || other.pollingIntervalComic == pollingIntervalComic)&&(identical(other.showListEpisodeWithGrid, showListEpisodeWithGrid) || other.showListEpisodeWithGrid == showListEpisodeWithGrid)&&const DeepCollectionEquality().equals(other.sortComicService, sortComicService)&&const DeepCollectionEquality().equals(other.sortEigaService, sortEigaService)&&(identical(other.lastTabActiveApp, lastTabActiveApp) || other.lastTabActiveApp == lastTabActiveApp));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GeneralSettings&&(identical(other.mangaReadLazyPage, mangaReadLazyPage) || other.mangaReadLazyPage == mangaReadLazyPage)&&(identical(other.lastCheckUpdateApp, lastCheckUpdateApp) || other.lastCheckUpdateApp == lastCheckUpdateApp)&&(identical(other.brightnessApp, brightnessApp) || other.brightnessApp == brightnessApp)&&(identical(other.pollingIntervalComic, pollingIntervalComic) || other.pollingIntervalComic == pollingIntervalComic)&&(identical(other.showListEpisodeWithGrid, showListEpisodeWithGrid) || other.showListEpisodeWithGrid == showListEpisodeWithGrid)&&const DeepCollectionEquality().equals(other.sortComicService, sortComicService)&&const DeepCollectionEquality().equals(other.sortEigaService, sortEigaService)&&(identical(other.lastTabActiveApp, lastTabActiveApp) || other.lastTabActiveApp == lastTabActiveApp)&&const DeepCollectionEquality().equals(other.newsKeywordComic, newsKeywordComic)&&const DeepCollectionEquality().equals(other.newsKeywordEiga, newsKeywordEiga));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,mangaReadLazyPage,lastCheckUpdateApp,brightnessApp,pollingIntervalComic,showListEpisodeWithGrid,const DeepCollectionEquality().hash(sortComicService),const DeepCollectionEquality().hash(sortEigaService),lastTabActiveApp);
+int get hashCode => Object.hash(runtimeType,mangaReadLazyPage,lastCheckUpdateApp,brightnessApp,pollingIntervalComic,showListEpisodeWithGrid,const DeepCollectionEquality().hash(sortComicService),const DeepCollectionEquality().hash(sortEigaService),lastTabActiveApp,const DeepCollectionEquality().hash(newsKeywordComic),const DeepCollectionEquality().hash(newsKeywordEiga));
 
 @override
 String toString() {
-  return 'GeneralSettings(mangaReadLazyPage: $mangaReadLazyPage, lastCheckUpdateApp: $lastCheckUpdateApp, brightnessApp: $brightnessApp, pollingIntervalComic: $pollingIntervalComic, showListEpisodeWithGrid: $showListEpisodeWithGrid, sortComicService: $sortComicService, sortEigaService: $sortEigaService, lastTabActiveApp: $lastTabActiveApp)';
+  return 'GeneralSettings(mangaReadLazyPage: $mangaReadLazyPage, lastCheckUpdateApp: $lastCheckUpdateApp, brightnessApp: $brightnessApp, pollingIntervalComic: $pollingIntervalComic, showListEpisodeWithGrid: $showListEpisodeWithGrid, sortComicService: $sortComicService, sortEigaService: $sortEigaService, lastTabActiveApp: $lastTabActiveApp, newsKeywordComic: $newsKeywordComic, newsKeywordEiga: $newsKeywordEiga)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $GeneralSettingsCopyWith<$Res>  {
   factory $GeneralSettingsCopyWith(GeneralSettings value, $Res Function(GeneralSettings) _then) = _$GeneralSettingsCopyWithImpl;
 @useResult
 $Res call({
- bool mangaReadLazyPage, DateTime? lastCheckUpdateApp, double? brightnessApp, int pollingIntervalComic, bool showListEpisodeWithGrid, List<String>? sortComicService, List<String>? sortEigaService, String? lastTabActiveApp
+ bool mangaReadLazyPage, DateTime? lastCheckUpdateApp, double? brightnessApp, int pollingIntervalComic, bool showListEpisodeWithGrid, List<String>? sortComicService, List<String>? sortEigaService, String? lastTabActiveApp, List<String> newsKeywordComic, List<String> newsKeywordEiga
 });
 
 
@@ -66,7 +66,7 @@ class _$GeneralSettingsCopyWithImpl<$Res>
 
 /// Create a copy of GeneralSettings
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? mangaReadLazyPage = null,Object? lastCheckUpdateApp = freezed,Object? brightnessApp = freezed,Object? pollingIntervalComic = null,Object? showListEpisodeWithGrid = null,Object? sortComicService = freezed,Object? sortEigaService = freezed,Object? lastTabActiveApp = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? mangaReadLazyPage = null,Object? lastCheckUpdateApp = freezed,Object? brightnessApp = freezed,Object? pollingIntervalComic = null,Object? showListEpisodeWithGrid = null,Object? sortComicService = freezed,Object? sortEigaService = freezed,Object? lastTabActiveApp = freezed,Object? newsKeywordComic = null,Object? newsKeywordEiga = null,}) {
   return _then(_self.copyWith(
 mangaReadLazyPage: null == mangaReadLazyPage ? _self.mangaReadLazyPage : mangaReadLazyPage // ignore: cast_nullable_to_non_nullable
 as bool,lastCheckUpdateApp: freezed == lastCheckUpdateApp ? _self.lastCheckUpdateApp : lastCheckUpdateApp // ignore: cast_nullable_to_non_nullable
@@ -76,7 +76,9 @@ as int,showListEpisodeWithGrid: null == showListEpisodeWithGrid ? _self.showList
 as bool,sortComicService: freezed == sortComicService ? _self.sortComicService : sortComicService // ignore: cast_nullable_to_non_nullable
 as List<String>?,sortEigaService: freezed == sortEigaService ? _self.sortEigaService : sortEigaService // ignore: cast_nullable_to_non_nullable
 as List<String>?,lastTabActiveApp: freezed == lastTabActiveApp ? _self.lastTabActiveApp : lastTabActiveApp // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,newsKeywordComic: null == newsKeywordComic ? _self.newsKeywordComic : newsKeywordComic // ignore: cast_nullable_to_non_nullable
+as List<String>,newsKeywordEiga: null == newsKeywordEiga ? _self.newsKeywordEiga : newsKeywordEiga // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -87,7 +89,7 @@ as String?,
 @JsonSerializable()
 
 class _GeneralSettings implements GeneralSettings {
-  const _GeneralSettings({this.mangaReadLazyPage = false, this.lastCheckUpdateApp = null, this.brightnessApp = null, this.pollingIntervalComic = 60 * 60 * 3, this.showListEpisodeWithGrid = false, final  List<String>? sortComicService = null, final  List<String>? sortEigaService = null, this.lastTabActiveApp = null}): _sortComicService = sortComicService,_sortEigaService = sortEigaService;
+  const _GeneralSettings({this.mangaReadLazyPage = false, this.lastCheckUpdateApp = null, this.brightnessApp = null, this.pollingIntervalComic = 60 * 60 * 3, this.showListEpisodeWithGrid = false, final  List<String>? sortComicService = null, final  List<String>? sortEigaService = null, this.lastTabActiveApp = null, final  List<String> newsKeywordComic = const ['manga'], final  List<String> newsKeywordEiga = const ['anime']}): _sortComicService = sortComicService,_sortEigaService = sortEigaService,_newsKeywordComic = newsKeywordComic,_newsKeywordEiga = newsKeywordEiga;
   factory _GeneralSettings.fromJson(Map<String, dynamic> json) => _$GeneralSettingsFromJson(json);
 
 @override@JsonKey() final  bool mangaReadLazyPage;
@@ -114,6 +116,20 @@ class _GeneralSettings implements GeneralSettings {
 }
 
 @override@JsonKey() final  String? lastTabActiveApp;
+ final  List<String> _newsKeywordComic;
+@override@JsonKey() List<String> get newsKeywordComic {
+  if (_newsKeywordComic is EqualUnmodifiableListView) return _newsKeywordComic;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_newsKeywordComic);
+}
+
+ final  List<String> _newsKeywordEiga;
+@override@JsonKey() List<String> get newsKeywordEiga {
+  if (_newsKeywordEiga is EqualUnmodifiableListView) return _newsKeywordEiga;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_newsKeywordEiga);
+}
+
 
 /// Create a copy of GeneralSettings
 /// with the given fields replaced by the non-null parameter values.
@@ -128,16 +144,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GeneralSettings&&(identical(other.mangaReadLazyPage, mangaReadLazyPage) || other.mangaReadLazyPage == mangaReadLazyPage)&&(identical(other.lastCheckUpdateApp, lastCheckUpdateApp) || other.lastCheckUpdateApp == lastCheckUpdateApp)&&(identical(other.brightnessApp, brightnessApp) || other.brightnessApp == brightnessApp)&&(identical(other.pollingIntervalComic, pollingIntervalComic) || other.pollingIntervalComic == pollingIntervalComic)&&(identical(other.showListEpisodeWithGrid, showListEpisodeWithGrid) || other.showListEpisodeWithGrid == showListEpisodeWithGrid)&&const DeepCollectionEquality().equals(other._sortComicService, _sortComicService)&&const DeepCollectionEquality().equals(other._sortEigaService, _sortEigaService)&&(identical(other.lastTabActiveApp, lastTabActiveApp) || other.lastTabActiveApp == lastTabActiveApp));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GeneralSettings&&(identical(other.mangaReadLazyPage, mangaReadLazyPage) || other.mangaReadLazyPage == mangaReadLazyPage)&&(identical(other.lastCheckUpdateApp, lastCheckUpdateApp) || other.lastCheckUpdateApp == lastCheckUpdateApp)&&(identical(other.brightnessApp, brightnessApp) || other.brightnessApp == brightnessApp)&&(identical(other.pollingIntervalComic, pollingIntervalComic) || other.pollingIntervalComic == pollingIntervalComic)&&(identical(other.showListEpisodeWithGrid, showListEpisodeWithGrid) || other.showListEpisodeWithGrid == showListEpisodeWithGrid)&&const DeepCollectionEquality().equals(other._sortComicService, _sortComicService)&&const DeepCollectionEquality().equals(other._sortEigaService, _sortEigaService)&&(identical(other.lastTabActiveApp, lastTabActiveApp) || other.lastTabActiveApp == lastTabActiveApp)&&const DeepCollectionEquality().equals(other._newsKeywordComic, _newsKeywordComic)&&const DeepCollectionEquality().equals(other._newsKeywordEiga, _newsKeywordEiga));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,mangaReadLazyPage,lastCheckUpdateApp,brightnessApp,pollingIntervalComic,showListEpisodeWithGrid,const DeepCollectionEquality().hash(_sortComicService),const DeepCollectionEquality().hash(_sortEigaService),lastTabActiveApp);
+int get hashCode => Object.hash(runtimeType,mangaReadLazyPage,lastCheckUpdateApp,brightnessApp,pollingIntervalComic,showListEpisodeWithGrid,const DeepCollectionEquality().hash(_sortComicService),const DeepCollectionEquality().hash(_sortEigaService),lastTabActiveApp,const DeepCollectionEquality().hash(_newsKeywordComic),const DeepCollectionEquality().hash(_newsKeywordEiga));
 
 @override
 String toString() {
-  return 'GeneralSettings(mangaReadLazyPage: $mangaReadLazyPage, lastCheckUpdateApp: $lastCheckUpdateApp, brightnessApp: $brightnessApp, pollingIntervalComic: $pollingIntervalComic, showListEpisodeWithGrid: $showListEpisodeWithGrid, sortComicService: $sortComicService, sortEigaService: $sortEigaService, lastTabActiveApp: $lastTabActiveApp)';
+  return 'GeneralSettings(mangaReadLazyPage: $mangaReadLazyPage, lastCheckUpdateApp: $lastCheckUpdateApp, brightnessApp: $brightnessApp, pollingIntervalComic: $pollingIntervalComic, showListEpisodeWithGrid: $showListEpisodeWithGrid, sortComicService: $sortComicService, sortEigaService: $sortEigaService, lastTabActiveApp: $lastTabActiveApp, newsKeywordComic: $newsKeywordComic, newsKeywordEiga: $newsKeywordEiga)';
 }
 
 
@@ -148,7 +164,7 @@ abstract mixin class _$GeneralSettingsCopyWith<$Res> implements $GeneralSettings
   factory _$GeneralSettingsCopyWith(_GeneralSettings value, $Res Function(_GeneralSettings) _then) = __$GeneralSettingsCopyWithImpl;
 @override @useResult
 $Res call({
- bool mangaReadLazyPage, DateTime? lastCheckUpdateApp, double? brightnessApp, int pollingIntervalComic, bool showListEpisodeWithGrid, List<String>? sortComicService, List<String>? sortEigaService, String? lastTabActiveApp
+ bool mangaReadLazyPage, DateTime? lastCheckUpdateApp, double? brightnessApp, int pollingIntervalComic, bool showListEpisodeWithGrid, List<String>? sortComicService, List<String>? sortEigaService, String? lastTabActiveApp, List<String> newsKeywordComic, List<String> newsKeywordEiga
 });
 
 
@@ -165,7 +181,7 @@ class __$GeneralSettingsCopyWithImpl<$Res>
 
 /// Create a copy of GeneralSettings
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? mangaReadLazyPage = null,Object? lastCheckUpdateApp = freezed,Object? brightnessApp = freezed,Object? pollingIntervalComic = null,Object? showListEpisodeWithGrid = null,Object? sortComicService = freezed,Object? sortEigaService = freezed,Object? lastTabActiveApp = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? mangaReadLazyPage = null,Object? lastCheckUpdateApp = freezed,Object? brightnessApp = freezed,Object? pollingIntervalComic = null,Object? showListEpisodeWithGrid = null,Object? sortComicService = freezed,Object? sortEigaService = freezed,Object? lastTabActiveApp = freezed,Object? newsKeywordComic = null,Object? newsKeywordEiga = null,}) {
   return _then(_GeneralSettings(
 mangaReadLazyPage: null == mangaReadLazyPage ? _self.mangaReadLazyPage : mangaReadLazyPage // ignore: cast_nullable_to_non_nullable
 as bool,lastCheckUpdateApp: freezed == lastCheckUpdateApp ? _self.lastCheckUpdateApp : lastCheckUpdateApp // ignore: cast_nullable_to_non_nullable
@@ -175,7 +191,9 @@ as int,showListEpisodeWithGrid: null == showListEpisodeWithGrid ? _self.showList
 as bool,sortComicService: freezed == sortComicService ? _self._sortComicService : sortComicService // ignore: cast_nullable_to_non_nullable
 as List<String>?,sortEigaService: freezed == sortEigaService ? _self._sortEigaService : sortEigaService // ignore: cast_nullable_to_non_nullable
 as List<String>?,lastTabActiveApp: freezed == lastTabActiveApp ? _self.lastTabActiveApp : lastTabActiveApp // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,newsKeywordComic: null == newsKeywordComic ? _self._newsKeywordComic : newsKeywordComic // ignore: cast_nullable_to_non_nullable
+as List<String>,newsKeywordEiga: null == newsKeywordEiga ? _self._newsKeywordEiga : newsKeywordEiga // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 

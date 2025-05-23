@@ -265,6 +265,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.3"
+  choice:
+    dependency: "direct main"
+    description:
+      name: choice
+      sha256: "52d07065e8056beba5b26cff7786134cbfa24927b1f5bf60a05d50058597b2d9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.2"
   circular_seek_bar:
     dependency: "direct main"
     description:
@@ -2402,7 +2410,7 @@ packages:
     source: hosted
     version: "1.1.0"
   xml:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: xml
       sha256: b015a8ad1c488f66851d762d3090a21c600e479dc75e68328c52774040cf9226

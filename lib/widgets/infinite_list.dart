@@ -6,7 +6,7 @@ import 'package:very_good_infinite_list/very_good_infinite_list.dart'
 
 class InfiniteList<T> extends StatefulWidget {
   final List<T> data;
-  final Future<(bool, List<T>)> Function() fetchData;
+  final Future<({bool done, List<T> data})> Function() fetchData;
   final Widget Function(BuildContext context, T item, int index, T? prev)
   itemBuilder;
 
@@ -54,7 +54,7 @@ class _InfiniteListState<T> extends State<InfiniteList<T>> {
         setState(() {});
 
         try {
-          final (isLastPage, items) = await widget.fetchData();
+          final (done: isLastPage, data: items) = await widget.fetchData();
 
           _data.addAll(items);
           _hasReachedMax = isLastPage;
