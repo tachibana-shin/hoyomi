@@ -7,7 +7,6 @@ import 'package:hoyomi/plugins/export.dart';
 import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/utils/export.dart';
 import 'package:hoyomi/widgets/export.dart';
-import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 import 'package:kaeru/kaeru.dart';
