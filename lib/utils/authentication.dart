@@ -20,8 +20,6 @@ class Authentication {
   static final Authentication _instance = Authentication._internal();
   static Authentication get instance => _instance;
 
-  Authentication._internal();
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late final _user = Ref<User?>(_auth.currentUser);
   final _clientId = Env.googleClientId;
@@ -41,19 +39,23 @@ class Authentication {
             ),
           );
 
-  bool _initializedUser = false;
+  Completer<void>? _futureInitializeUser = Completer<void>();
 
-  Authentication() {
+  Authentication._internal() {
     if (_auth.currentUser != null) {
       _user.value = _auth.currentUser;
     }
 
     bool firstChanged = false;
-    _auth.userChanges().listen(
+    _auth.authStateChanges().listen(
       (user) {
-        if (_initializedUser || firstChanged || user != null) {
+        if (_futureInitializeUser == null || firstChanged || user != null) {
           _user.value = user;
-          if (!_initializedUser) _initializedUser = true;
+
+          if (_futureInitializeUser != null) {
+            _futureInitializeUser!.complete();
+            _futureInitializeUser = null;
+          }
         } else {
           firstChanged = true;
         }
@@ -209,39 +211,9 @@ class Authentication {
   }
 
   Future<User?> getUserAsync() async {
-    if (_auth.currentUser != null) {
-      _user.value = _auth.currentUser;
-    }
+    await _futureInitializeUser?.future;
 
-    if (_user.value != null || _initializedUser) {
-      return _user.value;
-    }
-
-    final completer = Completer<User?>();
-
-    bool firstChanged = false;
-    late final StreamSubscription<User?> subscription;
-    subscription = _auth.userChanges().listen(
-      (user) {
-        if (firstChanged || user != null) {
-          subscription.cancel();
-
-          _user.value = user;
-          if (!_initializedUser) _initializedUser = true;
-
-          completer.complete(_user.value);
-        } else {
-          firstChanged = true;
-        }
-      },
-      onError: (error) {
-        subscription.cancel();
-        completer.completeError(error);
-      },
-      onDone: () => subscription.cancel(),
-    );
-
-    return completer.future;
+    return _user.value;
   } // =================== utils ===================
 
   void _catchFirebaseAuthException(FirebaseAuthException err) {
