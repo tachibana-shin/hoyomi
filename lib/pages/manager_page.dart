@@ -366,7 +366,10 @@ class _AccountMainTile extends StatelessWidget {
               child: InteractiveViewer(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: Image.network(imageUrl, fit: BoxFit.contain),
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),

@@ -20,7 +20,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:speech_to_text_google_dialog/speech_to_text_google_dialog.dart';
 
 final Ref<String> globalKeyword = Ref('');
-final Ref<String?> _serviceSelect = Ref(null);
+final Ref<String?> serviceSelect = Ref(null);
 
 final _setKeyword =
     Debouncer(Duration(seconds: 1), (String keyword) {
@@ -434,21 +434,28 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
 
   Service _getCurrentService(BuildContext context) {
     final routeName = GoRouter.of(context).state.name;
+    final query = GoRouter.of(context).state.uri.queryParameters;
 
     late final Service service;
-    if (_serviceSelect.value == null) {
-      switch (routeName) {
-        case 'home_comic':
-          service = comicServices.value.first;
-          break;
-        case 'home_eiga':
-          service = eigaServices.value.first;
-          break;
-        default:
-          service = allServices.value.first;
+    if (serviceSelect.value == null) {
+      final queryService = query['service'];
+
+      if (queryService != null) {
+        service = getService(queryService);
+      } else {
+        switch (routeName) {
+          case 'home_comic':
+            service = comicServices.value.first;
+            break;
+          case 'home_eiga':
+            service = eigaServices.value.first;
+            break;
+          default:
+            service = allServices.value.first;
+        }
       }
     } else {
-      service = getService(_serviceSelect.value!);
+      service = getService(serviceSelect.value!);
     }
 
     return service;
@@ -476,7 +483,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
           ),
         ),
         onSelected: (value) {
-          _serviceSelect.value = value;
+          serviceSelect.value = value;
         },
         itemBuilder:
             (BuildContext context) =>

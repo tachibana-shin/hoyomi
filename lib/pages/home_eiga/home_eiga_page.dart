@@ -42,6 +42,7 @@ class _HomeEigaPageState extends State<HomeEigaPage>
           );
           lastTabActiveApp.value =
               '/home_eiga?service=${eigaServices.value[_tabController!.index].uid}';
+          serviceSelect.value = eigaServices.value[_tabController!.index].uid;
           PersistentScaffold.tabEiga.value =
               eigaServices.value[_tabController!.index].uid;
         });

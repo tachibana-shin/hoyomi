@@ -42,6 +42,7 @@ class _HomeComicPageState extends State<HomeComicPage>
           );
           lastTabActiveApp.value =
               '/home_comic?service=${comicServices.value[_tabController!.index].uid}';
+          serviceSelect.value = comicServices.value[_tabController!.index].uid;
           PersistentScaffold.tabComic.value =
               comicServices.value[_tabController!.index].uid;
         });
