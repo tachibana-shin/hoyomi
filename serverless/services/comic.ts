@@ -1,7 +1,7 @@
 import { and, eq, desc, sql } from "drizzle-orm"
 // import { PgDialect } from "drizzle-orm/pg-core"
 import { db } from "../db/db.ts"
-import { comicHistories, comicHistoryChapters } from "../db/schema.ts"
+import { comic, comicHistories, comicHistoryChapters } from "../db/schema.ts"
 import { single } from "../logic/single.ts"
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
@@ -15,13 +15,14 @@ export class Comic {
     }
   ) {
     // const pgDialect = new PgDialect()
-    const query = sourceId ? sql`
+    const query = sourceId
+      ? sql`
 select
-  ${comicHistories.sourceId} as source_id,
-  ${comicHistories.comicTextId} as comic_text_id,
-  ${comicHistories.name} as name,
-  ${comicHistories.poster} as poster,
-  ${comicHistories.seasonName} as season_name,
+  ${comic.sourceId} as source_id,
+  ${comic.comicTextId} as comic_text_id,
+  ${comic.name} as name,
+  ${comic.poster} as poster,
+  ${comic.seasonName} as season_name,
   ${comicHistories.createdAt} as created_at,
   ${comicHistoryChapters.updatedAt} as watch_updated_at,
   ${comicHistoryChapters.name} as watch_name,
@@ -34,36 +35,47 @@ left join lateral (
   select
     *
   from
+    ${comic}
+  where
+    ${comic.id} = ${comicHistories.comicId}
+  limit
+    1
+) ${comic} on TRUE
+left join lateral (
+  select
+    *
+  from
     ${comicHistoryChapters}
   where
     (${comicHistories.vChap} is not null and  ${comicHistoryChapters.id} = ${
-      comicHistories.vChap
-    }) or
+          comicHistories.vChap
+        }) or
     (${comicHistories.vChap} is     null and (${
-      comicHistoryChapters.comicHistoryId
-    } = ${comicHistories.forTo} or ${comicHistoryChapters.comicHistoryId} = ${
-      comicHistories.id
-    }))
+          comicHistoryChapters.comicHistoryId
+        } = ${comicHistories.forTo} or ${
+          comicHistoryChapters.comicHistoryId
+        } = ${comicHistories.id}))
   order by
     ${comicHistoryChapters.updatedAt} desc
   limit
     1
 ) ${comicHistoryChapters} on TRUE
 where
-  ${comicHistories.sourceId} = ${sourceId} and
-  ${comicHistories.userId}   = ${params.user_id}
+  ${comic.sourceId} = ${sourceId} and
+  ${comic.userId}   = ${params.user_id}
 order by
   ${comicHistories.createdAt} desc
 limit
   ${params.limit} offset ${(params.page - 1) * params.limit}
-` : sql`
+`
+      : sql`
 select
-  ${comicHistories.sourceId} as source_id,
-  ${comicHistories.comicTextId} as comic_text_id,
-  ${comicHistories.name} as name,
-  ${comicHistories.poster} as poster,
-  ${comicHistories.seasonName} as season_name,
-  ${comicHistories.createdAt} as created_at,
+  ${comic.sourceId} as source_id,
+  ${comic.comicTextId} as comic_text_id,
+  ${comic.name} as name,
+  ${comic.poster} as poster,
+  ${comic.seasonName} as season_name,
+  ${comic.createdAt} as created_at,
   ${comicHistoryChapters.updatedAt} as watch_updated_at,
   ${comicHistoryChapters.name} as watch_name,
   ${comicHistoryChapters.chapId} as watch_id,
@@ -75,23 +87,33 @@ left join lateral (
   select
     *
   from
+    ${comic}
+  where
+    ${comic.id} = ${comicHistories.comicId}
+  limit
+    1
+) ${comic} on TRUE
+left join lateral (
+  select
+    *
+  from
     ${comicHistoryChapters}
   where
     (${comicHistories.vChap} is not null and  ${comicHistoryChapters.id} = ${
-      comicHistories.vChap
-    }) or
+          comicHistories.vChap
+        }) or
     (${comicHistories.vChap} is     null and (${
-      comicHistoryChapters.comicHistoryId
-    } = ${comicHistories.forTo} or ${comicHistoryChapters.comicHistoryId} = ${
-      comicHistories.id
-    }))
+          comicHistoryChapters.comicHistoryId
+        } = ${comicHistories.forTo} or ${
+          comicHistoryChapters.comicHistoryId
+        } = ${comicHistories.id}))
   order by
     ${comicHistoryChapters.updatedAt} desc
   limit
     1
 ) ${comicHistoryChapters} on TRUE
 where
-  ${comicHistories.userId}   = ${params.user_id}
+  ${comic.userId}   = ${params.user_id}
 order by
   ${comicHistories.createdAt} desc
 limit
@@ -146,13 +168,18 @@ limit
 
     const lastHistory = single(
       await db
-        .select()
+        .select({
+          id: comicHistories.id,
+          forTo: comicHistories.forTo,
+          createdAt: comicHistories.createdAt,
+
+          comicTextId: comic.comicTextId,
+          seasonName: comic.seasonName
+        })
         .from(comicHistories)
+        .leftJoin(comic, eq(comic.id, comicHistories.comicId))
         .where(
-          and(
-            eq(comicHistories.sourceId, sourceId),
-            eq(comicHistories.userId, params.user_id)
-          )
+          and(eq(comic.sourceId, sourceId), eq(comic.userId, params.user_id))
         )
         .orderBy(desc(comicHistories.createdAt))
         .limit(1)
@@ -188,12 +215,14 @@ limit
         // update the last history
 
         // update the last history with new chapter id
+        db.update(comic).set({
+          name: params.name,
+          poster: params.poster,
+          seasonName: params.season_name || null
+        })
         await db
           .update(comicHistories)
           .set({
-            name: params.name,
-            poster: params.poster,
-            seasonName: params.season_name || null,
             // forTo not update
             vChap: id,
             createdAt: new Date()
@@ -201,13 +230,30 @@ limit
           .where(eq(comicHistories.id, lastHistory.id))
       } else {
         // insert new history
+        const { id: comicId } = single(
+          await db
+            .insert(comic)
+            .values({
+              sourceId: sourceId,
+              userId: params.user_id,
+              comicTextId: params.comic_text_id,
+              name: params.name,
+              poster: params.poster,
+              seasonName: params.season_name || null
+            })
+            .onConflictDoUpdate({
+              target: [comic.sourceId, comic.userId, comic.comicTextId],
+              set: {
+                name: params.name,
+                poster: params.poster,
+                seasonName: params.season_name || null
+              }
+            })
+            .returning({ id: comic.id })
+        )!
+
         await db.insert(comicHistories).values({
-          sourceId: sourceId,
-          userId: params.user_id,
-          comicTextId: params.comic_text_id,
-          name: params.name,
-          poster: params.poster,
-          seasonName: params.season_name || null,
+          comicId,
           forTo: lastHistory.forTo ?? lastHistory.id,
           vChap: id
         })
@@ -217,13 +263,18 @@ limit
       // find movie exists in history
       const existsHistory = single(
         await db
-          .select()
+          .select({
+            id: comicHistories.id,
+            forTo: comicHistories.forTo,
+            createdAt: comicHistories.createdAt
+          })
           .from(comicHistories)
+          .leftJoin(comic, eq(comic.id, comicHistories.comicId))
           .where(
             and(
-              eq(comicHistories.sourceId, sourceId),
-              eq(comicHistories.userId, params.user_id),
-              eq(comicHistories.comicTextId, params.comic_text_id)
+              eq(comic.sourceId, sourceId),
+              eq(comic.userId, params.user_id),
+              eq(comic.comicTextId, params.comic_text_id)
             )
           )
           .limit(1)
@@ -251,26 +302,58 @@ limit
           })
           .returning({ id: comicHistoryChapters.id })
 
+        const { id: comicId } = single(
+          await db
+            .insert(comic)
+            .values({
+              sourceId: sourceId,
+              userId: params.user_id,
+              comicTextId: params.comic_text_id,
+              name: params.name,
+              poster: params.poster,
+              seasonName: params.season_name || null
+            })
+            .onConflictDoUpdate({
+              target: [comic.sourceId, comic.userId, comic.comicTextId],
+              set: {
+                name: params.name,
+                poster: params.poster,
+                seasonName: params.season_name || null
+              }
+            })
+            .returning({ id: comic.id })
+        )!
         await db.insert(comicHistories).values({
-          sourceId: sourceId,
-          userId: params.user_id,
-          comicTextId: params.comic_text_id,
-          name: params.name,
-          poster: params.poster,
-          seasonName: params.season_name || null,
+          comicId,
           forTo: existsHistory.forTo ?? existsHistory.id,
           vChap: id
         })
       } else {
+        const { id: comicId } = single(
+          await db
+            .insert(comic)
+            .values({
+              sourceId: sourceId,
+              userId: params.user_id,
+              comicTextId: params.comic_text_id,
+              name: params.name,
+              poster: params.poster,
+              seasonName: params.season_name || null
+            })
+            .onConflictDoUpdate({
+              target: [comic.sourceId, comic.userId, comic.comicTextId],
+              set: {
+                name: params.name,
+                poster: params.poster,
+                seasonName: params.season_name || null
+              }
+            })
+            .returning({ id: comic.id })
+        )!
         const [{ id }] = await db
           .insert(comicHistories)
           .values({
-            sourceId: sourceId,
-            userId: params.user_id,
-            comicTextId: params.comic_text_id,
-            name: params.name,
-            poster: params.poster,
-            seasonName: params.season_name || null,
+            comicId,
             forTo: null, // this is parent
             vChap: null
           })
@@ -334,11 +417,12 @@ limit
           comicHistories,
           eq(comicHistories.id, comicHistoryChapters.comicHistoryId)
         )
+        .leftJoin(comic, eq(comic.id, comicHistories.comicId))
         .where(
           and(
-            eq(comicHistories.sourceId, sourceId),
-            eq(comicHistories.userId, params.user_id),
-            eq(comicHistories.comicTextId, params.comic_text_id),
+            eq(comic.sourceId, sourceId),
+            eq(comic.userId, params.user_id),
+            eq(comic.comicTextId, params.comic_text_id),
             eq(comicHistoryChapters.chapId, params.chap_id)
           )
         )
@@ -388,11 +472,12 @@ limit
         comicHistories,
         eq(comicHistoryChapters.comicHistoryId, comicHistories.id)
       )
+      .leftJoin(comic, eq(comic.id, comicHistories.comicId))
       .where(
         and(
-          eq(comicHistories.sourceId, sourceId),
-          eq(comicHistories.userId, params.user_id),
-          eq(comicHistories.comicTextId, params.comic_text_id)
+          eq(comic.sourceId, sourceId),
+          eq(comic.userId, params.user_id),
+          eq(comic.comicTextId, params.comic_text_id)
         )
       )
       .orderBy(comicHistories.id)

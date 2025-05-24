@@ -64,6 +64,13 @@
       "when": 1746770090023,
       "tag": "0008_majestic_pretty_boy",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1748075846320,
+      "tag": "0009_gray_steel_serpent",
+      "breakpoints": true
     }
   ]
 }
