@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
@@ -134,14 +133,7 @@ class _CategoryComicPageState extends State<CategoryComicPage> with KaeruMixin {
           ),
         ),
       ),
-      actions: [
-        Watch(
-          () =>
-              _url.value != null
-                  ? IconButtonOpenBrowser(url: _url.value!)
-                  : nil,
-        ),
-      ],
+      actions: [Watch(() => IconButtonOpenBrowser(url: _url.value))],
       // actions: [
       //   IconButton(
       //       onPressed: () {},

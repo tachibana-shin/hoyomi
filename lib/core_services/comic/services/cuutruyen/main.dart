@@ -69,7 +69,7 @@ class CuuTruyenService extends ABComicService
                   )
                   .toList(),
           name: 'Mới Cập Nhật',
-          categoryId: 'newest',
+          categoryId: 'recently_updated',
         ),
 
         HomeComicCategory(
@@ -268,12 +268,26 @@ class CuuTruyenService extends ABComicService
 
   @override
   getCategory({required categoryId, required page, required filters}) async {
-    final data = MangaTagResponse.fromJson(
-      jsonDecode(
-        await fetch(
-          '${categoryId.replaceFirst('tag_', 'tags/')}?page=$page&per_page=30',
-        ),
+    final dataRaw = jsonDecode(
+      await fetch(
+        '${categoryId.replaceFirst('tag_', 'tags/').replaceFirst('recently_updated', 'mangas/recently_updated')}?page=$page&per_page=30',
       ),
+    );
+
+    final data = MangaTagResponse.fromJson(
+      categoryId.contains('recently_updated')
+          ? {
+            'data': {
+              'mangas': dataRaw['data'],
+              'tag': <String, dynamic>{
+                'name': 'Mới cập nhật',
+                'slug': 'newest',
+                'tagging_count': -1
+              },
+            },
+            '_metadata': dataRaw['_metadata'],
+          }
+          : dataRaw,
     );
 
     return ComicCategory(
