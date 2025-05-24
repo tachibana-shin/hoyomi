@@ -86,6 +86,17 @@
 		</dict>
 	</array>
 	<!-- End of the Google Sign-In section -->
+	<!-- Background fetch section -->
+	<key>UIBackgroundModes</key>
+	<array>
+			<string>fetch</string>
+			<string>remote-notification</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+			<string>dev.flutter.background.refresh</string>
+	</array>
+	<!-- End of the Background fetch section -->
 </dict>
 
 </plist>
