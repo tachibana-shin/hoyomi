@@ -141,6 +141,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
             enabled: _showToolbar,
             service: _service,
             comicId: widget.comicId,
+            showButtonMeta: widget.comic == null,
           ),
         ],
       ),
@@ -154,6 +155,7 @@ class _AppBar extends StatefulWidget {
   final Ref<bool> enabled;
   final ABComicService service;
   final String comicId;
+  final bool showButtonMeta;
 
   const _AppBar({
     required this.comic,
@@ -161,6 +163,7 @@ class _AppBar extends StatefulWidget {
     required this.enabled,
     required this.service,
     required this.comicId,
+    required this.showButtonMeta,
   });
 
   @override
@@ -206,9 +209,7 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                             backgroundColor: Colors.transparent,
                             leading: IconButton(
                               icon: const Iconify(Ion.chevron_left),
-                              onPressed: () {
-                                context.pop();
-                              },
+                              onPressed: () => context.pop(),
                             ),
                             title: Watch(() {
                               return Text(
@@ -221,7 +222,7 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                                     widget.comic.value!.name,
                                 ].join(' - '),
                                 maxLines: 1,
-                                overflow: TextOverflow.fade,
+                                overflow: TextOverflow.ellipsis,
                               ).fontSize(16.0);
                               // return Column(
                               // mainAxisSize: MainAxisSize.min,
@@ -247,6 +248,19 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                               // );
                             }),
                             actions: [
+                              if (widget.showButtonMeta)
+                                IconButton(
+                                  icon: const Iconify(Ion.menu),
+                                  onPressed:
+                                      () => context.pushReplacementNamed(
+                                        'details_comic',
+                                        pathParameters: {
+                                          'sourceId': widget.service.uid,
+                                          'comicId': widget.comicId,
+                                        },
+                                        extra: {'comic': widget.comic.value},
+                                      ),
+                                ),
                               Watch(
                                 () => IconButtonFollow(
                                   sourceId: widget.service.uid,

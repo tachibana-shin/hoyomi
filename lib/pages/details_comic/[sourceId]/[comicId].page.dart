@@ -26,11 +26,13 @@ import '../../../plugins/export.dart';
 class DetailsComic extends StatefulWidget {
   final String sourceId;
   final String comicId;
+  final MetaComic? comic;
 
   const DetailsComic({
     super.key,
     required this.sourceId,
     required this.comicId,
+    required this.comic,
   });
 
   @override
@@ -123,6 +125,7 @@ class _DetailsComicState extends State<DetailsComic>
   @override
   Widget build(BuildContext context2) {
     return PullRefreshPage(
+      initialData: widget.comic,
       onLoadData: () async {
         try {
           return await _service

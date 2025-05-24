@@ -11,6 +11,7 @@ class PullRefreshPage<T> extends StatefulWidget {
   builder;
   final Future<T> Function() onLoadData;
   final T Function() onLoadFake;
+  final T? initialData;
 
   const PullRefreshPage({
     super.key,
@@ -18,6 +19,7 @@ class PullRefreshPage<T> extends StatefulWidget {
     required this.builder,
     required this.onLoadData,
     required this.onLoadFake,
+    this.initialData,
   });
 
   @override
@@ -30,7 +32,10 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
   @override
   void initState() {
     super.initState();
-    _dataFuture = widget.onLoadData();
+    _dataFuture =
+        widget.initialData != null
+            ? Future.value(widget.initialData!)
+            : widget.onLoadData();
   }
 
   @override

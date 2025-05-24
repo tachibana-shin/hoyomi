@@ -217,6 +217,10 @@ final routes = [
         (context, state) => DetailsComic(
           sourceId: state.pathParameters['sourceId']!,
           comicId: state.pathParameters['comicId']!,
+          comic:
+              state.extra != null
+                  ? (state.extra as Map)['comic'] as MetaComic
+                  : null,
         ),
     routes: [
       GoRoute(
