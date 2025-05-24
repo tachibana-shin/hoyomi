@@ -128,6 +128,9 @@ class _MangaReaderState extends State<MangaReader>
   // created at
   late final _createdAt = DateTime.now();
 
+  // skip restore page if scroll
+  late final _skipRestoreWatch = <String>{};
+
   @override
   void initState() {
     _currChapter = computed(() {
@@ -370,7 +373,9 @@ class _MangaReaderState extends State<MangaReader>
     /// history read
     watch([_realCurrentPage], () {
       final service = widget.service;
-      if (service is ComicWatchPageMixin && _currChapter.value != null) {
+      if (service is ComicWatchPageMixin &&
+          _currChapter.value != null &&
+          !_skipRestoreWatch.contains(_currChapter.value)) {
         _saveWatchPage(
           service: widget.service as ComicWatchPageMixin,
           comicId: widget.comicId,
@@ -527,6 +532,7 @@ class _MangaReaderState extends State<MangaReader>
             .chapterId; // Get the group id of the current page
     if (_chapterId.value != currentGroup) {
       _forceUpdateWatchPage();
+      _skipRestoreWatch.add(currentGroup);
       _chapterId.value = currentGroup;
       widget.onChangeChap(currentGroup);
       // GoRouter.of(context)
