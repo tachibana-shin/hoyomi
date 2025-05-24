@@ -375,7 +375,7 @@ class _MangaReaderState extends State<MangaReader>
       final service = widget.service;
       if (service is ComicWatchPageMixin &&
           _currChapter.value != null &&
-          !_skipRestoreWatch.contains(_currChapter.value)) {
+          !_skipRestoreWatch.contains(_chapterId.value)) {
         _saveWatchPage(
           service: widget.service as ComicWatchPageMixin,
           comicId: widget.comicId,
