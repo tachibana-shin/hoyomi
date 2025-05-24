@@ -1117,15 +1117,24 @@ class _MangaReaderState extends State<MangaReader>
           return _buildPage(index, key: key);
         },
         currentPage: _currentPage,
-        builderImage: (int index, key) {
-          final item = _pages.value.elementAt(index);
+        builderImage: (int index, key) async {
+          final source = _pages.value.elementAt(index);
 
-          return OImage.oNetwork(
-            key: key,
-            item.image,
-            sourceId: widget.service.uid,
-            fit: BoxFit.contain,
+          final cache = _pageMemoryCacheStore[source.image];
+          if (cache != null && cache.data != null) {
+            return Image.memory(cache.data!, fit: BoxFit.contain);
+          }
+
+          final data = await _fetchPage(
+            index,
+            false,
+            progress:
+                _progressCacheStore[_pages.value
+                    .elementAt(index)
+                    .image] ??= ref(-1.0),
           );
+
+          return Image.memory(await data.future);
         },
         rtl: mode == ComicModes.rightToLeft,
         twoPage: _useTwoPage.value,

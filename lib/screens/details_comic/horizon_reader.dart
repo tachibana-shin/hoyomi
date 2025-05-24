@@ -10,7 +10,7 @@ class HorizonReader extends StatefulWidget {
   itemBuilder;
   final Ref<double> currentPage;
 
-  final Image Function(int page, ValueKey key) builderImage;
+  final Future<Image> Function(int page, ValueKey key) builderImage;
   final bool rtl;
   final bool twoPage;
 
@@ -176,7 +176,7 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
     }
 
     try {
-      final image = widget.builderImage(
+      final image = await widget.builderImage(
         index,
         ValueKey(widget.pages.value.elementAt(index).image.src),
       );
