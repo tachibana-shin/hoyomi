@@ -4,9 +4,43 @@ import { db } from "../db/db.ts"
 import { comic, comicHistories, comicHistoryChapters } from "../db/schema.ts"
 import { single } from "../logic/single.ts"
 
+type ComicParams = Required<{
+  user_id: number
+  name: string
+  poster: string
+  comic_text_id: string
+  season_name?: string
+}>
+
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Comic {
-  static async getWatchHistory(
+  private async _saveComic(sourceId: string, params: ComicParams) {
+    const { id: comicId } = single(
+      await db
+        .insert(comic)
+        .values({
+          sourceId: sourceId,
+          userId: params.user_id,
+          comicTextId: params.comic_text_id,
+          name: params.name,
+          poster: params.poster,
+          seasonName: params.season_name || null
+        })
+        .onConflictDoUpdate({
+          target: [comic.sourceId, comic.userId, comic.comicTextId],
+          set: {
+            name: params.name,
+            poster: params.poster,
+            seasonName: params.season_name || null
+          }
+        })
+        .returning({ id: comic.id })
+    )!
+
+    return comicId
+  }
+
+  async getWatchHistory(
     sourceId: string | void,
     params: {
       user_id: number
@@ -144,14 +178,9 @@ limit
     // `
   }
 
-  static async setWatchTime(
+  async setWatchTime(
     sourceId: string,
-    params: {
-      user_id: number
-      name: string
-      poster: string
-      comic_text_id: string
-      season_name?: string
+    params: ComicParams & {
       cur: number
       dur: number
       episode_name: string
@@ -230,27 +259,7 @@ limit
           .where(eq(comicHistories.id, lastHistory.id))
       } else {
         // insert new history
-        const { id: comicId } = single(
-          await db
-            .insert(comic)
-            .values({
-              sourceId: sourceId,
-              userId: params.user_id,
-              comicTextId: params.comic_text_id,
-              name: params.name,
-              poster: params.poster,
-              seasonName: params.season_name || null
-            })
-            .onConflictDoUpdate({
-              target: [comic.sourceId, comic.userId, comic.comicTextId],
-              set: {
-                name: params.name,
-                poster: params.poster,
-                seasonName: params.season_name || null
-              }
-            })
-            .returning({ id: comic.id })
-        )!
+        const comicId = await this._saveComic(sourceId, params)!
 
         await db.insert(comicHistories).values({
           comicId,
@@ -302,54 +311,14 @@ limit
           })
           .returning({ id: comicHistoryChapters.id })
 
-        const { id: comicId } = single(
-          await db
-            .insert(comic)
-            .values({
-              sourceId: sourceId,
-              userId: params.user_id,
-              comicTextId: params.comic_text_id,
-              name: params.name,
-              poster: params.poster,
-              seasonName: params.season_name || null
-            })
-            .onConflictDoUpdate({
-              target: [comic.sourceId, comic.userId, comic.comicTextId],
-              set: {
-                name: params.name,
-                poster: params.poster,
-                seasonName: params.season_name || null
-              }
-            })
-            .returning({ id: comic.id })
-        )!
+        const comicId = await this._saveComic(sourceId, params)
         await db.insert(comicHistories).values({
           comicId,
           forTo: existsHistory.forTo ?? existsHistory.id,
           vChap: id
         })
       } else {
-        const { id: comicId } = single(
-          await db
-            .insert(comic)
-            .values({
-              sourceId: sourceId,
-              userId: params.user_id,
-              comicTextId: params.comic_text_id,
-              name: params.name,
-              poster: params.poster,
-              seasonName: params.season_name || null
-            })
-            .onConflictDoUpdate({
-              target: [comic.sourceId, comic.userId, comic.comicTextId],
-              set: {
-                name: params.name,
-                poster: params.poster,
-                seasonName: params.season_name || null
-              }
-            })
-            .returning({ id: comic.id })
-        )!
+        const comicId = await this._saveComic(sourceId, params)
         const [{ id }] = await db
           .insert(comicHistories)
           .values({
@@ -386,7 +355,7 @@ limit
       }
     }
   }
-  static async getWatchTime(
+  async getWatchTime(
     sourceId: string,
     params: {
       user_id: number
@@ -430,7 +399,7 @@ limit
         .limit(1)
     )
   }
-  static async getWatchTimeEpisodes(
+  async getWatchTimeEpisodes(
     sourceId: string,
     params: {
       user_id: number
@@ -481,5 +450,20 @@ limit
         )
       )
       .orderBy(comicHistories.id)
+  }
+
+  async setFollow(
+    sourceId: string,
+    params: ComicParams & {
+chapterId: string,
+chapterMeta: string
+    }
+  ) {
+    const comicId = await this._saveComic(sourceId, params)
+
+    await db.insert(comicFollows).values({
+      comicId,
+      currentChapters
+    })
   }
 }
