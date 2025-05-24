@@ -21,7 +21,7 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
   bool? get $isAuth => false;
 
   final hostCUrl = 'ophim17.cc';
-  final _buildId = 'YjU3ELa3ICaBELMtMHUHj';
+  final _buildId = '-ErKQh31qRaPkNInLHIOk';
   @override
   late final init = ServiceInit(
     name: 'OPhim',
