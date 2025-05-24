@@ -1,7 +1,7 @@
 import { and, eq, desc, sql } from "drizzle-orm"
 // import { PgDialect } from "drizzle-orm/pg-core"
 import { db } from "../db/db.ts"
-import { eigaHistories, eigaHistoryChapters } from "../db/schema.ts"
+import { eiga, eigaHistories, eigaHistoryChapters } from "../db/schema.ts"
 import { single } from "../logic/single.ts"
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
@@ -15,13 +15,14 @@ export class Eiga {
     }
   ) {
     // const pgDialect = new PgDialect()
-    const query = sourceId ? sql`
+    const query = sourceId
+      ? sql`
 select
-  ${eigaHistories.sourceId} as source_id,
-  ${eigaHistories.eigaTextId} as eiga_text_id,
-  ${eigaHistories.name} as name,
-  ${eigaHistories.poster} as poster,
-  ${eigaHistories.seasonName} as season_name,
+  ${eiga.sourceId} as source_id,
+  ${eiga.eigaTextId} as eiga_text_id,
+  ${eiga.name} as name,
+  ${eiga.poster} as poster,
+  ${eiga.seasonName} as season_name,
   ${eigaHistories.createdAt} as created_at,
   ${eigaHistoryChapters.updatedAt} as watch_updated_at,
   ${eigaHistoryChapters.name} as watch_name,
@@ -34,43 +35,12 @@ left join lateral (
   select
     *
   from
-    ${eigaHistoryChapters}
+    ${eiga}
   where
-    (${eigaHistories.vChap} is not null and  ${eigaHistoryChapters.id} = ${
-      eigaHistories.vChap
-    }) or
-    (${eigaHistories.vChap} is     null and (${
-      eigaHistoryChapters.eigaHistoryId
-    } = ${eigaHistories.forTo} or ${eigaHistoryChapters.eigaHistoryId} = ${
-      eigaHistories.id
-    }))
-  order by
-    ${eigaHistoryChapters.updatedAt} desc
+    ${eiga.id} = ${eigaHistories.eigaId}
   limit
     1
-) ${eigaHistoryChapters} on TRUE
-where
-  ${eigaHistories.sourceId} = ${sourceId} and
-  ${eigaHistories.userId}   = ${params.user_id}
-order by
-  ${eigaHistories.createdAt} desc
-limit
-  ${params.limit} offset ${(params.page - 1) * params.limit}
-`: sql`
-select
-  ${eigaHistories.sourceId} as source_id,
-  ${eigaHistories.eigaTextId} as eiga_text_id,
-  ${eigaHistories.name} as name,
-  ${eigaHistories.poster} as poster,
-  ${eigaHistories.seasonName} as season_name,
-  ${eigaHistories.createdAt} as created_at,
-  ${eigaHistoryChapters.updatedAt} as watch_updated_at,
-  ${eigaHistoryChapters.name} as watch_name,
-  ${eigaHistoryChapters.chapId} as watch_id,
-  ${eigaHistoryChapters.cur} as watch_cur,
-  ${eigaHistoryChapters.dur} as watch_dur
-from
-  ${eigaHistories}
+) ${eiga} on TRUE
 left join lateral (
   select
     *
@@ -78,26 +48,77 @@ left join lateral (
     ${eigaHistoryChapters}
   where
     (${eigaHistories.vChap} is not null and  ${eigaHistoryChapters.id} = ${
-      eigaHistories.vChap
-    }) or
+          eigaHistories.vChap
+        }) or
     (${eigaHistories.vChap} is     null and (${
-      eigaHistoryChapters.eigaHistoryId
-    } = ${eigaHistories.forTo} or ${eigaHistoryChapters.eigaHistoryId} = ${
-      eigaHistories.id
-    }))
+          eigaHistoryChapters.eigaHistoryId
+        } = ${eigaHistories.forTo} or ${eigaHistoryChapters.eigaHistoryId} = ${
+          eigaHistories.id
+        }))
   order by
     ${eigaHistoryChapters.updatedAt} desc
   limit
     1
 ) ${eigaHistoryChapters} on TRUE
 where
-  ${eigaHistories.userId}   = ${params.user_id}
+  ${eiga.sourceId} = ${sourceId} and
+  ${eiga.userId}   = ${params.user_id}
 order by
   ${eigaHistories.createdAt} desc
 limit
   ${params.limit} offset ${(params.page - 1) * params.limit}
 `
-
+      : sql`
+select
+  ${eiga.sourceId} as source_id,
+  ${eiga.eigaTextId} as eiga_text_id,
+  ${eiga.name} as name,
+  ${eiga.poster} as poster,
+  ${eiga.seasonName} as season_name,
+  ${eigaHistories.createdAt} as created_at,
+  ${eigaHistoryChapters.updatedAt} as watch_updated_at,
+  ${eigaHistoryChapters.name} as watch_name,
+  ${eigaHistoryChapters.chapId} as watch_id,
+  ${eigaHistoryChapters.cur} as watch_cur,
+  ${eigaHistoryChapters.dur} as watch_dur
+from
+  ${eigaHistories}
+left join lateral (
+  select
+    *
+  from
+    ${eiga}
+  where
+    ${eiga.id} = ${eigaHistories.eigaId}
+  limit
+    1
+) ${eiga} on TRUE
+left join lateral (
+  select
+    *
+  from
+    ${eigaHistoryChapters}
+  where
+    (${eigaHistories.vChap} is not null and  ${eigaHistoryChapters.id} = ${
+          eigaHistories.vChap
+        }) or
+    (${eigaHistories.vChap} is     null and (${
+          eigaHistoryChapters.eigaHistoryId
+        } = ${eigaHistories.forTo} or ${eigaHistoryChapters.eigaHistoryId} = ${
+          eigaHistories.id
+        }))
+  order by
+    ${eigaHistoryChapters.updatedAt} desc
+  limit
+    1
+) ${eigaHistoryChapters} on TRUE
+where
+  ${eiga.userId}   = ${params.user_id}
+order by
+  ${eigaHistories.createdAt} desc
+limit
+  ${params.limit} offset ${(params.page - 1) * params.limit}
+`
 
     return (await db.execute(query)).rows as {
       created_at: string
@@ -147,13 +168,18 @@ limit
 
     const lastHistory = single(
       await db
-        .select()
+        .select({
+          id: eigaHistories.id,
+          forTo: eigaHistories.forTo,
+          createdAt: eigaHistories.createdAt,
+
+          eigaTextId: eiga.eigaTextId,
+          seasonName: eiga.seasonName
+        })
         .from(eigaHistories)
+        .leftJoin(eiga, eq(eiga.id, eigaHistories.eigaId))
         .where(
-          and(
-            eq(eigaHistories.sourceId, sourceId),
-            eq(eigaHistories.userId, params.user_id)
-          )
+          and(eq(eiga.sourceId, sourceId), eq(eiga.userId, params.user_id))
         )
         .orderBy(desc(eigaHistories.createdAt))
         .limit(1)
@@ -189,12 +215,14 @@ limit
         // update the last history
 
         // update the last history with new chapter id
+        db.update(eiga).set({
+          name: params.name,
+          poster: params.poster,
+          seasonName: params.season_name || null
+        })
         await db
           .update(eigaHistories)
           .set({
-            name: params.name,
-            poster: params.poster,
-            seasonName: params.season_name || null,
             // forTo not update
             vChap: id,
             createdAt: new Date()
@@ -202,13 +230,30 @@ limit
           .where(eq(eigaHistories.id, lastHistory.id))
       } else {
         // insert new history
+        const { id: eigaId } = single(
+          await db
+            .insert(eiga)
+            .values({
+              sourceId: sourceId,
+              userId: params.user_id,
+              eigaTextId: params.eiga_text_id,
+              name: params.name,
+              poster: params.poster,
+              seasonName: params.season_name || null
+            })
+            .onConflictDoUpdate({
+              target: [eiga.sourceId, eiga.userId, eiga.eigaTextId],
+              set: {
+                name: params.name,
+                poster: params.poster,
+                seasonName: params.season_name || null
+              }
+            })
+            .returning({ id: eiga.id })
+        )!
+
         await db.insert(eigaHistories).values({
-          sourceId: sourceId,
-          userId: params.user_id,
-          eigaTextId: params.eiga_text_id,
-          name: params.name,
-          poster: params.poster,
-          seasonName: params.season_name || null,
+          eigaId,
           forTo: lastHistory.forTo ?? lastHistory.id,
           vChap: id
         })
@@ -218,13 +263,18 @@ limit
       // find movie exists in history
       const existsHistory = single(
         await db
-          .select()
+          .select({
+            id: eigaHistories.id,
+            forTo: eigaHistories.forTo,
+            createdAt: eigaHistories.createdAt
+          })
           .from(eigaHistories)
+          .leftJoin(eiga, eq(eiga.id, eigaHistories.eigaId))
           .where(
             and(
-              eq(eigaHistories.sourceId, sourceId),
-              eq(eigaHistories.userId, params.user_id),
-              eq(eigaHistories.eigaTextId, params.eiga_text_id)
+              eq(eiga.sourceId, sourceId),
+              eq(eiga.userId, params.user_id),
+              eq(eiga.eigaTextId, params.eiga_text_id)
             )
           )
           .limit(1)
@@ -252,26 +302,58 @@ limit
           })
           .returning({ id: eigaHistoryChapters.id })
 
+        const { id: eigaId } = single(
+          await db
+            .insert(eiga)
+            .values({
+              sourceId: sourceId,
+              userId: params.user_id,
+              eigaTextId: params.eiga_text_id,
+              name: params.name,
+              poster: params.poster,
+              seasonName: params.season_name || null
+            })
+            .onConflictDoUpdate({
+              target: [eiga.sourceId, eiga.userId, eiga.eigaTextId],
+              set: {
+                name: params.name,
+                poster: params.poster,
+                seasonName: params.season_name || null
+              }
+            })
+            .returning({ id: eiga.id })
+        )!
         await db.insert(eigaHistories).values({
-          sourceId: sourceId,
-          userId: params.user_id,
-          eigaTextId: params.eiga_text_id,
-          name: params.name,
-          poster: params.poster,
-          seasonName: params.season_name || null,
+          eigaId,
           forTo: existsHistory.forTo ?? existsHistory.id,
           vChap: id
         })
       } else {
+        const { id: eigaId } = single(
+          await db
+            .insert(eiga)
+            .values({
+              sourceId: sourceId,
+              userId: params.user_id,
+              eigaTextId: params.eiga_text_id,
+              name: params.name,
+              poster: params.poster,
+              seasonName: params.season_name || null
+            })
+            .onConflictDoUpdate({
+              target: [eiga.sourceId, eiga.userId, eiga.eigaTextId],
+              set: {
+                name: params.name,
+                poster: params.poster,
+                seasonName: params.season_name || null
+              }
+            })
+            .returning({ id: eiga.id })
+        )!
         const [{ id }] = await db
           .insert(eigaHistories)
           .values({
-            sourceId: sourceId,
-            userId: params.user_id,
-            eigaTextId: params.eiga_text_id,
-            name: params.name,
-            poster: params.poster,
-            seasonName: params.season_name || null,
+            eigaId,
             forTo: null, // this is parent
             vChap: null
           })
@@ -335,11 +417,12 @@ limit
           eigaHistories,
           eq(eigaHistories.id, eigaHistoryChapters.eigaHistoryId)
         )
+        .leftJoin(eiga, eq(eiga.id, eigaHistories.eigaId))
         .where(
           and(
-            eq(eigaHistories.sourceId, sourceId),
-            eq(eigaHistories.userId, params.user_id),
-            eq(eigaHistories.eigaTextId, params.eiga_text_id),
+            eq(eiga.sourceId, sourceId),
+            eq(eiga.userId, params.user_id),
+            eq(eiga.eigaTextId, params.eiga_text_id),
             eq(eigaHistoryChapters.chapId, params.chap_id)
           )
         )
@@ -389,11 +472,12 @@ limit
         eigaHistories,
         eq(eigaHistoryChapters.eigaHistoryId, eigaHistories.id)
       )
+      .leftJoin(eiga, eq(eiga.id, eigaHistories.eigaId))
       .where(
         and(
-          eq(eigaHistories.sourceId, sourceId),
-          eq(eigaHistories.userId, params.user_id),
-          eq(eigaHistories.eigaTextId, params.eiga_text_id)
+          eq(eiga.sourceId, sourceId),
+          eq(eiga.userId, params.user_id),
+          eq(eiga.eigaTextId, params.eiga_text_id)
         )
       )
       .orderBy(eigaHistories.id)

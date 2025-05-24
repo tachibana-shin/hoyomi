@@ -2,9 +2,10 @@ import { drizzle } from "drizzle-orm/node-postgres"
 import { Pool } from "pg"
 import assert from "node:assert"
 import {
-comic,
+  comic,
   comicHistories,
   comicHistoryChapters,
+  eiga,
   eigaHistories,
   eigaHistoryChapters,
   users
@@ -30,6 +31,7 @@ export const db = drizzle({
     comic,
     comicHistories,
     comicHistoryChapters,
+    eiga,
     eigaHistories,
     eigaHistoryChapters,
     users

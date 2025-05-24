@@ -71,6 +71,13 @@
       "when": 1748075846320,
       "tag": "0009_gray_steel_serpent",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1748080821545,
+      "tag": "0010_colorful_deathbird",
+      "breakpoints": true
     }
   ]
 }

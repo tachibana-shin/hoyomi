@@ -25,13 +25,14 @@ export const comicHistories = pgTable(
       .defaultNow()
   },
   (table) => [
+    index("comic_comic_id_idx").on(table.comicId),
     index("comic_history_for_to_idx").on(table.forTo),
     index("comic_history_v_chap_idx").on(table.vChap),
     foreignKey({
       columns: [table.forTo],
       foreignColumns: [table.id]
     }),
-    index("comic_history__user_source_comic_date_created__idx").on(
+    index("comic_history_date_created_idx").on(
       table.dateCreated
     )
   ]
