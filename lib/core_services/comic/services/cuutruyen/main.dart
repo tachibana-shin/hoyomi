@@ -282,7 +282,7 @@ class CuuTruyenService extends ABComicService
               'tag': <String, dynamic>{
                 'name': 'Mới cập nhật',
                 'slug': 'newest',
-                'tagging_count': -1
+                'tagging_count': -1,
               },
             },
             '_metadata': dataRaw['_metadata'],
