@@ -7,10 +7,13 @@ import 'package:retrofit/retrofit.dart';
 
 import '../models/comic_list_watch_history.dart';
 import '../models/eiga_list_watch_history.dart';
+import '../models/has_follow_response.dart';
 import '../models/list_watch_page_schema.dart';
 import '../models/list_watch_time_schema.dart';
 import '../models/post_api_comic_set_watch_page_response.dart';
 import '../models/post_api_eiga_set_watch_time_response.dart';
+import '../models/set_follow_body_schema.dart';
+import '../models/set_follow_response.dart';
 import '../models/set_watch_page_body_schema.dart';
 import '../models/set_watch_time_body_schema.dart';
 import '../models/watch_page_schema.dart';
@@ -48,6 +51,19 @@ abstract class ClientClient {
   Future<PostApiComicSetWatchPageResponse> postApiComicSetWatchPage({
     @Header('Authorization') required String authorization,
     @Body() required SetWatchPageBodySchema body,
+  });
+
+  @GET('/api/comic/has-follow')
+  Future<HasFollowResponse> getApiComicHasFollow({
+    @Query('sourceId') required String sourceId,
+    @Query('comic_text_id') required String comicTextId,
+    @Header('Authorization') required String authorization,
+  });
+
+  @POST('/api/comic/set-follow')
+  Future<SetFollowResponse> postApiComicSetFollow({
+    @Header('Authorization') required String authorization,
+    @Body() SetFollowBodySchema? body,
   });
 
   @GET('/api/eiga/get-watch-history')

@@ -259,6 +259,110 @@
                     "episode_id"
                 ]
             },
+            "HasFollowResponse": {
+                "type": "object",
+                "properties": {
+                    "has_follow": {
+                        "type": "boolean",
+                        "description": "Whether the user is following this comic."
+                    }
+                },
+                "required": [
+                    "has_follow"
+                ],
+                "description": "Indicates if the user follows the specified comic."
+            },
+            "SetFollowResponse": {
+                "type": "object",
+                "properties": {
+                    "ok": {
+                        "type": "boolean",
+                        "description": "Whether the operation was successful."
+                    }
+                },
+                "required": [
+                    "ok"
+                ],
+                "description": "Indicates if the follow/unfollow operation succeeded."
+            },
+            "SetFollowBodySchema": {
+                "type": "object",
+                "properties": {
+                    "sourceId": {
+                        "type": "string",
+                        "description": "The unique identifier for the source (e.g., the series or season).",
+                        "example": "tonikaku-kawaii-season-2"
+                    },
+                    "comic_text_id": {
+                        "type": "string",
+                        "description": "The identifier for the specific comic text.",
+                        "example": "ep-01"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Comic name.",
+                        "example": "Tonikaku Kawaii"
+                    },
+                    "poster": {
+                        "type": "string",
+                        "description": "Poster image URL.",
+                        "example": "https://example.com/poster.jpg"
+                    },
+                    "season_name": {
+                        "type": "string",
+                        "description": "Season name (optional).",
+                        "example": "Season 2"
+                    },
+                    "chapter_Id": {
+                        "type": "string",
+                        "description": "Current chapter id.",
+                        "example": "ch-01"
+                    },
+                    "current_chapters": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "fullName": {
+                                    "type": "string"
+                                },
+                                "order": {
+                                    "type": "number"
+                                },
+                                "chapterId": {
+                                    "type": "string"
+                                },
+                                "time": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                }
+                            },
+                            "required": [
+                                "name",
+                                "order",
+                                "chapterId"
+                            ]
+                        },
+                        "description": "Array of chapter meta info."
+                    },
+                    "value": {
+                        "type": "boolean",
+                        "description": "Set to true to follow, false to unfollow."
+                    }
+                },
+                "required": [
+                    "sourceId",
+                    "comic_text_id",
+                    "name",
+                    "poster",
+                    "chapter_Id",
+                    "current_chapters",
+                    "value"
+                ]
+            },
             "EigaListWatchHistory": {
                 "type": "object",
                 "properties": {
@@ -725,6 +829,95 @@
                                     "required": [
                                         "success"
                                     ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comic/has-follow": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "The unique identifier for the source (e.g., the series or season).",
+                            "example": "tonikaku-kawaii-season-2"
+                        },
+                        "required": true,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "The identifier for the specific comic text.",
+                            "example": "ep-01"
+                        },
+                        "required": true,
+                        "name": "comic_text_id",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Check if the user follows the specified comic.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HasFollowResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comic/set-follow": {
+            "post": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SetFollowBodySchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Set or unset follow for the specified comic.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SetFollowResponse"
                                 }
                             }
                         }
