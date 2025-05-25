@@ -1,4 +1,4 @@
-import { and, eq, desc, sql, exists } from "drizzle-orm"
+import { and, eq, desc, sql, exists, count } from "drizzle-orm"
 // import { PgDialect } from "drizzle-orm/pg-core"
 import { db } from "../db/db.ts"
 import {
@@ -508,5 +508,53 @@ limit
           .limit(1)
       )?.exists === true
     )
+  }
+
+  async getListFollow(
+    sourceId: string | void,
+    params: {
+      user_id: number
+      page: number
+      limit: number
+    }
+  ) {
+    const items = await db
+      .select({
+        created_at: eigaFollows.createdAt,
+        eiga_text_id: eiga.eigaTextId,
+        name: eiga.name,
+        poster: eiga.poster,
+        season_name: eiga.seasonName,
+        source_id: eiga.sourceId,
+        episode_name: eigaFollows.currentEpisodeName,
+        episode_id: eigaFollows.currentEpisodeId,
+        episode_time: eigaFollows.currentEpisodeTime
+      })
+      .from(eigaFollows)
+      .leftJoin(eiga, eq(eiga.id, eigaFollows.eigaId))
+      .where(
+        sourceId
+          ? and(eq(eiga.sourceId, sourceId), eq(eiga.userId, params.user_id))
+          : eq(eiga.userId, params.user_id)
+      )
+      .orderBy(desc(eigaFollows.createdAt))
+      .limit(params.limit)
+      .offset((params.page - 1) * params.limit)
+
+    const { totalItems } = single(
+      await db
+        .select({
+          totalItems: count()
+        })
+        .from(eigaFollows)
+        .leftJoin(eiga, eq(eiga.id, eigaFollows.eigaId))
+    )!
+
+    return {
+      items,
+      totalItems,
+      page: params.page,
+      totalPages: Math.ceil(totalItems / params.limit)
+    }
   }
 }

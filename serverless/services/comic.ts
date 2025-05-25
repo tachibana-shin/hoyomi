@@ -1,4 +1,4 @@
-import { and, eq, desc, sql, exists } from "drizzle-orm"
+import { and, eq, desc, sql, exists, count } from "drizzle-orm"
 // import { PgDialect } from "drizzle-orm/pg-core"
 import { db } from "../db/db.ts"
 import {
@@ -477,7 +477,9 @@ limit
         .insert(comicFollows)
         .values({
           comicId,
-          ...params
+          currentChapterId: params.current_chapter_id,
+          currentChapterName: params.current_chapter_name,
+          currentChapterTime: params.current_chapter_time || new Date()
         })
         .onConflictDoNothing({
           target: [comicFollows.comicId]
@@ -507,5 +509,53 @@ limit
           .limit(1)
       )?.exists === true
     )
+  }
+
+  async getListFollow(
+    sourceId: string | void,
+    params: {
+      user_id: number
+      page: number
+      limit: number
+    }
+  ) {
+    const items = await db
+      .select({
+        created_at: comicFollows.createdAt,
+        comic_text_id: comic.comicTextId,
+        name: comic.name,
+        poster: comic.poster,
+        season_name: comic.seasonName,
+        source_id: comic.sourceId,
+        chapter_name: comicFollows.currentChapterName,
+        chapter_id: comicFollows.currentChapterId,
+        chapter_time: comicFollows.currentChapterTime
+      })
+      .from(comicFollows)
+      .leftJoin(comic, eq(comic.id, comicFollows.comicId))
+      .where(
+        sourceId
+          ? and(eq(comic.sourceId, sourceId), eq(comic.userId, params.user_id))
+          : eq(comic.userId, params.user_id)
+      )
+      .orderBy(desc(comicFollows.createdAt))
+      .limit(params.limit)
+      .offset((params.page - 1) * params.limit)
+
+    const { totalItems } = single(
+      await db
+        .select({
+          totalItems: count()
+        })
+        .from(comicFollows)
+        .leftJoin(comic, eq(comic.id, comicFollows.comicId))
+    )!
+
+    return {
+      items,
+      totalItems,
+      page: params.page,
+      totalPages: Math.ceil(totalItems / params.limit)
+    }
   }
 }
