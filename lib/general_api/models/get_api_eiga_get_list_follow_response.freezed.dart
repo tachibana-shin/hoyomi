@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GetApiEigaGetListFollowResponse {
 
- List<Items2> get items; num get totalItems; num get page; num get totalPages;
+ List<Items2> get items; int get totalItems; int get page; int get totalPages;
 /// Create a copy of GetApiEigaGetListFollowResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $GetApiEigaGetListFollowResponseCopyWith<$Res>  {
   factory $GetApiEigaGetListFollowResponseCopyWith(GetApiEigaGetListFollowResponse value, $Res Function(GetApiEigaGetListFollowResponse) _then) = _$GetApiEigaGetListFollowResponseCopyWithImpl;
 @useResult
 $Res call({
- List<Items2> items, num totalItems, num page, num totalPages
+ List<Items2> items, int totalItems, int page, int totalPages
 });
 
 
@@ -70,9 +70,9 @@ class _$GetApiEigaGetListFollowResponseCopyWithImpl<$Res>
   return _then(_self.copyWith(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<Items2>,totalItems: null == totalItems ? _self.totalItems : totalItems // ignore: cast_nullable_to_non_nullable
-as num,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
-as num,totalPages: null == totalPages ? _self.totalPages : totalPages // ignore: cast_nullable_to_non_nullable
-as num,
+as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int,totalPages: null == totalPages ? _self.totalPages : totalPages // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -93,9 +93,9 @@ class _GetApiEigaGetListFollowResponse implements GetApiEigaGetListFollowRespons
   return EqualUnmodifiableListView(_items);
 }
 
-@override final  num totalItems;
-@override final  num page;
-@override final  num totalPages;
+@override final  int totalItems;
+@override final  int page;
+@override final  int totalPages;
 
 /// Create a copy of GetApiEigaGetListFollowResponse
 /// with the given fields replaced by the non-null parameter values.
@@ -130,7 +130,7 @@ abstract mixin class _$GetApiEigaGetListFollowResponseCopyWith<$Res> implements 
   factory _$GetApiEigaGetListFollowResponseCopyWith(_GetApiEigaGetListFollowResponse value, $Res Function(_GetApiEigaGetListFollowResponse) _then) = __$GetApiEigaGetListFollowResponseCopyWithImpl;
 @override @useResult
 $Res call({
- List<Items2> items, num totalItems, num page, num totalPages
+ List<Items2> items, int totalItems, int page, int totalPages
 });
 
 
@@ -151,9 +151,9 @@ class __$GetApiEigaGetListFollowResponseCopyWithImpl<$Res>
   return _then(_GetApiEigaGetListFollowResponse(
 items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
 as List<Items2>,totalItems: null == totalItems ? _self.totalItems : totalItems // ignore: cast_nullable_to_non_nullable
-as num,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
-as num,totalPages: null == totalPages ? _self.totalPages : totalPages // ignore: cast_nullable_to_non_nullable
-as num,
+as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int,totalPages: null == totalPages ? _self.totalPages : totalPages // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

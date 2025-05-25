@@ -26,6 +26,9 @@
                                     "type": "string",
                                     "description": "The name of the watch history item (e.g., the episode title)."
                                 },
+                                "original_name": {
+                                    "type": "string"
+                                },
                                 "poster": {
                                     "type": "string",
                                     "description": "The URL for the poster image of the episode."
@@ -64,6 +67,7 @@
                                 "created_at",
                                 "comic_text_id",
                                 "name",
+                                "original_name",
                                 "poster",
                                 "source_id",
                                 "watch_cur",
@@ -383,6 +387,9 @@
                                     "type": "string",
                                     "description": "The name of the watch history item (e.g., the episode title)."
                                 },
+                                "original_name": {
+                                    "type": "string"
+                                },
                                 "poster": {
                                     "type": "string",
                                     "description": "The URL for the poster image of the episode."
@@ -421,6 +428,7 @@
                                 "created_at",
                                 "eiga_text_id",
                                 "name",
+                                "original_name",
                                 "poster",
                                 "source_id",
                                 "watch_cur",
@@ -1098,6 +1106,9 @@
                                                     "name": {
                                                         "type": "string"
                                                     },
+                                                    "original_name": {
+                                                        "type": "string"
+                                                    },
                                                     "poster": {
                                                         "type": "string"
                                                     },
@@ -1123,6 +1134,7 @@
                                                     "created_at",
                                                     "comic_text_id",
                                                     "name",
+                                                    "original_name",
                                                     "poster",
                                                     "season_name",
                                                     "source_id",
@@ -1133,13 +1145,13 @@
                                             }
                                         },
                                         "totalItems": {
-                                            "type": "number"
+                                            "type": "integer"
                                         },
                                         "page": {
-                                            "type": "number"
+                                            "type": "integer"
                                         },
                                         "totalPages": {
-                                            "type": "number"
+                                            "type": "integer"
                                         }
                                     },
                                     "required": [
@@ -1541,6 +1553,9 @@
                                                     "name": {
                                                         "type": "string"
                                                     },
+                                                    "original_name": {
+                                                        "type": "string"
+                                                    },
                                                     "poster": {
                                                         "type": "string"
                                                     },
@@ -1566,6 +1581,7 @@
                                                     "created_at",
                                                     "eiga_text_id",
                                                     "name",
+                                                    "original_name",
                                                     "poster",
                                                     "season_name",
                                                     "source_id",
@@ -1576,13 +1592,13 @@
                                             }
                                         },
                                         "totalItems": {
-                                            "type": "number"
+                                            "type": "integer"
                                         },
                                         "page": {
-                                            "type": "number"
+                                            "type": "integer"
                                         },
                                         "totalPages": {
-                                            "type": "number"
+                                            "type": "integer"
                                         }
                                     },
                                     "required": [

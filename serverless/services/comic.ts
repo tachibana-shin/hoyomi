@@ -64,6 +64,7 @@ select
   ${comic.sourceId} as source_id,
   ${comic.comicTextId} as comic_text_id,
   ${comic.name} as name,
+  ${comic.originalName} as original_name,
   ${comic.poster} as poster,
   ${comic.seasonName} as season_name,
   ${comicHistories.createdAt} as created_at,
@@ -116,6 +117,7 @@ select
   ${comic.sourceId} as source_id,
   ${comic.comicTextId} as comic_text_id,
   ${comic.name} as name,
+  ${comic.originalName} as original_name,
   ${comic.poster} as poster,
   ${comic.seasonName} as season_name,
   ${comic.createdAt} as created_at,
@@ -167,6 +169,7 @@ limit
       created_at: string
       comic_text_id: string
       name: string
+      original_name: string
       poster: string
       season_name: string
       source_id: string
@@ -524,6 +527,7 @@ limit
         created_at: comicFollows.createdAt,
         comic_text_id: comic.comicTextId,
         name: comic.name,
+        original_name: comic.originalName,
         poster: comic.poster,
         season_name: comic.seasonName,
         source_id: comic.sourceId,

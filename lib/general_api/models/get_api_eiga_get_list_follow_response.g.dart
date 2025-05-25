@@ -13,9 +13,9 @@ _GetApiEigaGetListFollowResponse _$GetApiEigaGetListFollowResponseFromJson(
       (json['items'] as List<dynamic>)
           .map((e) => Items2.fromJson(e as Map<String, dynamic>))
           .toList(),
-  totalItems: json['totalItems'] as num,
-  page: json['page'] as num,
-  totalPages: json['totalPages'] as num,
+  totalItems: (json['totalItems'] as num).toInt(),
+  page: (json['page'] as num).toInt(),
+  totalPages: (json['totalPages'] as num).toInt(),
 );
 
 Map<String, dynamic> _$GetApiEigaGetListFollowResponseToJson(

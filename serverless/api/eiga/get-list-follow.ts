@@ -24,6 +24,7 @@ const EigaFollowItemSchema = z.object({
   created_at: z.string().openapi({ example: "2024-05-01T12:00:00Z" }),
   eiga_text_id: z.string(),
   name: z.string(),
+  original_name: z.string(),
   poster: z.string(),
   season_name: z.string().nullable(),
   source_id: z.string(),
@@ -34,9 +35,9 @@ const EigaFollowItemSchema = z.object({
 
 const GetListFollowResponseSchema = z.object({
   items: z.array(EigaFollowItemSchema),
-  totalItems: z.number(),
-  page: z.number(),
-  totalPages: z.number()
+  totalItems: z.number().int(),
+  page: z.number().int(),
+  totalPages: z.number().int()
 })
 
 const route = createRoute({

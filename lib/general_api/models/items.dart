@@ -15,6 +15,8 @@ abstract class Items with _$Items {
     @JsonKey(name: 'comic_text_id')
     required String comicTextId,
     required String name,
+    @JsonKey(name: 'original_name')
+    required String originalName,
     required String poster,
     @JsonKey(name: 'season_name')
     required String? seasonName,

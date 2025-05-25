@@ -13,9 +13,9 @@ part 'get_api_comic_get_list_follow_response.g.dart';
 abstract class GetApiComicGetListFollowResponse with _$GetApiComicGetListFollowResponse {
   const factory GetApiComicGetListFollowResponse({
     required List<Items> items,
-    required num totalItems,
-    required num page,
-    required num totalPages,
+    required int totalItems,
+    required int page,
+    required int totalPages,
   }) = _GetApiComicGetListFollowResponse;
   
   factory GetApiComicGetListFollowResponse.fromJson(Map<String, Object?> json) => _$GetApiComicGetListFollowResponseFromJson(json);

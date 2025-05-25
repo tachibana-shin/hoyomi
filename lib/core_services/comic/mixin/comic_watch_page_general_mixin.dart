@@ -46,7 +46,7 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
         item: Comic(
           name: history.name,
           comicId: history.comicTextId,
-          originalName: history.seasonName,
+          originalName: history.originalName,
           image: OImage(src: history.poster),
         ),
         watchUpdatedAt: DateTime.parse(history.createdAt),

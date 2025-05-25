@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GetApiComicGetListFollowResponse {
 
- List<Items> get items; num get totalItems; num get page; num get totalPages;
+ List<Items> get items; int get totalItems; int get page; int get totalPages;
 /// Create a copy of GetApiComicGetListFollowResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $GetApiComicGetListFollowResponseCopyWith<$Res>  {
   factory $GetApiComicGetListFollowResponseCopyWith(GetApiComicGetListFollowResponse value, $Res Function(GetApiComicGetListFollowResponse) _then) = _$GetApiComicGetListFollowResponseCopyWithImpl;
 @useResult
 $Res call({
- List<Items> items, num totalItems, num page, num totalPages
+ List<Items> items, int totalItems, int page, int totalPages
 });
 
 
@@ -70,9 +70,9 @@ class _$GetApiComicGetListFollowResponseCopyWithImpl<$Res>
   return _then(_self.copyWith(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<Items>,totalItems: null == totalItems ? _self.totalItems : totalItems // ignore: cast_nullable_to_non_nullable
-as num,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
-as num,totalPages: null == totalPages ? _self.totalPages : totalPages // ignore: cast_nullable_to_non_nullable
-as num,
+as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int,totalPages: null == totalPages ? _self.totalPages : totalPages // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -93,9 +93,9 @@ class _GetApiComicGetListFollowResponse implements GetApiComicGetListFollowRespo
   return EqualUnmodifiableListView(_items);
 }
 
-@override final  num totalItems;
-@override final  num page;
-@override final  num totalPages;
+@override final  int totalItems;
+@override final  int page;
+@override final  int totalPages;
 
 /// Create a copy of GetApiComicGetListFollowResponse
 /// with the given fields replaced by the non-null parameter values.
@@ -130,7 +130,7 @@ abstract mixin class _$GetApiComicGetListFollowResponseCopyWith<$Res> implements
   factory _$GetApiComicGetListFollowResponseCopyWith(_GetApiComicGetListFollowResponse value, $Res Function(_GetApiComicGetListFollowResponse) _then) = __$GetApiComicGetListFollowResponseCopyWithImpl;
 @override @useResult
 $Res call({
- List<Items> items, num totalItems, num page, num totalPages
+ List<Items> items, int totalItems, int page, int totalPages
 });
 
 
@@ -151,9 +151,9 @@ class __$GetApiComicGetListFollowResponseCopyWithImpl<$Res>
   return _then(_GetApiComicGetListFollowResponse(
 items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
 as List<Items>,totalItems: null == totalItems ? _self.totalItems : totalItems // ignore: cast_nullable_to_non_nullable
-as num,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
-as num,totalPages: null == totalPages ? _self.totalPages : totalPages // ignore: cast_nullable_to_non_nullable
-as num,
+as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int,totalPages: null == totalPages ? _self.totalPages : totalPages // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

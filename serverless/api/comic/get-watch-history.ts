@@ -31,6 +31,7 @@ export const ComicListWatchHistorySchema = z
           description:
             "The name of the watch history item (e.g., the episode title)."
         }),
+        original_name: z.string(),
         poster: z.string().openapi({
           description: "The URL for the poster image of the episode."
         }),

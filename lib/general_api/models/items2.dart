@@ -15,6 +15,8 @@ abstract class Items2 with _$Items2 {
     @JsonKey(name: 'eiga_text_id')
     required String eigaTextId,
     required String name,
+    @JsonKey(name: 'original_name')
+    required String originalName,
     required String poster,
     @JsonKey(name: 'season_name')
     required String? seasonName,

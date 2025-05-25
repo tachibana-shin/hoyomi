@@ -27,6 +27,39 @@ mixin ComicFollowGeneralMixin on Service implements ComicFollowMixin {
   }
 
   @override
+  getFollows({required page}) async {
+    final user = await Authentication.instance.getUserAsync();
+    if (user == null) throw UserNotFoundException();
+
+    final idToken = await user.getIdTokenResult();
+
+    final body = await _getClient().client.getApiComicGetListFollow(
+      sourceId: uid,
+      page: page,
+      authorization: 'Bearer ${idToken.token}',
+    );
+
+    return ComicCategory(
+      name: '',
+      url: '',
+      items:
+          body.items
+              .map(
+                (item) => Comic(
+                  comicId: item.comicTextId,
+                  name: item.name,
+                  originalName: item.originalName,
+                  image: OImage.from(item.poster),
+                ),
+              )
+              .toList(),
+      page: body.page,
+      totalItems: body.totalItems,
+      totalPages: body.totalPages,
+    );
+  }
+
+  @override
   isFollow({required comicId}) async {
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();

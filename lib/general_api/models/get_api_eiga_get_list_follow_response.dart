@@ -13,9 +13,9 @@ part 'get_api_eiga_get_list_follow_response.g.dart';
 abstract class GetApiEigaGetListFollowResponse with _$GetApiEigaGetListFollowResponse {
   const factory GetApiEigaGetListFollowResponse({
     required List<Items2> items,
-    required num totalItems,
-    required num page,
-    required num totalPages,
+    required int totalItems,
+    required int page,
+    required int totalPages,
   }) = _GetApiEigaGetListFollowResponse;
   
   factory GetApiEigaGetListFollowResponse.fromJson(Map<String, Object?> json) => _$GetApiEigaGetListFollowResponseFromJson(json);

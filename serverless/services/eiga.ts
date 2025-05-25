@@ -63,6 +63,7 @@ select
   ${eiga.sourceId} as source_id,
   ${eiga.eigaTextId} as eiga_text_id,
   ${eiga.name} as name,
+  ${eiga.originalName} as original_name,
   ${eiga.poster} as poster,
   ${eiga.seasonName} as season_name,
   ${eigaHistories.createdAt} as created_at,
@@ -115,6 +116,7 @@ select
   ${eiga.sourceId} as source_id,
   ${eiga.eigaTextId} as eiga_text_id,
   ${eiga.name} as name,
+  ${eiga.originalName} as original_name,
   ${eiga.poster} as poster,
   ${eiga.seasonName} as season_name,
   ${eigaHistories.createdAt} as created_at,
@@ -166,8 +168,9 @@ limit
       created_at: string
       eiga_text_id: string
       name: string
+      original_name: string
       poster: string
-      season_name?: string
+      season_name: string
       source_id: string
       watch_cur: number
       watch_dur: number
@@ -523,6 +526,7 @@ limit
         created_at: eigaFollows.createdAt,
         eiga_text_id: eiga.eigaTextId,
         name: eiga.name,
+        original_name: eiga.originalName,
         poster: eiga.poster,
         season_name: eiga.seasonName,
         source_id: eiga.sourceId,
