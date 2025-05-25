@@ -7,11 +7,16 @@ import 'package:retrofit/retrofit.dart';
 
 import '../models/comic_list_watch_history.dart';
 import '../models/eiga_list_watch_history.dart';
+import '../models/get_api_comic_get_list_follow_response.dart';
+import '../models/get_api_eiga_get_list_follow_response.dart';
+import '../models/has_eiga_follow_response.dart';
 import '../models/has_follow_response.dart';
 import '../models/list_watch_page_schema.dart';
 import '../models/list_watch_time_schema.dart';
 import '../models/post_api_comic_set_watch_page_response.dart';
 import '../models/post_api_eiga_set_watch_time_response.dart';
+import '../models/set_eiga_follow_body_schema.dart';
+import '../models/set_eiga_follow_response.dart';
 import '../models/set_follow_body_schema.dart';
 import '../models/set_follow_response.dart';
 import '../models/set_watch_page_body_schema.dart';
@@ -66,6 +71,14 @@ abstract class ClientClient {
     @Body() SetFollowBodySchema? body,
   });
 
+  @GET('/api/comic/get-list-follow')
+  Future<GetApiComicGetListFollowResponse> getApiComicGetListFollow({
+    @Header('Authorization') required String authorization,
+    @Query('page') int page = 1,
+    @Query('limit') int limit = 20,
+    @Query('sourceId') String? sourceId,
+  });
+
   @GET('/api/eiga/get-watch-history')
   Future<EigaListWatchHistory> getApiEigaGetWatchHistory({
     @Query('sourceId') required String sourceId,
@@ -92,5 +105,26 @@ abstract class ClientClient {
   Future<PostApiEigaSetWatchTimeResponse> postApiEigaSetWatchTime({
     @Header('Authorization') required String authorization,
     @Body() required SetWatchTimeBodySchema body,
+  });
+
+  @GET('/api/eiga/has-follow')
+  Future<HasEigaFollowResponse> getApiEigaHasFollow({
+    @Query('sourceId') required String sourceId,
+    @Query('eiga_text_id') required String eigaTextId,
+    @Header('Authorization') required String authorization,
+  });
+
+  @POST('/api/eiga/set-follow')
+  Future<SetEigaFollowResponse> postApiEigaSetFollow({
+    @Header('Authorization') required String authorization,
+    @Body() SetEigaFollowBodySchema? body,
+  });
+
+  @GET('/api/eiga/get-list-follow')
+  Future<GetApiEigaGetListFollowResponse> getApiEigaGetListFollow({
+    @Header('Authorization') required String authorization,
+    @Query('page') int page = 1,
+    @Query('limit') int limit = 20,
+    @Query('sourceId') String? sourceId,
   });
 }

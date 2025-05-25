@@ -615,6 +615,98 @@
                     "episode_name",
                     "episode_id"
                 ]
+            },
+            "HasEigaFollowResponse": {
+                "type": "object",
+                "properties": {
+                    "has_follow": {
+                        "type": "boolean",
+                        "description": "Whether the user is following this eiga."
+                    }
+                },
+                "required": [
+                    "has_follow"
+                ],
+                "description": "Indicates if the user follows the specified eiga."
+            },
+            "SetEigaFollowResponse": {
+                "type": "object",
+                "properties": {
+                    "ok": {
+                        "type": "boolean",
+                        "description": "Whether the operation was successful."
+                    }
+                },
+                "required": [
+                    "ok"
+                ],
+                "description": "Indicates if the follow/unfollow operation succeeded."
+            },
+            "SetEigaFollowBodySchema": {
+                "type": "object",
+                "properties": {
+                    "sourceId": {
+                        "type": "string",
+                        "description": "The unique identifier for the source (e.g., the series or season).",
+                        "example": "kimetsu-no-yaiba"
+                    },
+                    "eiga_text_id": {
+                        "type": "string",
+                        "description": "The identifier for the specific eiga text.",
+                        "example": "ep-01"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Eiga name.",
+                        "example": "Kimetsu no Yaiba"
+                    },
+                    "original_name": {
+                        "type": "string",
+                        "description": "Eiga raw name.",
+                        "example": "鬼滅の刃"
+                    },
+                    "poster": {
+                        "type": "string",
+                        "description": "Poster image URL.",
+                        "example": "https://example.com/poster.jpg"
+                    },
+                    "season_name": {
+                        "type": "string",
+                        "description": "Season name (optional).",
+                        "example": "Season 1"
+                    },
+                    "current_episode_name": {
+                        "type": "string",
+                        "description": "Current episode name.",
+                        "example": "Episode 1"
+                    },
+                    "current_episode_id": {
+                        "type": "string",
+                        "description": "Current episode id.",
+                        "example": "ep-01"
+                    },
+                    "current_episode_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Current episode time (ISO string).",
+                        "example": "2024-05-01T12:00:00Z"
+                    },
+                    "value": {
+                        "type": "boolean",
+                        "description": "Set to true to follow, false to unfollow.",
+                        "example": true
+                    }
+                },
+                "required": [
+                    "sourceId",
+                    "eiga_text_id",
+                    "name",
+                    "original_name",
+                    "poster",
+                    "current_episode_name",
+                    "current_episode_id",
+                    "value"
+                ]
             }
         },
         "parameters": {}
@@ -932,6 +1024,137 @@
                 }
             }
         },
+        "/api/comic/get-list-follow": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "Lọc theo sourceId (tùy chọn)",
+                            "example": "tonikaku-kawaii-season-2"
+                        },
+                        "required": false,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1,
+                            "description": "Trang hiện tại",
+                            "example": 1
+                        },
+                        "required": false,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 20,
+                            "description": "Số lượng mỗi trang",
+                            "example": 20
+                        },
+                        "required": false,
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Danh sách comic đang follow",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "example": "2024-05-01T12:00:00Z"
+                                                    },
+                                                    "comic_text_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "poster": {
+                                                        "type": "string"
+                                                    },
+                                                    "season_name": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "source_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "chapter_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "chapter_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "chapter_time": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "required": [
+                                                    "created_at",
+                                                    "comic_text_id",
+                                                    "name",
+                                                    "poster",
+                                                    "season_name",
+                                                    "source_id",
+                                                    "chapter_name",
+                                                    "chapter_id",
+                                                    "chapter_time"
+                                                ]
+                                            }
+                                        },
+                                        "totalItems": {
+                                            "type": "number"
+                                        },
+                                        "page": {
+                                            "type": "number"
+                                        },
+                                        "totalPages": {
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "items",
+                                        "totalItems",
+                                        "page",
+                                        "totalPages"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/eiga/get-watch-history": {
             "get": {
                 "parameters": [
@@ -1140,6 +1363,233 @@
                                     },
                                     "required": [
                                         "success"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/eiga/has-follow": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "The unique identifier for the source (e.g., the series or season).",
+                            "example": "kimetsu-no-yaiba"
+                        },
+                        "required": true,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "The identifier for the specific eiga text.",
+                            "example": "ep-01"
+                        },
+                        "required": true,
+                        "name": "eiga_text_id",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Check if the user follows the specified eiga.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HasEigaFollowResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/eiga/set-follow": {
+            "post": {
+                "openapi": {
+                    "summary": "Set or unset follow for an eiga",
+                    "tags": [
+                        "Eiga"
+                    ],
+                    "operationId": "setEigaFollow"
+                },
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SetEigaFollowBodySchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Set or unset follow for the specified eiga.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SetEigaFollowResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/eiga/get-list-follow": {
+            "get": {
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "description": "Lọc theo sourceId (tùy chọn)",
+                            "example": "some-eiga-source-id"
+                        },
+                        "required": false,
+                        "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1,
+                            "description": "Trang hiện tại",
+                            "example": 1
+                        },
+                        "required": false,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 20,
+                            "description": "Số lượng mỗi trang",
+                            "example": 20
+                        },
+                        "required": false,
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^Bearer\\s([A-Za-z0-9\\-_.]+)$",
+                            "description": "The Authorization header must be in the format 'Bearer <token>'",
+                            "example": "Bearer your_token_here"
+                        },
+                        "required": true,
+                        "name": "Authorization",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Danh sách eiga đang follow",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "example": "2024-05-01T12:00:00Z"
+                                                    },
+                                                    "eiga_text_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "poster": {
+                                                        "type": "string"
+                                                    },
+                                                    "season_name": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "source_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "episode_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "episode_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "episode_time": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "required": [
+                                                    "created_at",
+                                                    "eiga_text_id",
+                                                    "name",
+                                                    "poster",
+                                                    "season_name",
+                                                    "source_id",
+                                                    "episode_name",
+                                                    "episode_id",
+                                                    "episode_time"
+                                                ]
+                                            }
+                                        },
+                                        "totalItems": {
+                                            "type": "number"
+                                        },
+                                        "page": {
+                                            "type": "number"
+                                        },
+                                        "totalPages": {
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "items",
+                                        "totalItems",
+                                        "page",
+                                        "totalPages"
                                     ]
                                 }
                             }
