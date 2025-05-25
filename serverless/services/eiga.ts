@@ -214,7 +214,7 @@ limit
           seasonName: eiga.seasonName
         })
         .from(eigaHistories)
-        .leftJoin(eiga, eq(eiga.id, eigaHistories.eigaId))
+        .innerJoin(eiga, eq(eiga.id, eigaHistories.eigaId))
         .where(
           and(eq(eiga.sourceId, sourceId), eq(eiga.userId, params.user_id))
         )
@@ -286,7 +286,7 @@ limit
             createdAt: eigaHistories.createdAt
           })
           .from(eigaHistories)
-          .leftJoin(eiga, eq(eiga.id, eigaHistories.eigaId))
+          .innerJoin(eiga, eq(eiga.id, eigaHistories.eigaId))
           .where(
             and(
               eq(eiga.sourceId, sourceId),
@@ -390,11 +390,11 @@ limit
           updatedAt: eigaHistoryChapters.updatedAt
         })
         .from(eigaHistoryChapters)
-        .leftJoin(
+        .innerJoin(
           eigaHistories,
           eq(eigaHistories.id, eigaHistoryChapters.eigaHistoryId)
         )
-        .leftJoin(eiga, eq(eiga.id, eigaHistories.eigaId))
+        .innerJoin(eiga, eq(eiga.id, eigaHistories.eigaId))
         .where(
           and(
             eq(eiga.sourceId, sourceId),
@@ -445,11 +445,11 @@ limit
         chapId: eigaHistoryChapters.chapId
       })
       .from(eigaHistoryChapters)
-      .leftJoin(
+      .innerJoin(
         eigaHistories,
         eq(eigaHistoryChapters.eigaHistoryId, eigaHistories.id)
       )
-      .leftJoin(eiga, eq(eiga.id, eigaHistories.eigaId))
+      .innerJoin(eiga, eq(eiga.id, eigaHistories.eigaId))
       .where(
         and(
           eq(eiga.sourceId, sourceId),
@@ -497,7 +497,7 @@ limit
             exists: exists(eigaFollows.id)
           })
           .from(eigaFollows)
-          .leftJoin(eiga, eq(eiga.id, eigaFollows.eigaId))
+          .innerJoin(eiga, eq(eiga.id, eigaFollows.eigaId))
           .where(
             and(
               eq(eiga.sourceId, sourceId),
@@ -531,7 +531,7 @@ limit
         episode_time: eigaFollows.currentEpisodeTime
       })
       .from(eigaFollows)
-      .leftJoin(eiga, eq(eiga.id, eigaFollows.eigaId))
+      .innerJoin(eiga, eq(eiga.id, eigaFollows.eigaId))
       .where(
         sourceId
           ? and(eq(eiga.sourceId, sourceId), eq(eiga.userId, params.user_id))
@@ -547,7 +547,7 @@ limit
           totalItems: count()
         })
         .from(eigaFollows)
-        .leftJoin(eiga, eq(eiga.id, eigaFollows.eigaId))
+        .innerJoin(eiga, eq(eiga.id, eigaFollows.eigaId))
     )!
 
     return {

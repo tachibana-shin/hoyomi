@@ -215,7 +215,7 @@ limit
           seasonName: comic.seasonName
         })
         .from(comicHistories)
-        .leftJoin(comic, eq(comic.id, comicHistories.comicId))
+        .innerJoin(comic, eq(comic.id, comicHistories.comicId))
         .where(
           and(eq(comic.sourceId, sourceId), eq(comic.userId, params.user_id))
         )
@@ -287,7 +287,7 @@ limit
             createdAt: comicHistories.createdAt
           })
           .from(comicHistories)
-          .leftJoin(comic, eq(comic.id, comicHistories.comicId))
+          .innerJoin(comic, eq(comic.id, comicHistories.comicId))
           .where(
             and(
               eq(comic.sourceId, sourceId),
@@ -391,11 +391,11 @@ limit
           updatedAt: comicHistoryChapters.updatedAt
         })
         .from(comicHistoryChapters)
-        .leftJoin(
+        .innerJoin(
           comicHistories,
           eq(comicHistories.id, comicHistoryChapters.comicHistoryId)
         )
-        .leftJoin(comic, eq(comic.id, comicHistories.comicId))
+        .innerJoin(comic, eq(comic.id, comicHistories.comicId))
         .where(
           and(
             eq(comic.sourceId, sourceId),
@@ -446,11 +446,11 @@ limit
         chapId: comicHistoryChapters.chapId
       })
       .from(comicHistoryChapters)
-      .leftJoin(
+      .innerJoin(
         comicHistories,
         eq(comicHistoryChapters.comicHistoryId, comicHistories.id)
       )
-      .leftJoin(comic, eq(comic.id, comicHistories.comicId))
+      .innerJoin(comic, eq(comic.id, comicHistories.comicId))
       .where(
         and(
           eq(comic.sourceId, sourceId),
@@ -498,7 +498,7 @@ limit
             exists: exists(comicFollows.id)
           })
           .from(comicFollows)
-          .leftJoin(comic, eq(comic.id, comicFollows.comicId))
+          .innerJoin(comic, eq(comic.id, comicFollows.comicId))
           .where(
             and(
               eq(comic.sourceId, sourceId),
@@ -532,7 +532,7 @@ limit
         chapter_time: comicFollows.currentChapterTime
       })
       .from(comicFollows)
-      .leftJoin(comic, eq(comic.id, comicFollows.comicId))
+      .innerJoin(comic, eq(comic.id, comicFollows.comicId))
       .where(
         sourceId
           ? and(eq(comic.sourceId, sourceId), eq(comic.userId, params.user_id))
@@ -548,7 +548,7 @@ limit
           totalItems: count()
         })
         .from(comicFollows)
-        .leftJoin(comic, eq(comic.id, comicFollows.comicId))
+        .innerJoin(comic, eq(comic.id, comicFollows.comicId))
     )!
 
     return {
