@@ -3,8 +3,10 @@ import { Pool } from "pg"
 import assert from "node:assert"
 import {
   comic,
+  comicFollows,
   comicHistories,
   comicHistoryChapters,
+  comicNewest,
   eiga,
   eigaHistories,
   eigaHistoryChapters,
@@ -29,8 +31,10 @@ export const db = drizzle({
   client: pool,
   schema: {
     comic,
+    comicFollows,
     comicHistories,
     comicHistoryChapters,
+    comicNewest,
     eiga,
     eigaHistories,
     eigaHistoryChapters,

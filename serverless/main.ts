@@ -11,6 +11,8 @@ import { app as comicGetWatchHistory } from "./api/comic/get-watch-history.ts"
 import { app as comicGetWatchTimeEpisodes } from "./api/comic/get-watch-page-episodes.ts"
 import { app as comicGetWatchTime } from "./api/comic/get-watch-page.ts"
 import { app as comicSetWatchTime } from "./api/comic/set-watch-page.ts"
+import { app as comicHasFollow } from "./api/comic/has-follow.ts"
+import { app as comicSetFollow } from "./api/comic/set-follow.ts"
 
 import { app as eigaGetWatchHistory } from "./api/eiga/get-watch-history.ts"
 import { app as eigaGetWatchTimeEpisodes } from "./api/eiga/get-watch-time-episodes.ts"
@@ -43,6 +45,9 @@ app.route("/api", comicGetWatchHistory)
 app.route("/api", comicGetWatchTimeEpisodes)
 app.route("/api", comicGetWatchTime)
 app.route("/api", comicSetWatchTime)
+
+app.route("/api", comicHasFollow)
+app.route("/api", comicSetFollow)
 
 app.route("/api", eigaGetWatchHistory)
 app.route("/api", eigaGetWatchTimeEpisodes)

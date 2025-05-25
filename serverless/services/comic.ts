@@ -1,12 +1,53 @@
-import { and, eq, desc, sql } from "drizzle-orm"
+import { and, eq, desc, sql, exists } from "drizzle-orm"
 // import { PgDialect } from "drizzle-orm/pg-core"
 import { db } from "../db/db.ts"
-import { comic, comicHistories, comicHistoryChapters } from "../db/schema.ts"
+import {
+  comic,
+  comicFollows,
+  comicHistories,
+  comicHistoryChapters
+} from "../db/schema.ts"
 import { single } from "../logic/single.ts"
+
+type ComicParams = Readonly<{
+  user_id: number
+  name: string
+  poster: string
+  comic_text_id: string
+  season_name?: string
+}>
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Comic {
-  static async getWatchHistory(
+  static readonly instance = new Comic();
+
+  private async _saveComic(sourceId: string, params: ComicParams) {
+    const { id: comicId } = single(
+      await db
+        .insert(comic)
+        .values({
+          sourceId: sourceId,
+          userId: params.user_id,
+          comicTextId: params.comic_text_id,
+          name: params.name,
+          poster: params.poster,
+          seasonName: params.season_name || null
+        })
+        .onConflictDoUpdate({
+          target: [comic.sourceId, comic.userId, comic.comicTextId],
+          set: {
+            name: params.name,
+            poster: params.poster,
+            seasonName: params.season_name || null
+          }
+        })
+        .returning({ id: comic.id })
+    )!
+
+    return comicId
+  }
+
+  async getWatchHistory(
     sourceId: string | void,
     params: {
       user_id: number
@@ -125,7 +166,7 @@ limit
       comic_text_id: string
       name: string
       poster: string
-      season_name?: string
+      season_name: string
       source_id: string
       watch_cur: number
       watch_dur: number
@@ -144,14 +185,9 @@ limit
     // `
   }
 
-  static async setWatchTime(
+  async setWatchTime(
     sourceId: string,
-    params: {
-      user_id: number
-      name: string
-      poster: string
-      comic_text_id: string
-      season_name?: string
+    params: ComicParams & {
       cur: number
       dur: number
       episode_name: string
@@ -230,27 +266,7 @@ limit
           .where(eq(comicHistories.id, lastHistory.id))
       } else {
         // insert new history
-        const { id: comicId } = single(
-          await db
-            .insert(comic)
-            .values({
-              sourceId: sourceId,
-              userId: params.user_id,
-              comicTextId: params.comic_text_id,
-              name: params.name,
-              poster: params.poster,
-              seasonName: params.season_name || null
-            })
-            .onConflictDoUpdate({
-              target: [comic.sourceId, comic.userId, comic.comicTextId],
-              set: {
-                name: params.name,
-                poster: params.poster,
-                seasonName: params.season_name || null
-              }
-            })
-            .returning({ id: comic.id })
-        )!
+        const comicId = await this._saveComic(sourceId, params)!
 
         await db.insert(comicHistories).values({
           comicId,
@@ -302,54 +318,14 @@ limit
           })
           .returning({ id: comicHistoryChapters.id })
 
-        const { id: comicId } = single(
-          await db
-            .insert(comic)
-            .values({
-              sourceId: sourceId,
-              userId: params.user_id,
-              comicTextId: params.comic_text_id,
-              name: params.name,
-              poster: params.poster,
-              seasonName: params.season_name || null
-            })
-            .onConflictDoUpdate({
-              target: [comic.sourceId, comic.userId, comic.comicTextId],
-              set: {
-                name: params.name,
-                poster: params.poster,
-                seasonName: params.season_name || null
-              }
-            })
-            .returning({ id: comic.id })
-        )!
+        const comicId = await this._saveComic(sourceId, params)
         await db.insert(comicHistories).values({
           comicId,
           forTo: existsHistory.forTo ?? existsHistory.id,
           vChap: id
         })
       } else {
-        const { id: comicId } = single(
-          await db
-            .insert(comic)
-            .values({
-              sourceId: sourceId,
-              userId: params.user_id,
-              comicTextId: params.comic_text_id,
-              name: params.name,
-              poster: params.poster,
-              seasonName: params.season_name || null
-            })
-            .onConflictDoUpdate({
-              target: [comic.sourceId, comic.userId, comic.comicTextId],
-              set: {
-                name: params.name,
-                poster: params.poster,
-                seasonName: params.season_name || null
-              }
-            })
-            .returning({ id: comic.id })
-        )!
+        const comicId = await this._saveComic(sourceId, params)
         const [{ id }] = await db
           .insert(comicHistories)
           .values({
@@ -386,7 +362,7 @@ limit
       }
     }
   }
-  static async getWatchTime(
+  async getWatchTime(
     sourceId: string,
     params: {
       user_id: number
@@ -430,7 +406,7 @@ limit
         .limit(1)
     )
   }
-  static async getWatchTimeEpisodes(
+  async getWatchTimeEpisodes(
     sourceId: string,
     params: {
       user_id: number
@@ -481,5 +457,58 @@ limit
         )
       )
       .orderBy(comicHistories.id)
+  }
+
+  async setFollow(
+    sourceId: string,
+    params: ComicParams & {
+      chapterId: string
+      current_chapters: {
+        name: string
+        fullName?: string
+        order: number
+        chapterId: string
+        time?: Date
+      }[]
+    },
+    value: boolean
+  ) {
+    const comicId = await this._saveComic(sourceId, params)
+
+    if (value)
+      await db
+        .insert(comicFollows)
+        .values({
+          comicId,
+          currentChapters: JSON.stringify(params.current_chapters)
+        })
+        .onConflictDoNothing({
+          target: [comicFollows.comicId]
+        })
+    else await db.delete(comicFollows).where(eq(comicFollows.comicId, comicId))
+  }
+
+  async hasFollow(
+    sourceId: string,
+    params: Pick<ComicParams, "user_id" | "comic_text_id">
+  ) {
+    return (
+      single(
+        await db
+          .select({
+            exists: exists(comicFollows.id)
+          })
+          .from(comicFollows)
+          .leftJoin(comic, eq(comic.id, comicFollows.comicId))
+          .where(
+            and(
+              eq(comic.sourceId, sourceId),
+              eq(comic.userId, params.user_id),
+              eq(comic.comicTextId, params.comic_text_id)
+            )
+          )
+          .limit(1)
+      )?.exists === true
+    )
   }
 }

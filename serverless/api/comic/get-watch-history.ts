@@ -90,7 +90,7 @@ app.openapi(route, async (c) => {
 
   const user = useUser(c)
 
-  const watchHistory = await Comic.getWatchHistory(params.sourceId, {
+  const watchHistory = await Comic.instance.getWatchHistory(params.sourceId, {
     user_id: user.userId,
     ...params,
     limit: 30

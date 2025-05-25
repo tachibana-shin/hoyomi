@@ -85,7 +85,7 @@ app.openapi(route, async (c) => {
 
   const user = useUser(c)
 
-  await Comic.setWatchTime(params.sourceId, { user_id: user.userId, ...params })
+  await Comic.instance.setWatchTime(params.sourceId, { user_id: user.userId, ...params })
 
   return c.json({
     success: true
