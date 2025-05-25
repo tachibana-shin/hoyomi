@@ -1,57 +1,52 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
-import { Comic } from "../../services/comic.ts"
+import { Eiga } from "../../services/eiga.ts"
 import { useUser } from "../../logic/use-user.ts"
 import { AuthorizationSchema } from "../../schema/authorization.ts"
 
 const SetFollowBodySchema = z
   .object({
     sourceId: z.string().openapi({
-      example: "tonikaku-kawaii-season-2",
-      description:
-        "The unique identifier for the source (e.g., the series or season)."
+      example: "kimetsu-no-yaiba",
+      description: "The unique identifier for the source (e.g., the series or season)."
     }),
-    comic_text_id: z.string().openapi({
+    eiga_text_id: z.string().openapi({
       example: "ep-01",
-      description: "The identifier for the specific comic text."
+      description: "The identifier for the specific eiga text."
     }),
     name: z.string().openapi({
-      example: "Tonikaku Kawaii",
-      description: "Comic name."
+      example: "Kimetsu no Yaiba",
+      description: "Eiga name."
     }),
     original_name: z.string().openapi({
-      example: "とにかくかわいい",
-      description: "Comic raw name."
+      example: "鬼滅の刃",
+      description: "Eiga raw name."
     }),
     poster: z.string().openapi({
       example: "https://example.com/poster.jpg",
       description: "Poster image URL."
     }),
     season_name: z.string().optional().openapi({
-      example: "Season 2",
+      example: "Season 1",
       description: "Season name (optional)."
     }),
-    current_chapter_name: z.string().openapi({
-      example: "Chapter 1",
-      description: "Current chapter name."
+    current_episode_name: z.string().openapi({
+      example: "Episode 1",
+      description: "Current episode name."
     }),
-    current_chapter_full_name: z.string().openapi({
-      example: "The Beginning",
-      description: "Current chapter full name."
+    current_episode_id: z.string().openapi({
+      example: "ep-01",
+      description: "Current episode id."
     }),
-    current_chapter_id: z.string().openapi({
-      example: "ch-01",
-      description: "Current chapter id."
-    }),
-    current_chapter_time: z.string().datetime().optional().openapi({
+    current_episode_time: z.string().datetime().optional().openapi({
       example: "2024-05-01T12:00:00Z",
-      description: "Current chapter time (ISO string)."
+      description: "Current episode time (ISO string)."
     }),
     value: z.boolean().openapi({
       example: true,
       description: "Set to true to follow, false to unfollow."
     })
   })
-  .openapi("SetFollowBodySchema")
+  .openapi("SetEigaFollowBodySchema")
 
 export const SetFollowResponseSchema = z
   .object({
@@ -59,17 +54,17 @@ export const SetFollowResponseSchema = z
       description: "Whether the operation was successful."
     })
   })
-  .openapi("SetFollowResponse", {
+  .openapi("SetEigaFollowResponse", {
     description: "Indicates if the follow/unfollow operation succeeded."
   })
 
 const route = createRoute({
   method: "post",
-  path: "/comic/set-follow",
+  path: "/eiga/set-follow",
   openapi: {
-    summary: "Set or unset follow for a comic",
-    tags: ["Comic"],
-    operationId: "setComicFollow"
+    summary: "Set or unset follow for an eiga",
+    tags: ["Eiga"],
+    operationId: "setEigaFollow"
   },
   request: {
     body: {
@@ -88,7 +83,7 @@ const route = createRoute({
           schema: SetFollowResponseSchema
         }
       },
-      description: "Set or unset follow for the specified comic."
+      description: "Set or unset follow for the specified eiga."
     }
   }
 })
@@ -98,13 +93,13 @@ app.openapi(route, async (c) => {
   const body = await c.req.valid("json")
   const user = useUser(c)
 
-  await Comic.instance.setFollow(
+  await Eiga.instance.setFollow(
     body.sourceId,
     {
       user_id: user.userId,
       ...body,
-      current_chapter_time: body.current_chapter_time
-        ? new Date(body.current_chapter_time)
+      current_episode_time: body.current_episode_time
+        ? new Date(body.current_episode_time)
         : undefined
     },
     body.value

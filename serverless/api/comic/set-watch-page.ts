@@ -14,6 +14,10 @@ const SetWatchPageBodySchema = z
       description: "The name of the episode.",
       example: "Episode 1"
     }),
+    original_name: z.string().openapi({
+      example: "とにかくかわいい",
+      description: "Comic raw name."
+    }),
     poster: z.string().min(1).openapi({
       description: "URL to the poster image for the episode.",
       example: "https://example.com/poster.jpg"
@@ -22,7 +26,7 @@ const SetWatchPageBodySchema = z
       description: "Unique identifier for the comic (movie/show) text.",
       example: "comic-001"
     }),
-    season_name: z.string().min(1).or(z.literal('')).optional().openapi({
+    season_name: z.string().min(1).or(z.literal("")).optional().openapi({
       description: "The name of the season.",
       example: "Season 1"
     }),
@@ -85,7 +89,10 @@ app.openapi(route, async (c) => {
 
   const user = useUser(c)
 
-  await Comic.instance.setWatchTime(params.sourceId, { user_id: user.userId, ...params })
+  await Comic.instance.setWatchTime(params.sourceId, {
+    user_id: user.userId,
+    ...params
+  })
 
   return c.json({
     success: true

@@ -21,7 +21,6 @@ export 'models/post_api_eiga_set_watch_time_response.dart';
 export 'models/data.dart';
 export 'models/data2.dart';
 export 'models/data3.dart';
-export 'models/current_chapters.dart';
 export 'models/data4.dart';
 export 'models/data5.dart';
 export 'models/data6.dart';

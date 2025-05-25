@@ -173,6 +173,7 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
         sourceId: uid,
         // data
         name: metaComic.name,
+        originalName: metaComic.originalName ?? '',
         poster: metaComic.image.src,
         comicTextId: comicId,
         seasonName: '',

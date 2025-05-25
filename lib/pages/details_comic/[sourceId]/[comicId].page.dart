@@ -951,9 +951,9 @@ class _ButtonLikeState extends State<_ButtonLike> {
     super.initState();
     _likes = widget.comic.likes;
 
-    if (widget.service is ComicLikeMixin) {
-      (widget.service as ComicLikeMixin)
-          .isLiked(comicId: widget.comicId)
+    if (widget.service is ComicFollowMixin) {
+      (widget.service as ComicFollowMixin)
+          .isFollow(comicId: widget.comicId)
           .then((liked) {
             if (mounted) {
               setState(() {
@@ -969,10 +969,12 @@ class _ButtonLikeState extends State<_ButtonLike> {
     }
   }
 
-  void _onTap() {
-    (widget.service as ComicLikeMixin)
-        .setLike(comicId: widget.comicId, value: !(_liked ?? false))
-        .then((value) {
+  void _onTap(MetaComic comic) {
+    final value = !(_liked ?? false);
+
+    (widget.service as ComicFollowMixin)
+        .setFollow(comicId: widget.comicId, metaComic: comic, value: value)
+        .then((_) {
           if (mounted) {
             setState(() {
               _liked = value;
@@ -996,7 +998,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
       onTap:
           (widget.service is ComicAuthMixin &&
                   !(widget.service as AuthMixin).$noAuth)
-              ? _onTap
+              ?  () => _onTap(widget.comic)
               : null,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(30.0),

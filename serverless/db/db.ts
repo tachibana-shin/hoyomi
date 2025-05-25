@@ -8,6 +8,7 @@ import {
   comicHistoryChapters,
   comicNewest,
   eiga,
+  eigaFollows,
   eigaHistories,
   eigaHistoryChapters,
   users
@@ -36,6 +37,7 @@ export const db = drizzle({
     comicHistoryChapters,
     comicNewest,
     eiga,
+    eigaFollows,
     eigaHistories,
     eigaHistoryChapters,
     users

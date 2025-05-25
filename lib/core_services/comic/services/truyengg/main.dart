@@ -51,7 +51,7 @@ class TruyenGGService extends ABComicService
     with
         ComicAuthMixin,
         ComicCommentMixin,
-        ComicLikeMixin,
+        ComicFollowMixin,
         ComicWatchPageGeneralMixin {
   @override
   bool? get $isAuth => true;
@@ -627,7 +627,7 @@ class TruyenGGService extends ABComicService
   }
 
   @override
-  Future<bool> isLiked({required comicId}) async {
+  Future<bool> isFollow({required comicId}) async {
     final $ = await fetch$('$baseUrl/truyen-tranh/$comicId.html');
 
     return $('body').text().contains('Bỏ Theo Dõi');
@@ -636,18 +636,21 @@ class TruyenGGService extends ABComicService
   }
 
   @override
-  Future<bool> setLike({required comicId, required value}) async {
+  setFollow({required comicId, required metaComic, required value}) async {
     final $ = await fetch$('$baseUrl/truyen-tranh/$comicId.html');
 
     final id = $('.subscribe_button', single: true).attr('data-id');
     final csrf = $('#csrf-token', single: true).val();
 
-    final data = await fetch(
+    await fetch(
       '$baseUrl/frontend/user/regiter-subscribe',
       headers: Headers({'x-requested-with': 'XMLHttpRequest'}),
       body: {'id': id, 'token': csrf},
     );
-
-    return data != '0';
+  }
+  
+  @override
+  Future<ComicCategory> getFollows({required int page}) {
+    return getCategory(categoryId: 'tu-truyen' , page: page, filters: {});
   }
 }

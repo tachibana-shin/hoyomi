@@ -18,6 +18,8 @@ import { app as eigaGetWatchHistory } from "./api/eiga/get-watch-history.ts"
 import { app as eigaGetWatchTimeEpisodes } from "./api/eiga/get-watch-time-episodes.ts"
 import { app as eigaGetWatchTime } from "./api/eiga/get-watch-time.ts"
 import { app as eigaSetWatchTime } from "./api/eiga/set-watch-time.ts"
+import { app as eigaHasFollow } from "./api/eiga/has-follow.ts"
+import { app as eigaSetFollow } from "./api/eiga/set-follow.ts"
 
 const app = new OpenAPIHono()
 
@@ -53,6 +55,9 @@ app.route("/api", eigaGetWatchHistory)
 app.route("/api", eigaGetWatchTimeEpisodes)
 app.route("/api", eigaGetWatchTime)
 app.route("/api", eigaSetWatchTime)
+
+app.route("/api", eigaHasFollow)
+app.route("/api", eigaSetFollow)
 
 app.get("/ui", swaggerUI({ url: "/general-api.swagger" }))
 

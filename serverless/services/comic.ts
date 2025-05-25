@@ -12,6 +12,7 @@ import { single } from "../logic/single.ts"
 type ComicParams = Readonly<{
   user_id: number
   name: string
+  original_name: string
   poster: string
   comic_text_id: string
   season_name?: string
@@ -19,7 +20,7 @@ type ComicParams = Readonly<{
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Comic {
-  static readonly instance = new Comic();
+  static readonly instance = new Comic()
 
   private async _saveComic(sourceId: string, params: ComicParams) {
     const { id: comicId } = single(
@@ -30,6 +31,7 @@ export class Comic {
           userId: params.user_id,
           comicTextId: params.comic_text_id,
           name: params.name,
+          originalName: params.original_name,
           poster: params.poster,
           seasonName: params.season_name || null
         })
@@ -462,14 +464,9 @@ limit
   async setFollow(
     sourceId: string,
     params: ComicParams & {
-      chapterId: string
-      current_chapters: {
-        name: string
-        fullName?: string
-        order: number
-        chapterId: string
-        time?: Date
-      }[]
+      current_chapter_name: string
+      current_chapter_id: string
+      current_chapter_time?: Date
     },
     value: boolean
   ) {
@@ -480,7 +477,7 @@ limit
         .insert(comicFollows)
         .values({
           comicId,
-          currentChapters: JSON.stringify(params.current_chapters)
+          ...params
         })
         .onConflictDoNothing({
           target: [comicFollows.comicId]

@@ -16,6 +16,10 @@ abstract class SetWatchPageBodySchema with _$SetWatchPageBodySchema {
     /// The name of the episode.
     required String name,
 
+    /// Comic raw name.
+    @JsonKey(name: 'original_name')
+    required String originalName,
+
     /// URL to the poster image for the episode.
     required String poster,
 

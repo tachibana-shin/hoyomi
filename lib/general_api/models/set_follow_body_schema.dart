@@ -4,8 +4,6 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'current_chapters.dart';
-
 part 'set_follow_body_schema.freezed.dart';
 part 'set_follow_body_schema.g.dart';
 
@@ -22,6 +20,10 @@ abstract class SetFollowBodySchema with _$SetFollowBodySchema {
     /// Comic name.
     required String name,
 
+    /// Comic raw name.
+    @JsonKey(name: 'original_name')
+    required String originalName,
+
     /// Poster image URL.
     required String poster,
 
@@ -29,13 +31,21 @@ abstract class SetFollowBodySchema with _$SetFollowBodySchema {
     @JsonKey(name: 'season_name')
     required String seasonName,
 
-    /// Current chapter id.
-    @JsonKey(name: 'chapter_Id')
-    required String chapterId,
+    /// Current chapter name.
+    @JsonKey(name: 'current_chapter_name')
+    required String currentChapterName,
 
-    /// Array of chapter meta info.
-    @JsonKey(name: 'current_chapters')
-    required List<CurrentChapters> currentChapters,
+    /// Current chapter full name.
+    @JsonKey(name: 'current_chapter_full_name')
+    required String currentChapterFullName,
+
+    /// Current chapter id.
+    @JsonKey(name: 'current_chapter_id')
+    required String currentChapterId,
+
+    /// Current chapter time (ISO string).
+    @JsonKey(name: 'current_chapter_time')
+    required DateTime currentChapterTime,
 
     /// Set to true to follow, false to unfollow.
     required bool value,

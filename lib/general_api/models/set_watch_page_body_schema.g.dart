@@ -11,6 +11,7 @@ _SetWatchPageBodySchema _$SetWatchPageBodySchemaFromJson(
 ) => _SetWatchPageBodySchema(
   sourceId: json['sourceId'] as String,
   name: json['name'] as String,
+  originalName: json['original_name'] as String,
   poster: json['poster'] as String,
   comicTextId: json['comic_text_id'] as String,
   seasonName: json['season_name'],
@@ -25,6 +26,7 @@ Map<String, dynamic> _$SetWatchPageBodySchemaToJson(
 ) => <String, dynamic>{
   'sourceId': instance.sourceId,
   'name': instance.name,
+  'original_name': instance.originalName,
   'poster': instance.poster,
   'comic_text_id': instance.comicTextId,
   'season_name': instance.seasonName,

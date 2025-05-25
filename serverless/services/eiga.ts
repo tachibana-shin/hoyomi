@@ -1,12 +1,54 @@
-import { and, eq, desc, sql } from "drizzle-orm"
+import { and, eq, desc, sql, exists } from "drizzle-orm"
 // import { PgDialect } from "drizzle-orm/pg-core"
 import { db } from "../db/db.ts"
-import { eiga, eigaHistories, eigaHistoryChapters } from "../db/schema.ts"
+import {
+  eiga,
+  eigaHistories,
+  eigaHistoryChapters,
+  eigaFollows
+} from "../db/schema.ts"
 import { single } from "../logic/single.ts"
+
+type EigaParams = Readonly<{
+  user_id: number
+  name: string
+  original_name: string
+  poster: string
+  eiga_text_id: string
+  season_name?: string
+}>
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Eiga {
-  static async getWatchHistory(
+  static readonly instance = new Eiga()
+
+  private async _saveEiga(sourceId: string, params: EigaParams) {
+    const { id: eigaId } = single(
+      await db
+        .insert(eiga)
+        .values({
+          sourceId: sourceId,
+          userId: params.user_id,
+          eigaTextId: params.eiga_text_id,
+          name: params.name,
+          originalName: params.original_name,
+          poster: params.poster,
+          seasonName: params.season_name || null
+        })
+        .onConflictDoUpdate({
+          target: [eiga.sourceId, eiga.userId, eiga.eigaTextId],
+          set: {
+            name: params.name,
+            poster: params.poster,
+            seasonName: params.season_name || null
+          }
+        })
+        .returning({ id: eiga.id })
+    )!
+    return eigaId
+  }
+
+  async getWatchHistory(
     sourceId: string | void,
     params: {
       user_id: number
@@ -144,14 +186,9 @@ limit
     // `
   }
 
-  static async setWatchTime(
+  async setWatchTime(
     sourceId: string,
-    params: {
-      user_id: number
-      name: string
-      poster: string
-      eiga_text_id: string
-      season_name?: string
+    params: EigaParams & {
       cur: number
       dur: number
       episode_name: string
@@ -230,27 +267,7 @@ limit
           .where(eq(eigaHistories.id, lastHistory.id))
       } else {
         // insert new history
-        const { id: eigaId } = single(
-          await db
-            .insert(eiga)
-            .values({
-              sourceId: sourceId,
-              userId: params.user_id,
-              eigaTextId: params.eiga_text_id,
-              name: params.name,
-              poster: params.poster,
-              seasonName: params.season_name || null
-            })
-            .onConflictDoUpdate({
-              target: [eiga.sourceId, eiga.userId, eiga.eigaTextId],
-              set: {
-                name: params.name,
-                poster: params.poster,
-                seasonName: params.season_name || null
-              }
-            })
-            .returning({ id: eiga.id })
-        )!
+        const eigaId = await this._saveEiga(sourceId, params)
 
         await db.insert(eigaHistories).values({
           eigaId,
@@ -302,54 +319,14 @@ limit
           })
           .returning({ id: eigaHistoryChapters.id })
 
-        const { id: eigaId } = single(
-          await db
-            .insert(eiga)
-            .values({
-              sourceId: sourceId,
-              userId: params.user_id,
-              eigaTextId: params.eiga_text_id,
-              name: params.name,
-              poster: params.poster,
-              seasonName: params.season_name || null
-            })
-            .onConflictDoUpdate({
-              target: [eiga.sourceId, eiga.userId, eiga.eigaTextId],
-              set: {
-                name: params.name,
-                poster: params.poster,
-                seasonName: params.season_name || null
-              }
-            })
-            .returning({ id: eiga.id })
-        )!
+        const eigaId = await this._saveEiga(sourceId, params)
         await db.insert(eigaHistories).values({
           eigaId,
           forTo: existsHistory.forTo ?? existsHistory.id,
           vChap: id
         })
       } else {
-        const { id: eigaId } = single(
-          await db
-            .insert(eiga)
-            .values({
-              sourceId: sourceId,
-              userId: params.user_id,
-              eigaTextId: params.eiga_text_id,
-              name: params.name,
-              poster: params.poster,
-              seasonName: params.season_name || null
-            })
-            .onConflictDoUpdate({
-              target: [eiga.sourceId, eiga.userId, eiga.eigaTextId],
-              set: {
-                name: params.name,
-                poster: params.poster,
-                seasonName: params.season_name || null
-              }
-            })
-            .returning({ id: eiga.id })
-        )!
+        const eigaId = await this._saveEiga(sourceId, params)
         const [{ id }] = await db
           .insert(eigaHistories)
           .values({
@@ -386,7 +363,7 @@ limit
       }
     }
   }
-  static async getWatchTime(
+  async getWatchTime(
     sourceId: string,
     params: {
       user_id: number
@@ -430,7 +407,7 @@ limit
         .limit(1)
     )
   }
-  static async getWatchTimeEpisodes(
+  async getWatchTimeEpisodes(
     sourceId: string,
     params: {
       user_id: number
@@ -481,5 +458,55 @@ limit
         )
       )
       .orderBy(eigaHistories.id)
+  }
+  async setFollow(
+    sourceId: string,
+    params: EigaParams & {
+      current_episode_name: string
+      current_episode_id: string
+      current_episode_time?: Date
+    },
+    value: boolean
+  ) {
+    const eigaId = await this._saveEiga(sourceId, params)
+    if (value) {
+      await db
+        .insert(eigaFollows)
+        .values({
+          eigaId,
+          currentEpisodeName: params.current_episode_name,
+          currentEpisodeId: params.current_episode_id,
+          currentEpisodeTime: params.current_episode_time ?? null
+        })
+        .onConflictDoNothing({
+          target: [eigaFollows.eigaId]
+        })
+    } else {
+      await db.delete(eigaFollows).where(eq(eigaFollows.eigaId, eigaId))
+    }
+  }
+
+  async hasFollow(
+    sourceId: string,
+    params: Pick<EigaParams, "user_id" | "eiga_text_id">
+  ) {
+    return (
+      single(
+        await db
+          .select({
+            exists: exists(eigaFollows.id)
+          })
+          .from(eigaFollows)
+          .leftJoin(eiga, eq(eiga.id, eigaFollows.eigaId))
+          .where(
+            and(
+              eq(eiga.sourceId, sourceId),
+              eq(eiga.userId, params.user_id),
+              eq(eiga.eigaTextId, params.eiga_text_id)
+            )
+          )
+          .limit(1)
+      )?.exists === true
+    )
   }
 }

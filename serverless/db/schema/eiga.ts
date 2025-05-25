@@ -19,6 +19,7 @@ export const eiga = pgTable(
     sourceId: text("source_id").notNull(),
     eigaTextId: text("eiga_text_id").notNull(),
     name: text("name").notNull(),
+    originalName: text("original_name").notNull().default(""),
     poster: text("poster").notNull(),
     seasonName: text("season_name").default(""),
     createdAt: timestamp("created_at", { withTimezone: true })

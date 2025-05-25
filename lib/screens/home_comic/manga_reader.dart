@@ -1288,7 +1288,7 @@ class _MangaReaderState extends State<MangaReader>
                                       icon: Eva.message_square_outline,
                                       text: 'Comments',
                                       disabled:
-                                          widget.service is! ComicLikeMixin,
+                                          widget.service is! ComicFollowMixin,
                                       onPressed: _showPanelComments,
                                     ),
                                   ),

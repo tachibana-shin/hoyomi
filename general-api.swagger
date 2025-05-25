@@ -197,6 +197,11 @@
                         "description": "The name of the episode.",
                         "example": "Episode 1"
                     },
+                    "original_name": {
+                        "type": "string",
+                        "description": "Comic raw name.",
+                        "example": "とにかくかわいい"
+                    },
                     "poster": {
                         "type": "string",
                         "minLength": 1,
@@ -251,6 +256,7 @@
                 "required": [
                     "sourceId",
                     "name",
+                    "original_name",
                     "poster",
                     "comic_text_id",
                     "cur",
@@ -303,6 +309,11 @@
                         "description": "Comic name.",
                         "example": "Tonikaku Kawaii"
                     },
+                    "original_name": {
+                        "type": "string",
+                        "description": "Comic raw name.",
+                        "example": "とにかくかわいい"
+                    },
                     "poster": {
                         "type": "string",
                         "description": "Poster image URL.",
@@ -313,53 +324,42 @@
                         "description": "Season name (optional).",
                         "example": "Season 2"
                     },
-                    "chapter_Id": {
+                    "current_chapter_name": {
+                        "type": "string",
+                        "description": "Current chapter name.",
+                        "example": "Chapter 1"
+                    },
+                    "current_chapter_full_name": {
+                        "type": "string",
+                        "description": "Current chapter full name.",
+                        "example": "The Beginning"
+                    },
+                    "current_chapter_id": {
                         "type": "string",
                         "description": "Current chapter id.",
                         "example": "ch-01"
                     },
-                    "current_chapters": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                },
-                                "fullName": {
-                                    "type": "string"
-                                },
-                                "order": {
-                                    "type": "number"
-                                },
-                                "chapterId": {
-                                    "type": "string"
-                                },
-                                "time": {
-                                    "type": "string",
-                                    "format": "date-time"
-                                }
-                            },
-                            "required": [
-                                "name",
-                                "order",
-                                "chapterId"
-                            ]
-                        },
-                        "description": "Array of chapter meta info."
+                    "current_chapter_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Current chapter time (ISO string).",
+                        "example": "2024-05-01T12:00:00Z"
                     },
                     "value": {
                         "type": "boolean",
-                        "description": "Set to true to follow, false to unfollow."
+                        "description": "Set to true to follow, false to unfollow.",
+                        "example": true
                     }
                 },
                 "required": [
                     "sourceId",
                     "comic_text_id",
                     "name",
+                    "original_name",
                     "poster",
-                    "chapter_Id",
-                    "current_chapters",
+                    "current_chapter_name",
+                    "current_chapter_full_name",
+                    "current_chapter_id",
                     "value"
                 ]
             },
@@ -888,6 +888,13 @@
         },
         "/api/comic/set-follow": {
             "post": {
+                "openapi": {
+                    "summary": "Set or unset follow for a comic",
+                    "tags": [
+                        "Comic"
+                    ],
+                    "operationId": "setComicFollow"
+                },
                 "parameters": [
                     {
                         "schema": {
