@@ -8,7 +8,6 @@ export 'vtt.dart';
 export 'url_search_params.dart';
 export 'setting/setting_field.dart';
 export 'setting/field_input.dart';
-export 'follow_item.dart';
 export 'web_rule.dart';
 export 'user.dart';
 export 'paginate.dart';

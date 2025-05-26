@@ -34,6 +34,7 @@ export 'card_item.dart';
 export 'infinite_list.dart';
 export 'blurred_part_background.dart';
 export 'library/follow/eiga/horizontal_eiga_follow_list.dart';
+export 'library/follow/comic/horizontal_comic_follow_list.dart';
 export 'library/history/eiga/eiga_history.dart';
 export 'library/history/eiga/horizontal_eiga_history_list.dart';
 export 'library/history/comic/horizontal_comic_history_list.dart';

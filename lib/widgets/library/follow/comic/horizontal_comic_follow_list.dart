@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hoyomi/core_services/eiga/main.dart';
+import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/utils/export.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class HorizontalEigaFollowList extends StatefulWidget {
+class HorizontalComicFollowList extends StatefulWidget {
   final String sourceId;
   final String? more;
-  final Future<Paginate<EigaFollow>> Function({required int page}) fn;
+  final Future<Paginate<ComicFollow>> Function({required int page}) fn;
 
-  const HorizontalEigaFollowList({
+  const HorizontalComicFollowList({
     super.key,
     required this.sourceId,
     this.more,
@@ -19,16 +19,16 @@ class HorizontalEigaFollowList extends StatefulWidget {
   });
 
   @override
-  createState() => _HorizontalEigaHistoryState();
+  createState() => _HorizontalComicHistoryState();
 }
 
-class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
-  late final EigaFollowMixin _service;
-  late final Future<List<EigaFollow>> _followsFuture;
+class _HorizontalComicHistoryState extends State<HorizontalComicFollowList> {
+  late final ComicFollowMixin _service;
+  late final Future<List<ComicFollow>> _followsFuture;
 
   @override
   void initState() {
-    _service = getEigaService(widget.sourceId) as EigaFollowMixin;
+    _service = getComicService(widget.sourceId) as ComicFollowMixin;
     _followsFuture = widget.fn(page: 1).then((data) => data.items);
 
     super.initState();
@@ -41,7 +41,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
       builder: (context, snapshot) {
         final title = 'Follow';
         final subtitle = null;
-        final more = widget.more ?? '/library/follow/eiga/${widget.sourceId}';
+        final more = widget.more ?? '/library/follow/comic/${widget.sourceId}';
 
         if (snapshot.hasError) {
           return HorizontalList.buildContainer(
@@ -81,13 +81,13 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
 
         final data =
             loading
-                ? List.generate(30, (_) => EigaFollow.createFakeData())
+                ? List.generate(30, (_) => ComicFollow.createFakeData())
                 : snapshot.data!;
 
         return Skeletonizer(
           enabled: loading,
           enableSwitchAnimation: true,
-          child: HorizontalList<EigaFollow>(
+          child: HorizontalList<ComicFollow>(
             title: title,
             subtitle:
                 data.firstOrNull?.updatedAt == null
@@ -96,20 +96,20 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
             more: more,
             items: data,
             titleLength: data
-                .map((eiga) => eiga.item.name.length)
+                .map((comic) => comic.item.name.length)
                 .reduce((max, length) => length > max ? length : max),
             itemSubtitle:
                 data.firstWhereOrNull(
-                  (eiga) => VerticalEiga.existsSubtitle(eiga.item),
+                  (comic) => VerticalComic.existsSubtitle(comic.item),
                 ) !=
                 null,
             itemTimeAgo:
                 data.firstWhereOrNull(
-                  (eiga) => VerticalEiga.existsTimeAgo(eiga.item),
+                  (comic) => VerticalComic.existsTimeAgo(comic.item),
                 ) !=
                 null,
             builder: (context, follow, index) {
-              return VerticalEiga(sourceId: follow.sourceId, eiga: follow.item);
+              return VerticalComic(sourceId: follow.sourceId, comic: follow.item);
             },
           ),
         );

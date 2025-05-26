@@ -24,6 +24,7 @@ export 'interfaces/home_comic_category.dart';
 export 'interfaces/comic_comments.dart';
 export 'interfaces/meta_comic.dart';
 export 'interfaces/watch_page_updated.dart';
+export 'interfaces/comic_follow.dart';
 export 'interfaces/comic_carousel.dart';
 export 'interfaces/comic.dart';
 export 'ab_comic_service.dart';

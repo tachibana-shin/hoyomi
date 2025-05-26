@@ -85,18 +85,26 @@ class _LibraryPageState extends State<LibraryPage>
           isGeneral: false,
           sourceId: comic.uid,
           history: ({required int page}) {
-            if (comic is ComicWatchPageMixin) {
-              return (comic as ComicWatchPageMixin).getWatchHistory(page: page);
-            }
-
-            throw UnimplementedError();
+            return (comic as ComicWatchPageMixin).getWatchHistory(page: page);
           },
-          follow: ({required int page}) {
-            if (comic is ComicFollowMixin) {
-              return (comic as ComicFollowMixin).getFollows(page: page);
-            }
+          follow: ({required int page}) async {
+            final raw = await (comic as ComicFollowMixin).getFollows(
+              page: page,
+            );
 
-            throw UnimplementedError();
+            final Paginate<ComicFollow> data = Paginate(
+              items:
+                  raw.items
+                      .map(
+                        (item) => ComicFollow(sourceId: comic.uid, item: item),
+                      )
+                      .toList(),
+              page: page,
+              totalItems: raw.totalItems,
+              totalPages: raw.totalPages,
+            );
+
+            return data;
           },
         ),
       ),
@@ -107,18 +115,24 @@ class _LibraryPageState extends State<LibraryPage>
           isGeneral: false,
           sourceId: comic.uid,
           history: ({required int page}) {
-            if (comic is EigaWatchTimeMixin) {
-              return (comic as EigaWatchTimeMixin).getWatchHistory(page: page);
-            }
-
-            throw UnimplementedError();
+            return (comic as EigaWatchTimeMixin).getWatchHistory(page: page);
           },
-          follow: ({required int page}) {
-            if (comic is EigaFollowMixin) {
-              return (comic as EigaFollowMixin).getFollows(page: page);
-            }
+          follow: ({required int page}) async {
+            final raw = await (comic as EigaFollowMixin).getFollows(page: page);
 
-            throw UnimplementedError();
+            final Paginate<EigaFollow> data = Paginate(
+              items:
+                  raw.items
+                      .map(
+                        (item) => EigaFollow(sourceId: comic.uid, item: item),
+                      )
+                      .toList(),
+              page: page,
+              totalItems: raw.totalItems,
+              totalPages: raw.totalPages,
+            );
+
+            return data;
           },
         ),
       ),
@@ -204,8 +218,15 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
                 fn: widget.source.history as dynamic,
                 isGeneral: widget.source.isGeneral,
               ),
-            // if (_service is ComicFollowMixin)
-            // HorizontalComicFollowList(sourceId: widget.sourceId),
+            if (widget.source.isComic && widget.source.follow != null)
+              HorizontalComicFollowList(
+                sourceId: widget.source.sourceId,
+                more:
+                    !widget.source.isGeneral
+                        ? null
+                        : '/library/follow/eiga/general',
+                fn: widget.source.follow as dynamic,
+              ),
             if (!widget.source.isComic && widget.source.history != null)
               HorizontalEigaHistoryList(
                 sourceId: widget.source.sourceId,

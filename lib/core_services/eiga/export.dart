@@ -12,6 +12,7 @@ export 'interfaces/meta_eiga.dart';
 export 'interfaces/main.dart';
 export 'interfaces/eiga_carousel_item.dart';
 export 'interfaces/eiga_param.dart';
+export 'interfaces/eiga_follow.dart';
 export 'interfaces/eiga_carousel.dart';
 export 'interfaces/eiga_history.dart';
 export 'interfaces/eiga_context_with_episodes.dart';
