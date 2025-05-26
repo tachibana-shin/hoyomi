@@ -50,7 +50,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga>
             if (mounted) _isFollowed.value = value;
           }),
           service
-              .getFollowCount(widget.eigaId.value)
+              .getFollowsCount(widget.eigaId.value)
               .then((value) {
                 if (mounted) _followCount.value = value;
               })

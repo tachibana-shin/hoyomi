@@ -59,6 +59,11 @@ mixin EigaFollowGeneralMixin on Service implements EigaFollowMixin {
   }
 
   @override
+  getFollowsCount(eigaId) {
+    throw UnimplementedError();
+  }
+
+  @override
   isFollow(eigaId) async {
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();

@@ -173,7 +173,7 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  getFollowCount(eigaId) async {
+  getFollowsCount(eigaId) async {
     final $ =
         await (_docEigaStore[eigaId] ??= fetch$(
           '$baseUrl/phim/$eigaId',
