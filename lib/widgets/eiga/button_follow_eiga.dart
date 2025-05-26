@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hoyomi/core_services/service.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
+import 'package:hoyomi/core_services/eiga/main.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/utils/format_number.dart';
 import 'package:hoyomi/widgets/export.dart';
@@ -14,12 +11,14 @@ class ButtonFollowEiga extends StatefulWidget {
   final Ref<String> eigaId;
   final Ref<MetaEiga> metaEiga;
   final Service service;
+  final Ref<EigaEpisodes?> episodes;
 
   const ButtonFollowEiga({
     super.key,
     required this.eigaId,
     required this.metaEiga,
     required this.service,
+    required this.episodes,
   });
 
   @override
@@ -34,8 +33,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga>
 
   late final UserData? _user;
 
-  bool get _supportAuth =>
-      widget.service is EigaAuthMixin && AuthMixin.support(widget.service);
+  bool get _supportAuth => widget.service is EigaFollowMixin;
 
   @override
   void initState() {
@@ -43,17 +41,20 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga>
 
     watch([widget.eigaId], () async {
       if (!_supportAuth) return;
-      final service = widget.service as EigaAuthMixin;
+      final service = widget.service as EigaFollowMixin;
 
       _loading.value = true;
       try {
         await Future.wait([
-          service.isFollowed(eigaId: widget.eigaId.value).then((value) {
+          service.isFollow(widget.eigaId.value).then((value) {
             if (mounted) _isFollowed.value = value;
           }),
-          service.getFollowCount(eigaId: widget.eigaId.value).then((value) {
-            if (mounted) _followCount.value = value;
-          }),
+          service
+              .getFollowCount(widget.eigaId.value)
+              .then((value) {
+                if (mounted) _followCount.value = value;
+              })
+              .onError<UnimplementedError>((_, __) => null),
         ]);
       } finally {
         if (mounted) _loading.value = false;
@@ -74,7 +75,8 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga>
       final followCount = _followCount.value;
 
       return Disabled(
-        disabled: !(_supportAuth && !_loading.value),
+        disabled:
+            !_supportAuth || _loading.value || widget.episodes.value == null,
         child: ElevatedButton.icon(
           onPressed: _onTap,
           icon: Iconify(
@@ -102,7 +104,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga>
 
   void _onTap() async {
     if (!_supportAuth) return;
-    final service = widget.service as EigaAuthMixin;
+    final service = widget.service as EigaFollowMixin;
 
     final isSigned = _user?.user.value != null;
     if (!isSigned) {
@@ -121,9 +123,13 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga>
     _isFollowed.value = !oldFollowed;
 
     try {
-      _isFollowed.value = await service.setFollow(
-        eigaId: widget.eigaId.value,
-        value: !oldFollowed,
+      await service.setFollow(
+        EigaContextWithEpisodes(
+          eigaId: widget.eigaId.value,
+          metaEiga: widget.metaEiga.value,
+          episodes: widget.episodes.value!.episodes,
+        ),
+        !oldFollowed,
       );
 
       showSnackBar(

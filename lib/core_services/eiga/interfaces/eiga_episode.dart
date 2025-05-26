@@ -12,7 +12,7 @@ sealed class EigaEpisode with _$EigaEpisode {
     OImage? image,
     String? description,
     String? extra,
-    @Default(-1) int index,
+    @Default(-1) int order,
   }) = _EigaEpisode;
 
   factory EigaEpisode.fromJson(Map<String, dynamic> json) =>
@@ -20,5 +20,14 @@ sealed class EigaEpisode with _$EigaEpisode {
 
   factory EigaEpisode.createFakeData() {
     return EigaEpisode(name: "Episode 1", episodeId: "1");
+  }
+}
+
+extension EigaChapterListExt on List<EigaEpisode> {
+  static final _sortedCache = Expando<List<EigaEpisode>>();
+
+  List<EigaEpisode> get sortAsc {
+    return _sortedCache[this] ??= [...this]
+      ..sort((a, b) => a.order.compareTo(b.order));
   }
 }

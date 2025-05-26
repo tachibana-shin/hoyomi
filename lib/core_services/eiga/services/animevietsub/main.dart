@@ -151,7 +151,7 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  Future<bool> isFollowed({required eigaId}) async {
+  Future<bool> isFollow(eigaId) async {
     final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
 
     final text = await fetch(
@@ -164,18 +164,16 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  Future<bool> setFollow({required eigaId, required value}) async {
-    final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
+  setFollow(context, value) async {
+    final id = RegExp(r'(\d+)$').firstMatch(context.eigaId)!.group(1)!;
 
-    final text = await fetch(
+    await fetch(
       '$baseUrl/ajax/notification?Bookmark=true&filmId=$id&type=${value ? 'add' : 'remove'}',
     );
-
-    return jsonDecode(text)['status'] == 1 ? value : !value;
   }
 
   @override
-  getFollowCount({required eigaId}) async {
+  getFollowCount(eigaId) async {
     final $ =
         await (_docEigaStore[eigaId] ??= fetch$(
           '$baseUrl/phim/$eigaId',
@@ -778,7 +776,7 @@ class AnimeVietsubService extends ABEigaService
 
               return num.tryParse(item['name'])?.toDouble() == epFloat;
             })) ??
-        list.elementAtOrNull(episode.index);
+        list.elementAtOrNull(episode.order);
 
     if (episodeD == null) return null;
 
@@ -984,22 +982,7 @@ class AnimeVietsubService extends ABEigaService
   getFollows({required int page}) async {
     await _getUidUser();
 
-    final category = await getCategory(
-      categoryId: '/tu-phim/',
-      page: page,
-      filters: {},
-    );
-    final items =
-        category.items
-            .map((item) => FollowItem<Eiga>(sourceId: uid, item: item))
-            .toList();
-
-    return Paginate(
-      items: items,
-      page: category.page,
-      totalItems: category.totalItems,
-      totalPages: category.totalPages,
-    );
+    return await getCategory(categoryId: '/tu-phim/', page: page, filters: {});
   }
 }
 

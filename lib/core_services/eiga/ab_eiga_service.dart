@@ -19,13 +19,13 @@ export 'package:hoyomi/core_services/service.dart';
 part 'ab_eiga_service.freezed.dart';
 
 @freezed
-sealed class EigaContext with _$EigaContext {
-  const factory EigaContext({
+sealed class EigaSourceContext with _$EigaSourceContext {
+  const factory EigaSourceContext({
     required String eigaId,
     required MetaEiga metaEiga,
     required EigaEpisode episode,
     required SourceVideo source,
-  }) = _EigaContext;
+  }) = _EigaSourceContext;
 }
 
 abstract class ABEigaService extends Service {
@@ -67,11 +67,11 @@ abstract class ABEigaService extends Service {
     throw UnimplementedError();
   }
 
-  Future<Vtt?> getSeekThumbnail(EigaContext context) {
+  Future<Vtt?> getSeekThumbnail(EigaSourceContext context) {
     throw UnimplementedError();
   }
 
-  Future<OpeningEnding?> getOpeningEnding(EigaContext context) {
+  Future<OpeningEnding?> getOpeningEnding(EigaSourceContext context) {
     throw UnimplementedError();
   }
 

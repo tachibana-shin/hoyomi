@@ -96,6 +96,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final _schedule = ref<DateTime?>(null);
   late final _episode = ref<EigaEpisode?>(null);
   late final _currentSeason = ref<Season?>(null);
+  late final _episodes = ref<EigaEpisodes?>(null);
   late final _suggest = computed<Future<List<Eiga>?>>(() async {
     if (_metaIsFake.value) {
       return Completer<List<Eiga>>().future;
@@ -173,7 +174,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 (data) => data.copyWith(
                   episodes:
                       data.episodes.indexed
-                          .map((entry) => entry.$2.copyWith(index: entry.$1))
+                          .map((entry) => entry.$2.copyWith(order: entry.$1))
                           .toList(),
                 ),
               ),
@@ -732,6 +733,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           eigaId: _eigaId,
           metaEiga: _metaEiga,
           service: _service,
+          episodes: _episodes,
         ),
         SizedBox(width: 10.0),
         ButtonShareEiga(
@@ -1127,6 +1129,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     _episode.value = currentEpisode;
 
     _currentSeason.value = seasons[indexSeason];
+    _episodes.value = episodesEiga;
 
     final currentIndex = episodesEiga.episodes.indexWhere(
       (e) => e.episodeId == _episodeId.value,

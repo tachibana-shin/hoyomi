@@ -4,10 +4,10 @@ import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 mixin EigaFollowMixin on AuthMixin {
   Future<EigaCategory> getFollows({required int page});
 
-  Future<bool> isFollow({required String eigaId});
-  Future<void> setFollow({
-    required String eigaId,
-    required MetaEiga metaEiga,
-    required bool value,
-  });
+  Future<int> getFollowCount(String eigaId) {
+    throw UnimplementedError();
+  }
+
+  Future<bool> isFollow(String eigaId);
+  Future<void> setFollow(EigaContextWithEpisodes context, bool value);
 }

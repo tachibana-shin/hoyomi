@@ -59,7 +59,7 @@ mixin EigaFollowGeneralMixin on Service implements EigaFollowMixin {
   }
 
   @override
-  isFollow({required eigaId}) async {
+  isFollow(eigaId) async {
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
@@ -75,7 +75,7 @@ mixin EigaFollowGeneralMixin on Service implements EigaFollowMixin {
   }
 
   @override
-  setFollow({required eigaId, required metaEiga, required value}) async {
+  setFollow(context, value) async {
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
 
@@ -84,16 +84,17 @@ mixin EigaFollowGeneralMixin on Service implements EigaFollowMixin {
     await _getClient().client.postApiEigaSetFollow(
       body: SetEigaFollowBodySchema(
         sourceId: uid,
-        eigaTextId: eigaId,
-        name: metaEiga.name,
-        originalName: metaEiga.originalName ?? '',
-        poster: metaEiga.image.src,
-        seasonName: '',
-        currentEpisodeName: metaEiga.episodes.sortAsc.last.name,
+        eigaTextId: context.eigaId,
+        name: context.metaEiga.name,
+        originalName: context.metaEiga.originalName ?? '',
+        poster: context.metaEiga.image.src,
+        seasonName: context.season?.name ?? '',
+        currentEpisodeName: context.episodes.sortAsc.last.name,
         // currentEpisodeFullName: metaEiga.episodes.sortAsc.last.fullName ?? '',
-        currentEpisodeId: metaEiga.episodes.sortAsc.last.episodeId,
+        currentEpisodeId: context.episodes.sortAsc.last.episodeId,
         currentEpisodeTime:
-            metaEiga.episodes.sortAsc.last.time ?? DateTime.now(),
+            // context.episodes.sortAsc.last. ??
+            DateTime.now(),
         value: value,
       ),
       authorization: 'Bearer ${idToken.token}',

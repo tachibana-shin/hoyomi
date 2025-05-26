@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/core_services/comic/export.dart';
-import 'package:hoyomi/core_services/comic/interfaces/meta_comic.dart';
-import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';

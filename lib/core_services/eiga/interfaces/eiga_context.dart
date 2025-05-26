@@ -8,8 +8,8 @@ part 'eiga_context.freezed.dart';
 sealed class EigaContext with _$EigaContext {
   const factory EigaContext({
     required String eigaId,
-    required EigaEpisode episode,
     required MetaEiga metaEiga,
+    required EigaEpisode episode,
     Season? season,
   }) = _EigaContext;
 }
