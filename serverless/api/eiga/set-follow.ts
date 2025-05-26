@@ -7,7 +7,8 @@ const SetFollowBodySchema = z
   .object({
     sourceId: z.string().openapi({
       example: "kimetsu-no-yaiba",
-      description: "The unique identifier for the source (e.g., the series or season)."
+      description:
+        "The unique identifier for the source (e.g., the series or season)."
     }),
     eiga_text_id: z.string().openapi({
       example: "ep-01",
@@ -37,10 +38,14 @@ const SetFollowBodySchema = z
       example: "ep-01",
       description: "Current episode id."
     }),
-    current_episode_time: z.string().datetime().optional().openapi({
-      example: "2024-05-01T12:00:00Z",
-      description: "Current episode time (ISO string)."
-    }),
+    current_episode_time: z
+      .string()
+      .datetime({ local: true })
+      .optional()
+      .openapi({
+        example: "2024-05-01T12:00:00Z",
+        description: "Current episode time (ISO string)."
+      }),
     value: z.boolean().openapi({
       example: true,
       description: "Set to true to follow, false to unfollow."

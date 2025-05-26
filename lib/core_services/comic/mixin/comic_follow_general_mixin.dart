@@ -82,6 +82,7 @@ mixin ComicFollowGeneralMixin on Service implements ComicFollowMixin {
 
     final idToken = await user.getIdTokenResult();
 
+try {
     await _getClient().client.postApiComicSetFollow(
       body: SetFollowBodySchema(
         sourceId: uid,
@@ -99,5 +100,8 @@ mixin ComicFollowGeneralMixin on Service implements ComicFollowMixin {
       ),
       authorization: 'Bearer ${idToken.token}',
     );
+} on DioException catch (e) {
+  print(e.response?.data);
+    }
   }
 }

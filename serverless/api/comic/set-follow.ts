@@ -42,10 +42,16 @@ const SetFollowBodySchema = z
       example: "ch-01",
       description: "Current chapter id."
     }),
-    current_chapter_time: z.string().datetime().optional().openapi({
-      example: "2024-05-01T12:00:00Z",
-      description: "Current chapter time (ISO string)."
-    }),
+    current_chapter_time: z
+      .string()
+      .datetime({
+        local: true
+      })
+      .optional()
+      .openapi({
+        example: "2024-05-01T12:00:00Z",
+        description: "Current chapter time (ISO string)."
+      }),
     value: z.boolean().openapi({
       example: true,
       description: "Set to true to follow, false to unfollow."

@@ -1,4 +1,4 @@
-import { and, eq, desc, sql, exists, count } from "drizzle-orm"
+import { and, eq, desc, sql, count } from "drizzle-orm"
 // import { PgDialect } from "drizzle-orm/pg-core"
 import { db } from "../db/db.ts"
 import {
@@ -495,10 +495,10 @@ limit
     params: Pick<ComicParams, "user_id" | "comic_text_id">
   ) {
     return (
-      single(
+      (single(
         await db
           .select({
-            exists: exists(comicFollows.id)
+            exists: count(comicFollows.id)
           })
           .from(comicFollows)
           .innerJoin(comic, eq(comic.id, comicFollows.comicId))
@@ -510,7 +510,7 @@ limit
             )
           )
           .limit(1)
-      )?.exists === true
+      )?.exists ?? 0) > 0
     )
   }
 

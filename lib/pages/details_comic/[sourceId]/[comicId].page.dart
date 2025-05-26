@@ -178,12 +178,10 @@ class _DetailsComicState extends State<DetailsComic>
                 if (_service is ComicAuthMixin && AuthMixin.support(_service))
                   _AvatarUser(service: _service),
                 IconButtonShare(),
-                Watch(
-                  () => IconButtonFollow(
-                    sourceId: widget.sourceId,
-                    comicId: widget.comicId,
-                    comic: _comic.value,
-                  ),
+                IconButtonFollow(
+                  service: _service,
+                  comicId: widget.comicId,
+                  comic: _comic,
                 ),
                 PopupMenuButton<String>(
                   onSelected: (value) {
@@ -998,7 +996,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
       onTap:
           (widget.service is ComicAuthMixin &&
                   !(widget.service as AuthMixin).$noAuth)
-              ?  () => _onTap(widget.comic)
+              ? () => _onTap(widget.comic)
               : null,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(30.0),

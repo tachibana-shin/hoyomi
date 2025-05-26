@@ -1,4 +1,4 @@
-import { and, eq, desc, sql, exists, count } from "drizzle-orm"
+import { and, eq, desc, sql, count } from "drizzle-orm"
 // import { PgDialect } from "drizzle-orm/pg-core"
 import { db } from "../db/db.ts"
 import {
@@ -472,7 +472,7 @@ limit
     value: boolean
   ) {
     const eigaId = await this._saveEiga(sourceId, params)
-    if (value) {
+    if (value)
       await db
         .insert(eigaFollows)
         .values({
@@ -484,9 +484,8 @@ limit
         .onConflictDoNothing({
           target: [eigaFollows.eigaId]
         })
-    } else {
+    else
       await db.delete(eigaFollows).where(eq(eigaFollows.eigaId, eigaId))
-    }
   }
 
   async hasFollow(
@@ -494,10 +493,10 @@ limit
     params: Pick<EigaParams, "user_id" | "eiga_text_id">
   ) {
     return (
-      single(
+      (single(
         await db
           .select({
-            exists: exists(eigaFollows.id)
+            exists: count(eigaFollows.id)
           })
           .from(eigaFollows)
           .innerJoin(eiga, eq(eiga.id, eigaFollows.eigaId))
@@ -509,7 +508,7 @@ limit
             )
           )
           .limit(1)
-      )?.exists === true
+      )?.exists ?? 0) > 0
     )
   }
 
