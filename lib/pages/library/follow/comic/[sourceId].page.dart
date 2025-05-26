@@ -14,11 +14,15 @@ class FollowsComicPage extends StatefulWidget {
 
 class _FollowsComicPageState extends State<FollowsComicPage> {
   int _pageKey = 2;
-  late final ComicFollowMixin _service;
+  late final ComicFollowMixin? _service;
 
   @override
   void initState() {
-    _service = getComicService(widget.sourceId) as ComicFollowMixin;
+    _service =
+        widget.sourceId == 'general'
+            ? null
+            : getComicService(widget.sourceId) as ComicFollowMixin;
+
     super.initState();
   }
 
@@ -26,7 +30,7 @@ class _FollowsComicPageState extends State<FollowsComicPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Follows ${(_service as Service).name}'),
+        title: Text('Follows ${(_service as Service?)?.name ?? ''}'),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         scrolledUnderElevation: 0.0,
       ),
@@ -34,9 +38,15 @@ class _FollowsComicPageState extends State<FollowsComicPage> {
     );
   }
 
+  Future<Paginate<ComicFollow>> _getData(int page) {
+    return _service == null
+        ? ComicFollowGeneralMixin.getAllListFollow(page: 1)
+        : _service.getFollows(page: 1);
+  }
+
   Widget _buildBody() {
     return PullRefreshPage<Paginate<ComicFollow>>(
-      onLoadData: () => _service.getFollows(page: 1),
+      onLoadData: () => _getData(1),
       onLoadFake: () => Paginate.createFakeData(ComicFollow.createFakeData()),
       builder:
           (data, param) => Padding(
@@ -48,7 +58,7 @@ class _FollowsComicPageState extends State<FollowsComicPage> {
               crossAxisSpacing: 4.0,
               mainAxisSpacing: 4.0,
               fetchData: () async {
-                final result = await _service.getFollows(page: _pageKey);
+                final result = await _getData(_pageKey);
                 _pageKey++;
 
                 final isLastPage = result.page >= result.totalPages;

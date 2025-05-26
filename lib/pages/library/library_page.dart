@@ -251,7 +251,7 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
                 more:
                     !widget.source.isGeneral
                         ? null
-                        : '/library/follow/eiga/general',
+                        : '/library/follow/comic/general',
                 fn: widget.source.follow as dynamic,
                 isGeneral: widget.source.isGeneral,
               ),
