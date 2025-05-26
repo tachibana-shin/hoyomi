@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hoyomi/core_services/comic/main.dart';
+import 'package:hoyomi/core_services/comic/main.dart' as types;
+import 'package:hoyomi/core_services/comic/main.dart' hide ComicFollow;
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/utils/export.dart';
 import 'package:hoyomi/widgets/export.dart';
+import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
+import 'comic_follow.dart';
 
 class HorizontalComicFollowList extends StatefulWidget {
   final String sourceId;
   final String? more;
-  final Future<Paginate<ComicFollow>> Function({required int page}) fn;
+  final bool isGeneral;
+  final Future<Paginate<types.ComicFollow>> Function({required int page}) fn;
 
   const HorizontalComicFollowList({
     super.key,
     required this.sourceId,
     this.more,
+    required this.isGeneral,
     required this.fn,
   });
 
@@ -24,7 +29,7 @@ class HorizontalComicFollowList extends StatefulWidget {
 
 class _HorizontalComicHistoryState extends State<HorizontalComicFollowList> {
   late final ComicFollowMixin _service;
-  late final Future<List<ComicFollow>> _followsFuture;
+  late final Future<List<types.ComicFollow>> _followsFuture;
 
   @override
   void initState() {
@@ -81,36 +86,52 @@ class _HorizontalComicHistoryState extends State<HorizontalComicFollowList> {
 
         final data =
             loading
-                ? List.generate(30, (_) => ComicFollow.createFakeData())
+                ? List.generate(30, (_) => types.ComicFollow.createFakeData())
                 : snapshot.data!;
+
+        final items = data;
+        final needSubtitle =
+            data.firstWhereOrNull(
+              (comic) => comic.lastChapter?.fullName?.isNotEmpty == true,
+            ) !=
+            null;
 
         return Skeletonizer(
           enabled: loading,
           enableSwitchAnimation: true,
-          child: HorizontalList<ComicFollow>(
-            title: title,
-            subtitle:
-                data.firstOrNull?.updatedAt == null
-                    ? ''
-                    : formatWatchUpdatedAt(data.first.updatedAt!, null),
-            more: more,
-            items: data,
-            titleLength: data
-                .map((comic) => comic.item.name.length)
-                .reduce((max, length) => length > max ? length : max),
-            itemSubtitle:
-                data.firstWhereOrNull(
-                  (comic) => VerticalComic.existsSubtitle(comic.item),
-                ) !=
-                null,
-            itemTimeAgo:
-                data.firstWhereOrNull(
-                  (comic) => VerticalComic.existsTimeAgo(comic.item),
-                ) !=
-                null,
-            builder: (context, follow, index) {
-              return VerticalComic(sourceId: follow.sourceId, comic: follow.item);
-            },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              HorizontalList.buildContainer(
+                context,
+                title: title,
+                titleLength: items
+                    .map((item) => item.item.name.length)
+                    .reduce((max, length) => length > max ? length : max),
+                subtitle: subtitle,
+                more: more,
+                itemSubtitle: needSubtitle,
+                itemTimeAgo: widget.isGeneral,
+                builder:
+                    (viewportFraction) => PageView.builder(
+                      itemCount: items.length,
+                      allowImplicitScrolling: true,
+                      padEnds: false,
+                      controller: PageController(
+                        viewportFraction: viewportFraction,
+                        initialPage: 0,
+                      ),
+                      itemBuilder:
+                          (context, index) => ComicFollow(
+                            sourceId: items.elementAt(index).sourceId,
+                            follow: items.elementAt(index),
+                            width: 100.w(context) / 1 / viewportFraction,
+                            direction: Axis.vertical,
+                            showService: widget.isGeneral,
+                          ),
+                    ),
+              ),
+            ],
           ),
         );
       },

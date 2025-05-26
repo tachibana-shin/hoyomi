@@ -2,7 +2,7 @@ import 'package:hoyomi/core_services/eiga/export.dart';
 import 'package:hoyomi/core_services/mixin/auth_mixin.dart';
 
 mixin EigaFollowMixin on AuthMixin {
-  Future<EigaCategory> getFollows({required int page});
+  Future<Paginate<EigaFollow>> getFollows({required int page});
 
   Future<int> getFollowsCount(String eigaId) {
     throw UnimplementedError();

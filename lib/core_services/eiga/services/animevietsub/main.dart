@@ -4,11 +4,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart' show BaseOptions, Dio, DioException;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart' hide FormData, Response;
-import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_follow_mixin.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
+import 'package:hoyomi/core_services/eiga/main.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/plugins/inflate_raw.dart';
 import 'package:hoyomi/utils/d_query.dart';
@@ -982,7 +978,14 @@ class AnimeVietsubService extends ABEigaService
   getFollows({required int page}) async {
     await _getUidUser();
 
-    return await getCategory(categoryId: '/tu-phim/', page: page, filters: {});
+    final category = await getCategory(categoryId: '/tu-phim/', page: page, filters: {});
+    
+    return Paginate(
+      items: category.items.map((item) => EigaFollow(sourceId: uid, item: item)).toList(),
+      page: page,
+      totalPages: category.totalPages,
+      totalItems: category.totalItems,
+    );
   }
 }
 

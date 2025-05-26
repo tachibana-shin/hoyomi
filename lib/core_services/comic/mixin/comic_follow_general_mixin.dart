@@ -26,6 +26,47 @@ mixin ComicFollowGeneralMixin on Service implements ComicFollowMixin {
     throw UnimplementedError();
   }
 
+  static Future<Paginate<ComicFollow>> getAllListFollow({
+    required int page,
+  }) async {
+    final user = await Authentication.instance.getUserAsync();
+    if (user == null) throw UserNotFoundException();
+
+    final idToken = await user.getIdTokenResult();
+
+    final body = await _getClient().client.getApiComicGetListFollow(
+      page: page,
+      authorization: 'Bearer ${idToken.token}',
+      sourceId: '',
+    );
+
+    final items =
+        body.items.map((item) {
+          return ComicFollow(
+            sourceId: item.sourceId,
+            item: Comic(
+              name: item.name,
+              comicId: item.comicTextId,
+              originalName: item.originalName,
+              image: OImage(src: item.poster),
+            ),
+            updatedAt: DateTime.parse(item.createdAt),
+            lastChapter: ComicChapter(
+              name: item.chapterName,
+              chapterId: item.chapterId,
+              order: -1,
+            ),
+          );
+        }).toList();
+
+    return Paginate(
+      items: items,
+      page: page,
+      totalItems: body.totalItems,
+      totalPages: body.totalPages,
+    );
+  }
+
   @override
   getFollows({required page}) async {
     final user = await Authentication.instance.getUserAsync();
@@ -39,17 +80,24 @@ mixin ComicFollowGeneralMixin on Service implements ComicFollowMixin {
       authorization: 'Bearer ${idToken.token}',
     );
 
-    return ComicCategory(
-      name: '',
-      url: '',
+    return Paginate(
       items:
           body.items
               .map(
-                (item) => Comic(
-                  comicId: item.comicTextId,
-                  name: item.name,
-                  originalName: item.originalName,
-                  image: OImage.from(item.poster),
+                (item) => ComicFollow(
+                  sourceId: item.sourceId,
+                  item: Comic(
+                    comicId: item.comicTextId,
+                    name: item.name,
+                    originalName: item.originalName,
+                    image: OImage.from(item.poster),
+                  ),
+                  updatedAt: DateTime.parse(item.createdAt),
+                  lastChapter: ComicChapter(
+                    name: item.chapterName,
+                    chapterId: item.chapterId,
+                    order: -1,
+                  ),
                 ),
               )
               .toList(),

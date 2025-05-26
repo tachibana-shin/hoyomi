@@ -35,9 +35,9 @@ class _FollowsComicPageState extends State<FollowsComicPage> {
   }
 
   Widget _buildBody() {
-    return PullRefreshPage<ComicCategory>(
+    return PullRefreshPage<Paginate<ComicFollow>>(
       onLoadData: () => _service.getFollows(page: 1),
-      onLoadFake: () => ComicCategory.createFakeData(),
+      onLoadFake: () => Paginate.createFakeData(ComicFollow.createFakeData()),
       builder:
           (data, param) => Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -56,8 +56,8 @@ class _FollowsComicPageState extends State<FollowsComicPage> {
               },
               itemBuilder: (context, follow, index) {
                 return VerticalComic(
-                  comic: follow,
-                  sourceId: _service.uid,
+                  comic: follow.item,
+                  sourceId: follow.sourceId,
                 );
               },
             ),

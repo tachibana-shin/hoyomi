@@ -35,9 +35,9 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
   }
 
   Widget _buildBody() {
-    return PullRefreshPage<EigaCategory>(
+    return PullRefreshPage<Paginate<EigaFollow>>(
       onLoadData: () => _service.getFollows(page: 1),
-      onLoadFake: () => EigaCategory.createFakeData(),
+      onLoadFake: () => Paginate.createFakeData(EigaFollow.createFakeData()),
       builder:
           (data, param) => Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -55,7 +55,10 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
                 return (isLastPage: isLastPage, data: result.items);
               },
               itemBuilder: (context, follow, index) {
-                return VerticalEiga(eiga: follow, sourceId: _service.uid);
+                return VerticalEiga(
+                  eiga: follow.item,
+                  sourceId: follow.sourceId,
+                );
               },
             ),
           ),

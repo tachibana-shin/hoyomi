@@ -4,13 +4,13 @@ class EigaFollow {
   final String sourceId;
   final Eiga item;
   final DateTime? updatedAt;
-  final EigaEpisode? lastChapter;
+  final EigaEpisode? lastEpisode;
 
   const EigaFollow({
     required this.sourceId,
     required this.item,
     this.updatedAt,
-    this.lastChapter,
+    this.lastEpisode,
   });
 
   factory EigaFollow.createFakeData() {
@@ -18,7 +18,7 @@ class EigaFollow {
       sourceId: '',
       item: Eiga.createFakeData(),
       updatedAt: DateTime.now(),
-      lastChapter: EigaEpisode(
+      lastEpisode: EigaEpisode(
         episodeId: 'fake_episode_id',
         name: 'Fake Episode',
       ),

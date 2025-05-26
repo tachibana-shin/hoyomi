@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/eiga/main.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/core_services/mixin/export.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:kaeru/kaeru.dart';
@@ -36,20 +37,20 @@ class _LibraryPageState extends State<LibraryPage>
     final List<ABEigaService> normalEiga = [];
 
     for (final service in allServices.value) {
+      if (service is ABComicService && !(service as AuthMixin).$noAuth) {
+        normalComic.add(service);
+        continue;
+      }
+      if (service is ABEigaService && !(service as AuthMixin).$noAuth) {
+        normalEiga.add(service);
+        continue;
+      }
       if (service is ComicWatchPageGeneralMixin) {
         generalComic.add(service);
         continue;
       }
       if (service is EigaWatchTimeGeneralMixin) {
         generalEiga.add(service);
-        continue;
-      }
-      if (service is ABComicService) {
-        normalComic.add(service);
-        continue;
-      }
-      if (service is ABEigaService) {
-        normalEiga.add(service);
         continue;
       }
     }
@@ -64,7 +65,9 @@ class _LibraryPageState extends State<LibraryPage>
           history:
               ({required int page}) =>
                   ComicWatchPageGeneralMixin.getAllWatchHistory(page: page),
-          follow: null,
+          follow:
+              ({required int page}) =>
+                  ComicFollowGeneralMixin.getAllListFollow(page: page),
         ),
 
       if (generalEiga.isNotEmpty)
@@ -76,7 +79,9 @@ class _LibraryPageState extends State<LibraryPage>
           history:
               ({required int page}) =>
                   EigaWatchTimeGeneralMixin.getAllWatchHistory(page: page),
-          follow: null,
+          follow:
+              ({required int page}) =>
+                  EigaFollowGeneralMixin.getAllListFollow(page: page),
         ),
       ...normalComic.map(
         (comic) => (
@@ -87,24 +92,8 @@ class _LibraryPageState extends State<LibraryPage>
           history: ({required int page}) {
             return (comic as ComicWatchPageMixin).getWatchHistory(page: page);
           },
-          follow: ({required int page}) async {
-            final raw = await (comic as ComicFollowMixin).getFollows(
-              page: page,
-            );
-
-            final Paginate<ComicFollow> data = Paginate(
-              items:
-                  raw.items
-                      .map(
-                        (item) => ComicFollow(sourceId: comic.uid, item: item),
-                      )
-                      .toList(),
-              page: page,
-              totalItems: raw.totalItems,
-              totalPages: raw.totalPages,
-            );
-
-            return data;
+          follow: ({required int page}) {
+            return (comic as ComicFollowMixin).getFollows(page: page);
           },
         ),
       ),
@@ -117,22 +106,8 @@ class _LibraryPageState extends State<LibraryPage>
           history: ({required int page}) {
             return (comic as EigaWatchTimeMixin).getWatchHistory(page: page);
           },
-          follow: ({required int page}) async {
-            final raw = await (comic as EigaFollowMixin).getFollows(page: page);
-
-            final Paginate<EigaFollow> data = Paginate(
-              items:
-                  raw.items
-                      .map(
-                        (item) => EigaFollow(sourceId: comic.uid, item: item),
-                      )
-                      .toList(),
-              page: page,
-              totalItems: raw.totalItems,
-              totalPages: raw.totalPages,
-            );
-
-            return data;
+          follow: ({required int page}) {
+            return (comic as EigaFollowMixin).getFollows(page: page);
           },
         ),
       ),
@@ -226,6 +201,7 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
                         ? null
                         : '/library/follow/eiga/general',
                 fn: widget.source.follow as dynamic,
+                isGeneral: widget.source.isGeneral,
               ),
             if (!widget.source.isComic && widget.source.history != null)
               HorizontalEigaHistoryList(

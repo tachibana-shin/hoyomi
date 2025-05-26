@@ -11,11 +11,11 @@ class Paginate<T> {
     required this.totalPages,
   });
 
-  factory Paginate.createFakeData(List<T> items) {
+  factory Paginate.createFakeData(T item) {
     return Paginate(
-      items: items,
+      items: List.generate(30, (_) => item),
       page: 1,
-      totalItems: items.length,
+      totalItems: 30,
       totalPages: 1,
     );
   }

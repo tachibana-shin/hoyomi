@@ -25,6 +25,47 @@ mixin EigaFollowGeneralMixin on Service implements EigaFollowMixin {
     throw UnimplementedError();
   }
 
+  static Future<Paginate<EigaFollow>> getAllListFollow({
+    required int page,
+  }) async {
+    final user = await Authentication.instance.getUserAsync();
+    if (user == null) throw UserNotFoundException();
+
+    final idToken = await user.getIdTokenResult();
+
+    final body = await _getClient().client.getApiEigaGetListFollow(
+      page: page,
+      authorization: 'Bearer ${idToken.token}',
+      sourceId: '',
+    );
+
+    final items =
+        body.items.map((item) {
+          return EigaFollow(
+            sourceId: item.sourceId,
+            item: Eiga(
+              name: item.name,
+              eigaId: item.eigaTextId,
+              originalName: item.originalName,
+              image: OImage(src: item.poster),
+            ),
+            lastEpisode: EigaEpisode(
+              name: item.episodeName,
+              episodeId: item.episodeId,
+              order: -1,
+            ),
+            updatedAt: DateTime.parse(item.createdAt),
+          );
+        }).toList();
+
+    return Paginate(
+      items: items,
+      page: page,
+      totalItems: body.totalItems,
+      totalPages: body.totalPages,
+    );
+  }
+
   @override
   getFollows({required page}) async {
     final user = await Authentication.instance.getUserAsync();
@@ -38,17 +79,24 @@ mixin EigaFollowGeneralMixin on Service implements EigaFollowMixin {
       authorization: 'Bearer ${idToken.token}',
     );
 
-    return EigaCategory(
-      name: '',
-      url: '',
+    return Paginate(
       items:
           body.items
               .map(
-                (item) => Eiga(
-                  eigaId: item.eigaTextId,
-                  name: item.name,
-                  originalName: item.originalName,
-                  image: OImage.from(item.poster),
+                (item) => EigaFollow(
+                  sourceId: item.sourceId,
+                  item: Eiga(
+                    eigaId: item.eigaTextId,
+                    name: item.name,
+                    originalName: item.originalName,
+                    image: OImage.from(item.poster),
+                  ),
+                  lastEpisode: EigaEpisode(
+                    name: item.episodeName,
+                    episodeId: item.episodeId,
+                    order: -1,
+                  ),
+                  updatedAt: DateTime.parse(item.createdAt),
                 ),
               )
               .toList(),

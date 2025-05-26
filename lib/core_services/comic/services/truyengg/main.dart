@@ -648,9 +648,20 @@ class TruyenGGService extends ABComicService
       body: {'id': id, 'token': csrf},
     );
   }
-  
+
   @override
-  Future<ComicCategory> getFollows({required int page}) {
-    return getCategory(categoryId: 'tu-truyen' , page: page, filters: {});
+  getFollows({required int page}) async {
+    final category = await getCategory(
+      categoryId: 'tu-truyen',
+      page: page,
+      filters: {},
+    );
+
+    return Paginate(
+      items: category.items.map((item) => ComicFollow(sourceId: uid, item: item)).toList(),
+      page: page,
+      totalPages: category.totalPages,
+      totalItems: category.totalItems,
+    );
   }
 }
