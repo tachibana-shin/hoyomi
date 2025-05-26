@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hoyomi/constraints/fluent.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/eiga/main.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/export.dart';
+import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:kaeru/kaeru.dart';
@@ -29,7 +31,7 @@ class _LibraryPageState extends State<LibraryPage>
     with SingleTickerProviderStateMixin, KaeruMixin {
   TabController? _tabController;
 
-  List<FNService> get _services {
+  late final _services = computed<List<FNService>>(() {
     final List<ComicWatchPageGeneralMixin> generalComic = [];
     final List<EigaWatchTimeGeneralMixin> generalEiga = [];
 
@@ -53,6 +55,27 @@ class _LibraryPageState extends State<LibraryPage>
         generalEiga.add(service);
         continue;
       }
+    }
+
+    final Map<String, Service> allNormalService = Map.fromEntries(
+      [
+        ...normalComic,
+        ...normalEiga,
+      ].map((service) => MapEntry(service.uid, service)),
+    );
+
+    final List<Service> normalService =
+        sortLibraryService.value
+            .map((id) {
+              final service = allNormalService[id];
+
+              return service;
+            })
+            .whereType<Service>()
+            .toList();
+
+    for (final service in allNormalService.values) {
+      if (!normalService.contains(service)) normalService.add(service);
     }
 
     return [
@@ -83,43 +106,50 @@ class _LibraryPageState extends State<LibraryPage>
               ({required int page}) =>
                   EigaFollowGeneralMixin.getAllListFollow(page: page),
         ),
-      ...normalComic.map(
-        (comic) => (
-          name: comic.name,
-          isComic: true,
-          isGeneral: false,
-          sourceId: comic.uid,
-          history: ({required int page}) {
-            return (comic as ComicWatchPageMixin).getWatchHistory(page: page);
-          },
-          follow: ({required int page}) {
-            return (comic as ComicFollowMixin).getFollows(page: page);
-          },
-        ),
-      ),
-      ...normalEiga.map(
-        (comic) => (
-          name: comic.name,
-          isComic: false,
-          isGeneral: false,
-          sourceId: comic.uid,
-          history: ({required int page}) {
-            return (comic as EigaWatchTimeMixin).getWatchHistory(page: page);
-          },
-          follow: ({required int page}) {
-            return (comic as EigaFollowMixin).getFollows(page: page);
-          },
-        ),
+      ...normalService.map(
+        (comic) =>
+            comic is ABComicService
+                ? (
+                  name: comic.name,
+                  isComic: true,
+                  isGeneral: false,
+                  sourceId: comic.uid,
+                  history: ({required int page}) {
+                    return (comic as ComicWatchPageMixin).getWatchHistory(
+                      page: page,
+                    );
+                  },
+                  follow: ({required int page}) {
+                    return (comic as ComicFollowMixin).getFollows(page: page);
+                  },
+                )
+                : (
+                  name: comic.name,
+                  isComic: false,
+                  isGeneral: false,
+                  sourceId: comic.uid,
+                  history: ({required int page}) {
+                    return (comic as EigaWatchTimeMixin).getWatchHistory(
+                      page: page,
+                    );
+                  },
+                  follow: ({required int page}) {
+                    return (comic as EigaFollowMixin).getFollows(page: page);
+                  },
+                ),
       ),
     ];
-  }
+  });
 
   @override
   Widget build(BuildContext context) {
     return Watch(() {
-      if (_tabController?.length != _services.length) {
+      if (_tabController?.length != _services.value.length) {
         _tabController?.dispose();
-        _tabController = TabController(length: _services.length, vsync: this);
+        _tabController = TabController(
+          length: _services.value.length,
+          vsync: this,
+        );
       }
 
       return Scaffold(
@@ -132,6 +162,24 @@ class _LibraryPageState extends State<LibraryPage>
           title: Text('Library'),
           actions: [
             IconButton(
+              onPressed: () {
+                showServiceManagerDialog(
+                  context,
+                  items:
+                      _services.value
+                          .where((service) => !service.isGeneral)
+                          .map((service) => getService(service.sourceId))
+                          .toList(),
+                  onDone: (newValue) {
+                    print(newValue);
+                    sortLibraryService.value =
+                        newValue.map((item) => item.uid).toList();
+                  },
+                );
+              },
+              icon: Iconify(Fluent.extension20),
+            ),
+            IconButton(
               icon: Iconify(Ion.download),
               onPressed: () => context.pushNamed('downloader_comic'),
             ),
@@ -140,12 +188,16 @@ class _LibraryPageState extends State<LibraryPage>
             controller: _tabController,
             isScrollable: true,
             splashBorderRadius: BorderRadius.circular(35.0),
-            tabs: _services.map((service) => Tab(text: service.name)).toList(),
+            tabs:
+                _services.value
+                    .map((service) => Tab(text: service.name))
+                    .toList(),
           ),
         ),
         body: TabBarView(
           controller: _tabController,
-          children: _services.map((service) => _TabView(service)).toList(),
+          children:
+              _services.value.map((service) => _TabView(service)).toList(),
         ),
       );
     });

@@ -7,6 +7,7 @@ final showListEpisodeWithGrid = Ref(false);
 final lastTabActiveApp = Ref<String?>(null);
 final newsKeywordComic = Ref<List<String>>([]);
 final newsKeywordEiga = Ref<List<String>>([]);
+final sortLibraryService = Ref<List<String>>([]);
 
 Future<void> initializeStore() async {
   final settings =
@@ -15,6 +16,7 @@ Future<void> initializeStore() async {
   lastTabActiveApp.value = settings.lastTabActiveApp;
   newsKeywordComic.value = settings.newsKeywordComic;
   newsKeywordEiga.value = settings.newsKeywordEiga;
+  sortLibraryService.value = settings.sortLibraryService ?? <String>[];
 
   watch$(
     [
@@ -22,6 +24,7 @@ Future<void> initializeStore() async {
       lastTabActiveApp,
       newsKeywordComic,
       newsKeywordEiga,
+      sortLibraryService,
     ],
     () {
       GeneralSettingsController.instance.save(
@@ -30,6 +33,7 @@ Future<void> initializeStore() async {
           lastTabActiveApp: lastTabActiveApp.value,
           newsKeywordComic: newsKeywordComic.value,
           newsKeywordEiga: newsKeywordEiga.value,
+          sortLibraryService: sortLibraryService.value,
         ),
       );
     },

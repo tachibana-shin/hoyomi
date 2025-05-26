@@ -13,6 +13,7 @@ sealed class GeneralSettings with _$GeneralSettings {
     @Default(false) bool showListEpisodeWithGrid,
     @Default(null) List<String>? sortComicService,
     @Default(null) List<String>? sortEigaService,
+    @Default(null) List<String>? sortLibraryService,
     @Default(null) String? lastTabActiveApp,
     @Default(['manga']) List<String> newsKeywordComic,
     @Default(['anime']) List<String> newsKeywordEiga,
