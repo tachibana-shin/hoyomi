@@ -163,9 +163,13 @@ mixin EigaWatchTimeGeneralMixin on Service implements EigaWatchTimeMixin {
         sourceId: uid,
         // data
         name: context.metaEiga.name,
+        originalName: context.metaEiga.originalName ?? '',
         poster: context.metaEiga.poster?.src ?? context.metaEiga.image.src,
         eigaTextId: context.eigaId,
         seasonName: context.season?.name ?? '',
+        status: SetWatchTimeBodySchemaStatus.fromJson(
+          context.metaEiga.status.name,
+        ),
         cur: watchTime.position.inMilliseconds / 1e3,
         dur: watchTime.duration.inMilliseconds / 1e3,
         episodeName: context.episode.name,

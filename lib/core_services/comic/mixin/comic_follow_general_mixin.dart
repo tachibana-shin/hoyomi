@@ -138,6 +138,7 @@ mixin ComicFollowGeneralMixin on Service implements ComicFollowMixin {
         originalName: metaComic.originalName ?? '',
         poster: metaComic.image.src,
         seasonName: '',
+        status: SetFollowBodySchemaStatus.fromJson(metaComic.status.name),
         currentChapterName: metaComic.chapters.sortAsc.last.name,
         currentChapterFullName: metaComic.chapters.sortAsc.last.fullName ?? '',
         currentChapterId: metaComic.chapters.sortAsc.last.chapterId,

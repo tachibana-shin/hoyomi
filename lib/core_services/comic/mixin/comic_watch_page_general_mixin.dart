@@ -177,6 +177,7 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
         poster: metaComic.image.src,
         comicTextId: comicId,
         seasonName: '',
+        status: SetWatchPageBodySchemaStatus.fromJson(metaComic.status.name),
         cur: watchPage.currentPage,
         dur: watchPage.totalPage,
         episodeName: chapter.name,

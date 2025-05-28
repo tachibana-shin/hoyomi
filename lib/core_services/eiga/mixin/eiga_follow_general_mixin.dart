@@ -140,6 +140,9 @@ mixin EigaFollowGeneralMixin on Service implements EigaFollowMixin {
         eigaTextId: context.eigaId,
         name: context.metaEiga.name,
         originalName: context.metaEiga.originalName ?? '',
+        status: SetEigaFollowBodySchemaStatus.fromJson(
+          context.metaEiga.status.name,
+        ),
         poster: context.metaEiga.image.src,
         seasonName: context.season?.name ?? '',
         currentEpisodeName: context.episodes.sortAsc.last.name,
