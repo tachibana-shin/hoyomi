@@ -15,7 +15,6 @@ export 'interfaces/comic_modes.dart';
 export 'interfaces/comic_history.dart';
 export 'interfaces/comic_home.dart';
 export 'interfaces/comic_comment.dart';
-export 'interfaces/status_enum.dart';
 export 'interfaces/comic_chapter.dart';
 export 'interfaces/comic_param.dart';
 export 'interfaces/rate_value.dart';

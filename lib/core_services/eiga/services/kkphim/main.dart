@@ -319,6 +319,14 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final trailer = pageData.movie.trailerUrl;
     final movieSeason = null;
 
+    final status =
+        int.tryParse(duration) ==
+                pageData.episodes
+                    .map((episodes) => episodes.serverData.length)
+                    .fold(0, (prev, len) => len > prev ? len : prev)
+            ? StatusEnum.completed
+            : StatusEnum.ongoing;
+
     return MetaEiga(
       name: name,
       originalName: originalName,
@@ -339,6 +347,7 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
       studios: studios,
       movieSeason: movieSeason,
       trailer: trailer,
+      status: status,
     );
   }
 

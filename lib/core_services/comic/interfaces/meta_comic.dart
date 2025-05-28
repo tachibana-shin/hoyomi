@@ -1,9 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic_chapter.dart';
-import 'package:hoyomi/core_services/interfaces/genre.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
-import 'package:hoyomi/core_services/comic/interfaces/rate_value.dart';
-import 'package:hoyomi/core_services/comic/interfaces/status_enum.dart';
+import 'package:hoyomi/core_services/comic/main.dart';
 
 part 'meta_comic.freezed.dart';
 part 'meta_comic.g.dart';

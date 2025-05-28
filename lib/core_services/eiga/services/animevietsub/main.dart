@@ -569,6 +569,23 @@ class AnimeVietsubService extends ABEigaService
       _findInfo(infoListRight, 'season')!.queryOne('a'),
     );
 
+    late final StatusEnum status;
+    final parts$ = duration.split('/');
+
+    if (parts$.length != 2) {
+      status = StatusEnum.unknown;
+    } else {
+      final current = int.tryParse(parts$[0]);
+      final total = int.tryParse(parts$[1]);
+
+      if (current == null || total == null) {
+        status = StatusEnum.ongoing;
+      } else if (current >= total) {
+        status = StatusEnum.completed;
+      } else {
+        status = StatusEnum.ongoing;
+      }
+    }
     return MetaEiga(
       name: name,
       originalName: originalName,
@@ -589,6 +606,7 @@ class AnimeVietsubService extends ABEigaService
       studios: studios,
       movieSeason: movieSeason,
       trailer: trailer,
+      status: status,
     );
   }
 
@@ -978,10 +996,17 @@ class AnimeVietsubService extends ABEigaService
   getFollows({required int page}) async {
     await _getUidUser();
 
-    final category = await getCategory(categoryId: '/tu-phim/', page: page, filters: {});
-    
+    final category = await getCategory(
+      categoryId: '/tu-phim/',
+      page: page,
+      filters: {},
+    );
+
     return Paginate(
-      items: category.items.map((item) => EigaFollow(sourceId: uid, item: item)).toList(),
+      items:
+          category.items
+              .map((item) => EigaFollow(sourceId: uid, item: item))
+              .toList(),
       page: page,
       totalPages: category.totalPages,
       totalItems: category.totalItems,

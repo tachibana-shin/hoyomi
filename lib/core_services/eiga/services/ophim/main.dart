@@ -331,6 +331,14 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
     final trailer = pageData.data.item.trailerUrl;
     final movieSeason = null;
 
+    final status =
+        int.tryParse(duration.split(' ').firstOrNull ?? '') ==
+                pageData.data.item.episodes
+                    .map((episodes) => episodes.serverData.length)
+                    .fold(0, (prev, len) => len > prev ? len : prev)
+            ? StatusEnum.completed
+            : StatusEnum.ongoing;
+
     return MetaEiga(
       name: name,
       originalName: originalName,
@@ -352,6 +360,7 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
           studio == null ? null : [Genre(name: studio, genreId: Genre.noId)],
       movieSeason: movieSeason,
       trailer: trailer,
+      status: status,
     );
   }
 

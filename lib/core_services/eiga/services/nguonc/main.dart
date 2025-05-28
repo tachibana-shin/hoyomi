@@ -310,6 +310,14 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
     final trailer = null;
     final movieSeason = null;
 
+    final status =
+        movie.totalEpisodes ==
+                pageData.movie.episodes
+                    .map((episodes) => episodes.items.length)
+                    .fold(0, (prev, len) => len > prev ? len : prev)
+            ? StatusEnum.completed
+            : StatusEnum.ongoing;
+
     return MetaEiga(
       name: name,
       originalName: originalName,
@@ -331,6 +339,7 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
           studio == null ? null : [Genre(name: studio, genreId: Genre.noId)],
       movieSeason: movieSeason,
       trailer: trailer,
+      status: status,
     );
   }
 
