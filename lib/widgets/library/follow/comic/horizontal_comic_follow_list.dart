@@ -7,8 +7,6 @@ import 'package:hoyomi/widgets/export.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import 'comic_follow.dart';
-
 class HorizontalComicFollowList extends StatefulWidget {
   final String sourceId;
   final String? more;

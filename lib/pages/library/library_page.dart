@@ -171,7 +171,6 @@ class _LibraryPageState extends State<LibraryPage>
                           .map((service) => getService(service.sourceId))
                           .toList(),
                   onDone: (newValue) {
-                    print(newValue);
                     sortLibraryService.value =
                         newValue.map((item) => item.uid).toList();
                   },

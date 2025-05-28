@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide TimeOfDay;
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/main.dart';
-import 'package:hoyomi/widgets/export.dart';
+import 'package:hoyomi/widgets/export.dart' hide ComicFollow;
 
 class FollowsComicPage extends StatefulWidget {
   final String sourceId;
