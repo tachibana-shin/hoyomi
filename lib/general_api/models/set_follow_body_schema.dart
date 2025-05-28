@@ -4,6 +4,8 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'set_follow_body_schema_status.dart';
+
 part 'set_follow_body_schema.freezed.dart';
 part 'set_follow_body_schema.g.dart';
 
@@ -30,6 +32,9 @@ abstract class SetFollowBodySchema with _$SetFollowBodySchema {
     /// Season name (optional).
     @JsonKey(name: 'season_name')
     required String seasonName,
+
+    /// Comic status.
+    required SetFollowBodySchemaStatus status,
 
     /// Current chapter name.
     @JsonKey(name: 'current_chapter_name')

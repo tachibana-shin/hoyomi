@@ -4,9 +4,11 @@ import {
   text,
   timestamp,
   index,
-  unique
+  unique,
+  pgEnum
 } from "drizzle-orm/pg-core"
 import { users } from "./users.ts"
+import { StatusEnum } from "../enum/status_enum.ts"
 
 export const comicName = "comic"
 export const comic = pgTable(
@@ -22,6 +24,7 @@ export const comic = pgTable(
     originalName: text("original_name").notNull().default(""),
     poster: text("poster").notNull(),
     seasonName: text("season_name").default(""),
+    status: pgEnum("status", StatusEnum)().notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow()

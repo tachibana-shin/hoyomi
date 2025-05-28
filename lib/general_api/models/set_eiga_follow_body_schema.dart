@@ -4,6 +4,8 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'set_eiga_follow_body_schema_status.dart';
+
 part 'set_eiga_follow_body_schema.freezed.dart';
 part 'set_eiga_follow_body_schema.g.dart';
 
@@ -30,6 +32,9 @@ abstract class SetEigaFollowBodySchema with _$SetEigaFollowBodySchema {
     /// Season name (optional).
     @JsonKey(name: 'season_name')
     required String seasonName,
+
+    /// Comic status.
+    required SetEigaFollowBodySchemaStatus status,
 
     /// Current episode name.
     @JsonKey(name: 'current_episode_name')

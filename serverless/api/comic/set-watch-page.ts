@@ -2,6 +2,7 @@ import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import { Comic } from "../../services/comic.ts"
 import { useUser } from "../../logic/use-user.ts"
 import { AuthorizationSchema } from "../../schema/authorization.ts"
+import { StatusEnum } from "../../db/enum/status_enum.ts";
 
 const SetWatchPageBodySchema = z
   .object({
@@ -29,6 +30,10 @@ const SetWatchPageBodySchema = z
     season_name: z.string().min(1).or(z.literal("")).optional().openapi({
       description: "The name of the season.",
       example: "Season 1"
+    }),
+    status: z.enum(StatusEnum).openapi({
+      example: "ongoing",
+      description: "Comic status."
     }),
     cur: z.number().openapi({
       description: "The current watch page in seconds.",

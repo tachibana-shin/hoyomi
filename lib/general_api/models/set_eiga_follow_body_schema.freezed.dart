@@ -22,7 +22,8 @@ mixin _$SetEigaFollowBodySchema {
  String get name;/// Eiga raw name.
 @JsonKey(name: 'original_name') String get originalName;/// Poster image URL.
  String get poster;/// Season name (optional).
-@JsonKey(name: 'season_name') String get seasonName;/// Current episode name.
+@JsonKey(name: 'season_name') String get seasonName;/// Comic status.
+ SetEigaFollowBodySchemaStatus get status;/// Current episode name.
 @JsonKey(name: 'current_episode_name') String get currentEpisodeName;/// Current episode id.
 @JsonKey(name: 'current_episode_id') String get currentEpisodeId;/// Current episode time (ISO string).
 @JsonKey(name: 'current_episode_time') DateTime get currentEpisodeTime;/// Set to true to follow, false to unfollow.
@@ -39,16 +40,16 @@ $SetEigaFollowBodySchemaCopyWith<SetEigaFollowBodySchema> get copyWith => _$SetE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetEigaFollowBodySchema&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.eigaTextId, eigaTextId) || other.eigaTextId == eigaTextId)&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.poster, poster) || other.poster == poster)&&(identical(other.seasonName, seasonName) || other.seasonName == seasonName)&&(identical(other.currentEpisodeName, currentEpisodeName) || other.currentEpisodeName == currentEpisodeName)&&(identical(other.currentEpisodeId, currentEpisodeId) || other.currentEpisodeId == currentEpisodeId)&&(identical(other.currentEpisodeTime, currentEpisodeTime) || other.currentEpisodeTime == currentEpisodeTime)&&(identical(other.value, value) || other.value == value));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetEigaFollowBodySchema&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.eigaTextId, eigaTextId) || other.eigaTextId == eigaTextId)&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.poster, poster) || other.poster == poster)&&(identical(other.seasonName, seasonName) || other.seasonName == seasonName)&&(identical(other.status, status) || other.status == status)&&(identical(other.currentEpisodeName, currentEpisodeName) || other.currentEpisodeName == currentEpisodeName)&&(identical(other.currentEpisodeId, currentEpisodeId) || other.currentEpisodeId == currentEpisodeId)&&(identical(other.currentEpisodeTime, currentEpisodeTime) || other.currentEpisodeTime == currentEpisodeTime)&&(identical(other.value, value) || other.value == value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sourceId,eigaTextId,name,originalName,poster,seasonName,currentEpisodeName,currentEpisodeId,currentEpisodeTime,value);
+int get hashCode => Object.hash(runtimeType,sourceId,eigaTextId,name,originalName,poster,seasonName,status,currentEpisodeName,currentEpisodeId,currentEpisodeTime,value);
 
 @override
 String toString() {
-  return 'SetEigaFollowBodySchema(sourceId: $sourceId, eigaTextId: $eigaTextId, name: $name, originalName: $originalName, poster: $poster, seasonName: $seasonName, currentEpisodeName: $currentEpisodeName, currentEpisodeId: $currentEpisodeId, currentEpisodeTime: $currentEpisodeTime, value: $value)';
+  return 'SetEigaFollowBodySchema(sourceId: $sourceId, eigaTextId: $eigaTextId, name: $name, originalName: $originalName, poster: $poster, seasonName: $seasonName, status: $status, currentEpisodeName: $currentEpisodeName, currentEpisodeId: $currentEpisodeId, currentEpisodeTime: $currentEpisodeTime, value: $value)';
 }
 
 
@@ -59,7 +60,7 @@ abstract mixin class $SetEigaFollowBodySchemaCopyWith<$Res>  {
   factory $SetEigaFollowBodySchemaCopyWith(SetEigaFollowBodySchema value, $Res Function(SetEigaFollowBodySchema) _then) = _$SetEigaFollowBodySchemaCopyWithImpl;
 @useResult
 $Res call({
- String sourceId,@JsonKey(name: 'eiga_text_id') String eigaTextId, String name,@JsonKey(name: 'original_name') String originalName, String poster,@JsonKey(name: 'season_name') String seasonName,@JsonKey(name: 'current_episode_name') String currentEpisodeName,@JsonKey(name: 'current_episode_id') String currentEpisodeId,@JsonKey(name: 'current_episode_time') DateTime currentEpisodeTime, bool value
+ String sourceId,@JsonKey(name: 'eiga_text_id') String eigaTextId, String name,@JsonKey(name: 'original_name') String originalName, String poster,@JsonKey(name: 'season_name') String seasonName, SetEigaFollowBodySchemaStatus status,@JsonKey(name: 'current_episode_name') String currentEpisodeName,@JsonKey(name: 'current_episode_id') String currentEpisodeId,@JsonKey(name: 'current_episode_time') DateTime currentEpisodeTime, bool value
 });
 
 
@@ -76,7 +77,7 @@ class _$SetEigaFollowBodySchemaCopyWithImpl<$Res>
 
 /// Create a copy of SetEigaFollowBodySchema
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? sourceId = null,Object? eigaTextId = null,Object? name = null,Object? originalName = null,Object? poster = null,Object? seasonName = null,Object? currentEpisodeName = null,Object? currentEpisodeId = null,Object? currentEpisodeTime = null,Object? value = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? sourceId = null,Object? eigaTextId = null,Object? name = null,Object? originalName = null,Object? poster = null,Object? seasonName = null,Object? status = null,Object? currentEpisodeName = null,Object? currentEpisodeId = null,Object? currentEpisodeTime = null,Object? value = null,}) {
   return _then(_self.copyWith(
 sourceId: null == sourceId ? _self.sourceId : sourceId // ignore: cast_nullable_to_non_nullable
 as String,eigaTextId: null == eigaTextId ? _self.eigaTextId : eigaTextId // ignore: cast_nullable_to_non_nullable
@@ -84,7 +85,8 @@ as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non
 as String,originalName: null == originalName ? _self.originalName : originalName // ignore: cast_nullable_to_non_nullable
 as String,poster: null == poster ? _self.poster : poster // ignore: cast_nullable_to_non_nullable
 as String,seasonName: null == seasonName ? _self.seasonName : seasonName // ignore: cast_nullable_to_non_nullable
-as String,currentEpisodeName: null == currentEpisodeName ? _self.currentEpisodeName : currentEpisodeName // ignore: cast_nullable_to_non_nullable
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as SetEigaFollowBodySchemaStatus,currentEpisodeName: null == currentEpisodeName ? _self.currentEpisodeName : currentEpisodeName // ignore: cast_nullable_to_non_nullable
 as String,currentEpisodeId: null == currentEpisodeId ? _self.currentEpisodeId : currentEpisodeId // ignore: cast_nullable_to_non_nullable
 as String,currentEpisodeTime: null == currentEpisodeTime ? _self.currentEpisodeTime : currentEpisodeTime // ignore: cast_nullable_to_non_nullable
 as DateTime,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
@@ -99,7 +101,7 @@ as bool,
 @JsonSerializable()
 
 class _SetEigaFollowBodySchema implements SetEigaFollowBodySchema {
-  const _SetEigaFollowBodySchema({required this.sourceId, @JsonKey(name: 'eiga_text_id') required this.eigaTextId, required this.name, @JsonKey(name: 'original_name') required this.originalName, required this.poster, @JsonKey(name: 'season_name') required this.seasonName, @JsonKey(name: 'current_episode_name') required this.currentEpisodeName, @JsonKey(name: 'current_episode_id') required this.currentEpisodeId, @JsonKey(name: 'current_episode_time') required this.currentEpisodeTime, required this.value});
+  const _SetEigaFollowBodySchema({required this.sourceId, @JsonKey(name: 'eiga_text_id') required this.eigaTextId, required this.name, @JsonKey(name: 'original_name') required this.originalName, required this.poster, @JsonKey(name: 'season_name') required this.seasonName, required this.status, @JsonKey(name: 'current_episode_name') required this.currentEpisodeName, @JsonKey(name: 'current_episode_id') required this.currentEpisodeId, @JsonKey(name: 'current_episode_time') required this.currentEpisodeTime, required this.value});
   factory _SetEigaFollowBodySchema.fromJson(Map<String, dynamic> json) => _$SetEigaFollowBodySchemaFromJson(json);
 
 /// The unique identifier for the source (e.g., the series or season).
@@ -114,6 +116,8 @@ class _SetEigaFollowBodySchema implements SetEigaFollowBodySchema {
 @override final  String poster;
 /// Season name (optional).
 @override@JsonKey(name: 'season_name') final  String seasonName;
+/// Comic status.
+@override final  SetEigaFollowBodySchemaStatus status;
 /// Current episode name.
 @override@JsonKey(name: 'current_episode_name') final  String currentEpisodeName;
 /// Current episode id.
@@ -136,16 +140,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetEigaFollowBodySchema&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.eigaTextId, eigaTextId) || other.eigaTextId == eigaTextId)&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.poster, poster) || other.poster == poster)&&(identical(other.seasonName, seasonName) || other.seasonName == seasonName)&&(identical(other.currentEpisodeName, currentEpisodeName) || other.currentEpisodeName == currentEpisodeName)&&(identical(other.currentEpisodeId, currentEpisodeId) || other.currentEpisodeId == currentEpisodeId)&&(identical(other.currentEpisodeTime, currentEpisodeTime) || other.currentEpisodeTime == currentEpisodeTime)&&(identical(other.value, value) || other.value == value));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetEigaFollowBodySchema&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.eigaTextId, eigaTextId) || other.eigaTextId == eigaTextId)&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.poster, poster) || other.poster == poster)&&(identical(other.seasonName, seasonName) || other.seasonName == seasonName)&&(identical(other.status, status) || other.status == status)&&(identical(other.currentEpisodeName, currentEpisodeName) || other.currentEpisodeName == currentEpisodeName)&&(identical(other.currentEpisodeId, currentEpisodeId) || other.currentEpisodeId == currentEpisodeId)&&(identical(other.currentEpisodeTime, currentEpisodeTime) || other.currentEpisodeTime == currentEpisodeTime)&&(identical(other.value, value) || other.value == value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sourceId,eigaTextId,name,originalName,poster,seasonName,currentEpisodeName,currentEpisodeId,currentEpisodeTime,value);
+int get hashCode => Object.hash(runtimeType,sourceId,eigaTextId,name,originalName,poster,seasonName,status,currentEpisodeName,currentEpisodeId,currentEpisodeTime,value);
 
 @override
 String toString() {
-  return 'SetEigaFollowBodySchema(sourceId: $sourceId, eigaTextId: $eigaTextId, name: $name, originalName: $originalName, poster: $poster, seasonName: $seasonName, currentEpisodeName: $currentEpisodeName, currentEpisodeId: $currentEpisodeId, currentEpisodeTime: $currentEpisodeTime, value: $value)';
+  return 'SetEigaFollowBodySchema(sourceId: $sourceId, eigaTextId: $eigaTextId, name: $name, originalName: $originalName, poster: $poster, seasonName: $seasonName, status: $status, currentEpisodeName: $currentEpisodeName, currentEpisodeId: $currentEpisodeId, currentEpisodeTime: $currentEpisodeTime, value: $value)';
 }
 
 
@@ -156,7 +160,7 @@ abstract mixin class _$SetEigaFollowBodySchemaCopyWith<$Res> implements $SetEiga
   factory _$SetEigaFollowBodySchemaCopyWith(_SetEigaFollowBodySchema value, $Res Function(_SetEigaFollowBodySchema) _then) = __$SetEigaFollowBodySchemaCopyWithImpl;
 @override @useResult
 $Res call({
- String sourceId,@JsonKey(name: 'eiga_text_id') String eigaTextId, String name,@JsonKey(name: 'original_name') String originalName, String poster,@JsonKey(name: 'season_name') String seasonName,@JsonKey(name: 'current_episode_name') String currentEpisodeName,@JsonKey(name: 'current_episode_id') String currentEpisodeId,@JsonKey(name: 'current_episode_time') DateTime currentEpisodeTime, bool value
+ String sourceId,@JsonKey(name: 'eiga_text_id') String eigaTextId, String name,@JsonKey(name: 'original_name') String originalName, String poster,@JsonKey(name: 'season_name') String seasonName, SetEigaFollowBodySchemaStatus status,@JsonKey(name: 'current_episode_name') String currentEpisodeName,@JsonKey(name: 'current_episode_id') String currentEpisodeId,@JsonKey(name: 'current_episode_time') DateTime currentEpisodeTime, bool value
 });
 
 
@@ -173,7 +177,7 @@ class __$SetEigaFollowBodySchemaCopyWithImpl<$Res>
 
 /// Create a copy of SetEigaFollowBodySchema
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? sourceId = null,Object? eigaTextId = null,Object? name = null,Object? originalName = null,Object? poster = null,Object? seasonName = null,Object? currentEpisodeName = null,Object? currentEpisodeId = null,Object? currentEpisodeTime = null,Object? value = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? sourceId = null,Object? eigaTextId = null,Object? name = null,Object? originalName = null,Object? poster = null,Object? seasonName = null,Object? status = null,Object? currentEpisodeName = null,Object? currentEpisodeId = null,Object? currentEpisodeTime = null,Object? value = null,}) {
   return _then(_SetEigaFollowBodySchema(
 sourceId: null == sourceId ? _self.sourceId : sourceId // ignore: cast_nullable_to_non_nullable
 as String,eigaTextId: null == eigaTextId ? _self.eigaTextId : eigaTextId // ignore: cast_nullable_to_non_nullable
@@ -181,7 +185,8 @@ as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non
 as String,originalName: null == originalName ? _self.originalName : originalName // ignore: cast_nullable_to_non_nullable
 as String,poster: null == poster ? _self.poster : poster // ignore: cast_nullable_to_non_nullable
 as String,seasonName: null == seasonName ? _self.seasonName : seasonName // ignore: cast_nullable_to_non_nullable
-as String,currentEpisodeName: null == currentEpisodeName ? _self.currentEpisodeName : currentEpisodeName // ignore: cast_nullable_to_non_nullable
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as SetEigaFollowBodySchemaStatus,currentEpisodeName: null == currentEpisodeName ? _self.currentEpisodeName : currentEpisodeName // ignore: cast_nullable_to_non_nullable
 as String,currentEpisodeId: null == currentEpisodeId ? _self.currentEpisodeId : currentEpisodeId // ignore: cast_nullable_to_non_nullable
 as String,currentEpisodeTime: null == currentEpisodeTime ? _self.currentEpisodeTime : currentEpisodeTime // ignore: cast_nullable_to_non_nullable
 as DateTime,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable

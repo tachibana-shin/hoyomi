@@ -2,6 +2,7 @@ import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import { Eiga } from "../../services/eiga.ts"
 import { useUser } from "../../logic/use-user.ts"
 import { AuthorizationSchema } from "../../schema/authorization.ts"
+import { StatusEnum } from "../../db/enum/status_enum.ts";
 
 const SetFollowBodySchema = z
   .object({
@@ -29,6 +30,10 @@ const SetFollowBodySchema = z
     season_name: z.string().optional().openapi({
       example: "Season 1",
       description: "Season name (optional)."
+    }),
+    status: z.enum(StatusEnum).openapi({
+      example: "ongoing",
+      description: "Comic status."
     }),
     current_episode_name: z.string().openapi({
       example: "Episode 1",

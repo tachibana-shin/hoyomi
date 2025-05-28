@@ -4,6 +4,8 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'set_watch_page_body_schema_status.dart';
+
 part 'set_watch_page_body_schema.freezed.dart';
 part 'set_watch_page_body_schema.g.dart';
 
@@ -30,6 +32,9 @@ abstract class SetWatchPageBodySchema with _$SetWatchPageBodySchema {
     /// The name of the season.
     @JsonKey(name: 'season_name')
     required dynamic seasonName,
+
+    /// Comic status.
+    required SetWatchPageBodySchemaStatus status,
 
     /// The current watch page in seconds.
     required num cur,

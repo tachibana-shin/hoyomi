@@ -1,0 +1,1 @@
+ALTER TABLE "eiga_" ADD COLUMN "status" "status" DEFAULT 'unknown' NOT NULL;

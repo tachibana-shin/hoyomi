@@ -22,7 +22,8 @@ mixin _$SetFollowBodySchema {
  String get name;/// Comic raw name.
 @JsonKey(name: 'original_name') String get originalName;/// Poster image URL.
  String get poster;/// Season name (optional).
-@JsonKey(name: 'season_name') String get seasonName;/// Current chapter name.
+@JsonKey(name: 'season_name') String get seasonName;/// Comic status.
+ SetFollowBodySchemaStatus get status;/// Current chapter name.
 @JsonKey(name: 'current_chapter_name') String get currentChapterName;/// Current chapter full name.
 @JsonKey(name: 'current_chapter_full_name') String get currentChapterFullName;/// Current chapter id.
 @JsonKey(name: 'current_chapter_id') String get currentChapterId;/// Current chapter time (ISO string).
@@ -40,16 +41,16 @@ $SetFollowBodySchemaCopyWith<SetFollowBodySchema> get copyWith => _$SetFollowBod
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetFollowBodySchema&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.comicTextId, comicTextId) || other.comicTextId == comicTextId)&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.poster, poster) || other.poster == poster)&&(identical(other.seasonName, seasonName) || other.seasonName == seasonName)&&(identical(other.currentChapterName, currentChapterName) || other.currentChapterName == currentChapterName)&&(identical(other.currentChapterFullName, currentChapterFullName) || other.currentChapterFullName == currentChapterFullName)&&(identical(other.currentChapterId, currentChapterId) || other.currentChapterId == currentChapterId)&&(identical(other.currentChapterTime, currentChapterTime) || other.currentChapterTime == currentChapterTime)&&(identical(other.value, value) || other.value == value));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetFollowBodySchema&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.comicTextId, comicTextId) || other.comicTextId == comicTextId)&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.poster, poster) || other.poster == poster)&&(identical(other.seasonName, seasonName) || other.seasonName == seasonName)&&(identical(other.status, status) || other.status == status)&&(identical(other.currentChapterName, currentChapterName) || other.currentChapterName == currentChapterName)&&(identical(other.currentChapterFullName, currentChapterFullName) || other.currentChapterFullName == currentChapterFullName)&&(identical(other.currentChapterId, currentChapterId) || other.currentChapterId == currentChapterId)&&(identical(other.currentChapterTime, currentChapterTime) || other.currentChapterTime == currentChapterTime)&&(identical(other.value, value) || other.value == value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sourceId,comicTextId,name,originalName,poster,seasonName,currentChapterName,currentChapterFullName,currentChapterId,currentChapterTime,value);
+int get hashCode => Object.hash(runtimeType,sourceId,comicTextId,name,originalName,poster,seasonName,status,currentChapterName,currentChapterFullName,currentChapterId,currentChapterTime,value);
 
 @override
 String toString() {
-  return 'SetFollowBodySchema(sourceId: $sourceId, comicTextId: $comicTextId, name: $name, originalName: $originalName, poster: $poster, seasonName: $seasonName, currentChapterName: $currentChapterName, currentChapterFullName: $currentChapterFullName, currentChapterId: $currentChapterId, currentChapterTime: $currentChapterTime, value: $value)';
+  return 'SetFollowBodySchema(sourceId: $sourceId, comicTextId: $comicTextId, name: $name, originalName: $originalName, poster: $poster, seasonName: $seasonName, status: $status, currentChapterName: $currentChapterName, currentChapterFullName: $currentChapterFullName, currentChapterId: $currentChapterId, currentChapterTime: $currentChapterTime, value: $value)';
 }
 
 
@@ -60,7 +61,7 @@ abstract mixin class $SetFollowBodySchemaCopyWith<$Res>  {
   factory $SetFollowBodySchemaCopyWith(SetFollowBodySchema value, $Res Function(SetFollowBodySchema) _then) = _$SetFollowBodySchemaCopyWithImpl;
 @useResult
 $Res call({
- String sourceId,@JsonKey(name: 'comic_text_id') String comicTextId, String name,@JsonKey(name: 'original_name') String originalName, String poster,@JsonKey(name: 'season_name') String seasonName,@JsonKey(name: 'current_chapter_name') String currentChapterName,@JsonKey(name: 'current_chapter_full_name') String currentChapterFullName,@JsonKey(name: 'current_chapter_id') String currentChapterId,@JsonKey(name: 'current_chapter_time') DateTime currentChapterTime, bool value
+ String sourceId,@JsonKey(name: 'comic_text_id') String comicTextId, String name,@JsonKey(name: 'original_name') String originalName, String poster,@JsonKey(name: 'season_name') String seasonName, SetFollowBodySchemaStatus status,@JsonKey(name: 'current_chapter_name') String currentChapterName,@JsonKey(name: 'current_chapter_full_name') String currentChapterFullName,@JsonKey(name: 'current_chapter_id') String currentChapterId,@JsonKey(name: 'current_chapter_time') DateTime currentChapterTime, bool value
 });
 
 
@@ -77,7 +78,7 @@ class _$SetFollowBodySchemaCopyWithImpl<$Res>
 
 /// Create a copy of SetFollowBodySchema
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? sourceId = null,Object? comicTextId = null,Object? name = null,Object? originalName = null,Object? poster = null,Object? seasonName = null,Object? currentChapterName = null,Object? currentChapterFullName = null,Object? currentChapterId = null,Object? currentChapterTime = null,Object? value = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? sourceId = null,Object? comicTextId = null,Object? name = null,Object? originalName = null,Object? poster = null,Object? seasonName = null,Object? status = null,Object? currentChapterName = null,Object? currentChapterFullName = null,Object? currentChapterId = null,Object? currentChapterTime = null,Object? value = null,}) {
   return _then(_self.copyWith(
 sourceId: null == sourceId ? _self.sourceId : sourceId // ignore: cast_nullable_to_non_nullable
 as String,comicTextId: null == comicTextId ? _self.comicTextId : comicTextId // ignore: cast_nullable_to_non_nullable
@@ -85,7 +86,8 @@ as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non
 as String,originalName: null == originalName ? _self.originalName : originalName // ignore: cast_nullable_to_non_nullable
 as String,poster: null == poster ? _self.poster : poster // ignore: cast_nullable_to_non_nullable
 as String,seasonName: null == seasonName ? _self.seasonName : seasonName // ignore: cast_nullable_to_non_nullable
-as String,currentChapterName: null == currentChapterName ? _self.currentChapterName : currentChapterName // ignore: cast_nullable_to_non_nullable
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as SetFollowBodySchemaStatus,currentChapterName: null == currentChapterName ? _self.currentChapterName : currentChapterName // ignore: cast_nullable_to_non_nullable
 as String,currentChapterFullName: null == currentChapterFullName ? _self.currentChapterFullName : currentChapterFullName // ignore: cast_nullable_to_non_nullable
 as String,currentChapterId: null == currentChapterId ? _self.currentChapterId : currentChapterId // ignore: cast_nullable_to_non_nullable
 as String,currentChapterTime: null == currentChapterTime ? _self.currentChapterTime : currentChapterTime // ignore: cast_nullable_to_non_nullable
@@ -101,7 +103,7 @@ as bool,
 @JsonSerializable()
 
 class _SetFollowBodySchema implements SetFollowBodySchema {
-  const _SetFollowBodySchema({required this.sourceId, @JsonKey(name: 'comic_text_id') required this.comicTextId, required this.name, @JsonKey(name: 'original_name') required this.originalName, required this.poster, @JsonKey(name: 'season_name') required this.seasonName, @JsonKey(name: 'current_chapter_name') required this.currentChapterName, @JsonKey(name: 'current_chapter_full_name') required this.currentChapterFullName, @JsonKey(name: 'current_chapter_id') required this.currentChapterId, @JsonKey(name: 'current_chapter_time') required this.currentChapterTime, required this.value});
+  const _SetFollowBodySchema({required this.sourceId, @JsonKey(name: 'comic_text_id') required this.comicTextId, required this.name, @JsonKey(name: 'original_name') required this.originalName, required this.poster, @JsonKey(name: 'season_name') required this.seasonName, required this.status, @JsonKey(name: 'current_chapter_name') required this.currentChapterName, @JsonKey(name: 'current_chapter_full_name') required this.currentChapterFullName, @JsonKey(name: 'current_chapter_id') required this.currentChapterId, @JsonKey(name: 'current_chapter_time') required this.currentChapterTime, required this.value});
   factory _SetFollowBodySchema.fromJson(Map<String, dynamic> json) => _$SetFollowBodySchemaFromJson(json);
 
 /// The unique identifier for the source (e.g., the series or season).
@@ -116,6 +118,8 @@ class _SetFollowBodySchema implements SetFollowBodySchema {
 @override final  String poster;
 /// Season name (optional).
 @override@JsonKey(name: 'season_name') final  String seasonName;
+/// Comic status.
+@override final  SetFollowBodySchemaStatus status;
 /// Current chapter name.
 @override@JsonKey(name: 'current_chapter_name') final  String currentChapterName;
 /// Current chapter full name.
@@ -140,16 +144,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetFollowBodySchema&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.comicTextId, comicTextId) || other.comicTextId == comicTextId)&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.poster, poster) || other.poster == poster)&&(identical(other.seasonName, seasonName) || other.seasonName == seasonName)&&(identical(other.currentChapterName, currentChapterName) || other.currentChapterName == currentChapterName)&&(identical(other.currentChapterFullName, currentChapterFullName) || other.currentChapterFullName == currentChapterFullName)&&(identical(other.currentChapterId, currentChapterId) || other.currentChapterId == currentChapterId)&&(identical(other.currentChapterTime, currentChapterTime) || other.currentChapterTime == currentChapterTime)&&(identical(other.value, value) || other.value == value));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetFollowBodySchema&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.comicTextId, comicTextId) || other.comicTextId == comicTextId)&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.poster, poster) || other.poster == poster)&&(identical(other.seasonName, seasonName) || other.seasonName == seasonName)&&(identical(other.status, status) || other.status == status)&&(identical(other.currentChapterName, currentChapterName) || other.currentChapterName == currentChapterName)&&(identical(other.currentChapterFullName, currentChapterFullName) || other.currentChapterFullName == currentChapterFullName)&&(identical(other.currentChapterId, currentChapterId) || other.currentChapterId == currentChapterId)&&(identical(other.currentChapterTime, currentChapterTime) || other.currentChapterTime == currentChapterTime)&&(identical(other.value, value) || other.value == value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sourceId,comicTextId,name,originalName,poster,seasonName,currentChapterName,currentChapterFullName,currentChapterId,currentChapterTime,value);
+int get hashCode => Object.hash(runtimeType,sourceId,comicTextId,name,originalName,poster,seasonName,status,currentChapterName,currentChapterFullName,currentChapterId,currentChapterTime,value);
 
 @override
 String toString() {
-  return 'SetFollowBodySchema(sourceId: $sourceId, comicTextId: $comicTextId, name: $name, originalName: $originalName, poster: $poster, seasonName: $seasonName, currentChapterName: $currentChapterName, currentChapterFullName: $currentChapterFullName, currentChapterId: $currentChapterId, currentChapterTime: $currentChapterTime, value: $value)';
+  return 'SetFollowBodySchema(sourceId: $sourceId, comicTextId: $comicTextId, name: $name, originalName: $originalName, poster: $poster, seasonName: $seasonName, status: $status, currentChapterName: $currentChapterName, currentChapterFullName: $currentChapterFullName, currentChapterId: $currentChapterId, currentChapterTime: $currentChapterTime, value: $value)';
 }
 
 
@@ -160,7 +164,7 @@ abstract mixin class _$SetFollowBodySchemaCopyWith<$Res> implements $SetFollowBo
   factory _$SetFollowBodySchemaCopyWith(_SetFollowBodySchema value, $Res Function(_SetFollowBodySchema) _then) = __$SetFollowBodySchemaCopyWithImpl;
 @override @useResult
 $Res call({
- String sourceId,@JsonKey(name: 'comic_text_id') String comicTextId, String name,@JsonKey(name: 'original_name') String originalName, String poster,@JsonKey(name: 'season_name') String seasonName,@JsonKey(name: 'current_chapter_name') String currentChapterName,@JsonKey(name: 'current_chapter_full_name') String currentChapterFullName,@JsonKey(name: 'current_chapter_id') String currentChapterId,@JsonKey(name: 'current_chapter_time') DateTime currentChapterTime, bool value
+ String sourceId,@JsonKey(name: 'comic_text_id') String comicTextId, String name,@JsonKey(name: 'original_name') String originalName, String poster,@JsonKey(name: 'season_name') String seasonName, SetFollowBodySchemaStatus status,@JsonKey(name: 'current_chapter_name') String currentChapterName,@JsonKey(name: 'current_chapter_full_name') String currentChapterFullName,@JsonKey(name: 'current_chapter_id') String currentChapterId,@JsonKey(name: 'current_chapter_time') DateTime currentChapterTime, bool value
 });
 
 
@@ -177,7 +181,7 @@ class __$SetFollowBodySchemaCopyWithImpl<$Res>
 
 /// Create a copy of SetFollowBodySchema
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? sourceId = null,Object? comicTextId = null,Object? name = null,Object? originalName = null,Object? poster = null,Object? seasonName = null,Object? currentChapterName = null,Object? currentChapterFullName = null,Object? currentChapterId = null,Object? currentChapterTime = null,Object? value = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? sourceId = null,Object? comicTextId = null,Object? name = null,Object? originalName = null,Object? poster = null,Object? seasonName = null,Object? status = null,Object? currentChapterName = null,Object? currentChapterFullName = null,Object? currentChapterId = null,Object? currentChapterTime = null,Object? value = null,}) {
   return _then(_SetFollowBodySchema(
 sourceId: null == sourceId ? _self.sourceId : sourceId // ignore: cast_nullable_to_non_nullable
 as String,comicTextId: null == comicTextId ? _self.comicTextId : comicTextId // ignore: cast_nullable_to_non_nullable
@@ -185,7 +189,8 @@ as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non
 as String,originalName: null == originalName ? _self.originalName : originalName // ignore: cast_nullable_to_non_nullable
 as String,poster: null == poster ? _self.poster : poster // ignore: cast_nullable_to_non_nullable
 as String,seasonName: null == seasonName ? _self.seasonName : seasonName // ignore: cast_nullable_to_non_nullable
-as String,currentChapterName: null == currentChapterName ? _self.currentChapterName : currentChapterName // ignore: cast_nullable_to_non_nullable
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as SetFollowBodySchemaStatus,currentChapterName: null == currentChapterName ? _self.currentChapterName : currentChapterName // ignore: cast_nullable_to_non_nullable
 as String,currentChapterFullName: null == currentChapterFullName ? _self.currentChapterFullName : currentChapterFullName // ignore: cast_nullable_to_non_nullable
 as String,currentChapterId: null == currentChapterId ? _self.currentChapterId : currentChapterId // ignore: cast_nullable_to_non_nullable
 as String,currentChapterTime: null == currentChapterTime ? _self.currentChapterTime : currentChapterTime // ignore: cast_nullable_to_non_nullable

@@ -234,6 +234,19 @@
                         "description": "The name of the season.",
                         "example": "Season 1"
                     },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ongoing",
+                            "completed",
+                            "cancelled",
+                            "unknown",
+                            "on_hiatus",
+                            "publishing_finished"
+                        ],
+                        "description": "Comic status.",
+                        "example": "ongoing"
+                    },
                     "cur": {
                         "type": "number",
                         "description": "The current watch page in seconds.",
@@ -263,6 +276,7 @@
                     "original_name",
                     "poster",
                     "comic_text_id",
+                    "status",
                     "cur",
                     "dur",
                     "episode_name",
@@ -328,6 +342,19 @@
                         "description": "Season name (optional).",
                         "example": "Season 2"
                     },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ongoing",
+                            "completed",
+                            "cancelled",
+                            "unknown",
+                            "on_hiatus",
+                            "publishing_finished"
+                        ],
+                        "description": "Comic status.",
+                        "example": "ongoing"
+                    },
                     "current_chapter_name": {
                         "type": "string",
                         "description": "Current chapter name.",
@@ -361,6 +388,7 @@
                     "name",
                     "original_name",
                     "poster",
+                    "status",
                     "current_chapter_name",
                     "current_chapter_full_name",
                     "current_chapter_id",
@@ -562,6 +590,11 @@
                         "description": "The name of the episode.",
                         "example": "Episode 1"
                     },
+                    "original_name": {
+                        "type": "string",
+                        "description": "Eiga raw name.",
+                        "example": "鬼滅の刃"
+                    },
                     "poster": {
                         "type": "string",
                         "minLength": 1,
@@ -590,6 +623,19 @@
                         "description": "The name of the season.",
                         "example": "Season 1"
                     },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ongoing",
+                            "completed",
+                            "cancelled",
+                            "unknown",
+                            "on_hiatus",
+                            "publishing_finished"
+                        ],
+                        "description": "Comic status.",
+                        "example": "ongoing"
+                    },
                     "cur": {
                         "type": "number",
                         "description": "The current watch time in seconds.",
@@ -616,8 +662,10 @@
                 "required": [
                     "sourceId",
                     "name",
+                    "original_name",
                     "poster",
                     "eiga_text_id",
+                    "status",
                     "cur",
                     "dur",
                     "episode_name",
@@ -683,6 +731,19 @@
                         "description": "Season name (optional).",
                         "example": "Season 1"
                     },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ongoing",
+                            "completed",
+                            "cancelled",
+                            "unknown",
+                            "on_hiatus",
+                            "publishing_finished"
+                        ],
+                        "description": "Comic status.",
+                        "example": "ongoing"
+                    },
                     "current_episode_name": {
                         "type": "string",
                         "description": "Current episode name.",
@@ -711,6 +772,7 @@
                     "name",
                     "original_name",
                     "poster",
+                    "status",
                     "current_episode_name",
                     "current_episode_id",
                     "value"

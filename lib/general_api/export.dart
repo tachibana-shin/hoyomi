@@ -31,6 +31,10 @@ export 'models/data3.dart';
 export 'models/data4.dart';
 export 'models/data5.dart';
 export 'models/data6.dart';
+export 'models/set_watch_page_body_schema_status.dart';
+export 'models/set_follow_body_schema_status.dart';
+export 'models/set_watch_time_body_schema_status.dart';
+export 'models/set_eiga_follow_body_schema_status.dart';
 // Root client
 export 'general_api_client.dart';
 

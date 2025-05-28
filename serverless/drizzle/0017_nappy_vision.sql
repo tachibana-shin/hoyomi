@@ -1,0 +1,1 @@
+ALTER TABLE "eiga_" ALTER COLUMN "status" DROP DEFAULT;

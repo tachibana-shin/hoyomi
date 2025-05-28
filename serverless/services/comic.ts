@@ -8,6 +8,7 @@ import {
   comicHistoryChapters
 } from "../db/schema.ts"
 import { single } from "../logic/single.ts"
+import { StatusEnum } from "../db/enum/status_enum.ts"
 
 type ComicParams = Readonly<{
   user_id: number
@@ -16,6 +17,7 @@ type ComicParams = Readonly<{
   poster: string
   comic_text_id: string
   season_name?: string
+  status: (typeof StatusEnum)[number]
 }>
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
@@ -33,7 +35,8 @@ export class Comic {
           name: params.name,
           originalName: params.original_name,
           poster: params.poster,
-          seasonName: params.season_name || null
+          seasonName: params.season_name || null,
+          status: params.status
         })
         .onConflictDoUpdate({
           target: [comic.sourceId, comic.userId, comic.comicTextId],

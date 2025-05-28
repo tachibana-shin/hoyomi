@@ -14,6 +14,7 @@ _SetFollowBodySchema _$SetFollowBodySchemaFromJson(Map<String, dynamic> json) =>
       originalName: json['original_name'] as String,
       poster: json['poster'] as String,
       seasonName: json['season_name'] as String,
+      status: SetFollowBodySchemaStatus.fromJson(json['status'] as String),
       currentChapterName: json['current_chapter_name'] as String,
       currentChapterFullName: json['current_chapter_full_name'] as String,
       currentChapterId: json['current_chapter_id'] as String,
@@ -32,9 +33,20 @@ Map<String, dynamic> _$SetFollowBodySchemaToJson(
   'original_name': instance.originalName,
   'poster': instance.poster,
   'season_name': instance.seasonName,
+  'status': _$SetFollowBodySchemaStatusEnumMap[instance.status]!,
   'current_chapter_name': instance.currentChapterName,
   'current_chapter_full_name': instance.currentChapterFullName,
   'current_chapter_id': instance.currentChapterId,
   'current_chapter_time': instance.currentChapterTime.toIso8601String(),
   'value': instance.value,
+};
+
+const _$SetFollowBodySchemaStatusEnumMap = {
+  SetFollowBodySchemaStatus.ongoing: 'ongoing',
+  SetFollowBodySchemaStatus.completed: 'completed',
+  SetFollowBodySchemaStatus.cancelled: 'cancelled',
+  SetFollowBodySchemaStatus.unknown: 'unknown',
+  SetFollowBodySchemaStatus.onHiatus: 'on_hiatus',
+  SetFollowBodySchemaStatus.publishingFinished: 'publishing_finished',
+  SetFollowBodySchemaStatus.$unknown: r'$unknown',
 };
