@@ -21,6 +21,7 @@ import '../models/set_follow_body_schema.dart';
 import '../models/set_follow_response.dart';
 import '../models/set_watch_page_body_schema.dart';
 import '../models/set_watch_time_body_schema.dart';
+import '../models/status.dart';
 import '../models/watch_page_schema.dart';
 import '../models/watch_time_schema.dart';
 
@@ -35,6 +36,7 @@ abstract class ClientClient {
     @Query('sourceId') required String sourceId,
     @Query('page') required num page,
     @Header('Authorization') required String authorization,
+    @Query('status') Status? status,
   });
 
   @GET('/api/comic/get-watch-page-episodes')
@@ -84,6 +86,7 @@ abstract class ClientClient {
     @Query('sourceId') required String sourceId,
     @Query('page') required num page,
     @Header('Authorization') required String authorization,
+    @Query('status') Status? status,
   });
 
   @GET('/api/eiga/get-watch-time-episodes')

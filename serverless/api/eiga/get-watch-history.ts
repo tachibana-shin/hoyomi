@@ -2,6 +2,7 @@ import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import { Eiga } from "../../services/eiga.ts"
 import { useUser } from "../../logic/use-user.ts"
 import { AuthorizationSchema } from "../../schema/authorization.ts"
+import { StatusEnum } from "../../db/enum/status_enum.ts";
 
 const GetWatchHistoryQuerySchema = z
   .object({
@@ -9,6 +10,10 @@ const GetWatchHistoryQuerySchema = z
       example: "tonikaku-kawaii-season-2",
       description:
         "The unique identifier for the source (e.g., the series or season)."
+    }),
+    status: z.enum(StatusEnum).optional().openapi({
+      example: "ongoing",
+      description: "The status of the comic (e.g., ongoing, completed)."
     }),
     page: z.coerce.number().min(1).openapi({
       example: 1,
@@ -91,11 +96,15 @@ app.openapi(route, async (c) => {
 
   const user = useUser(c)
 
-  const watchHistory = await Eiga.instance.getWatchHistory(params.sourceId, {
-    user_id: user.userId,
-    ...params,
-    limit: 30
-  })
+  const watchHistory = await Eiga.instance.getWatchHistory(
+    params.sourceId,
+    {
+      user_id: user.userId,
+      ...params,
+      limit: 30
+    },
+    params.status
+  )
 
   return c.json({ data: watchHistory })
 })

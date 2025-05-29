@@ -58,7 +58,8 @@ export class Comic {
       user_id: number
       page: number
       limit: number
-    }
+    },
+    status?: (typeof StatusEnum)[number]
   ) {
     // const pgDialect = new PgDialect()
     const query = sourceId
@@ -109,7 +110,11 @@ left join lateral (
 ) ${comicHistoryChapters} on TRUE
 where
   ${comic.sourceId} = ${sourceId} and
-  ${comic.userId}   = ${params.user_id}
+  ${comic.userId}   = ${params.user_id} and
+  (
+    ${comic.status} = ${status} OR
+    ${status ?? null} IS NULL
+  )
 order by
   ${comicHistories.createdAt} desc
 limit
@@ -161,7 +166,11 @@ left join lateral (
     1
 ) ${comicHistoryChapters} on TRUE
 where
-  ${comic.userId}   = ${params.user_id}
+  ${comic.userId}   = ${params.user_id} and
+  (
+    ${comic.status} = ${status} OR
+    ${status ?? null} IS NULL
+  )
 order by
   ${comicHistories.createdAt} desc
 limit
