@@ -27,6 +27,7 @@ mixin EigaFollowGeneralMixin on Service implements EigaFollowMixin {
 
   static Future<Paginate<EigaFollow>> getAllListFollow({
     required int page,
+    StatusEnum? status,
   }) async {
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
@@ -35,6 +36,7 @@ mixin EigaFollowGeneralMixin on Service implements EigaFollowMixin {
 
     final body = await _getClient().client.getApiEigaGetListFollow(
       page: page,
+      status: status != null ? Status.fromJson(status.name) : null,
       authorization: 'Bearer ${idToken.token}',
       sourceId: '',
     );

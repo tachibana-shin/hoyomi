@@ -6,6 +6,8 @@ import 'package:hoyomi/utils/authentication.dart';
 
 import '../main.dart';
 
+export 'package:hoyomi/general_api/export.dart' show Ignore;
+
 mixin ComicFollowGeneralMixin on Service implements ComicFollowMixin {
   static final _baseApiGeneral = Env.baseApiGeneral;
   static GeneralApiClient? _client;
@@ -28,6 +30,8 @@ mixin ComicFollowGeneralMixin on Service implements ComicFollowMixin {
 
   static Future<Paginate<ComicFollow>> getAllListFollow({
     required int page,
+    StatusEnum? status,
+    List<Ignore>? ignore,
   }) async {
     final user = await Authentication.instance.getUserAsync();
     if (user == null) throw UserNotFoundException();
@@ -36,6 +40,8 @@ mixin ComicFollowGeneralMixin on Service implements ComicFollowMixin {
 
     final body = await _getClient().client.getApiComicGetListFollow(
       page: page,
+      status: status != null ? Status.fromJson(status.name) : null,
+      ignore: ignore,
       authorization: 'Bearer ${idToken.token}',
       sourceId: '',
     );
