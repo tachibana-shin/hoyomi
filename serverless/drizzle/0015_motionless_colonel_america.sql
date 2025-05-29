@@ -1,1 +1,0 @@
-ALTER TABLE "comic" ALTER COLUMN "status" DROP DEFAULT;

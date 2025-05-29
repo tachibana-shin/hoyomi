@@ -1,5 +1,5 @@
 {
-  "id": "e7c214ff-d39a-4027-9952-8b66567068e2",
+  "id": "d2cc56ed-041f-4a84-b078-4f2882a11bae",
   "prevId": "d5477e31-957b-47e3-a270-6b30b36911ff",
   "version": "7",
   "dialect": "postgresql",
@@ -484,7 +484,7 @@
         },
         "status": {
           "name": "status",
-          "type": "status",
+          "type": "text",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
@@ -1017,6 +1017,14 @@
           "primaryKey": false,
           "notNull": false,
           "default": "''"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'unknown'"
         },
         "created_at": {
           "name": "created_at",

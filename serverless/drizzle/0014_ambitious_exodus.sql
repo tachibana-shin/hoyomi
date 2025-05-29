@@ -1,1 +1,0 @@
-ALTER TABLE "comic" ADD COLUMN "status" "status" DEFAULT 'unknown' NOT NULL;
