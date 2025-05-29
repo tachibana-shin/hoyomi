@@ -1,4 +1,4 @@
-import { and, eq, desc, sql, count } from "drizzle-orm"
+import { and, eq, desc, sql, count, not, or } from "drizzle-orm"
 // import { PgDialect } from "drizzle-orm/pg-core"
 import { db } from "../db/db.ts"
 import {
@@ -516,7 +516,6 @@ limit
       )?.exists ?? 0) > 0
     )
   }
-
   async getListFollow(
     sourceId: string | void,
     params: {
@@ -524,8 +523,30 @@ limit
       page: number
       limit: number
     },
-    status?: (typeof StatusEnum)[number]
+    status?: (typeof StatusEnum)[number],
+    ignore?: {
+      sourceId: string
+      comic_text_id: string
+    }[]
   ) {
+    const ignoreConditions = ignore?.length
+      ? or(
+          ...ignore.map((i) =>
+            and(
+              eq(comic.sourceId, i.sourceId),
+              eq(comic.comicTextId, i.comic_text_id)
+            )
+          )
+        )
+      : undefined
+
+    const whereClause = and(
+      ...(sourceId ? [eq(comic.sourceId, sourceId)] : []),
+      eq(comic.userId, params.user_id),
+      ...(status ? [eq(comic.status, status)] : []),
+      ...(ignoreConditions ? [not(ignoreConditions)] : [])
+    )
+
     const items = await db
       .select({
         created_at: comicFollows.createdAt,
@@ -541,13 +562,7 @@ limit
       })
       .from(comicFollows)
       .innerJoin(comic, eq(comic.id, comicFollows.comicId))
-      .where(
-        and(
-          ...(sourceId ? [eq(comic.sourceId, sourceId)] : []),
-          eq(comic.userId, params.user_id),
-          ...(status ? [eq(comic.status, status)] : [])
-        )
-      )
+      .where(whereClause)
       .orderBy(desc(comicFollows.createdAt))
       .limit(params.limit)
       .offset((params.page - 1) * params.limit)
@@ -559,6 +574,7 @@ limit
         })
         .from(comicFollows)
         .innerJoin(comic, eq(comic.id, comicFollows.comicId))
+        .where(whereClause)
     )!
 
     return {

@@ -231,6 +231,7 @@ class _ClientClient implements ClientClient {
     int limit = 20,
     String? sourceId,
     Status? status,
+    List<Ignore>? ignore,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
@@ -238,6 +239,7 @@ class _ClientClient implements ClientClient {
       r'limit': limit,
       r'sourceId': sourceId,
       r'status': status?.name,
+      r'ignore': ignore,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{r'Authorization': authorization};
@@ -478,6 +480,7 @@ class _ClientClient implements ClientClient {
     int limit = 20,
     String? sourceId,
     Status? status,
+    List<Ignore2>? ignore,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
@@ -485,6 +488,7 @@ class _ClientClient implements ClientClient {
       r'limit': limit,
       r'sourceId': sourceId,
       r'status': status?.name,
+      r'ignore': ignore,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{r'Authorization': authorization};

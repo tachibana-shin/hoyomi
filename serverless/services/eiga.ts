@@ -1,4 +1,4 @@
-import { and, eq, desc, sql, count } from "drizzle-orm"
+import { and, eq, desc, sql, count, or } from "drizzle-orm"
 // import { PgDialect } from "drizzle-orm/pg-core"
 import { db } from "../db/db.ts"
 import {
@@ -530,8 +530,33 @@ limit
       page: number
       limit: number
     },
-    status?: (typeof StatusEnum)[number]
+    status?: (typeof StatusEnum)[number],
+    ignore?: {
+      sourceId: string
+      eiga_text_id: string
+    }[]
   ) {
+    // Generate ignore conditions if provided
+    const ignoreConditions =
+      ignore && ignore.length > 0
+        ? or(
+            ...ignore.map((i) =>
+              and(
+                eq(eiga.sourceId, i.sourceId),
+                eq(eiga.eigaTextId, i.eiga_text_id)
+              )
+            )
+          )
+        : undefined
+
+    // Build where clause dynamically
+    const whereClause = and(
+      ...(sourceId ? [eq(eiga.sourceId, sourceId)] : []),
+      eq(eiga.userId, params.user_id),
+      ...(status ? [eq(eiga.status, status)] : []),
+      ...(ignoreConditions ? [ignoreConditions] : [])
+    )
+
     const items = await db
       .select({
         created_at: eigaFollows.createdAt,
@@ -547,13 +572,7 @@ limit
       })
       .from(eigaFollows)
       .innerJoin(eiga, eq(eiga.id, eigaFollows.eigaId))
-      .where(
-        and(
-          ...(sourceId ? [eq(eiga.sourceId, sourceId)] : []),
-          eq(eiga.userId, params.user_id),
-          ...(status ? [eq(eiga.status, status)] : [])
-        )
-      )
+      .where(whereClause)
       .orderBy(desc(eigaFollows.createdAt))
       .limit(params.limit)
       .offset((params.page - 1) * params.limit)
@@ -565,6 +584,7 @@ limit
         })
         .from(eigaFollows)
         .innerJoin(eiga, eq(eiga.id, eigaFollows.eigaId))
+        .where(whereClause)
     )!
 
     return {

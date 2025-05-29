@@ -8,19 +8,42 @@ const GetListFollowQuerySchema = z
   .object({
     sourceId: z.string().optional().openapi({
       example: "tonikaku-kawaii-season-2",
-      description: "Lọc theo sourceId (tùy chọn)"
+      description: "Filter by sourceId (optional)"
     }),
     status: z.enum(StatusEnum).optional().openapi({
       example: "ongoing",
-      description: "The status of the comic (e.g., ongoing, completed)."
+      description: "Filter by comic status (e.g., ongoing, completed)"
     }),
+    ignore: z
+      .array(
+        z.object({
+          sourceId: z.string().openapi({
+            example: "tonikaku-kawaii-season-2",
+            description: "Source ID to exclude from results"
+          }),
+          comic_text_id: z.string().min(1).openapi({
+            description: "Comic text ID to exclude from results",
+            example: "comic-001"
+          })
+        })
+      )
+      .optional()
+      .openapi({
+        example: [
+          {
+            sourceId: "tonikaku-kawaii-season-2",
+            comic_text_id: "comic-001"
+          }
+        ],
+        description: "List of comics to ignore from the follow result"
+      }),
     page: z.coerce.number().int().min(1).default(1).openapi({
       example: 1,
-      description: "Trang hiện tại"
+      description: "Current page number"
     }),
     limit: z.coerce.number().int().min(1).max(100).default(20).openapi({
       example: 20,
-      description: "Số lượng mỗi trang"
+      description: "Number of items per page"
     })
   })
   .openapi("GetComicListFollowQuery")
@@ -59,7 +82,7 @@ const route = createRoute({
           schema: GetListFollowResponseSchema
         }
       },
-      description: "Danh sách comic đang follow"
+      description: "List of comics followed by the user"
     }
   }
 })
@@ -76,7 +99,8 @@ app.openapi(route, async (c) => {
         page: params.page,
         limit: params.limit
       },
-      params.status
+      params.status,
+      params.ignore
     )
   return c.json({ items, totalItems, page, totalPages })
 })

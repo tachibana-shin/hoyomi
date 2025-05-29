@@ -4,7 +4,7 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// The status of the comic (e.g., ongoing, completed).
+/// Filter by comic status (e.g., ongoing, completed)
 @JsonEnum()
 enum Status {
   @JsonValue('ongoing')

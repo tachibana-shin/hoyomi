@@ -11,6 +11,8 @@ import '../models/get_api_comic_get_list_follow_response.dart';
 import '../models/get_api_eiga_get_list_follow_response.dart';
 import '../models/has_eiga_follow_response.dart';
 import '../models/has_follow_response.dart';
+import '../models/ignore.dart';
+import '../models/ignore2.dart';
 import '../models/list_watch_page_schema.dart';
 import '../models/list_watch_time_schema.dart';
 import '../models/post_api_comic_set_watch_page_response.dart';
@@ -79,6 +81,7 @@ abstract class ClientClient {
     @Query('limit') int limit = 20,
     @Query('sourceId') String? sourceId,
     @Query('status') Status? status,
+    @Query('ignore') List<Ignore>? ignore,
   });
 
   @GET('/api/eiga/get-watch-history')
@@ -129,5 +132,6 @@ abstract class ClientClient {
     @Query('limit') int limit = 20,
     @Query('sourceId') String? sourceId,
     @Query('status') Status? status,
+    @Query('ignore') List<Ignore2>? ignore,
   });
 }

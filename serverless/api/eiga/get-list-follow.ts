@@ -3,24 +3,46 @@ import { Eiga } from "../../services/eiga.ts"
 import { useUser } from "../../logic/use-user.ts"
 import { AuthorizationSchema } from "../../schema/authorization.ts"
 import { StatusEnum } from "../../db/enum/status_enum.ts"
-
 const GetListFollowQuerySchema = z
   .object({
     sourceId: z.string().optional().openapi({
       example: "some-eiga-source-id",
-      description: "Lọc theo sourceId (tùy chọn)"
+      description: "Filter by sourceId (optional)"
     }),
     status: z.enum(StatusEnum).optional().openapi({
       example: "ongoing",
-      description: "The status of the comic (e.g., ongoing, completed)."
+      description: "Filter by the status of the eiga (e.g., ongoing, completed)"
     }),
+    ignore: z
+      .array(
+        z.object({
+          sourceId: z.string().openapi({
+            example: "tonikaku-kawaii-season-2",
+            description: "Source ID to exclude from the result (optional)"
+          }),
+          eiga_text_id: z.string().min(1).openapi({
+            description: "Unique identifier for the eiga to exclude",
+            example: "comic-001"
+          })
+        })
+      )
+      .optional()
+      .openapi({
+        example: [
+          {
+            sourceId: "tonikaku-kawaii-season-2",
+            eiga_text_id: "comic-001"
+          }
+        ],
+        description: "List of eiga entries to ignore in the follow result"
+      }),
     page: z.coerce.number().int().min(1).default(1).openapi({
       example: 1,
-      description: "Trang hiện tại"
+      description: "Current page number"
     }),
     limit: z.coerce.number().int().min(1).max(100).default(20).openapi({
       example: 20,
-      description: "Số lượng mỗi trang"
+      description: "Number of items per page"
     })
   })
   .openapi("GetEigaListFollowQuery")
@@ -59,7 +81,7 @@ const route = createRoute({
           schema: GetListFollowResponseSchema
         }
       },
-      description: "Danh sách eiga đang follow"
+      description: "List of followed eiga"
     }
   }
 })
@@ -76,7 +98,8 @@ app.openapi(route, async (c) => {
         page: params.page,
         limit: params.limit
       },
-      params.status
+      params.status,
+      params.ignore
     )
   return c.json({ items, totalItems, page, totalPages })
 })
