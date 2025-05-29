@@ -797,24 +797,6 @@
                     },
                     {
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "ongoing",
-                                "completed",
-                                "cancelled",
-                                "unknown",
-                                "on_hiatus",
-                                "publishing_finished"
-                            ],
-                            "description": "The status of the comic (e.g., ongoing, completed).",
-                            "example": "ongoing"
-                        },
-                        "required": false,
-                        "name": "status",
-                        "in": "query"
-                    },
-                    {
-                        "schema": {
                             "type": "number",
                             "minimum": 1,
                             "description": "The page number for paginated results.",
@@ -1127,6 +1109,24 @@
                     },
                     {
                         "schema": {
+                            "type": "string",
+                            "enum": [
+                                "ongoing",
+                                "completed",
+                                "cancelled",
+                                "unknown",
+                                "on_hiatus",
+                                "publishing_finished"
+                            ],
+                            "description": "The status of the comic (e.g., ongoing, completed).",
+                            "example": "ongoing"
+                        },
+                        "required": false,
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
                             "type": "integer",
                             "minimum": 1,
                             "default": 1,
@@ -1258,24 +1258,6 @@
                         },
                         "required": true,
                         "name": "sourceId",
-                        "in": "query"
-                    },
-                    {
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "ongoing",
-                                "completed",
-                                "cancelled",
-                                "unknown",
-                                "on_hiatus",
-                                "publishing_finished"
-                            ],
-                            "description": "The status of the comic (e.g., ongoing, completed).",
-                            "example": "ongoing"
-                        },
-                        "required": false,
-                        "name": "status",
                         "in": "query"
                     },
                     {
@@ -1588,6 +1570,24 @@
                         },
                         "required": false,
                         "name": "sourceId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "ongoing",
+                                "completed",
+                                "cancelled",
+                                "unknown",
+                                "on_hiatus",
+                                "publishing_finished"
+                            ],
+                            "description": "The status of the comic (e.g., ongoing, completed).",
+                            "example": "ongoing"
+                        },
+                        "required": false,
+                        "name": "status",
                         "in": "query"
                     },
                     {

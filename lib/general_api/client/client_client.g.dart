@@ -22,15 +22,12 @@ class _ClientClient implements ClientClient {
     required String sourceId,
     required num page,
     required String authorization,
-    Status? status,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'sourceId': sourceId,
       r'page': page,
-      r'status': status?.name,
     };
-    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{r'Authorization': authorization};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
@@ -233,12 +230,14 @@ class _ClientClient implements ClientClient {
     int page = 1,
     int limit = 20,
     String? sourceId,
+    Status? status,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'page': page,
       r'limit': limit,
       r'sourceId': sourceId,
+      r'status': status?.name,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{r'Authorization': authorization};
@@ -270,15 +269,12 @@ class _ClientClient implements ClientClient {
     required String sourceId,
     required num page,
     required String authorization,
-    Status? status,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'sourceId': sourceId,
       r'page': page,
-      r'status': status?.name,
     };
-    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{r'Authorization': authorization};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
@@ -481,12 +477,14 @@ class _ClientClient implements ClientClient {
     int page = 1,
     int limit = 20,
     String? sourceId,
+    Status? status,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'page': page,
       r'limit': limit,
       r'sourceId': sourceId,
+      r'status': status?.name,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{r'Authorization': authorization};

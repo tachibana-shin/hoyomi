@@ -529,7 +529,8 @@ limit
       user_id: number
       page: number
       limit: number
-    }
+    },
+    status?: (typeof StatusEnum)[number]
   ) {
     const items = await db
       .select({
@@ -547,9 +548,11 @@ limit
       .from(eigaFollows)
       .innerJoin(eiga, eq(eiga.id, eigaFollows.eigaId))
       .where(
-        sourceId
-          ? and(eq(eiga.sourceId, sourceId), eq(eiga.userId, params.user_id))
-          : eq(eiga.userId, params.user_id)
+        and(
+          ...(sourceId ? [eq(eiga.sourceId, sourceId)] : []),
+          eq(eiga.userId, params.user_id),
+          ...(status ? [eq(eiga.status, status)] : [])
+        )
       )
       .orderBy(desc(eigaFollows.createdAt))
       .limit(params.limit)

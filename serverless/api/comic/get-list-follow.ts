@@ -2,12 +2,17 @@ import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import { Comic } from "../../services/comic.ts"
 import { useUser } from "../../logic/use-user.ts"
 import { AuthorizationSchema } from "../../schema/authorization.ts"
+import { StatusEnum } from "../../db/enum/status_enum.ts"
 
 const GetListFollowQuerySchema = z
   .object({
     sourceId: z.string().optional().openapi({
       example: "tonikaku-kawaii-season-2",
       description: "Lọc theo sourceId (tùy chọn)"
+    }),
+    status: z.enum(StatusEnum).optional().openapi({
+      example: "ongoing",
+      description: "The status of the comic (e.g., ongoing, completed)."
     }),
     page: z.coerce.number().int().min(1).default(1).openapi({
       example: 1,
@@ -64,10 +69,14 @@ app.openapi(route, async (c) => {
   const params = c.req.valid("query")
   const user = useUser(c)
   const { items, totalItems, page, totalPages } =
-    await Comic.instance.getListFollow(params.sourceId, {
-      user_id: user.userId,
-      page: params.page,
-      limit: params.limit
-    })
+    await Comic.instance.getListFollow(
+      params.sourceId,
+      {
+        user_id: user.userId,
+        page: params.page,
+        limit: params.limit
+      },
+      params.status
+    )
   return c.json({ items, totalItems, page, totalPages })
 })

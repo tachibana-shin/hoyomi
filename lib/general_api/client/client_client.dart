@@ -36,7 +36,6 @@ abstract class ClientClient {
     @Query('sourceId') required String sourceId,
     @Query('page') required num page,
     @Header('Authorization') required String authorization,
-    @Query('status') Status? status,
   });
 
   @GET('/api/comic/get-watch-page-episodes')
@@ -79,6 +78,7 @@ abstract class ClientClient {
     @Query('page') int page = 1,
     @Query('limit') int limit = 20,
     @Query('sourceId') String? sourceId,
+    @Query('status') Status? status,
   });
 
   @GET('/api/eiga/get-watch-history')
@@ -86,7 +86,6 @@ abstract class ClientClient {
     @Query('sourceId') required String sourceId,
     @Query('page') required num page,
     @Header('Authorization') required String authorization,
-    @Query('status') Status? status,
   });
 
   @GET('/api/eiga/get-watch-time-episodes')
@@ -129,5 +128,6 @@ abstract class ClientClient {
     @Query('page') int page = 1,
     @Query('limit') int limit = 20,
     @Query('sourceId') String? sourceId,
+    @Query('status') Status? status,
   });
 }

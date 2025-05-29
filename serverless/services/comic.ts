@@ -58,8 +58,7 @@ export class Comic {
       user_id: number
       page: number
       limit: number
-    },
-    status?: (typeof StatusEnum)[number]
+    }
   ) {
     // const pgDialect = new PgDialect()
     const query = sourceId
@@ -110,11 +109,7 @@ left join lateral (
 ) ${comicHistoryChapters} on TRUE
 where
   ${comic.sourceId} = ${sourceId} and
-  ${comic.userId}   = ${params.user_id} and
-  (
-    ${comic.status} = ${status} OR
-    ${status ?? null} IS NULL
-  )
+  ${comic.userId}   = ${params.user_id}
 order by
   ${comicHistories.createdAt} desc
 limit
@@ -166,11 +161,7 @@ left join lateral (
     1
 ) ${comicHistoryChapters} on TRUE
 where
-  ${comic.userId}   = ${params.user_id} and
-  (
-    ${comic.status} = ${status} OR
-    ${status ?? null} IS NULL
-  )
+  ${comic.userId}   = ${params.user_id}
 order by
   ${comicHistories.createdAt} desc
 limit
@@ -532,7 +523,8 @@ limit
       user_id: number
       page: number
       limit: number
-    }
+    },
+    status?: (typeof StatusEnum)[number]
   ) {
     const items = await db
       .select({
@@ -550,9 +542,11 @@ limit
       .from(comicFollows)
       .innerJoin(comic, eq(comic.id, comicFollows.comicId))
       .where(
-        sourceId
-          ? and(eq(comic.sourceId, sourceId), eq(comic.userId, params.user_id))
-          : eq(comic.userId, params.user_id)
+        and(
+          ...(sourceId ? [eq(comic.sourceId, sourceId)] : []),
+          eq(comic.userId, params.user_id),
+          ...(status ? [eq(comic.status, status)] : [])
+        )
       )
       .orderBy(desc(comicFollows.createdAt))
       .limit(params.limit)
