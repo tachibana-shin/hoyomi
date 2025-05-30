@@ -419,7 +419,7 @@ abstract class Service extends BaseService
     bool headless = false,
     bool cache = true,
   }) async {
-    if (init.fetchHeadless || _tempHeadless) headless = init.fetchHeadless;
+    if (init.fetchHeadless || _tempHeadless) headless = true;
 
     final record = await ServiceSettingsController.instance.get(uid);
     String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;
