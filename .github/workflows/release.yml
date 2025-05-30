@@ -26,7 +26,7 @@ jobs:
       - uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
-          version: 3.29.3
+          version: 3.32.0
 
       - run: flutter pub get
 
@@ -83,7 +83,7 @@ jobs:
       - uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
-          version: 3.29.3
+          version: 3.32.0
 
       - run: flutter pub get
 
@@ -157,7 +157,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.29.3"
+          flutter-version: "3.32.0"
           channel: stable
 
       - name: Enable Windows desktop
@@ -210,7 +210,7 @@ jobs:
       - uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
-          version: 3.29.3
+          version: 3.32.0
 
       - name: Install dependencies
         run: sh linux_setup.sh
