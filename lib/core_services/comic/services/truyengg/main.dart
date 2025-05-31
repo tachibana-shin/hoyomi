@@ -140,15 +140,15 @@ class TruyenGGService extends ABComicService
     );
 
     final timeAgoElement = itemComic.queryOne('.time-ago');
-    final timeAgo =
-        timeAgoElement.isNotEmpty
-            ? convertTimeAgoToUtc(timeAgoElement.text())
-            : null;
+    final timeAgo = timeAgoElement.isNotEmpty
+        ? convertTimeAgoToUtc(timeAgoElement.text())
+        : null;
     final String notice = itemComic.queryOne('.type-label').text();
 
     final rateValueText = itemComic.queryOne('.rate-star').text();
-    final double? rate =
-        rateValueText.isNotEmpty ? double.tryParse(rateValueText) : null;
+    final double? rate = rateValueText.isNotEmpty
+        ? double.tryParse(rateValueText)
+        : null;
 
     return Comic(
       image: image,
@@ -172,32 +172,29 @@ class TruyenGGService extends ABComicService
     return ComicHome(
       categories: [
         HomeComicCategory(
-          items:
-              categories
-                  .first()
-                  .query('.item_home')
-                  .map((element) => parseComic(element, baseUrl))
-                  .toList(),
+          items: categories
+              .first()
+              .query('.item_home')
+              .map((element) => parseComic(element, baseUrl))
+              .toList(),
           name: 'Mới Cập Nhật',
           categoryId: 'truyen-moi-cap-nhat',
         ),
         HomeComicCategory(
-          items:
-              categories
-                  .eq(1)
-                  .query('.item_home')
-                  .map((element) => parseComic(element, baseUrl))
-                  .toList(),
+          items: categories
+              .eq(1)
+              .query('.item_home')
+              .map((element) => parseComic(element, baseUrl))
+              .toList(),
           name: 'Bình Chọn',
           categoryId: 'top-binh-chon',
         ),
         HomeComicCategory(
-          items:
-              categories
-                  .eq(2)
-                  .query('.item_home')
-                  .map((element) => parseComic(element, baseUrl))
-                  .toList(),
+          items: categories
+              .eq(2)
+              .query('.item_home')
+              .map((element) => parseComic(element, baseUrl))
+              .toList(),
           name: 'Xem Nhiều',
           categoryId: 'top-thang',
         ),
@@ -222,12 +219,11 @@ class TruyenGGService extends ABComicService
     final status$ =
         _getInfoTale(tales, 'Trạng Thái:')?.textRaw()?.toLowerCase() ??
         'Unknown';
-    final status =
-        status$ == 'đang cập nhật'
-            ? StatusEnum.ongoing
-            : status$ == 'unknown'
-            ? StatusEnum.unknown
-            : StatusEnum.completed;
+    final status = status$ == 'đang cập nhật'
+        ? StatusEnum.ongoing
+        : status$ == 'unknown'
+        ? StatusEnum.unknown
+        : StatusEnum.completed;
     final views = int.tryParse(
       _getInfoTale(tales, 'Lượt Xem:')?.textRaw()?.replaceAll(',', '') ?? '',
     );
@@ -245,14 +241,13 @@ class TruyenGGService extends ABComicService
             )
             as Map<String, dynamic>;
 
-    final rate =
-        rate$.containsKey('aggregateRating')
-            ? RateValue(
-              best: int.parse('${rate$['aggregateRating']['bestRating']}'),
-              count: int.parse(rate$['aggregateRating']['ratingCount']),
-              value: double.parse(rate$['aggregateRating']['ratingValue']),
-            )
-            : null;
+    final rate = rate$.containsKey('aggregateRating')
+        ? RateValue(
+            best: int.parse('${rate$['aggregateRating']['bestRating']}'),
+            count: int.parse(rate$['aggregateRating']['ratingCount']),
+            value: double.parse(rate$['aggregateRating']['ratingValue']),
+          )
+        : null;
 
     final genres = $('.clblue').map(
       (anchor) => Genre(
@@ -286,12 +281,11 @@ class TruyenGGService extends ABComicService
         order: index,
       );
     });
-    final lastModified =
-        rate$.containsKey('dateModified')
-            ? DateTime.parse(rate$['dateModified'])
-            : DateFormat(
-              'dd/MM/yyyy',
-            ).parse($('div.w110.text-right > span > em', single: true).text());
+    final lastModified = rate$.containsKey('dateModified')
+        ? DateTime.parse(rate$['dateModified'])
+        : DateFormat(
+            'dd/MM/yyyy',
+          ).parse($('div.w110.text-right > span > em', single: true).text());
 
     return MetaComic(
       name: name,
@@ -364,35 +358,33 @@ class TruyenGGService extends ABComicService
     var chapterId = context.chapterId;
     if (chapterId != null) {
       // pre-fetch
-      chapterId =
-          _episodeIdStore[chapterId] ??=
-              (await fetch$(getURL(context.comicId, chapterId: chapterId)))(
-                '#episode_id',
-                single: true,
-              ).val();
+      chapterId = _episodeIdStore[chapterId] ??= (await fetch$(
+        getURL(context.comicId, chapterId: chapterId),
+      ))('#episode_id', single: true).val();
     }
 
     final docB = parse$(await fetch(getURL(context.comicId)));
-    final $ =
-        page == 1 && parentId == 0
-            ? docB
-            : await fetch$(
-              '$baseUrl/frontend/comment/list',
-              body: {
-                (baseUrl.contains('gg') ? 'comic_id' : 'book_id'):
-                    RegExp(r'(\d+)$').firstMatch(context.comicId)!.group(1)!,
-                'parent_id': parentId,
-                'team_id': docB('#team_id', single: true).val(),
-                'token': docB('#csrf-token', single: true).val(),
-                'page': page,
-                'episode_id': chapterId,
-              },
-              headers: Headers({'x-requested-with': 'XMLHttpRequest'}),
-            );
+    final $ = page == 1 && parentId == 0
+        ? docB
+        : await fetch$(
+            '$baseUrl/frontend/comment/list',
+            body: {
+              (baseUrl.contains('gg') ? 'comic_id' : 'book_id'): RegExp(
+                r'(\d+)$',
+              ).firstMatch(context.comicId)!.group(1)!,
+              'parent_id': parentId,
+              'team_id': docB('#team_id', single: true).val(),
+              'token': docB('#csrf-token', single: true).val(),
+              'page': page,
+              'episode_id': chapterId,
+            },
+            headers: Headers({'x-requested-with': 'XMLHttpRequest'}),
+          );
 
     final items = $('.info-comment').map((element) {
-      final id =
-          RegExp(r'child_(\d+)').firstMatch(element.className())!.group(1)!;
+      final id = RegExp(
+        r'child_(\d+)',
+      ).firstMatch(element.className())!.group(1)!;
 
       final photoUrl =
           element.queryOne('.avartar-comment> img').attrRaw('data-src') ??
@@ -414,12 +406,9 @@ class TruyenGGService extends ABComicService
       );
 
       final countReply$ = element.queryOne('.text-list-reply').text();
-      final countReply =
-          countReply$.isNotEmpty
-              ? int.parse(
-                RegExp(r'(\d+)').firstMatch(countReply$)?.group(0) ?? '0',
-              )
-              : 0;
+      final countReply = countReply$.isNotEmpty
+          ? int.parse(RegExp(r'(\d+)').firstMatch(countReply$)?.group(0) ?? '0')
+          : 0;
 
       final canDelete = element.queryOne('.remove_comnent').isNotEmpty;
 
@@ -500,12 +489,11 @@ class TruyenGGService extends ABComicService
       categoryId: 'tim-kiem-nang-cao',
       page: page!,
       filters: {
-        'category':
-            comic.genres
-                .toList()
-                .sublist(0, min(3, comic.genres.length))
-                .map((e) => RegExp(r'\d+').allMatches(e.genreId).last.group(0)!)
-                .toList(),
+        'category': comic.genres
+            .toList()
+            .sublist(0, min(3, comic.genres.length))
+            .map((e) => RegExp(r'\d+').allMatches(e.genreId).last.group(0)!)
+            .toList(),
       },
     )).items;
   }
@@ -532,16 +520,13 @@ class TruyenGGService extends ABComicService
     final lastPageLink = $('.pagination > a:last-child', single: true);
     final lastPageLinkText =
         lastPageLink.attrRaw('href') ?? lastPageLink.textRaw();
-    final maxPage =
-        lastPageLinkText?.isNotEmpty == true
-            ? int.parse(
-              !lastPageLinkText!.contains('javascript')
-                  ? RegExp(
-                    r'trang-(\d+)',
-                  ).firstMatch(lastPageLinkText)!.group(1)!
-                  : lastPageLink.textRaw() ?? '1',
-            )
-            : 1;
+    final maxPage = lastPageLinkText?.isNotEmpty == true
+        ? int.parse(
+            !lastPageLinkText!.contains('javascript')
+                ? RegExp(r'trang-(\d+)').firstMatch(lastPageLinkText)!.group(1)!
+                : lastPageLink.textRaw() ?? '1',
+          )
+        : 1;
 
     return ComicCategory(
       name: '',
@@ -569,14 +554,13 @@ class TruyenGGService extends ABComicService
       '.pagination > a:last-child',
       single: true,
     ).attr('href');
-    final maxPage =
-        lastPageLink.isNotEmpty
-            ? int.tryParse(
-                  RegExp(r'trang-(\d+)').firstMatch(lastPageLink)?.group(1) ??
-                      '1',
-                ) ??
-                1
-            : 1;
+    final maxPage = lastPageLink.isNotEmpty
+        ? int.tryParse(
+                RegExp(r'trang-(\d+)').firstMatch(lastPageLink)?.group(1) ??
+                    '1',
+              ) ??
+              1
+        : 1;
 
     return ComicCategory(
       name: $('.title_cate', single: true).text(),

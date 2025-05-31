@@ -12,9 +12,8 @@ part 'watch_page_schema.g.dart';
 /// The watch page object, which can be null if no data is available.
 @Freezed()
 abstract class WatchPageSchema with _$WatchPageSchema {
-  const factory WatchPageSchema({
-    required Data3? data,
-  }) = _WatchPageSchema;
-  
-  factory WatchPageSchema.fromJson(Map<String, Object?> json) => _$WatchPageSchemaFromJson(json);
+  const factory WatchPageSchema({required Data3? data}) = _WatchPageSchema;
+
+  factory WatchPageSchema.fromJson(Map<String, Object?> json) =>
+      _$WatchPageSchemaFromJson(json);
 }

@@ -61,17 +61,14 @@ class _FollowsComicPageState extends State<FollowsComicPage> {
                 final result = await _getData(_pageKey);
                 _pageKey++;
 
-                final isLastPage = result.page >= result.totalPages;
-                return (isLastPage: isLastPage, data: result.items);
-              },
-              itemBuilder: (context, follow, index) {
-                return VerticalComic(
-                  comic: follow.item,
-                  sourceId: follow.sourceId,
-                );
-              },
-            ),
-          ),
+            final isLastPage = result.page >= result.totalPages;
+            return (isLastPage: isLastPage, data: result.items);
+          },
+          itemBuilder: (context, follow, index) {
+            return VerticalComic(comic: follow.item, sourceId: follow.sourceId);
+          },
+        ),
+      ),
     );
   }
 }

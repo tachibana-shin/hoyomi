@@ -74,18 +74,17 @@ Future<void> _setupServices() async {
   final settings = await GeneralSettingsController.instance.get();
 
   if (settings?.sortComicService != null) {
-    final services =
-        settings!.sortComicService!
-            .map((id) {
-              final service = _allComicServices[id];
-              if (service == null) {
-                showSnackBar(Text('Service $id not install.'));
-              }
+    final services = settings!.sortComicService!
+        .map((id) {
+          final service = _allComicServices[id];
+          if (service == null) {
+            showSnackBar(Text('Service $id not install.'));
+          }
 
-              return service;
-            })
-            .whereType<ABComicService>()
-            .toList();
+          return service;
+        })
+        .whereType<ABComicService>()
+        .toList();
 
     for (final service in _allComicServices.values) {
       if (!services.contains(service)) services.add(service);
@@ -95,18 +94,17 @@ Future<void> _setupServices() async {
   }
   // eiga services
   if (settings?.sortEigaService != null) {
-    final services =
-        settings!.sortEigaService!
-            .map((id) {
-              final service = _allEigaServices[id];
-              if (service == null) {
-                showSnackBar(Text('Service $id not install.'));
-              }
+    final services = settings!.sortEigaService!
+        .map((id) {
+          final service = _allEigaServices[id];
+          if (service == null) {
+            showSnackBar(Text('Service $id not install.'));
+          }
 
-              return service;
-            })
-            .whereType<ABEigaService>()
-            .toList();
+          return service;
+        })
+        .whereType<ABEigaService>()
+        .toList();
 
     for (final service in _allEigaServices.values) {
       if (!services.contains(service)) services.add(service);
@@ -119,16 +117,18 @@ Future<void> _setupServices() async {
   watch$([comicServices], () {
     GeneralSettingsController.instance.save(
       (settings) => settings.copyWith(
-        sortComicService:
-            comicServices.value.map((service) => service.uid).toList(),
+        sortComicService: comicServices.value
+            .map((service) => service.uid)
+            .toList(),
       ),
     );
   });
   watch$([eigaServices], () {
     GeneralSettingsController.instance.save(
       (settings) => settings.copyWith(
-        sortEigaService:
-            eigaServices.value.map((service) => service.uid).toList(),
+        sortEigaService: eigaServices.value
+            .map((service) => service.uid)
+            .toList(),
       ),
     );
   });

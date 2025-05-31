@@ -119,10 +119,9 @@ class CardItem extends StatelessWidget {
                                 bottom: 4.0,
                               ),
                               decoration: BoxDecoration(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainer,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainer,
                                 borderRadius: BorderRadius.circular(14.0),
                               ),
                               child: Text(
@@ -220,8 +219,9 @@ class CardItem extends StatelessWidget {
                             bottom: 4.0,
                           ),
                           decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).colorScheme.surfaceContainer,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainer,
                             borderRadius: BorderRadius.circular(14.0),
                           ),
                           child: widgetStar,
@@ -247,8 +247,9 @@ class CardItem extends StatelessWidget {
                         Theme.of(context).colorScheme.onTertiaryFixed,
                       ),
                       backgroundBorder: Colors.transparent,
-                      backgroundColor:
-                          Theme.of(context).colorScheme.tertiaryFixedDim,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.tertiaryFixedDim,
                       size: 25,
                     ),
                   ),

@@ -129,7 +129,9 @@ class _ListEpisodesState extends State<ListEpisodes>
   }
 
   void _updateEpisodesEiga(EigaEpisodes newValue) {
-    _episodesEiga.force(Future.value(newValue));
+    if (mounted) {
+      _episodesEiga.force(Future.value(newValue));
+    }
   }
 
   @override
@@ -161,8 +163,9 @@ class _ListEpisodesState extends State<ListEpisodes>
             return const Center(child: Text('No data available'));
           }
 
-          final episodesEiga =
-              waiting ? EigaEpisodes.createFakeData() : snapshot.data!;
+          final episodesEiga = waiting
+              ? EigaEpisodes.createFakeData()
+              : snapshot.data!;
 
           final isVertical = widget.scrollDirection == Axis.vertical;
 
@@ -227,25 +230,24 @@ class _ListEpisodesState extends State<ListEpisodes>
                 itemCount: itemCount,
                 shrinkWrap: true,
                 controller: widget.controller,
-                itemBuilder:
-                    (context, index) => _itemBuilder(
-                      context,
-                      key: indexActive == index + start ? activeKey : null,
-                      index: index + start,
-                      episodesEiga: episodesEiga,
-                      waiting: waiting,
-                      isVertical: isVertical,
-                      height: height,
-                      inGridMode: false,
-                    ),
+                itemBuilder: (context, index) => _itemBuilder(
+                  context,
+                  key: indexActive == index + start ? activeKey : null,
+                  index: index + start,
+                  episodesEiga: episodesEiga,
+                  waiting: waiting,
+                  isVertical: isVertical,
+                  height: height,
+                  inGridMode: false,
+                ),
               );
             });
             return waiting
                 ? Skeletonizer(
-                  enabled: true,
-                  enableSwitchAnimation: true,
-                  child: child,
-                )
+                    enabled: true,
+                    enableSwitchAnimation: true,
+                    child: child,
+                  )
                 : child;
           }
 
@@ -384,26 +386,23 @@ class _ListEpisodesState extends State<ListEpisodes>
       final episode = episodesEiga.episodes[index];
       final active = !waiting && _checkEpisodeActive(episode, episodesEiga);
 
-      final watchTime =
-          usePick(
-            _watchTimeEpisodes,
-            (value) => value?[episode.episodeId],
-          ).value;
+      final watchTime = usePick(
+        _watchTimeEpisodes,
+        (value) => value?[episode.episodeId],
+      ).value;
 
       if (isVertical) {
         return InkWell(
           borderRadius: BorderRadius.circular(7),
-          onTap:
-              () => widget.onTapEpisode(
-                indexEpisode: index,
-                episodesEiga: episodesEiga,
-              ),
+          onTap: () => widget.onTapEpisode(
+            indexEpisode: index,
+            episodesEiga: episodesEiga,
+          ),
           child: Container(
             decoration: BoxDecoration(
-              color:
-                  active
-                      ? Theme.of(context).colorScheme.tertiaryContainer
-                      : null,
+              color: active
+                  ? Theme.of(context).colorScheme.tertiaryContainer
+                  : null,
               borderRadius: BorderRadius.circular(7.0),
             ),
             padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 7.0),
@@ -443,9 +442,9 @@ class _ListEpisodesState extends State<ListEpisodes>
                                     watchTime.duration.inMilliseconds,
                                 backgroundColor:
                                     Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Color.fromRGBO(0, 0, 0, 0.6)
-                                        : Color.fromRGBO(255, 255, 255, 0.6),
+                                        Brightness.light
+                                    ? Color.fromRGBO(0, 0, 0, 0.6)
+                                    : Color.fromRGBO(255, 255, 255, 0.6),
                                 valueColor: AlwaysStoppedAnimation<Color>(
                                   active
                                       ? Color(0xFF2196F3)
@@ -468,29 +467,27 @@ class _ListEpisodesState extends State<ListEpisodes>
                       SizedBox(height: 3.0),
                       Text(
                         'Episode ${episode.name}',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium?.copyWith(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w400,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w400,
+                            ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (watchTime != null)
                         Text(
                           'Last time watch ${formatDuration(watchTime.position)} / ${formatDuration(watchTime.duration)}',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleMedium?.copyWith(
-                            fontSize: 12.0,
-                            fontWeight: FontWeight.w400,
-                            color: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.color
-                                ?.withValues(alpha: 0.8),
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w400,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.color
+                                    ?.withValues(alpha: 0.8),
+                              ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -498,12 +495,11 @@ class _ListEpisodesState extends State<ListEpisodes>
                       if (episode.description?.isNotEmpty == true)
                         Text(
                           episode.description!,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(
-                            fontSize: 12.0,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                fontSize: 12.0,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
                           maxLines: 2,
                         ),
                     ],
@@ -528,23 +524,20 @@ class _ListEpisodesState extends State<ListEpisodes>
         padding: EdgeInsets.only(right: 8.0),
         child: InkWell(
           borderRadius: BorderRadius.circular(7),
-          onTap:
-              () => widget.onTapEpisode(
-                indexEpisode: index,
-                episodesEiga: episodesEiga,
-              ),
+          onTap: () => widget.onTapEpisode(
+            indexEpisode: index,
+            episodesEiga: episodesEiga,
+          ),
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(
-                color:
-                    active
-                        ? Theme.of(context).colorScheme.tertiaryContainer
-                        : Colors.grey.withAlpha(60),
+                color: active
+                    ? Theme.of(context).colorScheme.tertiaryContainer
+                    : Colors.grey.withAlpha(60),
               ),
-              color:
-                  active
-                      ? Theme.of(context).colorScheme.tertiaryContainer
-                      : Colors.transparent,
+              color: active
+                  ? Theme.of(context).colorScheme.tertiaryContainer
+                  : Colors.transparent,
               borderRadius: BorderRadius.circular(7),
             ),
             clipBehavior: Clip.antiAlias,

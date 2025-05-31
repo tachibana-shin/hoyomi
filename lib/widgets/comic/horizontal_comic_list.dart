@@ -69,16 +69,15 @@ class HorizontalComicList extends StatelessWidget {
             title: title,
             subtitle: subtitle,
             more: more,
-            builder:
-                (viewFraction) => Center(
-                  child: Service.errorWidgetBuilder(
-                    context,
-                    error: snapshot.error,
-                    trace: snapshot.stackTrace,
-                    service: null,
-                    orElse: (error) => Text('Error: $error'),
-                  ),
-                ),
+            builder: (viewFraction) => Center(
+              child: Service.errorWidgetBuilder(
+                context,
+                error: snapshot.error,
+                trace: snapshot.stackTrace,
+                service: null,
+                orElse: (error) => Text('Error: $error'),
+              ),
+            ),
             titleLength: 1,
             itemSubtitle: false,
             itemTimeAgo: false,

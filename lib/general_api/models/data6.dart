@@ -25,6 +25,6 @@ abstract class Data6 with _$Data6 {
     /// ISO 8601 format timestamp when the watch time was last updated.
     required String updatedAt,
   }) = _Data6;
-  
+
   factory Data6.fromJson(Map<String, Object?> json) => _$Data6FromJson(json);
 }

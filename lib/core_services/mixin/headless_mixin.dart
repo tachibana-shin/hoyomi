@@ -11,13 +11,13 @@ import 'package:hoyomi/core_services/mixin/export.dart';
 import '../service.dart';
 
 mixin HeadlessMixin on BaseService {
-  Future<InAppWebViewController>? _initHeadlessFuture;
+  final Map<String, Future<InAppWebViewController>?> _initHeadlessFuture = {};
 
-  Future<InAppWebViewController> _$initHeadless() {
+  Future<InAppWebViewController> _$initHeadless(Uri uri) {
     final completer = Completer<InAppWebViewController>();
 
     final headless = HeadlessInAppWebView(
-      initialUrlRequest: URLRequest(url: WebUri('$baseUrl/favicon.ico')),
+      initialUrlRequest: URLRequest(url: WebUri('${uri.origin}/favicon.ico')),
       initialSettings: InAppWebViewSettings(
         incognito: false,
         javaScriptCanOpenWindowsAutomatically: true,
@@ -63,13 +63,13 @@ mixin HeadlessMixin on BaseService {
     return completer.future;
   }
 
-  Future<InAppWebViewController> _initHeadless() async {
+  Future<InAppWebViewController> _initHeadless(Uri uri) async {
     try {
-      _initHeadlessFuture ??= _$initHeadless();
+      _initHeadlessFuture[uri.origin] ??= _$initHeadless(uri);
 
-      return await _initHeadlessFuture!;
+      return await _initHeadlessFuture[uri.origin]!;
     } catch (error) {
-      _initHeadlessFuture = null;
+      _initHeadlessFuture[uri.origin] = null;
       rethrow;
     }
   }
@@ -79,8 +79,12 @@ mixin HeadlessMixin on BaseService {
     Map<String, dynamic>? body,
     required Headers headers,
     bool notify = true,
+    bool base64 = false,
+    bool createNewHeadless = false,
   }) async {
-    final controller = await _initHeadless();
+    final controller = await _initHeadless(
+      Uri.parse(createNewHeadless ? url : baseUrl),
+    );
 
     final DateTime? startTime = kDebugMode ? DateTime.now() : null;
     if (kDebugMode) {
@@ -109,9 +113,9 @@ mixin HeadlessMixin on BaseService {
         functionBody: '''
 const body = rawBody ? new FormData() : null
 if (body) {
-  Object.entries(rawBody).map((key, value) => {
-    if (Array.isArray(value)) value.forEach((val) => formData.append(key, val))
-    else formData.set(key, value)
+  Object.entries(rawBody).map(([key, value]) => {
+    if (Array.isArray(value)) value.forEach((val) => body.append(key, val))
+    else body.set(key, value)
   })
 }
 
@@ -125,7 +129,12 @@ return await fetch(url, {
     statusCode: res.status,
     statusText: res.statusText,
     headers: Object.fromEntries(res.headers.entries()),
-    data: await res.text()
+    data: base64 ? await res.arrayBuffer().then(buffer => {
+      const bytes = new Uint8Array(buffer)
+      let binary = ""
+      for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i])
+      return btoa(binary)
+    }) : await res.text()
   }
 })
 ''',
@@ -134,6 +143,7 @@ return await fetch(url, {
           'method': body == null ? 'get' : 'post',
           'headers': headers.toMap(),
           'rawBody': body,
+          'base64': base64,
         },
         contentWorld: ContentWorld.PAGE,
       );

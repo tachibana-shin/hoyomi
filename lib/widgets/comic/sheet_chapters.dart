@@ -198,19 +198,18 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                         );
 
                     return Watch(() {
-                      final watchPage =
-                          usePick(
-                            _watchPageChapters,
-                            (value) => value?[chapter.chapterId],
-                          ).value;
+                      final watchPage = usePick(
+                        _watchPageChapters,
+                        (value) => value?[chapter.chapterId],
+                      ).value;
 
                       return Container(
                         key: selected && notSelected ? activeKey : null,
-                        color:
-                            _itemSelected.value.contains(chapter.chapterId)
-                                ? context.theme.colorScheme.onSurface
-                                    .withValues(alpha: 0.2)
-                                : null,
+                        color: _itemSelected.value.contains(chapter.chapterId)
+                            ? context.theme.colorScheme.onSurface.withValues(
+                                alpha: 0.2,
+                              )
+                            : null,
                         child: InkWell(
                           enableFeedback: true,
                           autofocus: selected,
@@ -231,16 +230,16 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                                     chapter.name,
                                     style: TextStyle(
                                       fontSize: 14.0,
-                                      fontWeight:
-                                          selected ? FontWeight.w500 : null,
-                                      color:
-                                          selected
-                                              ? Theme.of(
-                                                context,
-                                              ).colorScheme.tertiary
-                                              : Theme.of(
-                                                context,
-                                              ).colorScheme.onSurface,
+                                      fontWeight: selected
+                                          ? FontWeight.w500
+                                          : null,
+                                      color: selected
+                                          ? Theme.of(
+                                              context,
+                                            ).colorScheme.tertiary
+                                          : Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
                                     ),
                                   ),
                                   if (chapter.fullName != null)
@@ -248,32 +247,31 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                                       chapter.fullName!,
                                       style: TextStyle(
                                         fontSize: 13.0,
-                                        fontWeight:
-                                            selected ? FontWeight.w500 : null,
-                                        color:
-                                            selected
-                                                ? Theme.of(
-                                                  context,
-                                                ).colorScheme.secondary
-                                                : Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary
-                                                    .withValues(alpha: 0.7),
+                                        fontWeight: selected
+                                            ? FontWeight.w500
+                                            : null,
+                                        color: selected
+                                            ? Theme.of(
+                                                context,
+                                              ).colorScheme.secondary
+                                            : Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary
+                                                  .withValues(alpha: 0.7),
                                       ),
                                     ),
                                   if (chapter.time != null)
                                     Text(
                                       formatTimeAgo(chapter.time!),
                                       style: TextStyle(
-                                        color:
-                                            selected
-                                                ? Theme.of(
-                                                  context,
-                                                ).colorScheme.secondary
-                                                : Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary
-                                                    .withValues(alpha: 0.85),
+                                        color: selected
+                                            ? Theme.of(
+                                                context,
+                                              ).colorScheme.secondary
+                                            : Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary
+                                                  .withValues(alpha: 0.85),
                                         fontSize: 12.0,
                                       ),
                                     ),
@@ -321,101 +319,80 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
 
                                     FutureBuilder(
                                       future: downloadedChapter,
-                                      builder:
-                                          (context, snapshot) => snapshot.when(
-                                            error:
-                                                (error, _) =>
-                                                    Text(
-                                                      '$error',
-                                                      maxLines: 1,
-                                                    ).expanded(),
-                                            loading:
-                                                () => SizedBox(
-                                                  width: 4,
-                                                  height: 4,
-                                                ),
-                                            data: (downloadedChapter, _) {
-                                              if (downloadedChapter != null &&
-                                                  downloadedChapter.doneAt >
-                                                      0) {
-                                                return Iconify(Fluent.save24);
-                                              }
+                                      builder: (context, snapshot) => snapshot.when(
+                                        error: (error, _) => Text(
+                                          '$error',
+                                          maxLines: 1,
+                                        ).expanded(),
+                                        loading: () =>
+                                            SizedBox(width: 4, height: 4),
+                                        data: (downloadedChapter, _) {
+                                          if (downloadedChapter != null &&
+                                              downloadedChapter.doneAt > 0) {
+                                            return Iconify(Fluent.save24);
+                                          }
 
-                                              return Watch(() {
-                                                final downloadState =
-                                                    ComicDownloader.instance
-                                                        .getDownloaderState(
-                                                          service:
-                                                              widget.service,
-                                                          comicId:
-                                                              widget.comicId,
-                                                          chapterId:
-                                                              chapter.chapterId,
-                                                        );
-                                                if (downloadState != null) {
-                                                  return Watch(() {
-                                                    if (downloadState
-                                                            .value
-                                                            .done ==
-                                                        true) {
-                                                      return Iconify(
-                                                        Fluent.save24,
-                                                      );
-                                                    }
-                                                    return Text(
-                                                      'DL.${(downloadState.value.progress * 100).round()}%',
+                                          return Watch(() {
+                                            final downloadState =
+                                                ComicDownloader.instance
+                                                    .getDownloaderState(
+                                                      service: widget.service,
+                                                      comicId: widget.comicId,
+                                                      chapterId:
+                                                          chapter.chapterId,
                                                     );
-                                                  });
+                                            if (downloadState != null) {
+                                              return Watch(() {
+                                                if (downloadState.value.done ==
+                                                    true) {
+                                                  return Iconify(Fluent.save24);
                                                 }
-
-                                                return IconButton(
-                                                  icon: Row(
-                                                    children: [
-                                                      if (downloadedChapter !=
-                                                          null)
-                                                        Text(
-                                                          '${(downloadedChapter.count / downloadedChapter.pageCount) * 100}%',
-                                                          maxLines: 1,
-                                                        ),
-                                                      Iconify(Ion.download),
-                                                    ],
-                                                  ),
-                                                  onPressed: () async {
-                                                    try {
-                                                      await ComicDownloader
-                                                          .instance
-                                                          .downloadChapter(
-                                                            service:
-                                                                widget.service,
-                                                            comicId:
-                                                                widget.comicId,
-                                                            metaComic:
-                                                                widget.comic,
-                                                            chapterId:
-                                                                chapter
-                                                                    .chapterId,
-                                                            chapter: chapter,
-                                                            pages: await widget
-                                                                .service
-                                                                .getPages(
-                                                                  widget
-                                                                      .comicId,
-                                                                  chapter
-                                                                      .chapterId,
-                                                                ),
-                                                          );
-                                                    } catch (error) {
-                                                      showSnackBar(
-                                                        Text(
-                                                          'Download error: $error',
-                                                        ),
-                                                      );
-                                                    }
-                                                  },
+                                                return Text(
+                                                  'DL.${(downloadState.value.progress * 100).round()}%',
                                                 );
                                               });
-                                            },
-                                          ),
+                                            }
+
+                                            return IconButton(
+                                              icon: Row(
+                                                children: [
+                                                  if (downloadedChapter != null)
+                                                    Text(
+                                                      '${(downloadedChapter.count / downloadedChapter.pageCount) * 100}%',
+                                                      maxLines: 1,
+                                                    ),
+                                                  Iconify(Ion.download),
+                                                ],
+                                              ),
+                                              onPressed: () async {
+                                                try {
+                                                  await ComicDownloader.instance
+                                                      .downloadChapter(
+                                                        service: widget.service,
+                                                        comicId: widget.comicId,
+                                                        metaComic: widget.comic,
+                                                        chapterId:
+                                                            chapter.chapterId,
+                                                        chapter: chapter,
+                                                        pages: await widget
+                                                            .service
+                                                            .getPages(
+                                                              widget.comicId,
+                                                              chapter.chapterId,
+                                                            ),
+                                                      );
+                                                } catch (error) {
+                                                  showSnackBar(
+                                                    Text(
+                                                      'Download error: $error',
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                            );
+                                          });
+                                        },
+                                      ),
                                     ),
                                   ],
                                 ),

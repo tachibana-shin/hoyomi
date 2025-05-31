@@ -1220,7 +1220,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Widget _buildSeasonArea({
-    scrollDirection = Axis.horizontal,
+    Axis scrollDirection = Axis.horizontal,
     ScrollController? controller,
     bool inModal = false,
   }) {
@@ -1247,14 +1247,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       ),
               getWatchTimeEpisodes:
                   (episodesEiga) async =>
-                      _cacheWatchTimeStore[eigaId] ??=
-                          _service is EigaWatchTimeMixin
-                              ? await (_service as EigaWatchTimeMixin)
-                                  .getWatchTimeEpisodes(
-                                    eigaId: _eigaId.value,
-                                    episodes: episodesEiga.episodes,
-                                  )
-                              : {},
+                      _cacheWatchTimeStore[eigaId] ??= await (_service
+                              as EigaWatchTimeMixin)
+                          .getWatchTimeEpisodes(
+                            eigaId: _eigaId.value,
+                            episodes: episodesEiga.episodes,
+                          ),
               eager: true,
               scrollDirection: scrollDirection,
               controller: controller,
@@ -1314,13 +1312,11 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         getWatchTimeEpisodes:
                             (episodesEiga) async =>
                                 _cacheWatchTimeStore[season.eigaId] ??=
-                                    _service is EigaWatchTimeMixin
-                                        ? await (_service as EigaWatchTimeMixin)
-                                            .getWatchTimeEpisodes(
-                                              eigaId: season.eigaId,
-                                              episodes: episodesEiga.episodes,
-                                            )
-                                        : {},
+                                    await (_service as EigaWatchTimeMixin)
+                                        .getWatchTimeEpisodes(
+                                          eigaId: season.eigaId,
+                                          episodes: episodesEiga.episodes,
+                                        ),
                         eager: true,
                         scrollDirection: scrollDirection,
                         controller: controller,

@@ -11,12 +11,10 @@ part 'data.g.dart';
 abstract class Data with _$Data {
   const factory Data({
     /// The timestamp when the watch history entry was created.
-    @JsonKey(name: 'created_at')
-    required String createdAt,
+    @JsonKey(name: 'created_at') required String createdAt,
 
     /// The identifier for the specific episode of the text.
-    @JsonKey(name: 'comic_text_id')
-    required String comicTextId,
+    @JsonKey(name: 'comic_text_id') required String comicTextId,
 
     /// The name of the watch history item (e.g., the episode title).
     required String name,
@@ -27,34 +25,26 @@ abstract class Data with _$Data {
     required String poster,
 
     /// The source ID associated with the episode.
-    @JsonKey(name: 'source_id')
-    required String sourceId,
+    @JsonKey(name: 'source_id') required String sourceId,
 
     /// The current watch page in seconds.
-    @JsonKey(name: 'watch_cur')
-    required num watchCur,
+    @JsonKey(name: 'watch_cur') required num watchCur,
 
     /// The total page of the episode in seconds.
-    @JsonKey(name: 'watch_dur')
-    required num watchDur,
+    @JsonKey(name: 'watch_dur') required num watchDur,
 
     /// The unique identifier for the watch session.
-    @JsonKey(name: 'watch_id')
-    required String watchId,
+    @JsonKey(name: 'watch_id') required String watchId,
 
     /// The name associated with the watch session.
-    @JsonKey(name: 'watch_name')
-    required String watchName,
+    @JsonKey(name: 'watch_name') required String watchName,
 
     /// The timestamp when the watch history entry was last updated.
-    @JsonKey(name: 'watch_updated_at')
-    required String watchUpdatedAt,
+    @JsonKey(name: 'watch_updated_at') required String watchUpdatedAt,
 
     /// The name of the season the episode belongs to.
-    @JsonKey(name: 'season_name')
-    @Default('')
-    String seasonName,
+    @JsonKey(name: 'season_name') @Default('') String seasonName,
   }) = _Data;
-  
+
   factory Data.fromJson(Map<String, Object?> json) => _$DataFromJson(json);
 }

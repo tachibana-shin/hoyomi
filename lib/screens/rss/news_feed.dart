@@ -86,11 +86,9 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
 
     for (final keyword in keywords) {
       try {
-        final xml =
-            _storeCache['$keyword-$page'] ??=
-                (await dio.get(
-                  'https://www.google.com/search?q=$keyword&tbm=nws&gbv=1&start=${page * 10}',
-                )).data;
+        final xml = _storeCache['$keyword-$page'] ??= (await dio.get(
+          'https://www.google.com/search?q=$keyword&tbm=nws&gbv=1&start=${page * 10}',
+        )).data;
         final feed = _parseRss(xml);
 
         items.addAll(feed);
@@ -119,15 +117,14 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
           .attr('href')
           .replaceFirst(RegExp(r'\/url\?q='), '')
           .replaceFirst('&', '?');
-      final pubDateString =
-          item
-              .queryOne('img')
-              .parent()
-              .parent()
-              .next()
-              .children(0)
-              .queryOne('span')
-              .text();
+      final pubDateString = item
+          .queryOne('img')
+          .parent()
+          .parent()
+          .next()
+          .children(0)
+          .queryOne('span')
+          .text();
       final description = item
           .queryOne('img')
           .parent()
@@ -180,10 +177,8 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
     return Watch(
       () => PullRefreshPage(
         key: ValueKey(widget.type.value),
-        onLoadData:
-            () => _fetchAndParseFeeds(
-              NewsFeedScreenType.values[widget.type.value],
-            ),
+        onLoadData: () =>
+            _fetchAndParseFeeds(NewsFeedScreenType.values[widget.type.value]),
         onLoadFake: () => List.generate(30, (_) => _RssItem.createFakeData()),
         builder: (rawItems, _) {
           int page = 1;
@@ -191,10 +186,11 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
           return Watch(() {
             late final List<_RssItem> items;
             if (widget.sort.value) {
-              items = rawItems.sublist(0)..sort((a, b) {
-                if (a.pubDate == null || b.pubDate == null) return 0;
-                return b.pubDate!.compareTo(a.pubDate!);
-              });
+              items = rawItems.sublist(0)
+                ..sort((a, b) {
+                  if (a.pubDate == null || b.pubDate == null) return 0;
+                  return b.pubDate!.compareTo(a.pubDate!);
+                });
             } else {
               items = rawItems;
             }
@@ -273,10 +269,9 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
                                       child: Row(
                                         children: [
                                           CircleAvatar(
-                                            backgroundColor:
-                                                Theme.of(context)
-                                                    .colorScheme
-                                                    .surfaceContainerHigh,
+                                            backgroundColor: Theme.of(
+                                              context,
+                                            ).colorScheme.surfaceContainerHigh,
                                             radius: 10,
                                             backgroundImage:
                                                 OImage.oImageProvider(

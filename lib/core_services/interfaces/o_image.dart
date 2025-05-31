@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:ui' as ui;
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -80,18 +84,29 @@ sealed class OImage with _$OImage {
     final service = sourceId != null ? getService(sourceId) : null;
 
     return Image(
-      image: CachedNetworkImageProvider(
-        src,
-        headers:
-            Headers({
-              if (service != null) ...{
-                'set-cookie': service.getSetting(key: 'cookie') ?? '',
-                'user-agent': service.getSetting(key: 'user_agent') ?? '',
-                'referer': service.baseUrl,
-              },
-              ...headers?.toMap() ?? {},
-            }).toMap(),
-      ),
+      image: switch (service) {
+        != null when service.headlessMode => _FutureMemoryImage(
+          service
+              .fetchHeadless(
+                src,
+                headers: headers ?? Headers({}),
+                base64: true,
+                createNewHeadless: true,
+              )
+              .then((b64) => base64Decode(b64)),
+        ),
+        _ => CachedNetworkImageProvider(
+          src,
+          headers: Headers({
+            if (service != null) ...{
+              'set-cookie': service.getSetting(key: 'cookie') ?? '',
+              'user-agent': service.getSetting(key: 'user_agent') ?? '',
+              'referer': service.baseUrl,
+            },
+            ...headers?.toMap() ?? {},
+          }).toMap(),
+        ),
+      },
 
       key: key,
       // scale: scale,
@@ -183,4 +198,51 @@ sealed class OImage with _$OImage {
       headers: image.headers?.toMap(),
     );
   }
+}
+
+class _FutureMemoryImage extends ImageProvider<_FutureMemoryImage> {
+  final Future<Uint8List> futureBytes;
+  final double scale = 1.0;
+
+  _FutureMemoryImage(this.futureBytes);
+
+  @override
+  Future<_FutureMemoryImage> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture<_FutureMemoryImage>(this);
+  }
+
+  @override
+  ImageStreamCompleter loadImage(
+    _FutureMemoryImage key,
+    ImageDecoderCallback decode,
+  ) {
+    return OneFrameImageStreamCompleter(_loadAsync(key, decode));
+  }
+
+  Future<ImageInfo> _loadAsync(
+    _FutureMemoryImage key,
+    ImageDecoderCallback decode,
+  ) async {
+    assert(key == this);
+
+    final Uint8List bytes = await futureBytes;
+    if (bytes.isEmpty) {
+      throw StateError('Image bytes are empty');
+    }
+
+    final ui.Codec codec = await decode(
+      await ui.ImmutableBuffer.fromUint8List(bytes),
+    );
+    final ui.FrameInfo frame = await codec.getNextFrame();
+    return ImageInfo(image: frame.image, scale: key.scale);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is _FutureMemoryImage &&
+      other.futureBytes == futureBytes &&
+      other.scale == scale;
+
+  @override
+  int get hashCode => futureBytes.hashCode ^ scale.hashCode;
 }

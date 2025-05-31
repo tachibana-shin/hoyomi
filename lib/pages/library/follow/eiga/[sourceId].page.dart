@@ -60,17 +60,14 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
                 final result = await _getData(_pageKey);
                 _pageKey++;
 
-                final isLastPage = result.page >= result.totalPages;
-                return (isLastPage: isLastPage, data: result.items);
-              },
-              itemBuilder: (context, follow, index) {
-                return VerticalEiga(
-                  eiga: follow.item,
-                  sourceId: follow.sourceId,
-                );
-              },
-            ),
-          ),
+            final isLastPage = result.page >= result.totalPages;
+            return (isLastPage: isLastPage, data: result.items);
+          },
+          itemBuilder: (context, follow, index) {
+            return VerticalEiga(eiga: follow.item, sourceId: follow.sourceId);
+          },
+        ),
+      ),
     );
   }
 }

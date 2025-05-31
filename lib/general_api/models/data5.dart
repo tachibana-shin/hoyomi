@@ -28,6 +28,6 @@ abstract class Data5 with _$Data5 {
     /// The unique identifier for the chapter within the episode or series.
     required String chapId,
   }) = _Data5;
-  
+
   factory Data5.fromJson(Map<String, Object?> json) => _$Data5FromJson(json);
 }

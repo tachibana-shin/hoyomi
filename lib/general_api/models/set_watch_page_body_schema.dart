@@ -26,12 +26,10 @@ abstract class SetWatchPageBodySchema with _$SetWatchPageBodySchema {
     required String poster,
 
     /// Unique identifier for the comic (movie/show) text.
-    @JsonKey(name: 'comic_text_id')
-    required String comicTextId,
+    @JsonKey(name: 'comic_text_id') required String comicTextId,
 
     /// The name of the season.
-    @JsonKey(name: 'season_name')
-    required dynamic seasonName,
+    @JsonKey(name: 'season_name') required dynamic seasonName,
 
     /// Comic status.
     required SetWatchPageBodySchemaStatus status,
@@ -43,13 +41,12 @@ abstract class SetWatchPageBodySchema with _$SetWatchPageBodySchema {
     required num dur,
 
     /// The name of the episode.
-    @JsonKey(name: 'episode_name')
-    required String episodeName,
+    @JsonKey(name: 'episode_name') required String episodeName,
 
     /// Unique identifier for the episode.
-    @JsonKey(name: 'episode_id')
-    required String episodeId,
+    @JsonKey(name: 'episode_id') required String episodeId,
   }) = _SetWatchPageBodySchema;
-  
-  factory SetWatchPageBodySchema.fromJson(Map<String, Object?> json) => _$SetWatchPageBodySchemaFromJson(json);
+
+  factory SetWatchPageBodySchema.fromJson(Map<String, Object?> json) =>
+      _$SetWatchPageBodySchemaFromJson(json);
 }
