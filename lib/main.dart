@@ -2,6 +2,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+// import 'package:hoyomi/background_services/comic_changes.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/plugins/export.dart';
 import 'package:hoyomi/router/index.dart';
@@ -27,6 +28,7 @@ Future<void> main() async {
   await initializeServices();
   await initializeFullscreen();
   await initializeStore();
+  // initializeService();
   initializeRouter();
 
   final savedThemeMode = await AdaptiveTheme.getThemeMode();
