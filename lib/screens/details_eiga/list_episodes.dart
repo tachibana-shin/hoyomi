@@ -181,21 +181,21 @@ class _ListEpisodesState extends State<ListEpisodes>
               false => 0,
             };
 
-            final activeKey = GlobalKey();
+            final child = Watch(key: ValueKey(isVertical), () {
+              final activeKey = GlobalKey();
 
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              Timer(Duration(milliseconds: 70), () {
-                if (widget.controller != null &&
-                    activeKey.currentContext != null) {
-                  Scrollable.ensureVisible(
-                    activeKey.currentContext!,
-                    duration: Duration(milliseconds: 200),
-                  );
-                }
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                Timer(Duration(milliseconds: 70), () {
+                  if (widget.controller != null &&
+                      activeKey.currentContext != null) {
+                    Scrollable.ensureVisible(
+                      activeKey.currentContext!,
+                      duration: Duration(milliseconds: 200),
+                    );
+                  }
+                });
               });
-            });
 
-            final child = Watch(() {
               if (isVertical && showListEpisodeWithGrid.value) {
                 return ResponsiveGridList(
                   horizontalGridSpacing: 16,
@@ -226,8 +226,8 @@ class _ListEpisodesState extends State<ListEpisodes>
 
               return ListView.builder(
                 scrollDirection: widget.scrollDirection,
+                addRepaintBoundaries: false,
                 itemCount: itemCount,
-                shrinkWrap: true,
                 controller: widget.controller,
                 itemBuilder:
                     (context, index) => _itemBuilder(
@@ -595,7 +595,7 @@ class ListEpisodesSkeleton extends StatelessWidget {
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: episodes.length,
-          shrinkWrap: true,
+          addRepaintBoundaries: false,
           itemBuilder: (context, index) {
             final episode = episodes[index];
 

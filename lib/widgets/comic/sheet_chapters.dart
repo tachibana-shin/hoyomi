@@ -179,6 +179,7 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                 heightFactor: 1.0,
                 child: ListView.builder(
                   controller: scrollController,
+                  addRepaintBoundaries: false,
                   // reverse
                   itemCount: chapters.length,
                   itemBuilder: (context2, index) {
