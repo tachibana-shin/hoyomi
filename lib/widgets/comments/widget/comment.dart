@@ -181,12 +181,14 @@ class _CommentState extends State<Comment> with KaeruMixin {
                                 TextSpan(
                                   text:
                                       'View more replies (${widget.comment.countReply})',
-                                  style: Theme.of(context).textTheme.bodyMedium
-                                      ?.copyWith(
-                                        color: Theme.of(
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.copyWith(
+                                    color:
+                                        Theme.of(
                                           context,
                                         ).colorScheme.secondaryFixedDim,
-                                      ),
+                                  ),
                                 ),
                                 WidgetSpan(
                                   child: Padding(
@@ -213,16 +215,17 @@ class _CommentState extends State<Comment> with KaeruMixin {
         ),
         // Replies category
         Watch(
-          () => _showReplies.value
-              ? Comments(
-                  fake: false,
-                  getComments: widget.getComments,
-                  parent: widget.comment,
-                  controller: null,
-                  deleteComment: widget.deleteComment,
-                  setLikeComment: widget.setLikeComment,
-                )
-              : nil,
+          () =>
+              _showReplies.value
+                  ? Comments(
+                    fake: false,
+                    getComments: widget.getComments,
+                    parent: widget.comment,
+                    controller: null,
+                    deleteComment: widget.deleteComment,
+                    setLikeComment: widget.setLikeComment,
+                  )
+                  : nil,
         ),
       ],
     );
@@ -281,38 +284,40 @@ class _CommentState extends State<Comment> with KaeruMixin {
                   child: const Text('Cancel'),
                 ),
                 TextButton(
-                  onPressed: isDeleting
-                      ? null
-                      : () async {
-                          setState(() {
-                            isDeleting = true;
-                          });
-
-                          try {
-                            await widget.deleteComment(
-                              comment: widget.comment,
-                              parent: widget.parent,
-                            );
-                            if (mounted) {
-                              // pop me
-                              widget.onPop();
-                              // ignore: use_build_context_synchronously
-                              Navigator.pop(context);
-                            }
-                          } catch (e) {
+                  onPressed:
+                      isDeleting
+                          ? null
+                          : () async {
                             setState(() {
-                              isDeleting = false;
+                              isDeleting = true;
                             });
-                            showSnackError('delete', e);
-                          }
-                        },
-                  child: isDeleting
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Delete'),
+
+                            try {
+                              await widget.deleteComment(
+                                comment: widget.comment,
+                                parent: widget.parent,
+                              );
+                              if (mounted) {
+                                // pop me
+                                widget.onPop();
+                                // ignore: use_build_context_synchronously
+                                Navigator.pop(context);
+                              }
+                            } catch (e) {
+                              setState(() {
+                                isDeleting = false;
+                              });
+                              showSnackError('delete', e);
+                            }
+                          },
+                  child:
+                      isDeleting
+                          ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : const Text('Delete'),
                 ),
               ],
             );

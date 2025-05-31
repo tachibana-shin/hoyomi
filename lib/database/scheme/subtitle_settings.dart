@@ -57,9 +57,10 @@ extension SubtitleSettingsStyle on SubtitleSettings {
   TextStyle toTextStyle() {
     return TextStyle(
       fontSize: _parseFontSize(fontSize),
-      color: _needsForeground(edgeStyle)
-          ? null
-          : _parseColor(fontColor, fontOpacity),
+      color:
+          _needsForeground(edgeStyle)
+              ? null
+              : _parseColor(fontColor, fontOpacity),
       backgroundColor: _parseColor(bgColor, bgOpacity),
       fontFamily: _parseFontFamily(fontFamily),
       foreground: _parseEdgePaint(edgeStyle, fontColor, fontOpacity),

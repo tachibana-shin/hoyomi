@@ -27,16 +27,15 @@ class _SearchPageState extends State<SearchPage>
   @override
   void initState() {
     super.initState();
-    _tabController =
-        TabController(
-          initialIndex: widget.from == 'eiga' ? 1 : 0,
-          length: 2,
-          vsync: this,
-        )..addListener(() {
-          context.replace(
-            '/search?q=${globalKeyword.value}&from=${_tabController.index == 0 ? 'comic' : 'eiga'}',
-          );
-        });
+    _tabController = TabController(
+      initialIndex: widget.from == 'eiga' ? 1 : 0,
+      length: 2,
+      vsync: this,
+    )..addListener(() {
+      context.replace(
+        '/search?q=${globalKeyword.value}&from=${_tabController.index == 0 ? 'comic' : 'eiga'}',
+      );
+    });
   }
 
   @override

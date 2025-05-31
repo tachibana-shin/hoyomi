@@ -218,44 +218,54 @@ class ManagerPage extends StatelessWidget {
                         builder: (context, setState) {
                           return Column(
                             mainAxisSize: MainAxisSize.min,
-                            children: AdaptiveThemeMode.values.map((mode) {
-                              final icon = {
-                                AdaptiveThemeMode.light:
-                                    Icons.light_mode_rounded,
-                                AdaptiveThemeMode.dark: Icons.dark_mode_rounded,
-                                AdaptiveThemeMode.system: Icons.brightness_auto,
-                              }[mode];
+                            children:
+                                AdaptiveThemeMode.values.map((mode) {
+                                  final icon =
+                                      {
+                                        AdaptiveThemeMode.light:
+                                            Icons.light_mode_rounded,
+                                        AdaptiveThemeMode.dark:
+                                            Icons.dark_mode_rounded,
+                                        AdaptiveThemeMode.system:
+                                            Icons.brightness_auto,
+                                      }[mode];
 
-                              final label = {
-                                AdaptiveThemeMode.light: 'Light Theme',
-                                AdaptiveThemeMode.dark: 'Dark Theme',
-                                AdaptiveThemeMode.system: 'System Default',
-                              }[mode];
+                                  final label =
+                                      {
+                                        AdaptiveThemeMode.light: 'Light Theme',
+                                        AdaptiveThemeMode.dark: 'Dark Theme',
+                                        AdaptiveThemeMode.system:
+                                            'System Default',
+                                      }[mode];
 
-                              return RadioListTile<AdaptiveThemeMode>(
-                                value: mode,
-                                groupValue: selectedMode,
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    setState(() => selectedMode = value);
+                                  return RadioListTile<AdaptiveThemeMode>(
+                                    value: mode,
+                                    groupValue: selectedMode,
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        setState(() => selectedMode = value);
 
-                                    switch (value) {
-                                      case AdaptiveThemeMode.dark:
-                                        AdaptiveTheme.of(context).setDark();
-                                        break;
-                                      case AdaptiveThemeMode.light:
-                                        AdaptiveTheme.of(context).setLight();
-                                        break;
-                                      case AdaptiveThemeMode.system:
-                                        AdaptiveTheme.of(context).setSystem();
-                                    }
-                                    Navigator.pop(context);
-                                  }
-                                },
-                                title: Text(label!),
-                                secondary: Icon(icon),
-                              );
-                            }).toList(),
+                                        switch (value) {
+                                          case AdaptiveThemeMode.dark:
+                                            AdaptiveTheme.of(context).setDark();
+                                            break;
+                                          case AdaptiveThemeMode.light:
+                                            AdaptiveTheme.of(
+                                              context,
+                                            ).setLight();
+                                            break;
+                                          case AdaptiveThemeMode.system:
+                                            AdaptiveTheme.of(
+                                              context,
+                                            ).setSystem();
+                                        }
+                                        Navigator.pop(context);
+                                      }
+                                    },
+                                    title: Text(label!),
+                                    secondary: Icon(icon),
+                                  );
+                                }).toList(),
                           );
                         },
                       );
@@ -305,25 +315,30 @@ class _AccountMainTile extends StatelessWidget {
 
         return ListTile(
           leading: GestureDetector(
-            onTap: user?.photoURL != null
-                ? () => _showAvatarDialog(context, user!.photoURL!)
-                : null,
+            onTap:
+                user?.photoURL != null
+                    ? () => _showAvatarDialog(context, user!.photoURL!)
+                    : null,
             child: CircleAvatar(
               radius: 24,
               backgroundColor: Colors.grey.shade300,
-              backgroundImage: user?.photoURL != null
-                  ? CachedNetworkImageProvider(user!.photoURL!)
-                  : null,
-              child: user?.photoURL == null
-                  ? Text(
-                      (user?.displayName ?? 'U').substring(0, 1).toUpperCase(),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    )
-                  : null,
+              backgroundImage:
+                  user?.photoURL != null
+                      ? CachedNetworkImageProvider(user!.photoURL!)
+                      : null,
+              child:
+                  user?.photoURL == null
+                      ? Text(
+                        (user?.displayName ?? 'U')
+                            .substring(0, 1)
+                            .toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      )
+                      : null,
             ),
           ),
           title: Text(
@@ -331,9 +346,10 @@ class _AccountMainTile extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: Text(user?.email ?? 'No email'),
-          onTap: user != null
-              ? () => _showUserMenu(context, user)
-              : () => context.push('/sign_in/main'),
+          onTap:
+              user != null
+                  ? () => _showUserMenu(context, user)
+                  : () => context.push('/sign_in/main'),
         );
       },
     );
@@ -342,21 +358,22 @@ class _AccountMainTile extends StatelessWidget {
   void _showAvatarDialog(BuildContext context, String imageUrl) {
     showDialog(
       context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: GestureDetector(
-          onTap: () => Navigator.pop(context),
-          child: InteractiveViewer(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: CachedNetworkImage(
-                imageUrl: imageUrl,
-                fit: BoxFit.contain,
+      builder:
+          (context) => Dialog(
+            backgroundColor: Colors.transparent,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: InteractiveViewer(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
     );
   }
 
@@ -373,58 +390,63 @@ class _AccountMainTile extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: CircleAvatar(
-              backgroundImage: user?.photoURL != null
-                  ? CachedNetworkImageProvider(user!.photoURL!)
-                  : null,
-              child: user?.photoURL == null
-                  ? Text(
-                      (user?.displayName ?? 'U').substring(0, 1).toUpperCase(),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  : null,
-            ),
-            title: Text(user?.displayName ?? 'Guest'),
-            subtitle: Text(user?.email ?? 'No email'),
-          ),
-          if (kDebugMode && idToken != null) ...[
-            ListTile(
-              title: Text(
-                'Token:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+      builder:
+          (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundImage:
+                      user?.photoURL != null
+                          ? CachedNetworkImageProvider(user!.photoURL!)
+                          : null,
+                  child:
+                      user?.photoURL == null
+                          ? Text(
+                            (user?.displayName ?? 'U')
+                                .substring(0, 1)
+                                .toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                          : null,
+                ),
+                title: Text(user?.displayName ?? 'Guest'),
+                subtitle: Text(user?.email ?? 'No email'),
               ),
-              subtitle: Text(
-                idToken,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 12, fontFamily: 'monospace'),
-              ),
-              trailing: IconButton(
-                icon: Icon(Icons.copy),
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(text: idToken!));
-                  showSnackBar(Text('Copied to clipboard!'));
+              if (kDebugMode && idToken != null) ...[
+                ListTile(
+                  title: Text(
+                    'Token:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    idToken,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12, fontFamily: 'monospace'),
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.copy),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: idToken!));
+                      showSnackBar(Text('Copied to clipboard!'));
+                    },
+                  ),
+                ),
+              ],
+              ListTile(
+                leading: Icon(Icons.logout),
+                title: Text('Sign Out'),
+                onTap: () async {
+                  await Authentication.instance.signOut();
+                  if (context.mounted) context.pop();
                 },
               ),
-            ),
-          ],
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Sign Out'),
-            onTap: () async {
-              await Authentication.instance.signOut();
-              if (context.mounted) context.pop();
-            },
+            ],
           ),
-        ],
-      ),
     );
   }
 }

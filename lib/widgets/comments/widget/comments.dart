@@ -60,9 +60,10 @@ class _CommentsState extends State<Comments> {
   Widget build(BuildContext context) {
     if (widget.preview) {
       return FutureBuilder(
-        future: widget.fake
-            ? Completer<ComicComments>().future
-            : widget.getComments!(page: page, parent: widget.parent),
+        future:
+            widget.fake
+                ? Completer<ComicComments>().future
+                : widget.getComments!(page: page, parent: widget.parent),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -77,9 +78,8 @@ class _CommentsState extends State<Comments> {
           }
           final loading = snapshot.connectionState == ConnectionState.waiting;
 
-          final data = loading
-              ? ComicComments.createFakeData()
-              : snapshot.data!;
+          final data =
+              loading ? ComicComments.createFakeData() : snapshot.data!;
 
           return Skeletonizer(
             enabled: loading,
@@ -107,9 +107,8 @@ class _CommentsState extends State<Comments> {
           }
           final loading = snapshot.connectionState == ConnectionState.waiting;
 
-          final data = loading
-              ? ComicComments.createFakeData()
-              : snapshot.data!;
+          final data =
+              loading ? ComicComments.createFakeData() : snapshot.data!;
 
           return Skeletonizer(
             enabled: loading,
@@ -152,9 +151,8 @@ class _CommentsState extends State<Comments> {
 
     int index = 0;
     return Column(
-      children: comments.items
-          .map((item) => itemBuilder(comments, index++))
-          .toList(),
+      children:
+          comments.items.map((item) => itemBuilder(comments, index++)).toList(),
     );
   }
 
@@ -237,19 +235,20 @@ class _CommentsState extends State<Comments> {
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (context) => DraggableScrollableSheet(
-        expand: false,
-        snap: true,
-        initialChildSize: 0.5,
-        minChildSize: 0.3,
-        maxChildSize: 0.9,
-        builder: (context, scrollController) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            child: _buildFullComments(comments),
-          );
-        },
-      ),
+      builder:
+          (context) => DraggableScrollableSheet(
+            expand: false,
+            snap: true,
+            initialChildSize: 0.5,
+            minChildSize: 0.3,
+            maxChildSize: 0.9,
+            builder: (context, scrollController) {
+              return SingleChildScrollView(
+                controller: scrollController,
+                child: _buildFullComments(comments),
+              );
+            },
+          ),
     );
   }
 }

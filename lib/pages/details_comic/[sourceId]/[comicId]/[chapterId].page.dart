@@ -57,17 +57,18 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
 
       return _service.getPages(widget.comicId, widget.chapterId);
     });
-    _metaComicFuture = widget.comic != null
-        ? Future.value(widget.comic)
-        : _service.getDetails(widget.comicId).catchError((error) async {
-            final meta = await ComicDownloader.instance.getMetaOffline(
-              _service,
-              widget.comicId,
-            );
-            if (meta != null) return meta.copyWith(offlineMode: true);
+    _metaComicFuture =
+        widget.comic != null
+            ? Future.value(widget.comic)
+            : _service.getDetails(widget.comicId).catchError((error) async {
+              final meta = await ComicDownloader.instance.getMetaOffline(
+                _service,
+                widget.comicId,
+              );
+              if (meta != null) return meta.copyWith(offlineMode: true);
 
-            throw error;
-          });
+              throw error;
+            });
     _metaComicFuture.then((comic) {
       _chapter.value = comic.chapters.sortAsc.firstWhere(
         (element) => element.chapterId == widget.chapterId,
@@ -127,8 +128,8 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
                 comicId: widget.comicId,
                 comic: metaComic,
                 chapterId: widget.chapterId,
-                getPages: (String chap) =>
-                    _service.getPages(widget.comicId, chap),
+                getPages:
+                    (String chap) => _service.getPages(widget.comicId, chap),
                 onChangeChap: _updateChapter,
                 onChangeEnabled: _updateEnabled,
               );

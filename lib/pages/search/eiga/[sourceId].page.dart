@@ -18,26 +18,29 @@ class SearchEigaPage extends StatelessWidget {
     return CategoryEigaPage(
       sourceId: sourceId,
       categoryId: keyword,
-      getCategory:
-          ({required filters, required page, required categoryId}) async {
-            final data = await getEigaService(sourceId).search(
-              filters: filters,
-              page: page,
-              keyword: categoryId,
-              quick: false,
-            );
+      getCategory: ({
+        required filters,
+        required page,
+        required categoryId,
+      }) async {
+        final data = await getEigaService(sourceId).search(
+          filters: filters,
+          page: page,
+          keyword: categoryId,
+          quick: false,
+        );
 
-            return EigaCategory(
-              name: 'Search "$categoryId"',
-              url: data.url,
-              items: data.items,
-              page: data.page,
-              totalItems: data.totalItems,
-              totalPages: data.totalPages,
-              description: data.description,
-              filters: data.filters,
-            );
-          },
+        return EigaCategory(
+          name: 'Search "$categoryId"',
+          url: data.url,
+          items: data.items,
+          page: data.page,
+          totalItems: data.totalItems,
+          totalPages: data.totalPages,
+          description: data.description,
+          filters: data.filters,
+        );
+      },
     );
   }
 }

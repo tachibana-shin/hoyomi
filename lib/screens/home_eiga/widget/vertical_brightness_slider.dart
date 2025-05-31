@@ -9,41 +9,42 @@ class VerticalBrightnessSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (context, constraints) => Watch(
-        () => Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(
-              _getBrightnessIcon(brightness()),
-              color: Colors.white,
-              size: 25,
-            ),
-            const SizedBox(height: 8),
-            SizedBox(
-              height: constraints.biggest.height * 150 / 256,
-              child: RotatedBox(
-                quarterTurns: -1,
-                child: SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    thumbShape: const RoundSliderThumbShape(
-                      enabledThumbRadius: 0,
+      builder:
+          (context, constraints) => Watch(
+            () => Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  _getBrightnessIcon(brightness()),
+                  color: Colors.white,
+                  size: 25,
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: constraints.biggest.height * 150 / 256,
+                  child: RotatedBox(
+                    quarterTurns: -1,
+                    child: SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        thumbShape: const RoundSliderThumbShape(
+                          enabledThumbRadius: 0,
+                        ),
+                        overlayShape: SliderComponentShape.noOverlay,
+                        trackHeight: 5,
+                      ),
+                      child: Slider(
+                        value: brightness(),
+                        onChanged: (value) => brightness.emit(value),
+                        activeColor: Colors.white,
+                        inactiveColor: Colors.white.withAlpha(76),
+                      ),
                     ),
-                    overlayShape: SliderComponentShape.noOverlay,
-                    trackHeight: 5,
-                  ),
-                  child: Slider(
-                    value: brightness(),
-                    onChanged: (value) => brightness.emit(value),
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.white.withAlpha(76),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 

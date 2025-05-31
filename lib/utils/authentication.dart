@@ -26,18 +26,18 @@ class Authentication {
   final _clientSecret = Env.googleClientSecret;
   final _redirectPort = Env.googleRedirectPort;
 
-  late final _googleSignIn = _googleNativeSupport
-      ? g_native.GoogleSignIn()
-      : null;
-  late final _googleSignInAll = _googleNativeSupport
-      ? null
-      : g_all.GoogleSignIn(
-          params: g_all.GoogleSignInParams(
-            clientId: _clientId,
-            clientSecret: _clientSecret,
-            redirectPort: _redirectPort,
-          ),
-        );
+  late final _googleSignIn =
+      _googleNativeSupport ? g_native.GoogleSignIn() : null;
+  late final _googleSignInAll =
+      _googleNativeSupport
+          ? null
+          : g_all.GoogleSignIn(
+            params: g_all.GoogleSignInParams(
+              clientId: _clientId,
+              clientSecret: _clientSecret,
+              redirectPort: _redirectPort,
+            ),
+          );
 
   Completer<void>? _futureInitializeUser = Completer<void>();
 
@@ -175,10 +175,11 @@ class Authentication {
         }
         user = currentUser!;
       } else {
-        user = (await auth.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        )).user!;
+        user =
+            (await auth.createUserWithEmailAndPassword(
+              email: email,
+              password: password,
+            )).user!;
       }
 
       showSnackBar(Text('Welcome, ${user.displayName ?? user.email}'));

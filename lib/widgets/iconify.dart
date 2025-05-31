@@ -22,9 +22,10 @@ class Iconify extends StatelessWidget {
 
     final bool applyTextScaling = iconTheme.applyTextScaling ?? false;
     final double tentativeIconSize = size ?? iconTheme.size ?? kDefaultFontSize;
-    final double iconSize = applyTextScaling
-        ? MediaQuery.textScalerOf(context).scale(tentativeIconSize)
-        : tentativeIconSize;
+    final double iconSize =
+        applyTextScaling
+            ? MediaQuery.textScalerOf(context).scale(tentativeIconSize)
+            : tentativeIconSize;
 
     final double iconOpacity = iconTheme.opacity ?? 1.0;
     Color? colorIcon = color ?? iconTheme.color!;
@@ -43,9 +44,8 @@ class Iconify extends StatelessWidget {
       ),
       child: SvgPicture.string(
         icon,
-        colorFilter: iconColor
-            ? null
-            : ColorFilter.mode(colorIcon, BlendMode.srcIn),
+        colorFilter:
+            iconColor ? null : ColorFilter.mode(colorIcon, BlendMode.srcIn),
         width: iconSize,
         height: iconSize,
         alignment: Alignment.center,

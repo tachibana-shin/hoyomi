@@ -61,18 +61,20 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
         itemComic.queryOne('img').attr('alt');
 
     final chapter$ = itemComic.queryOne('.slide-caption > a, .chapter > a');
-    final lastChap = chapter$.isNotEmpty
-        ? ComicChapter(
-            name: chapter$.text().trim(),
-            chapterId: chapter$.attr('href').split('/').last,
-            order: -1,
-          )
-        : null;
+    final lastChap =
+        chapter$.isNotEmpty
+            ? ComicChapter(
+              name: chapter$.text().trim(),
+              chapterId: chapter$.attr('href').split('/').last,
+              order: -1,
+            )
+            : null;
 
     final timeAgoElement = itemComic.queryOne('.time');
-    final timeAgo = timeAgoElement.isNotEmpty
-        ? convertTimeAgoToUtc(timeAgoElement.text().trim())
-        : null;
+    final timeAgo =
+        timeAgoElement.isNotEmpty
+            ? convertTimeAgoToUtc(timeAgoElement.text().trim())
+            : null;
 
     final description = itemComic.queryOne('.box_text').text();
 
@@ -124,36 +126,41 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
       // ),
       categories: [
         HomeComicCategory(
-          items: $(
-            '#ctl00_divAlt1 .item',
-          ).map((element) => _parseComic(element, baseUrl)).toList(),
+          items:
+              $(
+                '#ctl00_divAlt1 .item',
+              ).map((element) => _parseComic(element, baseUrl)).toList(),
           // gridView: true,
           name: 'Đề cử',
         ),
         HomeComicCategory(
-          items: $(
-            '#ctl00_divCenter .row > .item',
-          ).map((element) => _parseComic(element, baseUrl)).toList(),
+          items:
+              $(
+                '#ctl00_divCenter .row > .item',
+              ).map((element) => _parseComic(element, baseUrl)).toList(),
           gridView: true,
           name: 'Mới Cập Nhật',
           categoryId: 'truyen-moi-cap-nhat',
         ),
         HomeComicCategory(
-          items: $(
-            '#topMonth li',
-          ).map((element) => _parseComic(element, baseUrl)).toList(),
+          items:
+              $(
+                '#topMonth li',
+              ).map((element) => _parseComic(element, baseUrl)).toList(),
           name: 'Top tháng',
         ),
         HomeComicCategory(
-          items: $(
-            '#topWeek li',
-          ).map((element) => _parseComic(element, baseUrl)).toList(),
+          items:
+              $(
+                '#topWeek li',
+              ).map((element) => _parseComic(element, baseUrl)).toList(),
           name: 'Top tuần',
         ),
         HomeComicCategory(
-          items: $(
-            '#topDay li',
-          ).map((element) => _parseComic(element, baseUrl)).toList(),
+          items:
+              $(
+                '#topDay li',
+              ).map((element) => _parseComic(element, baseUrl)).toList(),
           name: 'Top ngày',
         ),
       ],
@@ -181,11 +188,12 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
             .textRaw()
             ?.toLowerCase() ??
         'Unknown';
-    final status = status$ == 'đang cập nhật'
-        ? StatusEnum.ongoing
-        : status$ == 'unknown'
-        ? StatusEnum.unknown
-        : StatusEnum.completed;
+    final status =
+        status$ == 'đang cập nhật'
+            ? StatusEnum.ongoing
+            : status$ == 'unknown'
+            ? StatusEnum.unknown
+            : StatusEnum.completed;
     // final views = int.tryParse(
     //   _getInfoTale(tales, 'Lượt Xem:')?.textRaw()?.replaceAll(',', '') ?? '',
     // );
@@ -233,9 +241,8 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
       final chapterId = chapter['chapter_slug'];
 
       final time$ = chapter['updated_at'] as String?;
-      final time = time$ != null
-          ? DateFormat('yyyy-MM-dd hh:mm:ss').parse(time$)
-          : null;
+      final time =
+          time$ != null ? DateFormat('yyyy-MM-dd hh:mm:ss').parse(time$) : null;
 
       return ComicChapter(
         name: name,
@@ -295,9 +302,10 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
 
   @override
   getSuggest(comic, {page = 1}) async {
-    final metaSlugs = comic.genres
-        .map((c) => c.genreId.replaceFirst('tim-truyen_', ''))
-        .toSet();
+    final metaSlugs =
+        comic.genres
+            .map((c) => c.genreId.replaceFirst('tim-truyen_', ''))
+            .toSet();
 
     final pageData = await getCategory(
       categoryId: metaSlugs.first,
@@ -348,12 +356,14 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
     ).map((element) => _parseComic(element, baseUrl));
 
     final lastPageLink = $('.pagination li a').eq(-2).attr('href');
-    final maxPage = lastPageLink.isNotEmpty
-        ? int.tryParse(
-                RegExp(r'page=(\d+)').firstMatch(lastPageLink)?.group(1) ?? '1',
-              ) ??
-              1
-        : 1;
+    final maxPage =
+        lastPageLink.isNotEmpty
+            ? int.tryParse(
+                  RegExp(r'page=(\d+)').firstMatch(lastPageLink)?.group(1) ??
+                      '1',
+                ) ??
+                1
+            : 1;
 
     return ComicCategory(
       name: $('h1', single: true).text(),
@@ -367,17 +377,18 @@ class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
           name: 'Thể loại',
           key: 'category',
           multiple: false,
-          options: $('.dropdown-genres option').map((option) {
-            final name = option.text();
-            var value = option.attr('value').split('/').last;
-            if (value == 'tim-truyen') value = '';
+          options:
+              $('.dropdown-genres option').map((option) {
+                final name = option.text();
+                var value = option.attr('value').split('/').last;
+                if (value == 'tim-truyen') value = '';
 
-            return Option(
-              name: name,
-              value: value,
-              selected: filters['category']?.first == value,
-            );
-          }).toList(),
+                return Option(
+                  name: name,
+                  value: value,
+                  selected: filters['category']?.first == value,
+                );
+              }).toList(),
         ),
         ...globalFilters,
       ],

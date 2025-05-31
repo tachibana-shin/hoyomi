@@ -141,12 +141,13 @@ class _CarouselComicState extends State<CarouselComic> {
                       child: Center(
                         child: Text(
                           item.quality!,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                fontSize: 12.0,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            fontSize: 12.0,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -175,12 +176,13 @@ class _CarouselComicState extends State<CarouselComic> {
                             ),
                             Text(
                               ' ${item.countSub}',
-                              style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(
-                                    fontSize: 12.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
+                                fontSize: 12.0,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ],
                         ),
@@ -211,12 +213,13 @@ class _CarouselComicState extends State<CarouselComic> {
                             ),
                             Text(
                               ' ${item.countDub}',
-                              style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(
-                                    fontSize: 12.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
+                                fontSize: 12.0,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ],
                         ),
@@ -356,14 +359,13 @@ class _CarouselComicState extends State<CarouselComic> {
                                   item.subText!,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineSmall
-                                      ?.copyWith(
-                                        color: const Color(0xFFFFBADE),
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14.0,
-                                      ),
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.headlineSmall?.copyWith(
+                                    color: const Color(0xFFFFBADE),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14.0,
+                                  ),
                                 ),
                               ),
                             FractionallySizedBox(
@@ -372,12 +374,13 @@ class _CarouselComicState extends State<CarouselComic> {
                                 item.name,
                                 maxLines: height < 300 ? 1 : 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.headlineSmall
-                                    ?.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 20.0,
-                                    ),
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 20.0,
+                                ),
                               ),
                             ),
                             if (item.originalName?.isNotEmpty == true)
@@ -385,16 +388,16 @@ class _CarouselComicState extends State<CarouselComic> {
                                 item.originalName!,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.headlineSmall
-                                    ?.copyWith(
-                                      color: Colors.white.withValues(
-                                        alpha: height < 300 ? 0.8 : 1.0,
-                                      ),
-                                      fontWeight: height < 300
-                                          ? null
-                                          : FontWeight.w600,
-                                      fontSize: 16.0,
-                                    ),
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.white.withValues(
+                                    alpha: height < 300 ? 0.8 : 1.0,
+                                  ),
+                                  fontWeight:
+                                      height < 300 ? null : FontWeight.w600,
+                                  fontSize: 16.0,
+                                ),
                               ),
                             SizedBox(height: 5.0),
                             // rate
@@ -409,25 +412,29 @@ class _CarouselComicState extends State<CarouselComic> {
                                 scrollDirection: Axis.horizontal,
                                 child: Wrap(
                                   spacing: 7.0,
-                                  children: item.genres!.map((genre) {
-                                    return GestureDetector(
-                                      onTap: genre.genreId == Genre.noId
-                                          ? null
-                                          : () => context.push(
-                                              '/category_comic/${widget.sourceId}/${genre.genreId}',
-                                            ),
-                                      child: Text(
-                                        '#${genre.name}',
-                                        style: genre.genreId == Genre.noId
-                                            ? null
-                                            : TextStyle(
-                                                color: Colors.white.withValues(
-                                                  alpha: 0.8,
-                                                ),
-                                              ),
-                                      ),
-                                    );
-                                  }).toList(),
+                                  children:
+                                      item.genres!.map((genre) {
+                                        return GestureDetector(
+                                          onTap:
+                                              genre.genreId == Genre.noId
+                                                  ? null
+                                                  : () => context.push(
+                                                    '/category_comic/${widget.sourceId}/${genre.genreId}',
+                                                  ),
+                                          child: Text(
+                                            '#${genre.name}',
+                                            style:
+                                                genre.genreId == Genre.noId
+                                                    ? null
+                                                    : TextStyle(
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.8,
+                                                          ),
+                                                    ),
+                                          ),
+                                        );
+                                      }).toList(),
                                 ),
                               ),
                             // actors
@@ -435,29 +442,33 @@ class _CarouselComicState extends State<CarouselComic> {
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Wrap(
-                                  children: item.actors!.indexed.mapWithIterable((
-                                    entry,
-                                    list,
-                                  ) {
-                                    final (index, actor) = entry;
-                                    return GestureDetector(
-                                      onTap: actor.genreId == Genre.noId
-                                          ? null
-                                          : () => context.push(
-                                              '/category_comic/${widget.sourceId}/${actor.genreId}',
-                                            ),
-                                      child: Text(
-                                        '${actor.name}${index < list.length - 1 ? ', ' : ''}',
-                                        style: actor.genreId == Genre.noId
-                                            ? null
-                                            : TextStyle(
-                                                color: Colors.white.withValues(
-                                                  alpha: 0.8,
-                                                ),
-                                              ),
-                                      ),
-                                    );
-                                  }).toList(),
+                                  children:
+                                      item.actors!.indexed.mapWithIterable((
+                                        entry,
+                                        list,
+                                      ) {
+                                        final (index, actor) = entry;
+                                        return GestureDetector(
+                                          onTap:
+                                              actor.genreId == Genre.noId
+                                                  ? null
+                                                  : () => context.push(
+                                                    '/category_comic/${widget.sourceId}/${actor.genreId}',
+                                                  ),
+                                          child: Text(
+                                            '${actor.name}${index < list.length - 1 ? ', ' : ''}',
+                                            style:
+                                                actor.genreId == Genre.noId
+                                                    ? null
+                                                    : TextStyle(
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.8,
+                                                          ),
+                                                    ),
+                                          ),
+                                        );
+                                      }).toList(),
                                 ),
                               ),
                             SizedBox(height: 5.0),
