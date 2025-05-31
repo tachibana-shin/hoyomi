@@ -89,22 +89,22 @@ class _ComicFollowCache {
 
 Future<void> initializeService() async {
   if (XPlatform.isAndroid || XPlatform.isIOS) {
-  final service = FlutterBackgroundService();
+    final service = FlutterBackgroundService();
 
-  await service.configure(
-    iosConfiguration: IosConfiguration(
-      autoStart: true,
-      onForeground: onStart,
-      onBackground: onIosBackground,
-    ),
-    androidConfiguration: AndroidConfiguration(
-      autoStart: true,
-      onStart: onStart,
-      isForegroundMode: false,
-      autoStartOnBoot: true,
-    ),
-  );
-  // service.invoke('stop');
+    await service.configure(
+      iosConfiguration: IosConfiguration(
+        autoStart: true,
+        onForeground: onStart,
+        onBackground: onIosBackground,
+      ),
+      androidConfiguration: AndroidConfiguration(
+        autoStart: true,
+        onStart: onStart,
+        isForegroundMode: false,
+        autoStartOnBoot: true,
+      ),
+    );
+    // service.invoke('stop');
   } else {
     onStart();
   }

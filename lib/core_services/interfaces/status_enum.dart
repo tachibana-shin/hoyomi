@@ -9,4 +9,3 @@ enum StatusEnum {
   onHiatus,
   publishingFinished,
 }
-

@@ -658,7 +658,10 @@ class TruyenGGService extends ABComicService
     );
 
     return Paginate(
-      items: category.items.map((item) => ComicFollow(sourceId: uid, item: item)).toList(),
+      items:
+          category.items
+              .map((item) => ComicFollow(sourceId: uid, item: item))
+              .toList(),
       page: page,
       totalPages: category.totalPages,
       totalItems: category.totalItems,
