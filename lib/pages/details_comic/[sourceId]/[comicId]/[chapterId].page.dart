@@ -57,18 +57,17 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
 
       return _service.getPages(widget.comicId, widget.chapterId);
     });
-    _metaComicFuture =
-        widget.comic != null
-            ? Future.value(widget.comic)
-            : _service.getDetails(widget.comicId).catchError((error) async {
-              final meta = await ComicDownloader.instance.getMetaOffline(
-                _service,
-                widget.comicId,
-              );
-              if (meta != null) return meta.copyWith(offlineMode: true);
+    _metaComicFuture = widget.comic != null
+        ? Future.value(widget.comic)
+        : _service.getDetails(widget.comicId).catchError((error) async {
+            final meta = await ComicDownloader.instance.getMetaOffline(
+              _service,
+              widget.comicId,
+            );
+            if (meta != null) return meta.copyWith(offlineMode: true);
 
-              throw error;
-            });
+            throw error;
+          });
     _metaComicFuture.then((comic) {
       _chapter.value = comic.chapters.sortAsc.firstWhere(
         (element) => element.chapterId == widget.chapterId,
@@ -128,8 +127,8 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
                 comicId: widget.comicId,
                 comic: metaComic,
                 chapterId: widget.chapterId,
-                getPages:
-                    (String chap) => _service.getPages(widget.comicId, chap),
+                getPages: (String chap) =>
+                    _service.getPages(widget.comicId, chap),
                 onChangeChap: _updateChapter,
                 onChangeEnabled: _updateEnabled,
               );
@@ -190,100 +189,98 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
 
             return SlideTransition(position: offsetAnimation, child: child);
           },
-          child:
-              widget.enabled.value
-                  ? ClipRRect(
-                    child: SizedBox(
-                      height: 54.0,
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                        child: Container(
-                          color: Theme.of(
-                            context,
-                          ).scaffoldBackgroundColor.withValues(alpha: 0.8),
-                          padding: EdgeInsets.symmetric(
-                            vertical: 4.0,
-                            horizontal: 8.0,
+          child: widget.enabled.value
+              ? ClipRRect(
+                  child: SizedBox(
+                    height: 54.0,
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                      child: Container(
+                        color: Theme.of(
+                          context,
+                        ).scaffoldBackgroundColor.withValues(alpha: 0.8),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 4.0,
+                          horizontal: 8.0,
+                        ),
+                        child: AppBar(
+                          backgroundColor: Colors.transparent,
+                          leading: IconButton(
+                            icon: const Iconify(Ion.chevron_left),
+                            onPressed: () => context.pop(),
                           ),
-                          child: AppBar(
-                            backgroundColor: Colors.transparent,
-                            leading: IconButton(
-                              icon: const Iconify(Ion.chevron_left),
-                              onPressed: () => context.pop(),
+                          title: Watch(() {
+                            return Text(
+                              <String>[
+                                if (widget.chapter.value != null)
+                                  widget.chapter.value!.name,
+                                if (widget.chapter.value?.fullName != null)
+                                  widget.chapter.value!.fullName!,
+                                if (widget.comic.value?.name != null)
+                                  widget.comic.value!.name,
+                              ].join(' - '),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ).fontSize(16.0);
+                            // return Column(
+                            // mainAxisSize: MainAxisSize.min,
+                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            // children: [
+                            //   Text(
+                            //     widget.comic.value?.name ?? '',
+                            //     style: TextStyle(
+                            //       fontSize: 16,
+                            //       fontWeight: FontWeight.bold,
+                            //     ),
+                            //   ),
+                            //   SizedBox(height: 2),
+                            //   if (widget.chapter.value != null)
+                            //     Text(
+                            //       widget.chapter.value!.name,
+                            //       style: TextStyle(
+                            //         fontSize: 14,
+                            //         color: Colors.white70,
+                            //       ),
+                            //     ),
+                            // ],
+                            // );
+                          }),
+                          actions: [
+                            if (widget.showButtonMeta)
+                              IconButton(
+                                icon: const Iconify(Ion.menu),
+                                onPressed: () => context.pushReplacementNamed(
+                                  'details_comic',
+                                  pathParameters: {
+                                    'sourceId': widget.service.uid,
+                                    'comicId': widget.comicId,
+                                  },
+                                  extra: {'comic': widget.comic.value},
+                                ),
+                              ),
+                            Watch(
+                              () => IconButtonFollow(
+                                sourceId: widget.service.uid,
+                                comicId: widget.comicId,
+                                comic: widget.comic.value,
+                              ),
                             ),
-                            title: Watch(() {
-                              return Text(
-                                <String>[
-                                  if (widget.chapter.value != null)
-                                    widget.chapter.value!.name,
-                                  if (widget.chapter.value?.fullName != null)
-                                    widget.chapter.value!.fullName!,
-                                  if (widget.comic.value?.name != null)
-                                    widget.comic.value!.name,
-                                ].join(' - '),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ).fontSize(16.0);
-                              // return Column(
-                              // mainAxisSize: MainAxisSize.min,
-                              // crossAxisAlignment: CrossAxisAlignment.start,
-                              // children: [
-                              //   Text(
-                              //     widget.comic.value?.name ?? '',
-                              //     style: TextStyle(
-                              //       fontSize: 16,
-                              //       fontWeight: FontWeight.bold,
-                              //     ),
-                              //   ),
-                              //   SizedBox(height: 2),
-                              //   if (widget.chapter.value != null)
-                              //     Text(
-                              //       widget.chapter.value!.name,
-                              //       style: TextStyle(
-                              //         fontSize: 14,
-                              //         color: Colors.white70,
-                              //       ),
-                              //     ),
-                              // ],
-                              // );
-                            }),
-                            actions: [
-                              if (widget.showButtonMeta)
-                                IconButton(
-                                  icon: const Iconify(Ion.menu),
-                                  onPressed:
-                                      () => context.pushReplacementNamed(
-                                        'details_comic',
-                                        pathParameters: {
-                                          'sourceId': widget.service.uid,
-                                          'comicId': widget.comicId,
-                                        },
-                                        extra: {'comic': widget.comic.value},
-                                      ),
-                                ),
-                              Watch(
-                                () => IconButtonFollow(
-                                  sourceId: widget.service.uid,
-                                  comicId: widget.comicId,
-                                  comic: widget.comic.value,
+                            Watch(
+                              () => IconButtonOpenBrowser(
+                                url: widget.service.getURL(
+                                  widget.comicId,
+                                  chapterId: widget.chapter.value?.chapterId,
                                 ),
                               ),
-                              Watch(
-                                () => IconButtonOpenBrowser(
-                                  url: widget.service.getURL(
-                                    widget.comicId,
-                                    chapterId: widget.chapter.value?.chapterId,
-                                  ),
-                                ),
-                              ),
-                              IconButtonShare(),
-                            ],
-                          ),
+                            ),
+                            IconButtonShare(),
+                          ],
                         ),
                       ),
                     ),
-                  )
-                  : null,
+                  ),
+                )
+              : null,
         );
       }),
     );

@@ -16,28 +16,32 @@ import 'package:sqlite_async/sqlite_async.dart';
 
 part 'comic_downloader.freezed.dart';
 
-typedef DownloaderChapterReturn =
-    ({
-      Service service,
-      MetaComic comic,
-      ComicChapter chapter,
-      bool done,
-      Object? error,
-      double progress,
-    });
-typedef InsertPageReturn =
-    ({OImage image, String pageId, String path, bool done});
-typedef InsertChapterReturn =
-    ({String chapterDbId, List<InsertPageReturn> pages});
+typedef DownloaderChapterReturn = ({
+  Service service,
+  MetaComic comic,
+  ComicChapter chapter,
+  bool done,
+  Object? error,
+  double progress,
+});
+typedef InsertPageReturn = ({
+  OImage image,
+  String pageId,
+  String path,
+  bool done,
+});
+typedef InsertChapterReturn = ({
+  String chapterDbId,
+  List<InsertPageReturn> pages,
+});
 
-typedef DownloadedComicInfo =
-    ({
-      String sourceId,
-      String comicId,
-      MetaComic meta,
-      String imagePath,
-      Map<String, LoadedChapter> chapters,
-    });
+typedef DownloadedComicInfo = ({
+  String sourceId,
+  String comicId,
+  MetaComic meta,
+  String imagePath,
+  Map<String, LoadedChapter> chapters,
+});
 
 @freezed
 sealed class LoadedComic with _$LoadedComic {
@@ -85,11 +89,11 @@ sealed class LoadedPage with _$LoadedPage {
 ///         page-7.jpg
 ///
 class ComicDownloader {
-  static final migrations =
-      SqliteMigrations()..add(
-        SqliteMigration(1, (tx) async {
-          // comics table
-          await tx.execute('''
+  static final migrations = SqliteMigrations()
+    ..add(
+      SqliteMigration(1, (tx) async {
+        // comics table
+        await tx.execute('''
             CREATE TABLE IF NOT EXISTS comics (
               id TEXT NOT NULL,
               service_id TEXT NOT NULL,
@@ -101,8 +105,8 @@ class ComicDownloader {
             );
           ''');
 
-          // chapters table
-          await tx.execute('''
+        // chapters table
+        await tx.execute('''
             CREATE TABLE IF NOT EXISTS chapters (
               id TEXT NOT NULL,
               comic_db_id TEXT NOT NULL,
@@ -117,8 +121,8 @@ class ComicDownloader {
             );
           ''');
 
-          // pages table
-          await tx.execute('''
+        // pages table
+        await tx.execute('''
             CREATE TABLE IF NOT EXISTS pages (
               id TEXT NOT NULL,
               chapter_db_id TEXT NOT NULL,
@@ -131,8 +135,8 @@ class ComicDownloader {
               UNIQUE (chapter_db_id, index_order)
             );
           ''');
-        }),
-      );
+      }),
+    );
 
   static String expectedPosterPath(ABComicService service, String comicId) {
     return join('comic_offline', service.uid, comicId, 'poster');
@@ -154,8 +158,9 @@ class ComicDownloader {
   }
 
   static String generateComicDbId(Service service, String comicId) {
-    final comicDbId =
-        sha256.convert(utf8.encode('${service.uid}@$comicId')).toString();
+    final comicDbId = sha256
+        .convert(utf8.encode('${service.uid}@$comicId'))
+        .toString();
 
     return comicDbId;
   }
@@ -163,14 +168,13 @@ class ComicDownloader {
   static List<OImage> getPagesWithOffline(LoadedChapter downloaded) {
     return downloaded.pages
         .map(
-          (page) =>
-              page.downloaded
-                  ? OImage(
-                    src: 'file:${page.path}',
-                    headers: page.image.headers,
-                    extra: page.image.extra,
-                  )
-                  : page.image,
+          (page) => page.downloaded
+              ? OImage(
+                  src: 'file:${page.path}',
+                  headers: page.image.headers,
+                  extra: page.image.extra,
+                )
+              : page.image,
         )
         .toList();
   }
@@ -258,18 +262,17 @@ class ComicDownloader {
       [chapter['id'] as String],
     );
 
-    final images =
-        pages.map((p) {
-          final oImage = OImage.fromJson(jsonDecode(p['o_image'] as String));
-          final path = p['path'] as String;
-          final downloaded = (p['downloaded'] as int) == 1;
-          return LoadedPage(
-            image: oImage,
-            path: path,
-            downloaded: downloaded,
-            size: (p['size'] as num).toInt(),
-          );
-        }).toList();
+    final images = pages.map((p) {
+      final oImage = OImage.fromJson(jsonDecode(p['o_image'] as String));
+      final path = p['path'] as String;
+      final downloaded = (p['downloaded'] as int) == 1;
+      return LoadedPage(
+        image: oImage,
+        path: path,
+        downloaded: downloaded,
+        size: (p['size'] as num).toInt(),
+      );
+    }).toList();
 
     return LoadedChapter(
       id: chapter['id'] as String,
@@ -344,15 +347,16 @@ class ComicDownloader {
   }) {
     final comicDbId = generateComicDbId(service, comicId);
 
-    return _storeInsertComicFuture[comicDbId] ??= _insertComic$(
-      comicDbId,
-      service: service,
-      comicId: comicId,
-      metaComic: metaComic,
-    ).catchError((error) {
-      _storeInsertComicFuture.remove(comicDbId);
-      throw error;
-    });
+    return _storeInsertComicFuture[comicDbId] ??=
+        _insertComic$(
+          comicDbId,
+          service: service,
+          comicId: comicId,
+          metaComic: metaComic,
+        ).catchError((error) {
+          _storeInsertComicFuture.remove(comicDbId);
+          throw error;
+        });
   }
 
   Future<InsertChapterReturn> _insertChapter({
@@ -369,8 +373,9 @@ class ComicDownloader {
       metaComic: metaComic,
     );
 
-    final chapterDbId =
-        sha256.convert(utf8.encode('$comicDbId@$chapterId')).toString();
+    final chapterDbId = sha256
+        .convert(utf8.encode('$comicDbId@$chapterId'))
+        .toString();
 
     final now = DateTime.now().millisecondsSinceEpoch;
 
@@ -395,8 +400,9 @@ class ComicDownloader {
         final oImageJson = jsonEncode(pages[i].toJson());
         final path = expectedPagePath(service, comicId, chapterId, i);
 
-        final pageId =
-            sha256.convert(utf8.encode('$chapterDbId@$i')).toString();
+        final pageId = sha256
+            .convert(utf8.encode('$chapterDbId@$i'))
+            .toString();
 
         final page = await _db.getOptional(
           '''
@@ -702,20 +708,19 @@ class ComicDownloader {
               [chapter['id'] as String],
             );
 
-            final images =
-                pages.map((p) {
-                  final oImage = OImage.fromJson(
-                    jsonDecode(p['o_image'] as String),
-                  );
-                  final path = p['path'] as String;
-                  final downloaded = (p['downloaded'] as int) == 1;
-                  return LoadedPage(
-                    image: oImage,
-                    path: path,
-                    downloaded: downloaded,
-                    size: (p['size'] as num).toInt(),
-                  );
-                }).toList();
+            final images = pages.map((p) {
+              final oImage = OImage.fromJson(
+                jsonDecode(p['o_image'] as String),
+              );
+              final path = p['path'] as String;
+              final downloaded = (p['downloaded'] as int) == 1;
+              return LoadedPage(
+                image: oImage,
+                path: path,
+                downloaded: downloaded,
+                size: (p['size'] as num).toInt(),
+              );
+            }).toList();
 
             return LoadedChapter(
               id: chapter['id'] as String,

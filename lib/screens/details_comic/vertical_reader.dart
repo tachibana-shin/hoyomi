@@ -60,15 +60,14 @@ class _VerticalReaderState extends State<VerticalReader> with KaeruListenMixin {
           widget.currentPage.value = page.toDouble();
         },
         itemCount: widget.pages.value.length,
-        itemBuilder:
-            (context, index) => InteractiveViewer(
-              minScale: 0.5,
-              child: widget.itemBuilder(
-                context,
-                index,
-                ValueKey(widget.pages.value.elementAt(index).image.src),
-              ),
-            ),
+        itemBuilder: (context, index) => InteractiveViewer(
+          minScale: 0.5,
+          child: widget.itemBuilder(
+            context,
+            index,
+            ValueKey(widget.pages.value.elementAt(index).image.src),
+          ),
+        ),
       ),
     );
   }

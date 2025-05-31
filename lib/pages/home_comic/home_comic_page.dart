@@ -59,21 +59,19 @@ class _HomeComicPageState extends State<HomeComicPage>
             controller: _tabController,
             isScrollable: true,
             splashBorderRadius: BorderRadius.circular(35.0),
-            tabs:
-                comicServices.value
-                    .map((service) => Tab(text: service.name))
-                    .toList(),
+            tabs: comicServices.value
+                .map((service) => Tab(text: service.name))
+                .toList(),
           ),
         ),
         body: TabBarView(
           controller: _tabController,
-          children:
-              comicServices.value
-                  .map(
-                    (service) =>
-                        TabViewComic(key: Key(service.uid), service: service),
-                  )
-                  .toList(),
+          children: comicServices.value
+              .map(
+                (service) =>
+                    TabViewComic(key: Key(service.uid), service: service),
+              )
+              .toList(),
         ),
       );
     });

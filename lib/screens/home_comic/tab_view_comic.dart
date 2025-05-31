@@ -55,10 +55,9 @@ class _TabViewComicState extends State<TabViewComic>
                       .toList(),
                 ),
                 title: category.name,
-                more:
-                    category.categoryId != null
-                        ? '/category_comic/${widget.service.uid}/${category.categoryId}'
-                        : null,
+                more: category.categoryId != null
+                    ? '/category_comic/${widget.service.uid}/${category.categoryId}'
+                    : null,
               );
             }
 
@@ -74,10 +73,9 @@ class _TabViewComicState extends State<TabViewComic>
                     .toList(),
               ),
               title: category.name,
-              more:
-                  category.categoryId != null
-                      ? '/category_comic/${widget.service.uid}/${category.categoryId}'
-                      : null,
+              more: category.categoryId != null
+                  ? '/category_comic/${widget.service.uid}/${category.categoryId}'
+                  : null,
               disableScroll: true,
             );
           },

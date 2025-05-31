@@ -38,36 +38,34 @@ class CuuTruyenService extends ABComicService
       carousel: ComicCarousel(
         aspectRatio: 679 / 350,
         maxHeightBuilder: 0.4,
-        items:
-            data.spotlightMangas
-                .map(
-                  (item) => ComicCarouselItem(
-                    comicId: item.id.toString(),
-                    name: item.name,
-                    image: OImage.from(item.panoramaUrl),
-                    description: item.description,
-                  ),
-                )
-                .toList(),
+        items: data.spotlightMangas
+            .map(
+              (item) => ComicCarouselItem(
+                comicId: item.id.toString(),
+                name: item.name,
+                image: OImage.from(item.panoramaUrl),
+                description: item.description,
+              ),
+            )
+            .toList(),
       ),
       categories: [
         HomeComicCategory(
-          items:
-              data.newChapterMangas
-                  .map(
-                    (item) => Comic(
-                      comicId: item.id.toString(),
-                      name: item.name,
-                      image: OImage.from(item.coverUrl),
-                      lastChap: ComicChapter(
-                        name: 'Chapter ${item.newestChapterNumber}',
-                        chapterId: item.newestChapterId.toString(),
-                        order: -1,
-                      ),
-                      lastUpdate: item.newestChapterCreatedAt,
-                    ),
-                  )
-                  .toList(),
+          items: data.newChapterMangas
+              .map(
+                (item) => Comic(
+                  comicId: item.id.toString(),
+                  name: item.name,
+                  image: OImage.from(item.coverUrl),
+                  lastChap: ComicChapter(
+                    name: 'Chapter ${item.newestChapterNumber}',
+                    chapterId: item.newestChapterId.toString(),
+                    order: -1,
+                  ),
+                  lastUpdate: item.newestChapterCreatedAt,
+                ),
+              )
+              .toList(),
           name: 'Mới Cập Nhật',
           categoryId: 'recently_updated',
         ),
@@ -75,22 +73,21 @@ class CuuTruyenService extends ABComicService
         HomeComicCategory(
           name: 'Top nổi bật tuần',
           gridView: true,
-          items:
-              topWeek.data
-                  .map(
-                    (item) => Comic(
-                      comicId: item.id.toString(),
-                      name: item.name,
-                      image: OImage.from(item.coverUrl),
-                      lastChap: ComicChapter(
-                        name: 'Chapter ${item.newestChapterNumber}',
-                        chapterId: item.newestChapterId.toString(),
-                        order: -1,
-                      ),
-                      lastUpdate: DateTime.parse(item.newestChapterCreatedAt),
-                    ),
-                  )
-                  .toList(),
+          items: topWeek.data
+              .map(
+                (item) => Comic(
+                  comicId: item.id.toString(),
+                  name: item.name,
+                  image: OImage.from(item.coverUrl),
+                  lastChap: ComicChapter(
+                    name: 'Chapter ${item.newestChapterNumber}',
+                    chapterId: item.newestChapterId.toString(),
+                    order: -1,
+                  ),
+                  lastUpdate: DateTime.parse(item.newestChapterCreatedAt),
+                ),
+              )
+              .toList(),
         ),
       ],
     );
@@ -103,10 +100,9 @@ class CuuTruyenService extends ABComicService
       fetch('mangas/$comicId/chapters'),
     ]);
     final data = MangaDetail.fromJson(jsonDecode(all[0])['data']);
-    final chapters =
-        (jsonDecode(all[1])['data'] as List)
-            .map((item) => Chapter.fromJson(item))
-            .toList();
+    final chapters = (jsonDecode(all[1])['data'] as List)
+        .map((item) => Chapter.fromJson(item))
+        .toList();
 
     final name = data.name;
     final originalName = data.titles.map((title) => title.name).join(', ');
@@ -117,12 +113,11 @@ class CuuTruyenService extends ABComicService
     final status$ =
         // _getInfoTale(tales, 'Trạng Thái:')?.textRaw()?.toLowerCase() ??
         'Unknown';
-    final status =
-        status$ == 'đang cập nhật'
-            ? StatusEnum.ongoing
-            : status$ == 'unknown'
-            ? StatusEnum.unknown
-            : StatusEnum.completed;
+    final status = status$ == 'đang cập nhật'
+        ? StatusEnum.ongoing
+        : status$ == 'unknown'
+        ? StatusEnum.unknown
+        : StatusEnum.completed;
     final views = data.viewsCount;
     // final likes = int.tryParse(
     //   _getInfoTale(tales, 'Theo Dõi:')?.textRaw()?.replaceAll(',', '') ?? '',
@@ -147,23 +142,21 @@ class CuuTruyenService extends ABComicService
     //         )
     //         : null;
 
-    final genres =
-        data.tags
-            .map((tag) => Genre(name: tag.name, genreId: 'tag_${tag.slug}'))
-            .toList();
+    final genres = data.tags
+        .map((tag) => Genre(name: tag.name, genreId: 'tag_${tag.slug}'))
+        .toList();
     final description = data.fullDescription ?? data.description;
-    final chaps =
-        chapters
-            .map(
-              (chapter) => ComicChapter(
-                name: 'Chapter ${chapter.number}',
-                fullName: chapter.name,
-                order: chapter.order,
-                chapterId: chapter.id.toString(),
-                extra: chapter.id.toString(),
-              ),
-            )
-            .toList();
+    final chaps = chapters
+        .map(
+          (chapter) => ComicChapter(
+            name: 'Chapter ${chapter.number}',
+            fullName: chapter.name,
+            order: chapter.order,
+            chapterId: chapter.id.toString(),
+            extra: chapter.id.toString(),
+          ),
+        )
+        .toList();
 
     final lastModified = chapters.fold(
       chapters.first.updatedAt,
@@ -237,22 +230,21 @@ class CuuTruyenService extends ABComicService
       ),
     );
 
-    final items =
-        data.data
-            .map(
-              (item) => Comic(
-                comicId: item.id.toString(),
-                name: item.name,
-                image: OImage.from(item.coverUrl),
-                lastChap: ComicChapter(
-                  name: 'Chapter ${item.newestChapterNumber}',
-                  chapterId: item.newestChapterId.toString(),
-                  order: -1,
-                ),
-                lastUpdate: item.newestChapterCreatedAt,
-              ),
-            )
-            .toList();
+    final items = data.data
+        .map(
+          (item) => Comic(
+            comicId: item.id.toString(),
+            name: item.name,
+            image: OImage.from(item.coverUrl),
+            lastChap: ComicChapter(
+              name: 'Chapter ${item.newestChapterNumber}',
+              chapterId: item.newestChapterId.toString(),
+              order: -1,
+            ),
+            lastUpdate: item.newestChapterCreatedAt,
+          ),
+        )
+        .toList();
 
     final maxPage = data.meta.totalPages;
 
@@ -277,32 +269,31 @@ class CuuTruyenService extends ABComicService
     final data = MangaTagResponse.fromJson(
       categoryId.contains('recently_updated')
           ? {
-            'data': {
-              'mangas': dataRaw['data'],
-              'tag': <String, dynamic>{
-                'name': 'Mới cập nhật',
-                'slug': 'newest',
-                'tagging_count': -1,
+              'data': {
+                'mangas': dataRaw['data'],
+                'tag': <String, dynamic>{
+                  'name': 'Mới cập nhật',
+                  'slug': 'newest',
+                  'tagging_count': -1,
+                },
               },
-            },
-            '_metadata': dataRaw['_metadata'],
-          }
+              '_metadata': dataRaw['_metadata'],
+            }
           : dataRaw,
     );
 
     return ComicCategory(
       name: data.data.tag.name,
       url: '$baseUrl/${categoryId.replaceAll(r'_', '/')}',
-      items:
-          data.data.mangas
-              .map(
-                (manga) => Comic(
-                  comicId: manga.id.toString(),
-                  name: manga.name,
-                  image: OImage.from(manga.coverUrl!),
-                ),
-              )
-              .toList(),
+      items: data.data.mangas
+          .map(
+            (manga) => Comic(
+              comicId: manga.id.toString(),
+              name: manga.name,
+              image: OImage.from(manga.coverUrl!),
+            ),
+          )
+          .toList(),
       page: page,
       totalItems: data.metadata.perPage * data.metadata.totalPages,
       totalPages: data.metadata.totalPages,
@@ -355,10 +346,9 @@ class CuuTruyenService extends ABComicService
             id: entry.value.id.toString(),
             userId: entry.value.user.id.toString(),
             photoUrl: null,
-            name:
-                entry.value.user.teams.firstOrNull != null
-                    ? 'Team ${entry.value.user.teams.firstOrNull['name']}'
-                    : entry.value.user.username,
+            name: entry.value.user.teams.firstOrNull != null
+                ? 'Team ${entry.value.user.teams.firstOrNull['name']}'
+                : entry.value.user.username,
             content: entry.value.processedContent,
             timeAgo: entry.value.createdAt,
             countReply: 0,
@@ -387,22 +377,20 @@ class CuuTruyenService extends ABComicService
       final isDeepReply = parentId != rootId;
       final originalParent = mapRawComments[parentId];
 
-      final modified =
-          isDeepReply
-              ? mapComments[commentId]!.copyWith(
-                content:
-                    "@${originalParent?.user.username ?? 'unknown'} ${mapComments[commentId]!.content}",
-              )
-              : mapComments[commentId]!;
+      final modified = isDeepReply
+          ? mapComments[commentId]!.copyWith(
+              content:
+                  "@${originalParent?.user.username ?? 'unknown'} ${mapComments[commentId]!.content}",
+            )
+          : mapComments[commentId]!;
 
       repliesByRootId.putIfAbsent(rootId, () => []).add(modified);
     }
 
     // Gán replies vào root comment
-    final result =
-        rootComments.map((root) {
-          return root.copyWith(replies: repliesByRootId[root.id] ?? []);
-        }).toList();
+    final result = rootComments.map((root) {
+      return root.copyWith(replies: repliesByRootId[root.id] ?? []);
+    }).toList();
 
     return ComicComments(
       items: result,

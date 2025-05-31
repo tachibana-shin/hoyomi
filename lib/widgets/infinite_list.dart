@@ -65,29 +65,26 @@ class _InfiniteListState<T> extends State<InfiniteList<T>> {
           setState(() {});
         }
       },
-      itemBuilder:
-          (context, index) => widget.itemBuilder(
-            context,
-            _data.elementAt(index),
-            index,
-            index < 1 ? null : _data.elementAtOrNull(index - 1),
-          ),
-      loadingBuilder:
-          (context) => Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: SpinKitSpinningLines(
-              color: Theme.of(context).colorScheme.secondary,
-              size: 50.0,
-            ),
-          ),
-      errorBuilder:
-          (context) => Service.errorWidgetBuilder(
-            context,
-            error: _error,
-            trace: StackTrace.current,
-            service: null,
-            orElse: (error) => Text('Error: $error'),
-          ),
+      itemBuilder: (context, index) => widget.itemBuilder(
+        context,
+        _data.elementAt(index),
+        index,
+        index < 1 ? null : _data.elementAtOrNull(index - 1),
+      ),
+      loadingBuilder: (context) => Padding(
+        padding: EdgeInsets.symmetric(vertical: 8.0),
+        child: SpinKitSpinningLines(
+          color: Theme.of(context).colorScheme.secondary,
+          size: 50.0,
+        ),
+      ),
+      errorBuilder: (context) => Service.errorWidgetBuilder(
+        context,
+        error: _error,
+        trace: StackTrace.current,
+        service: null,
+        orElse: (error) => Text('Error: $error'),
+      ),
     );
   }
 }

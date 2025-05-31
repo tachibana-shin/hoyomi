@@ -97,15 +97,14 @@ sealed class OImage with _$OImage {
         ),
         _ => CachedNetworkImageProvider(
           src,
-          headers:
-              Headers({
-                if (service != null) ...{
-                  'set-cookie': service.getSetting(key: 'cookie') ?? '',
-                  'user-agent': service.getSetting(key: 'user_agent') ?? '',
-                  'referer': service.baseUrl,
-                },
-                ...headers?.toMap() ?? {},
-              }).toMap(),
+          headers: Headers({
+            if (service != null) ...{
+              'set-cookie': service.getSetting(key: 'cookie') ?? '',
+              'user-agent': service.getSetting(key: 'user_agent') ?? '',
+              'referer': service.baseUrl,
+            },
+            ...headers?.toMap() ?? {},
+          }).toMap(),
         ),
       },
 

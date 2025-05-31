@@ -32,12 +32,11 @@ Future<Dio> _createDioClientCache() async {
 
   final options = CacheOptions(
     // A default store is required for interceptor.
-    store:
-        kIsWeb
-            ? MemCacheStore()
-            : FileCacheStore(
-              join((await getTemporaryDirectory()).path, 'dio_cache_service'),
-            ),
+    store: kIsWeb
+        ? MemCacheStore()
+        : FileCacheStore(
+            join((await getTemporaryDirectory()).path, 'dio_cache_service'),
+          ),
 
     // All subsequent fields are optional to get a standard behaviour.
 
@@ -64,14 +63,15 @@ Future<Dio> _createDioClientCache() async {
     allowPostMethod: false,
   );
 
-  _dioCache = await createDioClient(
-      BaseOptions(
-        responseType: ResponseType.plain,
-        followRedirects: true,
-      ), // only followRedirects for web
-      followRedirects: true, // this skip followRedirects in io
-    )
-    ..interceptors.add(DioCacheInterceptor(options: options));
+  _dioCache =
+      await createDioClient(
+          BaseOptions(
+            responseType: ResponseType.plain,
+            followRedirects: true,
+          ), // only followRedirects for web
+          followRedirects: true, // this skip followRedirects in io
+        )
+        ..interceptors.add(DioCacheInterceptor(options: options));
 
   return _dioCache!;
 }
@@ -154,9 +154,8 @@ abstract class Service extends BaseService
     FieldInput(
       name: 'User Agent',
       key: 'user_agent',
-      defaultFn:
-          (service) =>
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      defaultFn: (service) =>
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       placeholder:
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       description: 'The user agent to use when fetching data',
@@ -188,19 +187,16 @@ abstract class Service extends BaseService
   }
 
   OImage? _faviconUrl;
-  OImage get faviconUrl =>
-      _faviconUrl ??= OImage(
-        src: Uri.parse(baseUrl).resolve(init.faviconUrl.src).toString(),
-        headers: Headers({
-          'referer': baseUrl,
-        }).merge(init.faviconUrl.headers ?? Headers({})),
-      );
+  OImage get faviconUrl => _faviconUrl ??= OImage(
+    src: Uri.parse(baseUrl).resolve(init.faviconUrl.src).toString(),
+    headers: Headers({
+      'referer': baseUrl,
+    }).merge(init.faviconUrl.headers ?? Headers({})),
+  );
   String? _rss;
-  String? get rss =>
-      _rss ??=
-          init.rss == null
-              ? null
-              : Uri.parse(baseUrl).resolve(init.rss!).toString();
+  String? get rss => _rss ??= init.rss == null
+      ? null
+      : Uri.parse(baseUrl).resolve(init.rss!).toString();
 
   String? _$fetchBaseUrl;
   String? get _fetchBaseUrl {
@@ -252,10 +248,9 @@ abstract class Service extends BaseService
 
     if (error is UserNotFoundException) {
       return Padding(
-        padding:
-            isSnackbar
-                ? EdgeInsets.zero
-                : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        padding: isSnackbar
+            ? EdgeInsets.zero
+            : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -439,10 +434,9 @@ abstract class Service extends BaseService
 
     cookiesText = init.onBeforeInsertCookie?.call(cookiesText) ?? cookiesText;
 
-    var uri =
-        _fetchBaseUrl == null
-            ? Uri.parse(url)
-            : Uri.parse(_fetchBaseUrl!).resolve(url);
+    var uri = _fetchBaseUrl == null
+        ? Uri.parse(url)
+        : Uri.parse(_fetchBaseUrl!).resolve(url);
     if (query != null) uri = query.joinTo(uri);
 
     final $headers = Headers({
@@ -488,14 +482,13 @@ abstract class Service extends BaseService
     Map<String, dynamic>? body,
     Headers? headers,
   }) async {
-    final uid =
-        sha256
-            .convert(
-              utf8.encode(
-                '$url|$cookie|${jsonEncode(query)}|${body == null ? '' : jsonEncode(body)}|${headers == null ? '' : jsonEncode(headers)}',
-              ),
-            )
-            .toString();
+    final uid = sha256
+        .convert(
+          utf8.encode(
+            '$url|$cookie|${jsonEncode(query)}|${body == null ? '' : jsonEncode(body)}|${headers == null ? '' : jsonEncode(headers)}',
+          ),
+        )
+        .toString();
 
     final inStore = _cacheFetch[uid];
     if (inStore != null &&
@@ -505,16 +498,12 @@ abstract class Service extends BaseService
     }
 
     final expiresIn = expires == null ? null : DateTime.now().add(expires);
-    final response = fetch(
-      url,
-      cookie: cookie,
-      query: query,
-      body: body,
-      headers: headers,
-    )..catchError((error) {
-      _cacheFetch.remove(uid);
-      throw error;
-    });
+    final response =
+        fetch(url, cookie: cookie, query: query, body: body, headers: headers)
+          ..catchError((error) {
+            _cacheFetch.remove(uid);
+            throw error;
+          });
     _cacheFetch[uid] = (expire: expiresIn, response: response);
 
     return response;
@@ -653,13 +642,11 @@ abstract class Service extends BaseService
   }
 
   Future<User> fetchUser({ServiceSettings? row, bool? recordLoaded}) async {
-    return _userFuture ??= _fetchUser(
-      record: row,
-      recordLoaded: recordLoaded,
-    ).catchError((error) {
-      _userFuture = null;
-      throw error;
-    });
+    return _userFuture ??= _fetchUser(record: row, recordLoaded: recordLoaded)
+        .catchError((error) {
+          _userFuture = null;
+          throw error;
+        });
   }
 
   Future<User> _fetchUser({ServiceSettings? record, bool? recordLoaded}) async {
@@ -668,10 +655,9 @@ abstract class Service extends BaseService
     }
     final service = this as AuthMixin;
 
-    record =
-        recordLoaded == true
-            ? record
-            : await ServiceSettingsController.instance.get(uid);
+    record = recordLoaded == true
+        ? record
+        : await ServiceSettingsController.instance.get(uid);
     final settings = record?.settings ?? {};
     final cookie = settings['cookie'] as String?;
     var user = record?.userDataCache;
