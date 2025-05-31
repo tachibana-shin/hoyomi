@@ -80,9 +80,11 @@ mixin HeadlessMixin on BaseService {
     required Headers headers,
     bool notify = true,
     bool base64 = false,
-    bool createNewHeadless = false
+    bool createNewHeadless = false,
   }) async {
-    final controller = await _initHeadless(Uri.parse(createNewHeadless ? url : baseUrl));
+    final controller = await _initHeadless(
+      Uri.parse(createNewHeadless ? url : baseUrl),
+    );
 
     final DateTime? startTime = kDebugMode ? DateTime.now() : null;
     if (kDebugMode) {
@@ -141,7 +143,7 @@ return await fetch(url, {
           'method': body == null ? 'get' : 'post',
           'headers': headers.toMap(),
           'rawBody': body,
-          'base64': base64
+          'base64': base64,
         },
         contentWorld: ContentWorld.PAGE,
       );

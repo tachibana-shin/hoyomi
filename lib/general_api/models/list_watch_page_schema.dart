@@ -12,9 +12,9 @@ part 'list_watch_page_schema.g.dart';
 /// A list of watch page entries, each representing the page watched for a specific episode.
 @Freezed()
 abstract class ListWatchPageSchema with _$ListWatchPageSchema {
-  const factory ListWatchPageSchema({
-    required List<Data2> data,
-  }) = _ListWatchPageSchema;
-  
-  factory ListWatchPageSchema.fromJson(Map<String, Object?> json) => _$ListWatchPageSchemaFromJson(json);
+  const factory ListWatchPageSchema({required List<Data2> data}) =
+      _ListWatchPageSchema;
+
+  factory ListWatchPageSchema.fromJson(Map<String, Object?> json) =>
+      _$ListWatchPageSchemaFromJson(json);
 }
