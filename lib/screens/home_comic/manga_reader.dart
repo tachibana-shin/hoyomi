@@ -97,21 +97,16 @@ class _MangaReaderState extends State<MangaReader>
 
   late final _watchPageChapters =
       computed<Future<Map<String, WatchPageUpdated>?>>(() async {
-        if (widget.service is ComicWatchPageMixin) {
-          final chapters = widget.comic.chapters.sortAsc;
+        final chapters = widget.comic.chapters.sortAsc;
 
-          try {
-            return await (widget.service as ComicWatchPageMixin)
-                .getWatchPageEpisodes(
-                  comicId: widget.comicId,
-                  chapters: chapters,
-                );
-          } on UnimplementedError {
-            return null;
-          }
+        try {
+          return await widget.service.getWatchPageEpisodes(
+            comicId: widget.comicId,
+            chapters: chapters,
+          );
+        } on UnimplementedError {
+          return null;
         }
-
-        return null;
       });
 
   // tiny status system
@@ -372,12 +367,10 @@ class _MangaReaderState extends State<MangaReader>
 
     /// history read
     watch([_realCurrentPage], () {
-      final service = widget.service;
-      if (service is ComicWatchPageMixin &&
-          _currChapter.value != null &&
+      if (_currChapter.value != null &&
           !_skipRestoreWatch.contains(_chapterId.value)) {
         _saveWatchPage(
-          service: widget.service as ComicWatchPageMixin,
+          service: widget.service,
           comicId: widget.comicId,
           chapter: _currChapter.value!,
           metaComic: widget.comic,
@@ -399,14 +392,13 @@ class _MangaReaderState extends State<MangaReader>
     });
 
     watchEffect(() async {
-      if (widget.service is ComicWatchPageMixin && _currChapter.value != null) {
+      if (_currChapter.value != null) {
         try {
-          final watchPage = await (widget.service as ComicWatchPageMixin)
-              .getWatchPage(
-                comicId: widget.comicId,
-                chapter: _currChapter.value!,
-                metaComic: widget.comic,
-              );
+          final watchPage = await widget.service.getWatchPage(
+            comicId: widget.comicId,
+            chapter: _currChapter.value!,
+            metaComic: widget.comic,
+          );
 
           if (kDebugMode) {
             print(watchPage);
@@ -468,20 +460,18 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   void _forceUpdateWatchPage() {
-    if (widget.service is ComicWatchPageMixin) {
-      _saveWatchPage(
-        service: widget.service as ComicWatchPageMixin,
-        comicId: widget.comicId,
-        chapter: _currChapter.value!,
-        metaComic: widget.comic,
-        watchPage: WatchPage(
-          currentPage: _realCurrentPage.value.toInt(),
-          totalPage: _realLength.value,
-        ),
-        force: true,
-      );
-      debugPrint('save watch page');
-    }
+    _saveWatchPage(
+      service: widget.service,
+      comicId: widget.comicId,
+      chapter: _currChapter.value!,
+      metaComic: widget.comic,
+      watchPage: WatchPage(
+        currentPage: _realCurrentPage.value.toInt(),
+        totalPage: _realLength.value,
+      ),
+      force: true,
+    );
+    debugPrint('save watch page');
   }
 
   Timer? _timer;
@@ -525,10 +515,11 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   void _updateRoute() {
-    final currentGroup = _pages
-        .value[_currentPage.value.round()]
-        .chapter
-        .chapterId; // Get the group id of the current page
+    final currentGroup =
+        _pages
+            .value[_currentPage.value.round()]
+            .chapter
+            .chapterId; // Get the group id of the current page
     if (_chapterId.value != currentGroup) {
       _forceUpdateWatchPage();
       _skipRestoreWatch.add(currentGroup);
@@ -738,14 +729,16 @@ class _MangaReaderState extends State<MangaReader>
       future: _fetchPage(index, false, progress: progress),
       builder: (context, snapshot) {
         return snapshot.when(
-          error: (error, stack) => SizedBox(
-            height: 100.h(context),
-            child: Text('Error: $error ($stack)'),
-          ),
-          loading: () => SizedBox(
-            height: 100.h(context),
-            child: Watch(() => _buildPageLoading(progress.value)),
-          ),
+          error:
+              (error, stack) => SizedBox(
+                height: 100.h(context),
+                child: Text('Error: $error ($stack)'),
+              ),
+          loading:
+              () => SizedBox(
+                height: 100.h(context),
+                child: Watch(() => _buildPageLoading(progress.value)),
+              ),
           data: (data, _) => Image.memory(data.data!, fit: BoxFit.contain),
         );
       },
@@ -783,10 +776,11 @@ class _MangaReaderState extends State<MangaReader>
             rows: 3,
             columns: 3,
             onTap: _onTapGrid,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 900),
-              child: _buildReader(),
-            ).alignAtTopCenter(),
+            child:
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 900),
+                  child: _buildReader(),
+                ).alignAtTopCenter(),
           ),
           Positioned(left: 0, right: 0, bottom: 0, child: _buildTinyStatus()),
           Positioned(left: 0, right: 0, bottom: 0, child: _buildBottomBar()),
@@ -995,16 +989,17 @@ class _MangaReaderState extends State<MangaReader>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (context) => ImagePicker(
-        images: _pages.value.map((page) => page.image).toList(),
-        sourceId: widget.service.uid,
-        onChange: (selected) {
-          setState(() {
-            _skipImages.clear();
-            _skipImages.addAll(selected);
-          });
-        },
-      ),
+      builder:
+          (context) => ImagePicker(
+            images: _pages.value.map((page) => page.image).toList(),
+            sourceId: widget.service.uid,
+            onChange: (selected) {
+              setState(() {
+                _skipImages.clear();
+                _skipImages.addAll(selected);
+              });
+            },
+          ),
     );
   }
 
@@ -1015,13 +1010,14 @@ class _MangaReaderState extends State<MangaReader>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (context) => CommentsSheet(
-        comicId: widget.comicId,
-        metaComic: widget.comic,
-        chapterId: _chapterId.value,
-        chapter: _currChapter.value!,
-        service: widget.service as ComicCommentMixin,
-      ),
+      builder:
+          (context) => CommentsSheet(
+            comicId: widget.comicId,
+            metaComic: widget.comic,
+            chapterId: _chapterId.value,
+            chapter: _currChapter.value!,
+            service: widget.service as ComicCommentMixin,
+          ),
     );
   }
 
@@ -1030,16 +1026,17 @@ class _MangaReaderState extends State<MangaReader>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (context) => SheetChapters(
-        comic: widget.comic,
-        service: widget.service,
-        comicId: widget.comicId,
-        currentChapterId: _chapterId.value,
-        initialChildSize: 0.6,
-        watchPageChapters: _watchPageChapters,
-        lastReadChapter: null,
-        replace: true,
-      ),
+      builder:
+          (context) => SheetChapters(
+            comic: widget.comic,
+            service: widget.service,
+            comicId: widget.comicId,
+            currentChapterId: _chapterId.value,
+            initialChildSize: 0.6,
+            watchPageChapters: _watchPageChapters,
+            lastReadChapter: null,
+            replace: true,
+          ),
     );
   }
 
@@ -1128,8 +1125,9 @@ class _MangaReaderState extends State<MangaReader>
             index,
             false,
             progress:
-                _progressCacheStore[_pages.value.elementAt(index).image] ??=
-                    ref(-1.0),
+                _progressCacheStore[_pages.value
+                    .elementAt(index)
+                    .image] ??= ref(-1.0),
           );
 
           return Image.memory(await data.future);
@@ -1280,7 +1278,7 @@ class _MangaReaderState extends State<MangaReader>
                                       icon: Eva.message_square_outline,
                                       text: 'Comments',
                                       disabled:
-                                          widget.service is! ComicFollowMixin,
+                                          widget.service is! ComicCommentMixin,
                                       onPressed: _showPanelComments,
                                     ),
                                   ),

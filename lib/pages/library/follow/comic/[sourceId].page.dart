@@ -19,9 +19,7 @@ class _FollowsComicPageState extends State<FollowsComicPage> {
   @override
   void initState() {
     _service =
-        widget.sourceId == 'general'
-            ? null
-            : getComicService(widget.sourceId) as ComicFollowMixin;
+        widget.sourceId == 'general' ? null : getComicService(widget.sourceId);
 
     super.initState();
   }
@@ -61,14 +59,17 @@ class _FollowsComicPageState extends State<FollowsComicPage> {
                 final result = await _getData(_pageKey);
                 _pageKey++;
 
-            final isLastPage = result.page >= result.totalPages;
-            return (isLastPage: isLastPage, data: result.items);
-          },
-          itemBuilder: (context, follow, index) {
-            return VerticalComic(comic: follow.item, sourceId: follow.sourceId);
-          },
-        ),
-      ),
+                final isLastPage = result.page >= result.totalPages;
+                return (isLastPage: isLastPage, data: result.items);
+              },
+              itemBuilder: (context, follow, index) {
+                return VerticalComic(
+                  comic: follow.item,
+                  sourceId: follow.sourceId,
+                );
+              },
+            ),
+          ),
     );
   }
 }

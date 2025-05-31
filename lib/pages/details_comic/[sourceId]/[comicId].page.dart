@@ -68,47 +68,39 @@ class _DetailsComicState extends State<DetailsComic>
       computed<Future<Map<String, WatchPageUpdated>?>>(() async {
         if (_comicIsFake.value) return null;
 
-        if (_service is ComicWatchPageMixin) {
-          final chapters = _comic.value.chapters.sortAsc;
+        final chapters = _comic.value.chapters.sortAsc;
 
-          try {
-            return await (_service as ComicWatchPageMixin).getWatchPageEpisodes(
-              comicId: widget.comicId,
-              chapters: chapters,
-            );
-          } on UnimplementedError {
-            return null;
-          }
+        try {
+          return await _service.getWatchPageEpisodes(
+            comicId: widget.comicId,
+            chapters: chapters,
+          );
+        } on UnimplementedError {
+          return null;
         }
-
-        return null;
       });
-  late final _lastReadChapter =
-      computed<Future<({ComicChapter chapter, WatchPageUpdated watchPage})?>>(
-        () {
-          return _watchPageChapters.value.then((watchPageChapters) {
-            final watchPage = watchPageChapters?.entries
-                .fold<MapEntry<String, WatchPageUpdated>?>(null, (
-                  prev,
-                  element,
-                ) {
-                  if (prev == null) return element;
-                  return element.value.updatedAt.isAfter(prev.value.updatedAt)
-                      ? element
-                      : prev;
-                });
-
-            if (watchPage == null) return null;
-
-            final chapter = _comic.value.chapters.sortAsc.firstWhereOrNull(
-              (chapter) => chapter.chapterId == watchPage.key,
-            );
-            if (chapter == null) return null;
-
-            return (chapter: chapter, watchPage: watchPage.value);
+  late final _lastReadChapter = computed<
+    Future<({ComicChapter chapter, WatchPageUpdated watchPage})?>
+  >(() {
+    return _watchPageChapters.value.then((watchPageChapters) {
+      final watchPage = watchPageChapters?.entries
+          .fold<MapEntry<String, WatchPageUpdated>?>(null, (prev, element) {
+            if (prev == null) return element;
+            return element.value.updatedAt.isAfter(prev.value.updatedAt)
+                ? element
+                : prev;
           });
-        },
+
+      if (watchPage == null) return null;
+
+      final chapter = _comic.value.chapters.sortAsc.firstWhereOrNull(
+        (chapter) => chapter.chapterId == watchPage.key,
       );
+      if (chapter == null) return null;
+
+      return (chapter: chapter, watchPage: watchPage.value);
+    });
+  });
 
   @override
   void initState() {
@@ -415,17 +407,18 @@ class _DetailsComicState extends State<DetailsComic>
         Wrap(
           spacing: 8.0,
           runSpacing: 4.0,
-          children: comic.genres.map((genre) {
-            return InkWell(
-              onTap: () {
-                ///
-                context.push(
-                  "/category_comic/${_service.uid}/${genre.genreId}",
+          children:
+              comic.genres.map((genre) {
+                return InkWell(
+                  onTap: () {
+                    ///
+                    context.push(
+                      "/category_comic/${_service.uid}/${genre.genreId}",
+                    );
+                  },
+                  child: Chip(label: Text(genre.name)),
                 );
-              },
-              child: Chip(label: Text(genre.name)),
-            );
-          }).toList(),
+              }).toList(),
         ),
         SizedBox(height: 24.0),
         if (!comic.offlineMode) _buildSuggest(comic),
@@ -519,9 +512,8 @@ class _DetailsComicState extends State<DetailsComic>
                             "(${comic.rate!.count})",
                             style: TextStyle(
                               fontSize: 14.0,
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.inverseSurface,
+                              color:
+                                  Theme.of(context).colorScheme.inverseSurface,
                             ),
                           ),
                         ],
@@ -548,19 +540,22 @@ class _DetailsComicState extends State<DetailsComic>
                     null,
                     FutureBuilder(
                       future: _lastReadChapter.value,
-                      builder: (context, snapshot) => snapshot.when(
-                        data: (lastReadChapter, isComplete) => Text(
-                          lastReadChapter == null
-                              ? '(No data)'
-                              : '${lastReadChapter.chapter.name} of ${comic.chapters.sortAsc.length}',
-                        ),
-                        error: (error, stack) => Text(
-                          'Error: $error',
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        loading: () => Text('Loading...'),
-                      ),
+                      builder:
+                          (context, snapshot) => snapshot.when(
+                            data:
+                                (lastReadChapter, isComplete) => Text(
+                                  lastReadChapter == null
+                                      ? '(No data)'
+                                      : '${lastReadChapter.chapter.name} of ${comic.chapters.sortAsc.length}',
+                                ),
+                            error:
+                                (error, stack) => Text(
+                                  'Error: $error',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                            loading: () => Text('Loading...'),
+                          ),
                     ),
                   ),
 
@@ -578,23 +573,29 @@ class _DetailsComicState extends State<DetailsComic>
                       ),
                       FutureBuilder(
                         future: _watchPageChapters.value,
-                        builder: (context, snapshot) => snapshot.when(
-                          data: (watchPageChapters, isComplete) => Text(
-                            watchPageChapters == null
-                                ? '(No data)'
-                                : '${((watchPageChapters.values.fold(0.0, (prev, item) => prev + item.currentPage / item.totalPage) / comic.chapters.sortAsc.length) * 100).round()}%',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontSize: 14,
+                        builder:
+                            (context, snapshot) => snapshot.when(
+                              data:
+                                  (watchPageChapters, isComplete) => Text(
+                                    watchPageChapters == null
+                                        ? '(No data)'
+                                        : '${((watchPageChapters.values.fold(0.0, (prev, item) => prev + item.currentPage / item.totalPage) / comic.chapters.sortAsc.length) * 100).round()}%',
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(
+                                            context,
+                                          ).colorScheme.secondary,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                              error:
+                                  (error, stack) => Text(
+                                    'Error: $error',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                              loading: () => Text('Loading...'),
                             ),
-                          ),
-                          error: (error, stack) => Text(
-                            'Error: $error',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          loading: () => Text('Loading...'),
-                        ),
                       ),
                     ],
                   ),
@@ -944,36 +945,35 @@ class _ButtonLikeState extends State<_ButtonLike> {
     super.initState();
     _likes = widget.comic.likes;
 
-    if (widget.service is ComicFollowMixin) {
-      (widget.service as ComicFollowMixin)
-          .isFollow(comicId: widget.comicId)
-          .then((liked) {
-            if (mounted) {
-              setState(() {
-                _liked = liked;
-              });
-            }
-          })
-          .catchError((error) {
-            if (error is! CaptchaRequiredException) {
-              showSnackError('like', error); // 显示錯誤訊息
-            }
-          });
-    }
+    widget.service
+        .isFollow(comicId: widget.comicId)
+        .then((liked) {
+          if (mounted) {
+            setState(() {
+              _liked = liked;
+            });
+          }
+        })
+        .catchError((error) {
+          if (error is! CaptchaRequiredException) {
+            showSnackError('like', error); // 显示錯誤訊息
+          }
+        });
   }
 
   void _onTap(MetaComic comic) {
     final value = !(_liked ?? false);
 
-    (widget.service as ComicFollowMixin)
+    widget.service
         .setFollow(comicId: widget.comicId, metaComic: comic, value: value)
         .then((_) {
           if (mounted) {
             setState(() {
               _liked = value;
-              _likes = value
-                  ? (widget.comic.likes ?? 0) + 1
-                  : widget.comic.likes! - 1;
+              _likes =
+                  value
+                      ? (widget.comic.likes ?? 0) + 1
+                      : widget.comic.likes! - 1;
             });
           }
         })

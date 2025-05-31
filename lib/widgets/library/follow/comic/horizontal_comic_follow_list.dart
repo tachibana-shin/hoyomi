@@ -31,7 +31,7 @@ class _HorizontalComicHistoryState extends State<HorizontalComicFollowList> {
 
   @override
   void initState() {
-    _service = getComicService(widget.sourceId) as ComicFollowMixin;
+    _service = getComicService(widget.sourceId);
     _followsFuture = widget.fn(page: 1).then((data) => data.items);
 
     super.initState();

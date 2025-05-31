@@ -1247,8 +1247,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       ),
               getWatchTimeEpisodes:
                   (episodesEiga) async =>
-                      _cacheWatchTimeStore[eigaId] ??= await (_service
-                              as EigaWatchTimeMixin)
+                      _cacheWatchTimeStore[eigaId] ??= await _service
                           .getWatchTimeEpisodes(
                             eigaId: _eigaId.value,
                             episodes: episodesEiga.episodes,
@@ -1312,11 +1311,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         getWatchTimeEpisodes:
                             (episodesEiga) async =>
                                 _cacheWatchTimeStore[season.eigaId] ??=
-                                    await (_service as EigaWatchTimeMixin)
-                                        .getWatchTimeEpisodes(
-                                          eigaId: season.eigaId,
-                                          episodes: episodesEiga.episodes,
-                                        ),
+                                    await _service.getWatchTimeEpisodes(
+                                      eigaId: season.eigaId,
+                                      episodes: episodesEiga.episodes,
+                                    ),
                         eager: true,
                         scrollDirection: scrollDirection,
                         controller: controller,

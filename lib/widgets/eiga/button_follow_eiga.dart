@@ -54,7 +54,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga>
               .then((value) {
                 if (mounted) _followCount.value = value;
               })
-              .onError<UnimplementedError>((_, __) => null),
+              .onError<UnimplementedError>((_, _) => null),
         ]);
       } finally {
         if (mounted) _loading.value = false;
