@@ -57,8 +57,7 @@ export class Eiga {
       user_id: number
       page: number
       limit: number
-    },
-    status?: (typeof StatusEnum)[number]
+    }
   ) {
     // const pgDialect = new PgDialect()
     const query = sourceId
@@ -109,11 +108,7 @@ left join lateral (
 ) ${eigaHistoryChapters} on TRUE
 where
   ${eiga.sourceId} = ${sourceId} and
-  ${eiga.userId}   = ${params.user_id} and
-  (
-    ${eiga.status} = ${status} OR
-    ${status ?? null} IS NULL
-  )
+  ${eiga.userId}   = ${params.user_id}
 order by
   ${eigaHistories.createdAt} desc
 limit
@@ -165,11 +160,7 @@ left join lateral (
     1
 ) ${eigaHistoryChapters} on TRUE
 where
-  ${eiga.userId}   = ${params.user_id} and
-  (
-    ${eiga.status} = ${status} OR
-    ${status ?? null} IS NULL
-  )
+  ${eiga.userId}   = ${params.user_id}
 order by
   ${eigaHistories.createdAt} desc
 limit
