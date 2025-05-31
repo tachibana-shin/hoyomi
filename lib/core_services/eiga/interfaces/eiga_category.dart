@@ -18,4 +18,16 @@ class EigaCategory extends Paginate<Eiga> {
     required super.totalPages,
     this.filters,
   });
+
+  factory EigaCategory.createFakeData() {
+    return EigaCategory(
+      name: 'Fake Category',
+      url: 'https://example.com/fake-category',
+      description: 'This is a fake category for testing purposes.',
+      items: List.generate(30, (_) => Eiga.createFakeData()),
+      page: 1,
+      totalItems: 0,
+      totalPages: 1,
+    );
+  }
 }

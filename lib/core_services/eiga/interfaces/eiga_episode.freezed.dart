@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EigaEpisode {
 
- String get name; String get episodeId; OImage? get image; String? get description; String? get extra; int get index;
+ String get name; String get episodeId; OImage? get image; String? get description; String? get extra; int get order;
 /// Create a copy of EigaEpisode
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $EigaEpisodeCopyWith<EigaEpisode> get copyWith => _$EigaEpisodeCopyWithImpl<Eiga
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EigaEpisode&&(identical(other.name, name) || other.name == name)&&(identical(other.episodeId, episodeId) || other.episodeId == episodeId)&&(identical(other.image, image) || other.image == image)&&(identical(other.description, description) || other.description == description)&&(identical(other.extra, extra) || other.extra == extra)&&(identical(other.index, index) || other.index == index));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EigaEpisode&&(identical(other.name, name) || other.name == name)&&(identical(other.episodeId, episodeId) || other.episodeId == episodeId)&&(identical(other.image, image) || other.image == image)&&(identical(other.description, description) || other.description == description)&&(identical(other.extra, extra) || other.extra == extra)&&(identical(other.order, order) || other.order == order));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,episodeId,image,description,extra,index);
+int get hashCode => Object.hash(runtimeType,name,episodeId,image,description,extra,order);
 
 @override
 String toString() {
-  return 'EigaEpisode(name: $name, episodeId: $episodeId, image: $image, description: $description, extra: $extra, index: $index)';
+  return 'EigaEpisode(name: $name, episodeId: $episodeId, image: $image, description: $description, extra: $extra, order: $order)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $EigaEpisodeCopyWith<$Res>  {
   factory $EigaEpisodeCopyWith(EigaEpisode value, $Res Function(EigaEpisode) _then) = _$EigaEpisodeCopyWithImpl;
 @useResult
 $Res call({
- String name, String episodeId, OImage? image, String? description, String? extra, int index
+ String name, String episodeId, OImage? image, String? description, String? extra, int order
 });
 
 
@@ -66,14 +66,14 @@ class _$EigaEpisodeCopyWithImpl<$Res>
 
 /// Create a copy of EigaEpisode
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? episodeId = null,Object? image = freezed,Object? description = freezed,Object? extra = freezed,Object? index = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? episodeId = null,Object? image = freezed,Object? description = freezed,Object? extra = freezed,Object? order = null,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,episodeId: null == episodeId ? _self.episodeId : episodeId // ignore: cast_nullable_to_non_nullable
 as String,image: freezed == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
 as OImage?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,extra: freezed == extra ? _self.extra : extra // ignore: cast_nullable_to_non_nullable
-as String?,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
+as String?,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -97,7 +97,7 @@ $OImageCopyWith<$Res>? get image {
 @JsonSerializable()
 
 class _EigaEpisode implements EigaEpisode {
-  const _EigaEpisode({required this.name, required this.episodeId, this.image, this.description, this.extra, this.index = -1});
+  const _EigaEpisode({required this.name, required this.episodeId, this.image, this.description, this.extra, this.order = -1});
   factory _EigaEpisode.fromJson(Map<String, dynamic> json) => _$EigaEpisodeFromJson(json);
 
 @override final  String name;
@@ -105,7 +105,7 @@ class _EigaEpisode implements EigaEpisode {
 @override final  OImage? image;
 @override final  String? description;
 @override final  String? extra;
-@override@JsonKey() final  int index;
+@override@JsonKey() final  int order;
 
 /// Create a copy of EigaEpisode
 /// with the given fields replaced by the non-null parameter values.
@@ -120,16 +120,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EigaEpisode&&(identical(other.name, name) || other.name == name)&&(identical(other.episodeId, episodeId) || other.episodeId == episodeId)&&(identical(other.image, image) || other.image == image)&&(identical(other.description, description) || other.description == description)&&(identical(other.extra, extra) || other.extra == extra)&&(identical(other.index, index) || other.index == index));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EigaEpisode&&(identical(other.name, name) || other.name == name)&&(identical(other.episodeId, episodeId) || other.episodeId == episodeId)&&(identical(other.image, image) || other.image == image)&&(identical(other.description, description) || other.description == description)&&(identical(other.extra, extra) || other.extra == extra)&&(identical(other.order, order) || other.order == order));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,episodeId,image,description,extra,index);
+int get hashCode => Object.hash(runtimeType,name,episodeId,image,description,extra,order);
 
 @override
 String toString() {
-  return 'EigaEpisode(name: $name, episodeId: $episodeId, image: $image, description: $description, extra: $extra, index: $index)';
+  return 'EigaEpisode(name: $name, episodeId: $episodeId, image: $image, description: $description, extra: $extra, order: $order)';
 }
 
 
@@ -140,7 +140,7 @@ abstract mixin class _$EigaEpisodeCopyWith<$Res> implements $EigaEpisodeCopyWith
   factory _$EigaEpisodeCopyWith(_EigaEpisode value, $Res Function(_EigaEpisode) _then) = __$EigaEpisodeCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String episodeId, OImage? image, String? description, String? extra, int index
+ String name, String episodeId, OImage? image, String? description, String? extra, int order
 });
 
 
@@ -157,14 +157,14 @@ class __$EigaEpisodeCopyWithImpl<$Res>
 
 /// Create a copy of EigaEpisode
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? episodeId = null,Object? image = freezed,Object? description = freezed,Object? extra = freezed,Object? index = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? episodeId = null,Object? image = freezed,Object? description = freezed,Object? extra = freezed,Object? order = null,}) {
   return _then(_EigaEpisode(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,episodeId: null == episodeId ? _self.episodeId : episodeId // ignore: cast_nullable_to_non_nullable
 as String,image: freezed == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
 as OImage?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,extra: freezed == extra ? _self.extra : extra // ignore: cast_nullable_to_non_nullable
-as String?,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
+as String?,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

@@ -91,7 +91,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
         return false;
       },
       onLoadFake: () => true,
-      builder: (loading, __) => _buildWidgetMain(),
+      builder: (loading, _) => _buildWidgetMain(),
     );
   }
 }

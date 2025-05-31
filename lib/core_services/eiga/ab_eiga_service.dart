@@ -1,34 +1,22 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/server_source.dart';
-import 'package:hoyomi/core_services/service.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_home.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_category.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_param.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_episodes.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/source_content.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/source_video.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart';
-import 'package:hoyomi/core_services/interfaces/vtt.dart';
+import 'package:hoyomi/core_services/eiga/main.dart';
 
 export 'package:hoyomi/core_services/service.dart';
 
 part 'ab_eiga_service.freezed.dart';
 
 @freezed
-sealed class EigaContext with _$EigaContext {
-  const factory EigaContext({
+sealed class EigaSourceContext with _$EigaSourceContext {
+  const factory EigaSourceContext({
     required String eigaId,
     required MetaEiga metaEiga,
     required EigaEpisode episode,
     required SourceVideo source,
-  }) = _EigaContext;
+  }) = _EigaSourceContext;
 }
 
-abstract class ABEigaService extends Service {
+abstract class ABEigaService extends Service
+    with EigaFollowGeneralMixin, EigaWatchTimeGeneralMixin {
   Future<EigaHome> home();
 
   Future<EigaCategory> getCategory({
@@ -67,11 +55,11 @@ abstract class ABEigaService extends Service {
     throw UnimplementedError();
   }
 
-  Future<Vtt?> getSeekThumbnail(EigaContext context) {
+  Future<Vtt?> getSeekThumbnail(EigaSourceContext context) {
     throw UnimplementedError();
   }
 
-  Future<OpeningEnding?> getOpeningEnding(EigaContext context) {
+  Future<OpeningEnding?> getOpeningEnding(EigaSourceContext context) {
     throw UnimplementedError();
   }
 

@@ -4,11 +4,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart' show BaseOptions, Dio, DioException;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart' hide FormData, Response;
-import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
-import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_auth_mixin.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_follow_mixin.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_mixin.dart';
+import 'package:hoyomi/core_services/eiga/main.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/plugins/inflate_raw.dart';
 import 'package:hoyomi/utils/d_query.dart';
@@ -151,7 +147,7 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  Future<bool> isFollowed({required eigaId}) async {
+  Future<bool> isFollow(eigaId) async {
     final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
 
     final text = await fetch(
@@ -164,18 +160,16 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  Future<bool> setFollow({required eigaId, required value}) async {
-    final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
+  setFollow(context, value) async {
+    final id = RegExp(r'(\d+)$').firstMatch(context.eigaId)!.group(1)!;
 
-    final text = await fetch(
+    await fetch(
       '$baseUrl/ajax/notification?Bookmark=true&filmId=$id&type=${value ? 'add' : 'remove'}',
     );
-
-    return jsonDecode(text)['status'] == 1 ? value : !value;
   }
 
   @override
-  getFollowCount({required eigaId}) async {
+  getFollowsCount(eigaId) async {
     final $ =
         await (_docEigaStore[eigaId] ??= fetch$(
           '$baseUrl/phim/$eigaId',
@@ -575,6 +569,23 @@ class AnimeVietsubService extends ABEigaService
       _findInfo(infoListRight, 'season')!.queryOne('a'),
     );
 
+    late final StatusEnum status;
+    final parts$ = duration.split('/');
+
+    if (parts$.length != 2) {
+      status = StatusEnum.unknown;
+    } else {
+      final current = int.tryParse(parts$[0]);
+      final total = int.tryParse(parts$[1]);
+
+      if (current == null || total == null) {
+        status = StatusEnum.ongoing;
+      } else if (current >= total) {
+        status = StatusEnum.completed;
+      } else {
+        status = StatusEnum.ongoing;
+      }
+    }
     return MetaEiga(
       name: name,
       originalName: originalName,
@@ -595,6 +606,7 @@ class AnimeVietsubService extends ABEigaService
       studios: studios,
       movieSeason: movieSeason,
       trailer: trailer,
+      status: status,
     );
   }
 
@@ -778,7 +790,7 @@ class AnimeVietsubService extends ABEigaService
 
               return num.tryParse(item['name'])?.toDouble() == epFloat;
             })) ??
-        list.elementAtOrNull(episode.index);
+        list.elementAtOrNull(episode.order);
 
     if (episodeD == null) return null;
 
@@ -989,16 +1001,15 @@ class AnimeVietsubService extends ABEigaService
       page: page,
       filters: {},
     );
-    final items =
-        category.items
-            .map((item) => FollowItem<Eiga>(sourceId: uid, item: item))
-            .toList();
 
     return Paginate(
-      items: items,
-      page: category.page,
-      totalItems: category.totalItems,
+      items:
+          category.items
+              .map((item) => EigaFollow(sourceId: uid, item: item))
+              .toList(),
+      page: page,
       totalPages: category.totalPages,
+      totalItems: category.totalItems,
     );
   }
 }

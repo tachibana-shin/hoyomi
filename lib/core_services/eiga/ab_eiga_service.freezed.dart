@@ -13,20 +13,20 @@ part of 'ab_eiga_service.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$EigaContext {
+mixin _$EigaSourceContext {
 
  String get eigaId; MetaEiga get metaEiga; EigaEpisode get episode; SourceVideo get source;
-/// Create a copy of EigaContext
+/// Create a copy of EigaSourceContext
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$EigaContextCopyWith<EigaContext> get copyWith => _$EigaContextCopyWithImpl<EigaContext>(this as EigaContext, _$identity);
+$EigaSourceContextCopyWith<EigaSourceContext> get copyWith => _$EigaSourceContextCopyWithImpl<EigaSourceContext>(this as EigaSourceContext, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EigaContext&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.metaEiga, metaEiga) || other.metaEiga == metaEiga)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.source, source) || other.source == source));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EigaSourceContext&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.metaEiga, metaEiga) || other.metaEiga == metaEiga)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.source, source) || other.source == source));
 }
 
 
@@ -35,15 +35,15 @@ int get hashCode => Object.hash(runtimeType,eigaId,metaEiga,episode,source);
 
 @override
 String toString() {
-  return 'EigaContext(eigaId: $eigaId, metaEiga: $metaEiga, episode: $episode, source: $source)';
+  return 'EigaSourceContext(eigaId: $eigaId, metaEiga: $metaEiga, episode: $episode, source: $source)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $EigaContextCopyWith<$Res>  {
-  factory $EigaContextCopyWith(EigaContext value, $Res Function(EigaContext) _then) = _$EigaContextCopyWithImpl;
+abstract mixin class $EigaSourceContextCopyWith<$Res>  {
+  factory $EigaSourceContextCopyWith(EigaSourceContext value, $Res Function(EigaSourceContext) _then) = _$EigaSourceContextCopyWithImpl;
 @useResult
 $Res call({
  String eigaId, MetaEiga metaEiga, EigaEpisode episode, SourceVideo source
@@ -54,14 +54,14 @@ $MetaEigaCopyWith<$Res> get metaEiga;$EigaEpisodeCopyWith<$Res> get episode;$Sou
 
 }
 /// @nodoc
-class _$EigaContextCopyWithImpl<$Res>
-    implements $EigaContextCopyWith<$Res> {
-  _$EigaContextCopyWithImpl(this._self, this._then);
+class _$EigaSourceContextCopyWithImpl<$Res>
+    implements $EigaSourceContextCopyWith<$Res> {
+  _$EigaSourceContextCopyWithImpl(this._self, this._then);
 
-  final EigaContext _self;
-  final $Res Function(EigaContext) _then;
+  final EigaSourceContext _self;
+  final $Res Function(EigaSourceContext) _then;
 
-/// Create a copy of EigaContext
+/// Create a copy of EigaSourceContext
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? eigaId = null,Object? metaEiga = null,Object? episode = null,Object? source = null,}) {
   return _then(_self.copyWith(
@@ -72,7 +72,7 @@ as EigaEpisode,source: null == source ? _self.source : source // ignore: cast_nu
 as SourceVideo,
   ));
 }
-/// Create a copy of EigaContext
+/// Create a copy of EigaSourceContext
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -81,7 +81,7 @@ $MetaEigaCopyWith<$Res> get metaEiga {
   return $MetaEigaCopyWith<$Res>(_self.metaEiga, (value) {
     return _then(_self.copyWith(metaEiga: value));
   });
-}/// Create a copy of EigaContext
+}/// Create a copy of EigaSourceContext
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -90,7 +90,7 @@ $EigaEpisodeCopyWith<$Res> get episode {
   return $EigaEpisodeCopyWith<$Res>(_self.episode, (value) {
     return _then(_self.copyWith(episode: value));
   });
-}/// Create a copy of EigaContext
+}/// Create a copy of EigaSourceContext
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -106,8 +106,8 @@ $SourceVideoCopyWith<$Res> get source {
 /// @nodoc
 
 
-class _EigaContext implements EigaContext {
-  const _EigaContext({required this.eigaId, required this.metaEiga, required this.episode, required this.source});
+class _EigaSourceContext implements EigaSourceContext {
+  const _EigaSourceContext({required this.eigaId, required this.metaEiga, required this.episode, required this.source});
   
 
 @override final  String eigaId;
@@ -115,17 +115,17 @@ class _EigaContext implements EigaContext {
 @override final  EigaEpisode episode;
 @override final  SourceVideo source;
 
-/// Create a copy of EigaContext
+/// Create a copy of EigaSourceContext
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$EigaContextCopyWith<_EigaContext> get copyWith => __$EigaContextCopyWithImpl<_EigaContext>(this, _$identity);
+_$EigaSourceContextCopyWith<_EigaSourceContext> get copyWith => __$EigaSourceContextCopyWithImpl<_EigaSourceContext>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EigaContext&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.metaEiga, metaEiga) || other.metaEiga == metaEiga)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.source, source) || other.source == source));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EigaSourceContext&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.metaEiga, metaEiga) || other.metaEiga == metaEiga)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.source, source) || other.source == source));
 }
 
 
@@ -134,15 +134,15 @@ int get hashCode => Object.hash(runtimeType,eigaId,metaEiga,episode,source);
 
 @override
 String toString() {
-  return 'EigaContext(eigaId: $eigaId, metaEiga: $metaEiga, episode: $episode, source: $source)';
+  return 'EigaSourceContext(eigaId: $eigaId, metaEiga: $metaEiga, episode: $episode, source: $source)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$EigaContextCopyWith<$Res> implements $EigaContextCopyWith<$Res> {
-  factory _$EigaContextCopyWith(_EigaContext value, $Res Function(_EigaContext) _then) = __$EigaContextCopyWithImpl;
+abstract mixin class _$EigaSourceContextCopyWith<$Res> implements $EigaSourceContextCopyWith<$Res> {
+  factory _$EigaSourceContextCopyWith(_EigaSourceContext value, $Res Function(_EigaSourceContext) _then) = __$EigaSourceContextCopyWithImpl;
 @override @useResult
 $Res call({
  String eigaId, MetaEiga metaEiga, EigaEpisode episode, SourceVideo source
@@ -153,17 +153,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$EigaContextCopyWithImpl<$Res>
-    implements _$EigaContextCopyWith<$Res> {
-  __$EigaContextCopyWithImpl(this._self, this._then);
+class __$EigaSourceContextCopyWithImpl<$Res>
+    implements _$EigaSourceContextCopyWith<$Res> {
+  __$EigaSourceContextCopyWithImpl(this._self, this._then);
 
-  final _EigaContext _self;
-  final $Res Function(_EigaContext) _then;
+  final _EigaSourceContext _self;
+  final $Res Function(_EigaSourceContext) _then;
 
-/// Create a copy of EigaContext
+/// Create a copy of EigaSourceContext
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? eigaId = null,Object? metaEiga = null,Object? episode = null,Object? source = null,}) {
-  return _then(_EigaContext(
+  return _then(_EigaSourceContext(
 eigaId: null == eigaId ? _self.eigaId : eigaId // ignore: cast_nullable_to_non_nullable
 as String,metaEiga: null == metaEiga ? _self.metaEiga : metaEiga // ignore: cast_nullable_to_non_nullable
 as MetaEiga,episode: null == episode ? _self.episode : episode // ignore: cast_nullable_to_non_nullable
@@ -172,7 +172,7 @@ as SourceVideo,
   ));
 }
 
-/// Create a copy of EigaContext
+/// Create a copy of EigaSourceContext
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -181,7 +181,7 @@ $MetaEigaCopyWith<$Res> get metaEiga {
   return $MetaEigaCopyWith<$Res>(_self.metaEiga, (value) {
     return _then(_self.copyWith(metaEiga: value));
   });
-}/// Create a copy of EigaContext
+}/// Create a copy of EigaSourceContext
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -190,7 +190,7 @@ $EigaEpisodeCopyWith<$Res> get episode {
   return $EigaEpisodeCopyWith<$Res>(_self.episode, (value) {
     return _then(_self.copyWith(episode: value));
   });
-}/// Create a copy of EigaContext
+}/// Create a copy of EigaSourceContext
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')

@@ -1,22 +1,22 @@
-import 'package:hoyomi/core_services/eiga/interfaces/eiga_episode.dart';
+import 'package:hoyomi/core_services/eiga/export.dart';
 
-class FollowItem<T> {
+class EigaFollow {
   final String sourceId;
-  final T item;
+  final Eiga item;
   final DateTime? updatedAt;
   final EigaEpisode? lastEpisode;
 
-  const FollowItem({
+  const EigaFollow({
     required this.sourceId,
     required this.item,
     this.updatedAt,
     this.lastEpisode,
   });
 
-  factory FollowItem.createFakeData(T item) {
-    return FollowItem(
+  factory EigaFollow.createFakeData() {
+    return EigaFollow(
       sourceId: '',
-      item: item,
+      item: Eiga.createFakeData(),
       updatedAt: DateTime.now(),
       lastEpisode: EigaEpisode(
         episodeId: 'fake_episode_id',

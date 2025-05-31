@@ -2,6 +2,7 @@ import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import { Eiga } from "../../services/eiga.ts"
 import { useUser } from "../../logic/use-user.ts"
 import { AuthorizationSchema } from "../../schema/authorization.ts"
+import { StatusEnum } from "../../db/enum/status_enum.ts"
 
 const SetWatchTimeBodySchema = z
   .object({
@@ -14,6 +15,10 @@ const SetWatchTimeBodySchema = z
       description: "The name of the episode.",
       example: "Episode 1"
     }),
+    original_name: z.string().openapi({
+      example: "鬼滅の刃",
+      description: "Eiga raw name."
+    }),
     poster: z.string().min(1).openapi({
       description: "URL to the poster image for the episode.",
       example: "https://example.com/poster.jpg"
@@ -25,6 +30,10 @@ const SetWatchTimeBodySchema = z
     season_name: z.string().min(1).or(z.literal("")).optional().openapi({
       description: "The name of the season.",
       example: "Season 1"
+    }),
+    status: z.enum(StatusEnum).openapi({
+      example: "ongoing",
+      description: "Comic status."
     }),
     cur: z.number().openapi({
       description: "The current watch time in seconds.",
@@ -85,7 +94,10 @@ app.openapi(route, async (c) => {
 
   const user = useUser(c)
 
-  await Eiga.setWatchTime(params.sourceId, { user_id: user.userId, ...params })
+  await Eiga.instance.setWatchTime(params.sourceId, {
+    user_id: user.userId,
+    ...params
+  })
 
   return c.json({
     success: true

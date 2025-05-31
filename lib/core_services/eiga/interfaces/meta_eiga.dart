@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hoyomi/core_services/interfaces/genre.dart';
-import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/core_services/eiga/main.dart';
 
 part 'meta_eiga.freezed.dart';
 part 'meta_eiga.g.dart';
@@ -35,6 +34,7 @@ sealed class MetaEiga with _$MetaEiga {
     List<Genre>? countries,
     String? language,
     List<Genre>? studios,
+    required StatusEnum status,
     Genre? movieSeason,
     String? trailer,
     @Default(false) bool fake,
@@ -69,6 +69,7 @@ sealed class MetaEiga with _$MetaEiga {
       countries: [Genre(name: 'Japan', genreId: Genre.noId)],
       language: 'English',
       studios: [Genre(name: 'Studio Ghibli', genreId: Genre.noId)],
+      status: StatusEnum.ongoing,
       movieSeason: Genre(name: 'Spring', genreId: Genre.noId),
       fake: true,
     );

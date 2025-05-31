@@ -97,21 +97,16 @@ class _MangaReaderState extends State<MangaReader>
 
   late final _watchPageChapters =
       computed<Future<Map<String, WatchPageUpdated>?>>(() async {
-        if (widget.service is ComicWatchPageMixin) {
-          final chapters = widget.comic.chapters.sortAsc;
+        final chapters = widget.comic.chapters.sortAsc;
 
-          try {
-            return await (widget.service as ComicWatchPageMixin)
-                .getWatchPageEpisodes(
-                  comicId: widget.comicId,
-                  chapters: chapters,
-                );
-          } on UnimplementedError {
-            return null;
-          }
+        try {
+          return await widget.service.getWatchPageEpisodes(
+            comicId: widget.comicId,
+            chapters: chapters,
+          );
+        } on UnimplementedError {
+          return null;
         }
-
-        return null;
       });
 
   // tiny status system
@@ -372,12 +367,10 @@ class _MangaReaderState extends State<MangaReader>
 
     /// history read
     watch([_realCurrentPage], () {
-      final service = widget.service;
-      if (service is ComicWatchPageMixin &&
-          _currChapter.value != null &&
+      if (_currChapter.value != null &&
           !_skipRestoreWatch.contains(_chapterId.value)) {
         _saveWatchPage(
-          service: widget.service as ComicWatchPageMixin,
+          service: widget.service,
           comicId: widget.comicId,
           chapter: _currChapter.value!,
           metaComic: widget.comic,
@@ -399,14 +392,13 @@ class _MangaReaderState extends State<MangaReader>
     });
 
     watchEffect(() async {
-      if (widget.service is ComicWatchPageMixin && _currChapter.value != null) {
+      if (_currChapter.value != null) {
         try {
-          final watchPage = await (widget.service as ComicWatchPageMixin)
-              .getWatchPage(
-                comicId: widget.comicId,
-                chapter: _currChapter.value!,
-                metaComic: widget.comic,
-              );
+          final watchPage = await widget.service.getWatchPage(
+            comicId: widget.comicId,
+            chapter: _currChapter.value!,
+            metaComic: widget.comic,
+          );
 
           if (kDebugMode) {
             print(watchPage);
@@ -468,20 +460,18 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   void _forceUpdateWatchPage() {
-    if (widget.service is ComicWatchPageMixin) {
-      _saveWatchPage(
-        service: widget.service as ComicWatchPageMixin,
-        comicId: widget.comicId,
-        chapter: _currChapter.value!,
-        metaComic: widget.comic,
-        watchPage: WatchPage(
-          currentPage: _realCurrentPage.value.toInt(),
-          totalPage: _realLength.value,
-        ),
-        force: true,
-      );
-      debugPrint('save watch page');
-    }
+    _saveWatchPage(
+      service: widget.service,
+      comicId: widget.comicId,
+      chapter: _currChapter.value!,
+      metaComic: widget.comic,
+      watchPage: WatchPage(
+        currentPage: _realCurrentPage.value.toInt(),
+        totalPage: _realLength.value,
+      ),
+      force: true,
+    );
+    debugPrint('save watch page');
   }
 
   Timer? _timer;
@@ -1288,7 +1278,7 @@ class _MangaReaderState extends State<MangaReader>
                                       icon: Eva.message_square_outline,
                                       text: 'Comments',
                                       disabled:
-                                          widget.service is! ComicLikeMixin,
+                                          widget.service is! ComicCommentMixin,
                                       onPressed: _showPanelComments,
                                     ),
                                   ),

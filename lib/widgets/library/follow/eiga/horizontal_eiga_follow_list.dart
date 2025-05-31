@@ -9,7 +9,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 class HorizontalEigaFollowList extends StatefulWidget {
   final String sourceId;
   final String? more;
-  final Future<Paginate<FollowItem<Eiga>>> Function({required int page}) fn;
+  final Future<Paginate<EigaFollow>> Function({required int page}) fn;
 
   const HorizontalEigaFollowList({
     super.key,
@@ -24,7 +24,7 @@ class HorizontalEigaFollowList extends StatefulWidget {
 
 class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
   late final EigaFollowMixin _service;
-  late final Future<List<FollowItem<Eiga>>> _followsFuture;
+  late final Future<List<EigaFollow>> _followsFuture;
 
   @override
   void initState() {
@@ -81,16 +81,13 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
 
         final data =
             loading
-                ? List.generate(
-                  30,
-                  (_) => FollowItem.createFakeData(Eiga.createFakeData()),
-                )
+                ? List.generate(30, (_) => EigaFollow.createFakeData())
                 : snapshot.data!;
 
         return Skeletonizer(
           enabled: loading,
           enableSwitchAnimation: true,
-          child: HorizontalList<FollowItem<Eiga>>(
+          child: HorizontalList<EigaFollow>(
             title: title,
             subtitle:
                 data.firstOrNull?.updatedAt == null

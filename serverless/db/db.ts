@@ -2,8 +2,13 @@ import { drizzle } from "drizzle-orm/node-postgres"
 import { Pool } from "pg"
 import assert from "node:assert"
 import {
+  comic,
+  comicFollows,
   comicHistories,
   comicHistoryChapters,
+  comicNewest,
+  eiga,
+  eigaFollows,
   eigaHistories,
   eigaHistoryChapters,
   users
@@ -26,8 +31,13 @@ const pool = new Pool({
 export const db = drizzle({
   client: pool,
   schema: {
+    comic,
+    comicFollows,
     comicHistories,
     comicHistoryChapters,
+    comicNewest,
+    eiga,
+    eigaFollows,
     eigaHistories,
     eigaHistoryChapters,
     users

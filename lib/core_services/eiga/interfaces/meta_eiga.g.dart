@@ -52,6 +52,7 @@ _MetaEiga _$MetaEigaFromJson(Map<String, dynamic> json) => _MetaEiga(
       (json['studios'] as List<dynamic>?)
           ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
           .toList(),
+  status: $enumDecode(_$StatusEnumEnumMap, json['status']),
   movieSeason:
       json['movieSeason'] == null
           ? null
@@ -80,7 +81,17 @@ Map<String, dynamic> _$MetaEigaToJson(_MetaEiga instance) => <String, dynamic>{
   'countries': instance.countries,
   'language': instance.language,
   'studios': instance.studios,
+  'status': _$StatusEnumEnumMap[instance.status]!,
   'movieSeason': instance.movieSeason,
   'trailer': instance.trailer,
   'fake': instance.fake,
+};
+
+const _$StatusEnumEnumMap = {
+  StatusEnum.ongoing: 'ongoing',
+  StatusEnum.completed: 'completed',
+  StatusEnum.canceled: 'canceled',
+  StatusEnum.unknown: 'unknown',
+  StatusEnum.onHiatus: 'on_hiatus',
+  StatusEnum.publishingFinished: 'publishing_finished',
 };

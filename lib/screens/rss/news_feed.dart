@@ -210,7 +210,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
 
                 return (done: items.length < 10, data: items);
               },
-              itemBuilder: (context, item, _, __) {
+              itemBuilder: (context, item, _, _) {
                 return Card(
                   margin: const EdgeInsets.symmetric(
                     vertical: 8,

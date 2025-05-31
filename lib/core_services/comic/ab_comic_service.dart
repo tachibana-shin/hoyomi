@@ -4,7 +4,8 @@ import 'main.dart';
 
 export 'package:hoyomi/core_services/service.dart';
 
-abstract class ABComicService extends Service {
+abstract class ABComicService extends Service
+    with ComicFollowGeneralMixin, ComicWatchPageGeneralMixin {
   String getURL(String comicId, {String? chapterId});
   ComicParam parseURL(String url);
 

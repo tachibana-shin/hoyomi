@@ -12,7 +12,10 @@ part 'main.freezed.dart';
 part 'main.g.dart';
 
 class CuuTruyenService extends ABComicService
-    with ComicWatchPageGeneralMixin, ComicCommentMixin {
+    with
+        ComicWatchPageGeneralMixin,
+        ComicCommentMixin,
+        ComicFollowGeneralMixin {
   @override
   bool? get $isAuth => false;
   @override

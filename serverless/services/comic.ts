@@ -1,12 +1,58 @@
-import { and, eq, desc, sql } from "drizzle-orm"
+import { and, eq, desc, sql, count, not, or } from "drizzle-orm"
 // import { PgDialect } from "drizzle-orm/pg-core"
 import { db } from "../db/db.ts"
-import { comicHistories, comicHistoryChapters } from "../db/schema.ts"
+import {
+  comic,
+  comicFollows,
+  comicHistories,
+  comicHistoryChapters
+} from "../db/schema.ts"
 import { single } from "../logic/single.ts"
+import { StatusEnum } from "../db/enum/status_enum.ts"
+
+type ComicParams = Readonly<{
+  user_id: number
+  name: string
+  original_name: string
+  poster: string
+  comic_text_id: string
+  season_name?: string
+  status: (typeof StatusEnum)[number]
+}>
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Comic {
-  static async getWatchHistory(
+  static readonly instance = new Comic()
+
+  private async _saveComic(sourceId: string, params: ComicParams) {
+    const { id: comicId } = single(
+      await db
+        .insert(comic)
+        .values({
+          sourceId: sourceId,
+          userId: params.user_id,
+          comicTextId: params.comic_text_id,
+          name: params.name,
+          originalName: params.original_name,
+          poster: params.poster,
+          seasonName: params.season_name || null,
+          status: params.status
+        })
+        .onConflictDoUpdate({
+          target: [comic.sourceId, comic.userId, comic.comicTextId],
+          set: {
+            name: params.name,
+            poster: params.poster,
+            seasonName: params.season_name || null
+          }
+        })
+        .returning({ id: comic.id })
+    )!
+
+    return comicId
+  }
+
+  async getWatchHistory(
     sourceId: string | void,
     params: {
       user_id: number
@@ -15,13 +61,15 @@ export class Comic {
     }
   ) {
     // const pgDialect = new PgDialect()
-    const query = sourceId ? sql`
+    const query = sourceId
+      ? sql`
 select
-  ${comicHistories.sourceId} as source_id,
-  ${comicHistories.comicTextId} as comic_text_id,
-  ${comicHistories.name} as name,
-  ${comicHistories.poster} as poster,
-  ${comicHistories.seasonName} as season_name,
+  ${comic.sourceId} as source_id,
+  ${comic.comicTextId} as comic_text_id,
+  ${comic.name} as name,
+  ${comic.originalName} as original_name,
+  ${comic.poster} as poster,
+  ${comic.seasonName} as season_name,
   ${comicHistories.createdAt} as created_at,
   ${comicHistoryChapters.updatedAt} as watch_updated_at,
   ${comicHistoryChapters.name} as watch_name,
@@ -34,36 +82,48 @@ left join lateral (
   select
     *
   from
+    ${comic}
+  where
+    ${comic.id} = ${comicHistories.comicId}
+  limit
+    1
+) ${comic} on TRUE
+left join lateral (
+  select
+    *
+  from
     ${comicHistoryChapters}
   where
     (${comicHistories.vChap} is not null and  ${comicHistoryChapters.id} = ${
-      comicHistories.vChap
-    }) or
+          comicHistories.vChap
+        }) or
     (${comicHistories.vChap} is     null and (${
-      comicHistoryChapters.comicHistoryId
-    } = ${comicHistories.forTo} or ${comicHistoryChapters.comicHistoryId} = ${
-      comicHistories.id
-    }))
+          comicHistoryChapters.comicHistoryId
+        } = ${comicHistories.forTo} or ${
+          comicHistoryChapters.comicHistoryId
+        } = ${comicHistories.id}))
   order by
     ${comicHistoryChapters.updatedAt} desc
   limit
     1
 ) ${comicHistoryChapters} on TRUE
 where
-  ${comicHistories.sourceId} = ${sourceId} and
-  ${comicHistories.userId}   = ${params.user_id}
+  ${comic.sourceId} = ${sourceId} and
+  ${comic.userId}   = ${params.user_id}
 order by
   ${comicHistories.createdAt} desc
 limit
   ${params.limit} offset ${(params.page - 1) * params.limit}
-` : sql`
+`
+      : sql`
 select
-  ${comicHistories.sourceId} as source_id,
-  ${comicHistories.comicTextId} as comic_text_id,
-  ${comicHistories.name} as name,
-  ${comicHistories.poster} as poster,
-  ${comicHistories.seasonName} as season_name,
-  ${comicHistories.createdAt} as created_at,
+  ${comic.sourceId} as source_id,
+  ${comic.comicTextId} as comic_text_id,
+  ${comic.name} as name,
+  ${comic.originalName} as original_name,
+  ${comic.poster} as poster,
+  ${comic.seasonName} as season_name,
+  ${comic.createdAt} as created_at,
   ${comicHistoryChapters.updatedAt} as watch_updated_at,
   ${comicHistoryChapters.name} as watch_name,
   ${comicHistoryChapters.chapId} as watch_id,
@@ -75,23 +135,33 @@ left join lateral (
   select
     *
   from
+    ${comic}
+  where
+    ${comic.id} = ${comicHistories.comicId}
+  limit
+    1
+) ${comic} on TRUE
+left join lateral (
+  select
+    *
+  from
     ${comicHistoryChapters}
   where
     (${comicHistories.vChap} is not null and  ${comicHistoryChapters.id} = ${
-      comicHistories.vChap
-    }) or
+          comicHistories.vChap
+        }) or
     (${comicHistories.vChap} is     null and (${
-      comicHistoryChapters.comicHistoryId
-    } = ${comicHistories.forTo} or ${comicHistoryChapters.comicHistoryId} = ${
-      comicHistories.id
-    }))
+          comicHistoryChapters.comicHistoryId
+        } = ${comicHistories.forTo} or ${
+          comicHistoryChapters.comicHistoryId
+        } = ${comicHistories.id}))
   order by
     ${comicHistoryChapters.updatedAt} desc
   limit
     1
 ) ${comicHistoryChapters} on TRUE
 where
-  ${comicHistories.userId}   = ${params.user_id}
+  ${comic.userId}   = ${params.user_id}
 order by
   ${comicHistories.createdAt} desc
 limit
@@ -102,8 +172,9 @@ limit
       created_at: string
       comic_text_id: string
       name: string
+      original_name: string
       poster: string
-      season_name?: string
+      season_name: string
       source_id: string
       watch_cur: number
       watch_dur: number
@@ -122,14 +193,9 @@ limit
     // `
   }
 
-  static async setWatchTime(
+  async setWatchTime(
     sourceId: string,
-    params: {
-      user_id: number
-      name: string
-      poster: string
-      comic_text_id: string
-      season_name?: string
+    params: ComicParams & {
       cur: number
       dur: number
       episode_name: string
@@ -146,13 +212,18 @@ limit
 
     const lastHistory = single(
       await db
-        .select()
+        .select({
+          id: comicHistories.id,
+          forTo: comicHistories.forTo,
+          createdAt: comicHistories.createdAt,
+
+          comicTextId: comic.comicTextId,
+          seasonName: comic.seasonName
+        })
         .from(comicHistories)
+        .innerJoin(comic, eq(comic.id, comicHistories.comicId))
         .where(
-          and(
-            eq(comicHistories.sourceId, sourceId),
-            eq(comicHistories.userId, params.user_id)
-          )
+          and(eq(comic.sourceId, sourceId), eq(comic.userId, params.user_id))
         )
         .orderBy(desc(comicHistories.createdAt))
         .limit(1)
@@ -188,12 +259,14 @@ limit
         // update the last history
 
         // update the last history with new chapter id
+        db.update(comic).set({
+          name: params.name,
+          poster: params.poster,
+          seasonName: params.season_name || null
+        })
         await db
           .update(comicHistories)
           .set({
-            name: params.name,
-            poster: params.poster,
-            seasonName: params.season_name || null,
             // forTo not update
             vChap: id,
             createdAt: new Date()
@@ -201,13 +274,10 @@ limit
           .where(eq(comicHistories.id, lastHistory.id))
       } else {
         // insert new history
+        const comicId = await this._saveComic(sourceId, params)!
+
         await db.insert(comicHistories).values({
-          sourceId: sourceId,
-          userId: params.user_id,
-          comicTextId: params.comic_text_id,
-          name: params.name,
-          poster: params.poster,
-          seasonName: params.season_name || null,
+          comicId,
           forTo: lastHistory.forTo ?? lastHistory.id,
           vChap: id
         })
@@ -217,13 +287,18 @@ limit
       // find movie exists in history
       const existsHistory = single(
         await db
-          .select()
+          .select({
+            id: comicHistories.id,
+            forTo: comicHistories.forTo,
+            createdAt: comicHistories.createdAt
+          })
           .from(comicHistories)
+          .innerJoin(comic, eq(comic.id, comicHistories.comicId))
           .where(
             and(
-              eq(comicHistories.sourceId, sourceId),
-              eq(comicHistories.userId, params.user_id),
-              eq(comicHistories.comicTextId, params.comic_text_id)
+              eq(comic.sourceId, sourceId),
+              eq(comic.userId, params.user_id),
+              eq(comic.comicTextId, params.comic_text_id)
             )
           )
           .limit(1)
@@ -251,26 +326,18 @@ limit
           })
           .returning({ id: comicHistoryChapters.id })
 
+        const comicId = await this._saveComic(sourceId, params)
         await db.insert(comicHistories).values({
-          sourceId: sourceId,
-          userId: params.user_id,
-          comicTextId: params.comic_text_id,
-          name: params.name,
-          poster: params.poster,
-          seasonName: params.season_name || null,
+          comicId,
           forTo: existsHistory.forTo ?? existsHistory.id,
           vChap: id
         })
       } else {
+        const comicId = await this._saveComic(sourceId, params)
         const [{ id }] = await db
           .insert(comicHistories)
           .values({
-            sourceId: sourceId,
-            userId: params.user_id,
-            comicTextId: params.comic_text_id,
-            name: params.name,
-            poster: params.poster,
-            seasonName: params.season_name || null,
+            comicId,
             forTo: null, // this is parent
             vChap: null
           })
@@ -303,7 +370,7 @@ limit
       }
     }
   }
-  static async getWatchTime(
+  async getWatchTime(
     sourceId: string,
     params: {
       user_id: number
@@ -330,15 +397,16 @@ limit
           updatedAt: comicHistoryChapters.updatedAt
         })
         .from(comicHistoryChapters)
-        .leftJoin(
+        .innerJoin(
           comicHistories,
           eq(comicHistories.id, comicHistoryChapters.comicHistoryId)
         )
+        .innerJoin(comic, eq(comic.id, comicHistories.comicId))
         .where(
           and(
-            eq(comicHistories.sourceId, sourceId),
-            eq(comicHistories.userId, params.user_id),
-            eq(comicHistories.comicTextId, params.comic_text_id),
+            eq(comic.sourceId, sourceId),
+            eq(comic.userId, params.user_id),
+            eq(comic.comicTextId, params.comic_text_id),
             eq(comicHistoryChapters.chapId, params.chap_id)
           )
         )
@@ -346,7 +414,7 @@ limit
         .limit(1)
     )
   }
-  static async getWatchTimeEpisodes(
+  async getWatchTimeEpisodes(
     sourceId: string,
     params: {
       user_id: number
@@ -384,17 +452,136 @@ limit
         chapId: comicHistoryChapters.chapId
       })
       .from(comicHistoryChapters)
-      .leftJoin(
+      .innerJoin(
         comicHistories,
         eq(comicHistoryChapters.comicHistoryId, comicHistories.id)
       )
+      .innerJoin(comic, eq(comic.id, comicHistories.comicId))
       .where(
         and(
-          eq(comicHistories.sourceId, sourceId),
-          eq(comicHistories.userId, params.user_id),
-          eq(comicHistories.comicTextId, params.comic_text_id)
+          eq(comic.sourceId, sourceId),
+          eq(comic.userId, params.user_id),
+          eq(comic.comicTextId, params.comic_text_id)
         )
       )
       .orderBy(comicHistories.id)
+  }
+
+  async setFollow(
+    sourceId: string,
+    params: ComicParams & {
+      current_chapter_name: string
+      current_chapter_id: string
+      current_chapter_time?: Date
+    },
+    value: boolean
+  ) {
+    const comicId = await this._saveComic(sourceId, params)
+
+    if (value)
+      await db
+        .insert(comicFollows)
+        .values({
+          comicId,
+          currentChapterId: params.current_chapter_id,
+          currentChapterName: params.current_chapter_name,
+          currentChapterTime: params.current_chapter_time || new Date()
+        })
+        .onConflictDoNothing({
+          target: [comicFollows.comicId]
+        })
+    else await db.delete(comicFollows).where(eq(comicFollows.comicId, comicId))
+  }
+
+  async hasFollow(
+    sourceId: string,
+    params: Pick<ComicParams, "user_id" | "comic_text_id">
+  ) {
+    return (
+      (single(
+        await db
+          .select({
+            exists: count(comicFollows.id)
+          })
+          .from(comicFollows)
+          .innerJoin(comic, eq(comic.id, comicFollows.comicId))
+          .where(
+            and(
+              eq(comic.sourceId, sourceId),
+              eq(comic.userId, params.user_id),
+              eq(comic.comicTextId, params.comic_text_id)
+            )
+          )
+          .limit(1)
+      )?.exists ?? 0) > 0
+    )
+  }
+  async getListFollow(
+    sourceId: string | void,
+    params: {
+      user_id: number
+      page: number
+      limit: number
+    },
+    status?: (typeof StatusEnum)[number],
+    ignore?: {
+      sourceId: string
+      comic_text_id: string
+    }[]
+  ) {
+    const ignoreConditions = ignore?.length
+      ? or(
+          ...ignore.map((i) =>
+            and(
+              eq(comic.sourceId, i.sourceId),
+              eq(comic.comicTextId, i.comic_text_id)
+            )
+          )
+        )
+      : undefined
+
+    const whereClause = and(
+      ...(sourceId ? [eq(comic.sourceId, sourceId)] : []),
+      eq(comic.userId, params.user_id),
+      ...(status ? [eq(comic.status, status)] : []),
+      ...(ignoreConditions ? [not(ignoreConditions)] : [])
+    )
+
+    const items = await db
+      .select({
+        created_at: comicFollows.createdAt,
+        comic_text_id: comic.comicTextId,
+        name: comic.name,
+        original_name: comic.originalName,
+        poster: comic.poster,
+        season_name: comic.seasonName,
+        source_id: comic.sourceId,
+        chapter_name: comicFollows.currentChapterName,
+        chapter_id: comicFollows.currentChapterId,
+        chapter_time: comicFollows.currentChapterTime
+      })
+      .from(comicFollows)
+      .innerJoin(comic, eq(comic.id, comicFollows.comicId))
+      .where(whereClause)
+      .orderBy(desc(comicFollows.createdAt))
+      .limit(params.limit)
+      .offset((params.page - 1) * params.limit)
+
+    const { totalItems } = single(
+      await db
+        .select({
+          totalItems: count()
+        })
+        .from(comicFollows)
+        .innerJoin(comic, eq(comic.id, comicFollows.comicId))
+        .where(whereClause)
+    )!
+
+    return {
+      items,
+      totalItems,
+      page: params.page,
+      totalPages: Math.ceil(totalItems / params.limit)
+    }
   }
 }

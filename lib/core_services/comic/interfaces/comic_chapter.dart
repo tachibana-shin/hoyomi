@@ -8,10 +8,10 @@ sealed class ComicChapter with _$ComicChapter {
   const factory ComicChapter({
     required String name,
     String? fullName,
-    required int order,
     required String chapterId,
     DateTime? time,
     String? extra,
+    @Default(-1) int order,
   }) = _ComicChapter;
 
   /// JSONからの生成

@@ -46,7 +46,7 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
         item: Comic(
           name: history.name,
           comicId: history.comicTextId,
-          originalName: history.seasonName,
+          originalName: history.originalName,
           image: OImage(src: history.poster),
         ),
         watchUpdatedAt: DateTime.parse(history.createdAt),
@@ -173,9 +173,11 @@ mixin ComicWatchPageGeneralMixin on Service implements ComicWatchPageMixin {
         sourceId: uid,
         // data
         name: metaComic.name,
+        originalName: metaComic.originalName ?? '',
         poster: metaComic.image.src,
         comicTextId: comicId,
         seasonName: '',
+        status: SetWatchPageBodySchemaStatus.fromJson(metaComic.status.name),
         cur: watchPage.currentPage,
         dur: watchPage.totalPage,
         episodeName: chapter.name,

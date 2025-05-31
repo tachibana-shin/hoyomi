@@ -68,20 +68,16 @@ class _DetailsComicState extends State<DetailsComic>
       computed<Future<Map<String, WatchPageUpdated>?>>(() async {
         if (_comicIsFake.value) return null;
 
-        if (_service is ComicWatchPageMixin) {
-          final chapters = _comic.value.chapters.sortAsc;
+        final chapters = _comic.value.chapters.sortAsc;
 
-          try {
-            return await (_service as ComicWatchPageMixin).getWatchPageEpisodes(
-              comicId: widget.comicId,
-              chapters: chapters,
-            );
-          } on UnimplementedError {
-            return null;
-          }
+        try {
+          return await _service.getWatchPageEpisodes(
+            comicId: widget.comicId,
+            chapters: chapters,
+          );
+        } on UnimplementedError {
+          return null;
         }
-
-        return null;
       });
   late final _lastReadChapter = computed<
     Future<({ComicChapter chapter, WatchPageUpdated watchPage})?>
@@ -178,12 +174,10 @@ class _DetailsComicState extends State<DetailsComic>
                 if (_service is ComicAuthMixin && AuthMixin.support(_service))
                   _AvatarUser(service: _service),
                 IconButtonShare(),
-                Watch(
-                  () => IconButtonFollow(
-                    sourceId: widget.sourceId,
-                    comicId: widget.comicId,
-                    comic: _comic.value,
-                  ),
+                IconButtonFollow(
+                  service: _service,
+                  comicId: widget.comicId,
+                  comic: _comic,
                 ),
                 PopupMenuButton<String>(
                   onSelected: (value) {
@@ -951,28 +945,28 @@ class _ButtonLikeState extends State<_ButtonLike> {
     super.initState();
     _likes = widget.comic.likes;
 
-    if (widget.service is ComicLikeMixin) {
-      (widget.service as ComicLikeMixin)
-          .isLiked(comicId: widget.comicId)
-          .then((liked) {
-            if (mounted) {
-              setState(() {
-                _liked = liked;
-              });
-            }
-          })
-          .catchError((error) {
-            if (error is! CaptchaRequiredException) {
-              showSnackError('like', error); // 显示錯誤訊息
-            }
-          });
-    }
+    widget.service
+        .isFollow(comicId: widget.comicId)
+        .then((liked) {
+          if (mounted) {
+            setState(() {
+              _liked = liked;
+            });
+          }
+        })
+        .catchError((error) {
+          if (error is! CaptchaRequiredException) {
+            showSnackError('like', error); // 显示錯誤訊息
+          }
+        });
   }
 
-  void _onTap() {
-    (widget.service as ComicLikeMixin)
-        .setLike(comicId: widget.comicId, value: !(_liked ?? false))
-        .then((value) {
+  void _onTap(MetaComic comic) {
+    final value = !(_liked ?? false);
+
+    widget.service
+        .setFollow(comicId: widget.comicId, metaComic: comic, value: value)
+        .then((_) {
           if (mounted) {
             setState(() {
               _liked = value;
@@ -996,7 +990,7 @@ class _ButtonLikeState extends State<_ButtonLike> {
       onTap:
           (widget.service is ComicAuthMixin &&
                   !(widget.service as AuthMixin).$noAuth)
-              ? _onTap
+              ? () => _onTap(widget.comic)
               : null,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(30.0),

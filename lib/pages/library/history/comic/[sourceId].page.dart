@@ -22,9 +22,7 @@ class _HistoryComicPageState extends State<HistoryComicPage> {
   @override
   void initState() {
     _service =
-        widget.sourceId == 'general'
-            ? null
-            : getComicService(widget.sourceId) as ComicWatchPageMixin;
+        widget.sourceId == 'general' ? null : getComicService(widget.sourceId);
     super.initState();
   }
 

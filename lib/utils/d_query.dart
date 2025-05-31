@@ -38,13 +38,13 @@ class DQuery {
   // --- Properties ---
 
   /// Returns `true` if the collection contains no elements.
-  get isEmpty => _elements.isEmpty;
+  bool get isEmpty => _elements.isEmpty;
 
   /// Returns `true` if the collection contains one or more elements.
-  get isNotEmpty => _elements.isNotEmpty;
+  bool get isNotEmpty => _elements.isNotEmpty;
 
   /// Returns the number of elements in the collection.
-  get length => _elements.length;
+  int get length => _elements.length;
 
   // --- Attribute/Property Access ---
 

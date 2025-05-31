@@ -261,12 +261,10 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                                         extra: {'comic': widget.comic.value},
                                       ),
                                 ),
-                              Watch(
-                                () => IconButtonFollow(
-                                  sourceId: widget.service.uid,
-                                  comicId: widget.comicId,
-                                  comic: widget.comic.value,
-                                ),
+                              IconButtonFollow(
+                                service: widget.service,
+                                comicId: widget.comicId,
+                                comic: widget.comic,
                               ),
                               Watch(
                                 () => IconButtonOpenBrowser(

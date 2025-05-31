@@ -4,6 +4,8 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'set_watch_time_body_schema_status.dart';
+
 part 'set_watch_time_body_schema.freezed.dart';
 part 'set_watch_time_body_schema.g.dart';
 
@@ -16,6 +18,10 @@ abstract class SetWatchTimeBodySchema with _$SetWatchTimeBodySchema {
     /// The name of the episode.
     required String name,
 
+    /// Eiga raw name.
+    @JsonKey(name: 'original_name')
+    required String originalName,
+
     /// URL to the poster image for the episode.
     required String poster,
 
@@ -24,6 +30,9 @@ abstract class SetWatchTimeBodySchema with _$SetWatchTimeBodySchema {
 
     /// The name of the season.
     @JsonKey(name: 'season_name') required dynamic seasonName,
+
+    /// Comic status.
+    required SetWatchTimeBodySchemaStatus status,
 
     /// The current watch time in seconds.
     required num cur,

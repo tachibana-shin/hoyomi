@@ -18,4 +18,16 @@ class ComicCategory extends Paginate<Comic> {
     required super.totalPages,
     this.filters,
   });
+
+  factory ComicCategory.createFakeData() {
+    return ComicCategory(
+      name: 'Fake Category',
+      url: 'https://example.com/fake-category',
+      description: 'This is a fake category for testing purposes.',
+      items: List.generate(30, (_) => Comic.createFakeData()),
+      page: 1,
+      totalItems: 0,
+      totalPages: 1,
+    );
+  }
 }

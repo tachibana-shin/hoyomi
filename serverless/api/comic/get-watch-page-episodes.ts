@@ -83,7 +83,7 @@ app.openapi(route, async (c) => {
 
   const user = useUser(c)
 
-  const watchPage = await Comic.getWatchTimeEpisodes(params.sourceId, {
+  const watchPage = await Comic.instance.getWatchTimeEpisodes(params.sourceId, {
     user_id: user.userId,
     ...params
   })

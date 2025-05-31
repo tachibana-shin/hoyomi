@@ -345,7 +345,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     /// Watch data position
     _watchTimeData = asyncComputed<WatchTimeData?>(
       () async {
-        if (widget.service is EigaWatchTimeMixin && !metaIsFake.value) {
+        if (!metaIsFake.value) {
           final eigaId = widget.eigaId.value;
           final episode = widget.episode.value;
           if (episode == null) return null;
@@ -354,7 +354,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
           return (widget.service as EigaWatchTimeMixin)
               .getWatchTime(
-                EigaWatchContext(
+                EigaContext(
                   eigaId: eigaId,
                   episode: episode,
                   metaEiga: widget.metaEiga.value,
@@ -398,7 +398,7 @@ class _PlayerEigaState extends State<PlayerEiga>
             _source.value != null) {
           try {
             return await widget.service.getSeekThumbnail(
-              EigaContext(
+              EigaSourceContext(
                 eigaId: widget.eigaId.value,
                 episode: widget.episode.value!,
                 metaEiga: widget.metaEiga.value,
@@ -426,7 +426,7 @@ class _PlayerEigaState extends State<PlayerEiga>
             _source.value != null) {
           try {
             return widget.service.getOpeningEnding(
-              EigaContext(
+              EigaSourceContext(
                 eigaId: widget.eigaId.value,
                 metaEiga: widget.metaEiga.value,
                 episode: widget.episode.value!,
@@ -626,7 +626,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   Timer? _timer;
   void _emitWatchTimeUpdate() {
-    if (_timer != null || widget.service is! EigaWatchTimeMixin) return;
+    if (_timer != null) return;
     _timer = Timer(Duration(seconds: 30), () {
       _timer = null;
     });
@@ -668,7 +668,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     );
     (widget.service as EigaWatchTimeMixin)
         .setWatchTime(
-          EigaWatchContext(
+          EigaContext(
             eigaId: eigaId,
             episode: episode,
             metaEiga: metaEiga,

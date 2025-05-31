@@ -50,7 +50,7 @@ ABComicService getComicService(String id) {
     }
   }
 
-  throw Exception('Service not found');
+  throw Exception('Service not found $id');
 }
 
 final eigaServices = Ref<List<ABEigaService>>(_allEigaServices.values.toList());
@@ -155,7 +155,7 @@ final allServices = Computed<List<Service>>(
 );
 
 Future<void> initializeServices([List<Service>? services]) async {
-  _setupServices();
+  await _setupServices();
 
   services ??= allServices.value;
   await Future.wait(services.map((service) => service.initState()));

@@ -310,6 +310,16 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
     final movieSeason =
         $aniScInfo.containsOne('Premiered:').queryOne('.name, .text').textRaw();
 
+    final status =
+        $aniScInfo
+                    .containsOne('Status:')
+                    .queryOne('.name, .text')
+                    .textRaw()
+                    ?.contains('Finished') ==
+                true
+            ? StatusEnum.completed
+            : StatusEnum.ongoing;
+
     return MetaEiga(
       name: name,
       originalName: originalName,
@@ -335,6 +345,7 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
               ? null
               : Genre(name: movieSeason, genreId: Genre.noId),
       trailer: trailer,
+      status: status,
     );
   }
 

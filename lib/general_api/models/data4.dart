@@ -18,6 +18,8 @@ abstract class Data4 with _$Data4 {
 
     /// The name of the watch history item (e.g., the episode title).
     required String name,
+    @JsonKey(name: 'original_name')
+    required String originalName,
 
     /// The URL for the poster image of the episode.
     required String poster,

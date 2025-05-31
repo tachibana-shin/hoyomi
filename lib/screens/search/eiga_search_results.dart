@@ -94,7 +94,7 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
         return false;
       },
       onLoadFake: () => true,
-      builder: (loading, __) => _buildWidgetMain(),
+      builder: (loading, _) => _buildWidgetMain(),
     );
   }
 }

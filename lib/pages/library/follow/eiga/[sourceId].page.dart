@@ -14,11 +14,14 @@ class FollowsEigaPage extends StatefulWidget {
 
 class _FollowsEigaPageState extends State<FollowsEigaPage> {
   int _pageKey = 2;
-  late final EigaFollowMixin _service;
+  late final EigaFollowMixin? _service;
 
   @override
   void initState() {
-    _service = getEigaService(widget.sourceId) as EigaFollowMixin;
+    _service =
+        widget.sourceId == 'general'
+            ? null
+            : getEigaService(widget.sourceId) as EigaFollowMixin;
     super.initState();
   }
 
@@ -26,7 +29,7 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Follows ${(_service as Service).name}'),
+        title: Text('Follows ${(_service as Service?)?.name ?? ''}'),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         scrolledUnderElevation: 0.0,
       ),
@@ -34,16 +37,16 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
     );
   }
 
+  Future<Paginate<EigaFollow>> _getData(int page) {
+    return _service == null
+        ? EigaFollowGeneralMixin.getAllListFollow(page: 1)
+        : _service.getFollows(page: 1);
+  }
+
   Widget _buildBody() {
-    return PullRefreshPage<Paginate<FollowItem<Eiga>>>(
-      onLoadData: () => _service.getFollows(page: 1),
-      onLoadFake:
-          () => Paginate.createFakeData(
-            List.generate(
-              30,
-              (_) => FollowItem.createFakeData(Eiga.createFakeData()),
-            ),
-          ),
+    return PullRefreshPage<Paginate<EigaFollow>>(
+      onLoadData: () => _getData(1),
+      onLoadFake: () => Paginate.createFakeData(EigaFollow.createFakeData()),
       builder:
           (data, param) => Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -54,7 +57,7 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
               crossAxisSpacing: 4.0,
               mainAxisSpacing: 4.0,
               fetchData: () async {
-                final result = await _service.getFollows(page: _pageKey);
+                final result = await _getData(_pageKey);
                 _pageKey++;
 
                 final isLastPage = result.page >= result.totalPages;
