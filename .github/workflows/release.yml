@@ -296,4 +296,5 @@ jobs:
             *.apk
             *.ipa
             *.exe
+            *.deb
           body: ${{ steps.changelog.outputs.changelog }}
