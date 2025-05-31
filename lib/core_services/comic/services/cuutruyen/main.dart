@@ -22,7 +22,7 @@ class CuuTruyenService extends ABComicService
   final init = ServiceInit(
     name: 'CuuTruyen',
     faviconUrl: OImage.from('https://i.imgur.com/2Vjm3S4.png'),
-    rootUrl: 'https://nettrom.com',
+    rootUrl: 'https://cuutruyen5c844.site',
     fetchHeadless: false,
     fetchBaseUrl: '{BASE_URL}/api/v2/',
   );
