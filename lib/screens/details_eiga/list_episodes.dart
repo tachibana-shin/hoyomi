@@ -129,7 +129,9 @@ class _ListEpisodesState extends State<ListEpisodes>
   }
 
   void _updateEpisodesEiga(EigaEpisodes newValue) {
-    _episodesEiga.force(Future.value(newValue));
+    if (mounted) {
+      _episodesEiga.force(Future.value(newValue));
+    }
   }
 
   @override
