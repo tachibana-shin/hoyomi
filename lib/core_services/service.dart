@@ -355,7 +355,18 @@ abstract class Service extends BaseService
       if (error.response != null &&
           CaptchaResolverMixin.responseIsCaptchaResolve(error.response!)) {
         // return Future.error(response);
-        _tempHeadless = true;
+        if (!_tempHeadless) {
+          _tempHeadless = true;
+
+          if (!kIsWeb) {
+            return fetchHeadless(
+              url,
+              body: body,
+              headers: headers,
+              notify: notify,
+            );
+          }
+        }
         final error = CaptchaRequiredException(getService(uid));
 
         // // required captcha resolve
@@ -409,6 +420,8 @@ abstract class Service extends BaseService
     }
   }
 
+  bool get headlessMode => init.fetchHeadless || _tempHeadless;
+
   Future<String> fetch(
     String url, {
     String? cookie,
@@ -419,7 +432,7 @@ abstract class Service extends BaseService
     bool headless = false,
     bool cache = true,
   }) async {
-    if (init.fetchHeadless || _tempHeadless) headless = true;
+    if (headlessMode) headless = true;
 
     final record = await ServiceSettingsController.instance.get(uid);
     String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;
