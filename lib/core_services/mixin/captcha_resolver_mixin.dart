@@ -29,9 +29,10 @@ mixin CaptchaResolverMixin on HeadlessMixin {
     String? url,
   }) {
     return Padding(
-      padding: isSnackbar
-          ? EdgeInsets.zero
-          : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+      padding:
+          isSnackbar
+              ? EdgeInsets.zero
+              : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -40,9 +41,10 @@ mixin CaptchaResolverMixin on HeadlessMixin {
             children: [
               Iconify(
                 Mdi.earth,
-                color: isSnackbar || context == null
-                    ? Colors.black
-                    : Theme.of(context).colorScheme.onSurface,
+                color:
+                    isSnackbar || context == null
+                        ? Colors.black
+                        : Theme.of(context).colorScheme.onSurface,
               ),
               SizedBox(width: 8),
               Expanded(
@@ -88,64 +90,65 @@ mixin CaptchaResolverMixin on HeadlessMixin {
   static void showGeneralDialog() {
     showDialog(
       context: shellRouteKey.currentContext!,
-      builder: (context) => AlertDialog(
-        title: Text('Captcha Required'),
-        content: ListView.builder(
-          shrinkWrap: true,
-          itemCount: _servicesNeedResolve.value.length,
-          itemBuilder: (context, index) {
-            final service = _servicesNeedResolve.value.elementAt(index);
+      builder:
+          (context) => AlertDialog(
+            title: Text('Captcha Required'),
+            content: ListView.builder(
+              shrinkWrap: true,
+              itemCount: _servicesNeedResolve.value.length,
+              itemBuilder: (context, index) {
+                final service = _servicesNeedResolve.value.elementAt(index);
 
-            return InkWell(
-              enableFeedback: true,
-              focusColor: Colors.transparent,
-              child: Row(
-                children: [
-                  AvatarService(service, radius: 7.0),
-
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                return InkWell(
+                  enableFeedback: true,
+                  focusColor: Colors.transparent,
+                  child: Row(
                     children: [
-                      Text(service.name),
-                      Text(
-                        service.baseUrl,
-                        style: TextStyle(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.secondary.withValues(alpha: 0.85),
-                          fontSize: 12.0,
+                      AvatarService(service, radius: 7.0),
+
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(service.name),
+                          Text(
+                            service.baseUrl,
+                            style: TextStyle(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.secondary.withValues(alpha: 0.85),
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ],
+                      ).expanded(),
+
+                      ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 200),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: Iconify(Logo.hCaptcha),
+                            ),
+                          ],
                         ),
                       ),
                     ],
-                  ).expanded(),
-
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: 200),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: Iconify(Logo.hCaptcha),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ).paddingSymmetric(vertical: 16.0, horizontal: 16.0),
-            );
-          },
-        ),
-        actions: [
-          TextButton(
-            child: Text('Go to Captcha'),
-            onPressed: () async {
-              // await router.push('/webview/${error.service.uid}');
-              // router.refresh();
-            },
+                  ).paddingSymmetric(vertical: 16.0, horizontal: 16.0),
+                );
+              },
+            ),
+            actions: [
+              TextButton(
+                child: Text('Go to Captcha'),
+                onPressed: () async {
+                  // await router.push('/webview/${error.service.uid}');
+                  // router.refresh();
+                },
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 

@@ -31,17 +31,18 @@ void main() {
     final exports = <String>[];
 
     // 対象ディレクトリ内の Dart ファイルを再帰的に取得
-    final allFiles = dir
-        .listSync(recursive: true)
-        .whereType<File>()
-        .where(
-          (f) =>
-              f.path.endsWith('.dart') &&
-              !p.basename(f.path).startsWith('.') && // 隠しファイルを除外
-              !_isGeneratedFile(f.path) && // 自動生成ファイルを除外
-              p.normalize(f.path) != p.normalize(mainFilePath),
-        ) // 自分自身を除外
-        .toList();
+    final allFiles =
+        dir
+            .listSync(recursive: true)
+            .whereType<File>()
+            .where(
+              (f) =>
+                  f.path.endsWith('.dart') &&
+                  !p.basename(f.path).startsWith('.') && // 隠しファイルを除外
+                  !_isGeneratedFile(f.path) && // 自動生成ファイルを除外
+                  p.normalize(f.path) != p.normalize(mainFilePath),
+            ) // 自分自身を除外
+            .toList();
 
     for (final file in allFiles) {
       // export.dart からの相対パスを計算

@@ -107,15 +107,16 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
         itemCount: _itemCount,
         itemBuilder: (context, index) {
           if (widget.twoPage) {
-            final children = _mapPage[index]!.map((i) {
-              return Expanded(
-                child: widget.itemBuilder(
-                  context,
-                  i,
-                  ValueKey(widget.pages.value.elementAt(i).image.src),
-                ),
-              );
-            }).toList();
+            final children =
+                _mapPage[index]!.map((i) {
+                  return Expanded(
+                    child: widget.itemBuilder(
+                      context,
+                      i,
+                      ValueKey(widget.pages.value.elementAt(i).image.src),
+                    ),
+                  );
+                }).toList();
 
             return InteractiveViewer(
               panEnabled: true,

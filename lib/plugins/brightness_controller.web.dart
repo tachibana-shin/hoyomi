@@ -6,15 +6,16 @@ HTMLDivElement? _overlayDiv;
 void _ensureOverlay() {
   if (_overlayDiv != null) return;
 
-  _overlayDiv = HTMLDivElement()
-    ..style.position = 'fixed'
-    ..style.top = '0'
-    ..style.left = '0'
-    ..style.width = '100vw'
-    ..style.height = '100vh'
-    ..style.zIndex = '999999'
-    ..style.pointerEvents = 'none'
-    ..style.transition = 'opacity 0.3s ease';
+  _overlayDiv =
+      HTMLDivElement()
+        ..style.position = 'fixed'
+        ..style.top = '0'
+        ..style.left = '0'
+        ..style.width = '100vw'
+        ..style.height = '100vh'
+        ..style.zIndex = '999999'
+        ..style.pointerEvents = 'none'
+        ..style.transition = 'opacity 0.3s ease';
 
   document.body!.append(_overlayDiv!);
 }

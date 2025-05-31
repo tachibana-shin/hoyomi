@@ -35,10 +35,12 @@ Future<void> bumpFlutter() async {
     "patch": [versionParts[0], versionParts[1], versionParts[2] + 1],
   };
 
-  final versionChoices = versionOptions.keys.map((key) {
-    final newVersion = versionOptions[key]!;
-    return "$key → ${newVersion.join('.')}+${buildNumber + 1}";
-  }).toList()..add("custom → Enter manually");
+  final versionChoices =
+      versionOptions.keys.map((key) {
+          final newVersion = versionOptions[key]!;
+          return "$key → ${newVersion.join('.')}+${buildNumber + 1}";
+        }).toList()
+        ..add("custom → Enter manually");
 
   final versionChoice =
       prompts.choose("Select version update type:", versionChoices) ?? "next";

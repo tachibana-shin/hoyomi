@@ -81,11 +81,8 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
         final image = OImage.from(
           $deslide.query('.deslide-cover-img > img').data('src'),
         );
-        final eigaId = $deslide
-            .query('.desi-buttons > a')
-            .attr('href')
-            .split('/')
-            .last;
+        final eigaId =
+            $deslide.query('.desi-buttons > a').attr('href').split('/').last;
         final name = $deslide.query('.dynamic-name').text();
         final originalName = $deslide.query('.dynamic-name').data('jname');
         final $scdItems = $deslide.query('.scd-item');
@@ -250,20 +247,19 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
     final originalName = $('.dynamic-name').data('jname');
     final image = OImage.from($('.film-poster-img').attr('src'));
     final poster = null; // OImage.from($('.film-poster-img').attr('src'));
-    final description = $(
-      '.film-description > .text, .film-description',
-      single: true,
-    ).html().trim();
+    final description =
+        $(
+          '.film-description > .text, .film-description',
+          single: true,
+        ).html().trim();
 
     final countRate = null; // pageData.data.item.tmdb?.voteCount;
     final $aniScInfo = $('.anisc-info > .item');
     final rate = double.tryParse(
       $aniScInfo.containsOne('MAL Score:').queryOne('.name, .text').text(),
     ); // pageData.data.item.tmdb?.voteAverage;
-    final duration = $aniScInfo
-        .containsOne('Duration:')
-        .queryOne('.name, .text')
-        .textRaw();
+    final duration =
+        $aniScInfo.containsOne('Duration:').queryOne('.name, .text').textRaw();
     final yearOf = int.tryParse(
       RegExp(r', (\d+) ')
               .firstMatch(
@@ -299,10 +295,8 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
               Genre(name: $a.text(), genreId: $a.attr('href').split('/').last),
         );
     final countries = null;
-    final language = $aniScInfo
-        .containsOne('Duration:')
-        .queryOne('.name, .text')
-        .textRaw();
+    final language =
+        $aniScInfo.containsOne('Duration:').queryOne('.name, .text').textRaw();
     final studios = $aniScInfo
         .containsOne('Studios:')
         .queryOne('a')
@@ -313,10 +307,8 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
           ),
         );
     final trailer = null; //pageData.data.item.trailerUrl;
-    final movieSeason = $aniScInfo
-        .containsOne('Premiered:')
-        .queryOne('.name, .text')
-        .textRaw();
+    final movieSeason =
+        $aniScInfo.containsOne('Premiered:').queryOne('.name, .text').textRaw();
 
     return MetaEiga(
       name: name,
@@ -338,9 +330,10 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
       countries: countries,
       language: language,
       studios: studios,
-      movieSeason: movieSeason == null
-          ? null
-          : Genre(name: movieSeason, genreId: Genre.noId),
+      movieSeason:
+          movieSeason == null
+              ? null
+              : Genre(name: movieSeason, genreId: Genre.noId),
       trailer: trailer,
     );
   }
@@ -491,9 +484,10 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
         url: subtitle['url'],
         language: subtitle['lang'],
         code: subtitle['lang'],
-        type: subtitle['url'].endsWith('srt')
-            ? SubtitleType.srt
-            : SubtitleType.vtt,
+        type:
+            subtitle['url'].endsWith('srt')
+                ? SubtitleType.srt
+                : SubtitleType.vtt,
       );
     }).toList();
   }
@@ -521,18 +515,20 @@ class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
     final ending = data['outro'] as Map;
 
     return OpeningEnding(
-      opening: opening['start'] != opening['end']
-          ? DurationRange(
-              start: Duration(seconds: (opening['start'] as num).floor()),
-              end: Duration(seconds: (opening['end'] as num).floor()),
-            )
-          : null,
-      ending: ending['start'] != ending['end']
-          ? DurationRange(
-              start: Duration(seconds: (ending['start'] as num).floor()),
-              end: Duration(seconds: (ending['end'] as num).floor()),
-            )
-          : null,
+      opening:
+          opening['start'] != opening['end']
+              ? DurationRange(
+                start: Duration(seconds: (opening['start'] as num).floor()),
+                end: Duration(seconds: (opening['end'] as num).floor()),
+              )
+              : null,
+      ending:
+          ending['start'] != ending['end']
+              ? DurationRange(
+                start: Duration(seconds: (ending['start'] as num).floor()),
+                end: Duration(seconds: (ending['end'] as num).floor()),
+              )
+              : null,
     );
   }
 

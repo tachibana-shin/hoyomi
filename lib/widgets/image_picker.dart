@@ -66,9 +66,8 @@ class _ImagePickerState extends State<ImagePicker> {
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: isSelected
-                                  ? Colors.blue
-                                  : Colors.transparent,
+                              color:
+                                  isSelected ? Colors.blue : Colors.transparent,
                               width: isSelected ? 5.0 : 0.0,
                             ),
                             borderRadius: BorderRadius.circular(20.0),

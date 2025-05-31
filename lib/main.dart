@@ -65,16 +65,17 @@ class MainApp extends StatelessWidget {
       light: ThemeData.light(useMaterial3: true),
       dark: ThemeData.dark(useMaterial3: true),
       initial: theme ?? AdaptiveThemeMode.system,
-      builder: (theme, darkTheme) => MaterialApp.router(
-        restorationScopeId: 'app',
-        title: 'Hoyomi',
-        scaffoldMessengerKey: snackbarKey,
-        theme: theme,
-        darkTheme: darkTheme,
-        // themeMode: ThemeMode.system,
-        scrollBehavior: AppScrollBehavior(),
-        routerConfig: router,
-      ),
+      builder:
+          (theme, darkTheme) => MaterialApp.router(
+            restorationScopeId: 'app',
+            title: 'Hoyomi',
+            scaffoldMessengerKey: snackbarKey,
+            theme: theme,
+            darkTheme: darkTheme,
+            // themeMode: ThemeMode.system,
+            scrollBehavior: AppScrollBehavior(),
+            routerConfig: router,
+          ),
     );
   }
 }

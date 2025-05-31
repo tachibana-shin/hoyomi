@@ -32,9 +32,10 @@ class _PullRefreshPageState<T> extends State<PullRefreshPage<T>> {
   @override
   void initState() {
     super.initState();
-    _dataFuture = widget.initialData != null
-        ? Future.value(widget.initialData!)
-        : widget.onLoadData();
+    _dataFuture =
+        widget.initialData != null
+            ? Future.value(widget.initialData!)
+            : widget.onLoadData();
   }
 
   @override
