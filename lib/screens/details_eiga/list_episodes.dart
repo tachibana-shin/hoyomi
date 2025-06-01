@@ -181,7 +181,7 @@ class _ListEpisodesState extends State<ListEpisodes>
               false => 0,
             };
 
-            final child = Watch(key: ValueKey(isVertical), () {
+            final child = Watch(dependencies: [isVertical], () {
               final activeKey = GlobalKey();
 
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {

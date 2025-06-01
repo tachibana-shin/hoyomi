@@ -104,7 +104,7 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
           return Column(
             children: [
               // Header
-              Watch(key: UniqueKey(), () {
+              Watch(dependencies: [lastReadChapter], () {
                 if (_itemSelected.value.isEmpty) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
