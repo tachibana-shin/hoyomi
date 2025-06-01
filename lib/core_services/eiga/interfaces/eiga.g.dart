@@ -15,10 +15,10 @@ _Eiga _$EigaFromJson(Map<String, dynamic> json) => _Eiga(
       json['lastEpisode'] == null
           ? null
           : EigaEpisode.fromJson(json['lastEpisode'] as Map<String, dynamic>),
-  timeAgo:
-      json['timeAgo'] == null
+  lastUpdate:
+      json['lastUpdate'] == null
           ? null
-          : DateTime.parse(json['timeAgo'] as String),
+          : DateTime.parse(json['lastUpdate'] as String),
   notice: json['notice'] as String?,
   countSub: (json['countSub'] as num?)?.toInt(),
   countDub: (json['countDub'] as num?)?.toInt(),
@@ -37,7 +37,7 @@ Map<String, dynamic> _$EigaToJson(_Eiga instance) => <String, dynamic>{
   'originalName': instance.originalName,
   'image': instance.image,
   'lastEpisode': instance.lastEpisode,
-  'timeAgo': instance.timeAgo?.toIso8601String(),
+  'lastUpdate': instance.lastUpdate?.toIso8601String(),
   'notice': instance.notice,
   'countSub': instance.countSub,
   'countDub': instance.countDub,

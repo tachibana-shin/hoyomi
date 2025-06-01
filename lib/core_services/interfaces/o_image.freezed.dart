@@ -14,7 +14,7 @@ part of 'o_image.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$OImage {
+mixin _$OImage implements DiagnosticableTreeMixin {
 
  String get src; Headers? get headers; String? get extra;
 /// Create a copy of OImage
@@ -26,6 +26,12 @@ $OImageCopyWith<OImage> get copyWith => _$OImageCopyWithImpl<OImage>(this as OIm
   /// Serializes this OImage to a JSON map.
   Map<String, dynamic> toJson();
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'OImage'))
+    ..add(DiagnosticsProperty('src', src))..add(DiagnosticsProperty('headers', headers))..add(DiagnosticsProperty('extra', extra));
+}
 
 @override
 bool operator ==(Object other) {
@@ -37,7 +43,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,src,headers,extra);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'OImage(src: $src, headers: $headers, extra: $extra)';
 }
 
@@ -93,7 +99,7 @@ $HeadersCopyWith<$Res>? get headers {
 /// @nodoc
 @JsonSerializable()
 
-class _OImage implements OImage {
+class _OImage with DiagnosticableTreeMixin implements OImage {
   const _OImage({required this.src, this.headers, this.extra});
   factory _OImage.fromJson(Map<String, dynamic> json) => _$OImageFromJson(json);
 
@@ -111,6 +117,12 @@ _$OImageCopyWith<_OImage> get copyWith => __$OImageCopyWithImpl<_OImage>(this, _
 Map<String, dynamic> toJson() {
   return _$OImageToJson(this, );
 }
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'OImage'))
+    ..add(DiagnosticsProperty('src', src))..add(DiagnosticsProperty('headers', headers))..add(DiagnosticsProperty('extra', extra));
+}
 
 @override
 bool operator ==(Object other) {
@@ -122,7 +134,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,src,headers,extra);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'OImage(src: $src, headers: $headers, extra: $extra)';
 }
 

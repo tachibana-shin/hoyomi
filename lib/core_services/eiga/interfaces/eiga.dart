@@ -13,7 +13,7 @@ sealed class Eiga with _$Eiga {
     String? originalName,
     required OImage image,
     EigaEpisode? lastEpisode,
-    DateTime? timeAgo,
+    DateTime? lastUpdate,
     String? notice,
     int? countSub,
     int? countDub,
@@ -32,7 +32,7 @@ sealed class Eiga with _$Eiga {
       originalName: null,
       image: OImage.createFakeData(),
       lastEpisode: null,
-      timeAgo: null,
+      lastUpdate: null,
       notice: 'Notice Fake',
       rate: 8.5,
     );

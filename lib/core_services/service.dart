@@ -266,7 +266,10 @@ abstract class Service extends BaseService
               child: Text('Sign in'),
               onPressed: () async {
                 if (service is AuthMixin && !service.$noAuth) {
-                  await router.push('/webview/${service.uid}');
+                  await router.pushNamed(
+                    'webview',
+                    pathParameters: {'sourceId': service.uid},
+                  );
                 } else {
                   await router.pushNamed('sign_in_main');
                 }

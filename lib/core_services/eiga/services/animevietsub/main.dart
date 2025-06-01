@@ -46,7 +46,7 @@ mixin _SupabaseRPC {
     ),
   );
 
-  Future<List<dynamic>> rpc(
+  Future<dynamic> rpc(
     String name,
     Map<String, dynamic> requestData,
   ) async {
@@ -55,7 +55,7 @@ mixin _SupabaseRPC {
       data: jsonEncode(requestData),
     );
 
-    return response.data as List;
+    return response.data;
   }
 }
 
@@ -252,7 +252,7 @@ class AnimeVietsubService extends ABEigaService
       preRelease: countdown,
       pending: timeSchedule.isNotEmpty,
       lastEpisode: null,
-      timeAgo: null,
+      lastUpdate: null,
     );
   }
 

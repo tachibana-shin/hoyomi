@@ -74,7 +74,7 @@ class OPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
       pending:
           item.episodeCurrent == 'Trailer' || item.episodeCurrent == 'Tập 0',
       lastEpisode: null,
-      timeAgo: DateTime.parse(item.modified.time),
+      lastUpdate: DateTime.parse(item.modified.time),
     );
   }
 

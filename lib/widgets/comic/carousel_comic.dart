@@ -260,7 +260,13 @@ class _CarouselComicState extends State<CarouselComic> {
 
           return GestureDetector(
             onTap: () {
-              context.push("/details_comic/${widget.sourceId}/${item.comicId}");
+              context.pushNamed(
+                'details_comic',
+                pathParameters: {
+                  'sourceId': widget.sourceId,
+                  'comicId': item.comicId,
+                },
+              );
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
@@ -418,9 +424,13 @@ class _CarouselComicState extends State<CarouselComic> {
                                           onTap:
                                               genre.genreId == Genre.noId
                                                   ? null
-                                                  : () => context.push(
-                                                    '/category_comic/${widget.sourceId}/${genre.genreId}',
-                                                  ),
+                                                  : () => context.pushNamed(
+                                                        'category_comic',
+                                                        pathParameters: {
+                                                          'sourceId': widget.sourceId,
+                                                          'categoryId': genre.genreId,
+                                                        },
+                                                      ),
                                           child: Text(
                                             '#${genre.name}',
                                             style:
@@ -452,9 +462,13 @@ class _CarouselComicState extends State<CarouselComic> {
                                           onTap:
                                               actor.genreId == Genre.noId
                                                   ? null
-                                                  : () => context.push(
-                                                    '/category_comic/${widget.sourceId}/${actor.genreId}',
-                                                  ),
+                                                  : () => context.pushNamed(
+                                                        'category_comic',
+                                                        pathParameters: {
+                                                          'sourceId': widget.sourceId,
+                                                          'categoryId': actor.genreId,
+                                                        },
+                                                      ),
                                           child: Text(
                                             '${actor.name}${index < list.length - 1 ? ', ' : ''}',
                                             style:

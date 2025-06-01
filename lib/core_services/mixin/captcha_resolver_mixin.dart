@@ -68,7 +68,7 @@ mixin CaptchaResolverMixin on HeadlessMixin {
           ElevatedButton(
             child: Text('Go to Captcha'),
             onPressed: () async {
-              await router.push('/webview/${error.service.uid}');
+              await router.pushNamed('webview', pathParameters: {'sourceId': error.service.uid});
             },
           ),
         ],

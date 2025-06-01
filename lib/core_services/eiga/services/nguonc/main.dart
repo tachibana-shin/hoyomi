@@ -69,7 +69,7 @@ class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
       preRelease: null,
       pending: item.currentEpisode == 'Trailer',
       lastEpisode: null,
-      timeAgo: DateTime.parse(item.modified),
+      lastUpdate: DateTime.parse(item.modified),
     );
   }
 

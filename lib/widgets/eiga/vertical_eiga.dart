@@ -11,7 +11,7 @@ class VerticalEiga extends StatelessWidget {
   }
 
   static bool existsTimeAgo(Eiga comic) {
-    return comic.timeAgo != null;
+    return comic.lastUpdate != null;
   }
 
   final Eiga eiga;
@@ -41,7 +41,7 @@ class VerticalEiga extends StatelessWidget {
       preRelease: eiga.preRelease,
       title: eiga.name,
       subtitle: eiga.lastEpisode?.name,
-      lastUpdate: eiga.timeAgo,
+      lastUpdate: eiga.lastUpdate,
       extend: [
         if (eiga.countSub != null)
           Row(

@@ -368,9 +368,9 @@ class _PlayerEigaState extends State<PlayerEiga>
                   watchTime: data,
                 ),
               )
-              .catchError((error) {
+              .catchError((error, stack) {
                 if (error is! UserNotFoundException) {
-                  debugPrint('Error: $error (${StackTrace.current})');
+                  debugPrint('Error: $error (${stack})');
                 }
 
                 return WatchTimeData(
@@ -386,7 +386,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           (error) =>
               (error is Response)
                   ? debugPrint('[watch_time]: ${error.statusCode}')
-                  : debugPrint('[watch_time]: $error (${StackTrace.current})'),
+                  : debugPrint('[watch_time]: $error'),
       beforeUpdate: () => null,
     );
 
@@ -415,7 +415,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           (error) =>
               (error is Response)
                   ? debugPrint('[seek_thumb]: ${error.statusCode}')
-                  : debugPrint('[seek_thumb]: $error (${StackTrace.current})'),
+                  : debugPrint('[seek_thumb]: $error'),
     );
 
     /// Position opening / ending
@@ -443,9 +443,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           (error) =>
               (error is Response)
                   ? debugPrint('[opening_ending]: ${error.statusCode}')
-                  : debugPrint(
-                    '[opening_ending]: $error (${StackTrace.current})',
-                  ),
+                  : debugPrint('[opening_ending]: $error'),
     );
 
     bool firstRun = true;
@@ -676,9 +674,9 @@ class _PlayerEigaState extends State<PlayerEiga>
           ),
           watchTime: watchTime,
         )
-        .catchError((error) {
+        .catchError((error, stack) {
           if (error is! UserNotFoundException) {
-            debugPrint('Error: $error (${StackTrace.current})');
+            debugPrint('Error: $error (${stack})');
           }
         });
   }
@@ -756,8 +754,8 @@ class _PlayerEigaState extends State<PlayerEiga>
                 if (position > Duration.zero) controller.seekTo(position);
                 controller.play();
               })
-              .catchError((err) {
-                debugPrint('Error: $err (${StackTrace.current})');
+              .catchError((err, stack) {
+                debugPrint('Error: $err (${stack})');
                 _error.value = '$err';
               })
           ..addListener(_onPlayerValueChanged);
@@ -800,7 +798,10 @@ class _PlayerEigaState extends State<PlayerEiga>
         }
       }
       _aspectRatio.value = controller.value.aspectRatio;
-      if (controller.value.isCompleted) widget.onNext.value?.call();
+      if (controller.value.isCompleted) {
+        controller.removeListener(_onPlayerValueChanged);  
+        widget.onNext.value?.call();
+      }
 
       _emitWatchTimeUpdate();
     }

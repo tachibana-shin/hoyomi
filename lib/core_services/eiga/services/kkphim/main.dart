@@ -74,7 +74,7 @@ class KKPhimService extends ABEigaService with EigaWatchTimeGeneralMixin
       preRelease: null,
       pending: item.episodeCurrent == 'Trailer',
       lastEpisode: null,
-      timeAgo: DateTime.parse(item.modified.time),
+      lastUpdate: DateTime.parse(item.modified.time),
     );
   }
 

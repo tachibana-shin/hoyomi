@@ -800,8 +800,12 @@ class _DetailsComicState extends State<DetailsComic>
         _downloadContent();
         break;
       case 'find_similar':
-        context.push(
-          '/details_comic/${widget.sourceId}/${widget.comicId}/similar',
+        context.pushNamed(
+          'similar_comic',
+          pathParameters: {
+            'sourceId': widget.sourceId,
+            'comicId': widget.comicId,
+          },
           extra: {'comic': _comic},
         );
         break;

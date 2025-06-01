@@ -349,7 +349,7 @@ class _AccountMainTile extends StatelessWidget {
           onTap:
               user != null
                   ? () => _showUserMenu(context, user)
-                  : () => context.push('/sign_in/main'),
+                  : () => context.pushNamed('sign_in_main'),
         );
       },
     );

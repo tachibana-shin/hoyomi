@@ -260,7 +260,13 @@ class _CarouselEigaState extends State<CarouselEiga> {
 
           return GestureDetector(
             onTap: () {
-              context.push("/details_eiga/${widget.sourceId}/${item.eigaId}");
+              context.pushNamed(
+                'details_eiga',
+                pathParameters: {
+                  'sourceId': widget.sourceId,
+                  'eigaId': item.eigaId,
+                },
+              );
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
@@ -418,9 +424,13 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                           onTap:
                                               genre.genreId == Genre.noId
                                                   ? null
-                                                  : () => context.push(
-                                                    '/category_eiga/${widget.sourceId}/${genre.genreId}',
-                                                  ),
+                                                  : () => context.pushNamed(
+                                                        'category_eiga',
+                                                        pathParameters: {
+                                                          'sourceId': widget.sourceId,
+                                                          'categoryId': genre.genreId,
+                                                        },
+                                                      ),
                                           child: Text(
                                             '#${genre.name}',
                                             style:
@@ -452,9 +462,13 @@ class _CarouselEigaState extends State<CarouselEiga> {
                                           onTap:
                                               actor.genreId == Genre.noId
                                                   ? null
-                                                  : () => context.push(
-                                                    '/category_eiga/${widget.sourceId}/${actor.genreId}',
-                                                  ),
+                                                  : () => context.pushNamed(
+                                                        'category_eiga',
+                                                        pathParameters: {
+                                                          'sourceId': widget.sourceId,
+                                                          'categoryId': actor.genreId,
+                                                        },
+                                                      ),
                                           child: Text(
                                             '${actor.name}${index < list.length - 1 ? ', ' : ''}',
                                             style:

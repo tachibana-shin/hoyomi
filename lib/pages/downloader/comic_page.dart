@@ -478,8 +478,12 @@ class _DownloaderComicPageState extends State<DownloaderComicPage> {
 
                                       return InkWell(
                                         onTap: () {
-                                          context.push(
-                                            '/details_comic/${downloader.sourceId}/${downloader.comicId}',
+                                          context.pushNamed(
+                                            'details_comic',
+                                            pathParameters: {
+                                              'sourceId': downloader.sourceId,
+                                              'comicId': downloader.comicId,
+                                            },
                                           );
                                         },
                                         child: Column(

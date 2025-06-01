@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
+import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/router/extensions/to_router.dart';
 
 import '../card_horz_item.dart';
 
-class HorizontalComic extends StatelessWidget {
-  final Comic comic;
+class HorizontalEiga extends StatelessWidget {
+  final Eiga eiga;
   final String sourceId;
   final bool replace;
 
-  const HorizontalComic({
+  const HorizontalEiga({
     super.key,
-    required this.comic,
+    required this.eiga,
     required this.sourceId,
     this.replace = false,
   });
@@ -20,21 +20,21 @@ class HorizontalComic extends StatelessWidget {
   Widget build(BuildContext context) {
     return CardHorzItem(
       to: ToRouter(
-        name: 'details_comic',
-        pathParameters: {'sourceId': sourceId, 'comicId': comic.comicId},
+        name: 'details_eiga',
+        pathParameters: {'sourceId': sourceId, 'eigaId': eiga.eigaId},
       ),
       replace: replace,
       sourceId: sourceId,
-      rate: comic.rate,
-      image: comic.image,
-      notice: comic.notice,
+      rate: eiga.rate,
+      image: eiga.image,
+      notice: eiga.notice,
       progress: null,
       pending: false,
       preRelease: null,
-      title: comic.name,
-      subtitle2: comic.originalName,
-      subtitle: comic.lastChap?.name,
-      lastUpdate: comic.lastUpdate,
+      title: eiga.name,
+      subtitle2: eiga.originalName,
+      subtitle: eiga.lastEpisode?.name,
+      lastUpdate: eiga.lastUpdate,
       extend: const [],
     );
   }
