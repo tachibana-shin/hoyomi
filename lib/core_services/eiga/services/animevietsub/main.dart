@@ -46,10 +46,7 @@ mixin _SupabaseRPC {
     ),
   );
 
-  Future<dynamic> rpc(
-    String name,
-    Map<String, dynamic> requestData,
-  ) async {
+  Future<dynamic> rpc(String name, Map<String, dynamic> requestData) async {
     final response = await _dio.post(
       '/rest/v1/rpc/$name',
       data: jsonEncode(requestData),

@@ -799,7 +799,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       }
       _aspectRatio.value = controller.value.aspectRatio;
       if (controller.value.isCompleted) {
-        controller.removeListener(_onPlayerValueChanged);  
+        controller.removeListener(_onPlayerValueChanged);
         widget.onNext.value?.call();
       }
 

@@ -425,12 +425,14 @@ class _CarouselComicState extends State<CarouselComic> {
                                               genre.genreId == Genre.noId
                                                   ? null
                                                   : () => context.pushNamed(
-                                                        'category_comic',
-                                                        pathParameters: {
-                                                          'sourceId': widget.sourceId,
-                                                          'categoryId': genre.genreId,
-                                                        },
-                                                      ),
+                                                    'category_comic',
+                                                    pathParameters: {
+                                                      'sourceId':
+                                                          widget.sourceId,
+                                                      'categoryId':
+                                                          genre.genreId,
+                                                    },
+                                                  ),
                                           child: Text(
                                             '#${genre.name}',
                                             style:
@@ -463,12 +465,14 @@ class _CarouselComicState extends State<CarouselComic> {
                                               actor.genreId == Genre.noId
                                                   ? null
                                                   : () => context.pushNamed(
-                                                        'category_comic',
-                                                        pathParameters: {
-                                                          'sourceId': widget.sourceId,
-                                                          'categoryId': actor.genreId,
-                                                        },
-                                                      ),
+                                                    'category_comic',
+                                                    pathParameters: {
+                                                      'sourceId':
+                                                          widget.sourceId,
+                                                      'categoryId':
+                                                          actor.genreId,
+                                                    },
+                                                  ),
                                           child: Text(
                                             '${actor.name}${index < list.length - 1 ? ', ' : ''}',
                                             style:
