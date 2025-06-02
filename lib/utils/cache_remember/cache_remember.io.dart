@@ -37,11 +37,13 @@ Future<T> cacheRemember<T>(
 
       // Update the cache in the background.
       get().then((newValue) async {
-        final content = toCache(newValue);
+        final newContent = toCache(newValue);
+        if (content == newContent) return;
+
         onUpdate(newValue);
         debugPrint('[cache_remember]: Cache updated for $key');
 
-        await file.writeAsString(content);
+        await file.writeAsString(newContent);
       });
 
       return cachedValue;
