@@ -205,6 +205,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     final player = _buildPlayer();
 
     return Watch(() {
+      final seasonWidgetGlobalKey = GlobalKey();
+
       final playerWidget = LayoutBuilder(
         builder: (context, constraints) {
           return ClipRect(
@@ -216,8 +218,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         },
       );
 
-      Widget seasonWidgetBuilder(bool verticalMode) {
+      Widget seasonWidgetBuilder(bool verticalMode, {GlobalKey? key}) {
         return Watch(
+          key: key,
           () => Column(
             children: [
               if (!_loading.value) _buildSchedule(),
@@ -275,7 +278,30 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 children: [
                   left.expanded(flex: 9),
                   7.widthBox,
-                  right.expanded(flex: 3),
+                  Column(
+                    children: [
+                      Watch(
+                        () =>
+                            _fullscreen.value
+                                ? LayoutBuilder(
+                                  builder:
+                                      (context, constraints) => SizedBox(
+                                        height: min(
+                                          constraints.biggest.height,
+                                          (constraints.biggest.width / 3 * 9) /
+                                              _aspectRatio!,
+                                        ),
+                                        child: seasonWidgetBuilder(
+                                          key: seasonWidgetGlobalKey,
+                                          true,
+                                        ),
+                                      ),
+                                )
+                                : nil,
+                      ),
+                      right,
+                    ],
+                  ).expanded(flex: 3),
                 ],
               );
             }
@@ -343,33 +369,52 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               ),
           builder:
               (data, _) => SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+                // padding:
+                //     _fullscreen.value
+                //         ? null
+                //         : const EdgeInsets.symmetric(
+                //           horizontal: 16.0,
+                //           vertical: 0.0,
+                //         ),
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        Flexible(flex: 9, child: playerWidget),
-                        Watch(
-                          () =>
-                              _fullscreen.value
-                                  ? nil
-                                  : LayoutBuilder(
-                                    builder:
-                                        (context, constraints) => SizedBox(
-                                          height: min(
-                                            constraints.biggest.height,
-                                            (constraints.biggest.width /
-                                                    3 *
-                                                    9) /
-                                                _aspectRatio!,
-                                          ),
-                                          child: seasonWidgetBuilder(true),
-                                        ),
-                                  ).expanded(flex: 3),
+                    Watch(
+                      () => PaddingX(
+                        Row(
+                          children: [
+                            Flexible(flex: 9, child: playerWidget),
+                            Watch(
+                              () =>
+                                  _fullscreen.value
+                                      ? nil
+                                      : LayoutBuilder(
+                                        builder:
+                                            (context, constraints) => SizedBox(
+                                              height: min(
+                                                constraints.biggest.height,
+                                                (constraints.biggest.width /
+                                                        3 *
+                                                        9) /
+                                                    _aspectRatio!,
+                                              ),
+                                              child: seasonWidgetBuilder(
+                                                key: seasonWidgetGlobalKey,
+                                                true,
+                                              ),
+                                            ),
+                                      ).expanded(flex: 3),
+                            ),
+                          ],
                         ),
-                      ],
+                      ).paddingSymmetric(
+                        horizontal: _fullscreen.value ? 0 : 16.0,
+                      ),
                     ),
-                    metaWidgetBuilder(data),
+                    Watch(
+                      () => PaddingX(metaWidgetBuilder(data)).paddingSymmetric(
+                        horizontal: _fullscreen.value ? 0 : 16.0,
+                      ),
+                    ),
                   ],
                 ),
               ),
