@@ -46,7 +46,7 @@ class _ButtonShareEigaState extends State<ButtonShareEiga> {
               'Share',
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.normal,
-                fontSize: 12.0,
+                fontSize: 14.0,
               ),
             ),
             style: ButtonStyle(

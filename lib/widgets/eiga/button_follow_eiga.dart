@@ -89,7 +89,7 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga>
                 : formatNumber(followCount),
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
               fontWeight: FontWeight.normal,
-              fontSize: 12.0,
+              fontSize: 14.0,
             ),
           ),
           style: ButtonStyle(
