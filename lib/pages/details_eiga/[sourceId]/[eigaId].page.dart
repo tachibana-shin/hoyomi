@@ -14,6 +14,7 @@ import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/eiga/export.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/extensions/breakpoint_extension.dart';
 import 'package:hoyomi/extensions/iterable_extension.dart';
 import 'package:hoyomi/extensions/list_extension.dart';
 import 'package:hoyomi/screens/export.dart';
@@ -118,7 +119,6 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   final _eventBus = EventBus();
 
   double _initialBottomSheet = 0.5;
-  Widget? _widgetAll;
 
   @override
   void initState() {
@@ -186,18 +186,13 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
   @override
   Widget build(BuildContext context) {
-    return (_widgetAll ??= _buildAll());
-  }
-
-  Widget _buildAll() {
-    final size = MediaQuery.of(context).size;
-
     if (_aspectRatio == null) {
       var aspectRatio = _defaultAspectRatio;
+      final maxWidth = (context.isGtSm ? 2 / 3 : 1.0).w(context);
 
-      final heightPlayer = size.width / aspectRatio;
-      if (size.height * 0.65 < heightPlayer) {
-        aspectRatio = size.width / (size.height * 0.65);
+      final heightPlayer = maxWidth / aspectRatio;
+      if (0.65.h(context) < heightPlayer) {
+        aspectRatio = maxWidth / 0.65.h(context);
       }
 
       _aspectRatio = aspectRatio;
@@ -210,19 +205,94 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     final player = _buildPlayer();
 
     return Watch(() {
-      return Column(
-        children: [
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return ClipRect(
-                child: SizedBox(
-                  height: _fullscreen.value ? 100.h(context) : null,
-                  child: player,
-                ),
-              );
-            },
+      final playerWidget = LayoutBuilder(
+        builder: (context, constraints) {
+          return ClipRect(
+            child: SizedBox(
+              height: _fullscreen.value ? 100.h(context) : null,
+              child: player,
+            ),
+          );
+        },
+      );
+
+      Widget seasonWidgetBuilder(bool verticalMode) {
+        return Watch(
+          () => Column(
+            children: [
+              if (!_loading.value) _buildSchedule(),
+              _buildServers(),
+              if (!verticalMode) _buildSeasonHeader(),
+              5.heightBox,
+              if (verticalMode)
+                FractionallySizedBox(
+                  widthFactor: 1.0,
+                  heightFactor: 1.0,
+                  child: _buildSeasonArea(
+                    inModal: verticalMode,
+                    scrollDirection:
+                        verticalMode ? Axis.vertical : Axis.horizontal,
+                  ),
+                ).expanded()
+              else
+                _buildSeasonArea(),
+            ],
           ),
-          ClipRect(
+        );
+      }
+
+      Widget metaWidgetBuilder(MetaEiga? data) {
+        Widget builder(MetaEiga data) {
+          return Watch(() {
+            final left = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildInfo(),
+                10.heightBox,
+                // button group
+                _buildButtonGroup(),
+                5.heightBox,
+                if (!context.isGtSm)
+                  seasonWidgetBuilder(false)
+                else ...[
+                  4.heightBox,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildPoster(data, width: 125),
+                      7.widthBox,
+                      _buildDescription(data, tags: false).expanded(),
+                    ],
+                  ),
+                ],
+              ],
+            );
+            final right = _buildSuggest();
+
+            if (context.isGtSm) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  left.expanded(flex: 9),
+                  7.widthBox,
+                  right.expanded(flex: 3),
+                ],
+              );
+            }
+
+            return SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+              child: Column(children: [left, right]),
+            );
+          });
+        }
+
+        if (data != null) {
+          return builder(data);
+        }
+
+        return Watch(
+          () => ClipRect(
             child: SizedBox(
               height: _fullscreen.value ? 0 : double.infinity,
               child: Offstage(
@@ -245,43 +315,69 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         ),
                         body: body,
                       ),
-                  builder: (data, param) {
-                    return Watch(() {
-                      final loading = _loading.value;
-
-                      return SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                          vertical: 8.0,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildInfo(),
-                            SizedBox(height: 10.0),
-                            // button group
-                            _buildButtonGroup(),
-                            SizedBox(height: 5.0),
-                            if (!loading) _buildSchedule(),
-                            _buildServers(),
-                            _buildSeasonHeader(),
-                            SizedBox(height: 5.0),
-                            if (loading)
-                              ListEpisodesSkeleton()
-                            else
-                              _buildSeasonArea(),
-                            SizedBox(height: 12.0),
-                            _buildSuggest(),
-                          ],
-                        ),
-                      );
-                    });
-                  },
+                  builder: (data, _) => builder(data),
                 ),
               ),
             ),
-          ).expanded(),
-        ],
+          ),
+        );
+      }
+
+      if (context.isGtSm) {
+        return PullRefreshPage(
+          onLoadData: () => _getDetails(_eigaId.value),
+          onLoadFake: () => _metaEiga.value = MetaEiga.createFakeData(),
+          builderError:
+              (body) => Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  scrolledUnderElevation: 0.0,
+                  leading: IconButton(
+                    icon: const Iconify(Ion.chevron_left),
+                    onPressed: () {
+                      context.pop();
+                    },
+                  ),
+                ),
+                body: body,
+              ),
+          builder:
+              (data, _) => SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(flex: 9, child: playerWidget),
+                        Watch(
+                          () =>
+                              _fullscreen.value
+                                  ? nil
+                                  : LayoutBuilder(
+                                    builder:
+                                        (context, constraints) => SizedBox(
+                                          height: min(
+                                            constraints.biggest.height,
+                                            (constraints.biggest.width /
+                                                    3 *
+                                                    9) /
+                                                _aspectRatio!,
+                                          ),
+                                          child: seasonWidgetBuilder(true),
+                                        ),
+                                  ).expanded(flex: 3),
+                        ),
+                      ],
+                    ),
+                    metaWidgetBuilder(data),
+                  ],
+                ),
+              ),
+        );
+      }
+
+      return Column(
+        children: [playerWidget, metaWidgetBuilder(null).expanded()],
       );
     });
   }
@@ -333,132 +429,127 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     return Watch(() {
       final colorScheme = Theme.of(context).colorScheme;
       final metaEiga = _metaEiga.value;
+
+      final main = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // name
+          Text(
+            metaEiga.name,
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18.0),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          if (metaEiga.views != null)
+            Text(
+              '${formatNumber(metaEiga.views!)} views',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: colorScheme.secondary,
+                fontSize: 14.0,
+              ),
+            ),
+
+          SizedBox(height: 2.0),
+
+          // authors
+          if (metaEiga.authors != null && metaEiga.authors!.isNotEmpty)
+            Wrap(
+              children: [
+                Text(
+                  'Author ',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.secondary,
+                    fontSize: 14.0,
+                  ),
+                ),
+                ...metaEiga.authors!.indexed.mapWithIterable((entry, list) {
+                  final (index, author) = entry;
+                  return GestureDetector(
+                    onTap:
+                        author.genreId == Genre.noId
+                            ? null
+                            : () => context.pushNamed(
+                              'category_eiga',
+                              pathParameters: {
+                                'sourceId': widget.sourceId,
+                                'categoryId': author.genreId,
+                              },
+                            ),
+                    child: Text(
+                      '${author.name}${index < list.length - 1 ? ', ' : ''}',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14.0,
+                        color: Colors.greenAccent.shade400,
+                      ),
+                    ),
+                  );
+                }),
+              ],
+            ),
+
+          // studios
+          if (metaEiga.studios != null && metaEiga.studios!.isNotEmpty)
+            Wrap(
+              children: [
+                Text(
+                  'Studio ',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.secondary,
+                    fontSize: 14.0,
+                  ),
+                ),
+                ...metaEiga.studios!.indexed.mapWithIterable((entry, list) {
+                  final (index, author) = entry;
+                  return GestureDetector(
+                    onTap:
+                        author.genreId == Genre.noId
+                            ? null
+                            : () => context.pushNamed(
+                              'category_eiga',
+                              pathParameters: {
+                                'sourceId': widget.sourceId,
+                                'categoryId': author.genreId,
+                              },
+                            ),
+                    child: Text(
+                      '${author.name}${index < list.length - 1 ? ', ' : ''}',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14.0,
+                        color: Colors.greenAccent.shade400,
+                      ),
+                    ),
+                  );
+                }),
+              ],
+            ),
+
+          SizedBox(height: 2.0),
+        ],
+      );
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          InkWell(
-            onTap: _showModalMetadata,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // name
-                    Text(
-                      metaEiga.name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18.0,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (metaEiga.views != null)
-                      Text(
-                        '${formatNumber(metaEiga.views!)} views',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.secondary,
-                          fontSize: 14.0,
-                        ),
-                      ),
-
-                    SizedBox(height: 2.0),
-
-                    // authors
-                    if (metaEiga.authors != null &&
-                        metaEiga.authors!.isNotEmpty)
-                      Wrap(
-                        children: [
-                          Text(
-                            'Author ',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.secondary,
-                              fontSize: 14.0,
-                            ),
-                          ),
-                          ...metaEiga.authors!.indexed.mapWithIterable((
-                            entry,
-                            list,
-                          ) {
-                            final (index, author) = entry;
-                            return GestureDetector(
-                              onTap:
-                                  author.genreId == Genre.noId
-                                      ? null
-                                      : () => context.push(
-                                        '/category_eiga/${widget.sourceId}/${author.genreId}',
-                                      ),
-                              child: Text(
-                                '${author.name}${index < list.length - 1 ? ', ' : ''}',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.bodyMedium?.copyWith(
-                                  fontSize: 14.0,
-                                  color: Colors.greenAccent.shade400,
-                                ),
-                              ),
-                            );
-                          }),
-                        ],
-                      ),
-
-                    // studios
-                    if (metaEiga.studios != null &&
-                        metaEiga.studios!.isNotEmpty)
-                      Wrap(
-                        children: [
-                          Text(
-                            'Studio ',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.secondary,
-                              fontSize: 14.0,
-                            ),
-                          ),
-                          ...metaEiga.studios!.indexed.mapWithIterable((
-                            entry,
-                            list,
-                          ) {
-                            final (index, author) = entry;
-                            return GestureDetector(
-                              onTap:
-                                  author.genreId == Genre.noId
-                                      ? null
-                                      : () => context.push(
-                                        '/category_eiga/${widget.sourceId}/${author.genreId}',
-                                      ),
-                              child: Text(
-                                '${author.name}${index < list.length - 1 ? ', ' : ''}',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.bodyMedium?.copyWith(
-                                  fontSize: 14.0,
-                                  color: Colors.greenAccent.shade400,
-                                ),
-                              ),
-                            );
-                          }),
-                        ],
-                      ),
-
-                    SizedBox(height: 2.0),
-                  ],
-                ).expanded(),
-                Opacity(
-                  opacity: 0.8,
-                  child: Iconify(
-                    Ion.chevron_right,
-                    size: 16,
-                  ).marginOnly(top: 8.0, right: 8.0),
-                ),
-              ],
+          if (context.isGtSm)
+            main
+          else
+            InkWell(
+              onTap: _showModalMetadata,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  main.expanded(),
+                  Opacity(
+                    opacity: 0.8,
+                    child: Iconify(
+                      Ion.chevron_right,
+                      size: 16,
+                    ).marginOnly(top: 8.0, right: 8.0),
+                  ),
+                ],
+              ),
             ),
-          ),
           SizedBox(height: 2.0),
 
           /////
@@ -594,8 +685,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       onTap:
                           country.genreId == Genre.noId
                               ? null
-                              : () => context.push(
-                                '/category_eiga/${widget.sourceId}/${country.genreId}',
+                              : () => context.pushNamed(
+                                'category_eiga',
+                                pathParameters: {
+                                  'sourceId': widget.sourceId,
+                                  'categoryId': country.genreId,
+                                },
                               ),
                       child: Text(
                         index < metaEiga.countries!.length - 1
@@ -649,8 +744,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         metaEiga.movieSeason!.genreId == Genre.noId
                             ? null
                             : () {
-                              context.push(
-                                '/category_eiga/${widget.sourceId}/${metaEiga.movieSeason!.genreId}',
+                              context.pushNamed(
+                                'category_eiga',
+                                pathParameters: {
+                                  'sourceId': widget.sourceId,
+                                  'categoryId': metaEiga.movieSeason!.genreId,
+                                },
                               );
                             },
                     child: Text(
@@ -679,8 +778,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         genre.genreId == Genre.noId
                             ? null
                             : () {
-                              context.push(
-                                '/category_eiga/${widget.sourceId}/${genre.genreId}',
+                              context.pushNamed(
+                                'category_eiga',
+                                pathParameters: {
+                                  'sourceId': widget.sourceId,
+                                  'categoryId': genre.genreId,
+                                },
                               );
                             },
                     child: Text(
@@ -814,6 +917,50 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     );
   }
 
+  Widget _buildPoster(MetaEiga metaEiga, {double width = 110.0}) {
+    return Container(
+      width: min(width, 50.w(context)),
+      decoration: BoxDecoration(
+        color: Colors.blueGrey.shade200,
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: AspectRatio(
+        aspectRatio: 2 / 3,
+        child: OImage.oNetwork(
+          metaEiga.image,
+          sourceId: widget.sourceId,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDescription(MetaEiga metaEiga, {bool tags = true}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+          child: Text(
+            'Description',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Text(metaEiga.description),
+        if (tags)
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 4.0,
+            children:
+                metaEiga.genres
+                    .map<Widget>((genre) => Chip(label: Text(genre.name)))
+                    .toList(),
+          ),
+      ],
+    );
+  }
+
   void _showModalMetadata() {
     final query = MediaQuery.of(context);
     final size = query.size;
@@ -848,22 +995,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: min(110.0, 50.w(context)),
-                          decoration: BoxDecoration(
-                            color: Colors.blueGrey.shade200,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          child: AspectRatio(
-                            aspectRatio: 2 / 3,
-                            child: OImage.oNetwork(
-                              metaEiga.image,
-                              sourceId: widget.sourceId,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
+                        _buildPoster(metaEiga),
                         SizedBox(width: 8),
                         Expanded(
                           child: Padding(
@@ -929,32 +1061,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           Text(metaEiga.originalName!),
                         ],
                       ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                          child: Text(
-                            'Description',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        Text(metaEiga.description),
-                        Wrap(
-                          spacing: 8.0,
-                          runSpacing: 4.0,
-                          children:
-                              metaEiga.genres
-                                  .map<Widget>(
-                                    (genre) => Chip(label: Text(genre.name)),
-                                  )
-                                  .toList(),
-                        ),
-                      ],
-                    ),
+                    _buildDescription(metaEiga),
                     if (metaEiga.trailer != null)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1160,8 +1267,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       _getDetails(_eigaId.value);
     }
 
-    context.replace(
-      '/details_eiga/${widget.sourceId}/${_eigaId.value}?episodeId=${_episodeId.value}',
+    context.replaceNamed(
+      'details_eiga',
+      pathParameters: {'sourceId': widget.sourceId, 'eigaId': widget.sourceId},
+      queryParameters: {'episodeId': _episodeId.value!},
     );
   }
 
@@ -1225,16 +1334,16 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     bool inModal = false,
   }) {
     return Watch(() {
-      final metaEiga$ = _metaEiga.value;
+      final metaEiga = _metaEiga.value;
 
-      if (metaEiga$.seasons.isEmpty || metaEiga$.seasons.length == 1) {
+      if (metaEiga.seasons.isEmpty || metaEiga.seasons.length == 1) {
         return ValueListenableBuilder(
           valueListenable: _eigaId,
           builder: (context, eigaId, child) {
             final season = Season(eigaId: eigaId, name: 'Episodes');
             return ListEpisodes(
               season: season,
-              thumbnail: metaEiga$.poster ?? metaEiga$.image,
+              thumbnail: metaEiga.poster ?? metaEiga.image,
               sourceId: widget.sourceId,
               eigaId: _eigaId,
               episodeId: _episodeId,
@@ -1252,10 +1361,12 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                             eigaId: _eigaId.value,
                             episodes: episodesEiga.episodes,
                           ),
-              eager: true,
+              eager: !metaEiga.fake,
               scrollDirection: scrollDirection,
               controller: controller,
               onTapEpisode: ({required episodesEiga, required indexEpisode}) {
+                if (metaEiga.fake) return;
+
                 _onChangeEpisode(
                   indexEpisode: indexEpisode,
                   indexSeason: 0,
@@ -1270,10 +1381,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
       // tab view
       return DefaultTabController(
-        length: metaEiga$.seasons.length,
+        length: metaEiga.seasons.length,
         initialIndex: max(
           0,
-          metaEiga$.seasons.indexWhere(
+          metaEiga.seasons.indexWhere(
             (season) => season.eigaId == _eigaId.value,
           ),
         ),
@@ -1282,7 +1393,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             final tabController = DefaultTabController.of(context);
 
             _eigaId.addListener(() {
-              final index = metaEiga$.seasons.indexWhere(
+              final index = metaEiga.seasons.indexWhere(
                 (season) => season.eigaId == _eigaId.value,
               );
               if (index != tabController.index) {
@@ -1293,14 +1404,14 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             final children = [
               (double? height) {
                 final children =
-                    metaEiga$.seasons.asMap().entries.map((entry) {
+                    metaEiga.seasons.asMap().entries.map((entry) {
                       final season = entry.value;
                       final index = entry.key;
 
                       final child = ListEpisodes(
                         season: season,
                         sourceId: widget.sourceId,
-                        thumbnail: metaEiga$.poster ?? metaEiga$.image,
+                        thumbnail: metaEiga.poster ?? metaEiga.image,
                         eigaId: _eigaId,
                         episodeId: _episodeId,
                         eventBus: _eventBus,
@@ -1315,18 +1426,20 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                       eigaId: season.eigaId,
                                       episodes: episodesEiga.episodes,
                                     ),
-                        eager: true,
+                        eager: !metaEiga.fake,
                         scrollDirection: scrollDirection,
                         controller: controller,
                         onTapEpisode: ({
                           required episodesEiga,
                           required indexEpisode,
                         }) {
+                          if (metaEiga.fake) return;
+
                           _onChangeEpisode(
                             indexEpisode: indexEpisode,
                             indexSeason: index,
                             episodesEiga: episodesEiga,
-                            seasons: metaEiga$.seasons,
+                            seasons: metaEiga.seasons,
                           );
                         },
                       );
@@ -1353,7 +1466,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 tabAlignment: TabAlignment.start,
                 dividerHeight: 0,
                 tabs:
-                    metaEiga$.seasons.map((season) {
+                    metaEiga.seasons.map((season) {
                       return Tab(text: season.name);
                     }).toList(),
               ),
@@ -1397,17 +1510,61 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   Widget _buildSuggest() {
     return Watch(() {
       final suggest = _suggest.value;
+      final future = suggest.then(
+        (data) =>
+            data
+                ?.map((item) => EigaExtend(eiga: item, sourceId: _service.uid))
+                .toList() ??
+            const <EigaExtend>[],
+      );
+
+      if (context.isGtSm) {
+        return FutureBuilder(
+          future: future,
+          builder: (context, snapshot) {
+            final loading = snapshot.connectionState == ConnectionState.waiting;
+
+            if (snapshot.hasError) {
+              return Center(
+                child: Service.errorWidgetBuilder(
+                  context,
+                  error: snapshot.error,
+                  trace: snapshot.stackTrace,
+                  service: null,
+                  orElse: (error) => Text('Error: $error'),
+                ),
+              );
+            }
+
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return nil;
+            }
+
+            final data =
+                loading
+                    ? List.generate(
+                      15,
+                      (_) =>
+                          EigaExtend(eiga: Eiga.createFakeData(), sourceId: ''),
+                    )
+                    : snapshot.data!;
+
+            return ListView.builder(
+              itemCount: data.length,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder:
+                  (context, index) => HorizontalEiga(
+                    eiga: data[index].eiga,
+                    sourceId: data[index].sourceId ?? '',
+                  ),
+            );
+          },
+        );
+      }
 
       return VerticalEigaList(
-        itemsFuture: suggest.then(
-          (data) =>
-              data
-                  ?.map(
-                    (item) => EigaExtend(eiga: item, sourceId: _service.uid),
-                  )
-                  .toList() ??
-              [],
-        ),
+        itemsFuture: future,
         title: 'Suggest',
         disableScroll: true,
         goMode: true,
