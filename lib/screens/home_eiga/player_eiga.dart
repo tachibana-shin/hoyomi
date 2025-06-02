@@ -370,7 +370,7 @@ class _PlayerEigaState extends State<PlayerEiga>
               )
               .catchError((error, stack) {
                 if (error is! UserNotFoundException) {
-                  debugPrint('Error: $error (${stack})');
+                  debugPrint('Error: $error ($stack)');
                 }
 
                 return WatchTimeData(
@@ -676,7 +676,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         )
         .catchError((error, stack) {
           if (error is! UserNotFoundException) {
-            debugPrint('Error: $error (${stack})');
+            debugPrint('Error: $error ($stack)');
           }
         });
   }
@@ -755,7 +755,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                 controller.play();
               })
               .catchError((err, stack) {
-                debugPrint('Error: $err (${stack})');
+                debugPrint('Error: $err ($stack)');
                 _error.value = '$err';
               })
           ..addListener(_onPlayerValueChanged);
