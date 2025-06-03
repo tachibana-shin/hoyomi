@@ -50,8 +50,8 @@ class _ZoomViewerState extends State<ZoomViewer> {
       // For a 3x zoom
       _transformationController.value =
           Matrix4.identity()
-            ..translate(-position.dx * 2, -position.dy * 2)
-            ..scale(3.0);
+            ..translate(-position.dx / 2, -position.dy / 2)
+            ..scale(1.15);
       // Fox a 2x zoom
       // ..translate(-position.dx, -position.dy)
       // ..scale(2.0);
