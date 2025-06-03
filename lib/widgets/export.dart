@@ -52,3 +52,4 @@ export 'stroke_text.dart';
 export 'tap_listener.dart';
 export 'vertical_list.dart';
 export 'vertical_separator.dart';
+export 'zoom_viewer.dart';

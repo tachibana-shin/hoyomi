@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hoyomi/screens/home_comic/manga_reader.dart';
+import 'package:hoyomi/widgets/export.dart';
 import 'package:kaeru/kaeru.dart';
 
 class HorizonReader extends StatefulWidget {
@@ -118,7 +119,7 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
                   );
                 }).toList();
 
-            return InteractiveViewer(
+            return ZoomViewer(
               panEnabled: true,
               minScale: 1.0,
               maxScale: 2.0,
@@ -129,7 +130,7 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
             );
           }
 
-          return InteractiveViewer(
+          return ZoomViewer(
             panEnabled: true,
             minScale: 1.0,
             maxScale: 2.0,

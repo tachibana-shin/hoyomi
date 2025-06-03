@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/screens/home_comic/manga_reader.dart';
+import 'package:hoyomi/widgets/export.dart';
 import 'package:jk_fast_listview/jk_fast_listview.dart';
 import 'package:kaeru/kaeru.dart';
 // import 'package:mediaquery_sizer/mediaquery_sizer.dart';
@@ -105,7 +106,7 @@ class _WebToonReaderState extends State<WebToonReader>
     super.build(context);
 
     return Watch(() {
-      return InteractiveViewer(
+      return ZoomViewer(
         minScale: 0.5,
         child: JkFastListView(
           key: ValueKey(_scrollController.value),

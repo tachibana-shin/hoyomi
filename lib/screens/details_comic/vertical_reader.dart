@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hoyomi/screens/home_comic/manga_reader.dart';
+import 'package:hoyomi/widgets/export.dart';
 import 'package:kaeru/kaeru.dart';
 
 class VerticalReader extends StatefulWidget {
@@ -61,7 +62,7 @@ class _VerticalReaderState extends State<VerticalReader> with KaeruListenMixin {
         },
         itemCount: widget.pages.value.length,
         itemBuilder:
-            (context, index) => InteractiveViewer(
+            (context, index) => ZoomViewer(
               minScale: 0.5,
               child: widget.itemBuilder(
                 context,
