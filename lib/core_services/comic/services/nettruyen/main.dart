@@ -36,7 +36,7 @@ final List<Filter> globalFilters = [
   ),
 ];
 
-class NetTruyenService extends ABComicService with ComicWatchPageGeneralMixin {
+class NetTruyenService extends ABComicService {
   @override
   bool? get $isAuth => false;
 

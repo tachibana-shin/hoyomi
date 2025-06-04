@@ -7,14 +7,8 @@ import 'dart:math';
 import 'package:get/get.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_general_mixin.dart';
 
-class NguonCService extends ABEigaService with EigaWatchTimeGeneralMixin
-// with
-// EigaWatchTimeMixin,
-// EigaHistoryMixin,
-// EigaFollowMixin,
-{
+class NguonCService extends ABEigaService {
   @override
   bool? get $isAuth => false;
 

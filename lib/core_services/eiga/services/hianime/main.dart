@@ -12,12 +12,11 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
-import 'package:hoyomi/core_services/eiga/mixin/eiga_watch_time_general_mixin.dart';
 import 'package:hoyomi/env.dart';
 import 'package:hoyomi/utils/d_query.dart';
 import 'package:intl/intl.dart';
 
-class HiAnimeService extends ABEigaService with EigaWatchTimeGeneralMixin {
+class HiAnimeService extends ABEigaService {
   @override
   bool? get $isAuth => false;
 

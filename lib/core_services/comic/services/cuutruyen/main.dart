@@ -11,11 +11,7 @@ import 'package:hoyomi/env.dart';
 part 'main.freezed.dart';
 part 'main.g.dart';
 
-class CuuTruyenService extends ABComicService
-    with
-        ComicWatchPageGeneralMixin,
-        ComicCommentMixin,
-        ComicFollowGeneralMixin {
+class CuuTruyenService extends ABComicService with ComicCommentMixin {
   @override
   bool? get $isAuth => false;
   @override

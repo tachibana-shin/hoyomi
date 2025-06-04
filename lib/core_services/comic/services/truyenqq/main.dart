@@ -24,7 +24,6 @@ class TruyenQQService extends TruyenGGService {
     name: 'TruyenQQ',
     faviconUrl: OImage(src: 'https://i.imgur.com/yX8CCPe.png'),
     rootUrl: 'https://truyenqqgo.com',
-    rss: '/rss.html',
     settings: [
       FieldInput(
         name: 'Visit Read ID',

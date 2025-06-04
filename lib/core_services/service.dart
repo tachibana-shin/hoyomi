@@ -93,7 +93,6 @@ class ServiceInit {
   final OImage faviconUrl;
   final String rootUrl;
   final String Function()? captchaUrl;
-  final String? rss;
   final List<SettingField>? settings;
   final List<WebRule>? webRules;
   final bool fetchHeadless;
@@ -116,7 +115,6 @@ class ServiceInit {
     required this.rootUrl,
     required this.faviconUrl,
     this.captchaUrl,
-    this.rss,
     this.settings,
     this.onBeforeInsertCookie,
     this.webRules,
@@ -143,13 +141,6 @@ abstract class Service extends BaseService
       defaultFn: (service) => service.init.rootUrl,
       placeholder: 'Example https://example.com',
       description: 'The root URL of the service',
-    ),
-    FieldInput(
-      name: 'RSS',
-      key: 'rss',
-      defaultFn: (service) => service.init.rss ?? '',
-      placeholder: 'Example https://example.com/rss',
-      description: 'The RSS feed of the service',
     ),
     FieldInput(
       name: 'User Agent',
@@ -195,13 +186,6 @@ abstract class Service extends BaseService
           'referer': baseUrl,
         }).merge(init.faviconUrl.headers ?? Headers({})),
       );
-  String? _rss;
-  String? get rss =>
-      _rss ??=
-          init.rss == null
-              ? null
-              : Uri.parse(baseUrl).resolve(init.rss!).toString();
-
   String? _$fetchBaseUrl;
   String? get _fetchBaseUrl {
     if (init.fetchBaseUrl == null) return null;

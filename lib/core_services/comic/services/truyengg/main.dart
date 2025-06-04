@@ -48,11 +48,7 @@ final List<Filter> globalFilters = [
 ];
 
 class TruyenGGService extends ABComicService
-    with
-        ComicAuthMixin,
-        ComicCommentMixin,
-        ComicFollowMixin,
-        ComicWatchPageGeneralMixin {
+    with ComicAuthMixin, ComicCommentMixin, ComicFollowMixin {
   @override
   bool? get $isAuth => true;
 
@@ -61,7 +57,6 @@ class TruyenGGService extends ABComicService
     name: 'TruyenGGP',
     faviconUrl: OImage(src: '/favicon.ico'),
     rootUrl: 'https://truyengg.net',
-    rss: '/rss.html',
     onBeforeInsertCookie: (cookie) {
       cookie ??= '';
 
