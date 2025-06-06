@@ -1402,43 +1402,38 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       final metaEiga = _metaEiga.value;
 
       if (metaEiga.seasons.isEmpty || metaEiga.seasons.length == 1) {
-        return ValueListenableBuilder(
-          valueListenable: _eigaId,
-          builder: (context, eigaId, child) {
-            final season = Season(eigaId: eigaId, name: 'Episodes');
-            return ListEpisodes(
-              season: season,
-              thumbnail: metaEiga.poster ?? metaEiga.image,
-              sourceId: widget.sourceId,
-              eigaId: _eigaId,
-              episodeId: _episodeId,
-              eventBus: _eventBus,
-              getData:
-                  (update) async =>
-                      _cacheEpisodesStore[eigaId] ??= await _getEpisodes(
-                        eigaId,
-                        update,
+        final season = Season(eigaId: _eigaId.value, name: 'Episodes');
+        return ListEpisodes(
+          season: season,
+          thumbnail: metaEiga.poster ?? metaEiga.image,
+          sourceId: widget.sourceId,
+          eigaId: _eigaId,
+          episodeId: _episodeId,
+          eventBus: _eventBus,
+          getData:
+              (update) async =>
+                  _cacheEpisodesStore[_eigaId.value] ??= await _getEpisodes(
+                    _eigaId.value,
+                    update,
+                  ),
+          getWatchTimeEpisodes:
+              (episodesEiga) async =>
+                  _cacheWatchTimeStore[_eigaId.value] ??= await _service
+                      .getWatchTimeEpisodes(
+                        eigaId: _eigaId.value,
+                        episodes: episodesEiga.episodes,
                       ),
-              getWatchTimeEpisodes:
-                  (episodesEiga) async =>
-                      _cacheWatchTimeStore[eigaId] ??= await _service
-                          .getWatchTimeEpisodes(
-                            eigaId: _eigaId.value,
-                            episodes: episodesEiga.episodes,
-                          ),
-              eager: !metaEiga.fake,
-              scrollDirection: scrollDirection,
-              controller: controller,
-              onTapEpisode: ({required episodesEiga, required indexEpisode}) {
-                if (metaEiga.fake) return;
+          eager: !metaEiga.fake,
+          scrollDirection: scrollDirection,
+          controller: controller,
+          onTapEpisode: ({required episodesEiga, required indexEpisode}) {
+            if (metaEiga.fake) return;
 
-                _onChangeEpisode(
-                  indexEpisode: indexEpisode,
-                  indexSeason: 0,
-                  episodesEiga: episodesEiga,
-                  seasons: [season],
-                );
-              },
+            _onChangeEpisode(
+              indexEpisode: indexEpisode,
+              indexSeason: 0,
+              episodesEiga: episodesEiga,
+              seasons: [season],
             );
           },
         );
@@ -1446,6 +1441,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
       // tab view
       return DefaultTabController(
+        key: ValueKey(metaEiga),
         length: metaEiga.seasons.length,
         initialIndex: max(
           0,
