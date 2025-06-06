@@ -855,7 +855,7 @@ class AnimeVietsubService extends ABEigaService
   @override
   search({required keyword, required page, required filters, required quick}) {
     return getCategory(
-      categoryId: 'tim-kiem/$keyword',
+      categoryId: 'tim-kiem/$keyword/',
       page: page,
       filters: filters,
     );
