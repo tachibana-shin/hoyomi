@@ -8,10 +8,12 @@ import 'package:get/get.dart' hide WidgetPaddingX;
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/fluent.dart';
+import 'package:hoyomi/constraints/huge_icons.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/eiga/main.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/utils/export.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
@@ -21,6 +23,26 @@ import 'package:speech_to_text_google_dialog/speech_to_text_google_dialog.dart';
 
 final Ref<String> globalKeyword = Ref('');
 final Ref<String?> serviceSelect = Ref(null);
+final Computed<Service> serviceSelectNotNull = Computed(() {
+  final routeName = router.state.name;
+  final query = router.state.uri.queryParameters;
+
+  if (serviceSelect.value == null) {
+    final queryService = query['service'];
+
+    if (queryService != null) {
+      return getService(queryService);
+    }
+
+    return switch (routeName) {
+      == 'home_comic' => comicServices.value.first,
+      == 'home_eiga' => eigaServices.value.first,
+      _ => allServices.value.first,
+    };
+  }
+
+  return getService(serviceSelect.value!);
+});
 
 final Map<String, dynamic> _storeGoogleSuggestCache = {};
 final Map<String, dynamic> _storeServiceSearchCache = {};
@@ -212,30 +234,87 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                 body: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Watch(() {
-                    if (globalKeyword.value.isEmpty) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.search),
-                            SizedBox(width: 4.0),
-                            Text(
-                              'Enter keyword to search',
-                              style: TextStyle(
-                                color: theme.colorScheme.secondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Text(_keyword.value),
-                        _buildKeywordSuggest(globalKeyword.value),
-                        _buildSearchResults(globalKeyword.value).expanded(),
+                        if (globalKeyword.value.isNotEmpty)
+                          _buildKeywordSuggest(globalKeyword.value),
+                        ListTile(
+                          leading: Iconify(Hg.search01),
+                          title: Watch(
+                            () => Text(
+                              'Search in ${serviceSelectNotNull.value.name}',
+                            ),
+                          ),
+                          onTap: () {
+                            _closeSearchLayer();
+
+                            globalKeyword.value = _controller.text;
+
+                            final route = GoRouter.of(context);
+
+                            if (serviceSelectNotNull.value is ABComicService) {
+                              if (route.state.name?.startsWith('search_') ==
+                                  true) {
+                                context.pushReplacementNamed(
+                                  'search_comic',
+                                  pathParameters: {
+                                    'sourceId': serviceSelectNotNull.value.uid,
+                                  },
+                                  queryParameters: {'q': globalKeyword.value},
+                                );
+                              } else {
+                                context.pushNamed(
+                                  'search_comic',
+                                  pathParameters: {
+                                    'sourceId': serviceSelectNotNull.value.uid,
+                                  },
+                                  queryParameters: {'q': globalKeyword.value},
+                                );
+                              }
+                            } else {
+                              if (route.state.name?.startsWith('search_') ==
+                                  true) {
+                                context.pushReplacementNamed(
+                                  'search_eiga',
+                                  pathParameters: {
+                                    'sourceId': serviceSelectNotNull.value.uid,
+                                  },
+                                  queryParameters: {'q': globalKeyword.value},
+                                );
+                              } else {
+                                print('ok');
+                                context.pushNamed(
+                                  'search_eiga',
+                                  pathParameters: {
+                                    'sourceId': serviceSelectNotNull.value.uid,
+                                  },
+                                  queryParameters: {'q': globalKeyword.value},
+                                );
+                              }
+                            }
+                          },
+                        ),
+                        if (globalKeyword.value.isNotEmpty)
+                          _buildSearchResults(globalKeyword.value).expanded()
+                        else
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.search),
+                                SizedBox(width: 4.0),
+                                Text(
+                                  'Enter keyword to search',
+                                  style: TextStyle(
+                                    color: theme.colorScheme.secondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                       ],
                     );
                   }),
@@ -337,7 +416,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
       return SizedBox.shrink();
     }
 
-    final service = _getCurrentService(context);
+    final service = serviceSelectNotNull.value;
 
     if (service is ABComicService) {
       return FutureBuilder(
@@ -451,39 +530,10 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
     throw Exception('Unknown service: ${service.runtimeType}');
   }
 
-  Service _getCurrentService(BuildContext context) {
-    final routeName = GoRouter.of(context).state.name;
-    final query = GoRouter.of(context).state.uri.queryParameters;
-
-    late final Service service;
-    if (serviceSelect.value == null) {
-      final queryService = query['service'];
-
-      if (queryService != null) {
-        service = getService(queryService);
-      } else {
-        switch (routeName) {
-          case 'home_comic':
-            service = comicServices.value.first;
-            break;
-          case 'home_eiga':
-            service = eigaServices.value.first;
-            break;
-          default:
-            service = allServices.value.first;
-        }
-      }
-    } else {
-      service = getService(serviceSelect.value!);
-    }
-
-    return service;
-  }
-
   Widget _buildServiceSelector() {
     return Watch(() {
       final services = allServices.value;
-      final service = _getCurrentService(context);
+      final service = serviceSelectNotNull.value;
 
       return PopupMenuButton<String>(
         padding: EdgeInsets.all(3.0),
@@ -597,35 +647,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                         onChanged: (value) {
                           _setKeyword(value);
                         },
-                        onSubmitted: (value) {
-                          globalKeyword.value = value;
-                          _closeSearchLayer();
-
-                          final route = GoRouter.of(context).state;
-                          if (route.pathParameters['from'] != null) {
-                            context.replace(
-                              "/search?q=$value&from=${route.pathParameters['from']}",
-                            );
-
-                            return;
-                          }
-                          switch (route.name) {
-                            case 'search':
-                            case 'search_comic':
-                            case 'search_eiga':
-                              context.replace("/search?q=$value");
-                              break;
-                            case 'home_comic':
-                              context.push("/search?q=$value&from=comic");
-                              break;
-                            case 'home_eiga':
-                              context.push("/search?q=$value&from=eiga");
-                              break;
-                            default:
-                              context.push("/search?q=$value");
-                              break;
-                          }
-                        },
+                        onSubmitted: _onSubmitted,
                       )
                       : GestureDetector(
                         onTap: () => _showSearchLayer(),
@@ -715,6 +737,34 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         ),
       ),
     );
+  }
+
+  void _onSubmitted(String value) {
+    globalKeyword.value = value;
+    _closeSearchLayer();
+
+    final route = GoRouter.of(context).state;
+    if (route.pathParameters['from'] != null) {
+      context.replace("/search?q=$value&from=${route.pathParameters['from']}");
+
+      return;
+    }
+    switch (route.name) {
+      case 'search':
+      case 'search_comic':
+      case 'search_eiga':
+        context.replace("/search?q=$value");
+        break;
+      case 'home_comic':
+        context.push("/search?q=$value&from=comic");
+        break;
+      case 'home_eiga':
+        context.push("/search?q=$value&from=eiga");
+        break;
+      default:
+        context.push("/search?q=$value");
+        break;
+    }
   }
 
   List<Widget> _buildButtonsMore() {
