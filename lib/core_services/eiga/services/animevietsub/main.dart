@@ -27,7 +27,7 @@ mixin _SupabaseRPC {
         'Accept-Language': 'vi-VN,vi;q=0.8,en-US;q=0.5,en;q=0.3',
         'Accept-Encoding': 'gzip, deflate, br, zstd',
         'Content-Type': 'application/json',
-        'Referer': 'https://animevsub.eu.org/',
+        'Referer': 'https://animevsub.eu.org',
         'apikey': _supabaseKey,
         'content-profile': 'public',
         'x-client-info': 'supabase-js-web/2.44.4',
@@ -65,7 +65,7 @@ class AnimeVietsubService extends ABEigaService
   @override
   late final init = ServiceInit(
     name: 'AnimeVietsub',
-    faviconUrl: OImage(src: '/favicon.ico'),
+    faviconUrl: OImage(src: 'favicon.ico'),
     rootUrl: 'https://$hostCUrl',
     webRules: [
       WebRule(
@@ -120,7 +120,7 @@ class AnimeVietsubService extends ABEigaService
         .attr('src')
         .replaceFirst(
           RegExp(r'animevietsub\.\w+\/'),
-          '${baseUrl.split('://')[1]}/',
+          '${baseUrl.split('://')[1]}',
         );
 
     final name = $('.profile-usertitle-name', single: true).text();
@@ -365,7 +365,7 @@ class AnimeVietsubService extends ABEigaService
         (params == null
             ? '$baseUrl/${categoryId.replaceAll('_', '/')}'
             : '$baseUrl/$params') +
-        (page > 1 ? '/trang-$page.html' : '/') +
+        (page > 1 ? '/trang-$page.html' : '') +
         (filters['sort'] == null ? '' : '?sort=${filters['sort']}');
     final $ = await fetch$(url);
 
@@ -473,7 +473,7 @@ class AnimeVietsubService extends ABEigaService
 
     return Genre(
       name: item.text(),
-      genreId: href.replaceAll(r'^\/|\/$', '').replaceAll('/', '_'),
+      genreId: href.replaceAll(r'^\/|\/$', '').replaceAll('', '_'),
     );
   }
 
@@ -855,7 +855,7 @@ class AnimeVietsubService extends ABEigaService
   @override
   search({required keyword, required page, required filters, required quick}) {
     return getCategory(
-      categoryId: '/tim-kiem/$keyword/',
+      categoryId: 'tim-kiem/$keyword',
       page: page,
       filters: filters,
     );
@@ -996,7 +996,7 @@ class AnimeVietsubService extends ABEigaService
     await _getUidUser();
 
     final category = await getCategory(
-      categoryId: '/tu-phim/',
+      categoryId: 'tu-phim',
       page: page,
       filters: {},
     );
