@@ -707,14 +707,40 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
           if (router.state.name?.contains('comic') == true) {
             showServiceManagerDialog(
               context,
-              items: comicServices.value,
-              onDone: (newValue) => comicServices.value = newValue,
+              items:
+                  comicServices.value.map((service) {
+                    return ServiceManagerItem(
+                      uid: service.uid,
+                      name: service.name,
+                      baseUrl: service.baseUrl,
+                      avatar: AvatarService(service, radius: 10.0),
+                    );
+                  }).toList(),
+              onDone:
+                  (newValue) =>
+                      comicServices.value =
+                          newValue
+                              .map((item) => getComicService(item.uid))
+                              .toList(),
             );
           } else {
             showServiceManagerDialog(
               context,
-              items: eigaServices.value,
-              onDone: (newValue) => eigaServices.value = newValue,
+              items:
+                  eigaServices.value.map((service) {
+                    return ServiceManagerItem(
+                      uid: service.uid,
+                      name: service.name,
+                      baseUrl: service.baseUrl,
+                      avatar: AvatarService(service, radius: 10.0),
+                    );
+                  }).toList(),
+              onDone:
+                  (newValue) =>
+                      eigaServices.value =
+                          newValue
+                              .map((item) => getEigaService(item.uid))
+                              .toList(),
             );
           }
         },

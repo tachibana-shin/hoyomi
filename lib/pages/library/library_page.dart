@@ -20,6 +20,34 @@ typedef FNService =
       Future<dynamic> Function({required int page})? follow,
     });
 
+FNService _serviceToFNService(Service comic) {
+  return comic is ABComicService
+      ? (
+        name: comic.name,
+        isComic: true,
+        isGeneral: false,
+        sourceId: comic.uid,
+        history: ({required int page}) {
+          return comic.getWatchHistory(page: page);
+        },
+        follow: ({required int page}) {
+          return comic.getFollows(page: page);
+        },
+      )
+      : (
+        name: comic.name,
+        isComic: false,
+        isGeneral: false,
+        sourceId: comic.uid,
+        history: ({required int page}) {
+          return (comic as EigaWatchTimeMixin).getWatchHistory(page: page);
+        },
+        follow: ({required int page}) {
+          return (comic as EigaFollowMixin).getFollows(page: page);
+        },
+      );
+}
+
 class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
 
@@ -64,79 +92,60 @@ class _LibraryPageState extends State<LibraryPage>
       ].map((service) => MapEntry(service.uid, service)),
     );
 
-    final List<Service> normalService =
+    final FNService generalComicService = (
+      name: 'General Comic',
+      isComic: true,
+      isGeneral: true,
+      sourceId: generalComic.first.uid,
+      history:
+          ({required int page}) =>
+              ComicWatchPageGeneralMixin.getAllWatchHistory(page: page),
+      follow:
+          ({required int page}) =>
+              ComicFollowGeneralMixin.getAllListFollow(page: page),
+    );
+    final FNService generalEigaService = (
+      name: 'General Eiga',
+      isComic: false,
+      isGeneral: true,
+      sourceId: generalEiga.first.uid,
+      history:
+          ({required int page}) =>
+              EigaWatchTimeGeneralMixin.getAllWatchHistory(page: page),
+      follow:
+          ({required int page}) =>
+              EigaFollowGeneralMixin.getAllListFollow(page: page),
+    );
+
+    final List<FNService> normalService =
         sortLibraryService.value
             .map((id) {
-              final service = allNormalService[id];
-
-              return service;
+              return switch (id) {
+                == '\$\$comic\$\$' => generalComicService,
+                == '\$\$eiga\$\$' => generalEigaService,
+                _ =>
+                  allNormalService[id] != null
+                      ? _serviceToFNService(allNormalService[id]!)
+                      : null,
+              };
             })
-            .whereType<Service>()
+            .whereType<FNService>()
             .toList();
 
     for (final service in allNormalService.values) {
-      if (!normalService.contains(service)) normalService.add(service);
+      if (!sortLibraryService.value.contains(service.uid)) {
+        normalService.add(_serviceToFNService(service));
+      }
     }
 
-    return [
-      if (generalComic.isNotEmpty)
-        (
-          name: 'General Comic',
-          isComic: true,
-          isGeneral: true,
-          sourceId: generalComic.first.uid,
-          history:
-              ({required int page}) =>
-                  ComicWatchPageGeneralMixin.getAllWatchHistory(page: page),
-          follow:
-              ({required int page}) =>
-                  ComicFollowGeneralMixin.getAllListFollow(page: page),
-        ),
+    if (!normalService.contains(generalComicService)) {
+      normalService.insert(0, generalComicService);
+    }
+    if (!normalService.contains(generalEigaService)) {
+      normalService.insert(0, generalEigaService);
+    }
 
-      if (generalEiga.isNotEmpty)
-        (
-          name: 'General Eiga',
-          isComic: false,
-          isGeneral: true,
-          sourceId: generalEiga.first.uid,
-          history:
-              ({required int page}) =>
-                  EigaWatchTimeGeneralMixin.getAllWatchHistory(page: page),
-          follow:
-              ({required int page}) =>
-                  EigaFollowGeneralMixin.getAllListFollow(page: page),
-        ),
-      ...normalService.map(
-        (comic) =>
-            comic is ABComicService
-                ? (
-                  name: comic.name,
-                  isComic: true,
-                  isGeneral: false,
-                  sourceId: comic.uid,
-                  history: ({required int page}) {
-                    return comic.getWatchHistory(page: page);
-                  },
-                  follow: ({required int page}) {
-                    return comic.getFollows(page: page);
-                  },
-                )
-                : (
-                  name: comic.name,
-                  isComic: false,
-                  isGeneral: false,
-                  sourceId: comic.uid,
-                  history: ({required int page}) {
-                    return (comic as EigaWatchTimeMixin).getWatchHistory(
-                      page: page,
-                    );
-                  },
-                  follow: ({required int page}) {
-                    return (comic as EigaFollowMixin).getFollows(page: page);
-                  },
-                ),
-      ),
-    ];
+    return normalService;
   });
 
   @override
@@ -165,8 +174,33 @@ class _LibraryPageState extends State<LibraryPage>
                   context,
                   items:
                       _services.value
-                          .where((service) => !service.isGeneral)
-                          .map((service) => getService(service.sourceId))
+                          .map((service) {
+                            if (service.isGeneral) {
+                              return switch (service.isComic) {
+                                true => ServiceManagerItem(
+                                  uid: '\$\$comic\$\$',
+                                  name: 'General Comic',
+                                  baseUrl: '',
+                                  avatar: Iconify(Fluent.extension20),
+                                ),
+                                false => ServiceManagerItem(
+                                  uid: '\$\$eiga\$\$',
+                                  name: 'General Eiga',
+                                  baseUrl: '',
+                                  avatar: Iconify(Fluent.extension20),
+                                ),
+                              };
+                            }
+
+                            final serviceA = getService(service.sourceId);
+
+                            return ServiceManagerItem(
+                              uid: serviceA.uid,
+                              name: serviceA.name,
+                              baseUrl: serviceA.baseUrl,
+                              avatar: AvatarService(serviceA, radius: 10.0),
+                            );
+                          })
                           .toList(),
                   onDone: (newValue) {
                     sortLibraryService.value =

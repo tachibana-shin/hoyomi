@@ -7,12 +7,26 @@ import 'package:iconify_flutter/icons/ic.dart';
 
 import 'iconify.dart';
 
-void showServiceManagerDialog<T extends Service>(
+class ServiceManagerItem {
+  final String uid;
+  final String name;
+  final String baseUrl;
+  final Widget avatar;
+
+  const ServiceManagerItem({
+    required this.uid,
+    required this.name,
+    required this.baseUrl,
+    required this.avatar,
+  });
+}
+
+void showServiceManagerDialog(
   BuildContext context, {
-  required List<T> items,
-  required void Function(List<T> items) onDone,
+  required List<ServiceManagerItem> items,
+  required void Function(List<ServiceManagerItem> items) onDone,
 }) {
-  List<T> dialogItems = List.from(items);
+  List<ServiceManagerItem> dialogItems = List.from(items);
 
   showDialog(
     context: context,
@@ -39,7 +53,9 @@ void showServiceManagerDialog<T extends Service>(
                       key: ValueKey(dialogItems[i]),
                       index: i,
                       child: ListTile(
-                        leading: AvatarService(dialogItems[i], radius: 10.0),
+                        leading:
+                            dialogItems[i]
+                                .avatar, // AvatarService(dialogItems[i], radius: 10.0),
                         title: Text(dialogItems[i].name),
                         subtitle: Text(dialogItems[i].baseUrl),
                         trailing: const Iconify(
@@ -58,7 +74,12 @@ void showServiceManagerDialog<T extends Service>(
                 onPressed: () async {
                   // setState(() => items = dialogItems);
                   if (!listEquals(dialogItems, items)) {
-                    await initializeServices(dialogItems);
+                    await initializeServices(
+                      dialogItems
+                          .map((item) => getServiceOrNull(item.uid))
+                          .whereType<Service>()
+                          .toList(),
+                    );
                     onDone(dialogItems);
                   } else if (!dialogItems.indexed.every(
                     (entry) => entry.$2 == items[entry.$1],
