@@ -13,6 +13,10 @@ mixin SettingsMixin on BaseService {
     _stateReady = true;
 
     _serviceSettings = await ServiceSettingsController.instance.get(uid);
+    ServiceSettingsController.instance.watch(
+      uid,
+      (newData) => _serviceSettings = newData,
+    );
     _initSettings();
   }
 
