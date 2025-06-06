@@ -22,6 +22,16 @@ import 'package:speech_to_text_google_dialog/speech_to_text_google_dialog.dart';
 final Ref<String> globalKeyword = Ref('');
 final Ref<String?> serviceSelect = Ref(null);
 
+final Map<String, dynamic> _storeGoogleSuggestCache = {};
+final Map<String, dynamic> _storeServiceSearchCache = {};
+
+void main() {
+  watch$([globalKeyword], () {
+    _storeGoogleSuggestCache.remove(globalKeyword.value);
+    _storeServiceSearchCache.clear();
+  });
+}
+
 final _setKeyword =
     Debouncer(Duration(seconds: 1), (String keyword) {
       globalKeyword.value = keyword;
@@ -257,7 +267,10 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
       'https://suggestqueries.google.com/complete/search?client=chrome&q=$keyword',
     );
     return FutureBuilder(
-      future: response.then((response) => response.data[1]),
+      future:
+          _storeGoogleSuggestCache[keyword] ??= response.then(
+            (response) => response.data[1],
+          ),
       builder: (context, snapshot) {
         if (snapshot.hasError) return SizedBox.shrink();
 
@@ -328,12 +341,15 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
 
     if (service is ABComicService) {
       return FutureBuilder(
-        future: service.search(
-          keyword: keyword,
-          page: 1,
-          filters: {},
-          quick: true,
-        ),
+        future:
+            (_storeServiceSearchCache['$keyword@${service.uid}'] ??= service
+                    .search(
+                      keyword: keyword,
+                      page: 1,
+                      filters: {},
+                      quick: true,
+                    ))
+                as Future<ComicCategory>,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -379,12 +395,15 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
     }
     if (service is ABEigaService) {
       return FutureBuilder(
-        future: service.search(
-          keyword: keyword,
-          page: 1,
-          filters: {},
-          quick: true,
-        ),
+        future:
+            (_storeServiceSearchCache['$keyword@${service.uid}'] ??= service
+                    .search(
+                      keyword: keyword,
+                      page: 1,
+                      filters: {},
+                      quick: true,
+                    ))
+                as Future<EigaCategory>,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
