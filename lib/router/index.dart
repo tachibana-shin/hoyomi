@@ -40,7 +40,7 @@ final routes = [
     restorationScopeId: 'root',
     builder: (context, state, navigationShell) {
       // Decide immediately whether to show the toolbar.
-      final showToolbar = shouldShowToolbar(state.uri.toString());
+      final showToolbar = shouldShowToolbar(GoRouter.of(context).state.name);
       return PersistentScaffold(
         key: shellRouteKey,
         navigationShell: navigationShell,
@@ -353,27 +353,41 @@ void initializeRouter() {
 }
 
 /// 日本語のコメント: 現在のURIに基づいてボトムツールバーを表示するかどうかを判定する関数。
-bool shouldShowToolbar(String uriString) {
+bool shouldShowToolbar(String? name) {
   const mainRoutes = [
-    '/home_comic',
-    '/home_eiga',
-    '/search',
-    '/library',
-    '/manager',
+    'home_comic',
+
+    'home_eiga',
+
+    'search',
+
+    'library',
+    'history_comic',
+    'follow_comic',
+    'history_eiga',
+    'follow_eiga',
+    'downloader'
+
+    'manager',
   ];
 
-  for (final route in mainRoutes) {
-    if (uriString.startsWith(route) || uriString.startsWith('$route/')) {
-      if (route == '/search'
-          ? (Uri.parse(uriString).queryParameters['q']?.trim().isNotEmpty !=
-              true)
-          : true) {
-        return true;
-      }
-    }
-  }
+  return name != null && mainRoutes.contains(name);
 
-  return false;
+  // for (final route in mainRoutes) {
+  //   if (uriString.startsWith(route) || uriString.startsWith('$route/')) {
+  //     if (route.startsWith('/search') ? (route == '/search' || route.startsWith('/search?')) : false) return true;
+  //     return true;
+
+  //     // if (route == '/search'
+  //     //     ? (Uri.parse(uriString).queryParameters['q']?.trim().isNotEmpty !=
+  //     //         true)
+  //     //     : true) {
+  //     //   return true;
+  //     // }
+  //   }
+  // }
+
+  // return false;
 }
 
 class PersistentScaffold extends StatelessWidget {
