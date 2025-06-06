@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga_category.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/pages/category_eiga/%5BsourceId%5D/%5BcategoryId%5D.page.dart';
+import 'package:hoyomi/widgets/export.dart';
 
 class SearchEigaPage extends StatelessWidget {
   final String sourceId;
@@ -18,6 +19,10 @@ class SearchEigaPage extends StatelessWidget {
     return CategoryEigaPage(
       sourceId: sourceId,
       categoryId: keyword,
+      title: const GlobalSearchBar(
+        pageIsSearch: true,
+        showExtension: false,
+      ),
       getCategory: ({
         required filters,
         required page,

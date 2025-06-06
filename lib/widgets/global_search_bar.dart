@@ -192,8 +192,15 @@ class _QuickSearchItemState extends State<_QuickSearchItem> {
 
 class GlobalSearchBar extends StatefulWidget {
   final bool pageIsSearch;
+  final bool showExtension;
+  final bool applyPadding;
 
-  const GlobalSearchBar({super.key, required this.pageIsSearch});
+  const GlobalSearchBar({
+    super.key,
+    required this.pageIsSearch,
+    this.showExtension = true,
+    this.applyPadding = true,
+  });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -600,7 +607,8 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         duration: const Duration(milliseconds: 280),
         curve: Curves.easeInOutCubic,
         padding: EdgeInsets.symmetric(horizontal: focusing ? 0.0 : 8.0),
-        margin: EdgeInsets.symmetric(horizontal: 18.0),
+        margin:
+            widget.applyPadding ? EdgeInsets.symmetric(horizontal: 18.0) : null,
         decoration: BoxDecoration(
           color:
               focusing
@@ -609,6 +617,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
           borderRadius:
               focusing ? BorderRadius.zero : BorderRadius.circular(30.0),
         ),
+        clipBehavior: Clip.antiAlias,
         child: Row(
           children: [
             if (widget.pageIsSearch &&
@@ -620,12 +629,13 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                     () =>
                         context.canPop()
                             ? context.pop()
-                            : context.replace('/search'),
+                            : context.pushReplacement('/search'),
               ),
-            if (focusing ||
-                widget.pageIsSearch && globalKeyword.value.isNotEmpty)
+            if ((focusing ||
+                    widget.pageIsSearch && globalKeyword.value.isNotEmpty) &&
+                widget.showExtension)
               _buildServiceSelector()
-            else
+            else if (widget.showExtension)
               IconButton(
                 icon: Iconify(Mdi.magnify),
                 onPressed: () => _showSearchLayer(),
@@ -732,7 +742,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                         ),
               ),
             ),
-            if (!focusing) ..._buildButtonsMore(),
+            if (!focusing && widget.showExtension) ..._buildButtonsMore(),
           ],
         ),
       ),

@@ -15,6 +15,8 @@ import 'package:skeletonizer/skeletonizer.dart';
 class CategoryComicPage extends StatefulWidget {
   final String sourceId;
   final String categoryId;
+  final Widget? title;
+
   final Future<ComicCategory> Function({
     required String categoryId,
     required int page,
@@ -26,6 +28,7 @@ class CategoryComicPage extends StatefulWidget {
     super.key,
     required this.sourceId,
     required this.categoryId,
+    this.title,
     this.getCategory,
   });
 
@@ -104,35 +107,43 @@ class _CategoryComicPageState extends State<CategoryComicPage> with KaeruMixin {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       scrolledUnderElevation: 0.0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          context.pop();
-        },
-      ),
-      title: Watch(
-        () => Skeletonizer(
-          enabled: _title.value == null,
-          enableSwitchAnimation: true,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                _title.value ?? "Fake title",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      automaticallyImplyLeading: false,
+      leading:
+          widget.title == null
+              ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  context.pop();
+                },
+              )
+              : null,
+      flexibleSpace: SizedBox.shrink(),
+      titleSpacing: 0,
+      title:
+          widget.title ??
+          Watch(
+            () => Skeletonizer(
+              enabled: _title.value == null,
+              enableSwitchAnimation: true,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _title.value ?? "Fake title",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    "${_service.name} (${(_currentPage.value ?? '?')}/${_totalPages.value ?? '??'}) page",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 2),
-              Text(
-                "${_service.name} (${(_currentPage.value ?? '?')}/${_totalPages.value ?? '??'}) page",
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
       actions: [Watch(() => IconButtonOpenBrowser(url: _url.value))],
       // actions: [
       //   IconButton(

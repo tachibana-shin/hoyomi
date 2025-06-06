@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_category.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/pages/category_comic/%5BsourceId%5D/%5BcategoryId%5D.page.dart';
+import 'package:hoyomi/widgets/export.dart';
 
 class SearchComicPage extends StatelessWidget {
   final String sourceId;
@@ -18,6 +19,10 @@ class SearchComicPage extends StatelessWidget {
     return CategoryComicPage(
       sourceId: sourceId,
       categoryId: keyword,
+      title: const GlobalSearchBar(
+        pageIsSearch: true,
+        showExtension: false,
+      ),
       getCategory: ({
         required filters,
         required page,

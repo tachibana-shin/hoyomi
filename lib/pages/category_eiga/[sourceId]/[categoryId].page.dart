@@ -9,11 +9,14 @@ import 'package:hoyomi/core_services/eiga/main.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/ion.dart';
+import 'package:kaeru/kaeru.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class CategoryEigaPage extends StatefulWidget {
   final String sourceId;
   final String categoryId;
+  final Widget? title;
+
   final Future<EigaCategory> Function({
     required String categoryId,
     required int page,
@@ -25,6 +28,7 @@ class CategoryEigaPage extends StatefulWidget {
     super.key,
     required this.sourceId,
     required this.categoryId,
+    this.title,
     this.getCategory,
   });
 
@@ -32,16 +36,16 @@ class CategoryEigaPage extends StatefulWidget {
   createState() => _CategoryEigaPageState();
 }
 
-class _CategoryEigaPageState extends State<CategoryEigaPage> {
+class _CategoryEigaPageState extends State<CategoryEigaPage> with KaeruMixin {
   late final ABEigaService _service;
   int _pageKey = 2;
 
-  String? _title;
-  String? _url;
+  late final _title = ref<String?>(null);
+  late final _url = ref<String?>(null);
   // String? _description;
-  List<Filter>? _filters;
-  int? _currentPage;
-  int? _totalPages;
+  late final _filters = ref<List<Filter>?>(null);
+  late final _currentPage = ref<int?>(null);
+  late final _totalPages = ref<int?>(null);
 
   final Map<String, List<String>?> _selectFilters = {};
 
@@ -51,44 +55,48 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
     _service = getEigaService(widget.sourceId);
   }
 
-  Future<({bool isLastPage, List<Eiga> data})> _fetchComics(int pageKey) async {
-    final newComics = await (widget.getCategory ?? _service.getCategory)(
+  Future<({bool isLastPage, List<Eiga> data})> _fetchEigas(int pageKey) async {
+    final newEigas = await (widget.getCategory ?? _service.getCategory)(
       categoryId: widget.categoryId,
       page: pageKey,
       filters: _selectFilters,
     );
-    final isLastPage = newComics.page >= newComics.totalPages;
+    final isLastPage = newEigas.page >= newEigas.totalPages;
 
-    setState(() {
-      _title = newComics.name;
-      _url = newComics.url;
-      // _description = newComics.description;
-      _filters = newComics.filters;
-      _filters?.map((filter) {
-        _selectFilters[filter.key] = null;
-      });
-      _currentPage = pageKey;
-      _totalPages = newComics.totalPages;
+    _title.value = newEigas.name;
+    _url.value = newEigas.url;
+    // _description = newEigas.description;
+    _filters.value = newEigas.filters;
+    if (_filters.value?.isEmpty == true) _filters.value = null;
+
+    _filters.value?.map((filter) {
+      _selectFilters[filter.key] = null;
     });
+    _currentPage.value = pageKey;
+    _totalPages.value = newEigas.totalPages;
 
-    return (isLastPage: isLastPage, data: newComics.items.toList());
+    return (isLastPage: isLastPage, data: newEigas.items.toList());
   }
 
   @override
   Widget build(BuildContext context) {
     return PullRefreshPage(
-      onLoadData: () => _fetchComics(1),
+      onLoadData: () => _fetchEigas(1),
       onLoadFake:
           () => (
             data: List.generate(30, (_) => Eiga.createFakeData()),
             isLastPage: true,
           ),
       builderError:
-          (body) => Scaffold(appBar: _buildAppBar(() async {}), body: body),
+          (body) => Watch(
+            () => Scaffold(appBar: _buildAppBar(() async {}), body: body),
+          ),
       builder:
-          (data, param) => Scaffold(
-            appBar: _buildAppBar(param.refresh),
-            body: _buildBody(data),
+          (data, param) => Watch(
+            () => Scaffold(
+              appBar: _buildAppBar(param.refresh),
+              body: _buildBody(data),
+            ),
           ),
     );
   }
@@ -97,34 +105,44 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       scrolledUnderElevation: 0.0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          context.pop();
-        },
-      ),
-      title: Skeletonizer(
-        enabled: _title == null || _title!.isEmpty,
-        enableSwitchAnimation: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              _title ?? "Fake title",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 2),
-            Text(
-              "${_service.name} (${(_currentPage ?? '?')}/${_totalPages ?? '??'}) page",
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).colorScheme.secondary,
+      automaticallyImplyLeading: false,
+      leading:
+          widget.title == null
+              ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  context.pop();
+                },
+              )
+              : null,
+      flexibleSpace: SizedBox.shrink(),
+      titleSpacing: 0,
+      title:
+          widget.title ??
+          Watch(
+            () => Skeletonizer(
+              enabled: _title.value == null,
+              enableSwitchAnimation: true,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _title.value ?? "Fake title",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    "${_service.name} (${(_currentPage.value ?? '?')}/${_totalPages.value ?? '??'}) page",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-      actions: [if (_url != null) IconButtonOpenBrowser(url: _url!)],
+          ),
+      actions: [Watch(() => IconButtonOpenBrowser(url: _url.value))],
       // actions: [
       //   IconButton(
       //       onPressed: () {},
@@ -132,7 +150,7 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
       //           color: Theme.of(context).colorScheme.onSurface)),
       // ],
       bottom:
-          _filters == null
+          _filters.value == null
               ? null
               : PreferredSize(
                 preferredSize: Size.fromHeight(48.0),
@@ -145,7 +163,7 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children:
-                          _filters!.map((filter) {
+                          _filters.value!.map((filter) {
                             final options = filter.options;
 
                             return Padding(
@@ -272,7 +290,7 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> {
         crossAxisSpacing: 4.0,
         mainAxisSpacing: 4.0,
         fetchData: () async {
-          final result = await _fetchComics(_pageKey);
+          final result = await _fetchEigas(_pageKey);
           if (!result.isLastPage) {
             _pageKey++;
           }
