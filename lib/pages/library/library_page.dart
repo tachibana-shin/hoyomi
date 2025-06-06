@@ -173,35 +173,33 @@ class _LibraryPageState extends State<LibraryPage>
                 showServiceManagerDialog(
                   context,
                   items:
-                      _services.value
-                          .map((service) {
-                            if (service.isGeneral) {
-                              return switch (service.isComic) {
-                                true => ServiceManagerItem(
-                                  uid: '\$\$comic\$\$',
-                                  name: 'General Comic',
-                                  baseUrl: '',
-                                  avatar: Iconify(Fluent.extension20),
-                                ),
-                                false => ServiceManagerItem(
-                                  uid: '\$\$eiga\$\$',
-                                  name: 'General Eiga',
-                                  baseUrl: '',
-                                  avatar: Iconify(Fluent.extension20),
-                                ),
-                              };
-                            }
+                      _services.value.map((service) {
+                        if (service.isGeneral) {
+                          return switch (service.isComic) {
+                            true => ServiceManagerItem(
+                              uid: '\$\$comic\$\$',
+                              name: 'General Comic',
+                              baseUrl: '',
+                              avatar: Iconify(Fluent.extension20),
+                            ),
+                            false => ServiceManagerItem(
+                              uid: '\$\$eiga\$\$',
+                              name: 'General Eiga',
+                              baseUrl: '',
+                              avatar: Iconify(Fluent.extension20),
+                            ),
+                          };
+                        }
 
-                            final serviceA = getService(service.sourceId);
+                        final serviceA = getService(service.sourceId);
 
-                            return ServiceManagerItem(
-                              uid: serviceA.uid,
-                              name: serviceA.name,
-                              baseUrl: serviceA.baseUrl,
-                              avatar: AvatarService(serviceA, radius: 10.0),
-                            );
-                          })
-                          .toList(),
+                        return ServiceManagerItem(
+                          uid: serviceA.uid,
+                          name: serviceA.name,
+                          baseUrl: serviceA.baseUrl,
+                          avatar: AvatarService(serviceA, radius: 10.0),
+                        );
+                      }).toList(),
                   onDone: (newValue) {
                     sortLibraryService.value =
                         newValue.map((item) => item.uid).toList();
