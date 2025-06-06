@@ -28,13 +28,15 @@ class _SearchPageState extends State<SearchPage>
   void initState() {
     super.initState();
     _tabController = TabController(
-      initialIndex: widget.from == 'eiga' ? 1 : 0,
+      initialIndex:
+          (_newsChoice.value = (widget.from == 'eiga' ? 1 : 0) + 1) - 1,
       length: 2,
       vsync: this,
     )..addListener(() {
       context.replace(
         '/search?q=${globalKeyword.value}&from=${_tabController.index == 0 ? 'comic' : 'eiga'}',
       );
+      _newsChoice.value = _tabController.index + 1;
     });
   }
 
@@ -63,15 +65,21 @@ class _SearchPageState extends State<SearchPage>
               Watch(
                 () => Choice<int>.inline(
                   value: ChoiceSingle.value(_newsChoice.value),
-                  onChanged: ChoiceSingle.onChanged(
-                    (value) => _newsChoice.value = value!,
-                  ),
+                  onChanged: ChoiceSingle.onChanged((value) {
+                    _newsChoice.value = value!;
+                    if (_newsChoice.value >= 1) {
+                      _tabController.animateTo(_newsChoice.value - 1);
+                    }
+                  }),
                   itemCount: _newsChoices.length,
                   itemBuilder: (state, i) {
-                    return ChoiceChip(
-                      selected: state.selected(i),
-                      onSelected: state.onSelected(i),
-                      label: Text(_newsChoices[i]),
+                    return Disabled(
+                      disabled: i == 0 && globalKeyword.value.trim().isNotEmpty,
+                      child: ChoiceChip(
+                        selected: state.selected(i),
+                        onSelected: state.onSelected(i),
+                        label: Text(_newsChoices[i]),
+                      ),
                     );
                   },
                   listBuilder: ChoiceList.createScrollable(
@@ -91,13 +99,15 @@ class _SearchPageState extends State<SearchPage>
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          if (globalKeyword.value.trim().isNotEmpty)
-            _buildBodySearch(context)
-          else
-            _buildBodyGetStarting(context),
-        ],
+      body: Watch(
+        () => Stack(
+          children: [
+            if (globalKeyword.value.trim().isNotEmpty)
+              _buildBodySearch(context)
+            else
+              _buildBodyGetStarting(context),
+          ],
+        ),
       ),
     );
   }
