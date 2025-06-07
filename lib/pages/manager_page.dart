@@ -12,6 +12,7 @@ import 'package:hoyomi/constraints/x_platform.dart';
 
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/utils/authentication.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/ic.dart';
@@ -277,7 +278,7 @@ class ManagerPage extends StatelessWidget {
           ),
 
           /// icon search
-          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.search), onPressed: () => goBranch(context, 'search')),
 
           /// icon settings
           IconButton(
