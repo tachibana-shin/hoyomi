@@ -5,7 +5,7 @@ import 'package:hoyomi/router/index.dart';
 class HorizontalList<T> extends StatelessWidget {
   final String title;
   final String? subtitle;
-  final ToRouter? more;
+  final ToRoute? more;
   final Widget Function(BuildContext, T, int) builder;
   final List<T>? items;
   final Widget? child;
@@ -31,7 +31,7 @@ class HorizontalList<T> extends StatelessWidget {
     BuildContext context, {
     required String title,
     required String? subtitle,
-    required ToRouter? more,
+    required ToRoute? more,
     required int titleLength,
     required bool itemSubtitle,
     required bool itemTimeAgo,
@@ -60,7 +60,7 @@ class HorizontalList<T> extends StatelessWidget {
                 onPressed: () {
                   if (more.name == '/search') goBranch(context, 'search');
 
-                  context.pushRouter(more);
+                  context.pushRoute(more);
                 },
                 child: Text('More'),
               )

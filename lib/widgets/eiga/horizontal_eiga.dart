@@ -19,7 +19,7 @@ class HorizontalEiga extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CardHorzItem(
-      to: ToRouter(
+      to: ToRoute(
         name: 'details_eiga',
         pathParameters: {'sourceId': sourceId, 'eigaId': eiga.eigaId},
       ),

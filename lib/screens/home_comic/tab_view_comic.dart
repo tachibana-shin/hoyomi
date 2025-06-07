@@ -58,7 +58,7 @@ class _TabViewComicState extends State<TabViewComic>
                 title: category.name,
                 more:
                     category.categoryId != null
-                        ? ToRouter(
+                        ? ToRoute(
                           name: 'category_comic',
                           pathParameters: {
                             'sourceId': widget.service.uid,

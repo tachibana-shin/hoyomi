@@ -58,7 +58,7 @@ class _TabViewEigaState extends State<TabViewEiga>
                 title: category.name,
                 more:
                     category.categoryId != null
-                        ? ToRouter(
+                        ? ToRoute(
                           name: 'category_eiga',
                           pathParameters: {
                             'sourceId': widget.service.uid,

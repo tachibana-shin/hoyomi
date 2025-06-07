@@ -19,7 +19,7 @@ class HorizontalEigaList extends StatelessWidget {
   final Future<List<EigaExtend>> itemsFuture;
   final String title;
   final String? subtitle;
-  final ToRouter? more;
+  final ToRoute? more;
 
   const HorizontalEigaList({
     super.key,

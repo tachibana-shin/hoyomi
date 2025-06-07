@@ -57,7 +57,7 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
             itemsFuture: itemsFuture,
             title: service.name,
             subtitle: subtitle,
-            more: ToRouter(
+            more: ToRoute(
               name: 'search_eiga',
               pathParameters: {'sourceId': service.uid},
               queryParameters: {'q': widget.keyword},

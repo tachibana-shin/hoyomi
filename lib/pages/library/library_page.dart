@@ -271,7 +271,7 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
                 more:
                     !widget.source.isGeneral
                         ? null
-                        : ToRouter(
+                        : ToRoute(
                           name: 'history_comic',
                           pathParameters: {'sourceId': 'general'},
                         ),
@@ -284,7 +284,7 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
                 more:
                     !widget.source.isGeneral
                         ? null
-                        : ToRouter(
+                        : ToRoute(
                           name: 'follow_comic',
                           pathParameters: {'sourceId': 'general'},
                         ),
@@ -307,7 +307,7 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
                 more:
                     !widget.source.isGeneral
                         ? null
-                        : ToRouter(
+                        : ToRoute(
                           name: 'follow_eiga',
                           pathParameters: {'sourceId': 'general'},
                         ),

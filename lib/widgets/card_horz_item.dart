@@ -9,7 +9,7 @@ import 'package:iconify_flutter/icons/eva.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
 class CardHorzItem extends StatelessWidget {
-  final ToRouter to;
+  final ToRoute to;
   final bool replace;
 
   final String sourceId;
@@ -240,9 +240,9 @@ class CardHorzItem extends StatelessWidget {
       borderRadius: BorderRadius.circular(8.0),
       onTap: () {
         if (replace) {
-          context.replaceRouter(to);
+          context.replaceRoute(to);
         } else {
-          context.pushRouter(to);
+          context.pushRoute(to);
         }
       },
       child: content,

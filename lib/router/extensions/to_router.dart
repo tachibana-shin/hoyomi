@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ToRouter {
+class ToRoute {
   final String name;
   final Map<String, String> pathParameters;
   final Map<String, String> queryParameters;
 
-  const ToRouter({
+  const ToRoute({
     required this.name,
     this.pathParameters = const <String, String>{},
     this.queryParameters = const <String, String>{},
@@ -14,7 +14,7 @@ class ToRouter {
 }
 
 extension ToRouterExtension on BuildContext {
-  pushRouter(ToRouter to) {
+  pushRoute(ToRoute to) {
     GoRouter.of(this).pushNamed(
       to.name,
       pathParameters: to.pathParameters,
@@ -22,7 +22,7 @@ extension ToRouterExtension on BuildContext {
     );
   }
 
-  goRouter(ToRouter to) {
+  goRoute(ToRoute to) {
     GoRouter.of(this).goNamed(
       to.name,
       pathParameters: to.pathParameters,
@@ -30,7 +30,7 @@ extension ToRouterExtension on BuildContext {
     );
   }
 
-  replaceRouter(ToRouter to) {
+  replaceRoute(ToRoute to) {
     GoRouter.of(this).replaceNamed(
       to.name,
       pathParameters: to.pathParameters,

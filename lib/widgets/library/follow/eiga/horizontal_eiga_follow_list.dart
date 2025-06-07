@@ -9,7 +9,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 class HorizontalEigaFollowList extends StatefulWidget {
   final String sourceId;
-  final ToRouter? more;
+  final ToRoute? more;
   final Future<Paginate<EigaFollow>> Function({required int page}) fn;
 
   const HorizontalEigaFollowList({
@@ -44,7 +44,7 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
         final subtitle = null;
         final more =
             widget.more ??
-            ToRouter(
+            ToRoute(
               name: 'follow_eiga',
               pathParameters: {'sourceId': widget.sourceId},
             );

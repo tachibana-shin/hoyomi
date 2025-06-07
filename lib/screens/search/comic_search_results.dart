@@ -56,7 +56,7 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
             itemsFuture: itemsFuture,
             title: service.name,
             subtitle: subtitle,
-            more: ToRouter(
+            more: ToRoute(
               name: 'search_comic',
               pathParameters: {'sourceId': service.uid},
               queryParameters: {'q': widget.keyword},

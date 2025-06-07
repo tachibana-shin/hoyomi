@@ -12,7 +12,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 class HorizontalComicHistoryList extends StatefulWidget {
   final String sourceId;
-  final ToRouter? more;
+  final ToRoute? more;
   final bool isGeneral;
   final Future<List<types.ComicHistory>> Function({required int page}) fn;
 
@@ -46,7 +46,7 @@ class _HorizontalComicHistoryState extends State<HorizontalComicHistoryList> {
         final title = 'History';
         final more =
             widget.more ??
-            ToRouter(
+            ToRoute(
               name: 'history_comic',
               pathParameters: {'sourceId': widget.sourceId},
             );

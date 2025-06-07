@@ -19,7 +19,7 @@ class HorizontalComic extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CardHorzItem(
-      to: ToRouter(
+      to: ToRoute(
         name: 'details_comic',
         pathParameters: {'sourceId': sourceId, 'comicId': comic.comicId},
       ),

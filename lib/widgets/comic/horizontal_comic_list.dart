@@ -19,7 +19,7 @@ class HorizontalComicList extends StatelessWidget {
   final Future<List<ComicExtend>> itemsFuture;
   final String title;
   final String? subtitle;
-  final ToRouter? more;
+  final ToRoute? more;
 
   const HorizontalComicList({
     super.key,
