@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:hoyomi/router/extensions/to_router.dart';
+import 'package:hoyomi/router/index.dart';
 
 class HorizontalList<T> extends StatelessWidget {
   final String title;
   final String? subtitle;
-  final String? more;
+  final ToRouter? more;
   final Widget Function(BuildContext, T, int) builder;
   final List<T>? items;
   final Widget? child;
@@ -30,7 +31,7 @@ class HorizontalList<T> extends StatelessWidget {
     BuildContext context, {
     required String title,
     required String? subtitle,
-    required String? more,
+    required ToRouter? more,
     required int titleLength,
     required bool itemSubtitle,
     required bool itemTimeAgo,
@@ -56,7 +57,11 @@ class HorizontalList<T> extends StatelessWidget {
       trailing:
           more != null
               ? ElevatedButton(
-                onPressed: () => context.push(more),
+                onPressed: () {
+                  if (more.name == '/search') goBranch(context, 'search');
+
+                  context.pushRouter(more);
+                },
                 child: Text('More'),
               )
               : null,

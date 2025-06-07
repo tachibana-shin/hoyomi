@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hoyomi/core_services/eiga/main.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/router/extensions/to_router.dart';
 import 'package:hoyomi/utils/export.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class HorizontalEigaFollowList extends StatefulWidget {
   final String sourceId;
-  final String? more;
+  final ToRouter? more;
   final Future<Paginate<EigaFollow>> Function({required int page}) fn;
 
   const HorizontalEigaFollowList({
@@ -41,7 +42,12 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
       builder: (context, snapshot) {
         final title = 'Follow';
         final subtitle = null;
-        final more = widget.more ?? '/library/follow/eiga/${widget.sourceId}';
+        final more =
+            widget.more ??
+            ToRouter(
+              name: 'follow_eiga',
+              pathParameters: {'sourceId': widget.sourceId},
+            );
 
         if (snapshot.hasError) {
           return HorizontalList.buildContainer(

@@ -5,6 +5,7 @@ import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/eiga/main.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/export.dart';
+import 'package:hoyomi/router/extensions/to_router.dart';
 import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/ion.dart';
@@ -270,7 +271,10 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
                 more:
                     !widget.source.isGeneral
                         ? null
-                        : '/library/history/comic/general',
+                        : ToRouter(
+                          name: 'history_comic',
+                          pathParameters: {'sourceId': 'general'},
+                        ),
                 fn: widget.source.history as dynamic,
                 isGeneral: widget.source.isGeneral,
               ),
@@ -280,7 +284,10 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
                 more:
                     !widget.source.isGeneral
                         ? null
-                        : '/library/follow/comic/general',
+                        : ToRouter(
+                          name: 'follow_comic',
+                          pathParameters: {'sourceId': 'general'},
+                        ),
                 fn: widget.source.follow as dynamic,
                 isGeneral: widget.source.isGeneral,
               ),
@@ -300,7 +307,10 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
                 more:
                     !widget.source.isGeneral
                         ? null
-                        : '/library/follow/eiga/general',
+                        : ToRouter(
+                          name: 'follow_eiga',
+                          pathParameters: {'sourceId': 'general'},
+                        ),
                 fn: widget.source.follow as dynamic,
               ),
           ],

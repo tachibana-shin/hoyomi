@@ -17,13 +17,12 @@ import '../pages/export.dart';
 
 final shellRouteKey = GlobalKey<State<StatefulWidget>>();
 
-final List<String> routeIgnoreLayoutDefault = [
-  '/details_comic',
-  '/details_eiga',
-  '/webview',
-  '/search?q=',
-  '/category_comic',
-  '/category_eiga',
+const branches = [
+  '/home_comic',
+  '/home_eiga',
+  '/search',
+  '/library',
+  '/manager',
 ];
 
 /// 日本語のコメント: ルートナビゲーターのためのグローバルキー。
@@ -367,8 +366,7 @@ bool shouldShowToolbar(String? name) {
     'history_eiga',
     'follow_eiga',
     'downloader'
-
-    'manager',
+        'manager',
   ];
 
   return name != null && mainRoutes.contains(name);
@@ -390,17 +388,16 @@ bool shouldShowToolbar(String? name) {
   // return false;
 }
 
+void goBranch(BuildContext context, String name) {
+  final router = StatefulNavigationShell.of(context);
+  final index = branches.indexOf('/$name') >>> 0;
+
+  router.goBranch(index, initialLocation: index == router.currentIndex);
+}
+
 class PersistentScaffold extends StatelessWidget {
   static final tabComic = Ref<String?>(null);
   static final tabEiga = Ref<String?>(null);
-
-  static const branches = [
-    '/home_comic',
-    '/home_eiga',
-    '/search',
-    '/library',
-    '/manager',
-  ];
 
   final StatefulNavigationShell navigationShell;
   final bool showToolbar;

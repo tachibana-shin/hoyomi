@@ -4,6 +4,7 @@ import 'package:hoyomi/core_services/comic/interfaces/comic_history.dart'
     as types;
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/router/extensions/to_router.dart';
 import 'package:hoyomi/utils/format_watch_update_at.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
@@ -11,7 +12,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 class HorizontalComicHistoryList extends StatefulWidget {
   final String sourceId;
-  final String? more;
+  final ToRouter? more;
   final bool isGeneral;
   final Future<List<types.ComicHistory>> Function({required int page}) fn;
 
@@ -43,7 +44,12 @@ class _HorizontalComicHistoryState extends State<HorizontalComicHistoryList> {
       future: _historyFuture,
       builder: (context, snapshot) {
         final title = 'History';
-        final more = widget.more ?? '/library/history/comic/${widget.sourceId}';
+        final more =
+            widget.more ??
+            ToRouter(
+              name: 'history_comic',
+              pathParameters: {'sourceId': widget.sourceId},
+            );
 
         if (snapshot.hasError) {
           return HorizontalList.buildContainer(

@@ -3,13 +3,14 @@ import 'package:get/get.dart';
 import 'package:hoyomi/core_services/comic/main.dart' as types;
 import 'package:hoyomi/core_services/comic/main.dart' hide ComicFollow;
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/router/extensions/to_router.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class HorizontalComicFollowList extends StatefulWidget {
   final String sourceId;
-  final String? more;
+  final ToRouter? more;
   final bool isGeneral;
   final Future<Paginate<types.ComicFollow>> Function({required int page}) fn;
 
@@ -44,7 +45,12 @@ class _HorizontalComicHistoryState extends State<HorizontalComicFollowList> {
       builder: (context, snapshot) {
         final title = 'Follow';
         final subtitle = null;
-        final more = widget.more ?? '/library/follow/comic/${widget.sourceId}';
+        final more =
+            widget.more ??
+            ToRouter(
+              name: 'follow_comic',
+              pathParameters: {'sourceId': widget.sourceId},
+            );
 
         if (snapshot.hasError) {
           return HorizontalList.buildContainer(

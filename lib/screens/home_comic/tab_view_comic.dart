@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
+import 'package:hoyomi/router/extensions/to_router.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 
@@ -57,7 +58,13 @@ class _TabViewComicState extends State<TabViewComic>
                 title: category.name,
                 more:
                     category.categoryId != null
-                        ? '/category_comic/${widget.service.uid}/${category.categoryId}'
+                        ? ToRouter(
+                          name: 'category_comic',
+                          pathParameters: {
+                            'sourceId': widget.service.uid,
+                            'categoryId': category.categoryId!,
+                          },
+                        )
                         : null,
               );
             }

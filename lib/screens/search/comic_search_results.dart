@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/router/extensions/to_router.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:kaeru/kaeru.dart';
 
@@ -55,7 +56,11 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
             itemsFuture: itemsFuture,
             title: service.name,
             subtitle: subtitle,
-            more: '/search/comic/${service.uid}?q=${widget.keyword}',
+            more: ToRouter(
+              name: 'search_comic',
+              pathParameters: {'sourceId': service.uid},
+              queryParameters: {'q': widget.keyword},
+            ),
           ),
         );
       },

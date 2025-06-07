@@ -291,7 +291,6 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                                   queryParameters: {'q': globalKeyword.value},
                                 );
                               } else {
-                                print('ok');
                                 context.pushNamed(
                                   'search_eiga',
                                   pathParameters: {
@@ -625,11 +624,12 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                 globalKeyword.value.isNotEmpty)
               IconButton(
                 icon: Iconify(Mdi.arrow_back),
-                onPressed:
-                    () =>
-                        context.canPop()
-                            ? context.pop()
-                            : context.pushReplacement('/search'),
+                onPressed: () {
+                  if (context.canPop()) return context.pop();
+
+                  goBranch(context, 'search');
+                  context.pushReplacement('/search');
+                },
               ),
             if ((focusing ||
                     widget.pageIsSearch && globalKeyword.value.isNotEmpty) &&
@@ -752,6 +752,8 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
   void _onSubmitted(String value) {
     globalKeyword.value = value;
     _closeSearchLayer();
+
+    goBranch(context, 'search');
 
     final route = GoRouter.of(context).state;
     if (route.pathParameters['from'] != null) {

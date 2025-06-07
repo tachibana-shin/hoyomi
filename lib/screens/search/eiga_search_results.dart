@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/router/extensions/to_router.dart';
 import 'package:hoyomi/widgets/eiga/horizontal_eiga_list.dart';
 import 'package:hoyomi/widgets/pull_refresh_page.dart';
 import 'package:kaeru/kaeru.dart';
@@ -56,7 +57,11 @@ class _EigaSearchResultsState extends State<EigaSearchResults>
             itemsFuture: itemsFuture,
             title: service.name,
             subtitle: subtitle,
-            more: '/search/eiga/${service.uid}?q=${widget.keyword}',
+            more: ToRouter(
+              name: 'search_eiga',
+              pathParameters: {'sourceId': service.uid},
+              queryParameters: {'q': widget.keyword},
+            ),
           ),
         );
       },
