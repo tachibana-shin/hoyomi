@@ -19,10 +19,7 @@ class SearchComicPage extends StatelessWidget {
     return CategoryComicPage(
       sourceId: sourceId,
       categoryId: keyword,
-      title: const GlobalSearchBar(
-        pageIsSearch: true,
-        showExtension: false,
-      ),
+      title: const GlobalSearchBar(pageIsSearch: true, showExtension: false),
       getCategory: ({
         required filters,
         required page,

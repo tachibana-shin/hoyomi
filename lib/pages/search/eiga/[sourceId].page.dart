@@ -19,10 +19,7 @@ class SearchEigaPage extends StatelessWidget {
     return CategoryEigaPage(
       sourceId: sourceId,
       categoryId: keyword,
-      title: const GlobalSearchBar(
-        pageIsSearch: true,
-        showExtension: false,
-      ),
+      title: const GlobalSearchBar(pageIsSearch: true, showExtension: false),
       getCategory: ({
         required filters,
         required page,

@@ -361,7 +361,8 @@ bool shouldShowToolbar(String? name) {
     'downloader',
   ];
 
-  return name != null && (mainRoutes.contains(name) || branches.contains('/$name'));
+  return name != null &&
+      (mainRoutes.contains(name) || branches.contains('/$name'));
 
   // for (final route in mainRoutes) {
   //   if (uriString.startsWith(route) || uriString.startsWith('$route/')) {

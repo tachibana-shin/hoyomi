@@ -278,7 +278,10 @@ class ManagerPage extends StatelessWidget {
           ),
 
           /// icon search
-          IconButton(icon: const Icon(Icons.search), onPressed: () => goBranch(context, 'search')),
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () => goBranch(context, 'search'),
+          ),
 
           /// icon settings
           IconButton(
