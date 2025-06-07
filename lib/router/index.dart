@@ -354,22 +354,14 @@ void initializeRouter() {
 /// 日本語のコメント: 現在のURIに基づいてボトムツールバーを表示するかどうかを判定する関数。
 bool shouldShowToolbar(String? name) {
   const mainRoutes = [
-    'home_comic',
-
-    'home_eiga',
-
-    'search',
-
-    'library',
     'history_comic',
     'follow_comic',
     'history_eiga',
     'follow_eiga',
-    'downloader'
-        'manager',
+    'downloader',
   ];
 
-  return name != null && mainRoutes.contains(name);
+  return name != null && (mainRoutes.contains(name) || branches.contains('/$name'));
 
   // for (final route in mainRoutes) {
   //   if (uriString.startsWith(route) || uriString.startsWith('$route/')) {

@@ -120,7 +120,7 @@ class AnimeVietsubService extends ABEigaService
         .attr('src')
         .replaceFirst(
           RegExp(r'animevietsub\.\w+\/'),
-          '${baseUrl.split('://')[1]}',
+          '${baseUrl.split('://')[1]}/',
         );
 
     final name = $('.profile-usertitle-name', single: true).text();
