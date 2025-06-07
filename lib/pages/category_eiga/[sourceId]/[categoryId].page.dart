@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
@@ -153,126 +154,150 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> with KaeruMixin {
           _filters.value == null
               ? null
               : PreferredSize(
-                preferredSize: Size.fromHeight(48.0),
+                preferredSize: Size.fromHeight(
+                  48.0 + (widget.title != null ? (14.0 * 1.5 + 3.0) : 0),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 10.0,
                     horizontal: 8.0,
                   ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children:
-                          _filters.value!.map((filter) {
-                            final options = filter.options;
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (widget.title != null) ...[
+                        Watch(
+                          () => Text(
+                            'Results (${(_currentPage.value ?? '?')}/${_totalPages.value ?? '??'}) page',
+                          ).fontSize(14),
+                        ),
+                        3.heightBox,
+                      ],
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children:
+                              _filters.value!.map((filter) {
+                                final options = filter.options;
 
-                            return Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: InkWell(
-                                onTap: () {
-                                  DropDownState(
-                                    dropDown: DropDown(
-                                      bottomSheetTitle: Text(
-                                        filter.name,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20.0,
-                                        ),
-                                      ),
-                                      searchHintText: filter.name,
-                                      submitButtonChild: const Text(
-                                        'Done',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      listItemBuilder:
-                                          (index, selected) =>
-                                              Text(selected.data.name),
-                                      data:
-                                          options
-                                              .map(
-                                                (option) => SelectedListItem(
-                                                  data: option,
-                                                  isSelected:
-                                                      _selectFilters[filter.key]
-                                                          ?.contains(
-                                                            option.value,
-                                                          ) ??
-                                                      option.selected,
-                                                ),
-                                              )
-                                              .toList(),
-                                      onSelected: (selectedList) {
-                                        _selectFilters[filter.key] =
-                                            selectedList
-                                                .map(
-                                                  (option) => option.data.value,
-                                                )
-                                                .toList();
-                                        _pageKey = 1;
-
-                                        refresh();
-                                      },
-                                      enableMultipleSelection: filter.multiple,
-                                    ),
-                                  ).showModal(context);
-                                },
-                                child: ClipRRect(
-                                  clipBehavior: Clip.antiAlias,
-                                  child: Chip(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 8.0,
-                                      vertical: 4.0,
-                                    ),
-                                    backgroundColor: Colors.transparent,
-                                    label: Row(
-                                      children: [
-                                        Text(
-                                          _selectFilters.containsKey(filter.key)
-                                              ? _selectFilters[filter.key]!
-                                                  .map(
-                                                    (value) =>
-                                                        options
-                                                            .firstWhere(
-                                                              (option) =>
-                                                                  option
-                                                                      .value ==
-                                                                  value,
-                                                            )
-                                                            .name,
-                                                  )
-                                                  .join(', ')
-                                              : filter.name,
-                                          style: TextStyle(
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.onSurface.withValues(
-                                              alpha:
-                                                  _selectFilters.containsKey(
-                                                        filter.key,
-                                                      )
-                                                      ? 1.0
-                                                      : 0.8,
+                                return Padding(
+                                  padding: EdgeInsets.only(right: 8.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      DropDownState(
+                                        dropDown: DropDown(
+                                          bottomSheetTitle: Text(
+                                            filter.name,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0,
                                             ),
                                           ),
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.only(
-                                            left: 7.0,
-                                            right: 0.0,
+                                          searchHintText: filter.name,
+                                          submitButtonChild: const Text(
+                                            'Done',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                          child: Iconify(Ion.chevron_down),
+                                          listItemBuilder:
+                                              (index, selected) =>
+                                                  Text(selected.data.name),
+                                          data:
+                                              options
+                                                  .map(
+                                                    (
+                                                      option,
+                                                    ) => SelectedListItem(
+                                                      data: option,
+                                                      isSelected:
+                                                          _selectFilters[filter
+                                                                  .key]
+                                                              ?.contains(
+                                                                option.value,
+                                                              ) ??
+                                                          option.selected,
+                                                    ),
+                                                  )
+                                                  .toList(),
+                                          onSelected: (selectedList) {
+                                            _selectFilters[filter.key] =
+                                                selectedList
+                                                    .map(
+                                                      (option) =>
+                                                          option.data.value,
+                                                    )
+                                                    .toList();
+                                            _pageKey = 1;
+
+                                            refresh();
+                                          },
+                                          enableMultipleSelection:
+                                              filter.multiple,
                                         ),
-                                      ],
+                                      ).showModal(context);
+                                    },
+                                    child: ClipRRect(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Chip(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 8.0,
+                                          vertical: 4.0,
+                                        ),
+                                        backgroundColor: Colors.transparent,
+                                        label: Row(
+                                          children: [
+                                            Text(
+                                              _selectFilters.containsKey(
+                                                    filter.key,
+                                                  )
+                                                  ? _selectFilters[filter.key]!
+                                                      .map(
+                                                        (value) =>
+                                                            options
+                                                                .firstWhere(
+                                                                  (option) =>
+                                                                      option
+                                                                          .value ==
+                                                                      value,
+                                                                )
+                                                                .name,
+                                                      )
+                                                      .join(', ')
+                                                  : filter.name,
+                                              style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface
+                                                    .withValues(
+                                                      alpha:
+                                                          _selectFilters
+                                                                  .containsKey(
+                                                                    filter.key,
+                                                                  )
+                                                              ? 1.0
+                                                              : 0.8,
+                                                    ),
+                                              ),
+                                            ),
+                                            const Padding(
+                                              padding: EdgeInsets.only(
+                                                left: 7.0,
+                                                right: 0.0,
+                                              ),
+                                              child: Iconify(Ion.chevron_down),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                    ),
+                                );
+                              }).toList(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
