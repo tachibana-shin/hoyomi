@@ -473,7 +473,7 @@ class AnimeVietsubService extends ABEigaService
 
     return Genre(
       name: item.text(),
-      genreId: href.replaceAll(r'^\/|\/$', '').replaceAll('', '_'),
+      genreId: href.replaceAll(r'^\/|\/$', '').replaceAll('/', '_'),
     );
   }
 
@@ -855,7 +855,7 @@ class AnimeVietsubService extends ABEigaService
   @override
   search({required keyword, required page, required filters, required quick}) {
     return getCategory(
-      categoryId: 'tim-kiem/$keyword/',
+      categoryId: 'tim-kiem_$keyword/',
       page: page,
       filters: filters,
     );
