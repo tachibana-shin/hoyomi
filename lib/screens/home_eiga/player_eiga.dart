@@ -27,10 +27,12 @@ import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart' as type;
 import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'widget/subtitle_settings_sheet.dart';
 import 'widget/animated_icon_forward.dart';
@@ -61,6 +63,7 @@ class PlayerEiga extends StatefulWidget {
 
   final Computed<String> title;
   final Computed<String> subtitle;
+  final Computed<String?> trailerUrl;
 
   final double aspectRatio;
 
@@ -87,6 +90,7 @@ class PlayerEiga extends StatefulWidget {
     required this.fullscreen,
     required this.title,
     required this.subtitle,
+    required this.trailerUrl,
     required this.aspectRatio,
     required this.onTapPlaylist,
     required this.onNext,
@@ -138,6 +142,13 @@ class _PlayerEigaState extends State<PlayerEiga>
   //   }
 
   /// Like <video>
+  late final _trailerAvailable = computed(
+    () =>
+        widget.episode.value?.episodeId == EigaEpisode.trailerId &&
+        widget.trailerUrl.value != null,
+  );
+
+  ///
   late final _controllerId = ref<String?>(null);
   late final _controller = ref<VideoPlayerController?>(null);
 
@@ -268,6 +279,8 @@ class _PlayerEigaState extends State<PlayerEiga>
           return null;
         }
 
+        if (episode.episodeId == EigaEpisode.trailerId) return null;
+
         return widget.service.getSource(
           eigaId: widget.eigaId.value,
           episode: episode,
@@ -284,7 +297,11 @@ class _PlayerEigaState extends State<PlayerEiga>
     _subtitles = asyncComputed(
       () async {
         final episode = widget.episode.value;
-        if (metaIsFake.value || episode == null) return null;
+        if (metaIsFake.value ||
+            episode == null ||
+            episode.episodeId == EigaEpisode.trailerId) {
+          return null;
+        }
 
         final source = _source.value;
         if (source == null) return null;
@@ -348,7 +365,9 @@ class _PlayerEigaState extends State<PlayerEiga>
         if (!metaIsFake.value) {
           final eigaId = widget.eigaId.value;
           final episode = widget.episode.value;
-          if (episode == null) return null;
+          if (episode == null || episode.episodeId == EigaEpisode.trailerId) {
+            return null;
+          }
 
           final episodeId = episode.episodeId;
 
@@ -984,7 +1003,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                       child: _buildStack(context, isFullscreen: false),
                     ),
                   ),
-                  _buildMobileSliderProgress(),
+                  if (_trailerAvailable.value) _buildMobileSliderProgress(),
                 ],
               ),
     );
@@ -1007,11 +1026,26 @@ class _PlayerEigaState extends State<PlayerEiga>
           child: Watch(() {
             final controller = _controller.value;
             if (controller == null) {
-              return Center(
-                child: OImage.oNetwork(
-                  widget.metaEiga.value.poster ?? widget.metaEiga.value.image,
-                  sourceId: widget.service.uid,
-                  fit: BoxFit.cover,
+              if (_trailerAvailable.value) {
+                return YoutubePlayer(
+                  controller: YoutubePlayerController(
+                    initialVideoId:
+                        YoutubePlayer.convertUrlToId(widget.trailerUrl.value!)!,
+                    flags: YoutubePlayerFlags(autoPlay: true, mute: true),
+                  ),
+                  showVideoProgressIndicator: true,
+                  topActions: [BackButton()],
+                );
+              }
+
+              return Skeleton.replace(
+                replacement: SizedBox.shrink(),
+                child: Center(
+                  child: OImage.oNetwork(
+                    widget.metaEiga.value.poster ?? widget.metaEiga.value.image,
+                    sourceId: widget.service.uid,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               );
             }
@@ -1051,6 +1085,8 @@ class _PlayerEigaState extends State<PlayerEiga>
           }),
         ),
         Watch(() {
+          if (_trailerAvailable.value) return nil;
+
           final child =
               _showControls.value || _error.value != null
                   ? GestureDetector(
@@ -1087,12 +1123,13 @@ class _PlayerEigaState extends State<PlayerEiga>
         }),
         _buildError(),
         _buildIndicator(),
-        Watch(
-          () =>
-              _fullscreen.value
-                  ? _buildMobileSliderProgress()
-                  : SizedBox.shrink(),
-        ),
+        Watch(() {
+          if (_trailerAvailable.value) return nil;
+
+          return _fullscreen.value
+              ? _buildMobileSliderProgress()
+              : SizedBox.shrink();
+        }),
         _buildUISwipeView(),
         _buildUIDoubleTapView(),
         _buildPopupOpeningEnding(),
@@ -1328,7 +1365,12 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   Widget _buildIndicator() {
     return Watch(() {
-      if (!_loading.value) return SizedBox.shrink();
+      if (_trailerAvailable.value) return nil;
+
+      if (!_loading.value ||
+          widget.episode.value?.episodeId == EigaEpisode.trailerId) {
+        return SizedBox.shrink();
+      }
 
       return Positioned(
         top: 0,
@@ -1352,6 +1394,8 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   Widget _buildError() {
     return Watch(() {
+      if (_trailerAvailable.value) return nil;
+
       final error = _error.value;
       if (error == null) return SizedBox.shrink();
 
@@ -1467,220 +1511,232 @@ class _PlayerEigaState extends State<PlayerEiga>
   }
 
   Widget _buildUISwipeView() {
-    return LayoutBuilder(
-      builder:
-          (context, constrains) => Stack(
-            children: [
-              // left
-              Watch(
-                () => AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder:
-                      (child, animation) =>
-                          FadeTransition(opacity: animation, child: child),
-                  child:
-                      _showVolume.value
-                          ? Stack(
-                            children: [
-                              Positioned(
-                                top: 0,
-                                bottom: 0,
-                                left: 30,
-                                child: VerticalVolumeSlider(
-                                  volume: Prop(_systemVolume),
-                                ),
-                              ),
-                            ],
-                          )
-                          : SizedBox.shrink(),
-                ),
-              ),
+    return Watch(() {
+      if (_trailerAvailable.value) return nil;
 
-              // right
-              Watch(
-                () => AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder:
-                      (child, animation) =>
-                          FadeTransition(opacity: animation, child: child),
-                  child:
-                      _showBrightness.value
-                          ? Stack(
-                            children: [
-                              Positioned(
-                                top: 0,
-                                bottom: 0,
-                                right: 30,
-                                child: VerticalBrightnessSlider(
-                                  brightness: Prop(_appBrightness),
+      return LayoutBuilder(
+        builder:
+            (context, constrains) => Stack(
+              children: [
+                // left
+                Watch(
+                  () => AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder:
+                        (child, animation) =>
+                            FadeTransition(opacity: animation, child: child),
+                    child:
+                        _showVolume.value
+                            ? Stack(
+                              children: [
+                                Positioned(
+                                  top: 0,
+                                  bottom: 0,
+                                  left: 30,
+                                  child: VerticalVolumeSlider(
+                                    volume: Prop(_systemVolume),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          )
-                          : SizedBox.shrink(),
+                              ],
+                            )
+                            : SizedBox.shrink(),
+                  ),
                 ),
-              ),
-            ],
-          ),
-    );
+
+                // right
+                Watch(
+                  () => AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder:
+                        (child, animation) =>
+                            FadeTransition(opacity: animation, child: child),
+                    child:
+                        _showBrightness.value
+                            ? Stack(
+                              children: [
+                                Positioned(
+                                  top: 0,
+                                  bottom: 0,
+                                  right: 30,
+                                  child: VerticalBrightnessSlider(
+                                    brightness: Prop(_appBrightness),
+                                  ),
+                                ),
+                              ],
+                            )
+                            : SizedBox.shrink(),
+                  ),
+                ),
+              ],
+            ),
+      );
+    });
   }
 
   Widget _buildUIDoubleTapView() {
-    return LayoutBuilder(
-      builder:
-          (context, constrains) => Stack(
-            children: [
-              // left
-              Watch(
-                () => AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder:
-                      (child, animation) =>
-                          FadeTransition(opacity: animation, child: child),
-                  child:
-                      _doubleTapToRewind.value > 0
-                          ? GestureDetector(
-                            onTap: () {
-                              _doubleTapToRewind.value++;
+    return Watch(() {
+      if (_trailerAvailable.value) return nil;
 
-                              if (_controller.value != null) {
-                                _seekTo(
-                                  _controller.value!,
-                                  _position.value - Duration(seconds: 10),
-                                );
-                              }
-                            },
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  top: 0,
-                                  bottom: 0,
-                                  left: 0,
-                                  child: Container(
-                                    width: constrains.biggest.width / 2,
-                                    height: constrains.biggest.height * 2,
-                                    clipBehavior: Clip.hardEdge,
-                                    decoration: BoxDecoration(
-                                      color: Colors.transparent,
+      return LayoutBuilder(
+        builder:
+            (context, constrains) => Stack(
+              children: [
+                // left
+                Watch(
+                  () => AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder:
+                        (child, animation) =>
+                            FadeTransition(opacity: animation, child: child),
+                    child:
+                        _doubleTapToRewind.value > 0
+                            ? GestureDetector(
+                              onTap: () {
+                                _doubleTapToRewind.value++;
+
+                                if (_controller.value != null) {
+                                  _seekTo(
+                                    _controller.value!,
+                                    _position.value - Duration(seconds: 10),
+                                  );
+                                }
+                              },
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    top: 0,
+                                    bottom: 0,
+                                    left: 0,
+                                    child: Container(
+                                      width: constrains.biggest.width / 2,
+                                      height: constrains.biggest.height * 2,
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: BoxDecoration(
+                                        color: Colors.transparent,
+                                      ),
+                                      child: CustomPaint(painter: AreaRewind()),
                                     ),
-                                    child: CustomPaint(painter: AreaRewind()),
+                                    // Center(child: AnimatedSkipIcon())
                                   ),
-                                  // Center(child: AnimatedSkipIcon())
-                                ),
-                                Positioned(
-                                  top: 0,
-                                  bottom: 0,
-                                  left: 0,
-                                  child: Container(
-                                    width: constrains.biggest.width / 2,
-                                    height: constrains.biggest.height * 2,
-                                    clipBehavior: Clip.hardEdge,
-                                    decoration: BoxDecoration(
-                                      color: Colors.transparent,
-                                    ),
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          AnimatedIconRewind(),
-                                          Text(
-                                            '${_doubleTapToRewind.value}0 seconds',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12.0,
+                                  Positioned(
+                                    top: 0,
+                                    bottom: 0,
+                                    left: 0,
+                                    child: Container(
+                                      width: constrains.biggest.width / 2,
+                                      height: constrains.biggest.height * 2,
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: BoxDecoration(
+                                        color: Colors.transparent,
+                                      ),
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            AnimatedIconRewind(),
+                                            Text(
+                                              '${_doubleTapToRewind.value}0 seconds',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12.0,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          )
-                          : SizedBox.shrink(),
+                                ],
+                              ),
+                            )
+                            : SizedBox.shrink(),
+                  ),
                 ),
-              ),
-              // right
-              Watch(
-                () => AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder:
-                      (child, animation) =>
-                          FadeTransition(opacity: animation, child: child),
-                  child:
-                      _doubleTapToForward.value > 0
-                          ? GestureDetector(
-                            onTap: () {
-                              _doubleTapToForward.value++;
+                // right
+                Watch(
+                  () => AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder:
+                        (child, animation) =>
+                            FadeTransition(opacity: animation, child: child),
+                    child:
+                        _doubleTapToForward.value > 0
+                            ? GestureDetector(
+                              onTap: () {
+                                _doubleTapToForward.value++;
 
-                              if (_controller.value != null) {
-                                _seekTo(
-                                  _controller.value!,
-                                  _position.value + Duration(seconds: 10),
-                                );
-                              }
-                            },
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  top: 0,
-                                  bottom: 0,
-                                  right: 0,
-                                  child: Container(
-                                    width: constrains.biggest.width / 2,
-                                    height: constrains.biggest.height * 2,
-                                    clipBehavior: Clip.hardEdge,
-                                    decoration: BoxDecoration(
-                                      color: Colors.transparent,
+                                if (_controller.value != null) {
+                                  _seekTo(
+                                    _controller.value!,
+                                    _position.value + Duration(seconds: 10),
+                                  );
+                                }
+                              },
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    top: 0,
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Container(
+                                      width: constrains.biggest.width / 2,
+                                      height: constrains.biggest.height * 2,
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: BoxDecoration(
+                                        color: Colors.transparent,
+                                      ),
+                                      child: CustomPaint(
+                                        painter: AreaForward(),
+                                      ),
                                     ),
-                                    child: CustomPaint(painter: AreaForward()),
+                                    // Center(child: AnimatedSkipIcon())
                                   ),
-                                  // Center(child: AnimatedSkipIcon())
-                                ),
-                                Positioned(
-                                  top: 0,
-                                  bottom: 0,
-                                  right: 0,
-                                  child: Container(
-                                    width: constrains.biggest.width / 2,
-                                    height: constrains.biggest.height * 2,
-                                    clipBehavior: Clip.hardEdge,
-                                    decoration: BoxDecoration(
-                                      color: Colors.transparent,
-                                    ),
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          AnimatedIconForward(),
-                                          Text(
-                                            '${_doubleTapToForward.value}0 seconds',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12.0,
+                                  Positioned(
+                                    top: 0,
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Container(
+                                      width: constrains.biggest.width / 2,
+                                      height: constrains.biggest.height * 2,
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: BoxDecoration(
+                                        color: Colors.transparent,
+                                      ),
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            AnimatedIconForward(),
+                                            Text(
+                                              '${_doubleTapToForward.value}0 seconds',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12.0,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          )
-                          : SizedBox.shrink(),
+                                ],
+                              ),
+                            )
+                            : SizedBox.shrink(),
+                  ),
                 ),
-              ),
-            ],
-          ),
-    );
+              ],
+            ),
+      );
+    });
   }
 
   Widget _buildPopupOpeningEnding() {
     return Watch(() {
+      if (_trailerAvailable.value) return nil;
+
       if (_openingEnding.value == null || _controller.value == null) {
         return SizedBox.shrink();
       }

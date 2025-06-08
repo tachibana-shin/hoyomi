@@ -15,6 +15,8 @@ sealed class EigaEpisode with _$EigaEpisode {
     @Default(-1) int order,
   }) = _EigaEpisode;
 
+  static const trailerId = 'trailer-0';
+
   factory EigaEpisode.fromJson(Map<String, dynamic> json) =>
       _$EigaEpisodeFromJson(json);
 

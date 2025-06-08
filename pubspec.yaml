@@ -106,6 +106,14 @@ dependencies:
   wakelock_plus: ^1.2.10
   web: ^1.1.1
   webview_flutter: ^4.10.0
+  youtube_player_flutter: ^9.1.1
+
+dependency_overrides:
+  flutter_inappwebview:
+    git:
+      url: https://github.com/tachibana-shin/flutter_inappwebview
+      ref: master
+      path: flutter_inappwebview
 
 dev_dependencies:
   flutter_test:
