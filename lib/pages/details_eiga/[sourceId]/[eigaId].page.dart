@@ -66,7 +66,10 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     () => _metaIsFake.value ? '' : _metaEiga.value.name,
   );
   late final _subtitle = computed(
-    () => _metaIsFake.value || _episode.value == null ? '' : 'Episode ${_episode.value?.name}',
+    () =>
+        _metaIsFake.value || _episode.value == null
+            ? ''
+            : 'Episode ${_episode.value?.name}',
   );
   late final _trailerUrl = computed(() {
     if (_metaIsFake.value) return null;
@@ -74,7 +77,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     final trailer = _metaEiga.value.trailer;
     if (trailer == null) return null;
 
-    if (trailer.contains('youtube') || trailer.contains('youtu.be')) return trailer;
+    if (trailer.contains('youtube') || trailer.contains('youtu.be'))
+      return trailer;
 
     return null;
   });
