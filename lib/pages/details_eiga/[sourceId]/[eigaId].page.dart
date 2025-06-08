@@ -358,12 +358,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                           backgroundColor:
                               Theme.of(context).scaffoldBackgroundColor,
                           scrolledUnderElevation: 0.0,
-                          leading: IconButton(
-                            icon: const Iconify(Ion.chevron_left),
-                            onPressed: () {
-                              context.pop();
-                            },
-                          ),
+                          leading: HBackButton(),
                         ),
                         body: body,
                       ),
@@ -384,12 +379,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 appBar: AppBar(
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   scrolledUnderElevation: 0.0,
-                  leading: IconButton(
-                    icon: const Iconify(Ion.chevron_left),
-                    onPressed: () {
-                      context.pop();
-                    },
-                  ),
+                  leading: HBackButton(),
                 ),
                 body: body,
               ),

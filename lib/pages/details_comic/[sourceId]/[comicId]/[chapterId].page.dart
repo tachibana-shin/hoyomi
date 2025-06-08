@@ -207,10 +207,7 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                           ),
                           child: AppBar(
                             backgroundColor: Colors.transparent,
-                            leading: IconButton(
-                              icon: const Iconify(Ion.chevron_left),
-                              onPressed: () => context.pop(),
-                            ),
+                            leading: HBackButton(),
                             title: Watch(() {
                               return Text(
                                 <String>[
