@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/interfaces/setting/field_input.dart';
 import 'package:hoyomi/core_services/interfaces/setting/setting_field.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/widgets/export.dart';
 
 class ServiceSettingsPage extends StatefulWidget {
   final String sourceId;
@@ -52,10 +52,7 @@ class _ServiceSettingsPageState extends State<ServiceSettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
+        leading: HBackButton(),
         title: Text('Settings for ${_service.name}'),
         actions: [
           IconButton(

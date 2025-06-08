@@ -5,7 +5,6 @@ import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/export.dart';
@@ -109,15 +108,7 @@ class _CategoryComicPageState extends State<CategoryComicPage> with KaeruMixin {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       scrolledUnderElevation: 0.0,
       automaticallyImplyLeading: false,
-      leading:
-          widget.title == null
-              ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  context.pop();
-                },
-              )
-              : null,
+      leading: HBackButton().showIf(widget.title == null),
       flexibleSpace: SizedBox.shrink(),
       titleSpacing: 0,
       title:

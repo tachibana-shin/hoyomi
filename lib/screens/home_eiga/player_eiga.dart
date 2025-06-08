@@ -1191,9 +1191,10 @@ class _PlayerEigaState extends State<PlayerEiga>
                   // button back
                   IconButton(
                     icon: Watch(
-                      () => Transform.rotate(
-                        angle: _fullscreen.value ? 1.5 * pi : 0.0,
-                        child: Icon(Icons.arrow_back_ios),
+                      () => Icon(
+                        _fullscreen.value
+                            ? Icons.keyboard_arrow_down
+                            : Icons.arrow_back_ios_new,
                       ),
                     ),
                     color: Colors.white,

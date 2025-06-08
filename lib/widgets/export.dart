@@ -32,6 +32,7 @@ export 'eiga/vertical_eiga_list.dart';
 export 'fading_scroll_view.dart';
 export 'global_search_bar.dart';
 export 'horizontal_list.dart';
+export 'h_back_button.dart';
 export 'iconify.dart';
 export 'image_picker.dart';
 export 'infinite_grid.dart';

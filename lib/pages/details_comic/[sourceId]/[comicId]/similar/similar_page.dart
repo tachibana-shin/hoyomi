@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/screens/export.dart';
@@ -50,12 +49,7 @@ class _SimilarPageState extends State<SimilarPage> {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       scrolledUnderElevation: 0.0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          context.pop();
-        },
-      ),
+      leading: HBackButton(),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
