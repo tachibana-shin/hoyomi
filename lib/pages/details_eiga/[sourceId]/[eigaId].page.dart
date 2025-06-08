@@ -77,8 +77,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     final trailer = _metaEiga.value.trailer;
     if (trailer == null) return null;
 
-    if (trailer.contains('youtube') || trailer.contains('youtu.be'))
+    if (trailer.contains('youtube') || trailer.contains('youtu.be')) {
       return trailer;
+    }
 
     return null;
   });
