@@ -1003,7 +1003,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                       child: _buildStack(context, isFullscreen: false),
                     ),
                   ),
-                  if (_trailerAvailable.value) _buildMobileSliderProgress(),
+                  if (!_trailerAvailable.value) _buildMobileSliderProgress(),
                 ],
               ),
     );
