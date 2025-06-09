@@ -481,7 +481,8 @@ sealed class MangaItem with _$MangaItem {
     required String name,
     @JsonKey(name: 'cover_url') required String coverUrl,
     @JsonKey(name: 'cover_mobile_url') required String coverMobileUrl,
-    @JsonKey(name: 'newest_chapter_number') required String newestChapterNumber,
+    @JsonKey(name: 'newest_chapter_number')
+    required String? newestChapterNumber,
     @JsonKey(name: 'newest_chapter_id') required int newestChapterId,
     @JsonKey(name: 'newest_chapter_created_at')
     required String newestChapterCreatedAt,
@@ -511,7 +512,7 @@ sealed class MangaDetail with _$MangaDetail {
     @JsonKey(name: 'panorama_mobile_url')
     required String panoramaMobileUrl, // パノラマURL（モバイル）/ Panorama URL (Mobile)
     @JsonKey(name: 'newest_chapter_number')
-    required String newestChapterNumber, // 最新チャプター番号 / Latest chapter number
+    required String? newestChapterNumber, // 最新チャプター番号 / Latest chapter number
     @JsonKey(name: 'newest_chapter_id')
     required int newestChapterId, // 最新チャプターID / Latest chapter ID
     @JsonKey(name: 'newest_chapter_created_at')
@@ -719,7 +720,8 @@ sealed class SearchResultManga with _$SearchResultManga {
     @JsonKey(name: 'author_name') required String authorName,
     @JsonKey(name: 'cover_url') required String coverUrl,
     @JsonKey(name: 'cover_mobile_url') required String coverMobileUrl,
-    @JsonKey(name: 'newest_chapter_number') required String newestChapterNumber,
+    @JsonKey(name: 'newest_chapter_number')
+    required String? newestChapterNumber,
     @JsonKey(name: 'newest_chapter_id') required int newestChapterId,
     @JsonKey(name: 'newest_chapter_created_at')
     required DateTime newestChapterCreatedAt,

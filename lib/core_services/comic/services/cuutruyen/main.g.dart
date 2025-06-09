@@ -87,7 +87,7 @@ _MangaItem _$MangaItemFromJson(Map<String, dynamic> json) => _MangaItem(
   name: json['name'] as String,
   coverUrl: json['cover_url'] as String,
   coverMobileUrl: json['cover_mobile_url'] as String,
-  newestChapterNumber: json['newest_chapter_number'] as String,
+  newestChapterNumber: json['newest_chapter_number'] as String?,
   newestChapterId: (json['newest_chapter_id'] as num).toInt(),
   newestChapterCreatedAt: json['newest_chapter_created_at'] as String,
   viewsCount: (json['views_count'] as num).toInt(),
@@ -116,7 +116,7 @@ _MangaDetail _$MangaDetailFromJson(Map<String, dynamic> json) => _MangaDetail(
   coverMobileUrl: json['cover_mobile_url'] as String,
   panoramaUrl: json['panorama_url'] as String,
   panoramaMobileUrl: json['panorama_mobile_url'] as String,
-  newestChapterNumber: json['newest_chapter_number'] as String,
+  newestChapterNumber: json['newest_chapter_number'] as String?,
   newestChapterId: (json['newest_chapter_id'] as num).toInt(),
   newestChapterCreatedAt: DateTime.parse(
     json['newest_chapter_created_at'] as String,
@@ -383,7 +383,7 @@ _SearchResultManga _$SearchResultMangaFromJson(Map<String, dynamic> json) =>
       authorName: json['author_name'] as String,
       coverUrl: json['cover_url'] as String,
       coverMobileUrl: json['cover_mobile_url'] as String,
-      newestChapterNumber: json['newest_chapter_number'] as String,
+      newestChapterNumber: json['newest_chapter_number'] as String?,
       newestChapterId: (json['newest_chapter_id'] as num).toInt(),
       newestChapterCreatedAt: DateTime.parse(
         json['newest_chapter_created_at'] as String,
