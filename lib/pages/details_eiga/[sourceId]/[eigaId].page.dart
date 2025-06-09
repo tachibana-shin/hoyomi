@@ -324,7 +324,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                         ),
                                       ),
                                 )
-                                : nil,
+                                : SizedBox.shrink(),
                       ),
                       right,
                     ],
