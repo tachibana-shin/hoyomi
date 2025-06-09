@@ -65,8 +65,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '972743069461',
     projectId: 'hoyomi-app',
     storageBucket: 'hoyomi-app.firebasestorage.app',
-    androidClientId: '972743069461-enisv4fqjs6pbv26qnjs1r6qoj2k6abi.apps.googleusercontent.com',
-    iosClientId: '972743069461-1oulppj3blpvvro8hl9pd6p8e8lgi1km.apps.googleusercontent.com',
+    androidClientId:
+        '972743069461-enisv4fqjs6pbv26qnjs1r6qoj2k6abi.apps.googleusercontent.com',
+    iosClientId:
+        '972743069461-1oulppj3blpvvro8hl9pd6p8e8lgi1km.apps.googleusercontent.com',
     iosBundleId: 'git.shin.hoyomi',
   );
 
@@ -76,8 +78,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '972743069461',
     projectId: 'hoyomi-app',
     storageBucket: 'hoyomi-app.firebasestorage.app',
-    androidClientId: '972743069461-enisv4fqjs6pbv26qnjs1r6qoj2k6abi.apps.googleusercontent.com',
-    iosClientId: '972743069461-1oulppj3blpvvro8hl9pd6p8e8lgi1km.apps.googleusercontent.com',
+    androidClientId:
+        '972743069461-enisv4fqjs6pbv26qnjs1r6qoj2k6abi.apps.googleusercontent.com',
+    iosClientId:
+        '972743069461-1oulppj3blpvvro8hl9pd6p8e8lgi1km.apps.googleusercontent.com',
     iosBundleId: 'git.shin.hoyomi',
   );
 
@@ -90,5 +94,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'hoyomi-app.firebasestorage.app',
     measurementId: 'G-E3EL4KSPEX',
   );
-
 }
