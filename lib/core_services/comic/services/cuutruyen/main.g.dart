@@ -88,8 +88,8 @@ _MangaItem _$MangaItemFromJson(Map<String, dynamic> json) => _MangaItem(
   coverUrl: json['cover_url'] as String,
   coverMobileUrl: json['cover_mobile_url'] as String,
   newestChapterNumber: json['newest_chapter_number'] as String?,
-  newestChapterId: (json['newest_chapter_id'] as num).toInt(),
-  newestChapterCreatedAt: json['newest_chapter_created_at'] as String,
+  newestChapterId: (json['newest_chapter_id'] as num?)?.toInt(),
+  newestChapterCreatedAt: json['newest_chapter_created_at'] as String?,
   viewsCount: (json['views_count'] as num).toInt(),
   viewsCountWeek: (json['views_count_week'] as num).toInt(),
   viewsCountMonth: (json['views_count_month'] as num).toInt(),
@@ -117,10 +117,11 @@ _MangaDetail _$MangaDetailFromJson(Map<String, dynamic> json) => _MangaDetail(
   panoramaUrl: json['panorama_url'] as String,
   panoramaMobileUrl: json['panorama_mobile_url'] as String,
   newestChapterNumber: json['newest_chapter_number'] as String?,
-  newestChapterId: (json['newest_chapter_id'] as num).toInt(),
-  newestChapterCreatedAt: DateTime.parse(
-    json['newest_chapter_created_at'] as String,
-  ),
+  newestChapterId: (json['newest_chapter_id'] as num?)?.toInt(),
+  newestChapterCreatedAt:
+      json['newest_chapter_created_at'] == null
+          ? null
+          : DateTime.parse(json['newest_chapter_created_at'] as String),
   author: Author.fromJson(json['author'] as Map<String, dynamic>),
   description: json['description'] as String,
   fullDescription: json['full_description'] as String?,
@@ -155,7 +156,7 @@ Map<String, dynamic> _$MangaDetailToJson(_MangaDetail instance) =>
       'newest_chapter_number': instance.newestChapterNumber,
       'newest_chapter_id': instance.newestChapterId,
       'newest_chapter_created_at':
-          instance.newestChapterCreatedAt.toIso8601String(),
+          instance.newestChapterCreatedAt?.toIso8601String(),
       'author': instance.author,
       'description': instance.description,
       'full_description': instance.fullDescription,
@@ -384,10 +385,11 @@ _SearchResultManga _$SearchResultMangaFromJson(Map<String, dynamic> json) =>
       coverUrl: json['cover_url'] as String,
       coverMobileUrl: json['cover_mobile_url'] as String,
       newestChapterNumber: json['newest_chapter_number'] as String?,
-      newestChapterId: (json['newest_chapter_id'] as num).toInt(),
-      newestChapterCreatedAt: DateTime.parse(
-        json['newest_chapter_created_at'] as String,
-      ),
+      newestChapterId: (json['newest_chapter_id'] as num?)?.toInt(),
+      newestChapterCreatedAt:
+          json['newest_chapter_created_at'] == null
+              ? null
+              : DateTime.parse(json['newest_chapter_created_at'] as String),
     );
 
 Map<String, dynamic> _$SearchResultMangaToJson(_SearchResultManga instance) =>
@@ -400,7 +402,7 @@ Map<String, dynamic> _$SearchResultMangaToJson(_SearchResultManga instance) =>
       'newest_chapter_number': instance.newestChapterNumber,
       'newest_chapter_id': instance.newestChapterId,
       'newest_chapter_created_at':
-          instance.newestChapterCreatedAt.toIso8601String(),
+          instance.newestChapterCreatedAt?.toIso8601String(),
     };
 
 _Metadata _$MetadataFromJson(Map<String, dynamic> json) => _Metadata(

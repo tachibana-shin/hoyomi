@@ -86,7 +86,10 @@ class CuuTruyenService extends ABComicService with ComicCommentMixin {
                         chapterId: item.newestChapterId.toString(),
                         order: -1,
                       ),
-                      lastUpdate: DateTime.parse(item.newestChapterCreatedAt),
+                      lastUpdate:
+                          item.newestChapterCreatedAt != null
+                              ? DateTime.parse(item.newestChapterCreatedAt!)
+                              : null,
                     ),
                   )
                   .toList(),
@@ -483,9 +486,9 @@ sealed class MangaItem with _$MangaItem {
     @JsonKey(name: 'cover_mobile_url') required String coverMobileUrl,
     @JsonKey(name: 'newest_chapter_number')
     required String? newestChapterNumber,
-    @JsonKey(name: 'newest_chapter_id') required int newestChapterId,
+    @JsonKey(name: 'newest_chapter_id') required int? newestChapterId,
     @JsonKey(name: 'newest_chapter_created_at')
-    required String newestChapterCreatedAt,
+    required String? newestChapterCreatedAt,
     @JsonKey(name: 'views_count') required int viewsCount,
     @JsonKey(name: 'views_count_week') required int viewsCountWeek,
     @JsonKey(name: 'views_count_month') required int viewsCountMonth,
@@ -514,9 +517,9 @@ sealed class MangaDetail with _$MangaDetail {
     @JsonKey(name: 'newest_chapter_number')
     required String? newestChapterNumber, // 最新チャプター番号 / Latest chapter number
     @JsonKey(name: 'newest_chapter_id')
-    required int newestChapterId, // 最新チャプターID / Latest chapter ID
+    required int? newestChapterId, // 最新チャプターID / Latest chapter ID
     @JsonKey(name: 'newest_chapter_created_at')
-    required DateTime
+    required DateTime?
     newestChapterCreatedAt, // 最新チャプター作成日時 / Latest chapter creation datetime
     required Author author, // 作者情報 / Author info
     required String description, // 簡単な説明 / Short description
@@ -722,9 +725,9 @@ sealed class SearchResultManga with _$SearchResultManga {
     @JsonKey(name: 'cover_mobile_url') required String coverMobileUrl,
     @JsonKey(name: 'newest_chapter_number')
     required String? newestChapterNumber,
-    @JsonKey(name: 'newest_chapter_id') required int newestChapterId,
+    @JsonKey(name: 'newest_chapter_id') required int? newestChapterId,
     @JsonKey(name: 'newest_chapter_created_at')
-    required DateTime newestChapterCreatedAt,
+    required DateTime? newestChapterCreatedAt,
   }) = _SearchResultManga;
 
   factory SearchResultManga.fromJson(Map<String, dynamic> json) =>
