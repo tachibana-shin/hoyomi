@@ -25,6 +25,7 @@ Future<void> main() async {
   await initializeCert();
   await initializeDioClient();
   await initializeFirebase();
+  await initializeAnalytics();
   await initializeServices();
   await initializeFullscreen();
   await initializeStore();

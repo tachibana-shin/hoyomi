@@ -1,6 +1,7 @@
 // 自動生成ファイル。手動で編集しないでください。
 // 再生成するには scripts/auto_export.dart を実行してください。
 
+export 'analytics.dart';
 export 'android_sdk_int.dart';
 export 'application_document_directory.dart';
 export 'brightness_controller.dart';
