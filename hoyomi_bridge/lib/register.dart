@@ -63,6 +63,7 @@ void registerEvalDeclarations(Compiler compiler) {
   compiler.defineBridgeClass($Option.$declaration);
   compiler.defineBridgeClass($Bridger.$declaration);
   compiler.defineBridgeClass($DQuery.$declaration);
+  compiler.defineBridgeClass($TimeUtils.$declaration);
 }
 
 void registerEvalConstructors(Runtime runtime) {

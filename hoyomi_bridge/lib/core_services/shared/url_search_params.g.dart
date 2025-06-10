@@ -10,7 +10,7 @@ _UrlSearchParams _$UrlSearchParamsFromJson(Map<String, dynamic> json) =>
     _UrlSearchParams(
       params: (json['params'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(
-                k, (e as List<dynamic>).map((e) => e as String).toList()),
+                k, (e as List<dynamic>?)?.map((e) => e as String).toList()),
           ) ??
           const {},
     );

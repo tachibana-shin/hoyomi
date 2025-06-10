@@ -23,6 +23,7 @@ void main(List<String> args) async {
   for (final file in dartFiles) {
     if (file.path.contains('_service.dart')) continue;
     if (file.path.endsWith('bridger.dart')) continue;
+    if (file.path.endsWith('time_utils.dart')) continue;
 
     final content = file.readAsStringSync();
     // if (!content.contains('@Bind')) continue;

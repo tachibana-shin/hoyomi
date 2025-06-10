@@ -3,10 +3,8 @@ import 'dart:async';
 import 'package:eval_annotation/eval_annotation.dart';
 import 'package:hoyomi_bridge/export.dart';
 
-import 'bridger.dart';
-
 @Bind()
-abstract class ServiceInit {
+class ServiceInit {
   final String name;
   final String? uid;
   final OImage faviconUrl;

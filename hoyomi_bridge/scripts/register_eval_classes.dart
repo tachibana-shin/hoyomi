@@ -18,6 +18,8 @@ void main() {
   final constructors = <String>[];
 
   for (final file in files) {
+    if (file.path.contains('compiler')) continue;
+
     final content = file.readAsStringSync();
     final matches = RegExp(r'class (\$\w+)\b').allMatches(content);
 
@@ -37,8 +39,9 @@ void main() {
         '  compiler.defineBridgeClass($className.\$declaration);',
       );
       if (className.contains('Service')) continue;
-      if (className == 'Bridger') continue;
+      if (className.contains('Bridger')) continue;
       if (className.contains('AB')) continue;
+      if (className.contains('TimeUtils')) continue;
 
       constructors.add(
         "  runtime.registerBridgeFunc('$dartUri', '${className.substring(1)}.', $className.\$new);",
@@ -81,6 +84,7 @@ void main() {
             !file.path.contains('.io.dart') &&
             !file.path.contains('generated') &&
             !file.path.contains('mixin') &&
+            !file.path.contains('compiler') &&
             file.path != 'lib/export_no_eval.dart' &&
             file.path != 'lib/register.dart' &&
             file.path != 'lib/test.dart' &&

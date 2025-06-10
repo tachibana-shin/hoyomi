@@ -10,7 +10,7 @@ part 'url_search_params.g.dart';
 @Bind()
 sealed class UrlSearchParams with _$UrlSearchParams {
   const factory UrlSearchParams({
-    @Default({}) Map<String, List<String>> params,
+    @Default({}) Map<String, List<String>?> params,
   }) = _UrlSearchParams;
 
   factory UrlSearchParams.fromJson(Map<String, dynamic> json) =>
@@ -66,11 +66,12 @@ extension UrlSearchParamsExt on UrlSearchParams {
   String toQuery() {
     final parts = <String>[];
     for (final entry in params.entries) {
-      for (final value in entry.value) {
-        parts.add(
-          '${Uri.encodeQueryComponent(entry.key)}=${Uri.encodeComponent(value)}',
-        );
-      }
+      if (entry.value != null)
+        for (final value in entry.value!) {
+          parts.add(
+            '${Uri.encodeQueryComponent(entry.key)}=${Uri.encodeComponent(value)}',
+          );
+        }
     }
     return parts.join('&');
   }
@@ -101,10 +102,10 @@ extension UrlSearchParamsExt on UrlSearchParams {
   /// Join current params into a given Uri, overriding existing keys if duplicated.
   Uri joinTo(Uri uri) {
     final existingParams = Uri.splitQueryString(uri.query, encoding: utf8);
-    final combined = Map<String, List<String>>.from({});
+    final combined = Map<String, List<String>?>.from({});
 
     for (final entry in existingParams.entries) {
-      combined.putIfAbsent(entry.key, () => []).add(entry.value);
+      (combined[entry.key] ??= []).add(entry.value);
     }
 
     for (final entry in params.entries) {
@@ -113,10 +114,12 @@ extension UrlSearchParamsExt on UrlSearchParams {
 
     final newQuery = combined.entries
         .expand(
-          (e) => e.value.map(
-            (v) =>
-                '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(v)}',
-          ),
+          (e) =>
+              e.value?.map(
+                (v) =>
+                    '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(v)}',
+              ) ??
+              const <String>[],
         )
         .join('&');
 

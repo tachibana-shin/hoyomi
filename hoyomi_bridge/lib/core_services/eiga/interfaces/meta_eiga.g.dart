@@ -87,6 +87,6 @@ const _$StatusEnumEnumMap = {
   StatusEnum.completed: 'completed',
   StatusEnum.canceled: 'canceled',
   StatusEnum.unknown: 'unknown',
-  StatusEnum.onHiatus: 'on_hiatus',
-  StatusEnum.publishingFinished: 'publishing_finished',
+  StatusEnum.onHiatus: 'onHiatus',
+  StatusEnum.publishingFinished: 'publishingFinished',
 };

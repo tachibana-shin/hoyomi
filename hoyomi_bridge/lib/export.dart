@@ -1,7 +1,6 @@
 // 自動生成ファイル。手動で編集しないでください。
 // 再生成するには scripts/auto_export.dart を実行してください。
 
-export 'test.dart';
 export 'core_services/mixin/auth_mixin.dart';
 export 'core_services/eiga/ab_eiga_service.dart';
 export 'core_services/eiga/interfaces/meta_eiga.dart';
@@ -120,5 +119,8 @@ export 'core_services/bridger.eval.dart';
 export 'utils/d_query.dart';
 export 'utils/d_query.eval.dart';
 export 'utils/is_web.dart';
+export 'utils/time_utils.eval.dart';
+export 'utils/time_utils.dart';
 export 'export_no_eval.dart';
+export 'compiler/compile.dart';
 export 'register.dart';

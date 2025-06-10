@@ -1,7 +1,4 @@
-
 import 'package:hoyomi_bridge/export.dart';
-// ignore: unused_import
-import 'package:dart_eval/dart_eval.dart';
 
 class EigaCategory extends Paginate<Eiga> {
   final String name;

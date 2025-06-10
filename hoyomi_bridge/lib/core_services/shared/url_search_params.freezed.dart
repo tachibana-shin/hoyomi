@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$UrlSearchParams {
-  Map<String, List<String>> get params;
+  Map<String, List<String>?> get params;
 
   /// Create a copy of UrlSearchParams
   /// with the given fields replaced by the non-null parameter values.
@@ -53,7 +53,7 @@ abstract mixin class $UrlSearchParamsCopyWith<$Res> {
           UrlSearchParams value, $Res Function(UrlSearchParams) _then) =
       _$UrlSearchParamsCopyWithImpl;
   @useResult
-  $Res call({Map<String, List<String>> params});
+  $Res call({Map<String, List<String>?> params});
 }
 
 /// @nodoc
@@ -75,7 +75,7 @@ class _$UrlSearchParamsCopyWithImpl<$Res>
       params: null == params
           ? _self.params
           : params // ignore: cast_nullable_to_non_nullable
-              as Map<String, List<String>>,
+              as Map<String, List<String>?>,
     ));
   }
 }
@@ -83,15 +83,15 @@ class _$UrlSearchParamsCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _UrlSearchParams implements UrlSearchParams {
-  const _UrlSearchParams({final Map<String, List<String>> params = const {}})
+  const _UrlSearchParams({final Map<String, List<String>?> params = const {}})
       : _params = params;
   factory _UrlSearchParams.fromJson(Map<String, dynamic> json) =>
       _$UrlSearchParamsFromJson(json);
 
-  final Map<String, List<String>> _params;
+  final Map<String, List<String>?> _params;
   @override
   @JsonKey()
-  Map<String, List<String>> get params {
+  Map<String, List<String>?> get params {
     if (_params is EqualUnmodifiableMapView) return _params;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_params);
@@ -139,7 +139,7 @@ abstract mixin class _$UrlSearchParamsCopyWith<$Res>
       __$UrlSearchParamsCopyWithImpl;
   @override
   @useResult
-  $Res call({Map<String, List<String>> params});
+  $Res call({Map<String, List<String>?> params});
 }
 
 /// @nodoc
@@ -161,7 +161,7 @@ class __$UrlSearchParamsCopyWithImpl<$Res>
       params: null == params
           ? _self._params
           : params // ignore: cast_nullable_to_non_nullable
-              as Map<String, List<String>>,
+              as Map<String, List<String>?>,
     ));
   }
 }

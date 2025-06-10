@@ -158,7 +158,9 @@ class DQuery {
 
   /// Gets the descendants of each element in the current set of matched elements,
   /// filtered by a selector.
-  DQuery query(String selector) {
+  DQuery query(String selector, {bool single = false}) {
+    if (single) return queryOne(selector);
+
     final found =
         _elements.expand((e) => e.querySelectorAll(selector)).toList();
     return DQuery(found);
