@@ -1,0 +1,147 @@
+// ignore_for_file: unused_import
+// ignore_for_file: unnecessary_import
+
+import 'package:dart_eval/dart_eval.dart';
+import 'package:dart_eval/dart_eval_bridge.dart';
+import 'subtitle.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hoyomi_bridge/export.dart';
+import 'package:dart_eval/stdlib/core.dart';
+
+/// dart_eval wrapper binding for [Subtitle]
+class $Subtitle implements $Instance {
+  /// Configure this class for use in a [Runtime]
+  static void configureForRuntime(Runtime runtime) {
+    runtime.registerBridgeFunc(
+        'package:hoyomi_bridge/core_services/eiga/interfaces/subtitle.dart',
+        'Subtitle.',
+        $Subtitle.$new);
+
+    runtime.registerBridgeFunc(
+        'package:hoyomi_bridge/core_services/eiga/interfaces/subtitle.dart',
+        'Subtitle.fromJson',
+        $Subtitle.$fromJson);
+  }
+
+  /// Compile-time type specification of [$Subtitle]
+  static const $spec = BridgeTypeSpec(
+    'package:hoyomi_bridge/core_services/eiga/interfaces/subtitle.dart',
+    'Subtitle',
+  );
+
+  /// Compile-time type declaration of [$Subtitle]
+  static const $type = BridgeTypeRef($spec);
+
+  /// Compile-time class declaration of [$Subtitle]
+  static const $declaration = BridgeClassDef(
+    BridgeClassType(
+      $type,
+      isAbstract: false,
+    ),
+    constructors: {
+      '': BridgeConstructorDef(
+        BridgeFunctionDef(
+          returns: BridgeTypeAnnotation($type),
+          namedParams: [
+            BridgeParameter(
+              'language',
+              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+              false,
+            ),
+            BridgeParameter(
+              'code',
+              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+              false,
+            ),
+            BridgeParameter(
+              'type',
+              BridgeTypeAnnotation(BridgeTypeRef(BridgeTypeSpec(
+                  'package:hoyomi_bridge/core_services/eiga/interfaces/subtitle.dart',
+                  'SubtitleType'))),
+              false,
+            ),
+            BridgeParameter(
+              'url',
+              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+              false,
+            ),
+            BridgeParameter(
+              'headers',
+              BridgeTypeAnnotation(
+                  BridgeTypeRef(BridgeTypeSpec(
+                      'package:hoyomi_bridge/core_services/shared/headers.dart',
+                      'Headers')),
+                  nullable: true),
+              true,
+            ),
+          ],
+          params: [],
+        ),
+        isFactory: true,
+      ),
+      'fromJson': BridgeConstructorDef(
+        BridgeFunctionDef(
+          returns: BridgeTypeAnnotation($type),
+          namedParams: [],
+          params: [
+            BridgeParameter(
+              'json',
+              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.map)),
+              false,
+            ),
+          ],
+        ),
+        isFactory: true,
+      ),
+    },
+    methods: {},
+    getters: {},
+    setters: {},
+    fields: {},
+    wrap: true,
+  );
+
+  /// Wrapper for the [Subtitle.new] constructor
+  static $Value? $new(Runtime runtime, $Value? thisValue, List<$Value?> args) {
+    return $Subtitle.wrap(
+      Subtitle(
+          language: args[0]!.$value,
+          code: args[1]!.$value,
+          type: args[2]!.$value,
+          url: args[3]!.$value,
+          headers: args[4]?.$value),
+    );
+  }
+
+  /// Wrapper for the [Subtitle.fromJson] constructor
+  static $Value? $fromJson(
+      Runtime runtime, $Value? thisValue, List<$Value?> args) {
+    return $Subtitle.wrap(
+      Subtitle.fromJson((args[0]!.$reified as Map).cast()),
+    );
+  }
+
+  final $Instance _superclass;
+
+  @override
+  final Subtitle $value;
+
+  @override
+  Subtitle get $reified => $value;
+
+  /// Wrap a [Subtitle] in a [$Subtitle]
+  $Subtitle.wrap(this.$value) : _superclass = $Object($value);
+
+  @override
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+
+  @override
+  $Value? $getProperty(Runtime runtime, String identifier) {
+    return _superclass.$getProperty(runtime, identifier);
+  }
+
+  @override
+  void $setProperty(Runtime runtime, String identifier, $Value value) {
+    return _superclass.$setProperty(runtime, identifier, value);
+  }
+}
