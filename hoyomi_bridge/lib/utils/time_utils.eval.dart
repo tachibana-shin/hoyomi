@@ -1,9 +1,11 @@
 // ignore_for_file: unused_import
 // ignore_for_file: unnecessary_import
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
 import 'time_utils.dart';
+import 'package:intl/intl.dart';
 import 'package:dart_eval/stdlib/core.dart';
 
 /// dart_eval wrapper binding for [TimeUtils]
@@ -80,7 +82,7 @@ class $TimeUtils implements $Instance {
   $TimeUtils.wrap(this.$value) : _superclass = $Object($value);
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {

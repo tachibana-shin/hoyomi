@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 // ignore_for_file: unnecessary_import
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
@@ -110,7 +111,7 @@ class $HomeEigaCategory implements $Instance {
       HomeEigaCategory(
           name: args[0]!.$value,
           categoryId: args[1]?.$value,
-          gridView: args[2]?.$value,
+          gridView: args[2]?.$value ?? false,
           items: (args[3]!.$reified as List).cast()),
     );
   }
@@ -143,7 +144,7 @@ class $HomeEigaCategory implements $Instance {
   $HomeEigaCategory.wrap(this.$value) : _superclass = $Object($value);
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {

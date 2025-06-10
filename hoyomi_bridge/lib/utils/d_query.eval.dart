@@ -1,11 +1,13 @@
 // ignore_for_file: unused_import
 // ignore_for_file: unnecessary_import
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
 import 'd_query.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
+import 'package:hoyomi_bridge/utils/d_query.eval.dart';
 import 'package:dart_eval/stdlib/core.dart';
 
 /// dart_eval wrapper binding for [DQuery]
@@ -249,7 +251,13 @@ class $DQuery implements $Instance {
         BridgeFunctionDef(
           returns: BridgeTypeAnnotation(BridgeTypeRef(BridgeTypeSpec(
               'package:hoyomi_bridge/utils/d_query.dart', 'DQuery'))),
-          namedParams: [],
+          namedParams: [
+            BridgeParameter(
+              'single',
+              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+              true,
+            ),
+          ],
           params: [
             BridgeParameter(
               'selector',
@@ -577,7 +585,7 @@ class $DQuery implements $Instance {
   $DQuery.wrap(this.$value) : _superclass = $Object($value);
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
@@ -798,7 +806,8 @@ class $DQuery implements $Instance {
   static const $Function __query = $Function(_query);
   static $Value? _query(Runtime runtime, $Value? target, List<$Value?> args) {
     final self = target as $DQuery;
-    final result = self.$value.query(args[0]!.$value);
+    final result =
+        self.$value.query(args[0]!.$value, single: args[1]?.$value ?? false);
     return $DQuery.wrap(result);
   }
 

@@ -1,20 +1,21 @@
 // ignore_for_file: unused_import
 // ignore_for_file: unnecessary_import
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
 import 'ab_comic_service.dart';
 import 'dart:typed_data';
 import 'package:hoyomi_bridge/export.dart';
-import 'package:hoyomi_bridge/core_services/service.dart';
+import 'package:hoyomi_bridge/core_services/service.eval.dart';
 import 'package:dart_eval/stdlib/core.dart';
-import 'package:hoyomi_bridge/core_services/comic/interfaces/comic_param.dart';
+import 'package:hoyomi_bridge/core_services/comic/interfaces/comic_param.eval.dart';
 import 'package:dart_eval/stdlib/async.dart';
-import 'package:hoyomi_bridge/core_services/comic/interfaces/comic_home.dart';
-import 'package:hoyomi_bridge/core_services/comic/interfaces/meta_comic.dart';
-import 'package:hoyomi_bridge/core_services/shared/o_image.dart';
+import 'package:hoyomi_bridge/core_services/comic/interfaces/comic_home.eval.dart';
+import 'package:hoyomi_bridge/core_services/comic/interfaces/meta_comic.eval.dart';
+import 'package:hoyomi_bridge/core_services/shared/o_image.eval.dart';
 import 'package:dart_eval/stdlib/typed_data.dart';
-import 'package:hoyomi_bridge/core_services/comic/interfaces/comic.dart';
+import 'package:hoyomi_bridge/core_services/comic/interfaces/comic.eval.dart';
 
 /// dart_eval wrapper binding for [ABComicService]
 class $ABComicService implements $Instance {
@@ -251,7 +252,7 @@ class $ABComicService implements $Instance {
   $ABComicService.wrap(this.$value) : _superclass = $BaseService.wrap($value);
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {

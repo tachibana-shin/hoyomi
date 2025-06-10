@@ -1,24 +1,25 @@
 // ignore_for_file: unused_import
 // ignore_for_file: unnecessary_import
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
 import 'ab_eiga_service.dart';
 import 'package:hoyomi_bridge/export.dart';
-import 'package:hoyomi_bridge/core_services/service.dart';
+import 'package:hoyomi_bridge/core_services/service.eval.dart';
 import 'package:dart_eval/stdlib/async.dart';
-import 'package:hoyomi_bridge/core_services/eiga/interfaces/eiga_home.dart';
-import 'package:hoyomi_bridge/core_services/eiga/interfaces/eiga_param.dart';
-import 'package:hoyomi_bridge/core_services/eiga/interfaces/meta_eiga.dart';
-import 'package:hoyomi_bridge/core_services/eiga/interfaces/eiga_episodes.dart';
+import 'package:hoyomi_bridge/core_services/eiga/interfaces/eiga_home.eval.dart';
+import 'package:hoyomi_bridge/core_services/eiga/interfaces/eiga_param.eval.dart';
+import 'package:hoyomi_bridge/core_services/eiga/interfaces/meta_eiga.eval.dart';
+import 'package:hoyomi_bridge/core_services/eiga/interfaces/eiga_episodes.eval.dart';
 import 'package:dart_eval/stdlib/core.dart';
-import 'package:hoyomi_bridge/core_services/eiga/interfaces/server_source.dart';
-import 'package:hoyomi_bridge/core_services/eiga/interfaces/source_video.dart';
-import 'package:hoyomi_bridge/core_services/eiga/interfaces/source_content.dart';
-import 'package:hoyomi_bridge/core_services/eiga/interfaces/subtitle.dart';
-import 'package:hoyomi_bridge/core_services/shared/vtt.dart';
-import 'package:hoyomi_bridge/core_services/eiga/interfaces/opening_ending.dart';
-import 'package:hoyomi_bridge/core_services/eiga/interfaces/eiga.dart';
+import 'package:hoyomi_bridge/core_services/eiga/interfaces/server_source.eval.dart';
+import 'package:hoyomi_bridge/core_services/eiga/interfaces/source_video.eval.dart';
+import 'package:hoyomi_bridge/core_services/eiga/interfaces/source_content.eval.dart';
+import 'package:hoyomi_bridge/core_services/eiga/interfaces/subtitle.eval.dart';
+import 'package:hoyomi_bridge/core_services/shared/vtt.eval.dart';
+import 'package:hoyomi_bridge/core_services/eiga/interfaces/opening_ending.eval.dart';
+import 'package:hoyomi_bridge/core_services/eiga/interfaces/eiga.eval.dart';
 
 /// dart_eval wrapper binding for [ABEigaService]
 class $ABEigaService implements $Instance {
@@ -318,7 +319,7 @@ class $ABEigaService implements $Instance {
   $ABEigaService.wrap(this.$value) : _superclass = $BaseService.wrap($value);
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {

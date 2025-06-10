@@ -1,4 +1,5 @@
 import 'package:eval_annotation/eval_annotation.dart';
+import 'package:intl/intl.dart';
 
 @Bind()
 abstract class TimeUtils {

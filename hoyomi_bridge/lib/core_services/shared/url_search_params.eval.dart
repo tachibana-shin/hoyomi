@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 // ignore_for_file: unnecessary_import
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
@@ -116,7 +117,7 @@ class $UrlSearchParams implements $Instance {
   /// Wrapper for the [UrlSearchParams.new] constructor
   static $Value? $new(Runtime runtime, $Value? thisValue, List<$Value?> args) {
     return $UrlSearchParams.wrap(
-      UrlSearchParams(params: (args[0]?.$reified!.cast())?.cast()),
+      UrlSearchParams(params: (args[0]?.$reified ?? const {} as Map?)?.cast()),
     );
   }
 
@@ -156,7 +157,7 @@ class $UrlSearchParams implements $Instance {
   $UrlSearchParams.wrap(this.$value) : _superclass = $Object($value);
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {

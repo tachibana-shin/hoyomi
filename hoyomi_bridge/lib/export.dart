@@ -119,6 +119,8 @@ export 'core_services/bridger.eval.dart';
 export 'utils/d_query.dart';
 export 'utils/d_query.eval.dart';
 export 'utils/is_web.dart';
+export 'utils/date_format.eval.dart';
+export 'utils/date_format.dart';
 export 'utils/time_utils.eval.dart';
 export 'utils/time_utils.dart';
 export 'export_no_eval.dart';

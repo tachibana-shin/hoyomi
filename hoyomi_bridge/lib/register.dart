@@ -63,6 +63,7 @@ void registerEvalDeclarations(Compiler compiler) {
   compiler.defineBridgeClass($Option.$declaration);
   compiler.defineBridgeClass($Bridger.$declaration);
   compiler.defineBridgeClass($DQuery.$declaration);
+  compiler.defineBridgeClass($DateFormat.$declaration);
   compiler.defineBridgeClass($TimeUtils.$declaration);
 }
 
@@ -122,4 +123,5 @@ void registerEvalConstructors(Runtime runtime) {
   runtime.registerBridgeFunc('package:hoyomi_bridge/core_services/shared/paginate.dart', 'Paginate.', $Paginate.$new);
   runtime.registerBridgeFunc('package:hoyomi_bridge/core_services/shared/a_option.dart', 'Option.', $Option.$new);
   runtime.registerBridgeFunc('package:hoyomi_bridge/utils/d_query.dart', 'DQuery.', $DQuery.$new);
+  runtime.registerBridgeFunc('package:hoyomi_bridge/utils/date_format.dart', 'DateFormat.', $DateFormat.$new);
 }

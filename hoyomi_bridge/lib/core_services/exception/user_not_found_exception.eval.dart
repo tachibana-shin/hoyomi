@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 // ignore_for_file: unnecessary_import
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
@@ -54,15 +55,7 @@ class $UserNotFoundException implements $Instance {
         isFactory: false,
       ),
     },
-    methods: {
-      'toString': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -98,7 +91,7 @@ class $UserNotFoundException implements $Instance {
   $UserNotFoundException.wrap(this.$value) : _superclass = $Object($value);
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
@@ -110,18 +103,8 @@ class $UserNotFoundException implements $Instance {
       case 'trace':
         final _trace = $value.trace;
         return $StackTrace.wrap(_trace);
-      case 'toString':
-        return __toString;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __toString = $Function(_toString);
-  static $Value? _toString(
-      Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target as $UserNotFoundException;
-    final result = self.$value.toString();
-    return $String(result);
   }
 
   @override

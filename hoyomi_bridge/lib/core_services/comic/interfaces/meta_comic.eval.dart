@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 // ignore_for_file: unnecessary_import
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
@@ -188,8 +189,8 @@ class $MetaComic implements $Instance {
           description: args[10]!.$value,
           chapters: (args[11]!.$reified as List).cast(),
           lastModified: args[12]!.$value,
-          fake: args[13]?.$value,
-          offlineMode: args[14]?.$value),
+          fake: args[13]?.$value ?? false,
+          offlineMode: args[14]?.$value ?? false),
     );
   }
 
@@ -221,7 +222,7 @@ class $MetaComic implements $Instance {
   $MetaComic.wrap(this.$value) : _superclass = $Object($value);
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {

@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 // ignore_for_file: unnecessary_import
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
@@ -171,7 +172,7 @@ class $ComicComment implements $Instance {
           countLike: args[7]?.$value,
           countDislike: args[8]?.$value,
           countReply: args[9]!.$value,
-          canDelete: args[10]?.$value,
+          canDelete: args[10]?.$value ?? false,
           like: args[11]?.$value,
           replies: (args[12]?.$reified as List?)?.cast()),
     );
@@ -205,7 +206,7 @@ class $ComicComment implements $Instance {
   $ComicComment.wrap(this.$value) : _superclass = $Object($value);
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {

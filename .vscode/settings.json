@@ -26,6 +26,6 @@
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
-    "*.dart": "${capture}.g.dart, ${capture}.freezed.dart, ${capture}.io.dart, ${capture}.web.dart, ${capture}.stub.dart, ${capture}_stub.dart",
+    "*.dart": "${capture}.g.dart, ${capture}.freezed.dart, ${capture}.io.dart, ${capture}.web.dart, ${capture}.stub.dart, ${capture}_stub.dart, ${capture}.eval.dart",
   }
 }

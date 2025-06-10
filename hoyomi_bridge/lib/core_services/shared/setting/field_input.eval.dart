@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 // ignore_for_file: unnecessary_import
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
@@ -114,8 +115,8 @@ class $FieldInput implements $Instance {
           description: args[2]?.$value,
           placeholder: args[3]!.$value,
           defaultValue: args[4]!.$value,
-          maxLines: args[5]?.$value,
-          appear: args[6]?.$value),
+          maxLines: args[5]?.$value ?? 1,
+          appear: args[6]?.$value ?? false),
     );
   }
 
@@ -139,7 +140,7 @@ class $FieldInput implements $Instance {
   $FieldInput.wrap(this.$value) : _superclass = $Object($value);
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {

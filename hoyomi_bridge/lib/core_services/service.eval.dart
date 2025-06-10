@@ -1,25 +1,31 @@
 // ignore_for_file: unused_import
 // ignore_for_file: unnecessary_import
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
 import 'service.dart';
 import 'dart:async';
 import 'package:hoyomi_bridge/export.dart';
-import 'bridger.dart';
 import 'package:dart_eval/stdlib/core.dart';
-import 'package:hoyomi_bridge/core_services/shared/o_image.dart';
-import 'package:hoyomi_bridge/core_services/shared/setting/setting_field.dart';
-import 'package:hoyomi_bridge/core_services/shared/web_rule.dart';
+import 'package:hoyomi_bridge/core_services/shared/o_image.eval.dart';
+import 'package:hoyomi_bridge/core_services/shared/setting/setting_field.eval.dart';
+import 'package:hoyomi_bridge/core_services/shared/web_rule.eval.dart';
 import 'package:dart_eval/stdlib/async.dart';
-import 'package:hoyomi_bridge/core_services/shared/setting/field_input.dart';
-import 'package:hoyomi_bridge/core_services/bridger.dart';
-import 'package:hoyomi_bridge/utils/d_query.dart';
+import 'package:hoyomi_bridge/core_services/shared/setting/field_input.eval.dart';
+import 'package:hoyomi_bridge/core_services/bridger.eval.dart';
+import 'package:hoyomi_bridge/core_services/service.eval.dart';
+import 'package:hoyomi_bridge/utils/d_query.eval.dart';
 
 /// dart_eval wrapper binding for [ServiceInit]
 class $ServiceInit implements $Instance {
   /// Configure this class for use in a [Runtime]
-  static void configureForRuntime(Runtime runtime) {}
+  static void configureForRuntime(Runtime runtime) {
+    runtime.registerBridgeFunc(
+        'package:hoyomi_bridge/core_services/service.dart',
+        'ServiceInit.',
+        $ServiceInit.$new);
+  }
 
   /// Compile-time type specification of [$ServiceInit]
   static const $spec = BridgeTypeSpec(
@@ -34,7 +40,7 @@ class $ServiceInit implements $Instance {
   static const $declaration = BridgeClassDef(
     BridgeClassType(
       $type,
-      isAbstract: true,
+      isAbstract: false,
     ),
     constructors: {
       '': BridgeConstructorDef(
@@ -203,6 +209,27 @@ class $ServiceInit implements $Instance {
     wrap: true,
   );
 
+  /// Wrapper for the [ServiceInit.new] constructor
+  static $Value? $new(Runtime runtime, $Value? thisValue, List<$Value?> args) {
+    return $ServiceInit.wrap(
+      ServiceInit(
+          name: args[0]!.$value,
+          uid: args[1]?.$value,
+          rootUrl: args[2]!.$value,
+          faviconUrl: args[3]!.$value,
+          captchaUrl: () {
+            return (args[4] as EvalCallable)(runtime, null, [])?.$value;
+          },
+          settings: (args[5]?.$reified as List?)?.cast(),
+          onBeforeInsertCookie: (oldCookie) {
+            return (args[6] as EvalCallable)(runtime, null, [])?.$value;
+          },
+          webRules: (args[7]?.$reified as List?)?.cast(),
+          fetchHeadless: args[8]?.$value ?? false,
+          fetchBaseUrl: args[9]?.$value),
+    );
+  }
+
   final $Instance _superclass;
 
   @override
@@ -215,7 +242,7 @@ class $ServiceInit implements $Instance {
   $ServiceInit.wrap(this.$value) : _superclass = $Object($value);
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
@@ -317,7 +344,7 @@ class $BaseService implements $Instance {
   static const $declaration = BridgeClassDef(
     BridgeClassType(
       $type,
-      isAbstract: true,
+      isAbstract: false,
     ),
     constructors: {
       '': BridgeConstructorDef(
@@ -534,7 +561,7 @@ class $BaseService implements $Instance {
   $BaseService.wrap(this.$value) : _superclass = $Object($value);
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {

@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 // ignore_for_file: unnecessary_import
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
@@ -176,7 +177,7 @@ class $Eiga implements $Instance {
           countSub: args[7]?.$value,
           countDub: args[8]?.$value,
           rate: args[9]?.$value,
-          pending: args[10]?.$value,
+          pending: args[10]?.$value ?? false,
           preRelease: args[11]?.$value,
           description: args[12]?.$value),
     );
@@ -210,7 +211,7 @@ class $Eiga implements $Instance {
   $Eiga.wrap(this.$value) : _superclass = $Object($value);
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($type.spec!);
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {

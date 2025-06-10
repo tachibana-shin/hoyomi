@@ -60,4 +60,5 @@ export 'core_services/shared/genre.dart';
 export 'core_services/bridger.dart';
 export 'utils/d_query.dart';
 export 'utils/is_web.dart';
+export 'utils/date_format.dart';
 export 'utils/time_utils.dart';
