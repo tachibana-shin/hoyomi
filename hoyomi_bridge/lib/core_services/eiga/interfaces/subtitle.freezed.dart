@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$Subtitle {
   String get language;
   String get code;
-  SubtitleType get type;
+  String get type;
   String get url;
   Headers? get headers;
 
@@ -63,7 +63,7 @@ abstract mixin class $SubtitleCopyWith<$Res> {
   $Res call(
       {String language,
       String code,
-      SubtitleType type,
+      String type,
       String url,
       Headers? headers});
 
@@ -100,7 +100,7 @@ class _$SubtitleCopyWithImpl<$Res> implements $SubtitleCopyWith<$Res> {
       type: null == type
           ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
-              as SubtitleType,
+              as String,
       url: null == url
           ? _self.url
           : url // ignore: cast_nullable_to_non_nullable
@@ -144,7 +144,7 @@ class _Subtitle implements Subtitle {
   @override
   final String code;
   @override
-  final SubtitleType type;
+  final String type;
   @override
   final String url;
   @override
@@ -199,7 +199,7 @@ abstract mixin class _$SubtitleCopyWith<$Res>
   $Res call(
       {String language,
       String code,
-      SubtitleType type,
+      String type,
       String url,
       Headers? headers});
 
@@ -237,7 +237,7 @@ class __$SubtitleCopyWithImpl<$Res> implements _$SubtitleCopyWith<$Res> {
       type: null == type
           ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
-              as SubtitleType,
+              as String,
       url: null == url
           ? _self.url
           : url // ignore: cast_nullable_to_non_nullable

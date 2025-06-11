@@ -20,7 +20,7 @@ mixin _$MetaComic {
   OImage get image;
   String? get author;
   String? get translator;
-  StatusEnum get status;
+  String get status;
   int? get views;
   int? get likes;
   RateValue? get rate;
@@ -105,7 +105,7 @@ abstract mixin class $MetaComicCopyWith<$Res> {
       OImage image,
       String? author,
       String? translator,
-      StatusEnum status,
+      String status,
       int? views,
       int? likes,
       RateValue? rate,
@@ -172,7 +172,7 @@ class _$MetaComicCopyWithImpl<$Res> implements $MetaComicCopyWith<$Res> {
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
-              as StatusEnum,
+              as String,
       views: freezed == views
           ? _self.views
           : views // ignore: cast_nullable_to_non_nullable
@@ -272,7 +272,7 @@ class _MetaComic implements MetaComic {
   @override
   final String? translator;
   @override
-  final StatusEnum status;
+  final String status;
   @override
   final int? views;
   @override
@@ -388,7 +388,7 @@ abstract mixin class _$MetaComicCopyWith<$Res>
       OImage image,
       String? author,
       String? translator,
-      StatusEnum status,
+      String status,
       int? views,
       int? likes,
       RateValue? rate,
@@ -457,7 +457,7 @@ class __$MetaComicCopyWithImpl<$Res> implements _$MetaComicCopyWith<$Res> {
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
-              as StatusEnum,
+              as String,
       views: freezed == views
           ? _self.views
           : views // ignore: cast_nullable_to_non_nullable

@@ -247,6 +247,26 @@ class $DQuery implements $Instance {
           ],
         ),
       ),
+      'q': BridgeMethodDef(
+        BridgeFunctionDef(
+          returns: BridgeTypeAnnotation(BridgeTypeRef(BridgeTypeSpec(
+              'package:hoyomi_bridge/utils/d_query.dart', 'DQuery'))),
+          namedParams: [
+            BridgeParameter(
+              'single',
+              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+              true,
+            ),
+          ],
+          params: [
+            BridgeParameter(
+              'selector',
+              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+              false,
+            ),
+          ],
+        ),
+      ),
       'query': BridgeMethodDef(
         BridgeFunctionDef(
           returns: BridgeTypeAnnotation(BridgeTypeRef(BridgeTypeSpec(
@@ -450,7 +470,7 @@ class $DQuery implements $Instance {
       ),
       'toList': BridgeMethodDef(
         BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.iterable)),
+          returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.list)),
           namedParams: [],
           params: [],
         ),
@@ -646,6 +666,9 @@ class $DQuery implements $Instance {
       case 'eq':
         return __eq;
 
+      case 'q':
+        return __q;
+
       case 'query':
         return __query;
 
@@ -803,6 +826,14 @@ class $DQuery implements $Instance {
     return $DQuery.wrap(result);
   }
 
+  static const $Function __q = $Function(_q);
+  static $Value? _q(Runtime runtime, $Value? target, List<$Value?> args) {
+    final self = target as $DQuery;
+    final result =
+        self.$value.q(args[0]!.$value, single: args[1]?.$value ?? false);
+    return $DQuery.wrap(result);
+  }
+
   static const $Function __query = $Function(_query);
   static $Value? _query(Runtime runtime, $Value? target, List<$Value?> args) {
     final self = target as $DQuery;
@@ -901,7 +932,7 @@ class $DQuery implements $Instance {
   static $Value? _toList(Runtime runtime, $Value? target, List<$Value?> args) {
     final self = target as $DQuery;
     final result = self.$value.toList();
-    return $Iterable.wrap(result);
+    return $List.view(result, (e) => $DQuery.wrap(e));
   }
 
   static const $Function __get = $Function(_get);

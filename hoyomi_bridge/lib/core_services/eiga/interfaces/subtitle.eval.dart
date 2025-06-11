@@ -56,9 +56,7 @@ class $Subtitle implements $Instance {
             ),
             BridgeParameter(
               'type',
-              BridgeTypeAnnotation(BridgeTypeRef(BridgeTypeSpec(
-                  'package:hoyomi_bridge/core_services/eiga/interfaces/subtitle.dart',
-                  'SubtitleType'))),
+              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
               false,
             ),
             BridgeParameter(

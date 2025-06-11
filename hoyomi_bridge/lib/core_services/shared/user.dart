@@ -12,10 +12,19 @@ sealed class User with _$User {
     String? email,
     required String photoUrl,
     required String fullName,
-    @Default(Sex.other) Sex sex,
+    @Default(Sex.other) String sex,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 }
 
-enum Sex { male, female, other }
+@Bind()
+class Sex {
+  static const String male = 'male';
+  static const String female = 'female';
+  static const String other = 'other';
+
+  static const List<String> values = [male, female, other];
+
+  static bool isValid(String? value) => values.contains(value);
+}

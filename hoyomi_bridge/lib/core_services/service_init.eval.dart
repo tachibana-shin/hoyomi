@@ -4,32 +4,27 @@
 
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
-import 'service.dart';
-import 'dart:async';
+import 'service_init.dart';
 import 'package:hoyomi_bridge/export.dart';
 import 'package:dart_eval/stdlib/core.dart';
 import 'package:hoyomi_bridge/core_services/shared/o_image.eval.dart';
 import 'package:hoyomi_bridge/core_services/shared/setting/setting_field.eval.dart';
 import 'package:hoyomi_bridge/core_services/shared/web_rule.eval.dart';
 import 'package:dart_eval/stdlib/async.dart';
-import 'package:hoyomi_bridge/core_services/shared/setting/field_input.eval.dart';
-import 'package:hoyomi_bridge/core_services/bridger.eval.dart';
-import 'package:hoyomi_bridge/core_services/service.eval.dart';
-import 'package:hoyomi_bridge/utils/d_query.eval.dart';
 
 /// dart_eval wrapper binding for [ServiceInit]
 class $ServiceInit implements $Instance {
   /// Configure this class for use in a [Runtime]
   static void configureForRuntime(Runtime runtime) {
     runtime.registerBridgeFunc(
-        'package:hoyomi_bridge/core_services/service.dart',
+        'package:hoyomi_bridge/core_services/service_init.dart',
         'ServiceInit.',
         $ServiceInit.$new);
   }
 
   /// Compile-time type specification of [$ServiceInit]
   static const $spec = BridgeTypeSpec(
-    'package:hoyomi_bridge/core_services/service.dart',
+    'package:hoyomi_bridge/core_services/service_init.dart',
     'ServiceInit',
   );
 
@@ -135,6 +130,13 @@ class $ServiceInit implements $Instance {
       'dynamicWebRules': BridgeMethodDef(
         BridgeFunctionDef(
           returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.future)),
+          namedParams: [],
+          params: [],
+        ),
+      ),
+      'toJson': BridgeMethodDef(
+        BridgeFunctionDef(
+          returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.map)),
           namedParams: [],
           params: [],
         ),
@@ -302,6 +304,9 @@ class $ServiceInit implements $Instance {
               });
       case 'dynamicWebRules':
         return __dynamicWebRules;
+
+      case 'toJson':
+        return __toJson;
     }
     return _superclass.$getProperty(runtime, identifier);
   }
@@ -315,329 +320,15 @@ class $ServiceInit implements $Instance {
         .wrap(result.then((e) => $List.view(e, (e) => $WebRule.wrap(e))));
   }
 
-  @override
-  void $setProperty(Runtime runtime, String identifier, $Value value) {
-    return _superclass.$setProperty(runtime, identifier, value);
-  }
-}
-
-/// dart_eval wrapper binding for [BaseService]
-class $BaseService implements $Instance {
-  /// Configure this class for use in a [Runtime]
-  static void configureForRuntime(Runtime runtime) {
-    runtime.registerBridgeFunc(
-        'package:hoyomi_bridge/core_services/service.dart',
-        'BaseService.settingsDefault*g',
-        $BaseService.$settingsDefault);
-  }
-
-  /// Compile-time type specification of [$BaseService]
-  static const $spec = BridgeTypeSpec(
-    'package:hoyomi_bridge/core_services/service.dart',
-    'BaseService',
-  );
-
-  /// Compile-time type declaration of [$BaseService]
-  static const $type = BridgeTypeRef($spec);
-
-  /// Compile-time class declaration of [$BaseService]
-  static const $declaration = BridgeClassDef(
-    BridgeClassType(
-      $type,
-      isAbstract: false,
-    ),
-    constructors: {
-      '': BridgeConstructorDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation($type),
-          namedParams: [],
-          params: [],
-        ),
-        isFactory: false,
-      ),
-    },
-    methods: {
-      'fetch': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.future)),
-          namedParams: [
-            BridgeParameter(
-              'cookie',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string),
-                  nullable: true),
-              true,
-            ),
-            BridgeParameter(
-              'query',
-              BridgeTypeAnnotation(
-                  BridgeTypeRef(BridgeTypeSpec(
-                      'package:hoyomi_bridge/core_services/shared/url_search_params.dart',
-                      'UrlSearchParams')),
-                  nullable: true),
-              true,
-            ),
-            BridgeParameter(
-              'body',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.map),
-                  nullable: true),
-              true,
-            ),
-            BridgeParameter(
-              'headers',
-              BridgeTypeAnnotation(
-                  BridgeTypeRef(BridgeTypeSpec(
-                      'package:hoyomi_bridge/core_services/shared/headers.dart',
-                      'Headers')),
-                  nullable: true),
-              true,
-            ),
-            BridgeParameter(
-              'notify',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
-              true,
-            ),
-            BridgeParameter(
-              'headless',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
-              true,
-            ),
-            BridgeParameter(
-              'cache',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
-              true,
-            ),
-          ],
-          params: [
-            BridgeParameter(
-              'url',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
-              false,
-            ),
-          ],
-        ),
-      ),
-      'parseQ': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(BridgeTypeRef(BridgeTypeSpec(
-              'package:hoyomi_bridge/utils/d_query.dart', 'DQuery'))),
-          namedParams: [],
-          params: [
-            BridgeParameter(
-              'html',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
-              false,
-            ),
-          ],
-        ),
-      ),
-      'fetchQ': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.future)),
-          namedParams: [
-            BridgeParameter(
-              'cookie',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string),
-                  nullable: true),
-              true,
-            ),
-            BridgeParameter(
-              'query',
-              BridgeTypeAnnotation(
-                  BridgeTypeRef(BridgeTypeSpec(
-                      'package:hoyomi_bridge/core_services/shared/url_search_params.dart',
-                      'UrlSearchParams')),
-                  nullable: true),
-              true,
-            ),
-            BridgeParameter(
-              'body',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.map),
-                  nullable: true),
-              true,
-            ),
-            BridgeParameter(
-              'headers',
-              BridgeTypeAnnotation(
-                  BridgeTypeRef(BridgeTypeSpec(
-                      'package:hoyomi_bridge/core_services/shared/headers.dart',
-                      'Headers')),
-                  nullable: true),
-              true,
-            ),
-            BridgeParameter(
-              'headless',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
-              true,
-            ),
-            BridgeParameter(
-              'cache',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
-              true,
-            ),
-          ],
-          params: [
-            BridgeParameter(
-              'url',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
-              false,
-            ),
-          ],
-        ),
-      ),
-    },
-    getters: {
-      'init': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(BridgeTypeRef(BridgeTypeSpec(
-              'package:hoyomi_bridge/core_services/service.dart',
-              'ServiceInit'))),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-      'uid': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-      'name': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-      '_bridger': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(BridgeTypeRef(BridgeTypeSpec(
-              'package:hoyomi_bridge/core_services/bridger.dart', 'Bridger'))),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-      'baseUrl': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
-    setters: {},
-    fields: {
-      'settingsDefault': BridgeFieldDef(
-        BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.list)),
-        isStatic: true,
-      ),
-      'bridger': BridgeFieldDef(
-        BridgeTypeAnnotation(
-            BridgeTypeRef(BridgeTypeSpec(
-                'package:hoyomi_bridge/core_services/bridger.dart', 'Bridger')),
-            nullable: true),
-        isStatic: false,
-      ),
-    },
-    wrap: true,
-  );
-
-  /// Wrapper for the [BaseService.settingsDefault] getter
-  static $Value? $settingsDefault(
-      Runtime runtime, $Value? target, List<$Value?> args) {
-    final value = BaseService.settingsDefault;
-    return $List.view(value, (e) => $FieldInput.wrap(e));
-  }
-
-  final $Instance _superclass;
-
-  @override
-  final BaseService $value;
-
-  @override
-  BaseService get $reified => $value;
-
-  /// Wrap a [BaseService] in a [$BaseService]
-  $BaseService.wrap(this.$value) : _superclass = $Object($value);
-
-  @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
-
-  @override
-  $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'bridger':
-        final _bridger = $value.bridger;
-        return _bridger == null ? $null() : $Bridger.wrap(_bridger);
-
-      case 'init':
-        final _init = $value.init;
-        return $ServiceInit.wrap(_init);
-
-      case 'uid':
-        final _uid = $value.uid;
-        return $String(_uid);
-
-      case 'name':
-        final _name = $value.name;
-        return $String(_name);
-
-      case 'baseUrl':
-        final _baseUrl = $value.baseUrl;
-        return $String(_baseUrl);
-      case 'fetch':
-        return __fetch;
-
-      case 'parseQ':
-        return __parseQ;
-
-      case 'fetchQ':
-        return __fetchQ;
-    }
-    return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __fetch = $Function(_fetch);
-  static $Value? _fetch(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target as $BaseService;
-    final result = self.$value.fetch(args[0]!.$value,
-        cookie: args[1]?.$value,
-        query: args[2]?.$value,
-        body: (args[3]?.$reified as Map?)?.cast(),
-        headers: args[4]?.$value,
-        notify: args[5]?.$value ?? true,
-        headless: args[6]?.$value ?? false,
-        cache: args[7]?.$value ?? true);
-    return $Future.wrap(result.then((e) => $String(e)));
-  }
-
-  static const $Function __parseQ = $Function(_parseQ);
-  static $Value? _parseQ(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target as $BaseService;
-    final result = self.$value.parseQ(args[0]!.$value);
-    return $DQuery.wrap(result);
-  }
-
-  static const $Function __fetchQ = $Function(_fetchQ);
-  static $Value? _fetchQ(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target as $BaseService;
-    final result = self.$value.fetchQ(args[0]!.$value,
-        cookie: args[1]?.$value,
-        query: args[2]?.$value,
-        body: (args[3]?.$reified as Map?)?.cast(),
-        headers: args[4]?.$value,
-        headless: args[5]?.$value ?? false,
-        cache: args[6]?.$value ?? true);
-    return $Future.wrap(result.then((e) => $DQuery.wrap(e)));
+  static const $Function __toJson = $Function(_toJson);
+  static $Value? _toJson(Runtime runtime, $Value? target, List<$Value?> args) {
+    final self = target as $ServiceInit;
+    final result = self.$value.toJson();
+    return $Map.wrap(result);
   }
 
   @override
   void $setProperty(Runtime runtime, String identifier, $Value value) {
-    switch (identifier) {
-      case 'bridger':
-        $value.bridger = value.$value;
-        return;
-    }
     return _superclass.$setProperty(runtime, identifier, value);
   }
 }

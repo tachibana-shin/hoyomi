@@ -1,8 +1,6 @@
 import 'dart:typed_data';
-import 'package:eval_annotation/eval_annotation.dart';
 import 'package:hoyomi_bridge/export.dart';
 
-@Bind()
 abstract class ABComicService extends BaseService {
   String getURL(String comicId, {String? chapterId});
   ComicParam parseURL(String url);
@@ -33,7 +31,7 @@ abstract class ABComicService extends BaseService {
   });
 
   // Utils
-  ComicModes getComicModes(MetaComic comic) {
+  String getComicModes(MetaComic comic) {
     throw UnimplementedError();
   }
 }

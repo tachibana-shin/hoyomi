@@ -85,9 +85,12 @@ void main() {
             !file.path.contains('generated') &&
             !file.path.contains('mixin') &&
             !file.path.contains('compiler') &&
+            !file.path.contains('ab_') &&
             file.path != 'lib/export_no_eval.dart' &&
             file.path != 'lib/register.dart' &&
             file.path != 'lib/test.dart' &&
+            file.path != 'lib/core_services/bridger.dart' &&
+            file.path != 'lib/core_services/service.dart' &&
             file.path != 'lib/export.dart',
       );
 

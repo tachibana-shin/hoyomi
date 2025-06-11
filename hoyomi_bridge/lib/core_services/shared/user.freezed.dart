@@ -19,7 +19,7 @@ mixin _$User {
   String? get email;
   String get photoUrl;
   String get fullName;
-  Sex get sex;
+  String get sex;
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.
@@ -62,7 +62,11 @@ abstract mixin class $UserCopyWith<$Res> {
       _$UserCopyWithImpl;
   @useResult
   $Res call(
-      {String user, String? email, String photoUrl, String fullName, Sex sex});
+      {String user,
+      String? email,
+      String photoUrl,
+      String fullName,
+      String sex});
 }
 
 /// @nodoc
@@ -103,7 +107,7 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
       sex: null == sex
           ? _self.sex
           : sex // ignore: cast_nullable_to_non_nullable
-              as Sex,
+              as String,
     ));
   }
 }
@@ -129,7 +133,7 @@ class _User implements User {
   final String fullName;
   @override
   @JsonKey()
-  final Sex sex;
+  final String sex;
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.
@@ -178,7 +182,11 @@ abstract mixin class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String user, String? email, String photoUrl, String fullName, Sex sex});
+      {String user,
+      String? email,
+      String photoUrl,
+      String fullName,
+      String sex});
 }
 
 /// @nodoc
@@ -219,7 +227,7 @@ class __$UserCopyWithImpl<$Res> implements _$UserCopyWith<$Res> {
       sex: null == sex
           ? _self.sex
           : sex // ignore: cast_nullable_to_non_nullable
-              as Sex,
+              as String,
     ));
   }
 }

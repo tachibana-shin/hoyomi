@@ -156,6 +156,9 @@ class DQuery {
 
   // --- Traversal/Filtering (Set Focus) ---
 
+  DQuery q(String selector, {bool single = false}) =>
+      query(selector, single: single);
+
   /// Gets the descendants of each element in the current set of matched elements,
   /// filtered by a selector.
   DQuery query(String selector, {bool single = false}) {
@@ -240,8 +243,8 @@ class DQuery {
 
   /// Converts the DQuery object into an Iterable of DQuery objects,
   /// each containing a single element from the original set.
-  Iterable<DQuery> toList() {
-    return _elements.map((element) => DQuery([element]));
+  List<DQuery> toList() {
+    return _elements.map((element) => DQuery([element])).toList();
   }
 
   /// A jQuery-like wrapper for HTML [Element] objects, providing convenient methods

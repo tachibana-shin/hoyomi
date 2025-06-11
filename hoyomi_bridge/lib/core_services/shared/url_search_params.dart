@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:eval_annotation/eval_annotation.dart';
+// import 'package:eval_annotation/eval_annotation.dart';
 
 part 'url_search_params.freezed.dart';
 part 'url_search_params.g.dart';
 
 @freezed
-@Bind()
+// @Bind()
 sealed class UrlSearchParams with _$UrlSearchParams {
   const factory UrlSearchParams({
     @Default({}) Map<String, List<String>?> params,

@@ -37,7 +37,7 @@ sealed class MetaEiga with _$MetaEiga {
     List<Genre>? countries,
     String? language,
     List<Genre>? studios,
-    required StatusEnum status,
+    required String status,
     Genre? movieSeason,
     String? trailer,
     @Default(false) bool fake,

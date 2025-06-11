@@ -9,7 +9,7 @@ part of 'subtitle.dart';
 _Subtitle _$SubtitleFromJson(Map<String, dynamic> json) => _Subtitle(
       language: json['language'] as String,
       code: json['code'] as String,
-      type: $enumDecode(_$SubtitleTypeEnumMap, json['type']),
+      type: json['type'] as String,
       url: json['url'] as String,
       headers: json['headers'] == null
           ? null
@@ -19,17 +19,7 @@ _Subtitle _$SubtitleFromJson(Map<String, dynamic> json) => _Subtitle(
 Map<String, dynamic> _$SubtitleToJson(_Subtitle instance) => <String, dynamic>{
       'language': instance.language,
       'code': instance.code,
-      'type': _$SubtitleTypeEnumMap[instance.type]!,
+      'type': instance.type,
       'url': instance.url,
       'headers': instance.headers,
     };
-
-const _$SubtitleTypeEnumMap = {
-  SubtitleType.srt: 'srt',
-  SubtitleType.ssa: 'ssa',
-  SubtitleType.ttml: 'ttml',
-  SubtitleType.dfxp: 'dfxp',
-  SubtitleType.sbv: 'sbv',
-  SubtitleType.vtt: 'vtt',
-  SubtitleType.custom: 'custom',
-};

@@ -12,7 +12,7 @@ _MetaComic _$MetaComicFromJson(Map<String, dynamic> json) => _MetaComic(
       image: OImage.fromJson(json['image'] as Map<String, dynamic>),
       author: json['author'] as String?,
       translator: json['translator'] as String?,
-      status: $enumDecode(_$StatusEnumEnumMap, json['status']),
+      status: json['status'] as String,
       views: (json['views'] as num?)?.toInt(),
       likes: (json['likes'] as num?)?.toInt(),
       rate: json['rate'] == null
@@ -37,7 +37,7 @@ Map<String, dynamic> _$MetaComicToJson(_MetaComic instance) =>
       'image': instance.image,
       'author': instance.author,
       'translator': instance.translator,
-      'status': _$StatusEnumEnumMap[instance.status]!,
+      'status': instance.status,
       'views': instance.views,
       'likes': instance.likes,
       'rate': instance.rate,
@@ -48,12 +48,3 @@ Map<String, dynamic> _$MetaComicToJson(_MetaComic instance) =>
       'fake': instance.fake,
       'offlineMode': instance.offlineMode,
     };
-
-const _$StatusEnumEnumMap = {
-  StatusEnum.ongoing: 'ongoing',
-  StatusEnum.completed: 'completed',
-  StatusEnum.canceled: 'canceled',
-  StatusEnum.unknown: 'unknown',
-  StatusEnum.onHiatus: 'onHiatus',
-  StatusEnum.publishingFinished: 'publishingFinished',
-};

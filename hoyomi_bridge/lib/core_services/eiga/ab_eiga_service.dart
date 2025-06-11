@@ -1,7 +1,5 @@
 import 'package:hoyomi_bridge/export.dart';
-import 'package:eval_annotation/eval_annotation.dart';
 
-@Bind()
 abstract class ABEigaService extends BaseService {
   Future<EigaHome> home();
 

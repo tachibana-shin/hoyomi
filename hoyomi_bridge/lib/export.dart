@@ -1,6 +1,7 @@
 // 自動生成ファイル。手動で編集しないでください。
 // 再生成するには scripts/auto_export.dart を実行してください。
 
+export 'test.dart';
 export 'core_services/mixin/auth_mixin.dart';
 export 'core_services/eiga/ab_eiga_service.dart';
 export 'core_services/eiga/interfaces/meta_eiga.dart';
@@ -49,8 +50,6 @@ export 'core_services/eiga/interfaces/watch_time_updated.dart';
 export 'core_services/eiga/interfaces/eiga_episode.dart';
 export 'core_services/eiga/interfaces/source_content.dart';
 export 'core_services/eiga/interfaces/subtitle.dart';
-export 'core_services/eiga/ab_eiga_service.eval.dart';
-export 'core_services/comic/ab_comic_service.eval.dart';
 export 'core_services/comic/interfaces/comic_category.dart';
 export 'core_services/comic/interfaces/watch_page.dart';
 export 'core_services/comic/interfaces/comic_history.eval.dart';
@@ -88,9 +87,9 @@ export 'core_services/comic/ab_comic_service.dart';
 export 'core_services/service.dart';
 export 'core_services/exception/user_not_found_exception.eval.dart';
 export 'core_services/exception/user_not_found_exception.dart';
-export 'core_services/service.eval.dart';
 export 'core_services/shared/headers.dart';
 export 'core_services/shared/genre.eval.dart';
+export 'core_services/shared/status_enum.eval.dart';
 export 'core_services/shared/o_image.dart';
 export 'core_services/shared/headers.eval.dart';
 export 'core_services/shared/vtt.dart';
@@ -115,7 +114,9 @@ export 'core_services/shared/paginate.eval.dart';
 export 'core_services/shared/a_option.eval.dart';
 export 'core_services/shared/genre.dart';
 export 'core_services/bridger.dart';
-export 'core_services/bridger.eval.dart';
+export 'core_services/service_init.eval.dart';
+export 'core_services/service_init.dart';
+export 'service_test.dart';
 export 'utils/d_query.dart';
 export 'utils/d_query.eval.dart';
 export 'utils/is_web.dart';
@@ -125,4 +126,5 @@ export 'utils/time_utils.eval.dart';
 export 'utils/time_utils.dart';
 export 'export_no_eval.dart';
 export 'compiler/compile.dart';
+export 'compiler/lib_eval.dart';
 export 'register.dart';

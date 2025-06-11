@@ -66,9 +66,7 @@ class $User implements $Instance {
             ),
             BridgeParameter(
               'sex',
-              BridgeTypeAnnotation(BridgeTypeRef(BridgeTypeSpec(
-                  'package:hoyomi_bridge/core_services/shared/user.dart',
-                  'Sex'))),
+              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
               true,
             ),
           ],
@@ -128,6 +126,168 @@ class $User implements $Instance {
 
   /// Wrap a [User] in a [$User]
   $User.wrap(this.$value) : _superclass = $Object($value);
+
+  @override
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
+
+  @override
+  $Value? $getProperty(Runtime runtime, String identifier) {
+    return _superclass.$getProperty(runtime, identifier);
+  }
+
+  @override
+  void $setProperty(Runtime runtime, String identifier, $Value value) {
+    return _superclass.$setProperty(runtime, identifier, value);
+  }
+}
+
+/// dart_eval wrapper binding for [Sex]
+class $Sex implements $Instance {
+  /// Configure this class for use in a [Runtime]
+  static void configureForRuntime(Runtime runtime) {
+    runtime.registerBridgeFunc(
+        'package:hoyomi_bridge/core_services/shared/user.dart',
+        'Sex.',
+        $Sex.$new);
+
+    runtime.registerBridgeFunc(
+        'package:hoyomi_bridge/core_services/shared/user.dart',
+        'Sex.isValid',
+        $Sex.$isValid);
+
+    runtime.registerBridgeFunc(
+        'package:hoyomi_bridge/core_services/shared/user.dart',
+        'Sex.male*g',
+        $Sex.$male);
+
+    runtime.registerBridgeFunc(
+        'package:hoyomi_bridge/core_services/shared/user.dart',
+        'Sex.female*g',
+        $Sex.$female);
+
+    runtime.registerBridgeFunc(
+        'package:hoyomi_bridge/core_services/shared/user.dart',
+        'Sex.other*g',
+        $Sex.$other);
+
+    runtime.registerBridgeFunc(
+        'package:hoyomi_bridge/core_services/shared/user.dart',
+        'Sex.values*g',
+        $Sex.$values);
+  }
+
+  /// Compile-time type specification of [$Sex]
+  static const $spec = BridgeTypeSpec(
+    'package:hoyomi_bridge/core_services/shared/user.dart',
+    'Sex',
+  );
+
+  /// Compile-time type declaration of [$Sex]
+  static const $type = BridgeTypeRef($spec);
+
+  /// Compile-time class declaration of [$Sex]
+  static const $declaration = BridgeClassDef(
+    BridgeClassType(
+      $type,
+      isAbstract: false,
+    ),
+    constructors: {
+      '': BridgeConstructorDef(
+        BridgeFunctionDef(
+          returns: BridgeTypeAnnotation($type),
+          namedParams: [],
+          params: [],
+        ),
+        isFactory: false,
+      ),
+    },
+    methods: {
+      'isValid': BridgeMethodDef(
+        BridgeFunctionDef(
+          returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool)),
+          namedParams: [],
+          params: [
+            BridgeParameter(
+              'value',
+              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string),
+                  nullable: true),
+              false,
+            ),
+          ],
+        ),
+        isStatic: true,
+      ),
+    },
+    getters: {},
+    setters: {},
+    fields: {
+      'male': BridgeFieldDef(
+        BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+        isStatic: true,
+      ),
+      'female': BridgeFieldDef(
+        BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+        isStatic: true,
+      ),
+      'other': BridgeFieldDef(
+        BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+        isStatic: true,
+      ),
+      'values': BridgeFieldDef(
+        BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.list)),
+        isStatic: true,
+      ),
+    },
+    wrap: true,
+  );
+
+  /// Wrapper for the [Sex.new] constructor
+  static $Value? $new(Runtime runtime, $Value? thisValue, List<$Value?> args) {
+    return $Sex.wrap(
+      Sex(),
+    );
+  }
+
+  /// Wrapper for the [Sex.isValid] method
+  static $Value? $isValid(Runtime runtime, $Value? target, List<$Value?> args) {
+    final value = Sex.isValid(args[0]!.$value);
+    return $bool(value);
+  }
+
+  /// Wrapper for the [Sex.male] getter
+  static $Value? $male(Runtime runtime, $Value? target, List<$Value?> args) {
+    final value = Sex.male;
+    return $String(value);
+  }
+
+  /// Wrapper for the [Sex.female] getter
+  static $Value? $female(Runtime runtime, $Value? target, List<$Value?> args) {
+    final value = Sex.female;
+    return $String(value);
+  }
+
+  /// Wrapper for the [Sex.other] getter
+  static $Value? $other(Runtime runtime, $Value? target, List<$Value?> args) {
+    final value = Sex.other;
+    return $String(value);
+  }
+
+  /// Wrapper for the [Sex.values] getter
+  static $Value? $values(Runtime runtime, $Value? target, List<$Value?> args) {
+    final value = Sex.values;
+    return $List.view(value, (e) => $String(e));
+  }
+
+  final $Instance _superclass;
+
+  @override
+  final Sex $value;
+
+  @override
+  Sex get $reified => $value;
+
+  /// Wrap a [Sex] in a [$Sex]
+  $Sex.wrap(this.$value) : _superclass = $Object($value);
 
   @override
   int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);

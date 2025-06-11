@@ -28,8 +28,6 @@ void registerEvalDeclarations(Compiler compiler) {
   compiler.defineBridgeClass($EigaEpisode.$declaration);
   compiler.defineBridgeClass($EigaEpisodes.$declaration);
   compiler.defineBridgeClass($WatchTime.$declaration);
-  compiler.defineBridgeClass($ABEigaService.$declaration);
-  compiler.defineBridgeClass($ABComicService.$declaration);
   compiler.defineBridgeClass($ComicHistory.$declaration);
   compiler.defineBridgeClass($HomeComicCategory.$declaration);
   compiler.defineBridgeClass($WatchPageUpdated.$declaration);
@@ -47,11 +45,11 @@ void registerEvalDeclarations(Compiler compiler) {
   compiler.defineBridgeClass($MetaComic.$declaration);
   compiler.defineBridgeClass($ComicChapter.$declaration);
   compiler.defineBridgeClass($UserNotFoundException.$declaration);
-  compiler.defineBridgeClass($ServiceInit.$declaration);
-  compiler.defineBridgeClass($BaseService.$declaration);
   compiler.defineBridgeClass($Genre.$declaration);
+  compiler.defineBridgeClass($StatusEnum.$declaration);
   compiler.defineBridgeClass($Headers.$declaration);
   compiler.defineBridgeClass($User.$declaration);
+  compiler.defineBridgeClass($Sex.$declaration);
   compiler.defineBridgeClass($UrlSearchParams.$declaration);
   compiler.defineBridgeClass($SettingField.$declaration);
   compiler.defineBridgeClass($FieldInput.$declaration);
@@ -61,7 +59,7 @@ void registerEvalDeclarations(Compiler compiler) {
   compiler.defineBridgeClass($WebRule.$declaration);
   compiler.defineBridgeClass($Paginate.$declaration);
   compiler.defineBridgeClass($Option.$declaration);
-  compiler.defineBridgeClass($Bridger.$declaration);
+  compiler.defineBridgeClass($ServiceInit.$declaration);
   compiler.defineBridgeClass($DQuery.$declaration);
   compiler.defineBridgeClass($DateFormat.$declaration);
   compiler.defineBridgeClass($TimeUtils.$declaration);
@@ -111,8 +109,10 @@ void registerEvalConstructors(Runtime runtime) {
   runtime.registerBridgeFunc('package:hoyomi_bridge/core_services/comic/interfaces/comic_chapter.dart', 'ComicChapter.', $ComicChapter.$new);
   runtime.registerBridgeFunc('package:hoyomi_bridge/core_services/exception/user_not_found_exception.dart', 'UserNotFoundException.', $UserNotFoundException.$new);
   runtime.registerBridgeFunc('package:hoyomi_bridge/core_services/shared/genre.dart', 'Genre.', $Genre.$new);
+  runtime.registerBridgeFunc('package:hoyomi_bridge/core_services/shared/status_enum.dart', 'StatusEnum.', $StatusEnum.$new);
   runtime.registerBridgeFunc('package:hoyomi_bridge/core_services/shared/headers.dart', 'Headers.', $Headers.$new);
   runtime.registerBridgeFunc('package:hoyomi_bridge/core_services/shared/user.dart', 'User.', $User.$new);
+  runtime.registerBridgeFunc('package:hoyomi_bridge/core_services/shared/user.dart', 'Sex.', $Sex.$new);
   runtime.registerBridgeFunc('package:hoyomi_bridge/core_services/shared/url_search_params.dart', 'UrlSearchParams.', $UrlSearchParams.$new);
   runtime.registerBridgeFunc('package:hoyomi_bridge/core_services/shared/setting/setting_field.dart', 'SettingField.', $SettingField.$new);
   runtime.registerBridgeFunc('package:hoyomi_bridge/core_services/shared/setting/field_input.dart', 'FieldInput.', $FieldInput.$new);

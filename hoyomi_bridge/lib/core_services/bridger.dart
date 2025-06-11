@@ -1,7 +1,5 @@
-import 'package:eval_annotation/eval_annotation.dart';
 import 'package:hoyomi_bridge/export.dart';
 
-@Bind()
 abstract class Bridger {
   String get baseUrl;
   Future<String> fetch(

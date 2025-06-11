@@ -14,7 +14,7 @@ sealed class MetaComic with _$MetaComic {
     required OImage image,
     String? author,
     String? translator,
-    required StatusEnum status,
+    required String status,
     int? views,
     int? likes,
     RateValue? rate,

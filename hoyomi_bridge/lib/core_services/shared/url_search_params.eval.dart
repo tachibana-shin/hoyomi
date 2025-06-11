@@ -14,24 +14,28 @@ class $UrlSearchParams implements $Instance {
   /// Configure this class for use in a [Runtime]
   static void configureForRuntime(Runtime runtime) {
     runtime.registerBridgeFunc(
-        'package:hoyomi_bridge/core_services/shared/url_search_params.dart',
-        'UrlSearchParams.',
-        $UrlSearchParams.$new);
+      'package:hoyomi_bridge/core_services/shared/url_search_params.dart',
+      'UrlSearchParams.',
+      $UrlSearchParams.$new,
+    );
 
     runtime.registerBridgeFunc(
-        'package:hoyomi_bridge/core_services/shared/url_search_params.dart',
-        'UrlSearchParams.fromJson',
-        $UrlSearchParams.$fromJson);
+      'package:hoyomi_bridge/core_services/shared/url_search_params.dart',
+      'UrlSearchParams.fromJson',
+      $UrlSearchParams.$fromJson,
+    );
 
     runtime.registerBridgeFunc(
-        'package:hoyomi_bridge/core_services/shared/url_search_params.dart',
-        'UrlSearchParams.fromQuery',
-        $UrlSearchParams.$fromQuery);
+      'package:hoyomi_bridge/core_services/shared/url_search_params.dart',
+      'UrlSearchParams.fromQuery',
+      $UrlSearchParams.$fromQuery,
+    );
 
     runtime.registerBridgeFunc(
-        'package:hoyomi_bridge/core_services/shared/url_search_params.dart',
-        'UrlSearchParams.fromMap',
-        $UrlSearchParams.$fromMap);
+      'package:hoyomi_bridge/core_services/shared/url_search_params.dart',
+      'UrlSearchParams.fromMap',
+      $UrlSearchParams.$fromMap,
+    );
   }
 
   /// Compile-time type specification of [$UrlSearchParams]
@@ -45,10 +49,7 @@ class $UrlSearchParams implements $Instance {
 
   /// Compile-time class declaration of [$UrlSearchParams]
   static const $declaration = BridgeClassDef(
-    BridgeClassType(
-      $type,
-      isAbstract: false,
-    ),
+    BridgeClassType($type, isAbstract: false),
     constructors: {
       '': BridgeConstructorDef(
         BridgeFunctionDef(
@@ -107,7 +108,15 @@ class $UrlSearchParams implements $Instance {
         isFactory: true,
       ),
     },
-    methods: {},
+    methods: {
+      'toQuery': BridgeMethodDef(
+        BridgeFunctionDef(
+          returns: BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
+          namedParams: [],
+          params: [],
+        ),
+      ),
+    },
     getters: {},
     setters: {},
     fields: {},
@@ -123,7 +132,10 @@ class $UrlSearchParams implements $Instance {
 
   /// Wrapper for the [UrlSearchParams.fromJson] constructor
   static $Value? $fromJson(
-      Runtime runtime, $Value? thisValue, List<$Value?> args) {
+    Runtime runtime,
+    $Value? thisValue,
+    List<$Value?> args,
+  ) {
     return $UrlSearchParams.wrap(
       UrlSearchParams.fromJson((args[0]!.$reified as Map).cast()),
     );
@@ -131,15 +143,19 @@ class $UrlSearchParams implements $Instance {
 
   /// Wrapper for the [UrlSearchParams.fromQuery] constructor
   static $Value? $fromQuery(
-      Runtime runtime, $Value? thisValue, List<$Value?> args) {
-    return $UrlSearchParams.wrap(
-      UrlSearchParams.fromQuery(args[0]!.$value),
-    );
+    Runtime runtime,
+    $Value? thisValue,
+    List<$Value?> args,
+  ) {
+    return $UrlSearchParams.wrap(UrlSearchParams.fromQuery(args[0]!.$value));
   }
 
   /// Wrapper for the [UrlSearchParams.fromMap] constructor
   static $Value? $fromMap(
-      Runtime runtime, $Value? thisValue, List<$Value?> args) {
+    Runtime runtime,
+    $Value? thisValue,
+    List<$Value?> args,
+  ) {
     return $UrlSearchParams.wrap(
       UrlSearchParams.fromMap((args[0]!.$reified as Map).cast()),
     );

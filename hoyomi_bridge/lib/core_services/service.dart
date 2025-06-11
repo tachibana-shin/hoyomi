@@ -1,46 +1,7 @@
 import 'dart:async';
 
-import 'package:eval_annotation/eval_annotation.dart';
 import 'package:hoyomi_bridge/export.dart';
 
-@Bind()
-class ServiceInit {
-  final String name;
-  final String? uid;
-  final OImage faviconUrl;
-  final String rootUrl;
-  final String Function()? captchaUrl;
-  final List<SettingField>? settings;
-  final List<WebRule>? webRules;
-  final bool fetchHeadless;
-  final String? fetchBaseUrl;
-
-  /// Called before inserting the cookie to the insert request. Override this method to modify the cookie
-  /// before it is inserted. The default implementation simply returns the original cookie.
-  ///
-  /// [cookie] The cookie to be inserted.
-  ///
-  /// Returns the modified cookie.
-  final String? Function(String? oldCookie)? onBeforeInsertCookie;
-  Future<List<WebRule>> dynamicWebRules() {
-    throw UnimplementedError();
-  }
-
-  const ServiceInit({
-    required this.name,
-    this.uid,
-    required this.rootUrl,
-    required this.faviconUrl,
-    this.captchaUrl,
-    this.settings,
-    this.onBeforeInsertCookie,
-    this.webRules,
-    this.fetchHeadless = false,
-    this.fetchBaseUrl,
-  });
-}
-
-@Bind()
 abstract class BaseService {
   static final List<FieldInput> settingsDefault = [
     FieldInput(
@@ -72,8 +33,10 @@ abstract class BaseService {
   ];
 
   ServiceInit get init;
+
   String get uid => init.uid ?? name.toLowerCase().replaceAll(r'\s', '-');
   String get name => init.name;
+  // NOTICE: Only use set bridger not get
   Bridger? bridger;
 
   Bridger get _bridger {

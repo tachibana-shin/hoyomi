@@ -186,7 +186,7 @@ mixin _$MetaEiga {
   List<Genre>? get countries;
   String? get language;
   List<Genre>? get studios;
-  StatusEnum get status;
+  String get status;
   Genre? get movieSeason;
   String? get trailer;
   bool get fake;
@@ -299,7 +299,7 @@ abstract mixin class $MetaEigaCopyWith<$Res> {
       List<Genre>? countries,
       String? language,
       List<Genre>? studios,
-      StatusEnum status,
+      String status,
       Genre? movieSeason,
       String? trailer,
       bool fake});
@@ -425,7 +425,7 @@ class _$MetaEigaCopyWithImpl<$Res> implements $MetaEigaCopyWith<$Res> {
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
-              as StatusEnum,
+              as String,
       movieSeason: freezed == movieSeason
           ? _self.movieSeason
           : movieSeason // ignore: cast_nullable_to_non_nullable
@@ -590,7 +590,7 @@ class _MetaEiga implements MetaEiga {
   }
 
   @override
-  final StatusEnum status;
+  final String status;
   @override
   final Genre? movieSeason;
   @override
@@ -715,7 +715,7 @@ abstract mixin class _$MetaEigaCopyWith<$Res>
       List<Genre>? countries,
       String? language,
       List<Genre>? studios,
-      StatusEnum status,
+      String status,
       Genre? movieSeason,
       String? trailer,
       bool fake});
@@ -844,7 +844,7 @@ class __$MetaEigaCopyWithImpl<$Res> implements _$MetaEigaCopyWith<$Res> {
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
-              as StatusEnum,
+              as String,
       movieSeason: freezed == movieSeason
           ? _self.movieSeason
           : movieSeason // ignore: cast_nullable_to_non_nullable

@@ -81,9 +81,7 @@ class $MetaComic implements $Instance {
             ),
             BridgeParameter(
               'status',
-              BridgeTypeAnnotation(BridgeTypeRef(BridgeTypeSpec(
-                  'package:hoyomi_bridge/core_services/shared/status_enum.dart',
-                  'StatusEnum'))),
+              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string)),
               false,
             ),
             BridgeParameter(

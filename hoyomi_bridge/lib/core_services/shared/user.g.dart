@@ -11,7 +11,7 @@ _User _$UserFromJson(Map<String, dynamic> json) => _User(
       email: json['email'] as String?,
       photoUrl: json['photoUrl'] as String,
       fullName: json['fullName'] as String,
-      sex: $enumDecodeNullable(_$SexEnumMap, json['sex']) ?? Sex.other,
+      sex: json['sex'] as String? ?? Sex.other,
     );
 
 Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
@@ -19,11 +19,5 @@ Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
       'email': instance.email,
       'photoUrl': instance.photoUrl,
       'fullName': instance.fullName,
-      'sex': _$SexEnumMap[instance.sex]!,
+      'sex': instance.sex,
     };
-
-const _$SexEnumMap = {
-  Sex.male: 'male',
-  Sex.female: 'female',
-  Sex.other: 'other',
-};

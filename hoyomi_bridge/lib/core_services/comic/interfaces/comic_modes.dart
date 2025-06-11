@@ -1,11 +1,15 @@
-enum ComicModes { leftToRight, rightToLeft, topToBottom, webToon }
+class ComicModes {
+  static const String leftToRight = 'leftToRight';
+  static const String rightToLeft = 'rightToLeft';
+  static const String topToBottom = 'topToBottom';
+  static const String webToon = 'webToon';
 
-bool modeUsingPageView(ComicModes mode) {
-  if (mode == ComicModes.leftToRight ||
-      mode == ComicModes.rightToLeft ||
-      mode == ComicModes.topToBottom) {
-    return true;
-  }
+  static const List<String> values = [
+    leftToRight,
+    rightToLeft,
+    topToBottom,
+    webToon,
+  ];
 
-  return false;
+  static bool isValid(String? value) => values.contains(value);
 }

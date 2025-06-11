@@ -1,6 +1,5 @@
 // GENERATED FILE - EXPORTS WITHOUT EVAL FILES
 
-export 'core_services/eiga/ab_eiga_service.dart';
 export 'core_services/eiga/interfaces/meta_eiga.dart';
 export 'core_services/eiga/interfaces/eiga_carousel_item.dart';
 export 'core_services/eiga/interfaces/eiga_param.dart';
@@ -41,8 +40,6 @@ export 'core_services/comic/interfaces/watch_page_updated.dart';
 export 'core_services/comic/interfaces/comic_follow.dart';
 export 'core_services/comic/interfaces/comic_carousel.dart';
 export 'core_services/comic/interfaces/comic.dart';
-export 'core_services/comic/ab_comic_service.dart';
-export 'core_services/service.dart';
 export 'core_services/exception/user_not_found_exception.dart';
 export 'core_services/shared/headers.dart';
 export 'core_services/shared/o_image.dart';
@@ -57,7 +54,7 @@ export 'core_services/shared/user.dart';
 export 'core_services/shared/paginate.dart';
 export 'core_services/shared/filter.dart';
 export 'core_services/shared/genre.dart';
-export 'core_services/bridger.dart';
+export 'core_services/service_init.dart';
 export 'utils/d_query.dart';
 export 'utils/is_web.dart';
 export 'utils/date_format.dart';
