@@ -11,6 +11,7 @@ dependencies:
   eval_annotation: ^0.7.1
   freezed_annotation: ^3.0.0
   html: ^0.15.6
+  intl: ^0.20.2
   json_annotation: ^4.9.0
   path: ^1.9.1
 

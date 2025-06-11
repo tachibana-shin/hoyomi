@@ -9,6 +9,7 @@ void main() async {
       void main() {
         final book = OImage(src: 'https://google.com/favicon.ico');
         print(jsonEncode(book));
+         print(DateFormat('yyyy-MM-dd').parse('2025-11-22'));
       }
     ''',
     },

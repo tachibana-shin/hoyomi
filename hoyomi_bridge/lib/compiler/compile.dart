@@ -18,10 +18,7 @@ Future<Runtime> compile(Map<String, Map<String, String>> packages) async {
       'utils/is_web.dart': 'const isWeb = ${isWeb ? 'true' : 'false'};',
       'core_services/comic/interfaces/comic_modes.dart':
           await File(
-            join(
-              __dirname,
-              'core_services/comic/interfaces/comic_modes.dart',
-            ),
+            join(__dirname, 'core_services/comic/interfaces/comic_modes.dart'),
           ).readAsString(),
       'core_services/shared/status_enum.dart':
           await File(
@@ -29,6 +26,7 @@ Future<Runtime> compile(Map<String, Map<String, String>> packages) async {
           ).readAsString(),
       'main.dart':
           await File(join(__dirname, 'export_no_eval.dart')).readAsString(),
+      'export.dart': 'export \'main.dart\';',
     },
   });
 
