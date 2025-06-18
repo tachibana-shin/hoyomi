@@ -7,10 +7,10 @@ import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/controller/update_available.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 
-import 'package:hoyomi/plugins/android_sdk_int.dart';
+import 'package:hoyomi/plugins/export.dart';
 import 'package:hoyomi/stores.dart';
+import 'package:hoyomi/widgets/export.dart';
 
-import 'package:hoyomi/widgets/navigation_app.dart';
 import 'package:kaeru/kaeru.dart';
 
 import '../pages/export.dart';
@@ -406,11 +406,14 @@ class PersistentScaffold extends StatelessWidget {
       index,
       initialLocation: index == navigationShell.currentIndex,
     );
+
     lastTabActiveApp.value =
         branches[index] +
-        (switch (navigationShell.shellRouteContext.routerState.name) {
-          == 'home_comic' => '?service=${tabComic.value}',
-          == 'home_eiga' => '?service=${tabEiga.value}',
+        (switch (branches[index]) {
+          == '/home_comic' =>
+            '?service=${serviceSelect.value = tabComic.value ?? comicServices.value.first.uid}',
+          == '/home_eiga' =>
+            '?service=${serviceSelect.value = tabEiga.value ?? eigaServices.value.first.uid}',
           _ => '',
         });
   }
