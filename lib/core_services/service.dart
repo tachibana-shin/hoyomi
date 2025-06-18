@@ -274,6 +274,7 @@ abstract class Service extends BaseService
         //   onPressed: () => router.refresh(),
         // ),
         Opacity(opacity: 0.8, child: Text('Pull to refresh').fontSize(14)),
+        Opacity(opacity: 0.8, child: Text('$trace', maxLines: 2).fontSize(12)),
       ],
     );
   }

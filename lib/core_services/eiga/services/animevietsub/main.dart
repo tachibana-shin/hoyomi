@@ -145,7 +145,12 @@ class AnimeVietsubService extends ABEigaService
 
   @override
   Future<bool> isFollow(eigaId) async {
-    final id = RegExp(r'(\d+)$').firstMatch(eigaId)!.group(1)!;
+    final id = RegExp(r'(\d+)\/?$').firstMatch(eigaId)?.group(1);
+
+    if (id == null) {
+      debugPrint('Error eigaId = $eigaId');
+      return false;
+    }
 
     final text = await fetch(
       '$baseUrl/ajax/notification?Bookmark=true&filmId=$id',
