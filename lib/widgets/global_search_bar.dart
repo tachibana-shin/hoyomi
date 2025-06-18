@@ -247,61 +247,70 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                         // Text(_keyword.value),
                         if (globalKeyword.value.isNotEmpty)
                           _buildKeywordSuggest(globalKeyword.value),
-                        ListTile(
-                          leading: Iconify(Hg.search01),
-                          title: Watch(
-                            () => Text(
-                              'Search in ${serviceSelectNotNull.value.name}',
+                        if (GoRouter.of(
+                              context,
+                            ).state.name?.startsWith('search_') !=
+                            true)
+                          ListTile(
+                            leading: Iconify(Hg.search01),
+                            title: Watch(
+                              () => Text(
+                                'Search in ${serviceSelectNotNull.value.name}',
+                              ),
                             ),
+                            onTap: () {
+                              _closeSearchLayer();
+
+                              globalKeyword.value = _controller.text;
+
+                              final route = GoRouter.of(context);
+
+                              if (serviceSelectNotNull.value
+                                  is ABComicService) {
+                                if (route.state.name?.startsWith('search_') ==
+                                    true) {
+                                  context.pushReplacementNamed(
+                                    'search_comic',
+                                    pathParameters: {
+                                      'sourceId':
+                                          serviceSelectNotNull.value.uid,
+                                    },
+                                    queryParameters: {'q': globalKeyword.value},
+                                  );
+                                } else {
+                                  context.pushNamed(
+                                    'search_comic',
+                                    pathParameters: {
+                                      'sourceId':
+                                          serviceSelectNotNull.value.uid,
+                                    },
+                                    queryParameters: {'q': globalKeyword.value},
+                                  );
+                                }
+                              } else {
+                                if (route.state.name?.startsWith('search_') ==
+                                    true) {
+                                  context.pushReplacementNamed(
+                                    'search_eiga',
+                                    pathParameters: {
+                                      'sourceId':
+                                          serviceSelectNotNull.value.uid,
+                                    },
+                                    queryParameters: {'q': globalKeyword.value},
+                                  );
+                                } else {
+                                  context.pushNamed(
+                                    'search_eiga',
+                                    pathParameters: {
+                                      'sourceId':
+                                          serviceSelectNotNull.value.uid,
+                                    },
+                                    queryParameters: {'q': globalKeyword.value},
+                                  );
+                                }
+                              }
+                            },
                           ),
-                          onTap: () {
-                            _closeSearchLayer();
-
-                            globalKeyword.value = _controller.text;
-
-                            final route = GoRouter.of(context);
-
-                            if (serviceSelectNotNull.value is ABComicService) {
-                              if (route.state.name?.startsWith('search_') ==
-                                  true) {
-                                context.pushReplacementNamed(
-                                  'search_comic',
-                                  pathParameters: {
-                                    'sourceId': serviceSelectNotNull.value.uid,
-                                  },
-                                  queryParameters: {'q': globalKeyword.value},
-                                );
-                              } else {
-                                context.pushNamed(
-                                  'search_comic',
-                                  pathParameters: {
-                                    'sourceId': serviceSelectNotNull.value.uid,
-                                  },
-                                  queryParameters: {'q': globalKeyword.value},
-                                );
-                              }
-                            } else {
-                              if (route.state.name?.startsWith('search_') ==
-                                  true) {
-                                context.pushReplacementNamed(
-                                  'search_eiga',
-                                  pathParameters: {
-                                    'sourceId': serviceSelectNotNull.value.uid,
-                                  },
-                                  queryParameters: {'q': globalKeyword.value},
-                                );
-                              } else {
-                                context.pushNamed(
-                                  'search_eiga',
-                                  pathParameters: {
-                                    'sourceId': serviceSelectNotNull.value.uid,
-                                  },
-                                  queryParameters: {'q': globalKeyword.value},
-                                );
-                              }
-                            }
-                          },
-                        ),
                         if (globalKeyword.value.isNotEmpty)
                           _buildSearchResults(globalKeyword.value).expanded()
                         else
@@ -619,23 +628,28 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         clipBehavior: Clip.antiAlias,
         child: Row(
           children: [
-            if (widget.pageIsSearch &&
-                !focusing &&
-                globalKeyword.value.isNotEmpty)
+            if (!focusing && globalKeyword.value.isNotEmpty)
               IconButton(
                 icon: Iconify(Mdi.arrow_back),
                 onPressed: () {
+                  final route = GoRouter.of(context).state;
+
+                  globalKeyword.value = '';
+
+                  if (route.name == 'search') {
+                    context.replace('/search');
+
+                    return;
+                  }
                   if (context.canPop()) return context.pop();
 
                   goBranch(context, 'search');
                   context.pushReplacement('/search');
                 },
               ),
-            if ((focusing ||
-                    widget.pageIsSearch && globalKeyword.value.isNotEmpty) &&
-                widget.showExtension)
+            if (widget.showExtension)
               _buildServiceSelector()
-            else if (widget.showExtension)
+            else if (globalKeyword.value.isEmpty)
               IconButton(
                 icon: Iconify(Mdi.magnify),
                 onPressed: () => _showSearchLayer(),
@@ -753,19 +767,38 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
     globalKeyword.value = value;
     _closeSearchLayer();
 
-    goBranch(context, 'search');
-
     final route = GoRouter.of(context).state;
-    if (route.pathParameters['from'] != null) {
-      context.replace("/search?q=$value&from=${route.pathParameters['from']}");
+
+    if (route.name != 'search_comic' &&
+        route.name != 'search_eiga' &&
+        route.name != 'search') {
+      goBranch(context, 'search');
+    }
+
+    if (route.name == 'search' && route.pathParameters['from'] != null) {
+      context.replace(
+        "/search?q=$value&from=${route.pathParameters['from']}",
+      );
 
       return;
     }
     switch (route.name) {
       case 'search':
-      case 'search_comic':
-      case 'search_eiga':
         context.replace("/search?q=$value");
+        break;
+      case 'search_comic':
+        context.replaceNamed(
+          'search_comic',
+          pathParameters: {'sourceId': route.pathParameters['sourceId']!},
+          queryParameters: {'q': value},
+        );
+        break;
+      case 'search_eiga':
+        context.replaceNamed(
+          'search_eiga',
+          pathParameters: {'sourceId': route.pathParameters['sourceId']!},
+          queryParameters: {'q': value},
+        );
         break;
       case 'home_comic':
         context.push("/search?q=$value&from=comic");

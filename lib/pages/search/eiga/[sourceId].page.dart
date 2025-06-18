@@ -3,6 +3,7 @@ import 'package:hoyomi/core_services/eiga/interfaces/eiga_category.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/pages/category_eiga/%5BsourceId%5D/%5BcategoryId%5D.page.dart';
 import 'package:hoyomi/widgets/export.dart';
+import 'package:kaeru/kaeru.dart';
 
 class SearchEigaPage extends StatelessWidget {
   final String sourceId;
@@ -16,33 +17,42 @@ class SearchEigaPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CategoryEigaPage(
-      sourceId: sourceId,
-      categoryId: keyword,
-      title: const GlobalSearchBar(pageIsSearch: true, showExtension: false),
-      getCategory: ({
-        required filters,
-        required page,
-        required categoryId,
-      }) async {
-        final data = await getEigaService(sourceId).search(
-          filters: filters,
-          page: page,
-          keyword: categoryId,
-          quick: false,
-        );
+    bool init = true;
 
-        return EigaCategory(
-          name: 'Search "$categoryId"',
-          url: data.url,
-          items: data.items,
-          page: data.page,
-          totalItems: data.totalItems,
-          totalPages: data.totalPages,
-          description: data.description,
-          filters: data.filters,
-        );
-      },
-    );
+    return Watch(() {
+      globalKeyword.value;
+      final $keyword = init ? keyword : globalKeyword.value;
+      init = false;
+
+      return CategoryEigaPage(
+        key: UniqueKey(),
+        sourceId: sourceId,
+        categoryId: $keyword,
+        title: const GlobalSearchBar(pageIsSearch: true, showExtension: false),
+        getCategory: ({
+          required filters,
+          required page,
+          required categoryId,
+        }) async {
+          final data = await getEigaService(sourceId).search(
+            filters: filters,
+            page: page,
+            keyword: categoryId,
+            quick: false,
+          );
+
+          return EigaCategory(
+            name: 'Search "$categoryId"',
+            url: data.url,
+            items: data.items,
+            page: data.page,
+            totalItems: data.totalItems,
+            totalPages: data.totalPages,
+            description: data.description,
+            filters: data.filters,
+          );
+        },
+      );
+    });
   }
 }
