@@ -163,6 +163,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Future<MetaEiga> _getDetails(String eigaId) async {
+    print('get details ==== =$eigaId');
     final data = await cacheRemember<MetaEiga>(
       'details_eiga/${_service.uid}/$eigaId',
       get: () => _service.getDetails(eigaId),
@@ -1353,7 +1354,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     context.replaceNamed(
       'details_eiga',
-      pathParameters: {'sourceId': widget.sourceId, 'eigaId': widget.sourceId},
+      pathParameters: {'sourceId': widget.sourceId, 'eigaId': widget.eigaId},
       queryParameters: {'episodeId': _episodeId.value!},
     );
   }
