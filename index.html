@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+    <base href="/" />
+
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <meta name="description" content="A new Flutter project." />
+
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Hoyomi" />
+    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png" />
+
+    <title>Hoyomi</title>
+    <link rel="manifest" href="manifest.json" />
+  </head>
+
+  <body>
+    <script type="module">
+      // @ts-check
+      import Hls from "https://esm.run/hls.js@1.6.2"
+      import canAutoPlay from "https://esm.run/can-autoplay@3.0.2"
+      import { inflateRaw } from "https://esm.run/pako@2.1.0"
+
+      const originalSrcDescriptor = Object.getOwnPropertyDescriptor(
+        HTMLMediaElement.prototype,
+        "src"
+      )
+
+      if (originalSrcDescriptor)
+        Object.defineProperty(HTMLMediaElement.prototype, "src", {
+          get() {
+            return originalSrcDescriptor.get?.call(this)
+          },
+          set(src) {
+            if (typeof src === "string" && (src.includes("b64") || src.includes(".m3u"))) {
+              const b64 = new URL(src).searchParams.get("b64")
+              if (b64) src = `data:;base64,${b64}`
+              
+              if (this.canPlayType("application/vnd.apple.mpegurl")) {
+                originalSrcDescriptor.set?.call(this, src)
+              } else if (Hls.isSupported()) {
+                if (this._hls) {
+                  this._hls.destroy()
+                  this._hls = null
+                }
+
+                const hls = new Hls({
+                  progressive: true
+                })
+                hls.loadSource(src)
+                hls.attachMedia(this)
+
+                this._hls = hls
+              } else {
+                console.warn("HLS is not supported in this browser.")
+                originalSrcDescriptor.set?.call(this, src)
+              }
+            } else {
+              originalSrcDescriptor.set?.call(this, src)
+            }
+          },
+          configurable: true,
+          enumerable: true
+        })
+
+      const originalPlayDescriptor = HTMLMediaElement.prototype.play
+
+      HTMLMediaElement.prototype.play = async function () {
+        try {
+          await originalPlayDescriptor.call(this)
+        } catch {
+          this.onpause?.(new Event("pause"))
+          this.dispatchEvent(new CustomEvent("pause"))
+        }
+      }
+
+      // @ts-ignore
+      if (!window._installWebRules)
+        // @ts-ignore
+        window._installWebRules = () => {
+          throw new Error("_installWebRules_not_ready")
+        }
+      Object.assign(window, { _inflateRaw: inflateRaw })
+    </script>
+    <script src="flutter_bootstrap.js" async></script>
+  </body>
+</html>
