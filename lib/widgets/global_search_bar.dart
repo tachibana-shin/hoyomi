@@ -776,9 +776,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
     }
 
     if (route.name == 'search' && route.pathParameters['from'] != null) {
-      context.replace(
-        "/search?q=$value&from=${route.pathParameters['from']}",
-      );
+      context.replace("/search?q=$value&from=${route.pathParameters['from']}");
 
       return;
     }
