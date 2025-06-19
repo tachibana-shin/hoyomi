@@ -1,0 +1,11 @@
+{
+  "name": "js_runtime_polyfill",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

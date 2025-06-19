@@ -1,0 +1,1 @@
+bun run js_runtime_polyfill/scripts/build_embed.ts $1

@@ -55,3 +55,5 @@ app.*.map.json
 
 /deb_output
 /*.deb
+
+node_modules
