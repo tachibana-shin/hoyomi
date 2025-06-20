@@ -12,7 +12,6 @@ import 'comic/services/cuutruyen/main.dart';
 import 'comic/services/nettruyen/main.dart';
 import 'comic/services/truyengg/main.dart';
 import 'comic/services/truyenqq/main.dart';
-
 import 'eiga/services/animevietsub/main.dart';
 import 'eiga/services/hianime/main.dart';
 import 'eiga/services/kkphim/main.dart';
@@ -20,6 +19,15 @@ import 'eiga/services/nguonc/main.dart';
 import 'eiga/services/ophim/main.dart';
 
 export 'widget/export.dart';
+
+final allServices = Computed<List<Service>>(
+  () => [...comicServices.value, ...eigaServices.value],
+);
+final comicServices = Ref<List<ABComicService>>(
+  _allComicServices.values.toList(),
+);
+
+final eigaServices = Ref<List<ABEigaService>>(_allEigaServices.values.toList());
 
 final _allComicServices = Map.fromEntries(
   <ABComicService>[
@@ -29,6 +37,7 @@ final _allComicServices = Map.fromEntries(
     TruyenQQService(),
   ].map((service) => MapEntry(service.uid, service)),
 );
+
 final _allEigaServices = Map.fromEntries(
   <ABEigaService>[
     AnimeVietsubService(),
@@ -39,10 +48,23 @@ final _allEigaServices = Map.fromEntries(
   ].map((service) => MapEntry(service.uid, service)),
 );
 
-final comicServices = Ref<List<ABComicService>>(
-  _allComicServices.values.toList(),
-);
+bool _setupServicesInitd = false;
 
+Future<List<WebRule>> dynamicWebRules(List<Service> moreServices) async {
+  final List<WebRule> rules = [];
+  for (final service in {...allServices.value, ...moreServices}) {
+    if (service.init.webRules?.isNotEmpty == true) {
+      rules.addAll(service.init.webRules!);
+    }
+    // try {
+    //   rules.addAll(await service.init.dynamicWebRules());
+    // } on UnimplementedError {
+    //   continue;
+    // }
+  }
+
+  return rules;
+}
 ABComicService getComicService(String id) {
   for (final service in comicServices.value) {
     if (service.uid == id) {
@@ -52,8 +74,6 @@ ABComicService getComicService(String id) {
 
   throw Exception('Service not found $id');
 }
-
-final eigaServices = Ref<List<ABEigaService>>(_allEigaServices.values.toList());
 
 ABEigaService getEigaService(String id) {
   for (final service in eigaServices.value) {
@@ -65,7 +85,31 @@ ABEigaService getEigaService(String id) {
   throw Exception('Service not found');
 }
 
-bool _setupServicesInitd = false;
+Service getService(String uid) {
+  try {
+    return getComicService(uid);
+  } catch (err) {
+    return getEigaService(uid);
+  }
+}
+
+Service? getServiceOrNull(String uid) {
+  try {
+    return getService(uid);
+  } catch (err) {
+    return null;
+  }
+}
+
+Future<void> initializeServices([List<Service>? services]) async {
+  await _setupServices();
+
+  services ??= allServices.value;
+  await Future.wait(services.map((service) => service.initState()));
+
+  if (XPlatform.isWeb) await installWebRules(await dynamicWebRules(services));
+}
+
 Future<void> _setupServices() async {
   if (_setupServicesInitd) return;
   _setupServicesInitd = true;
@@ -132,49 +176,4 @@ Future<void> _setupServices() async {
       ),
     );
   });
-}
-
-Service getService(String uid) {
-  try {
-    return getComicService(uid);
-  } catch (err) {
-    return getEigaService(uid);
-  }
-}
-
-Service? getServiceOrNull(String uid) {
-  try {
-    return getService(uid);
-  } catch (err) {
-    return null;
-  }
-}
-
-final allServices = Computed<List<Service>>(
-  () => [...comicServices.value, ...eigaServices.value],
-);
-
-Future<void> initializeServices([List<Service>? services]) async {
-  await _setupServices();
-
-  services ??= allServices.value;
-  await Future.wait(services.map((service) => service.initState()));
-
-  if (XPlatform.isWeb) await installWebRules(await dynamicWebRules(services));
-}
-
-Future<List<WebRule>> dynamicWebRules(List<Service> moreServices) async {
-  final List<WebRule> rules = [];
-  for (final service in {...allServices.value, ...moreServices}) {
-    if (service.init.webRules?.isNotEmpty == true) {
-      rules.addAll(service.init.webRules!);
-    }
-    // try {
-    //   rules.addAll(await service.init.dynamicWebRules());
-    // } on UnimplementedError {
-    //   continue;
-    // }
-  }
-
-  return rules;
 }
