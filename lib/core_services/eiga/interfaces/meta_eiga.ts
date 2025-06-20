@@ -1,12 +1,11 @@
 import { OImage } from "../../interfaces/o_image"
 import { Genre } from "../../interfaces/genre"
+import { StatusEnum } from "../../interfaces/status_enum"
 
 export interface Season {
   name: string
   eigaId: string
 }
-
-export type StatusEnum = "ongoing" | "completed" | "upcoming" // Adjust as needed
 
 export interface MetaEiga {
   name: string
