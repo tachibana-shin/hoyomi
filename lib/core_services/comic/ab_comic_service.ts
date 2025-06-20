@@ -1,17 +1,17 @@
 import {
-  ComicParam,
-  ComicHome,
-  ComicCategory,
-  MetaComic,
-  OImage,
-  Comic,
+  type ComicHome,
+  type ComicCategory,
+  type MetaComic,
+  type OImage,
+  type Comic,
   ComicModes,
   BaseService
 } from "../main"
 
 export abstract class ABComicService extends BaseService {
-  abstract getURL(comicId: string, chapterId?: string): string
-  abstract parseURL(url: string): ComicParam
+  readonly type = "comic"
+
+  abstract getURL(comicId: string, chapterId?: string): Promise<string>
 
   abstract home(): Promise<ComicHome>
 

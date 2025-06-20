@@ -112,7 +112,7 @@ class _ServiceSettingsPageState extends State<ServiceSettingsPage> {
               initialValue:
                   _settingsChanged[field.key] ??
                   _service.getSetting(key: field.key) ??
-                  field.defaultFn(_service),
+                  field.defaultValue,
               maxLines: field.maxLines,
               onFieldSubmitted: (value) => _onChangedValue(field, value),
               onChanged: (value) => _onChangedValue(field, value),
@@ -129,7 +129,7 @@ class _ServiceSettingsPageState extends State<ServiceSettingsPage> {
   void _onChangedValue(SettingField field, String value) {
     final oldValue =
         _service.getSetting(key: field.key) ??
-        (field is FieldInput ? field.defaultFn(_service) : null);
+        (field is FieldInput ? field.defaultValue : null);
 
     if (oldValue != value && _settingsChanged[field.key] != value) {
       _settingsChanged[field.key] = value;

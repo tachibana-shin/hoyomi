@@ -25,6 +25,9 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'interfaces/export.dart';
+import 'service_init.dart';
+
+export 'service_init.dart';
 
 Dio? _dioCache;
 Future<Dio> _createDioClientCache() async {
@@ -87,42 +90,6 @@ Future<Dio> _createDioClient() async {
   return _dio!;
 }
 
-class ServiceInit {
-  final String name;
-  final String? uid;
-  final OImage faviconUrl;
-  final String rootUrl;
-  final String Function()? captchaUrl;
-  final List<SettingField>? settings;
-  final List<WebRule>? webRules;
-  final bool fetchHeadless;
-  final String? fetchBaseUrl;
-
-  /// Called before inserting the cookie to the insert request. Override this method to modify the cookie
-  /// before it is inserted. The default implementation simply returns the original cookie.
-  ///
-  /// [cookie] The cookie to be inserted.
-  ///
-  /// Returns the modified cookie.
-  final String? Function(String? oldCookie)? onBeforeInsertCookie;
-  Future<List<WebRule>> dynamicWebRules() {
-    throw UnimplementedError();
-  }
-
-  const ServiceInit({
-    required this.name,
-    this.uid,
-    required this.rootUrl,
-    required this.faviconUrl,
-    this.captchaUrl,
-    this.settings,
-    this.onBeforeInsertCookie,
-    this.webRules,
-    this.fetchHeadless = false,
-    this.fetchBaseUrl,
-  });
-}
-
 abstract class BaseService {
   final kIsWeb = XPlatform.isWeb;
 
@@ -138,16 +105,15 @@ abstract class Service extends BaseService
     FieldInput(
       name: 'URL',
       key: 'url',
-      defaultFn: (service) => service.init.rootUrl,
+      defaultValue: '{BASE_URL}',
       placeholder: 'Example https://example.com',
       description: 'The root URL of the service',
     ),
     FieldInput(
       name: 'User Agent',
       key: 'user_agent',
-      defaultFn:
-          (service) =>
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      defaultValue:
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       placeholder:
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       description: 'The user agent to use when fetching data',
@@ -156,7 +122,7 @@ abstract class Service extends BaseService
     FieldInput(
       name: 'Cookie',
       key: 'cookie',
-      defaultFn: (service) => '',
+      defaultValue: '',
       placeholder: 'Example cookie',
       description:
           'The cookie to use when fetching data. This field sync if service auth. It can change on after login with WebView',
@@ -424,7 +390,9 @@ abstract class Service extends BaseService
     final record = await ServiceSettingsController.instance.get(uid);
     String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;
 
-    cookiesText = init.onBeforeInsertCookie?.call(cookiesText) ?? cookiesText;
+    cookiesText =
+        init.customCookie?.replaceFirst('{OLD_COOKIE}', cookiesText ?? '') ??
+        cookiesText;
 
     var uri =
         _fetchBaseUrl == null

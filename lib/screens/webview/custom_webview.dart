@@ -37,7 +37,12 @@ class _CustomWebViewState extends State<CustomWebView> {
     super.initState();
 
     _service = getService(widget.sourceId);
-    _initialUrl = _service.init.captchaUrl?.call() ?? _service.baseUrl;
+    _initialUrl =
+        _service.init.captchaUrl?.replaceFirst(
+          '{BASE_URL}',
+          _service.baseUrl,
+        ) ??
+        _service.baseUrl;
     _currentTitle = _initialUrl;
     _currentUrl = _initialUrl;
   }

@@ -10,6 +10,10 @@ extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
     final output = await evaluateAsync(code);
 
     if (output.isError || output.stringResult.contains('SyntaxError')) {
+      if (output.stringResult.startsWith('UnimplementedError:')) {
+        throw UnimplementedError(output.stringResult);
+      }
+
       throw output;
     }
     if (output.isPromise ||
@@ -18,6 +22,19 @@ extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
     }
 
     return output;
+  }
+
+  Future<dynamic> evalAsyncJson(String code) async {
+    final json = await evalAsync('JSON.stringify($code)');
+
+    return jsonDecode(json.stringResult);
+  }
+
+  Future<dynamic> evalAsyncJsonOrNull(String code) async {
+    final json = await evalAsync('JSON.stringify($code)');
+    if (json.stringResult == 'undefined') return null;
+
+    return jsonDecode(json.stringResult);
   }
 
   Future<void> dartSendMessage(String event, String data) async {

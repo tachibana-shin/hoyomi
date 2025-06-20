@@ -57,11 +57,7 @@ class TruyenGGService extends ABComicService
     name: 'TruyenGGP',
     faviconUrl: OImage(src: '/favicon.ico'),
     rootUrl: 'https://truyengg.net',
-    onBeforeInsertCookie: (cookie) {
-      cookie ??= '';
-
-      return 'type_comic=1; $cookie';
-    },
+    customCookie: 'type_comic=1; {OLD_COOKIE}',
   );
 
   @override
@@ -202,7 +198,9 @@ class TruyenGGService extends ABComicService
 
   @override
   Future<MetaComic> getDetails(String comicId) async {
-    final $ = parse$(_comicCachedStore[comicId] = await fetch(getURL(comicId)));
+    final $ = parse$(
+      _comicCachedStore[comicId] = await fetch(await getURL(comicId)),
+    );
 
     final String name = $('h1[itemprop=name]', single: true).text();
     final OImage image = OImage(
@@ -325,23 +323,13 @@ class TruyenGGService extends ABComicService
   }
 
   @override
-  String getURL(comicId, {chapterId}) {
+  getURL(comicId, {chapterId}) async {
     return '$baseUrl/truyen-tranh/$comicId${chapterId != null ? '-$chapterId' : ''}.html';
   }
 
   @override
-  parseURL(url) {
-    final pathname = url.split('/').last.replaceFirst('.html', '');
-    final index = pathname.indexOf('chap-');
-    final chapterId = index == -1 ? null : pathname.substring(index + 5);
-    final comicId = index == -1 ? pathname : pathname.substring(0, index);
-
-    return ComicParam(comicId: comicId, chapterId: chapterId);
-  }
-
-  @override
   Future<List<OImage>> getPages(String manga, String chap) async {
-    final $ = await fetch$(getURL(manga, chapterId: chap));
+    final $ = await fetch$(await getURL(manga, chapterId: chap));
 
     _episodeIdStore[chap] = $('#episode_id', single: true).val();
 
@@ -361,13 +349,12 @@ class TruyenGGService extends ABComicService
       // pre-fetch
       chapterId =
           _episodeIdStore[chapterId] ??=
-              (await fetch$(getURL(context.comicId, chapterId: chapterId)))(
-                '#episode_id',
-                single: true,
-              ).val();
+              (await fetch$(
+                await getURL(context.comicId, chapterId: chapterId),
+              ))('#episode_id', single: true).val();
     }
 
-    final docB = parse$(await fetch(getURL(context.comicId)));
+    final docB = parse$(await fetch(await getURL(context.comicId)));
     final $ =
         page == 1 && parentId == 0
             ? docB
@@ -453,7 +440,7 @@ class TruyenGGService extends ABComicService
   deleteComment(context, {required comment}) async {
     final docB = parse$(
       _comicCachedStore[context.comicId] ??
-          await fetch(getURL(context.comicId)),
+          await fetch(await getURL(context.comicId)),
     );
 
     await fetch(

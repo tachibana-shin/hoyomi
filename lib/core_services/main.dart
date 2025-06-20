@@ -169,11 +169,11 @@ Future<List<WebRule>> dynamicWebRules(List<Service> moreServices) async {
     if (service.init.webRules?.isNotEmpty == true) {
       rules.addAll(service.init.webRules!);
     }
-    try {
-      rules.addAll(await service.init.dynamicWebRules());
-    } on UnimplementedError {
-      continue;
-    }
+    // try {
+    //   rules.addAll(await service.init.dynamicWebRules());
+    // } on UnimplementedError {
+    //   continue;
+    // }
   }
 
   return rules;

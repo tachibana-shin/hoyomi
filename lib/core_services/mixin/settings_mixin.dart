@@ -26,7 +26,7 @@ mixin SettingsMixin on BaseService {
       for (final field in init.settings!) {
         if (field is FieldInput && field.appear) {
           if (getSetting(key: field.key) == null) {
-            setSetting(field.key, field.defaultFn(this as Service));
+            setSetting(field.key, field.defaultValue);
           }
         }
       }

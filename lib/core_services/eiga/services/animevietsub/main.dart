@@ -188,8 +188,7 @@ class AnimeVietsubService extends ABEigaService
     return followCount;
   }
 
-  @override
-  parseURL(String url) {
+  EigaParam _parseURL(String url) {
     final uri = Uri.parse(url);
     assert(uri.path.startsWith('/phim'));
 
@@ -206,7 +205,7 @@ class AnimeVietsubService extends ABEigaService
 
   Eiga _parseItem(DQuery item) {
     final name = item.queryOne('.Title').text();
-    final eigaId = parseURL(item.queryOne('a').attr('href')).eigaId;
+    final eigaId = _parseURL(item.queryOne('a').attr('href')).eigaId;
     final lty$ = item.queryOne('.mli-quality').text();
     final originalName =
         lty$.isNotEmpty ? lty$ : item.queryOne('.mli-quality').text();
@@ -373,7 +372,7 @@ class AnimeVietsubService extends ABEigaService
     final items = switch (categoryId.contains('bang-xep-hang')) {
       true =>
         $('li.group').map((item) {
-          final eigaId = parseURL(item.queryOne('a').attr('href')).eigaId;
+          final eigaId = _parseURL(item.queryOne('a').attr('href')).eigaId;
           final name = item.queryOne('.title-item').text();
           final originalName = item.queryOne('.title-sd-item').text();
           final $img = item.queryOne('img');

@@ -1,17 +1,16 @@
 import {
-  MetaEiga,
-  EigaEpisode,
-  SourceVideo,
-  EigaHome,
-  EigaCategory,
-  EigaParam,
-  EigaEpisodes,
-  ServerSource,
-  SourceContent,
-  Subtitle,
-  Vtt,
-  OpeningEnding,
-  Eiga,
+  type MetaEiga,
+  type EigaEpisode,
+  type SourceVideo,
+  type EigaHome,
+  type EigaCategory,
+  type EigaEpisodes,
+  type ServerSource,
+  type SourceContent,
+  type Subtitle,
+  type Vtt,
+  type OpeningEnding,
+  type Eiga,
   BaseService
 } from "../main"
 
@@ -24,6 +23,10 @@ export interface EigaSourceContext {
 
 // Abstract class ABEigaService
 export abstract class ABEigaService extends BaseService {
+  readonly type = "eiga"
+
+  abstract getURL(eigaId: string, chapterId?: string): Promise<string>
+
   abstract home(): Promise<EigaHome>
 
   abstract getCategory(params: {
@@ -31,8 +34,6 @@ export abstract class ABEigaService extends BaseService {
     page: number
     filters: { [key: string]: string[] | null }
   }): Promise<EigaCategory>
-
-  abstract parseURL(url: string): EigaParam
 
   abstract getDetails(eigaId: string): Promise<MetaEiga>
   abstract getEpisodes(eigaId: string): Promise<EigaEpisodes>

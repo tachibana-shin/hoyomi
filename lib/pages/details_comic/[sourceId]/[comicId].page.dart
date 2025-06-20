@@ -784,7 +784,7 @@ class _DetailsComicState extends State<DetailsComic>
     return PopupMenuItem<String>(value: id, child: Text(text));
   }
 
-  void _handleMenuSelection(BuildContext context, String id) {
+  void _handleMenuSelection(BuildContext context, String id) async {
     switch (id) {
       case 'download':
         _downloadContent();
@@ -800,7 +800,7 @@ class _DetailsComicState extends State<DetailsComic>
         );
         break;
       case 'open_browser':
-        IconButtonOpenBrowser.open(_service.getURL(widget.comicId));
+        IconButtonOpenBrowser.open(await _service.getURL(widget.comicId));
         // _openInBrowser(context);
         break;
       case 'create_shortcut':

@@ -29,17 +29,14 @@ class TruyenQQService extends TruyenGGService {
         name: 'Visit Read ID',
         key: 'visit_read',
         placeholder: '<13 char>-<13 char>',
-        defaultFn: (_) => '${_generateRandomHex(13)}-${_generateRandomHex(13)}',
+        defaultValue: '${_generateRandomHex(13)}-${_generateRandomHex(13)}',
         maxLines: 1,
         appear: true,
         description: 'The cookie value to use when reading comics.',
       ),
     ],
-    onBeforeInsertCookie: (String? cookie) {
-      cookie ??= '';
-
-      return 'visit-read=${_generateRandomHex(13)}-${_generateRandomHex(13)}; $cookie';
-    },
+    customCookie:
+        'visit-read=${_generateRandomHex(13)}-${_generateRandomHex(13)}; {OLD_COOKIE}',
     webRules: [
       WebRule(
         shortRegexFilter: 'i\\.hinhhinh\\.com',
@@ -238,7 +235,7 @@ class TruyenQQService extends TruyenGGService {
 
   @override
   Future<List<OImage>> getPages(String manga, String chap) async {
-    final $ = await fetch$(getURL(manga, chapterId: chap));
+    final $ = await fetch$(await getURL(manga, chapterId: chap));
 
     return $('.chapter_content img').map((img) {
       final src = img.attr('src') + (kIsWeb ? '#truyenqq' : '');

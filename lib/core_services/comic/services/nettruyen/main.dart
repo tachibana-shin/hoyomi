@@ -45,7 +45,7 @@ class NetTruyenService extends ABComicService {
     name: 'NetTruyen',
     faviconUrl: OImage.from('https://i.imgur.com/idvPTML.png'),
     rootUrl: 'https://nettruyenvio.com/',
-    captchaUrl: () => '$baseUrl/tim-truyen?keyword=tonikaku',
+    captchaUrl: '{BASE_URL}/tim-truyen?keyword=tonikaku',
   );
 
   // Utils
@@ -284,13 +284,13 @@ class NetTruyenService extends ABComicService {
   }
 
   @override
-  String getURL(comicId, {chapterId}) {
+  getURL(comicId, {chapterId}) async {
     return '${baseUrl}truyen-tranh/$comicId${chapterId != null ? '/$chapterId' : ''}';
   }
 
   @override
   Future<List<OImage>> getPages(String manga, String chap) async {
-    final $ = await fetch$(getURL(manga, chapterId: chap));
+    final $ = await fetch$(await getURL(manga, chapterId: chap));
 
     return $('.page-chapter > img').map((img) {
       final src =
@@ -393,11 +393,5 @@ class NetTruyenService extends ABComicService {
         ...globalFilters,
       ],
     );
-  }
-
-  @override
-  ComicParam parseURL(String url) {
-    // TODO: implement parseURL
-    throw UnimplementedError();
   }
 }
