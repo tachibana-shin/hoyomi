@@ -1,7 +1,7 @@
-import { OImage } from "../../interfaces/o_image"
-import { Genre } from "../../interfaces/genre"
-import { RateValue } from "./rate_value"
-import { ComicChapter } from "./comic_chapter"
+import type { OImage } from "../../interfaces/o_image"
+import type { Genre } from "../../interfaces/genre"
+import type { RateValue } from "./rate_value"
+import type { ComicChapter } from "./comic_chapter"
 import { StatusEnum } from "../../interfaces/status_enum"
 
 export interface MetaComic {

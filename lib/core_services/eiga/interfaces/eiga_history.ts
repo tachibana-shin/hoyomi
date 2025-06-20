@@ -1,6 +1,6 @@
-import { Eiga } from "./eiga"
-import { EigaEpisode } from "./eiga_episode"
-import { WatchTime } from "./watch_time"
+import type { Eiga } from "./eiga"
+import type { EigaEpisode } from "./eiga_episode"
+import type { WatchTime } from "./watch_time"
 
 export interface EigaHistory {
   sourceId: string

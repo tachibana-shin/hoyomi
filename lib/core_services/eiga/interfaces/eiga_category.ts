@@ -1,5 +1,5 @@
-import { Filter } from "../../interfaces/filter"
-import { Eiga } from "./eiga"
+import type { Filter } from "../../interfaces/filter"
+import type { Eiga } from "./eiga"
 
 export interface EigaCategory {
   name: string

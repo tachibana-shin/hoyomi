@@ -1,5 +1,5 @@
-import { Comic } from "./comic"
-import { ComicChapter } from "./comic_chapter"
+import type { Comic } from "./comic"
+import type { ComicChapter } from "./comic_chapter"
 
 export interface ComicFollow {
   sourceId: string

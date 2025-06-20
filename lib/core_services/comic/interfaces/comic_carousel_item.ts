@@ -1,6 +1,5 @@
-// ...existing imports...
-import { OImage } from "../../interfaces/o_image"
-import { Genre } from "../../interfaces/genre"
+import type { OImage } from "../../interfaces/o_image"
+import type { Genre } from "../../interfaces/genre"
 
 export interface ComicCarouselItem {
   subText?: string

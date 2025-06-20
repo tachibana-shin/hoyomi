@@ -1,4 +1,4 @@
-import { OImage } from "../../interfaces/o_image"
+import { type OImage } from "../../interfaces/o_image"
 
 export interface ComicComment {
   id: string

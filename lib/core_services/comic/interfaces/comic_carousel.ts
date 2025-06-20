@@ -1,4 +1,4 @@
-import { ComicCarouselItem } from "./comic_carousel_item"
+import type { ComicCarouselItem } from "./comic_carousel_item"
 
 export interface ComicCarousel {
   items: ComicCarouselItem[]

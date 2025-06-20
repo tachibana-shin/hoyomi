@@ -1,4 +1,4 @@
-import { EigaCarouselItem } from "./eiga_carousel_item"
+import type { EigaCarouselItem } from "./eiga_carousel_item"
 
 export interface EigaCarousel {
   items: EigaCarouselItem[]

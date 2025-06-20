@@ -1,5 +1,5 @@
-import { EigaEpisode } from "./eiga_episode"
-import { OImage } from "../../interfaces/o_image"
+import type { EigaEpisode } from "./eiga_episode"
+import type { OImage } from "../../interfaces/o_image"
 
 export interface EigaEpisodes {
   episodes: EigaEpisode[]

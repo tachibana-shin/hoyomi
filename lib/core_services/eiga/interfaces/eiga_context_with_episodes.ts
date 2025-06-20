@@ -1,6 +1,6 @@
-import { MetaEiga } from "./meta_eiga"
-import { Season } from "./meta_eiga"
-import { EigaEpisode } from "./eiga_episode"
+import type { MetaEiga } from "./meta_eiga"
+import type { Season } from "./meta_eiga"
+import type { EigaEpisode } from "./eiga_episode"
 
 export interface EigaContextWithEpisodes {
   eigaId: string

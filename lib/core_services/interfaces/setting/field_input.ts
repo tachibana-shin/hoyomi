@@ -1,4 +1,4 @@
-import { SettingField } from "./setting_field"
+import { type SettingField } from "./setting_field"
 import { BaseService } from "../../service"
 
 export interface FieldInput extends SettingField {

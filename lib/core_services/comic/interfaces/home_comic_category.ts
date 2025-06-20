@@ -1,4 +1,4 @@
-import { Comic } from "./comic"
+import type { Comic } from "./comic"
 
 export interface HomeComicCategory {
   name: string

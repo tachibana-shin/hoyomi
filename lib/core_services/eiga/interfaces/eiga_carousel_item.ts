@@ -1,5 +1,5 @@
-import { Genre } from "../../interfaces/genre"
-import { OImage } from "../../interfaces/o_image"
+import type { Genre } from "../../interfaces/genre"
+import type { OImage } from "../../interfaces/o_image"
 
 export interface EigaCarouselItem {
   subText?: string

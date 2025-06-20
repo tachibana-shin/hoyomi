@@ -1,4 +1,4 @@
-import { WatchTime } from "./watch_time"
+import { type WatchTime } from "./watch_time"
 
 export interface WatchTimeData {
   eigaId: string

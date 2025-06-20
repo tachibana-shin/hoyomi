@@ -1,5 +1,5 @@
-import { OImage } from "../../interfaces/o_image"
-import { ComicChapter } from "./comic_chapter"
+import type { OImage } from "../../interfaces/o_image"
+import type { ComicChapter } from "./comic_chapter"
 
 export interface Comic {
   name: string

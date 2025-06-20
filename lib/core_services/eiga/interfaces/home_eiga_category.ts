@@ -1,4 +1,4 @@
-import { Eiga } from "./eiga"
+import { type Eiga } from "./eiga"
 
 export interface HomeEigaCategory {
   name: string

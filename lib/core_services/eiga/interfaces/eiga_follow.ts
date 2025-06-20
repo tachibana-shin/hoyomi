@@ -1,5 +1,5 @@
-import { Eiga } from "./eiga"
-import { EigaEpisode } from "./eiga_episode"
+import type { Eiga } from "./eiga"
+import type { EigaEpisode } from "./eiga_episode"
 
 export interface EigaFollow {
   sourceId: string
