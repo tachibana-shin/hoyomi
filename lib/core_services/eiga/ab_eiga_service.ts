@@ -1,0 +1,87 @@
+import {
+  MetaEiga,
+  EigaEpisode,
+  SourceVideo,
+  EigaHome,
+  EigaCategory,
+  EigaParam,
+  EigaEpisodes,
+  ServerSource,
+  SourceContent,
+  Subtitle,
+  Vtt,
+  OpeningEnding,
+  Eiga,
+  BaseService
+} from "../main"
+
+export interface EigaSourceContext {
+  eigaId: string
+  metaEiga: MetaEiga
+  episode: EigaEpisode
+  source: SourceVideo
+}
+
+// Abstract class ABEigaService
+export abstract class ABEigaService extends BaseService {
+  abstract home(): Promise<EigaHome>
+
+  abstract getCategory(params: {
+    categoryId: string
+    page: number
+    filters: { [key: string]: string[] | null }
+  }): Promise<EigaCategory>
+
+  abstract parseURL(url: string): EigaParam
+
+  abstract getDetails(eigaId: string): Promise<MetaEiga>
+  abstract getEpisodes(eigaId: string): Promise<EigaEpisodes>
+
+  getServers(params: {
+    eigaId: string
+    episode: EigaEpisode
+  }): Promise<ServerSource[]> {
+    throw new Error("UnimplementedError")
+  }
+
+  abstract getSource(params: {
+    eigaId: string
+    episode: EigaEpisode
+    server?: ServerSource
+  }): Promise<SourceVideo>
+
+  fetchSourceContent(params: { source: SourceVideo }): Promise<SourceContent> {
+    throw new Error("UnimplementedError")
+  }
+
+  getSubtitles(params: {
+    eigaId: string
+    episode: EigaEpisode
+    source: SourceVideo
+  }): Promise<Subtitle[]> {
+    throw new Error("UnimplementedError")
+  }
+
+  getSeekThumbnail(context: EigaSourceContext): Promise<Vtt | null> {
+    throw new Error("UnimplementedError")
+  }
+
+  getOpeningEnding(context: EigaSourceContext): Promise<OpeningEnding | null> {
+    throw new Error("UnimplementedError")
+  }
+
+  getSuggest(params: {
+    metaEiga: MetaEiga
+    eigaId: string
+    page?: number
+  }): Promise<Eiga[]> {
+    throw new Error("UnimplementedError")
+  }
+
+  abstract search(params: {
+    keyword: string
+    page: number
+    filters: { [key: string]: string[] | null }
+    quick: boolean
+  }): Promise<EigaCategory>
+}
