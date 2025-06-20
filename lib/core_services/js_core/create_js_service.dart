@@ -1,0 +1,27 @@
+import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/js_runtime/js_runtime.dart';
+
+import 'js_comic_service.dart';
+import 'js_eiga_service.dart';
+
+Future<Service> createJsService(String jsCode) async {
+  final runtime = await getJsRuntime();
+
+  await runtime.evalAsync('''
+    !(() => {
+      $jsCode;
+      if (!globalThis.__\$HOYOMI_PLUGIN\$__) {
+        throw Exception('No plugin found');
+      }
+      globalThis.__plugin = globalThis.__\$HOYOMI_PLUGIN\$__();
+    })();
+  ''');
+
+  final type = await runtime.evalAsync('__plugin.type');
+
+  return switch (type.stringResult) {
+    == 'comic' => JSComicService(runtime),
+    == 'eiga' => JSEigaService(runtime),
+    _ => throw Exception('Unknown plugin type: $type'),
+  };
+}

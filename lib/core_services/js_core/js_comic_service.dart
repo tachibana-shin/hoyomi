@@ -113,20 +113,4 @@ class JSComicService extends ABComicService {
       ),
     );
   }
-
-  static fromScript(String code) async {
-    final runtime = await getJsRuntime();
-
-    await runtime.evalAsync('''
-      !(() => {
-        $code;
-
-        if (!globalThis.__\$HOYOMI_PLUGIN\$__) {
-          throw Exception('No plugin found');
-        }
-
-        globalThis.__plugin = globalThis.__\$HOYOMI_PLUGIN\$__();
-      })();
-    ''');
-  }
 }
