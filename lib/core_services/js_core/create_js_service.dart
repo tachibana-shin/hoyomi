@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/js_runtime/js_runtime.dart';
 
@@ -19,9 +21,15 @@ Future<Service> createJsService(String jsCode) async {
 
   final type = await runtime.evalAsync('__plugin.type');
 
-  return switch (type.stringResult) {
+  final service = switch (type.stringResult) {
     == 'comic' => JSComicService(runtime),
     == 'eiga' => JSEigaService(runtime),
     _ => throw Exception('Unknown plugin type: $type'),
   };
+
+  await service.initState();
+
+  await runtime.evalAsync('__plugin._baseUrl = ${jsonEncode(service.baseUrl)}');
+
+  return service;
 }

@@ -17,7 +17,10 @@ export interface ServiceInit {
 
 export abstract class BaseService {
   abstract init: ServiceInit
-  abstract get uid(): string
-  abstract get name(): string
-  abstract get baseUrl(): string
+  // abstract get uid(): string
+  // abstract get name(): string
+  _baseUrl: string = ""
+  get baseUrl(): string {
+    return this._baseUrl
+  }
 }
