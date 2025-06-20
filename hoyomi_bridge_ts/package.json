@@ -1,0 +1,16 @@
+{
+  "name": "hoyomi_bridge_ts",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "bun build index.ts --outfile=index.js && tsup index.ts --dts-resolve --dts-only -d ./ --format esm"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.16",
+    "tsup": "^8.5.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

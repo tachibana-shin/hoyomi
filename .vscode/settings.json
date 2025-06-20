@@ -28,5 +28,6 @@
   "explorer.fileNesting.patterns": {
     "*.dart": "${capture}.g.dart, ${capture}.freezed.dart, ${capture}.io.dart, ${capture}.web.dart, ${capture}.stub.dart, ${capture}_stub.dart, ${capture}.ts",
   },
-  "deno.enablePaths": ["./serverless"]
+  "deno.enablePaths": ["./serverless"],
+  "typescript.experimental.useTsgo": true
 }
