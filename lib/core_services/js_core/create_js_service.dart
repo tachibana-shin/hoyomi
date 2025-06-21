@@ -28,6 +28,10 @@ Future<Service> createJsService(String jsCode) async {
   };
 
   await service.initState();
+  runtime.setDio(service.dioCache);
+  service.bus.on<HeadlessModeChanged>().listen((event) {
+    runtime.setDio(service.dioCache);
+  });
 
   await runtime.evalAsync('__plugin._baseUrl = ${jsonEncode(service.baseUrl)}');
 

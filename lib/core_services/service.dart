@@ -5,6 +5,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart' hide Headers;
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/service_settings_controller.dart';
@@ -94,6 +95,8 @@ Future<Dio> _createDioClientCache({
   return dio;
 }
 
+class HeadlessModeChanged {}
+
 abstract class Service extends BaseService
     with SettingsMixin, CaptchaResolverMixin {
   static final List<SettingField> settingsDefault = [
@@ -129,6 +132,8 @@ abstract class Service extends BaseService
   final _error = Ref<String?>(null);
   final _fetching = Ref<bool>(true);
 
+  final bus = EventBus();
+
   bool _initUserData = false;
 
   @override
@@ -159,11 +164,11 @@ abstract class Service extends BaseService
 
   final Map<String, ({DateTime? expire, Future<String> response})> _cacheFetch =
       {};
-  late final Dio _dioCache;
+  Dio? _dioCache;
   Dio? _dioHeadless;
   Future<Dio>? _dioHeadlessFuture;
 
-  Dio get dioCache => _tempHeadless ? _dioHeadless! : _dioCache;
+  Dio get dioCache => _tempHeadless ? _dioHeadless! : _dioCache!;
 
   Future<Dio> getDioHeadless() {
     if (_dioHeadless != null) return Future.value(_dioHeadless);
@@ -193,10 +198,14 @@ abstract class Service extends BaseService
     if (_initialize) return;
     _initialize = true;
 
-    _dioCache = await _createDioClientCache(
-      baseUrl: _fetchBaseUrl ?? '',
-      fromService: this,
-    );
+    if (init.fetchHeadless) {
+      await getDioHeadless();
+    } else {
+      _dioCache = await _createDioClientCache(
+        baseUrl: _fetchBaseUrl ?? '',
+        fromService: this,
+      );
+    }
 
     await super.initState();
   }
@@ -368,8 +377,9 @@ abstract class Service extends BaseService
       if (error.response != null &&
           CaptchaResolverMixin.responseIsCaptchaResolve(error.response!)) {
         // return Future.error(response);
-        if (!_tempHeadless) {
+        if (!headlessMode) {
           _tempHeadless = true;
+          bus.fire(HeadlessModeChanged());
 
           if (!kIsWeb && !headless) {
             return fetch(

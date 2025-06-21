@@ -5,6 +5,8 @@ import 'package:flutter_js/flutter_js.dart';
 
 import '../embed.dart';
 
+final _dioStore = Expando<Dio>('dio store');
+
 extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
   Future<JsEvalResult> evalAsync(String code) async {
     final output = await evaluateAsync(code);
@@ -71,10 +73,13 @@ extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
     await evalAsync('__\$\$DART_SEND_MESSAGE\$\$__("$event", $data)');
   }
 
+  void setDio(Dio dio) => _dioStore[this] = dio;
+
   Future<void> activateFetch() async {
     await evalAsync(jsRuntimePolyfill);
 
-    final dio = Dio();
+    final dio = _dioStore[this];
+    if (dio == null) throw Exception('No dio found');
 
     onMessage('dart_fetch_request', (dynamic req) async {
       try {
