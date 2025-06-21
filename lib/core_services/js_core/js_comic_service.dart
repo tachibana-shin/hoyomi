@@ -20,7 +20,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
   @override
   Future<Uint8List> fetchPage(Uint8List buffer, OImage source) async {
     return await _runtime.evalFn('__plugin.fetchPage', [
-      base64Encode(buffer),
+      buffer,
       source,
     ], base64: true);
   }
@@ -181,11 +181,9 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     required MetaComic metaComic,
   }) async {
     return WatchPageUpdated.fromJson(
-      jsonDecode(
-        await _runtime.evalFn('__plugin.getWatchPage', [
-          {'comicId': comicId, 'chapter': chapter, 'metaComic': metaComic},
-        ]),
-      ),
+      await _runtime.evalFn('__plugin.getWatchPage', [
+        {'comicId': comicId, 'chapter': chapter, 'metaComic': metaComic},
+      ]),
     );
   }
 

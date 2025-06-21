@@ -52,7 +52,7 @@ extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
   }) async {
     final data = await evalAsyncJson('''
       (() => {
-        if (typeof $functionName === 'function') return ${base64 ? 'base64Encode(' : ''} $functionName(${arguments.map((arg) => jsonEncode(arg)).join(', ')}) ${base64 ? ')' : ''}
+        if (typeof $functionName === 'function') return ${base64 ? 'base64Encode(' : ''} $functionName(${arguments.map((arg) => arg is Uint8List ? 'base64Decode(${jsonEncode(base64Encode(arg))})' : jsonEncode(arg)).join(', ')}) ${base64 ? ')' : ''}
         throw UnimplementedError('$functionName')
       })()
     ''');
