@@ -1,7 +1,7 @@
-import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/main.dart';
@@ -86,14 +86,17 @@ sealed class OImage with _$OImage {
     return Image(
       image: switch (service) {
         != null when service.headlessMode => _FutureMemoryImage(
-          service
-              .fetchHeadless(
-                src,
-                headers: headers ?? Headers({}),
-                base64: true,
-                createNewHeadless: true,
-              )
-              .then((b64) => base64Decode(b64)),
+          service.getDioHeadless().then(
+            (dio) => dio
+                .fetch<Uint8List>(
+                  RequestOptions(
+                    path: src,
+                    headers: headers?.toMap(),
+                    responseType: ResponseType.bytes,
+                  ),
+                )
+                .then((res) => res.data!),
+          ),
         ),
         _ => CachedNetworkImageProvider(
           src,

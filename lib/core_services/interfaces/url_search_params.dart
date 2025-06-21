@@ -95,6 +95,15 @@ extension UrlSearchParamsExt on UrlSearchParams {
   }
 
   Map<String, List<String>> toMap() => Map.unmodifiable(params);
+  Map<String, dynamic> toSingleMap() {
+    return {
+      for (final entry in params.entries)
+        if (entry.value.length >= 2)
+          '${entry.key}[]': entry.value
+        else
+          entry.key: entry.value.firstOrNull ?? '',
+    };
+  }
 
   /// Join current params into a given Uri, overriding existing keys if duplicated.
   Uri joinTo(Uri uri) {

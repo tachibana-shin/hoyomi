@@ -63,6 +63,7 @@ class TruyenGGService extends ABComicService
   @override
   fetch(
     String url, {
+    String? method,
     String? cookie,
     UrlSearchParams? query,
     Map<String, dynamic>? body,
@@ -75,6 +76,7 @@ class TruyenGGService extends ABComicService
       try {
         return await super.fetch(
           url,
+          method: method,
           cookie: cookie,
           query: query,
           body: body,
