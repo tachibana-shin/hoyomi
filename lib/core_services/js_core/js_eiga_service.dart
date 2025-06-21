@@ -128,7 +128,7 @@ class JSEigaService extends ABEigaService {
   @override
   Future<void> initState() async {
     init = ServiceInit.fromJson(await _runtime.evalAsyncJson('__plugin.init'));
-    _$isAuth = await _runtime.evalAsyncJson('__plugin.\$isAuth');
+    _$isAuth = await _runtime.evalAsyncJson('__plugin.\$isAuth') ?? false;
 
     await super.initState();
   }
