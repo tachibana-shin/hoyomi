@@ -4,7 +4,7 @@ import type { EigaFollow } from "../interfaces/eiga_follow"
 import type { EigaContextWithEpisodes } from "../interfaces/eiga_context_with_episodes"
 
 export abstract class EigaFollowMixin extends AuthMixin {
-  abstract getFollows(params: { page: number }): Promise<Paginate<EigaFollow>>
+  abstract getFollows(page: number): Promise<Paginate<EigaFollow>>
 
   abstract getFollowsCount(eigaId: string): Promise<number>
 

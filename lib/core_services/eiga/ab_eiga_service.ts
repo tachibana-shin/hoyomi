@@ -51,7 +51,7 @@ export abstract class ABEigaService extends BaseService {
     server?: ServerSource
   }): Promise<SourceVideo>
 
-  fetchSourceContent(params: { source: SourceVideo }): Promise<SourceContent> {
+  fetchSourceContent(source: SourceVideo): Promise<SourceContent> {
     throw new Error("UnimplementedError")
   }
 

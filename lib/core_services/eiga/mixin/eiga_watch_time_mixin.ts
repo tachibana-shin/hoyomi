@@ -6,7 +6,7 @@ import type { WatchTime } from "../interfaces/watch_time"
 import type { WatchTimeUpdated } from "../interfaces/watch_time_updated"
 
 export abstract class EigaWatchTimeMixin extends AuthMixin {
-  abstract getWatchHistory(params: { page: number }): Promise<EigaHistory[]>
+  abstract getWatchHistory(page: number): Promise<EigaHistory[]>
 
   abstract getWatchTime(context: EigaContext): Promise<WatchTime>
 
