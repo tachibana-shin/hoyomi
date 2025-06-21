@@ -1,3 +1,4 @@
+import { BaseService } from "../service"
 import {
   type MetaEiga,
   type EigaEpisode,
@@ -11,7 +12,6 @@ import {
   type Vtt,
   type OpeningEnding,
   type Eiga,
-  BaseService
 } from "../main"
 
 export interface EigaSourceContext {

@@ -1,11 +1,11 @@
+import { BaseService } from "../service"
 import {
   type ComicHome,
   type ComicCategory,
   type MetaComic,
   type OImage,
   type Comic,
-  ComicModes,
-  BaseService
+  ComicModes
 } from "../main"
 
 export abstract class ABComicService extends BaseService {
