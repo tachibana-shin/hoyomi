@@ -25,16 +25,22 @@ extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
   }
 
   Future<dynamic> evalAsyncJson(String code) async {
-    final json = await evalAsync('JSON.stringify($code)');
+    final json = await evalAsync('''
+      (() => {
+        const out = $code;
+
+        if (out instanceof Promise || typeof out?.then === 'function')
+          return out.then(e => JSON.stringify(e))
+
+        return JSON.stringify(out)
+      })()
+    ''');
 
     return jsonDecode(json.stringResult);
   }
 
   Future<dynamic> evalAsyncJsonOrNull(String code) async {
-    final json = await evalAsync('JSON.stringify($code)');
-    if (json.stringResult == 'undefined') return null;
-
-    return jsonDecode(json.stringResult);
+    return evalAsyncJson(code);
   }
 
   Future<void> dartSendMessage(String event, String data) async {
