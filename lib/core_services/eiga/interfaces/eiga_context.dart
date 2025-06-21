@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../export.dart';
 
 part 'eiga_context.freezed.dart';
+part 'eiga_context.g.dart';
 
 @freezed
 sealed class EigaContext with _$EigaContext {
@@ -12,4 +13,7 @@ sealed class EigaContext with _$EigaContext {
     required EigaEpisode episode,
     Season? season,
   }) = _EigaContext;
+
+  factory EigaContext.fromJson(Map<String, dynamic> json) =>
+      _$EigaContextFromJson(json);
 }

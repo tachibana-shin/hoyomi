@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../main.dart';
 
 part 'comic_history.freezed.dart';
+part 'comic_history.g.dart';
 
 @freezed
 sealed class ComicHistory with _$ComicHistory {
@@ -23,4 +24,7 @@ sealed class ComicHistory with _$ComicHistory {
       watchPage: WatchPage(currentPage: 0, totalPage: 10),
     );
   }
+
+  factory ComicHistory.fromJson(Map<String, dynamic> json) =>
+      _$ComicHistoryFromJson(json);
 }

@@ -1,27 +1,28 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/eiga/export.dart';
 
-class EigaFollow {
-  final String sourceId;
-  final Eiga item;
-  final DateTime? updatedAt;
-  final EigaEpisode? lastEpisode;
+part 'eiga_follow.freezed.dart';
+part 'eiga_follow.g.dart';
 
-  const EigaFollow({
-    required this.sourceId,
-    required this.item,
-    this.updatedAt,
-    this.lastEpisode,
-  });
+@freezed
+sealed class EigaFollow with _$EigaFollow {
+  const factory EigaFollow({
+    required String sourceId,
+    required Eiga item,
+    DateTime? updatedAt,
+    EigaEpisode? lastEpisode,
+  }) = _EigaFollow;
 
-  factory EigaFollow.createFakeData() {
-    return EigaFollow(
-      sourceId: '',
-      item: Eiga.createFakeData(),
-      updatedAt: DateTime.now(),
-      lastEpisode: EigaEpisode(
-        episodeId: 'fake_episode_id',
-        name: 'Fake Episode',
-      ),
-    );
-  }
+  factory EigaFollow.createFakeData() => EigaFollow(
+    sourceId: '',
+    item: Eiga.createFakeData(),
+    updatedAt: DateTime.now(),
+    lastEpisode: EigaEpisode(
+      episodeId: 'fake_episode_id',
+      name: 'Fake Episode',
+    ),
+  );
+
+  factory EigaFollow.fromJson(Map<String, dynamic> json) =>
+      _$EigaFollowFromJson(json);
 }
