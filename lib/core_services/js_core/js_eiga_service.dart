@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_js/flutter_js.dart';
 import 'package:hoyomi/core_services/eiga/export.dart';
 import 'package:hoyomi/js_runtime/js_runtime.dart';
@@ -129,10 +127,8 @@ class JSEigaService extends ABEigaService {
 
   @override
   Future<void> initState() async {
-    init = ServiceInit.fromJson(
-      jsonDecode(await _runtime.evalAsyncJson('__plugin.init')),
-    );
-    _$isAuth = jsonDecode(await _runtime.evalAsyncJson('__plugin.\$isAuth'));
+    init = ServiceInit.fromJson(await _runtime.evalAsyncJson('__plugin.init'));
+    _$isAuth = await _runtime.evalAsyncJson('__plugin.\$isAuth');
 
     await super.initState();
   }
