@@ -1,5 +1,12 @@
 import { register } from "../register"
 
+declare global {
+  interface GlobalThis {
+    TextDecoder: $TextDecoder
+  }
+}
+
+type $TextDecoder = typeof TextDecoder
 class TextDecoder {
   constructor(encoding = "utf-8") {
     if (encoding.toLowerCase() !== "utf-8") {
@@ -7,7 +14,7 @@ class TextDecoder {
     }
   }
 
-  decode(bytes: ArrayBuffer | Uint8Array): string {
+  decode(bytes: Uint8Array): string {
     if (!(bytes instanceof Uint8Array)) {
       bytes = new Uint8Array(bytes)
     }

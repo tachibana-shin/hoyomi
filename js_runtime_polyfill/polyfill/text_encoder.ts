@@ -1,5 +1,11 @@
 import { register } from "../register"
 
+declare global {
+  interface GlobalThis {
+    TextEncoder: $TextEncoder
+  }
+}
+type $TextEncoder = typeof TextEncoder
 class TextEncoder {
   encode(str: string) {
     const utf8 = []

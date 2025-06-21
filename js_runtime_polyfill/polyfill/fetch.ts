@@ -2,9 +2,11 @@ import { Request, type RequestInit } from "./request"
 import { Response } from "./response"
 import { removeEventListener, addEventListener } from "./dart_send_message"
 import { register } from "../register"
+import type { URL } from "./url"
 
 declare global {
   var sendMessage: (name: string, param: string) => void
+  function fetch(input: string | URL | Request, init?: RequestInit): Promise<Response>
 }
 
 interface ResOk {

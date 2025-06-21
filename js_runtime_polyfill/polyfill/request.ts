@@ -1,12 +1,23 @@
 import { register } from "../register"
 import { Headers } from "./headers.ts"
+import { URL } from "./url.ts"
 
+declare global {
+  interface GlobalThis {
+    Request: $Request
+  }
+
+  type RequestInit = $RequestInit
+}
+
+type $RequestInit = RequestInit
 export interface RequestInit {
   method?: string
   headers?: Headers | Record<string, string>
   body?: any
 }
 
+type $Request = typeof Request
 export class Request {
   url: string
   method: string

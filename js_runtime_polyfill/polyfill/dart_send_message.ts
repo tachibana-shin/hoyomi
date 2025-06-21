@@ -1,5 +1,13 @@
 import { register } from "../register"
 
+declare global {
+  function addEventListener(name: string, callback: (data: any) => void): void
+  function removeEventListener(
+    name: string,
+    callback: (data: any) => void
+  ): void
+}
+
 const messageListeners = new Map<string, Set<(data: any) => void>>()
 
 export function addEventListener(event: string, callback: (data: any) => void) {

@@ -2,6 +2,12 @@ import { register } from "../register"
 import { fetch } from "./fetch"
 import { type RequestInit } from "./request"
 
+declare global {
+  interface GlobalThis {
+    XMLHttpRequest: $XMLHttpRequest
+  }
+}
+type $XMLHttpRequest = typeof XMLHttpRequest
 export class XMLHttpRequest {
   // Constants
   static readonly UNSENT = 0

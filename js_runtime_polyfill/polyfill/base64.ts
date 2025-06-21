@@ -1,5 +1,10 @@
 import { register } from "../register"
 
+declare global {
+  function btoa(data: string): string
+  function atob(base64: string): string
+}
+
 register({ btoa, atob })
 
 export function btoa(str: string): string {

@@ -1,5 +1,13 @@
 import { register } from "../register"
 
+declare global {
+  interface GlobalThis {
+    Headers: $TypeHeaders
+  }
+  type HeaderInit = Record<string, string> | $TypeHeaders
+}
+
+type $TypeHeaders = typeof Headers
 export type HeaderInit = Record<string, string> | Headers
 
 export class Headers {
@@ -44,4 +52,4 @@ export class Headers {
   }
 }
 
-register({ Headers })
+register({ $Headers: Headers })

@@ -1,5 +1,12 @@
 import { register } from "../register"
+import { URLSearchParams } from "./url_search_params"
 
+declare global {
+  interface GlobalThis {
+    URL: $URL
+  }
+}
+type $URL = typeof URL
 export class URL {
   href: string
   origin: string

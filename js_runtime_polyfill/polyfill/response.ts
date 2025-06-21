@@ -1,6 +1,15 @@
 import { register } from "../register"
 import { Headers } from "./headers"
 
+declare global {
+  interface GlobalThis {
+    Response: $Response
+  }
+
+  type ResponseInit = $ResponseInit
+}
+
+type $ResponseInit = ResponseInit
 export interface ResponseInit {
   status?: number
   statusText?: string
@@ -8,6 +17,7 @@ export interface ResponseInit {
   url?: string
 }
 
+type $Response = typeof Response
 export class Response {
   #base64: string
   status: number

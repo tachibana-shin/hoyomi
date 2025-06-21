@@ -1,5 +1,13 @@
 import { register } from "../register"
 
+declare global {
+  interface GlobalThis {
+    URLSearchParams: $URLSearchParams
+  }
+}
+
+type $URLSearchParams = typeof URLSearchParams
+
 export class URLSearchParams {
   private params: Map<string, string[]> = new Map()
 
