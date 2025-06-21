@@ -15,7 +15,7 @@ Future<Service> createJsService(String jsCode) async {
       if (!globalThis.__\$HOYOMI_PLUGIN\$__) {
         throw Exception('No plugin found');
       }
-      globalThis.__plugin = globalThis.__\$HOYOMI_PLUGIN\$__();
+      globalThis.__plugin = new globalThis.__\$HOYOMI_PLUGIN\$__();
     })();
   ''');
 
