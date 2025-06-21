@@ -1,4 +1,4 @@
-import { ComicHistory } from "../interfaces/comic_history"
+import type { ComicHistory } from "../interfaces/comic_history"
 import type { MetaComic } from "../interfaces/meta_comic"
 import type { ComicChapter } from "../interfaces/comic_chapter"
 import type { WatchPage } from "../interfaces/watch_page"

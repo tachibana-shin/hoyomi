@@ -1,4 +1,4 @@
-import { User } from "../interfaces/user"
+import type { User } from "../interfaces/user"
 import { BaseService } from "../service"
 
 export abstract class AuthMixin {
@@ -6,7 +6,7 @@ export abstract class AuthMixin {
     return $mixin instanceof AuthMixin && $mixin.$noAuth === false
   }
 
-  readonly $noAuth: boolean
-  readonly $isAuth: boolean | null
+  readonly $noAuth: boolean = false
+  readonly $isAuth: boolean | null = true
   abstract getUser(params: { cookie: string }): Promise<User>
 }

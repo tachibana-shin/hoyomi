@@ -1,3 +1,4 @@
+
 export * from "./mixin/auth_mixin"
 export * from "./eiga/mixin/eiga_watch_time_mixin"
 export * from "./eiga/mixin/eiga_follow_mixin"
@@ -47,7 +48,6 @@ export * from "./comic/interfaces/rate_value"
 export * from "./comic/interfaces/comic_chapter"
 export * from "./comic/interfaces/home_comic_category"
 export * from "./comic/interfaces/comic_category"
-export * from "./service"
 export * from "./interfaces/paginate"
 export * from "./interfaces/web_rule"
 export * from "./interfaces/filter"
