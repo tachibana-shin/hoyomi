@@ -5,7 +5,7 @@ import 'package:flutter_js/flutter_js.dart';
 import 'package:hoyomi/core_services/comic/export.dart';
 import 'package:hoyomi/js_runtime/js_runtime.dart';
 
-class JSComicService extends ABComicService {
+class JSComicService extends ABComicService implements ComicCommentMixin {
   final JavascriptRuntime _runtime;
 
   @override
@@ -19,11 +19,10 @@ class JSComicService extends ABComicService {
 
   @override
   Future<Uint8List> fetchPage(Uint8List buffer, OImage source) async {
-    return base64Decode(
-      await _runtime.evalAsyncJson(
-        'base64Encode(__plugin.fetchPage(base64Decode(${jsonEncode(base64Encode(buffer))}), ${jsonEncode(source.toJson())}))',
-      ),
-    );
+    return await _runtime.evalFn('__plugin.fetchPage', [
+      base64Encode(buffer),
+      source,
+    ], base64: true);
   }
 
   @override
@@ -33,69 +32,61 @@ class JSComicService extends ABComicService {
     required Map<String, List<String>?> filters,
   }) async {
     return ComicCategory.fromJson(
-      await _runtime.evalAsyncJson(
-        '__plugin.getCategory(${jsonEncode({'categoryId': categoryId, 'page': page, 'filters': filters})})',
-      ),
+      await _runtime.evalFn('__plugin.getCategory', [
+        {'categoryId': categoryId, 'page': page, 'filters': filters},
+      ]),
     );
   }
 
   // Utils
   @override
   ComicModes getComicModes(MetaComic comic) {
-    return jsonDecode(
-      _runtime
-          .evaluate('__plugin.getComicModes(${jsonEncode(comic)})')
-          .stringResult,
+    final out =
+        _runtime
+            .evaluate('__plugin.getComicModes(${jsonEncode(comic)})')
+            .stringResult;
+
+    return ComicModes.values.firstWhere(
+      (mode) => mode.name == out,
+      orElse: () => ComicModes.webToon,
     );
   }
 
   @override
   Future<MetaComic> getDetails(String comicId) async {
     return MetaComic.fromJson(
-      await _runtime.evalAsyncJson(
-        '__plugin.getDetails(${jsonEncode(comicId)})',
-      ),
+      await _runtime.evalFn('__plugin.getDetails', [comicId]),
     );
   }
 
   @override
   Future<List<OImage>> getPages(String manga, String chap) async {
     return List.from(
-      await _runtime.evalAsyncJson(
-        '__plugin.getPages(${jsonEncode(manga)}, ${jsonEncode(chap)})',
-      ),
+      await _runtime.evalFn('__plugin.getPages', [manga, chap]),
     ).map((element) => OImage.fromJson(element)).toList();
   }
 
   @override
   Future<List<Comic>> getSuggest(MetaComic comic, {int? page}) async {
     return List.from(
-      await _runtime.evalAsyncJson(
-        '__plugin.getSuggest(${jsonEncode(comic)}, ${jsonEncode(page)})',
-      ),
+      await _runtime.evalFn('__plugin.getSuggest', [comic, page]),
     ).map((element) => Comic.fromJson(element)).toList();
   }
 
   @override
   Future<String> getURL(String comicId, {String? chapterId}) async {
-    return await _runtime.evalAsyncJson(
-      '__plugin.getURL(${jsonEncode(comicId)}, ${jsonEncode(chapterId)})',
-    );
+    return await _runtime.evalFn('__plugin.getURL', [comicId, chapterId]);
   }
 
   @override
   Future<ComicHome> home() async {
-    return ComicHome.fromJson(
-      jsonDecode(await _runtime.evalAsyncJson('__plugin.home()')),
-    );
+    return ComicHome.fromJson(await _runtime.evalFn('__plugin.home', const []));
   }
 
   @override
   Future<void> initState() async {
-    init = ServiceInit.fromJson(
-      jsonDecode(await _runtime.evalAsyncJson('__plugin.init')),
-    );
-    _$isAuth = jsonDecode(await _runtime.evalAsyncJson('__plugin.\$isAuth'));
+    init = ServiceInit.fromJson(await _runtime.evalAsyncJson('__plugin.init'));
+    _$isAuth = await _runtime.evalAsyncJson('__plugin.\$isAuth') ?? false;
 
     await super.initState();
   }
@@ -108,9 +99,120 @@ class JSComicService extends ABComicService {
     required bool quick,
   }) async {
     return ComicCategory.fromJson(
-      await _runtime.evalAsyncJson(
-        '__plugin.search(${jsonEncode({'keyword': keyword, 'page': page, 'filters': filters, 'quick': quick})})',
+      await _runtime.evalFn('__plugin.search', [
+        {'keyword': keyword, 'page': page, 'filters': filters, 'quick': quick},
+      ]),
+    );
+  }
+
+  @override
+  Future<void> deleteComment(
+    ComicCommentContext context, {
+    required ComicComment comment,
+  }) async {
+    await _runtime.evalFn('__plugin.deleteComment', [context, comment]);
+  }
+
+  @override
+  Future<ComicComments> getComments(
+    ComicCommentContext context, {
+    int? page,
+  }) async {
+    return ComicComments.fromJson(
+      await _runtime.evalFn('__plugin.getComments', [context, page]),
+    );
+  }
+
+  @override
+  Future<bool> setLikeComment(
+    ComicCommentContext context, {
+    required ComicComment comment,
+    required bool value,
+  }) async {
+    return await _runtime.evalFn('__plugin.setLikeComment', [
+      context,
+      comment,
+      value,
+    ]);
+  }
+
+  @override
+  Future<Paginate<ComicFollow>> getFollows({required int page}) async {
+    final json = await _runtime.evalFn('__plugin.getFollows', [page]);
+
+    return Paginate(
+      items:
+          List.from(
+            json['items'],
+          ).map((item) => ComicFollow.fromJson(item)).toList(),
+      page: json['page'],
+      totalItems: json['totalItems'],
+      totalPages: json['totalPages'],
+    );
+  }
+
+  @override
+  Future<bool> isFollow({required String comicId}) async {
+    return await _runtime.evalFn('__plugin.isFollow', [comicId]);
+  }
+
+  @override
+  Future<void> setFollow({
+    required String comicId,
+    required MetaComic metaComic,
+    required bool value,
+  }) async {
+    await _runtime.evalFn('__plugin.setFollow', [
+      {'comicId': comicId, 'metaComic': metaComic, 'value': value},
+    ]);
+  }
+
+  @override
+  Future<List<ComicHistory>> getWatchHistory({required int page}) async {
+    return List.from(
+      await _runtime.evalFn('__plugin.getWatchHistory', [page]),
+    ).map((element) => ComicHistory.fromJson(element)).toList();
+  }
+
+  @override
+  Future<WatchPageUpdated> getWatchPage({
+    required String comicId,
+    required ComicChapter chapter,
+    required MetaComic metaComic,
+  }) async {
+    return WatchPageUpdated.fromJson(
+      jsonDecode(
+        await _runtime.evalFn('__plugin.getWatchPage', [
+          {'comicId': comicId, 'chapter': chapter, 'metaComic': metaComic},
+        ]),
       ),
     );
+  }
+
+  @override
+  Future<Map<String, WatchPageUpdated>> getWatchPageEpisodes({
+    required String comicId,
+    required List<ComicChapter> chapters,
+  }) async {
+    return await _runtime.evalFn('__plugin.getWatchPageEpisodes', [
+      {'comicId': comicId, 'chapters': chapters},
+    ]);
+  }
+
+  @override
+  Future<void> setWatchPage({
+    required String comicId,
+    required ComicChapter chapter,
+    required MetaComic metaComic,
+    required WatchPage watchPage,
+  }) async {
+    await _runtime.evalFn('__plugin.setWatchPage', [
+      {
+        'comicId': comicId,
+        'chapter': chapter,
+        'metaComic': metaComic,
+        'watchPage': watchPage,
+      },
+    ]);
   }
 }

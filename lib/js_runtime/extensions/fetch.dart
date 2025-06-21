@@ -39,6 +39,28 @@ extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
     return jsonDecode(json.stringResult);
   }
 
+  /// Calls a JavaScript function with the given arguments.
+  ///
+  /// The [arguments] will be automatically JSON-encoded before being passed into JS.
+  /// Do not pre-encode them manually.
+  ///
+  /// If [base64] is true, the result will be encoded in base64 using `base64Encode(...)` inside JS.
+  Future<dynamic> evalFn(
+    String functionName,
+    List<dynamic> arguments, {
+    bool base64 = false,
+  }) async {
+    final data = await evalAsyncJson('''
+      (() => {
+        if (typeof $functionName === 'function') return ${base64 ? 'base64Encode(' : ''} $functionName(${arguments.map((arg) => jsonEncode(arg)).join(', ')}) ${base64 ? ')' : ''}
+        throw UnimplementedError('$functionName')
+      })()
+    ''');
+
+    if (base64) return base64Decode(data);
+    return data;
+  }
+
   Future<dynamic> evalAsyncJsonOrNull(String code) async {
     return evalAsyncJson(code);
   }
