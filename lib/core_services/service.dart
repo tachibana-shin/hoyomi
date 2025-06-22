@@ -153,8 +153,8 @@ abstract class Service extends BaseService
         }).merge(init.faviconUrl.headers ?? Headers({})),
       );
   String? _$fetchBaseUrl;
-  String? get _fetchBaseUrl {
-    if (init.fetchBaseUrl == null) return null;
+  String get _fetchBaseUrl {
+    if (init.fetchBaseUrl == null) return baseUrl;
 
     return _$fetchBaseUrl ??= init.fetchBaseUrl!.replaceFirst(
       '{BASE_URL}',
@@ -175,7 +175,7 @@ abstract class Service extends BaseService
     if (_dioHeadlessFuture != null) return _dioHeadlessFuture!;
 
     _dioHeadlessFuture = _createDioClientCache(
-          baseUrl: _fetchBaseUrl ?? '',
+          baseUrl: _fetchBaseUrl,
           headless: true,
           fromService: this,
         )
@@ -202,7 +202,7 @@ abstract class Service extends BaseService
       await getDioHeadless();
     } else {
       _dioCache = await _createDioClientCache(
-        baseUrl: _fetchBaseUrl ?? '',
+        baseUrl: _fetchBaseUrl,
         fromService: this,
       );
     }
@@ -295,9 +295,7 @@ abstract class Service extends BaseService
         init.customCookie?.replaceFirst('{OLD_COOKIE}', cookiesText ?? '') ??
         cookiesText;
 
-    final host =
-        Uri.tryParse(url)?.host ??
-        (_fetchBaseUrl != null ? Uri.tryParse(_fetchBaseUrl!)?.host : null);
+    final host = Uri.tryParse(url)?.host ?? Uri.tryParse(_fetchBaseUrl)?.host;
     final $headers = Headers({
       'accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
