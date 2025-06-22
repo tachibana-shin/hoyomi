@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-type $UnimplementedError = typeof UnimplementedError
+export type $UnimplementedError = typeof UnimplementedError
 export class UnimplementedError extends Error {
   override name = "UnimplementedError"
 }

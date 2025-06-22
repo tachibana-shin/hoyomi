@@ -1,6 +1,7 @@
 export * from "./polyfill/base64_coder"
 export * from "./polyfill/base64"
 export * from "./polyfill/dart_send_message"
+export * from "./polyfill/ecma"
 export * from "./polyfill/fetch"
 export * from "./polyfill/headers"
 export * from "./polyfill/request"

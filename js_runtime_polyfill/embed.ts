@@ -1,6 +1,7 @@
 import "./polyfill/base64_coder"
 import "./polyfill/base64"
 import "./polyfill/dart_send_message"
+import "./polyfill/ecma"
 import "./polyfill/fetch"
 import "./polyfill/headers"
 import "./polyfill/request"
