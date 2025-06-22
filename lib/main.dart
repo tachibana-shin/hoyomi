@@ -1,4 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
@@ -6,11 +9,6 @@ import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/plugins/export.dart';
 import 'package:hoyomi/router/index.dart';
-
-import 'package:flutter/material.dart';
-
-// ignore: depend_on_referenced_packages
-import 'package:flutter_web_plugins/url_strategy.dart';
 
 import 'stores.dart';
 
