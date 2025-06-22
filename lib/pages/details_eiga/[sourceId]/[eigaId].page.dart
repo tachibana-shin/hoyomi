@@ -507,65 +507,73 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            verticalDirection: VerticalDirection.up,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (metaEiga.views != null)
-                    Text(
-                      '${formatNumber(metaEiga.views!)} views',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colorScheme.secondary,
-                        fontSize: 14.0,
-                      ),
-                    ),
-
-                  SizedBox(height: 2.0),
-
-                  // authors
-                  if (metaEiga.authors != null && metaEiga.authors!.isNotEmpty)
-                    Wrap(
-                      children: [
-                        Text(
-                          'Author ',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.secondary,
-                            fontSize: 14.0,
-                          ),
+              if (metaEiga.views != null ||
+                  (metaEiga.authors != null && metaEiga.authors!.isNotEmpty))
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (metaEiga.views != null)
+                      Text(
+                        '${formatNumber(metaEiga.views!)} views',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colorScheme.secondary,
+                          fontSize: 14.0,
                         ),
-                        ...metaEiga.authors!.indexed.mapWithIterable((
-                          entry,
-                          list,
-                        ) {
-                          final (index, author) = entry;
-                          return GestureDetector(
-                            onTap:
-                                author.genreId == Genre.noId
-                                    ? null
-                                    : () => context.pushNamed(
-                                      'category_eiga',
-                                      pathParameters: {
-                                        'sourceId': widget.sourceId,
-                                        'categoryId': author.genreId,
-                                      },
-                                    ),
-                            child: Text(
-                              '${author.name}${index < list.length - 1 ? ', ' : ''}',
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodyMedium?.copyWith(
-                                fontSize: 14.0,
-                                color: Colors.greenAccent.shade400,
-                              ),
+                      ),
+
+                    SizedBox(height: 2.0),
+
+                    // authors
+                    if (metaEiga.authors != null &&
+                        metaEiga.authors!.isNotEmpty)
+                      Wrap(
+                        children: [
+                          Text(
+                            'Author ',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.secondary,
+                              fontSize: 14.0,
                             ),
-                          );
-                        }),
-                      ],
-                    ),
-                ],
-              ).expanded(),
+                          ),
+                          ...metaEiga.authors!.indexed.mapWithIterable((
+                            entry,
+                            list,
+                          ) {
+                            final (index, author) = entry;
+                            return GestureDetector(
+                              onTap:
+                                  author.genreId == Genre.noId
+                                      ? null
+                                      : () => context.pushNamed(
+                                        'category_eiga',
+                                        pathParameters: {
+                                          'sourceId': widget.sourceId,
+                                          'categoryId': author.genreId,
+                                        },
+                                      ),
+                              child: Text(
+                                '${author.name}${index < list.length - 1 ? ', ' : ''}',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.copyWith(
+                                  fontSize: 14.0,
+                                  color: Colors.greenAccent.shade400,
+                                ),
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                  ],
+                ).expanded()
+              else
+                SizedBox.shrink(),
 
               if (context.isGtSm) _buildButtonGroup(),
             ],
