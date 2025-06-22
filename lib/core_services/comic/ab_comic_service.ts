@@ -25,11 +25,11 @@ export abstract class ABComicService extends BaseService {
   abstract getPages(manga: string, chap: string): Promise<OImage[]>
 
   fetchPage(buffer: Uint8Array, source: OImage): Promise<Uint8Array> {
-    throw new Error("UnimplementedError")
+    throw new UnimplementedError()
   }
 
   getSuggest(comic: MetaComic, page?: number): Promise<Comic[]> {
-    throw new Error("UnimplementedError")
+    throw new UnimplementedError()
   }
 
   abstract search(params: {
@@ -41,6 +41,6 @@ export abstract class ABComicService extends BaseService {
 
   // Utils
   getComicModes(comic: MetaComic): ComicModes {
-    throw new Error("UnimplementedError")
+    throw new UnimplementedError()
   }
 }

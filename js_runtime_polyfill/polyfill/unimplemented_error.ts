@@ -8,7 +8,10 @@ declare global {
 
 export type $UnimplementedError = typeof UnimplementedError
 export class UnimplementedError extends Error {
-  override name = "UnimplementedError"
+  constructor(message?: string) {
+    super(message)
+    this.name = "UnimplementedError"
+  }
 }
 
 register({ UnimplementedError })

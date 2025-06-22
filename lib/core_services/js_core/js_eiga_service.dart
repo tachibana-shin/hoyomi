@@ -17,7 +17,7 @@ class JSEigaService extends ABEigaService {
     required SourceVideo source,
   }) async {
     return SourceContent.fromJson(
-      await _runtime.evalFn('fetchSourceContent', [source]),
+      await _runtime.evalFn('__plugin.fetchSourceContent', [source]),
     );
   }
 
@@ -28,7 +28,7 @@ class JSEigaService extends ABEigaService {
     required Map<String, List<String>?> filters,
   }) async {
     return EigaCategory.fromJson(
-      await _runtime.evalFn('getCategory', [
+      await _runtime.evalFn('__plugin.getCategory', [
         {'categoryId': categoryId, 'page': page, 'filters': filters},
       ]),
     );
@@ -36,7 +36,7 @@ class JSEigaService extends ABEigaService {
 
   @override
   Future<MetaEiga> getDetails(String eigaId) async {
-    return MetaEiga.fromJson(await _runtime.evalFn('getDetails', [eigaId]));
+    return MetaEiga.fromJson(await _runtime.evalFn('__plugin.getDetails', [eigaId]));
   }
 
   @override

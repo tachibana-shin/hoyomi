@@ -42,7 +42,7 @@ export abstract class ABEigaService extends BaseService {
     eigaId: string
     episode: EigaEpisode
   }): Promise<ServerSource[]> {
-    throw new Error("UnimplementedError")
+    throw new UnimplementedError()
   }
 
   abstract getSource(params: {
@@ -52,7 +52,7 @@ export abstract class ABEigaService extends BaseService {
   }): Promise<SourceVideo>
 
   fetchSourceContent(source: SourceVideo): Promise<SourceContent> {
-    throw new Error("UnimplementedError")
+    throw new UnimplementedError()
   }
 
   getSubtitles(params: {
@@ -60,15 +60,15 @@ export abstract class ABEigaService extends BaseService {
     episode: EigaEpisode
     source: SourceVideo
   }): Promise<Subtitle[]> {
-    throw new Error("UnimplementedError")
+    throw new UnimplementedError()
   }
 
   getSeekThumbnail(context: EigaSourceContext): Promise<Vtt | null> {
-    throw new Error("UnimplementedError")
+    throw new UnimplementedError()
   }
 
   getOpeningEnding(context: EigaSourceContext): Promise<OpeningEnding | null> {
-    throw new Error("UnimplementedError")
+    throw new UnimplementedError()
   }
 
   getSuggest(params: {
@@ -76,7 +76,7 @@ export abstract class ABEigaService extends BaseService {
     eigaId: string
     page?: number
   }): Promise<Eiga[]> {
-    throw new Error("UnimplementedError")
+    throw new UnimplementedError()
   }
 
   abstract search(params: {
