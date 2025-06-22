@@ -12,9 +12,12 @@ extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
     final output = await evaluateAsync(code);
 
     if (output.isError || output.stringResult.contains('SyntaxError')) {
-      if (output.stringResult.startsWith('UnimplementedError:') || output.stringResult.contains('Method not implemented.')) {
+      if (output.stringResult.startsWith('UnimplementedError:') || output.stringResult.startsWith('Error: UnimplementedError') || output.stringResult.contains('Method not implemented.')) {
         throw UnimplementedError(output.stringResult);
       }
+
+      debugPrint('[JS Runtime]: Error in run "$code"');
+      debugPrint('[JS Runtime]: Output = $output');
 
       throw output;
     }
