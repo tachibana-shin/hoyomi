@@ -100,7 +100,7 @@ class HeadlessWebViewAdapter implements HttpClientAdapter {
 
       final result = await controller.callAsyncJavaScript(
         functionBody: '''
-const method = method.toUpperCase();
+method = method.toUpperCase();
 let body = null;
 
 if (rawBytes) {

@@ -7,12 +7,10 @@ class JSEigaService extends ABEigaService {
 
   @override
   late final ServiceInit init;
-
-  late final bool _$isAuth;
-
-  JSEigaService(this._runtime);
   @override
-  bool? get $isAuth => _$isAuth;
+  late final bool $isAuth;
+
+  JSEigaService(this._runtime, this.init, this.$isAuth);
 
   @override
   Future<SourceContent> fetchSourceContent({
@@ -123,14 +121,6 @@ class JSEigaService extends ABEigaService {
   @override
   Future<EigaHome> home() async {
     return EigaHome.fromJson(await _runtime.evalFn('__plugin.home', const []));
-  }
-
-  @override
-  Future<void> initState() async {
-    init = ServiceInit.fromJson(await _runtime.evalAsyncJson('__plugin.init'));
-    _$isAuth = await _runtime.evalAsyncJson('__plugin.\$isAuth') ?? false;
-
-    await super.initState();
   }
 
   @override

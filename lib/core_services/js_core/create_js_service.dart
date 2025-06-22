@@ -20,10 +20,14 @@ Future<Service> createJsService(String jsCode) async {
   ''');
 
   final type = await runtime.evalAsync('__plugin.type');
+  final init = ServiceInit.fromJson(
+    await runtime.evalAsyncJson('__plugin.init'),
+  );
+  final $isAuth = await runtime.evalAsyncJson('__plugin.\$isAuth') ?? false;
 
   final service = switch (type.stringResult) {
-    == 'comic' => JSComicService(runtime),
-    == 'eiga' => JSEigaService(runtime),
+    == 'comic' => JSComicService(runtime, init, $isAuth),
+    == 'eiga' => JSEigaService(runtime, init, $isAuth),
     _ => throw Exception('Unknown plugin type: $type'),
   };
 
@@ -32,6 +36,8 @@ Future<Service> createJsService(String jsCode) async {
   service.bus.on<HeadlessModeChanged>().listen((event) {
     runtime.setDio(service.dioCache);
   });
+
+  await runtime.activateFetch();
 
   await runtime.evalAsync('__plugin._baseUrl = ${jsonEncode(service.baseUrl)}');
 

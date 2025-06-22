@@ -70,7 +70,7 @@ Future<Dio> _createDioClientCache({
     allowPostMethod: false,
   );
 
-  if (headless) {
+  if (!headless) {
     return await createDioClient(
         BaseOptions(
           baseUrl: baseUrl,
@@ -82,15 +82,16 @@ Future<Dio> _createDioClientCache({
       ..interceptors.add(DioCacheInterceptor(options: options));
   }
 
-  final dio = Dio(
-    BaseOptions(
-      baseUrl: baseUrl,
-      responseType: ResponseType.plain,
-      followRedirects: followRedirects,
-    ),
-  );
-
-  dio.httpClientAdapter = HeadlessWebViewAdapter(fromService);
+  final dio =
+      Dio(
+          BaseOptions(
+            baseUrl: baseUrl,
+            responseType: ResponseType.plain,
+            followRedirects: followRedirects,
+          ),
+        )
+        ..httpClientAdapter = HeadlessWebViewAdapter(fromService)
+        ..interceptors.add(DioCacheInterceptor(options: options));
 
   return dio;
 }
@@ -138,10 +139,12 @@ abstract class Service extends BaseService
 
   @override
   String get baseUrl {
-    return (getSetting(key: 'url') ?? init.rootUrl).replaceFirst(
-      RegExp(r'/$'),
-      '',
-    );
+    final inSetting = getSetting(key: 'url');
+    if (inSetting == null || inSetting.isEmpty) {
+      return init.rootUrl.replaceFirst(RegExp(r'/$'), '');
+    }
+
+    return inSetting.replaceFirst(RegExp(r'/$'), '');
   }
 
   OImage? _faviconUrl;
@@ -198,7 +201,7 @@ abstract class Service extends BaseService
     if (_initialize) return;
     _initialize = true;
 
-    if (init.fetchHeadless) {
+    if (headlessMode) {
       await getDioHeadless();
     } else {
       _dioCache = await _createDioClientCache(
@@ -288,6 +291,8 @@ abstract class Service extends BaseService
   }) async {
     if (headlessMode) headless = true;
 
+    if (!url.contains('://') && !url.startsWith('/')) url = '/$url';
+
     final record = await ServiceSettingsController.instance.get(uid);
     String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;
 
@@ -295,7 +300,8 @@ abstract class Service extends BaseService
         init.customCookie?.replaceFirst('{OLD_COOKIE}', cookiesText ?? '') ??
         cookiesText;
 
-    final host = Uri.tryParse(url)?.host ?? Uri.tryParse(_fetchBaseUrl)?.host;
+    // final host = Uri.tryParse(url)?.host ?? Uri.tryParse(_fetchBaseUrl)?.host;
+    // print('Host = $host');
     final $headers = Headers({
       'accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -304,7 +310,7 @@ abstract class Service extends BaseService
       if (cookiesText != null) 'cookie': cookiesText,
       // 'pragma': 'no-cache',
       // 'priority': 'u=0, i',
-      if (host != null) 'host': host,
+      // if (host != null) 'host': host,
 
       // 'upgrade-insecure-requests': '1',
       'user-agent':
@@ -343,6 +349,7 @@ abstract class Service extends BaseService
     try {
       response = await dioCache.fetch(
         RequestOptions(
+          baseUrl: _fetchBaseUrl,
           path: url,
           method: method ?? (body == null ? 'GET' : 'POST'),
           queryParameters: query?.toSingleMap(),
@@ -372,6 +379,11 @@ abstract class Service extends BaseService
         }
       }
     } on DioException catch (error, trace) {
+      if (kDebugMode) {
+        print('URL = ${error.response?.realUri.toString()}');
+        print('Status = ${error.response?.statusCode}');
+        print('Response = ${error.response?.data.toString()}');
+      }
       if (error.response != null &&
           CaptchaResolverMixin.responseIsCaptchaResolve(error.response!)) {
         // return Future.error(response);
@@ -392,14 +404,14 @@ abstract class Service extends BaseService
             );
           }
         }
-        final error = CaptchaRequiredException(getService(uid));
+        final captchaError = CaptchaRequiredException(getService(uid));
 
         // // required captcha resolve
         if (notify) {
           CaptchaResolverMixin.showSnackCaptcha(
             null,
             url: url,
-            error: error,
+            error: captchaError,
             trace: trace,
           );
         }

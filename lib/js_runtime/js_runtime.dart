@@ -1,5 +1,4 @@
 import 'package:flutter_js/flutter_js.dart';
-import 'extensions/fetch.dart';
 
 export 'extensions/fetch.dart';
 
@@ -14,7 +13,6 @@ Future<JavascriptRuntime> getJsRuntime({
     extraArgs: extraArgs,
   );
 
-  await flutterJs.activateFetch();
   await flutterJs.enableHandlePromises();
 
   return flutterJs;

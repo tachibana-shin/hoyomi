@@ -10,12 +10,10 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
 
   @override
   late final ServiceInit init;
-
-  late final bool _$isAuth;
-
-  JSComicService(this._runtime);
   @override
-  bool? get $isAuth => _$isAuth;
+  late final bool $isAuth;
+
+  JSComicService(this._runtime, this.init, this.$isAuth);
 
   @override
   Future<Uint8List> fetchPage(Uint8List buffer, OImage source) async {
@@ -81,14 +79,6 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
   @override
   Future<ComicHome> home() async {
     return ComicHome.fromJson(await _runtime.evalFn('__plugin.home', const []));
-  }
-
-  @override
-  Future<void> initState() async {
-    init = ServiceInit.fromJson(await _runtime.evalAsyncJson('__plugin.init'));
-    _$isAuth = await _runtime.evalAsyncJson('__plugin.\$isAuth') ?? false;
-
-    await super.initState();
   }
 
   @override
