@@ -9,9 +9,7 @@ import 'js_eiga_service.dart';
 Future<Service> createJsService(String jsCode) async {
   final runtime = await getJsRuntime();
 
-  await runtime.evalAsync('''
-    !(() => {
-      $jsCode;
+  await runtime.evalAsync('''!(() => {$jsCode;
       if (!globalThis.__\$HOYOMI_PLUGIN\$__) {
         throw Exception('No plugin found');
       }
