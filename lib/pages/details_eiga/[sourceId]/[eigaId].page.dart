@@ -1605,6 +1605,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             final loading = snapshot.connectionState == ConnectionState.waiting;
 
             if (snapshot.hasError) {
+              if (snapshot.error is UnimplementedError) {
+                return SizedBox.shrink();
+              }
               return Center(
                 child: Service.errorWidgetBuilder(
                   context,
