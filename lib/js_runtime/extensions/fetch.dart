@@ -8,12 +8,14 @@ import '../embed.dart';
 final _dioStore = Expando<Dio>('dio store');
 
 extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
-  Future<JsEvalResult> evalAsync(String code) async {
+  Future<JsEvalResult> evalAsync(String code, [String? msg]) async {
     final output = await evaluateAsync(code);
 
     if (output.isError || output.stringResult.contains('SyntaxError')) {
-      if (output.stringResult.startsWith('UnimplementedError:') || output.stringResult.startsWith('Error: UnimplementedError') || output.stringResult.contains('Method not implemented.')) {
-        throw UnimplementedError(output.stringResult);
+      if (output.stringResult.startsWith('UnimplementedError:') ||
+          output.stringResult.startsWith('Error: UnimplementedError') ||
+          output.stringResult.contains('Method not implemented.')) {
+        throw UnimplementedError(msg);
       }
 
       debugPrint('[JS Runtime]: Error in run "$code"');
@@ -29,7 +31,7 @@ extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
     return output;
   }
 
-  Future<dynamic> evalAsyncJson(String code) async {
+  Future<dynamic> evalAsyncJson(String code, [String? msg]) async {
     final json = await evalAsync('''
       (() => {
         const out = $code;
@@ -39,7 +41,7 @@ extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
 
         return JSON.stringify(out)
       })()
-    ''');
+    ''', msg);
 
     return jsonDecode(json.stringResult);
   }
@@ -58,9 +60,9 @@ extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
     final data = await evalAsyncJson('''
       (() => {
         if (typeof $functionName === 'function') return ${base64 ? 'base64Encode(' : ''} $functionName(${arguments.map((arg) => arg is Uint8List ? 'base64Decode(${jsonEncode(base64Encode(arg))})' : jsonEncode(arg)).join(', ')}) ${base64 ? ')' : ''}
-        throw UnimplementedError('$functionName')
+        throw new UnimplementedError('$functionName')
       })()
-    ''');
+    ''', functionName);
 
     if (base64) return base64Decode(data);
     return data;
