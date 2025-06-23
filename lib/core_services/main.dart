@@ -186,7 +186,7 @@ Future<void> _setupServices() async {
 
   if (settings?.sortComicService != null) {
     final services =
-        settings!.sortComicService!
+        Set.from(settings!.sortComicService!)
             .map((id) {
               final service = allComicServices[id];
               if (service == null) {
@@ -207,7 +207,7 @@ Future<void> _setupServices() async {
   // eiga services
   if (settings?.sortEigaService != null) {
     final services =
-        settings!.sortEigaService!
+        Set.from(settings!.sortEigaService!)
             .map((id) {
               final service = allEigaServices[id];
               if (service == null) {
