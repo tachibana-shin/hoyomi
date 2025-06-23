@@ -2,11 +2,10 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:hoyomi/constraints/skill_icons.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/utils/get_lang_icon.dart';
 import 'package:iconify_flutter/icons/ic.dart';
-import 'package:flutter/widgets.dart';
 
 import 'iconify.dart';
 
@@ -26,30 +25,6 @@ class ServiceManagerItem {
   });
 }
 
-Widget? _getLangIcon(BuildContext context, String? lang, {double size = 16}) {
-  final isDark = Theme.of(context).brightness == Brightness.dark;
-
-  switch (lang?.toLowerCase()) {
-    case 'dart':
-      return Iconify(
-        isDark ? SkillIcons.dartLight : SkillIcons.dartDark,
-        size: size,
-      );
-    case 'ts':
-    case 'typescript':
-      return Iconify(SkillIcons.typescript, size: size);
-    case 'js':
-    case 'javascript':
-      return Iconify(SkillIcons.javascript, size: size);
-    case 'lua':
-      return Iconify(
-        isDark ? SkillIcons.luaLight : SkillIcons.luaDark,
-        size: size,
-      );
-    default:
-      return null;
-  }
-}
 
 void showServiceManagerDialog(
   BuildContext context, {
@@ -106,7 +81,7 @@ void showServiceManagerDialog(
                             Text(dialogItems[i].name),
                             if (dialogItems[i].writeWith != null) ...[
                               const SizedBox(width: 6),
-                              _getLangIcon(context, dialogItems[i].writeWith!)!,
+                              getLangIcon(context, dialogItems[i].writeWith!)!,
                             ],
                           ],
                         ),
