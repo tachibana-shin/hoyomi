@@ -65,6 +65,7 @@ Future<List<WebRule>> dynamicWebRules(List<Service> moreServices) async {
 
   return rules;
 }
+
 ABComicService getComicService(String id) {
   for (final service in comicServices.value) {
     if (service.uid == id) {

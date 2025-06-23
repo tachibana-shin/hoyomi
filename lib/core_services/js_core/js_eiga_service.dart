@@ -36,7 +36,9 @@ class JSEigaService extends ABEigaService {
 
   @override
   Future<MetaEiga> getDetails(String eigaId) async {
-    return MetaEiga.fromJson(await _runtime.evalFn('__plugin.getDetails', [eigaId]));
+    return MetaEiga.fromJson(
+      await _runtime.evalFn('__plugin.getDetails', [eigaId]),
+    );
   }
 
   @override

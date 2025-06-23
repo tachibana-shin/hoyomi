@@ -25,6 +25,7 @@ abstract class ABEigaService extends Service
   Future<OpeningEnding?> getOpeningEnding(EigaSourceContext context) {
     throw UnimplementedError();
   }
+
   Future<Vtt?> getSeekThumbnail(EigaSourceContext context) {
     throw UnimplementedError();
   }
