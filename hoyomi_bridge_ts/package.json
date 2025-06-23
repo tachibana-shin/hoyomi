@@ -1,13 +1,13 @@
 {
   "name": "@hoyomi/bridge_ts",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "module": "index.js",
   "types": "index.d.ts",
   "type": "module",
   "private": false,
   "scripts": {
     "build": "rm -f index.d.ts && rm -f index.js && bun build index.ts --outfile=index.js && tsup index.ts --dts-resolve --dts-only -d ./ --format esm",
-    "release": "bumpp --no-tags && bun run build && bun publish"
+    "release": "bumpp --no-tag && bun run build && bun publish"
   },
   "devDependencies": {
     "@types/bun": "^1.2.16",
