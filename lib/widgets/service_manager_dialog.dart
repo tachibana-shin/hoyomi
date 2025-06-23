@@ -86,9 +86,9 @@ void showServiceManagerDialog(
                         title: Row(
                           children: [
                             Text(dialogItems[i].name),
-                            if (dialogItems[i].writeWith != null) ...[
+                            if (dialogItems[i].writeWith != null &&
+                                dialogItems[i].writeWith != 'dart') ...[
                               const SizedBox(width: 6),
-                              Text('${dialogItems[i].writeWith}'),
                               getLangIcon(context, dialogItems[i].writeWith!)!,
                             ],
                           ],

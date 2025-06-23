@@ -10,17 +10,19 @@ Widget? getLangIcon(BuildContext context, String? lang, {double size = 16}) {
       return Iconify(
         isDark ? SkillIcons.dartLight : SkillIcons.dartDark,
         size: size,
+        iconColor: true,
       );
     case 'ts':
     case 'typescript':
-      return Iconify(SkillIcons.typescript, size: size);
+      return Iconify(SkillIcons.typescript, size: size, iconColor: true);
     case 'js':
     case 'javascript':
-      return Iconify(SkillIcons.javascript, size: size);
+      return Iconify(SkillIcons.javascript, size: size, iconColor: true);
     case 'lua':
       return Iconify(
         isDark ? SkillIcons.luaLight : SkillIcons.luaDark,
         size: size,
+        iconColor: true,
       );
     default:
       return null;
