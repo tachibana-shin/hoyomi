@@ -249,6 +249,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         return Watch(
           key: key,
           () => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (!_loading.value) _buildSchedule(),
               _buildServers(),

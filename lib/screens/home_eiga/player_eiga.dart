@@ -281,7 +281,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
         if (episode.episodeId == EigaEpisode.trailerId) return null;
 
-        return widget.service.getSource(
+        return await widget.service.getSource(
           eigaId: widget.eigaId.value,
           episode: episode,
           server: _server.value,
