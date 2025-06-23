@@ -36,7 +36,8 @@ export class Response {
   }
 
   async text(): Promise<string> {
-    return atob(this.#base64)
+    return new TextDecoder().decode(await this.arrayBuffer())
+    // return atob(this.#base64)
   }
 
   async json(): Promise<any> {
