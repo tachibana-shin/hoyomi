@@ -50,6 +50,10 @@ export class Headers {
       callback(value, key, this)
     }
   }
+
+  toJSON() {
+    return this.map
+  }
 }
 
 register({ $Headers: Headers })

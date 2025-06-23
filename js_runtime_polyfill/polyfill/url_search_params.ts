@@ -39,6 +39,10 @@ export class URLSearchParams {
     return this.params.has(key)
   }
 
+  toJSON() {
+    return this.params
+  }
+
   toString(): string {
     const parts: string[] = []
     for (const [key, values] of this.params.entries()) {
