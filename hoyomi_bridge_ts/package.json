@@ -1,11 +1,15 @@
 {
-  "name": "hoyomi_bridge_ts",
+  "name": "@hoyomi/bridge_ts",
+  "version": "0.0.1",
   "module": "index.js",
   "types": "index.d.ts",
   "type": "module",
+  "private": false,
   "scripts": {
     "build": "rm -f index.d.ts && rm -f index.js && bun build index.ts --outfile=index.js && tsup index.ts --dts-resolve --dts-only -d ./ --format esm",
-    "postinstall": "bun run build"
+    "postinstall": "bun run build",
+    "release": "bun publish",
+    "prepublish": "bumpp"
   },
   "devDependencies": {
     "@types/bun": "^1.2.16",
@@ -13,5 +17,8 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "bumpp": "^10.2.0"
   }
 }

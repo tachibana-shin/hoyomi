@@ -1,4 +1,6 @@
-# hoyomi_bridge_ts
+# @hoyomi/bridge-ts
+
+This a package generate plugin for Hoyomi application. Check documents at: https://github.com/tachibana-shin/hoyomi
 
 To install dependencies:
 
