@@ -11,10 +11,9 @@ void main(List<String> args) async {
 
   final dartFiles = <String>[];
 
-  await for (final entity in Directory(join(Directory.current.path, 'lib')).list(
-    recursive: true,
-    followLinks: false,
-  )) {
+  await for (final entity in Directory(
+    join(Directory.current.path, 'lib'),
+  ).list(recursive: true, followLinks: false)) {
     if (entity is! File) continue;
     if (!entity.path.endsWith('.dart')) continue;
 

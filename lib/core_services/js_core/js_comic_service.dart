@@ -16,7 +16,12 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
   // ignore: overridden_fields
   late final String writeWith;
 
-  JSComicService(this._runtime, this.init, this.$isAuth, {this.writeWith = 'js'});
+  JSComicService(
+    this._runtime,
+    this.init,
+    this.$isAuth, {
+    this.writeWith = 'js',
+  });
 
   @override
   Future<Uint8List> fetchPage(Uint8List buffer, OImage source) async {

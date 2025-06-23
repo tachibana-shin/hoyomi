@@ -14,6 +14,7 @@ sealed class ServiceInit with _$ServiceInit {
     required String rootUrl,
     String? version,
     String? description,
+
     /// Code language support
     String? language,
     List<SettingField>? settings,
