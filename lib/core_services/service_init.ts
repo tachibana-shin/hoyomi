@@ -9,6 +9,7 @@ export interface ServiceInit {
   rootUrl: string
   version?: string
   description?: string
+  language?: string
   captchaUrl?: () => string
   settings?: SettingField[]
   webRules?: WebRule[]

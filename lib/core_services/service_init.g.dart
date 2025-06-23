@@ -13,6 +13,7 @@ _ServiceInit _$ServiceInitFromJson(Map<String, dynamic> json) => _ServiceInit(
   rootUrl: json['rootUrl'] as String,
   version: json['version'] as String?,
   description: json['description'] as String?,
+  language: json['language'] as String?,
   settings:
       (json['settings'] as List<dynamic>?)
           ?.map((e) => SettingField.fromJson(e as Map<String, dynamic>))
@@ -35,6 +36,7 @@ Map<String, dynamic> _$ServiceInitToJson(_ServiceInit instance) =>
       'rootUrl': instance.rootUrl,
       'version': instance.version,
       'description': instance.description,
+      'language': instance.language,
       'settings': instance.settings,
       'webRules': instance.webRules,
       'fetchHeadless': instance.fetchHeadless,
