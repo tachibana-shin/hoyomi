@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/logic/normalize_plugin_url.dart';
+import 'package:sealed_languages/sealed_languages.dart';
 import 'package:text_field_validation/text_field_validation.dart';
 import 'package:hoyomi/core_services/js_core/create_js_service.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
@@ -144,7 +145,8 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
                           autofocus: true,
                           decoration: const InputDecoration(
                             labelText: 'Plugin URL',
-                            hintText: 'https://example.com/plugin.js or https://github.com/{user}/{repo}',
+                            hintText:
+                                'https://example.com/plugin.js or https://github.com/{user}/{repo}',
                           ),
                           keyboardType: TextInputType.url,
                           validator: (value) {
@@ -184,6 +186,11 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
                           if (service!.init.version != null)
                             Text('Version: ${service!.init.version}'),
                           Text('Base URL: ${service!.init.rootUrl}'),
+                          if (service!.init.language != null)
+                            Text(
+                              'Language: ${NaturalLanguage.codeShortMap[service!.init.language!.toUpperCase()]?.name ?? service!.init.language!.toUpperCase()}',
+                            ),
+
                           if (service!.init.description != null) ...[
                             const SizedBox(height: 8),
                             Text(service!.init.description!),
@@ -209,6 +216,11 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
               ),
               if (!isLoading)
                 ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Theme.of(ctx).colorScheme.primary,
+                    ),
+                  ),
                   onPressed: () {
                     if (service == null) {
                       onInstallPressed();
@@ -222,6 +234,9 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
                         : alreadyExists == true
                         ? 'Update'
                         : 'Install',
+                    style: TextStyle(
+                      color: Theme.of(ctx).colorScheme.onPrimary,
+                    ),
                   ),
                 ),
             ],

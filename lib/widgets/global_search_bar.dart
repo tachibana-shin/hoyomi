@@ -790,8 +790,22 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
             showServiceManagerDialog(
               context,
               actions: [
-                IconButton(
+                ElevatedButton.icon(
                   icon: Iconify(Mdi.plus),
+                  label: Text(
+                    'Install Plugin',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Theme.of(context).colorScheme.primary,
+                    ),
+                    iconColor: WidgetStateProperty.all(
+                      Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
                   onPressed: () {
                     showInstallJsServiceModal(context);
                   },
@@ -805,6 +819,9 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                       baseUrl: service.baseUrl,
                       avatar: AvatarService(service, radius: 10.0),
                       writeWith: service.writeWith,
+                      version: service.init.version,
+                      description: service.init.description,
+                      language: service.init.language,
                     );
                   }).toList(),
               onDone:
@@ -818,8 +835,22 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
             showServiceManagerDialog(
               context,
               actions: [
-                IconButton(
+                ElevatedButton.icon(
                   icon: Iconify(Mdi.plus),
+                  label: Text(
+                    'Install Plugin',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Theme.of(context).colorScheme.primary,
+                    ),
+                    iconColor: WidgetStateProperty.all(
+                      Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
                   onPressed: () {
                     showInstallJsServiceModal(context);
                   },
@@ -833,6 +864,9 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                       baseUrl: service.baseUrl,
                       avatar: AvatarService(service, radius: 10.0),
                       writeWith: service.writeWith,
+                      version: service.init.version,
+                      description: service.init.description,
+                      language: service.init.language,
                     );
                   }).toList(),
               onDone:

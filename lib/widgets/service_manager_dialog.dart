@@ -1,11 +1,11 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/get_lang_icon.dart';
 import 'package:iconify_flutter/icons/ic.dart';
+import 'package:sealed_languages/sealed_languages.dart';
 
 import 'iconify.dart';
 
@@ -15,6 +15,11 @@ class ServiceManagerItem {
   final String baseUrl;
   final Widget avatar;
   final String? writeWith;
+  final String? version;
+  final String? description;
+
+  /// Code language support
+  final String? language;
 
   const ServiceManagerItem({
     required this.uid,
@@ -22,9 +27,11 @@ class ServiceManagerItem {
     required this.baseUrl,
     required this.avatar,
     required this.writeWith,
+    required this.version,
+    required this.description,
+    required this.language,
   });
 }
-
 
 void showServiceManagerDialog(
   BuildContext context, {
@@ -81,11 +88,54 @@ void showServiceManagerDialog(
                             Text(dialogItems[i].name),
                             if (dialogItems[i].writeWith != null) ...[
                               const SizedBox(width: 6),
+                              Text('${dialogItems[i].writeWith}'),
                               getLangIcon(context, dialogItems[i].writeWith!)!,
                             ],
                           ],
                         ),
-                        subtitle: Text(dialogItems[i].baseUrl),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              children: [
+                                if (dialogItems[i].version != null)
+                                  Text(
+                                    'v${dialogItems[i].version} | ',
+                                  ).fontSize(12),
+
+                                Text(dialogItems[i].baseUrl).fontSize(12),
+
+                                if (dialogItems[i].language != null)
+                                  Text(
+                                    ' | ${NaturalLanguage.codeShortMap[dialogItems[i].language!.toUpperCase()]?.name ?? dialogItems[i].language}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color:
+                                          Theme.of(
+                                            context,
+                                          ).textTheme.bodySmall?.color,
+                                    ),
+                                  ),
+                              ],
+                            ),
+
+                            if (dialogItems[i].description != null)
+                              Text(
+                                dialogItems[i].description!,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).textTheme.bodySmall?.color,
+                                ),
+                              ),
+                          ],
+                        ),
+
                         trailing: const Iconify(
                           Ic.sharp_drag_indicator,
                           size: 20,
@@ -96,9 +146,12 @@ void showServiceManagerDialog(
               ),
             ),
             actions: [
-              GFButton(
-                text: 'Save',
-                shape: GFButtonShape.pills,
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(
+                    Theme.of(context).colorScheme.primary,
+                  ),
+                ),
                 onPressed: () async {
                   // setState(() => items = dialogItems);
                   if (!listEquals(dialogItems, items)) {
@@ -118,6 +171,12 @@ void showServiceManagerDialog(
                   if (!context.mounted) return;
                   Navigator.of(context).pop();
                 },
+                child: Text(
+                  'Save',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
               ),
               TextButton(
                 child: const Text("Cancel"),

@@ -183,6 +183,9 @@ class _LibraryPageState extends State<LibraryPage>
                               baseUrl: '',
                               avatar: Iconify(Fluent.extension20),
                               writeWith: null,
+                              version: null,
+                              description: null,
+                              language: null,
                             ),
                             false => ServiceManagerItem(
                               uid: '\$\$eiga\$\$',
@@ -190,6 +193,9 @@ class _LibraryPageState extends State<LibraryPage>
                               baseUrl: '',
                               avatar: Iconify(Fluent.extension20),
                               writeWith: null,
+                              version: null,
+                              description: null,
+                              language: null,
                             ),
                           };
                         }
@@ -202,6 +208,9 @@ class _LibraryPageState extends State<LibraryPage>
                           baseUrl: serviceA.baseUrl,
                           avatar: AvatarService(serviceA, radius: 10.0),
                           writeWith: serviceA.writeWith,
+                          version: serviceA.init.version,
+                          description: serviceA.init.description,
+                          language: serviceA.init.language,
                         );
                       }).toList(),
                   onDone: (newValue) {
