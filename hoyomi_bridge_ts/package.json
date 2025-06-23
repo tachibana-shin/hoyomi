@@ -4,7 +4,8 @@
   "types": "index.d.ts",
   "type": "module",
   "scripts": {
-    "build": "rm -f index.d.ts && rm -f index.js && bun build index.ts --outfile=index.js && tsup index.ts --dts-resolve --dts-only -d ./ --format esm"
+    "build": "rm -f index.d.ts && rm -f index.js && bun build index.ts --outfile=index.js && tsup index.ts --dts-resolve --dts-only -d ./ --format esm",
+    "postinstall": "bun run build"
   },
   "devDependencies": {
     "@types/bun": "^1.2.16",
