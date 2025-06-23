@@ -28,12 +28,12 @@ final allServices = Computed<List<Service>>(
   () => [...comicServices.value, ...eigaServices.value],
 );
 final comicServices = Ref<List<ABComicService>>(
-  _allComicServices.values.toList(),
+  allComicServices.values.toList(),
 );
 
-final eigaServices = Ref<List<ABEigaService>>(_allEigaServices.values.toList());
+final eigaServices = Ref<List<ABEigaService>>(allEigaServices.values.toList());
 
-final _allComicServices = Map.fromEntries(
+final allComicServices = Map.fromEntries(
   <ABComicService>[
     CuuTruyenService(),
     NetTruyenService(),
@@ -42,7 +42,7 @@ final _allComicServices = Map.fromEntries(
   ].map((service) => MapEntry(service.uid, service)),
 );
 
-final _allEigaServices = Map.fromEntries(
+final allEigaServices = Map.fromEntries(
   <ABEigaService>[
     AnimeVietsubService(),
     OPhimService(),
@@ -153,12 +153,12 @@ Future<void> _loadJsService() async {
     loadServicesFromDir(
       eigaDir,
       (s) => s is ABEigaService,
-      (s) => _allEigaServices[(s as ABEigaService).uid] = s,
+      (s) => allEigaServices[(s as ABEigaService).uid] = s,
     ),
     loadServicesFromDir(
       comicDir,
       (s) => s is ABComicService,
-      (s) => _allComicServices[(s as ABComicService).uid] = s,
+      (s) => allComicServices[(s as ABComicService).uid] = s,
     ),
   ]);
 
@@ -188,7 +188,7 @@ Future<void> _setupServices() async {
     final services =
         settings!.sortComicService!
             .map((id) {
-              final service = _allComicServices[id];
+              final service = allComicServices[id];
               if (service == null) {
                 showSnackBar(Text('Service $id not install.'));
               }
@@ -198,7 +198,7 @@ Future<void> _setupServices() async {
             .whereType<ABComicService>()
             .toList();
 
-    for (final service in _allComicServices.values) {
+    for (final service in allComicServices.values) {
       if (!services.contains(service)) services.add(service);
     }
 
@@ -209,7 +209,7 @@ Future<void> _setupServices() async {
     final services =
         settings!.sortEigaService!
             .map((id) {
-              final service = _allEigaServices[id];
+              final service = allEigaServices[id];
               if (service == null) {
                 showSnackBar(Text('Service $id not install.'));
               }
@@ -219,7 +219,7 @@ Future<void> _setupServices() async {
             .whereType<ABEigaService>()
             .toList();
 
-    for (final service in _allEigaServices.values) {
+    for (final service in allEigaServices.values) {
       if (!services.contains(service)) services.add(service);
     }
 
