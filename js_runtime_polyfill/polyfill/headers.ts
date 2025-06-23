@@ -56,4 +56,4 @@ export class Headers {
   }
 }
 
-register({ $Headers: Headers })
+register({ Headers })
