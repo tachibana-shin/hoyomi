@@ -7,28 +7,53 @@ import '../embed.dart';
 
 final _dioStore = Expando<Dio>('dio store');
 
+bool _isUnimplementedError(String msg) {
+  return msg.startsWith('UnimplementedError') ||
+      msg.startsWith('Error: UnimplementedError') ||
+      msg.contains('Method not implemented.');
+}
+
+void _printBlockError(List<String> lines) {
+  debugPrint('================================');
+  debugPrint(lines.join('\n'));
+  debugPrint('================================');
+}
+
 extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
   Future<JsEvalResult> evalAsync(String code, [String? msg]) async {
-    final output = await evaluateAsync(code);
+    try {
+      final output = await evaluateAsync(code);
 
-    if (output.isError || output.stringResult.contains('SyntaxError')) {
-      if (output.stringResult.startsWith('UnimplementedError:') ||
-          output.stringResult.startsWith('Error: UnimplementedError') ||
-          output.stringResult.contains('Method not implemented.')) {
+      if (output.isError || output.stringResult.contains('SyntaxError')) {
+        if (_isUnimplementedError(output.stringResult)) {
+          throw UnimplementedError(msg);
+        }
+
+        _printBlockError([
+          '[JS Runtime]: Error in run "$code"',
+          '[JS Runtime]: Output = $output',
+        ]);
+
+        throw output;
+      }
+      if (output.isPromise ||
+          output.stringResult.contains('Instance of \'Future')) {
+        return await handlePromise(output);
+      }
+
+      return output;
+    } catch (error) {
+      if (error is JSError && _isUnimplementedError(error.message)) {
         throw UnimplementedError(msg);
       }
 
-      debugPrint('[JS Runtime]: Error in run "$code"');
-      debugPrint('[JS Runtime]: Output = $output');
+      _printBlockError([
+        '[JS Runtime]: Error in run "$code"',
+        '[JS Runtime]: Output = $error',
+      ]);
 
-      throw output;
+      rethrow;
     }
-    if (output.isPromise ||
-        output.stringResult.contains('Instance of \'Future')) {
-      return await handlePromise(output);
-    }
-
-    return output;
   }
 
   Future<dynamic> evalAsyncJson(String code, [String? msg]) async {
