@@ -5,6 +5,7 @@ export abstract class BaseService {
   // abstract get uid(): string
   // abstract get name(): string
   _baseUrl: string = ""
+  writeWith: string = "js"
   get baseUrl(): string {
     return this._baseUrl
   }

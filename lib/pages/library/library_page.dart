@@ -182,12 +182,14 @@ class _LibraryPageState extends State<LibraryPage>
                               name: 'General Comic',
                               baseUrl: '',
                               avatar: Iconify(Fluent.extension20),
+                              writeWith: null,
                             ),
                             false => ServiceManagerItem(
                               uid: '\$\$eiga\$\$',
                               name: 'General Eiga',
                               baseUrl: '',
                               avatar: Iconify(Fluent.extension20),
+                              writeWith: null,
                             ),
                           };
                         }
@@ -199,6 +201,7 @@ class _LibraryPageState extends State<LibraryPage>
                           name: serviceA.name,
                           baseUrl: serviceA.baseUrl,
                           avatar: AvatarService(serviceA, radius: 10.0),
+                          writeWith: serviceA.writeWith,
                         );
                       }).toList(),
                   onDone: (newValue) {

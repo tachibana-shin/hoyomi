@@ -129,6 +129,8 @@ abstract class Service extends BaseService
     ),
   ];
 
+  final String writeWith = 'dart';
+
   final _user = Ref<User?>(null);
   final _error = Ref<String?>(null);
   final _fetching = Ref<bool>(true);

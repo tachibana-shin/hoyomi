@@ -12,6 +12,7 @@ import 'package:hoyomi/constraints/huge_icons.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/eiga/main.dart';
+import 'package:hoyomi/core_services/js_core/install_js_service.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/utils/export.dart';
@@ -788,6 +789,14 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
           if (router.state.name?.contains('comic') == true) {
             showServiceManagerDialog(
               context,
+              actions: [
+                IconButton(
+                  icon: Iconify(Mdi.plus),
+                  onPressed: () {
+                    showInstallJsServiceModal(context);
+                  },
+                ),
+              ],
               items:
                   comicServices.value.map((service) {
                     return ServiceManagerItem(
@@ -795,6 +804,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                       name: service.name,
                       baseUrl: service.baseUrl,
                       avatar: AvatarService(service, radius: 10.0),
+                      writeWith: service.writeWith,
                     );
                   }).toList(),
               onDone:
@@ -807,6 +817,14 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
           } else {
             showServiceManagerDialog(
               context,
+              actions: [
+                IconButton(
+                  icon: Iconify(Mdi.plus),
+                  onPressed: () {
+                    showInstallJsServiceModal(context);
+                  },
+                ),
+              ],
               items:
                   eigaServices.value.map((service) {
                     return ServiceManagerItem(
@@ -814,6 +832,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                       name: service.name,
                       baseUrl: service.baseUrl,
                       avatar: AvatarService(service, radius: 10.0),
+                      writeWith: service.writeWith,
                     );
                   }).toList(),
               onDone:

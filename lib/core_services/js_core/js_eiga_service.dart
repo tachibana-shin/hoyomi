@@ -9,8 +9,11 @@ class JSEigaService extends ABEigaService {
   late final ServiceInit init;
   @override
   late final bool $isAuth;
+  @override
+  // ignore: overridden_fields
+  late final String writeWith;
 
-  JSEigaService(this._runtime, this.init, this.$isAuth);
+  JSEigaService(this._runtime, this.init, this.$isAuth, {this.writeWith = 'js'});
 
   @override
   Future<SourceContent> fetchSourceContent({

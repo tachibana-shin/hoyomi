@@ -22,10 +22,11 @@ Future<Service> createJsService(String jsCode) async {
     await runtime.evalAsyncJson('__plugin.init'),
   );
   final $isAuth = await runtime.evalAsyncJson('__plugin.\$isAuth') ?? false;
+  final writeWith = await runtime.evalAsyncJson('__plugin.writeWith');
 
   final service = switch (type.stringResult) {
-    == 'comic' => JSComicService(runtime, init, $isAuth),
-    == 'eiga' => JSEigaService(runtime, init, $isAuth),
+    == 'comic' => JSComicService(runtime, init, $isAuth, writeWith: writeWith),
+    == 'eiga' => JSEigaService(runtime, init, $isAuth, writeWith: writeWith),
     _ => throw Exception('Unknown plugin type: $type'),
   };
 
