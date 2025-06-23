@@ -139,48 +139,97 @@ class JSEigaService extends ABEigaService {
     );
   }
 
+  /// =============== Internal plugin support flags ===============
+  bool _supportGetFollows = true;
+  bool _supportGetFollowsCount = true;
+  bool _supportIsFollow = true;
+  bool _supportSetFollow = true;
+  bool _supportGetWatchHistory = true;
+  bool _supportGetWatchTime = true;
+  bool _supportGetWatchTimeEpisodes = true;
+  bool _supportSetWatchTime = true;
+
+  /// =============== Overridden with fallback if plugin unimplemented ===============
+
   @override
   Future<Paginate<EigaFollow>> getFollows({required int page}) async {
-    final json = await _runtime.evalFn('__plugin.getFollows', [page]);
-
-    return Paginate(
-      items:
-          List.from(
-            json['items'],
-          ).map((item) => EigaFollow.fromJson(item)).toList(),
-      page: json['page'],
-      totalItems: json['totalItems'],
-      totalPages: json['totalPages'],
-    );
+    if (!_supportGetFollows) return await super.getFollows(page: page);
+    try {
+      final json = await _runtime.evalFn('__plugin.getFollows', [page]);
+      return Paginate(
+        items:
+            List.from(
+              json['items'],
+            ).map((item) => EigaFollow.fromJson(item)).toList(),
+        page: json['page'],
+        totalItems: json['totalItems'],
+        totalPages: json['totalPages'],
+      );
+    } on UnimplementedError {
+      _supportGetFollows = false;
+      return await super.getFollows(page: page);
+    }
   }
 
   @override
   Future<int> getFollowsCount(String eigaId) async {
-    return await _runtime.evalFn('__plugin.getFollowsCount', [eigaId]);
+    if (!_supportGetFollowsCount) return await super.getFollowsCount(eigaId);
+    try {
+      return await _runtime.evalFn('__plugin.getFollowsCount', [eigaId]);
+    } on UnimplementedError {
+      _supportGetFollowsCount = false;
+      return await super.getFollowsCount(eigaId);
+    }
   }
 
   @override
   Future<bool> isFollow(String eigaId) async {
-    return await _runtime.evalFn('__plugin.isFollow', [eigaId]);
+    if (!_supportIsFollow) return await super.isFollow(eigaId);
+    try {
+      return await _runtime.evalFn('__plugin.isFollow', [eigaId]);
+    } on UnimplementedError {
+      _supportIsFollow = false;
+      return await super.isFollow(eigaId);
+    }
   }
 
   @override
   Future<void> setFollow(EigaContextWithEpisodes context, bool value) async {
-    await _runtime.evalFn('__plugin.setFollow', [context, value]);
+    if (!_supportSetFollow) return await super.setFollow(context, value);
+    try {
+      await _runtime.evalFn('__plugin.setFollow', [context, value]);
+    } on UnimplementedError {
+      _supportSetFollow = false;
+      return await super.setFollow(context, value);
+    }
   }
 
   @override
   Future<List<EigaHistory>> getWatchHistory({required int page}) async {
-    return List.from(
-      await _runtime.evalFn('__plugin.getWatchHistory', [page]),
-    ).map((element) => EigaHistory.fromJson(element)).toList();
+    if (!_supportGetWatchHistory) {
+      return await super.getWatchHistory(page: page);
+    }
+    try {
+      return List.from(
+        await _runtime.evalFn('__plugin.getWatchHistory', [page]),
+      ).map((element) => EigaHistory.fromJson(element)).toList();
+    } on UnimplementedError {
+      _supportGetWatchHistory = false;
+      return await super.getWatchHistory(page: page);
+    }
   }
 
   @override
   Future<WatchTime> getWatchTime(EigaContext context) async {
-    return WatchTime.fromJson(
-      await _runtime.evalFn('__plugin.getWatchTime', [context]),
-    );
+    if (!_supportGetWatchTime) return await super.getWatchTime(context);
+    try {
+      return WatchTime.fromJson(
+        await _runtime.evalFn('__plugin.getWatchTime', [context]),
+      );
+    } on UnimplementedError {
+      _supportGetWatchTime = false;
+      return await super.getWatchTime(context);
+    }
   }
 
   @override
@@ -188,9 +237,23 @@ class JSEigaService extends ABEigaService {
     required String eigaId,
     required List<EigaEpisode> episodes,
   }) async {
-    return await _runtime.evalFn('__plugin.getWatchTimeEpisodes', [
-      {'eigaId': eigaId, 'episodes': episodes},
-    ]);
+    if (!_supportGetWatchTimeEpisodes) {
+      return await super.getWatchTimeEpisodes(
+        eigaId: eigaId,
+        episodes: episodes,
+      );
+    }
+    try {
+      return await _runtime.evalFn('__plugin.getWatchTimeEpisodes', [
+        {'eigaId': eigaId, 'episodes': episodes},
+      ]);
+    } on UnimplementedError {
+      _supportGetWatchTimeEpisodes = false;
+      return await super.getWatchTimeEpisodes(
+        eigaId: eigaId,
+        episodes: episodes,
+      );
+    }
   }
 
   @override
@@ -198,9 +261,17 @@ class JSEigaService extends ABEigaService {
     EigaContext context, {
     required WatchTime watchTime,
   }) async {
-    await _runtime.evalFn('__plugin.setWatchTime', [
-      context,
-      {'watchTime': watchTime},
-    ]);
+    if (!_supportSetWatchTime) {
+      return await super.setWatchTime(context, watchTime: watchTime);
+    }
+    try {
+      await _runtime.evalFn('__plugin.setWatchTime', [
+        context,
+        {'watchTime': watchTime},
+      ]);
+    } on UnimplementedError {
+      _supportSetWatchTime = false;
+      return await super.setWatchTime(context, watchTime: watchTime);
+    }
   }
 }

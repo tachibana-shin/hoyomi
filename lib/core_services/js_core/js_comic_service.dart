@@ -95,6 +95,8 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     );
   }
 
+  /// ================ Extension =================
+
   @override
   Future<void> deleteComment(
     ComicCommentContext context, {
@@ -126,67 +128,147 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     ]);
   }
 
+  bool _supportGetFollows = true;
   @override
   Future<Paginate<ComicFollow>> getFollows({required int page}) async {
-    final json = await _runtime.evalFn('__plugin.getFollows', [page]);
+    if (!_supportGetFollows) return await super.getFollows(page: page);
 
-    return Paginate(
-      items:
-          List.from(
-            json['items'],
-          ).map((item) => ComicFollow.fromJson(item)).toList(),
-      page: json['page'],
-      totalItems: json['totalItems'],
-      totalPages: json['totalPages'],
-    );
+    try {
+      final json = await _runtime.evalFn('__plugin.getFollows', [page]);
+
+      return Paginate(
+        items:
+            List.from(
+              json['items'],
+            ).map((item) => ComicFollow.fromJson(item)).toList(),
+        page: json['page'],
+        totalItems: json['totalItems'],
+        totalPages: json['totalPages'],
+      );
+    } on UnimplementedError {
+      _supportGetFollows = false;
+      return await super.getFollows(page: page);
+    }
   }
 
+  bool _supportIsFollow = true;
   @override
   Future<bool> isFollow({required String comicId}) async {
-    return await _runtime.evalFn('__plugin.isFollow', [comicId]);
+    if (!_supportIsFollow) return await super.isFollow(comicId: comicId);
+
+    try {
+      return await _runtime.evalFn('__plugin.isFollow', [comicId]);
+    } on UnimplementedError {
+      _supportIsFollow = false;
+      return await super.isFollow(comicId: comicId);
+    }
   }
 
+  bool _supportSetFollow = true;
   @override
   Future<void> setFollow({
     required String comicId,
     required MetaComic metaComic,
     required bool value,
   }) async {
-    await _runtime.evalFn('__plugin.setFollow', [
-      {'comicId': comicId, 'metaComic': metaComic, 'value': value},
-    ]);
+    if (!_supportSetFollow) {
+      return await super.setFollow(
+        comicId: comicId,
+        metaComic: metaComic,
+        value: value,
+      );
+    }
+
+    try {
+      await _runtime.evalFn('__plugin.setFollow', [
+        {'comicId': comicId, 'metaComic': metaComic, 'value': value},
+      ]);
+    } on UnimplementedError {
+      _supportSetFollow = false;
+      return await super.setFollow(
+        comicId: comicId,
+        metaComic: metaComic,
+        value: value,
+      );
+    }
   }
 
+  bool _supportGetWatchHistory = true;
   @override
   Future<List<ComicHistory>> getWatchHistory({required int page}) async {
-    return List.from(
-      await _runtime.evalFn('__plugin.getWatchHistory', [page]),
-    ).map((element) => ComicHistory.fromJson(element)).toList();
+    if (!_supportGetWatchHistory) {
+      return await super.getWatchHistory(page: page);
+    }
+
+    try {
+      return List.from(
+        await _runtime.evalFn('__plugin.getWatchHistory', [page]),
+      ).map((element) => ComicHistory.fromJson(element)).toList();
+    } on UnimplementedError {
+      _supportGetWatchHistory = false;
+      return await super.getWatchHistory(page: page);
+    }
   }
 
+  bool _supportGetWatchPage = true;
   @override
   Future<WatchPageUpdated> getWatchPage({
     required String comicId,
     required ComicChapter chapter,
     required MetaComic metaComic,
   }) async {
-    return WatchPageUpdated.fromJson(
-      await _runtime.evalFn('__plugin.getWatchPage', [
-        {'comicId': comicId, 'chapter': chapter, 'metaComic': metaComic},
-      ]),
-    );
+    if (!_supportGetWatchPage) {
+      return await super.getWatchPage(
+        comicId: comicId,
+        chapter: chapter,
+        metaComic: metaComic,
+      );
+    }
+
+    try {
+      return WatchPageUpdated.fromJson(
+        await _runtime.evalFn('__plugin.getWatchPage', [
+          {'comicId': comicId, 'chapter': chapter, 'metaComic': metaComic},
+        ]),
+      );
+    } on UnimplementedError {
+      _supportGetWatchPage = false;
+
+      return await super.getWatchPage(
+        comicId: comicId,
+        chapter: chapter,
+        metaComic: metaComic,
+      );
+    }
   }
 
+  bool _supportGetWatchPageEpisodes = true;
   @override
   Future<Map<String, WatchPageUpdated>> getWatchPageEpisodes({
     required String comicId,
     required List<ComicChapter> chapters,
   }) async {
-    return await _runtime.evalFn('__plugin.getWatchPageEpisodes', [
-      {'comicId': comicId, 'chapters': chapters},
-    ]);
+    if (!_supportGetWatchPageEpisodes) {
+      return await super.getWatchPageEpisodes(
+        comicId: comicId,
+        chapters: chapters,
+      );
+    }
+
+    try {
+      return await _runtime.evalFn('__plugin.getWatchPageEpisodes', [
+        {'comicId': comicId, 'chapters': chapters},
+      ]);
+    } on UnimplementedError {
+      _supportGetWatchPageEpisodes = false;
+      return await super.getWatchPageEpisodes(
+        comicId: comicId,
+        chapters: chapters,
+      );
+    }
   }
 
+  bool _supportSetWatchPage = true;
   @override
   Future<void> setWatchPage({
     required String comicId,
@@ -194,13 +276,32 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     required MetaComic metaComic,
     required WatchPage watchPage,
   }) async {
-    await _runtime.evalFn('__plugin.setWatchPage', [
-      {
-        'comicId': comicId,
-        'chapter': chapter,
-        'metaComic': metaComic,
-        'watchPage': watchPage,
-      },
-    ]);
+    if (!_supportSetWatchPage) {
+      return await super.setWatchPage(
+        comicId: comicId,
+        chapter: chapter,
+        metaComic: metaComic,
+        watchPage: watchPage,
+      );
+    }
+
+    try {
+      await _runtime.evalFn('__plugin.setWatchPage', [
+        {
+          'comicId': comicId,
+          'chapter': chapter,
+          'metaComic': metaComic,
+          'watchPage': watchPage,
+        },
+      ]);
+    } on UnimplementedError {
+      _supportSetWatchPage = false;
+      return await super.setWatchPage(
+        comicId: comicId,
+        chapter: chapter,
+        metaComic: metaComic,
+        watchPage: watchPage,
+      );
+    }
   }
 }
