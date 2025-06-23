@@ -12,6 +12,8 @@ sealed class ServiceInit with _$ServiceInit {
     String? uid,
     required OImage faviconUrl,
     required String rootUrl,
+    String? version,
+    String? description,
     List<SettingField>? settings,
     List<WebRule>? webRules,
     @Default(false) bool fetchHeadless,

@@ -11,6 +11,8 @@ _ServiceInit _$ServiceInitFromJson(Map<String, dynamic> json) => _ServiceInit(
   uid: json['uid'] as String?,
   faviconUrl: OImage.fromJson(json['faviconUrl'] as Map<String, dynamic>),
   rootUrl: json['rootUrl'] as String,
+  version: json['version'] as String?,
+  description: json['description'] as String?,
   settings:
       (json['settings'] as List<dynamic>?)
           ?.map((e) => SettingField.fromJson(e as Map<String, dynamic>))
@@ -31,6 +33,8 @@ Map<String, dynamic> _$ServiceInitToJson(_ServiceInit instance) =>
       'uid': instance.uid,
       'faviconUrl': instance.faviconUrl,
       'rootUrl': instance.rootUrl,
+      'version': instance.version,
+      'description': instance.description,
       'settings': instance.settings,
       'webRules': instance.webRules,
       'fetchHeadless': instance.fetchHeadless,

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ServiceInit {
 
- String get name; String? get uid; OImage get faviconUrl; String get rootUrl; List<SettingField>? get settings; List<WebRule>? get webRules; bool get fetchHeadless; String? get fetchBaseUrl;///
+ String get name; String? get uid; OImage get faviconUrl; String get rootUrl; String? get version; String? get description; List<SettingField>? get settings; List<WebRule>? get webRules; bool get fetchHeadless; String? get fetchBaseUrl;///
 /// {BASE_URL} = baseUrl. Example "{BASE_URL}/captcha" = https://example.com/captcha
 ///
  String? get captchaUrl;///
@@ -35,16 +35,16 @@ $ServiceInitCopyWith<ServiceInit> get copyWith => _$ServiceInitCopyWithImpl<Serv
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServiceInit&&(identical(other.name, name) || other.name == name)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.faviconUrl, faviconUrl) || other.faviconUrl == faviconUrl)&&(identical(other.rootUrl, rootUrl) || other.rootUrl == rootUrl)&&const DeepCollectionEquality().equals(other.settings, settings)&&const DeepCollectionEquality().equals(other.webRules, webRules)&&(identical(other.fetchHeadless, fetchHeadless) || other.fetchHeadless == fetchHeadless)&&(identical(other.fetchBaseUrl, fetchBaseUrl) || other.fetchBaseUrl == fetchBaseUrl)&&(identical(other.captchaUrl, captchaUrl) || other.captchaUrl == captchaUrl)&&(identical(other.customCookie, customCookie) || other.customCookie == customCookie));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServiceInit&&(identical(other.name, name) || other.name == name)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.faviconUrl, faviconUrl) || other.faviconUrl == faviconUrl)&&(identical(other.rootUrl, rootUrl) || other.rootUrl == rootUrl)&&(identical(other.version, version) || other.version == version)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.settings, settings)&&const DeepCollectionEquality().equals(other.webRules, webRules)&&(identical(other.fetchHeadless, fetchHeadless) || other.fetchHeadless == fetchHeadless)&&(identical(other.fetchBaseUrl, fetchBaseUrl) || other.fetchBaseUrl == fetchBaseUrl)&&(identical(other.captchaUrl, captchaUrl) || other.captchaUrl == captchaUrl)&&(identical(other.customCookie, customCookie) || other.customCookie == customCookie));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,uid,faviconUrl,rootUrl,const DeepCollectionEquality().hash(settings),const DeepCollectionEquality().hash(webRules),fetchHeadless,fetchBaseUrl,captchaUrl,customCookie);
+int get hashCode => Object.hash(runtimeType,name,uid,faviconUrl,rootUrl,version,description,const DeepCollectionEquality().hash(settings),const DeepCollectionEquality().hash(webRules),fetchHeadless,fetchBaseUrl,captchaUrl,customCookie);
 
 @override
 String toString() {
-  return 'ServiceInit(name: $name, uid: $uid, faviconUrl: $faviconUrl, rootUrl: $rootUrl, settings: $settings, webRules: $webRules, fetchHeadless: $fetchHeadless, fetchBaseUrl: $fetchBaseUrl, captchaUrl: $captchaUrl, customCookie: $customCookie)';
+  return 'ServiceInit(name: $name, uid: $uid, faviconUrl: $faviconUrl, rootUrl: $rootUrl, version: $version, description: $description, settings: $settings, webRules: $webRules, fetchHeadless: $fetchHeadless, fetchBaseUrl: $fetchBaseUrl, captchaUrl: $captchaUrl, customCookie: $customCookie)';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $ServiceInitCopyWith<$Res>  {
   factory $ServiceInitCopyWith(ServiceInit value, $Res Function(ServiceInit) _then) = _$ServiceInitCopyWithImpl;
 @useResult
 $Res call({
- String name, String? uid, OImage faviconUrl, String rootUrl, List<SettingField>? settings, List<WebRule>? webRules, bool fetchHeadless, String? fetchBaseUrl, String? captchaUrl, String? customCookie
+ String name, String? uid, OImage faviconUrl, String rootUrl, String? version, String? description, List<SettingField>? settings, List<WebRule>? webRules, bool fetchHeadless, String? fetchBaseUrl, String? captchaUrl, String? customCookie
 });
 
 
@@ -72,13 +72,15 @@ class _$ServiceInitCopyWithImpl<$Res>
 
 /// Create a copy of ServiceInit
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? uid = freezed,Object? faviconUrl = null,Object? rootUrl = null,Object? settings = freezed,Object? webRules = freezed,Object? fetchHeadless = null,Object? fetchBaseUrl = freezed,Object? captchaUrl = freezed,Object? customCookie = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? uid = freezed,Object? faviconUrl = null,Object? rootUrl = null,Object? version = freezed,Object? description = freezed,Object? settings = freezed,Object? webRules = freezed,Object? fetchHeadless = null,Object? fetchBaseUrl = freezed,Object? captchaUrl = freezed,Object? customCookie = freezed,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String?,faviconUrl: null == faviconUrl ? _self.faviconUrl : faviconUrl // ignore: cast_nullable_to_non_nullable
 as OImage,rootUrl: null == rootUrl ? _self.rootUrl : rootUrl // ignore: cast_nullable_to_non_nullable
-as String,settings: freezed == settings ? _self.settings : settings // ignore: cast_nullable_to_non_nullable
+as String,version: freezed == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,settings: freezed == settings ? _self.settings : settings // ignore: cast_nullable_to_non_nullable
 as List<SettingField>?,webRules: freezed == webRules ? _self.webRules : webRules // ignore: cast_nullable_to_non_nullable
 as List<WebRule>?,fetchHeadless: null == fetchHeadless ? _self.fetchHeadless : fetchHeadless // ignore: cast_nullable_to_non_nullable
 as bool,fetchBaseUrl: freezed == fetchBaseUrl ? _self.fetchBaseUrl : fetchBaseUrl // ignore: cast_nullable_to_non_nullable
@@ -104,13 +106,15 @@ $OImageCopyWith<$Res> get faviconUrl {
 @JsonSerializable()
 
 class _ServiceInit implements ServiceInit {
-  const _ServiceInit({required this.name, this.uid, required this.faviconUrl, required this.rootUrl, final  List<SettingField>? settings, final  List<WebRule>? webRules, this.fetchHeadless = false, this.fetchBaseUrl, this.captchaUrl, this.customCookie}): _settings = settings,_webRules = webRules;
+  const _ServiceInit({required this.name, this.uid, required this.faviconUrl, required this.rootUrl, this.version, this.description, final  List<SettingField>? settings, final  List<WebRule>? webRules, this.fetchHeadless = false, this.fetchBaseUrl, this.captchaUrl, this.customCookie}): _settings = settings,_webRules = webRules;
   factory _ServiceInit.fromJson(Map<String, dynamic> json) => _$ServiceInitFromJson(json);
 
 @override final  String name;
 @override final  String? uid;
 @override final  OImage faviconUrl;
 @override final  String rootUrl;
+@override final  String? version;
+@override final  String? description;
  final  List<SettingField>? _settings;
 @override List<SettingField>? get settings {
   final value = _settings;
@@ -153,16 +157,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServiceInit&&(identical(other.name, name) || other.name == name)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.faviconUrl, faviconUrl) || other.faviconUrl == faviconUrl)&&(identical(other.rootUrl, rootUrl) || other.rootUrl == rootUrl)&&const DeepCollectionEquality().equals(other._settings, _settings)&&const DeepCollectionEquality().equals(other._webRules, _webRules)&&(identical(other.fetchHeadless, fetchHeadless) || other.fetchHeadless == fetchHeadless)&&(identical(other.fetchBaseUrl, fetchBaseUrl) || other.fetchBaseUrl == fetchBaseUrl)&&(identical(other.captchaUrl, captchaUrl) || other.captchaUrl == captchaUrl)&&(identical(other.customCookie, customCookie) || other.customCookie == customCookie));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServiceInit&&(identical(other.name, name) || other.name == name)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.faviconUrl, faviconUrl) || other.faviconUrl == faviconUrl)&&(identical(other.rootUrl, rootUrl) || other.rootUrl == rootUrl)&&(identical(other.version, version) || other.version == version)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._settings, _settings)&&const DeepCollectionEquality().equals(other._webRules, _webRules)&&(identical(other.fetchHeadless, fetchHeadless) || other.fetchHeadless == fetchHeadless)&&(identical(other.fetchBaseUrl, fetchBaseUrl) || other.fetchBaseUrl == fetchBaseUrl)&&(identical(other.captchaUrl, captchaUrl) || other.captchaUrl == captchaUrl)&&(identical(other.customCookie, customCookie) || other.customCookie == customCookie));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,uid,faviconUrl,rootUrl,const DeepCollectionEquality().hash(_settings),const DeepCollectionEquality().hash(_webRules),fetchHeadless,fetchBaseUrl,captchaUrl,customCookie);
+int get hashCode => Object.hash(runtimeType,name,uid,faviconUrl,rootUrl,version,description,const DeepCollectionEquality().hash(_settings),const DeepCollectionEquality().hash(_webRules),fetchHeadless,fetchBaseUrl,captchaUrl,customCookie);
 
 @override
 String toString() {
-  return 'ServiceInit(name: $name, uid: $uid, faviconUrl: $faviconUrl, rootUrl: $rootUrl, settings: $settings, webRules: $webRules, fetchHeadless: $fetchHeadless, fetchBaseUrl: $fetchBaseUrl, captchaUrl: $captchaUrl, customCookie: $customCookie)';
+  return 'ServiceInit(name: $name, uid: $uid, faviconUrl: $faviconUrl, rootUrl: $rootUrl, version: $version, description: $description, settings: $settings, webRules: $webRules, fetchHeadless: $fetchHeadless, fetchBaseUrl: $fetchBaseUrl, captchaUrl: $captchaUrl, customCookie: $customCookie)';
 }
 
 
@@ -173,7 +177,7 @@ abstract mixin class _$ServiceInitCopyWith<$Res> implements $ServiceInitCopyWith
   factory _$ServiceInitCopyWith(_ServiceInit value, $Res Function(_ServiceInit) _then) = __$ServiceInitCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String? uid, OImage faviconUrl, String rootUrl, List<SettingField>? settings, List<WebRule>? webRules, bool fetchHeadless, String? fetchBaseUrl, String? captchaUrl, String? customCookie
+ String name, String? uid, OImage faviconUrl, String rootUrl, String? version, String? description, List<SettingField>? settings, List<WebRule>? webRules, bool fetchHeadless, String? fetchBaseUrl, String? captchaUrl, String? customCookie
 });
 
 
@@ -190,13 +194,15 @@ class __$ServiceInitCopyWithImpl<$Res>
 
 /// Create a copy of ServiceInit
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? uid = freezed,Object? faviconUrl = null,Object? rootUrl = null,Object? settings = freezed,Object? webRules = freezed,Object? fetchHeadless = null,Object? fetchBaseUrl = freezed,Object? captchaUrl = freezed,Object? customCookie = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? uid = freezed,Object? faviconUrl = null,Object? rootUrl = null,Object? version = freezed,Object? description = freezed,Object? settings = freezed,Object? webRules = freezed,Object? fetchHeadless = null,Object? fetchBaseUrl = freezed,Object? captchaUrl = freezed,Object? customCookie = freezed,}) {
   return _then(_ServiceInit(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String?,faviconUrl: null == faviconUrl ? _self.faviconUrl : faviconUrl // ignore: cast_nullable_to_non_nullable
 as OImage,rootUrl: null == rootUrl ? _self.rootUrl : rootUrl // ignore: cast_nullable_to_non_nullable
-as String,settings: freezed == settings ? _self._settings : settings // ignore: cast_nullable_to_non_nullable
+as String,version: freezed == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,settings: freezed == settings ? _self._settings : settings // ignore: cast_nullable_to_non_nullable
 as List<SettingField>?,webRules: freezed == webRules ? _self._webRules : webRules // ignore: cast_nullable_to_non_nullable
 as List<WebRule>?,fetchHeadless: null == fetchHeadless ? _self.fetchHeadless : fetchHeadless // ignore: cast_nullable_to_non_nullable
 as bool,fetchBaseUrl: freezed == fetchBaseUrl ? _self.fetchBaseUrl : fetchBaseUrl // ignore: cast_nullable_to_non_nullable

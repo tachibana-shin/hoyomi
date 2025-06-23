@@ -1,3 +1,4 @@
+export * from "./service_init"
 export * from "./service"
 export * from "./mixin/auth_mixin"
 export * from "./eiga/mixin/eiga_watch_time_mixin"
