@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
@@ -7,6 +9,7 @@ import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/plugins/install_web_rules.dart';
 import 'package:kaeru/kaeru.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'comic/services/cuutruyen/main.dart';
 import 'comic/services/nettruyen/main.dart';
@@ -17,6 +20,7 @@ import 'eiga/services/hianime/main.dart';
 import 'eiga/services/kkphim/main.dart';
 import 'eiga/services/nguonc/main.dart';
 import 'eiga/services/ophim/main.dart';
+import 'js_core/create_js_service.dart';
 
 export 'widget/export.dart';
 
@@ -111,9 +115,71 @@ Future<void> initializeServices([List<Service>? services]) async {
   if (XPlatform.isWeb) await installWebRules(await dynamicWebRules(services));
 }
 
+Future<void> _loadJsService() async {
+  final supportDir = await getApplicationSupportDirectory();
+
+  final eigaDir = Directory('${supportDir.path}/eiga');
+  final comicDir = Directory('${supportDir.path}/comic');
+
+  final services = <Service>[];
+
+  Future<void> loadServicesFromDir(
+    Directory dir,
+    bool Function(Service) isExpectedType,
+    void Function(Service) onAccept,
+  ) async {
+    if (!await dir.exists()) return;
+
+    final files =
+        await dir
+            .list()
+            .where((f) => f is File && f.path.endsWith('.js'))
+            .cast<File>()
+            .toList();
+
+    final futures = files.map((file) async {
+      final jsCode = await file.readAsString();
+      final service = await createJsService(jsCode);
+      if (isExpectedType(service)) {
+        onAccept(service);
+        services.add(service);
+      }
+    });
+
+    await Future.wait(futures);
+  }
+
+  await Future.wait([
+    loadServicesFromDir(
+      eigaDir,
+      (s) => s is ABEigaService,
+      (s) => _allEigaServices[(s as ABEigaService).uid] = s,
+    ),
+    loadServicesFromDir(
+      comicDir,
+      (s) => s is ABComicService,
+      (s) => _allComicServices[(s as ABComicService).uid] = s,
+    ),
+  ]);
+
+  eigaServices.value = [
+    ...eigaServices.value,
+    ...services.whereType<ABEigaService>(),
+  ];
+
+  comicServices.value = [
+    ...comicServices.value,
+    ...services.whereType<ABComicService>(),
+  ];
+}
+
 Future<void> _setupServices() async {
   if (_setupServicesInitd) return;
   _setupServicesInitd = true;
+
+  // no declare services here, because it will cause circular import
+  // setup all js service
+  await _loadJsService();
 
   // comic services
   final settings = await GeneralSettingsController.instance.get();
