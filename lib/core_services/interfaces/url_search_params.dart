@@ -12,7 +12,22 @@ sealed class UrlSearchParams with _$UrlSearchParams {
   }) = _UrlSearchParams;
 
   factory UrlSearchParams.fromJson(Map<String, dynamic> json) =>
-      _$UrlSearchParamsFromJson(json);
+      _$UrlSearchParamsFromJson(
+        json.containsKey('params')
+            ? json
+            : {
+              'params': Map.fromEntries(
+                json.entries.map(
+                  (entry) => MapEntry(
+                    entry.key,
+                    entry.value is List
+                        ? entry.value
+                        : [entry.value.toString()],
+                  ),
+                ),
+              ),
+            },
+      );
 
   /// Parse from raw query string
   factory UrlSearchParams.fromQuery(String query) {
