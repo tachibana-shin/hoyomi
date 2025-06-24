@@ -36,8 +36,20 @@ sealed class Headers with _$Headers {
 
   factory Headers.fromMap(Map<String, String> map) => Headers(map);
 
-  factory Headers.fromJson(Map<String, dynamic> json) =>
-      _$HeadersFromJson(json);
+  factory Headers.fromJson(Map<String, dynamic> json) => _$HeadersFromJson(
+    json.containsKey('headers')
+        ? json
+        : {
+          'headers': Map.fromEntries(
+            json.entries.map(
+              (entry) => MapEntry(
+                entry.key,
+                entry.value is List ? entry.value : [entry.value.toString()],
+              ),
+            ),
+          ),
+        },
+  );
 }
 
 extension HeadersExtension on Headers {
