@@ -62,6 +62,10 @@ class VerticalEigaList extends StatelessWidget {
         }
 
         if (snapshot.hasError) {
+          if (snapshot.error is UnimplementedError) {
+            return SizedBox.shrink();
+          }
+
           return Center(
             child: Service.errorWidgetBuilder(
               context,

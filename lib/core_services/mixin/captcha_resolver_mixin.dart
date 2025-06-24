@@ -11,11 +11,10 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 
 import '../widget/avatar_service.dart';
-import 'headless_mixin.dart';
 
 const _statusCaptchaResolve = [429, 503, 403];
 
-mixin CaptchaResolverMixin on HeadlessMixin {
+mixin CaptchaResolverMixin {
   static final _servicesNeedResolve = Ref<Set<Service>>({});
 
   static bool responseIsCaptchaResolve(Response response) {
@@ -153,19 +152,5 @@ mixin CaptchaResolverMixin on HeadlessMixin {
             ],
           ),
     );
-  }
-
-  Future<String> retryWithHeadless(
-    String url, {
-    Map<String, dynamic>? body,
-    required Headers headers,
-    bool notify = true,
-  }) {
-    _servicesNeedResolve.value = {
-      ..._servicesNeedResolve.value..add(this as Service),
-    };
-    showGeneralDialog();
-
-    return fetchHeadless(url, body: body, headers: headers, notify: notify);
   }
 }

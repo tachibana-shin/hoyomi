@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:io';
+import 'package:path/path.dart';
 
 void main(List<String> args) async {
   final useExit = args.contains('--exit');
@@ -10,10 +11,9 @@ void main(List<String> args) async {
 
   final dartFiles = <String>[];
 
-  await for (final entity in Directory.current.list(
-    recursive: true,
-    followLinks: false,
-  )) {
+  await for (final entity in Directory(
+    join(Directory.current.path, 'lib'),
+  ).list(recursive: true, followLinks: false)) {
     if (entity is! File) continue;
     if (!entity.path.endsWith('.dart')) continue;
 

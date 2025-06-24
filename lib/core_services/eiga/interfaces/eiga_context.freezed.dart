@@ -12,6 +12,7 @@ part of 'eiga_context.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$EigaContext {
 
@@ -22,6 +23,8 @@ mixin _$EigaContext {
 @pragma('vm:prefer-inline')
 $EigaContextCopyWith<EigaContext> get copyWith => _$EigaContextCopyWithImpl<EigaContext>(this as EigaContext, _$identity);
 
+  /// Serializes this EigaContext to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
@@ -29,7 +32,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is EigaContext&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.metaEiga, metaEiga) || other.metaEiga == metaEiga)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.season, season) || other.season == season));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,eigaId,metaEiga,episode,season);
 
@@ -107,11 +110,11 @@ $SeasonCopyWith<$Res>? get season {
 
 
 /// @nodoc
-
+@JsonSerializable()
 
 class _EigaContext implements EigaContext {
   const _EigaContext({required this.eigaId, required this.metaEiga, required this.episode, this.season});
-  
+  factory _EigaContext.fromJson(Map<String, dynamic> json) => _$EigaContextFromJson(json);
 
 @override final  String eigaId;
 @override final  MetaEiga metaEiga;
@@ -124,14 +127,17 @@ class _EigaContext implements EigaContext {
 @pragma('vm:prefer-inline')
 _$EigaContextCopyWith<_EigaContext> get copyWith => __$EigaContextCopyWithImpl<_EigaContext>(this, _$identity);
 
-
+@override
+Map<String, dynamic> toJson() {
+  return _$EigaContextToJson(this, );
+}
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _EigaContext&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.metaEiga, metaEiga) || other.metaEiga == metaEiga)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.season, season) || other.season == season));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,eigaId,metaEiga,episode,season);
 

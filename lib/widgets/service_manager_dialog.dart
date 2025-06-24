@@ -1,9 +1,11 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/utils/get_lang_icon.dart';
 import 'package:iconify_flutter/icons/ic.dart';
+import 'package:sealed_languages/sealed_languages.dart';
 
 import 'iconify.dart';
 
@@ -12,17 +14,28 @@ class ServiceManagerItem {
   final String name;
   final String baseUrl;
   final Widget avatar;
+  final String? writeWith;
+  final String? version;
+  final String? description;
+
+  /// Code language support
+  final String? language;
 
   const ServiceManagerItem({
     required this.uid,
     required this.name,
     required this.baseUrl,
     required this.avatar,
+    required this.writeWith,
+    required this.version,
+    required this.description,
+    required this.language,
   });
 }
 
 void showServiceManagerDialog(
   BuildContext context, {
+  List<Widget>? actions,
   required List<ServiceManagerItem> items,
   required void Function(List<ServiceManagerItem> items) onDone,
 }) {
@@ -34,7 +47,21 @@ void showServiceManagerDialog(
       return StatefulBuilder(
         builder: (context, setStateDialog) {
           return AlertDialog(
-            title: const Text("Service Manager"),
+            title: Row(
+              mainAxisAlignment:
+                  actions == null
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.spaceBetween,
+              children: [
+                const Text("Service Manager"),
+
+                if (actions != null)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: actions,
+                  ).expanded(),
+              ],
+            ),
             content: SizedBox(
               width: double.maxFinite,
               height: 300,
@@ -56,8 +83,59 @@ void showServiceManagerDialog(
                         leading:
                             dialogItems[i]
                                 .avatar, // AvatarService(dialogItems[i], radius: 10.0),
-                        title: Text(dialogItems[i].name),
-                        subtitle: Text(dialogItems[i].baseUrl),
+                        title: Row(
+                          children: [
+                            Text(dialogItems[i].name),
+                            if (dialogItems[i].writeWith != null &&
+                                dialogItems[i].writeWith != 'dart') ...[
+                              const SizedBox(width: 6),
+                              getLangIcon(context, dialogItems[i].writeWith!)!,
+                            ],
+                          ],
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              children: [
+                                if (dialogItems[i].version != null)
+                                  Text(
+                                    'v${dialogItems[i].version} | ',
+                                  ).fontSize(12),
+
+                                Text(dialogItems[i].baseUrl).fontSize(12),
+
+                                if (dialogItems[i].language != null)
+                                  Text(
+                                    ' | ${NaturalLanguage.codeShortMap[dialogItems[i].language!.toUpperCase()]?.name ?? dialogItems[i].language}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color:
+                                          Theme.of(
+                                            context,
+                                          ).textTheme.bodySmall?.color,
+                                    ),
+                                  ),
+                              ],
+                            ),
+
+                            if (dialogItems[i].description != null)
+                              Text(
+                                dialogItems[i].description!,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).textTheme.bodySmall?.color,
+                                ),
+                              ),
+                          ],
+                        ),
+
                         trailing: const Iconify(
                           Ic.sharp_drag_indicator,
                           size: 20,
@@ -68,9 +146,12 @@ void showServiceManagerDialog(
               ),
             ),
             actions: [
-              GFButton(
-                text: 'Save',
-                shape: GFButtonShape.pills,
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(
+                    Theme.of(context).colorScheme.primary,
+                  ),
+                ),
                 onPressed: () async {
                   // setState(() => items = dialogItems);
                   if (!listEquals(dialogItems, items)) {
@@ -90,6 +171,12 @@ void showServiceManagerDialog(
                   if (!context.mounted) return;
                   Navigator.of(context).pop();
                 },
+                child: Text(
+                  'Save',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
               ),
               TextButton(
                 child: const Text("Cancel"),

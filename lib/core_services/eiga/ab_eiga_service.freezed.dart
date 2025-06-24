@@ -12,6 +12,7 @@ part of 'ab_eiga_service.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$EigaSourceContext {
 
@@ -22,6 +23,8 @@ mixin _$EigaSourceContext {
 @pragma('vm:prefer-inline')
 $EigaSourceContextCopyWith<EigaSourceContext> get copyWith => _$EigaSourceContextCopyWithImpl<EigaSourceContext>(this as EigaSourceContext, _$identity);
 
+  /// Serializes this EigaSourceContext to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
@@ -29,7 +32,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is EigaSourceContext&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.metaEiga, metaEiga) || other.metaEiga == metaEiga)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.source, source) || other.source == source));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,eigaId,metaEiga,episode,source);
 
@@ -104,11 +107,11 @@ $SourceVideoCopyWith<$Res> get source {
 
 
 /// @nodoc
-
+@JsonSerializable()
 
 class _EigaSourceContext implements EigaSourceContext {
   const _EigaSourceContext({required this.eigaId, required this.metaEiga, required this.episode, required this.source});
-  
+  factory _EigaSourceContext.fromJson(Map<String, dynamic> json) => _$EigaSourceContextFromJson(json);
 
 @override final  String eigaId;
 @override final  MetaEiga metaEiga;
@@ -121,14 +124,17 @@ class _EigaSourceContext implements EigaSourceContext {
 @pragma('vm:prefer-inline')
 _$EigaSourceContextCopyWith<_EigaSourceContext> get copyWith => __$EigaSourceContextCopyWithImpl<_EigaSourceContext>(this, _$identity);
 
-
+@override
+Map<String, dynamic> toJson() {
+  return _$EigaSourceContextToJson(this, );
+}
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _EigaSourceContext&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.metaEiga, metaEiga) || other.metaEiga == metaEiga)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.source, source) || other.source == source));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,eigaId,metaEiga,episode,source);
 

@@ -12,6 +12,7 @@ import 'package:hoyomi/constraints/huge_icons.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/eiga/main.dart';
+import 'package:hoyomi/core_services/js_core/install_js_service.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/utils/export.dart';
@@ -819,6 +820,28 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
           if (router.state.name?.contains('comic') == true) {
             showServiceManagerDialog(
               context,
+              actions: [
+                ElevatedButton.icon(
+                  icon: Iconify(Mdi.plus),
+                  label: Text(
+                    'Install Plugin',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Theme.of(context).colorScheme.primary,
+                    ),
+                    iconColor: WidgetStateProperty.all(
+                      Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                  onPressed: () {
+                    showInstallJsServiceModal(context);
+                  },
+                ),
+              ],
               items:
                   comicServices.value.map((service) {
                     return ServiceManagerItem(
@@ -826,6 +849,10 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                       name: service.name,
                       baseUrl: service.baseUrl,
                       avatar: AvatarService(service, radius: 10.0),
+                      writeWith: service.writeWith,
+                      version: service.init.version,
+                      description: service.init.description,
+                      language: service.init.language,
                     );
                   }).toList(),
               onDone:
@@ -838,6 +865,28 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
           } else {
             showServiceManagerDialog(
               context,
+              actions: [
+                ElevatedButton.icon(
+                  icon: Iconify(Mdi.plus),
+                  label: Text(
+                    'Install Plugin',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Theme.of(context).colorScheme.primary,
+                    ),
+                    iconColor: WidgetStateProperty.all(
+                      Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                  onPressed: () {
+                    showInstallJsServiceModal(context);
+                  },
+                ),
+              ],
               items:
                   eigaServices.value.map((service) {
                     return ServiceManagerItem(
@@ -845,6 +894,10 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                       name: service.name,
                       baseUrl: service.baseUrl,
                       avatar: AvatarService(service, radius: 10.0),
+                      writeWith: service.writeWith,
+                      version: service.init.version,
+                      description: service.init.description,
+                      language: service.init.language,
                     );
                   }).toList(),
               onDone:

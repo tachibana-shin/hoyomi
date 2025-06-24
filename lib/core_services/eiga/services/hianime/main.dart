@@ -37,19 +37,6 @@ class HiAnimeService extends ABEigaService {
 
   final Map<String, Future<DollarFunction>> _cacheDetails = {};
 
-  @override
-  parseURL(String url) {
-    final uri = Uri.parse(url);
-    assert(uri.path.startsWith('/watch'));
-
-    final seg = uri.path.split('/');
-    // [0] is empty, [1] is phim
-    final eigaId = seg[2];
-    final episodeId = seg.length >= 4 ? seg[3] : null;
-
-    return EigaParam(eigaId: eigaId, episodeId: episodeId);
-  }
-
   Eiga _parseItem(DQuery $trend) {
     return Eiga(
       name: $trend.queryOne('.dynamic-name').text(),

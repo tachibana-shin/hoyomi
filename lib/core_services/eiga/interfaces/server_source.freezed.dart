@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ServerSource {
 
- String get name; String get serverId;
+ String get name; String get serverId; String? get extra;
 /// Create a copy of ServerSource
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $ServerSourceCopyWith<ServerSource> get copyWith => _$ServerSourceCopyWithImpl<S
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSource&&(identical(other.name, name) || other.name == name)&&(identical(other.serverId, serverId) || other.serverId == serverId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerSource&&(identical(other.name, name) || other.name == name)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.extra, extra) || other.extra == extra));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,serverId);
+int get hashCode => Object.hash(runtimeType,name,serverId,extra);
 
 @override
 String toString() {
-  return 'ServerSource(name: $name, serverId: $serverId)';
+  return 'ServerSource(name: $name, serverId: $serverId, extra: $extra)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $ServerSourceCopyWith<$Res>  {
   factory $ServerSourceCopyWith(ServerSource value, $Res Function(ServerSource) _then) = _$ServerSourceCopyWithImpl;
 @useResult
 $Res call({
- String name, String serverId
+ String name, String serverId, String? extra
 });
 
 
@@ -66,11 +66,12 @@ class _$ServerSourceCopyWithImpl<$Res>
 
 /// Create a copy of ServerSource
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? serverId = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? serverId = null,Object? extra = freezed,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,serverId: null == serverId ? _self.serverId : serverId // ignore: cast_nullable_to_non_nullable
-as String,
+as String,extra: freezed == extra ? _self.extra : extra // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -81,11 +82,12 @@ as String,
 @JsonSerializable()
 
 class _ServerSource implements ServerSource {
-   _ServerSource({required this.name, required this.serverId});
+   _ServerSource({required this.name, required this.serverId, this.extra});
   factory _ServerSource.fromJson(Map<String, dynamic> json) => _$ServerSourceFromJson(json);
 
 @override final  String name;
 @override final  String serverId;
+@override final  String? extra;
 
 /// Create a copy of ServerSource
 /// with the given fields replaced by the non-null parameter values.
@@ -100,16 +102,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServerSource&&(identical(other.name, name) || other.name == name)&&(identical(other.serverId, serverId) || other.serverId == serverId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServerSource&&(identical(other.name, name) || other.name == name)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.extra, extra) || other.extra == extra));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,serverId);
+int get hashCode => Object.hash(runtimeType,name,serverId,extra);
 
 @override
 String toString() {
-  return 'ServerSource(name: $name, serverId: $serverId)';
+  return 'ServerSource(name: $name, serverId: $serverId, extra: $extra)';
 }
 
 
@@ -120,7 +122,7 @@ abstract mixin class _$ServerSourceCopyWith<$Res> implements $ServerSourceCopyWi
   factory _$ServerSourceCopyWith(_ServerSource value, $Res Function(_ServerSource) _then) = __$ServerSourceCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String serverId
+ String name, String serverId, String? extra
 });
 
 
@@ -137,11 +139,12 @@ class __$ServerSourceCopyWithImpl<$Res>
 
 /// Create a copy of ServerSource
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? serverId = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? serverId = null,Object? extra = freezed,}) {
   return _then(_ServerSource(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,serverId: null == serverId ? _self.serverId : serverId // ignore: cast_nullable_to_non_nullable
-as String,
+as String,extra: freezed == extra ? _self.extra : extra // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

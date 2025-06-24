@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/widgets/disabled.dart';
@@ -12,7 +14,7 @@ class IconButtonOpenBrowser extends StatelessWidget {
     }
   }
 
-  final String? url;
+  final FutureOr<String?> url;
 
   const IconButtonOpenBrowser({super.key, required this.url});
 
@@ -23,7 +25,7 @@ class IconButtonOpenBrowser extends StatelessWidget {
       child: IconButton(
         icon: const Iconify(Mdi.earth),
         onPressed: () async {
-          if (url != null) open(url!);
+          if (url != null) open((url is Future ? await url : url as String)!);
         },
       ),
     );

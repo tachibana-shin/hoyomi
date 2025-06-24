@@ -1,9 +1,12 @@
 import 'package:hoyomi/core_services/interfaces/setting/setting_field.dart';
-import 'package:hoyomi/core_services/service.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'field_input.g.dart';
+
+@JsonSerializable()
 class FieldInput extends SettingField {
   final String placeholder;
-  final String Function(Service service) defaultFn;
+  final String defaultValue;
   final int maxLines;
 
   /// Mark this field to appear in the setting page.
@@ -14,8 +17,13 @@ class FieldInput extends SettingField {
     required super.key,
     super.description,
     required this.placeholder,
-    required this.defaultFn,
+    required this.defaultValue,
     this.maxLines = 1,
     this.appear = false,
   });
+
+  factory FieldInput.fromJson(Map<String, dynamic> json) =>
+      _$FieldInputFromJson(json);
+  @override
+  Map<String, dynamic> toJson() => _$FieldInputToJson(this);
 }

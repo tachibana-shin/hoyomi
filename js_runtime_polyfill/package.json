@@ -1,0 +1,14 @@
+{
+  "name": "js_runtime_polyfill",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "bun scripts/build_embed.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

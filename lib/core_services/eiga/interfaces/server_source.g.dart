@@ -10,7 +10,12 @@ _ServerSource _$ServerSourceFromJson(Map<String, dynamic> json) =>
     _ServerSource(
       name: json['name'] as String,
       serverId: json['serverId'] as String,
+      extra: json['extra'] as String?,
     );
 
 Map<String, dynamic> _$ServerSourceToJson(_ServerSource instance) =>
-    <String, dynamic>{'name': instance.name, 'serverId': instance.serverId};
+    <String, dynamic>{
+      'name': instance.name,
+      'serverId': instance.serverId,
+      'extra': instance.extra,
+    };

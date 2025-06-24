@@ -1,8 +1,8 @@
 import 'package:hoyomi/controller/service_settings_controller.dart';
+import 'package:hoyomi/core_services/base_service.dart';
 import 'package:hoyomi/database/scheme/service_settings.dart';
 
 import '../interfaces/main.dart';
-import '../service.dart';
 
 mixin SettingsMixin on BaseService {
   ServiceSettings? _serviceSettings;
@@ -26,7 +26,10 @@ mixin SettingsMixin on BaseService {
       for (final field in init.settings!) {
         if (field is FieldInput && field.appear) {
           if (getSetting(key: field.key) == null) {
-            setSetting(field.key, field.defaultFn(this as Service));
+            setSetting(
+              field.key,
+              field.defaultValue.replaceFirst('{BASE_URL}', baseUrl),
+            );
           }
         }
       }

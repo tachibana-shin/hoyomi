@@ -33,22 +33,6 @@ class NguonCService extends ABEigaService {
     ).then((value) => _MovieDetailResponse.fromJson(jsonDecode(value)));
   }
 
-  @override
-  parseURL(String url) {
-    final uri = Uri.parse(url);
-    assert(uri.path.startsWith('/phim'));
-
-    final seg = uri.path.split('/');
-    // [0] is empty, [1] is phim
-    final eigaId = seg[2];
-    final episodeId = seg.length >= 4 ? seg[3] : null;
-
-    return EigaParam(
-      eigaId: eigaId,
-      episodeId: episodeId?.replaceFirst('.html', ''),
-    );
-  }
-
   OImage _getImage({required String src}) {
     return OImage(src: src);
   }

@@ -313,14 +313,9 @@ class CuuTruyenService extends ABComicService with ComicCommentMixin {
   }
 
   @override
-  String getURL(String comicId, {String? chapterId}) {
+  getURL(String comicId, {String? chapterId}) async {
     if (chapterId == null) return '$baseUrl/mangas/$comicId';
     return '$baseUrl/mangas/$comicId/chapters/$chapterId';
-  }
-
-  @override
-  ComicParam parseURL(String url) {
-    throw UnimplementedError();
   }
 
   @override

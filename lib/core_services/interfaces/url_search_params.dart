@@ -12,7 +12,22 @@ sealed class UrlSearchParams with _$UrlSearchParams {
   }) = _UrlSearchParams;
 
   factory UrlSearchParams.fromJson(Map<String, dynamic> json) =>
-      _$UrlSearchParamsFromJson(json);
+      _$UrlSearchParamsFromJson(
+        json.containsKey('params')
+            ? json
+            : {
+              'params': Map.fromEntries(
+                json.entries.map(
+                  (entry) => MapEntry(
+                    entry.key,
+                    entry.value is List
+                        ? entry.value
+                        : [entry.value.toString()],
+                  ),
+                ),
+              ),
+            },
+      );
 
   /// Parse from raw query string
   factory UrlSearchParams.fromQuery(String query) {
@@ -95,6 +110,15 @@ extension UrlSearchParamsExt on UrlSearchParams {
   }
 
   Map<String, List<String>> toMap() => Map.unmodifiable(params);
+  Map<String, dynamic> toSingleMap() {
+    return {
+      for (final entry in params.entries)
+        if (entry.value.length >= 2)
+          '${entry.key}[]': entry.value
+        else
+          entry.key: entry.value.firstOrNull ?? '',
+    };
+  }
 
   /// Join current params into a given Uri, overriding existing keys if duplicated.
   Uri joinTo(Uri uri) {

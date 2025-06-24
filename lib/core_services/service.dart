@@ -5,6 +5,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart' hide Headers;
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/controller/service_settings_controller.dart';
@@ -17,19 +18,24 @@ import 'package:hoyomi/plugins/create_dio_client.dart';
 import 'package:hoyomi/utils/d_query.dart';
 import 'package:html/parser.dart';
 
-import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/router/index.dart';
 import 'package:http_cache_file_store/http_cache_file_store.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'http_adapter/headless_webview_adapter.dart';
 import 'interfaces/export.dart';
+import 'base_service.dart';
 
-Dio? _dioCache;
-Future<Dio> _createDioClientCache() async {
-  if (_dioCache != null) return _dioCache!;
+export 'service_init.dart';
 
+Future<Dio> _createDioClientCache({
+  String baseUrl = '',
+  bool headless = false,
+  bool followRedirects = true,
+  required Service fromService,
+}) async {
   final options = CacheOptions(
     // A default store is required for interceptor.
     store:
@@ -64,90 +70,49 @@ Future<Dio> _createDioClientCache() async {
     allowPostMethod: false,
   );
 
-  _dioCache = await createDioClient(
-      BaseOptions(
-        responseType: ResponseType.plain,
-        followRedirects: true,
-      ), // only followRedirects for web
-      followRedirects: true, // this skip followRedirects in io
-    )
-    ..interceptors.add(DioCacheInterceptor(options: options));
-
-  return _dioCache!;
-}
-
-Dio? _dio;
-Future<Dio> _createDioClient() async {
-  if (_dio != null) return _dio!;
-
-  _dio = await createDioClient(
-    BaseOptions(responseType: ResponseType.plain, followRedirects: true),
-  );
-
-  return _dio!;
-}
-
-class ServiceInit {
-  final String name;
-  final String? uid;
-  final OImage faviconUrl;
-  final String rootUrl;
-  final String Function()? captchaUrl;
-  final List<SettingField>? settings;
-  final List<WebRule>? webRules;
-  final bool fetchHeadless;
-  final String? fetchBaseUrl;
-
-  /// Called before inserting the cookie to the insert request. Override this method to modify the cookie
-  /// before it is inserted. The default implementation simply returns the original cookie.
-  ///
-  /// [cookie] The cookie to be inserted.
-  ///
-  /// Returns the modified cookie.
-  final String? Function(String? oldCookie)? onBeforeInsertCookie;
-  Future<List<WebRule>> dynamicWebRules() {
-    throw UnimplementedError();
+  if (!headless) {
+    return await createDioClient(
+        BaseOptions(
+          baseUrl: baseUrl,
+          responseType: ResponseType.plain,
+          followRedirects: followRedirects,
+        ), // only followRedirects for web
+        followRedirects: followRedirects, // this skip followRedirects in io
+      )
+      ..interceptors.add(DioCacheInterceptor(options: options));
   }
 
-  const ServiceInit({
-    required this.name,
-    this.uid,
-    required this.rootUrl,
-    required this.faviconUrl,
-    this.captchaUrl,
-    this.settings,
-    this.onBeforeInsertCookie,
-    this.webRules,
-    this.fetchHeadless = false,
-    this.fetchBaseUrl,
-  });
+  final dio =
+      Dio(
+          BaseOptions(
+            baseUrl: baseUrl,
+            responseType: ResponseType.plain,
+            followRedirects: followRedirects,
+          ),
+        )
+        ..httpClientAdapter = HeadlessWebViewAdapter(fromService)
+        ..interceptors.add(DioCacheInterceptor(options: options));
+
+  return dio;
 }
 
-abstract class BaseService {
-  final kIsWeb = XPlatform.isWeb;
-
-  ServiceInit get init;
-  String get uid => init.uid ?? name.toLowerCase().replaceAll(r'\s', '-');
-  String get name => init.name;
-  String get baseUrl;
-}
+class HeadlessModeChanged {}
 
 abstract class Service extends BaseService
-    with SettingsMixin, HeadlessMixin, CaptchaResolverMixin {
+    with SettingsMixin, CaptchaResolverMixin {
   static final List<SettingField> settingsDefault = [
     FieldInput(
       name: 'URL',
       key: 'url',
-      defaultFn: (service) => service.init.rootUrl,
+      defaultValue: '{BASE_URL}',
       placeholder: 'Example https://example.com',
       description: 'The root URL of the service',
     ),
     FieldInput(
       name: 'User Agent',
       key: 'user_agent',
-      defaultFn:
-          (service) =>
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      defaultValue:
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       placeholder:
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       description: 'The user agent to use when fetching data',
@@ -156,7 +121,7 @@ abstract class Service extends BaseService
     FieldInput(
       name: 'Cookie',
       key: 'cookie',
-      defaultFn: (service) => '',
+      defaultValue: '',
       placeholder: 'Example cookie',
       description:
           'The cookie to use when fetching data. This field sync if service auth. It can change on after login with WebView',
@@ -164,18 +129,24 @@ abstract class Service extends BaseService
     ),
   ];
 
+  final String writeWith = 'dart';
+
   final _user = Ref<User?>(null);
   final _error = Ref<String?>(null);
   final _fetching = Ref<bool>(true);
+
+  final bus = EventBus();
 
   bool _initUserData = false;
 
   @override
   String get baseUrl {
-    return (getSetting(key: 'url') ?? init.rootUrl).replaceFirst(
-      RegExp(r'/$'),
-      '',
-    );
+    final inSetting = getSetting(key: 'url');
+    if (inSetting == null || inSetting.isEmpty) {
+      return init.rootUrl.replaceFirst(RegExp(r'/$'), '');
+    }
+
+    return inSetting.replaceFirst(RegExp(r'/$'), '');
   }
 
   OImage? _faviconUrl;
@@ -187,8 +158,8 @@ abstract class Service extends BaseService
         }).merge(init.faviconUrl.headers ?? Headers({})),
       );
   String? _$fetchBaseUrl;
-  String? get _fetchBaseUrl {
-    if (init.fetchBaseUrl == null) return null;
+  String get _fetchBaseUrl {
+    if (init.fetchBaseUrl == null) return baseUrl;
 
     return _$fetchBaseUrl ??= init.fetchBaseUrl!.replaceFirst(
       '{BASE_URL}',
@@ -198,8 +169,31 @@ abstract class Service extends BaseService
 
   final Map<String, ({DateTime? expire, Future<String> response})> _cacheFetch =
       {};
-  late final Dio dioCache;
-  late final Dio dio;
+  Dio? _dioCache;
+  Dio? _dioHeadless;
+  Future<Dio>? _dioHeadlessFuture;
+
+  Dio get dioCache => _tempHeadless ? _dioHeadless! : _dioCache!;
+
+  Future<Dio> getDioHeadless() {
+    if (_dioHeadless != null) return Future.value(_dioHeadless);
+    if (_dioHeadlessFuture != null) return _dioHeadlessFuture!;
+
+    _dioHeadlessFuture = _createDioClientCache(
+          baseUrl: _fetchBaseUrl,
+          headless: true,
+          fromService: this,
+        )
+        .then((dio) {
+          _dioHeadless = dio;
+          return dio;
+        })
+        .whenComplete(() {
+          _dioHeadlessFuture = null;
+        });
+
+    return _dioHeadlessFuture!;
+  }
 
   bool _initialize = false;
   bool _tempHeadless = false;
@@ -209,8 +203,14 @@ abstract class Service extends BaseService
     if (_initialize) return;
     _initialize = true;
 
-    dioCache = await _createDioClientCache();
-    dio = await _createDioClient();
+    if (headlessMode) {
+      await getDioHeadless();
+    } else {
+      _dioCache = await _createDioClientCache(
+        baseUrl: _fetchBaseUrl,
+        fromService: this,
+      );
+    }
 
     await super.initState();
   }
@@ -279,25 +279,58 @@ abstract class Service extends BaseService
     );
   }
 
-  /// Fetches data from the provided URL, handling cookies and retries.
-  ///
-  /// [url] The URL of the data to fetch.
-  ///
-  /// [cookie] The cookie to include in the request. Defaults to null.
-  ///
-  /// Returns a string containing the fetched data, or throws an exception if the request fails.
-  Future<String> fetchRust(
+  bool get headlessMode => init.fetchHeadless || _tempHeadless;
+
+  Future<String> fetch(
     String url, {
+    String? method,
+    String? cookie,
+    UrlSearchParams? query,
     Map<String, dynamic>? body,
-    required Headers headers,
+    Headers? headers,
     bool notify = true,
+    bool headless = false,
     bool cache = true,
   }) async {
+    if (headlessMode) headless = true;
+
+    if (!url.contains('://') && !url.startsWith('/')) url = '/$url';
+
+    final record = await ServiceSettingsController.instance.get(uid);
+    String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;
+
+    cookiesText =
+        init.customCookie?.replaceFirst('{OLD_COOKIE}', cookiesText ?? '') ??
+        cookiesText;
+
+    // final host = Uri.tryParse(url)?.host ?? Uri.tryParse(_fetchBaseUrl)?.host;
+    // print('Host = $host');
+    final $headers = Headers({
+      'accept':
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+      // 'accept-language': 'vi',
+      'cache-control': 'max-age=0',
+      if (cookiesText != null) 'cookie': cookiesText,
+      // 'pragma': 'no-cache',
+      // 'priority': 'u=0, i',
+      // if (host != null) 'host': host,
+
+      // 'upgrade-insecure-requests': '1',
+      'user-agent':
+          record?.settings?['user_agent'] as String? ??
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      if (headers != null) ...headers.toMap(),
+    });
+
+    if (headless && _dioHeadless == null) {
+      await getDioHeadless();
+    }
+
     final DateTime? startTime = kDebugMode ? DateTime.now() : null;
     if (kDebugMode) {
       print('🔵 [HTTP] Request Started');
       print('➡️ URL: $url');
-      print('📩 Cookie: ${headers.get('cookie')}');
+      print('📩 Cookie: ${$headers.get('cookie')}');
 
       if (body != null) {
         final filteredBody = Map.fromEntries(
@@ -317,13 +350,22 @@ abstract class Service extends BaseService
 
     late final Response response;
     try {
-      response = await (cache ? dioCache : dio).fetch(
+      response = await dioCache.fetch(
         RequestOptions(
+          baseUrl: _fetchBaseUrl,
           path: url,
-          method: body == null ? 'GET' : 'POST',
+          method: method ?? (body == null ? 'GET' : 'POST'),
+          queryParameters: query?.toSingleMap(),
           data: body == null ? null : FormData.fromMap(body),
           responseType: ResponseType.plain,
-          headers: headers.toMap(),
+          headers: {
+            ...$headers.toMap(),
+            if (!cache) ...{
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache',
+              'Expires': '0',
+            },
+          },
         ),
       );
 
@@ -340,29 +382,39 @@ abstract class Service extends BaseService
         }
       }
     } on DioException catch (error, trace) {
+      if (kDebugMode) {
+        print('URL = ${error.response?.realUri.toString()}');
+        print('Status = ${error.response?.statusCode}');
+        print('Response = ${error.response?.data.toString()}');
+      }
       if (error.response != null &&
           CaptchaResolverMixin.responseIsCaptchaResolve(error.response!)) {
         // return Future.error(response);
-        if (!_tempHeadless) {
+        if (!headlessMode) {
           _tempHeadless = true;
+          bus.fire(HeadlessModeChanged());
 
-          if (!kIsWeb) {
-            return fetchHeadless(
+          if (!kIsWeb && !headless) {
+            return fetch(
               url,
+              cookie: cookie,
+              query: query,
               body: body,
               headers: headers,
               notify: notify,
+              headless: headless,
+              cache: cache,
             );
           }
         }
-        final error = CaptchaRequiredException(getService(uid));
+        final captchaError = CaptchaRequiredException(getService(uid));
 
         // // required captcha resolve
         if (notify) {
           CaptchaResolverMixin.showSnackCaptcha(
             null,
             url: url,
-            error: error,
+            error: captchaError,
             trace: trace,
           );
         }
@@ -400,72 +452,7 @@ abstract class Service extends BaseService
     //           '');
     // }
 
-    if (response.statusCode == 200) {
-      return response.data.toString();
-    } else {
-      debugPrint('Error: ${response.statusMessage}');
-      throw response;
-    }
-  }
-
-  bool get headlessMode => init.fetchHeadless || _tempHeadless;
-
-  Future<String> fetch(
-    String url, {
-    String? cookie,
-    UrlSearchParams? query,
-    Map<String, dynamic>? body,
-    Headers? headers,
-    bool notify = true,
-    bool headless = false,
-    bool cache = true,
-  }) async {
-    if (headlessMode) headless = true;
-
-    final record = await ServiceSettingsController.instance.get(uid);
-    String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;
-
-    cookiesText = init.onBeforeInsertCookie?.call(cookiesText) ?? cookiesText;
-
-    var uri =
-        _fetchBaseUrl == null
-            ? Uri.parse(url)
-            : Uri.parse(_fetchBaseUrl!).resolve(url);
-    if (query != null) uri = query.joinTo(uri);
-
-    final $headers = Headers({
-      'accept':
-          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-      // 'accept-language': 'vi',
-      'cache-control': 'max-age=0',
-      if (cookiesText != null) 'cookie': cookiesText,
-      // 'pragma': 'no-cache',
-      // 'priority': 'u=0, i',
-      'host': uri.host,
-
-      // 'upgrade-insecure-requests': '1',
-      'user-agent':
-          record?.settings?['user_agent'] as String? ??
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-      if (headers != null) ...headers.toMap(),
-    });
-
-    if (headless && !kIsWeb) {
-      return fetchHeadless(
-        uri.toString(),
-        body: body,
-        headers: $headers,
-        notify: notify,
-      );
-    }
-
-    return fetchRust(
-      uri.toString(),
-      body: body,
-      headers: $headers,
-      notify: notify,
-      cache: cache,
-    );
+    return response.data.toString();
   }
 
   Future<String> fetchWithCache(

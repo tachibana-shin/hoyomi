@@ -12,6 +12,7 @@ part of 'eiga_history.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$EigaHistory {
 
@@ -22,6 +23,8 @@ mixin _$EigaHistory {
 @pragma('vm:prefer-inline')
 $EigaHistoryCopyWith<EigaHistory> get copyWith => _$EigaHistoryCopyWithImpl<EigaHistory>(this as EigaHistory, _$identity);
 
+  /// Serializes this EigaHistory to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
@@ -29,7 +32,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is EigaHistory&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.item, item) || other.item == item)&&(identical(other.watchUpdatedAt, watchUpdatedAt) || other.watchUpdatedAt == watchUpdatedAt)&&(identical(other.lastEpisode, lastEpisode) || other.lastEpisode == lastEpisode)&&(identical(other.watchTime, watchTime) || other.watchTime == watchTime));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,sourceId,item,watchUpdatedAt,lastEpisode,watchTime);
 
@@ -105,11 +108,11 @@ $WatchTimeCopyWith<$Res> get watchTime {
 
 
 /// @nodoc
-
+@JsonSerializable()
 
 class _EigaHistory implements EigaHistory {
   const _EigaHistory({required this.sourceId, required this.item, required this.watchUpdatedAt, required this.lastEpisode, required this.watchTime});
-  
+  factory _EigaHistory.fromJson(Map<String, dynamic> json) => _$EigaHistoryFromJson(json);
 
 @override final  String sourceId;
 @override final  Eiga item;
@@ -123,14 +126,17 @@ class _EigaHistory implements EigaHistory {
 @pragma('vm:prefer-inline')
 _$EigaHistoryCopyWith<_EigaHistory> get copyWith => __$EigaHistoryCopyWithImpl<_EigaHistory>(this, _$identity);
 
-
+@override
+Map<String, dynamic> toJson() {
+  return _$EigaHistoryToJson(this, );
+}
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _EigaHistory&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.item, item) || other.item == item)&&(identical(other.watchUpdatedAt, watchUpdatedAt) || other.watchUpdatedAt == watchUpdatedAt)&&(identical(other.lastEpisode, lastEpisode) || other.lastEpisode == lastEpisode)&&(identical(other.watchTime, watchTime) || other.watchTime == watchTime));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,sourceId,item,watchUpdatedAt,lastEpisode,watchTime);
 

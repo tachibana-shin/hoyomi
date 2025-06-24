@@ -12,6 +12,7 @@ part of 'comic_history.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$ComicHistory {
 
@@ -22,6 +23,8 @@ mixin _$ComicHistory {
 @pragma('vm:prefer-inline')
 $ComicHistoryCopyWith<ComicHistory> get copyWith => _$ComicHistoryCopyWithImpl<ComicHistory>(this as ComicHistory, _$identity);
 
+  /// Serializes this ComicHistory to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
@@ -29,7 +32,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is ComicHistory&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.item, item) || other.item == item)&&(identical(other.watchUpdatedAt, watchUpdatedAt) || other.watchUpdatedAt == watchUpdatedAt)&&(identical(other.lastChapter, lastChapter) || other.lastChapter == lastChapter)&&(identical(other.watchPage, watchPage) || other.watchPage == watchPage));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,sourceId,item,watchUpdatedAt,lastChapter,watchPage);
 
@@ -105,11 +108,11 @@ $WatchPageCopyWith<$Res> get watchPage {
 
 
 /// @nodoc
-
+@JsonSerializable()
 
 class _ComicHistory implements ComicHistory {
   const _ComicHistory({required this.sourceId, required this.item, required this.watchUpdatedAt, required this.lastChapter, required this.watchPage});
-  
+  factory _ComicHistory.fromJson(Map<String, dynamic> json) => _$ComicHistoryFromJson(json);
 
 @override final  String sourceId;
 @override final  Comic item;
@@ -123,14 +126,17 @@ class _ComicHistory implements ComicHistory {
 @pragma('vm:prefer-inline')
 _$ComicHistoryCopyWith<_ComicHistory> get copyWith => __$ComicHistoryCopyWithImpl<_ComicHistory>(this, _$identity);
 
-
+@override
+Map<String, dynamic> toJson() {
+  return _$ComicHistoryToJson(this, );
+}
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _ComicHistory&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.item, item) || other.item == item)&&(identical(other.watchUpdatedAt, watchUpdatedAt) || other.watchUpdatedAt == watchUpdatedAt)&&(identical(other.lastChapter, lastChapter) || other.lastChapter == lastChapter)&&(identical(other.watchPage, watchPage) || other.watchPage == watchPage));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,sourceId,item,watchUpdatedAt,lastChapter,watchPage);
 

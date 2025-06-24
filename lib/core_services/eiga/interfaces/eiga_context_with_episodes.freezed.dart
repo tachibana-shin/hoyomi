@@ -12,6 +12,7 @@ part of 'eiga_context_with_episodes.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$EigaContextWithEpisodes {
 
@@ -22,6 +23,8 @@ mixin _$EigaContextWithEpisodes {
 @pragma('vm:prefer-inline')
 $EigaContextWithEpisodesCopyWith<EigaContextWithEpisodes> get copyWith => _$EigaContextWithEpisodesCopyWithImpl<EigaContextWithEpisodes>(this as EigaContextWithEpisodes, _$identity);
 
+  /// Serializes this EigaContextWithEpisodes to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
@@ -29,7 +32,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is EigaContextWithEpisodes&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.metaEiga, metaEiga) || other.metaEiga == metaEiga)&&(identical(other.season, season) || other.season == season)&&const DeepCollectionEquality().equals(other.episodes, episodes));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,eigaId,metaEiga,season,const DeepCollectionEquality().hash(episodes));
 
@@ -98,11 +101,11 @@ $SeasonCopyWith<$Res>? get season {
 
 
 /// @nodoc
-
+@JsonSerializable()
 
 class _EigaContextWithEpisodes implements EigaContextWithEpisodes {
   const _EigaContextWithEpisodes({required this.eigaId, required this.metaEiga, this.season, required final  List<EigaEpisode> episodes}): _episodes = episodes;
-  
+  factory _EigaContextWithEpisodes.fromJson(Map<String, dynamic> json) => _$EigaContextWithEpisodesFromJson(json);
 
 @override final  String eigaId;
 @override final  MetaEiga metaEiga;
@@ -121,14 +124,17 @@ class _EigaContextWithEpisodes implements EigaContextWithEpisodes {
 @pragma('vm:prefer-inline')
 _$EigaContextWithEpisodesCopyWith<_EigaContextWithEpisodes> get copyWith => __$EigaContextWithEpisodesCopyWithImpl<_EigaContextWithEpisodes>(this, _$identity);
 
-
+@override
+Map<String, dynamic> toJson() {
+  return _$EigaContextWithEpisodesToJson(this, );
+}
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _EigaContextWithEpisodes&&(identical(other.eigaId, eigaId) || other.eigaId == eigaId)&&(identical(other.metaEiga, metaEiga) || other.metaEiga == metaEiga)&&(identical(other.season, season) || other.season == season)&&const DeepCollectionEquality().equals(other._episodes, _episodes));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,eigaId,metaEiga,season,const DeepCollectionEquality().hash(_episodes));
 
