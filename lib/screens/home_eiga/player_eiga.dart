@@ -710,32 +710,28 @@ class _PlayerEigaState extends State<PlayerEiga>
     _loading.value = true;
 
     late final Uri url;
-    String? content;
+    late final String content;
     try {
       final sourceContent = await widget.service.fetchSourceContent(
         source: source,
       );
       content = sourceContent.content;
-
-      final fileCache = await ProxyCache.instance.saveFile(
-        content: sourceContent.content,
-        path: "${sha256.convert(utf8.encode(sourceContent.content))}.m3u8",
-      );
-      if (!mounted) return;
-
-      await ProxyCache.instance.start();
-
-      if (!mounted) return;
-
-      url = ProxyCache.instance.getUrlHttp(fileCache);
     } on UnimplementedError {
-      url = source.url; // Uri.parse(source.url);
+      content = await widget.service.fetch(
+        source.url.toString(),
+        headers: source.headers,
+      );
     }
 
-    content ??= await widget.service.fetch(
-      url.toString(),
-      headers: source.headers,
+    final fileCache = await ProxyCache.instance.saveFile(
+      content: content,
+      path: "${sha256.convert(utf8.encode(content))}.m3u8",
     );
+    if (!mounted) return;
+    await ProxyCache.instance.start();
+    if (!mounted) return;
+
+    url = ProxyCache.instance.getUrlHttp(fileCache);
 
     if (parseQuality && source.type == 'hls') {
       final isMediaPlaylist = await _initializeHls(
