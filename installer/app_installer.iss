@@ -1,7 +1,7 @@
 ; Inno Setup Script Hoyomi
 [Setup]
 AppName=Hoyomi
-AppVersion=0.3.51.89
+AppVersion=0.3.52.90
 DefaultDirName={pf}\Hoyomi
 DefaultGroupName=Hoyomi
 OutputDir=installer\output
