@@ -8,12 +8,7 @@ declare global {
 register({ btoa, atob })
 
 export function btoa(str: string): string {
-  const bytes = Uint8Array.from(str, (c) => c.charCodeAt(0))
-  let binary = ""
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]!)
-  }
-  return __b64Encode(binary)
+  return __b64Encode(str)
 }
 
 export function atob(base64: string): string {
