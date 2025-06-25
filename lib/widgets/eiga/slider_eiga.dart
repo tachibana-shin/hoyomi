@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
@@ -25,6 +26,7 @@ class SliderEiga extends StatefulWidget {
   final Ref<Duration> buffered;
   final Ref<bool> showThumb;
   final Ref<bool> pauseAutoHideControls;
+  final Ref<bool> isHovering;
   final AsyncComputed<Vtt?> vttThumbnail;
   final AsyncComputed<OpeningEnding?> openingEnding;
   final ValueChanged<Duration> onSeek;
@@ -38,6 +40,7 @@ class SliderEiga extends StatefulWidget {
     required this.vttThumbnail,
     required this.showThumb,
     required this.pauseAutoHideControls,
+    required this.isHovering,
     required this.openingEnding,
   });
 
@@ -46,7 +49,7 @@ class SliderEiga extends StatefulWidget {
 }
 
 class _SliderEigaState extends State<SliderEiga>
-    with TickerProviderStateMixin, KaeruMixin, KaeruListenMixin {
+    with TickerProviderStateMixin, KaeruMixin, KaeruLifeMixin {
   late final AnimationController _controller;
   late final Animation<double> _barHeightAnimation;
 
@@ -55,7 +58,7 @@ class _SliderEigaState extends State<SliderEiga>
   final double sliderHeightMax = XPlatform.isAndroid || XPlatform.isIOS ? 4 : 3;
 
   late final _hoverPosition = ref(0.0); // Hover position
-  late final _isHovering = ref(false);
+  late final _isHovering = widget.isHovering;
   late final _preview = ref<Future<_PreviewMeta>?>(null);
   late final _previewBlank = ref<Widget?>(null);
 
@@ -68,12 +71,13 @@ class _SliderEigaState extends State<SliderEiga>
       duration: const Duration(milliseconds: 50),
       vsync: this,
     );
+    onBeforeUnmount(_controller.dispose);
     _barHeightAnimation = Tween<double>(
       begin: sliderHeightMin,
       end: sliderHeightMax,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    listen(widget.vttThumbnail, () {
+    watch([widget.vttThumbnail], () {
       final vtt = widget.vttThumbnail.value;
       if (vtt != null) {
         // TODO: Controls this
@@ -89,12 +93,6 @@ class _SliderEigaState extends State<SliderEiga>
         _subtitleController = null;
       }
     });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   void _onHoverUpdate(Offset localPosition) {
@@ -181,6 +179,7 @@ class _SliderEigaState extends State<SliderEiga>
   }
 
   void _onSeek(Offset localPosition) {
+    _isHovering.value = true;
     final position = (localPosition.dx /
             (context.findRenderObject() as RenderBox).size.width)
         .clamp(0.0, 1.0);
@@ -199,69 +198,71 @@ class _SliderEigaState extends State<SliderEiga>
               left: 0,
               right: 0,
               bottom: 0,
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onHorizontalDragUpdate: (details) {
-                  _onSeek(details.localPosition);
-                  _onHoverUpdate(details.localPosition);
-                },
+              child: MouseRegion(
+                onEnter: (details) => _onHoverUpdate(details.localPosition),
+                onExit: (details) => _onHoverEnd(),
+                onHover: (details) => _onHoverUpdate(details.localPosition),
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  dragStartBehavior: DragStartBehavior.down,
+                  onHorizontalDragUpdate: (details) {
+                    _onSeek(details.localPosition);
+                    _onHoverUpdate(details.localPosition);
+                  },
 
-                /// hover event
-                onHorizontalDragStart: (details) {
-                  _onSeek(details.localPosition);
-                  _onHoverUpdate(details.localPosition);
-                },
-                onHorizontalDragEnd: (details) {
-                  _onHoverEnd();
-                },
+                  /// hover event
+                  onHorizontalDragStart: (details) {
+                    _onSeek(details.localPosition);
+                    _onHoverUpdate(details.localPosition);
+                  },
+                  onHorizontalDragEnd: (details) {
+                    _onHoverEnd();
+                  },
+                  onHorizontalDragCancel: _onHoverEnd,
 
-                /// progress
-                onTapDown: (details) {
-                  _onSeek(details.localPosition);
-                  _onHoverUpdate(details.localPosition);
-                },
-                onTapUp: (details) {
-                  _onHoverEnd();
-                },
+                  // progress
+                  onTapDown: (details) {
+                    _onSeek(details.localPosition);
+                    _onHoverUpdate(details.localPosition);
+                  },
+                  onTapUp: (_) => _onHoverEnd(),
+                  onTapCancel: _onHoverEnd,
 
-                /// long press
-                onLongPressDown: (details) {
-                  _onSeek(details.localPosition);
-                  _onHoverUpdate(details.localPosition);
-                },
-                onLongPressMoveUpdate: (details) {
-                  _onSeek(details.localPosition);
-                  _onHoverUpdate(details.localPosition);
-                },
-                onLongPressEnd: (details) {
-                  _onHoverEnd();
-                },
+                  // /// long press
+                  // onLongPressDown: (details) {
+                  //   _onSeek(details.localPosition);
+                  //   _onHoverUpdate(details.localPosition);
+                  // },
+                  // onLongPressMoveUpdate: (details) {
+                  //   _onSeek(details.localPosition);
+                  //   _onHoverUpdate(details.localPosition);
+                  // },
+                  // onLongPressEnd: (details) =>   _onHoverEnd(),
 
-                /// pan
-                onPanStart: (details) {
-                  _onSeek(details.localPosition);
-                  _onHoverUpdate(details.localPosition);
-                },
-                onPanUpdate: (details) {
-                  _onSeek(details.localPosition);
-                  _onHoverUpdate(details.localPosition);
-                },
-                onPanEnd: (details) {
-                  _onHoverEnd();
-                },
-                // onTapCancel: _onHoverEnd,
-                child: Stack(
-                  children: [
-                    Container(
-                      height: thumbSize * 2,
-                      color: Colors.transparent,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [_buildSliderBar(parentSize)],
+                  /// pan
+                  onPanStart: (details) {
+                    _onSeek(details.localPosition);
+                    _onHoverUpdate(details.localPosition);
+                  },
+                  onPanUpdate: (details) {
+                    _onSeek(details.localPosition);
+                    _onHoverUpdate(details.localPosition);
+                  },
+                  onPanEnd: (_) => _onHoverEnd(),
+                  onPanCancel: _onHoverEnd,
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: thumbSize * 2,
+                        color: Colors.transparent,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [_buildSliderBar(parentSize)],
+                        ),
                       ),
-                    ),
-                    _buildSliderThumb(parentSize),
-                  ],
+                      _buildSliderThumb(parentSize),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -276,26 +277,23 @@ class _SliderEigaState extends State<SliderEiga>
   }
 
   Widget _buildSliderBar(Size parentSize) {
-    return AnimatedBuilder(
-      animation: _barHeightAnimation,
-      builder: (context, child) {
-        return Watch(() {
-          final openingEnding = widget.openingEnding.value;
+    return Watch(() {
+      final openingEnding = widget.openingEnding.value;
+      final duration = widget.duration.value;
+      final progress = widget.progress.value;
+      final buffered = widget.buffered.value;
 
+      return AnimatedBuilder(
+        animation: _barHeightAnimation,
+        builder: (context, child) {
           final opening = openingEnding?.opening;
           final ending = openingEnding?.ending;
-
-          final duration = widget.duration.value;
 
           return CustomPaint(
             size: Size(parentSize.width, _barHeightAnimation.value),
             painter: _ProgressBarPainter(
-              progress:
-                  widget.progress.value.inMilliseconds /
-                  duration.inMilliseconds,
-              buffered:
-                  widget.buffered.value.inMilliseconds /
-                  duration.inMilliseconds,
+              progress: progress.inMilliseconds / duration.inMilliseconds,
+              buffered: buffered.inMilliseconds / duration.inMilliseconds,
               range: [
                 if (opening != null && duration.inMilliseconds > 0)
                   (
@@ -311,9 +309,9 @@ class _SliderEigaState extends State<SliderEiga>
               barHeight: _barHeightAnimation.value, // Animate bar height
             ),
           );
-        });
-      },
-    );
+        },
+      );
+    });
   }
 
   Widget _buildHoverPreview(Size parentSize) {
@@ -414,13 +412,16 @@ class _SliderEigaState extends State<SliderEiga>
           duration: const Duration(milliseconds: 111),
           curve: Curves.easeInOut,
           scale: widget.showThumb.value || _isHovering.value ? 1 : 0,
-          child: GestureDetector(
-            onPanUpdate: (details) {
-              _onSeek(details.localPosition);
-            },
-            child: CustomPaint(
-              size: Size(size, size), // Adjust size based on showThumb
-              painter: _ThumbPainter(size: size),
+          child: IgnorePointer(
+            ignoring: !(widget.showThumb.value || _isHovering.value),
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                _onSeek(details.localPosition);
+              },
+              child: CustomPaint(
+                size: Size(size, size), // Adjust size based on showThumb
+                painter: _ThumbPainter(size: size),
+              ),
             ),
           ),
         ),
@@ -446,7 +447,7 @@ class _ProgressBarPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final backgroundPaint =
         Paint()
-          ..color = Colors.grey.withValues(alpha: 0.8)
+          ..color = Colors.white.withValues(alpha: 0.3)
           ..style = PaintingStyle.fill;
 
     final progressPaint =
@@ -456,7 +457,7 @@ class _ProgressBarPainter extends CustomPainter {
 
     final bufferedPaint =
         Paint()
-          ..color = const Color(0x36F44336)
+          ..color = Colors.white.withValues(alpha: 0.3)
           ..style = PaintingStyle.fill;
 
     final rangePaint =

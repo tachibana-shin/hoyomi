@@ -169,6 +169,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   late final _showControls = ref(false);
   late final _pauseAutoHideControls = ref(false);
+  late final _progressIsHovering = ref(false);
   late final _autoPlay = ref(true);
   late final _subtitleCode = ref<String?>(null);
   late final _playbackSpeed = ref(1.0);
@@ -535,6 +536,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       /// Free memory
       if (loopIdAutoIncrement != loopId) return;
 
+      if (_progressIsHovering.value) return;
       await controller.pause();
       _position.value = watchTime.position;
 
@@ -792,7 +794,9 @@ class _PlayerEigaState extends State<PlayerEiga>
     }
 
     if (controller != null && controller.value.isInitialized) {
-      _position.value = controller.value.position;
+      if (!_progressIsHovering.value) {
+        _position.value = controller.value.position;
+      }
       _duration.value = controller.value.duration;
       _buffered.value = controller.value.buffered.fold(Duration.zero, (
         max,
@@ -1481,6 +1485,7 @@ class _PlayerEigaState extends State<PlayerEiga>
               buffered: _buffered,
               showThumb: _showControls,
               pauseAutoHideControls: _pauseAutoHideControls,
+              isHovering: _progressIsHovering,
               vttThumbnail: _thumbnailVtt,
               openingEnding: _openingEnding,
               onSeek: (duration) {
