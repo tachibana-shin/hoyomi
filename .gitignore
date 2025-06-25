@@ -57,3 +57,4 @@ app.*.map.json
 /*.deb
 
 node_modules
+.env
