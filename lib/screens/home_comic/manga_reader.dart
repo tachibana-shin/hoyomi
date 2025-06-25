@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:battery_plus/battery_plus.dart';
@@ -117,7 +118,7 @@ class _MangaReaderState extends State<MangaReader>
   late final _currentTime = ref<String?>(null);
 
   // image cache
-  late final _pageMemoryCacheStore = <OImage, FutureCache<Uint8List>>{};
+  late final _pageMemoryCacheStore = <OImage, FutureCache<ui.Image>>{};
   late final _progressCacheStore = <OImage, Ref<double>>{};
 
   // created at
@@ -624,7 +625,16 @@ class _MangaReaderState extends State<MangaReader>
     );
   }
 
-  Future<FutureCache<Uint8List>> _fetchPage(
+  Future<ui.Image> _decodeWithDescriptor(Uint8List bytes) async {
+    final buffer = await ImmutableBuffer.fromUint8List(bytes);
+    final descriptor = await ImageDescriptor.encoded(buffer);
+    final codec = await descriptor.instantiateCodec();
+    final frame = await codec.getNextFrame();
+
+    return frame.image;
+  }
+
+  Future<FutureCache<ui.Image>> _fetchPage(
     int index,
     bool wait, {
     required Ref<double> progress,
@@ -640,7 +650,7 @@ class _MangaReaderState extends State<MangaReader>
 
     _pageMemoryCacheStore[item.image] = FutureCache(
       ComicDownloader.getPage(item.image).then((buffer) {
-        if (buffer != null) return buffer;
+        if (buffer != null) return _decodeWithDescriptor(buffer);
         return widget.service.dioCache
             .get(
               item.image.src,
@@ -656,27 +666,29 @@ class _MangaReaderState extends State<MangaReader>
             .then((buffer) async {
               if (_serviceSupportFetchPage[widget.service] != false) {
                 try {
-                  return await widget.service.fetchPage(buffer, item.image);
+                  return _decodeWithDescriptor(
+                    await widget.service.fetchPage(buffer, item.image),
+                  );
                 } on UnimplementedError {
                   _serviceSupportFetchPage[widget.service] = false;
 
-                  return buffer;
+                  return _decodeWithDescriptor(buffer);
                 }
               }
 
-              return buffer;
+              return _decodeWithDescriptor(buffer);
             });
       }),
     );
 
     await _pageMemoryCacheStore[item.image]!.future;
 
-    final image = MemoryImage(_pageMemoryCacheStore[item.image]!.data!);
+    // final image = _pageMemoryCacheStore[item.image]!.data!;
 
-    if (mounted) {
-      final future = precacheImage(image, context);
-      if (wait) await future;
-    }
+    // if (mounted) {
+    //   final future = precacheImage(image, context);
+    //   if (wait) await future;
+    // }
 
     return _pageMemoryCacheStore[item.image]!;
   }
@@ -721,7 +733,7 @@ class _MangaReaderState extends State<MangaReader>
 
     final cache = _pageMemoryCacheStore[source.image];
     if (cache != null && cache.data != null) {
-      return Image.memory(cache.data!, fit: BoxFit.contain);
+      return RawImage(image: cache.data!, fit: BoxFit.contain);
     }
 
     final progress = _progressCacheStore[source.image] ??= ref(-1.0);
@@ -739,7 +751,7 @@ class _MangaReaderState extends State<MangaReader>
                 height: 100.h(context),
                 child: Watch(() => _buildPageLoading(progress.value)),
               ),
-          data: (data, _) => Image.memory(data.data!, fit: BoxFit.contain),
+          data: (data, _) => RawImage(image: data.data!, fit: BoxFit.contain),
         );
       },
     );
@@ -1118,7 +1130,7 @@ class _MangaReaderState extends State<MangaReader>
 
           final cache = _pageMemoryCacheStore[source.image];
           if (cache != null && cache.data != null) {
-            return Image.memory(cache.data!, fit: BoxFit.contain);
+            return RawImage(image: cache.data!, fit: BoxFit.contain);
           }
 
           final data = await _fetchPage(
@@ -1130,7 +1142,7 @@ class _MangaReaderState extends State<MangaReader>
                     .image] ??= ref(-1.0),
           );
 
-          return Image.memory(await data.future);
+          return RawImage(image: data.data!, fit: BoxFit.contain);
         },
         rtl: mode == ComicModes.rightToLeft,
         twoPage: _useTwoPage.value,
@@ -1140,8 +1152,12 @@ class _MangaReaderState extends State<MangaReader>
 
   Widget _buildPageLoading(double? progress) {
     return Center(
-      child: CircularProgressIndicator(
-        value: progress == null || progress < 0 ? null : progress,
+      child: SizedBox(
+        width: 20.0,
+        height: 20.0,
+        child: CircularProgressIndicator(
+          value: progress == null || progress < 0 ? null : progress,
+        ),
       ),
     );
   }
