@@ -1083,37 +1083,31 @@ class _PlayerEigaState extends State<PlayerEiga>
         Watch(() {
           if (_trailerAvailable.value) return nil;
 
-          final child =
-              _showControls.value || _error.value != null
-                  ? GestureDetector(
-                    onTap: _onTapToggleControls,
-                    onDoubleTapDown: _onDoubleTapPlayer,
-                    onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
-                    onVerticalDragEnd: (_) => _hideAllSlider(),
-                    onVerticalDragCancel: _hideAllSlider,
-                    onHorizontalDragStart: _onHorizontalDragStart,
-                    onHorizontalDragUpdate: _onHorizontalDragUpdate,
-                    onHorizontalDragEnd: _onHorizontalDragEnd,
-                    child: Container(
-                      color: Colors.black.withValues(alpha: 0.5),
-                      child: Stack(
-                        children: [
-                          _buildMobileTopControls(),
-                          _buildMobileControls(),
-                          _buildMobileBottomControls(),
-                        ],
-                      ),
-                    ),
-                  )
-                  : nil;
+          final child = GestureDetector(
+            onTap: _onTapToggleControls,
+            onDoubleTapDown: _onDoubleTapPlayer,
+            onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
+            onVerticalDragEnd: (_) => _hideAllSlider(),
+            onVerticalDragCancel: _hideAllSlider,
+            onHorizontalDragStart: _onHorizontalDragStart,
+            onHorizontalDragUpdate: _onHorizontalDragUpdate,
+            onHorizontalDragEnd: _onHorizontalDragEnd,
+            child: Container(
+              color: Colors.black.withValues(alpha: 0.5),
+              child: Stack(
+                children: [
+                  _buildMobileTopControls(),
+                  _buildMobileControls(),
+                  _buildMobileBottomControls(),
+                ],
+              ),
+            ),
+          );
 
           if (_error.value != null) return child;
 
-          return AnimatedSwitcher(
-            duration: _durationAnimate,
-            transitionBuilder:
-                (child, animation) =>
-                    FadeTransition(opacity: animation, child: child),
+          return AnimatedFadeIgnore(
+            hide: !(_showControls.value || _error.value != null),
             child: child,
           );
         }),
@@ -1477,29 +1471,25 @@ class _PlayerEigaState extends State<PlayerEiga>
         right: _fullscreen.value ? 16.0 : 0,
         child: SizedBox(
           width: (100.w(context) - 16.0 * 2),
-          child: AnimatedOpacity(
+          child: AnimatedFadeIgnore(
             duration: _durationAnimate,
-            opacity:
-                (_fullscreen.value ? _showControls.value : true) ? 1.0 : 0.0,
-            child: IgnorePointer(
-              ignoring: !(_fullscreen.value ? _showControls.value : true),
-              child: SliderEiga(
-                key: Key(widget.key.hashCode.toString()),
-                progress: _position,
-                duration: _duration,
-                buffered: _buffered,
-                showThumb: _showControls,
-                pauseAutoHideControls: _pauseAutoHideControls,
-                vttThumbnail: _thumbnailVtt,
-                openingEnding: _openingEnding,
-                onSeek: (duration) {
-                  final seek = _position.value = duration;
+            hide: !(_fullscreen.value ? _showControls.value : true),
+            child: SliderEiga(
+              key: Key(widget.key.hashCode.toString()),
+              progress: _position,
+              duration: _duration,
+              buffered: _buffered,
+              showThumb: _showControls,
+              pauseAutoHideControls: _pauseAutoHideControls,
+              vttThumbnail: _thumbnailVtt,
+              openingEnding: _openingEnding,
+              onSeek: (duration) {
+                final seek = _position.value = duration;
 
-                  if (_controller.value != null) {
-                    _seekTo(_controller.value!, seek);
-                  }
-                },
-              ),
+                if (_controller.value != null) {
+                  _seekTo(_controller.value!, seek);
+                }
+              },
             ),
           ),
         ),

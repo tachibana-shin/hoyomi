@@ -34,6 +34,7 @@ export 'circular_progress.dart';
 export 'pull_refresh_page.dart';
 export 'card_item.dart';
 export 'infinite_list.dart';
+export 'animated_fade_ignore.dart';
 export 'blurred_part_background.dart';
 export 'card_horz_item.dart';
 export 'library/follow/eiga/horizontal_eiga_follow_list.dart';
