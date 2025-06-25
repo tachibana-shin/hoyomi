@@ -93,6 +93,31 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: Watch(
+          () => AnimatedSlide(
+            duration: Duration(milliseconds: 300),
+            offset: _showToolbar.value ? Offset(0, 0) : Offset(0, -1),
+            curve: Curves.easeInOut,
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 300),
+              opacity: _showToolbar.value ? 1.0 : 0.0,
+              child: _AppBarExtended(
+                child: _AppBar(
+                  comic: _metaComic,
+                  chapter: _chapter,
+                  enabled: _showToolbar,
+                  service: _service,
+                  comicId: widget.comicId,
+                  showButtonMeta: widget.comic == null,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           FutureBuilder<List<dynamic>>(
@@ -134,14 +159,6 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
                 onChangeEnabled: _updateEnabled,
               );
             },
-          ),
-          _AppBar(
-            comic: _metaComic,
-            chapter: _chapter,
-            enabled: _showToolbar,
-            service: _service,
-            comicId: widget.comicId,
-            showButtonMeta: widget.comic == null,
           ),
         ],
       ),
@@ -281,6 +298,27 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                   : null,
         );
       }),
+    );
+  }
+}
+
+class _AppBarExtended extends AppBar {
+  final Widget child;
+
+  _AppBarExtended({required this.child});
+
+  @override
+  createState() => _AppBarExtendedState();
+}
+
+class _AppBarExtendedState extends State<_AppBarExtended> {
+  @override
+  Widget build(context) {
+    return Semantics(
+      container: true,
+      child: Material(
+        child: Semantics(explicitChildNodes: true, child: widget.child),
+      ),
     );
   }
 }

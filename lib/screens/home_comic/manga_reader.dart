@@ -1165,173 +1165,160 @@ class _MangaReaderState extends State<MangaReader>
 
   Widget _buildBottomBar() {
     return Watch(
-      () => AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        transitionBuilder: (child, animation) {
-          const begin = Offset(0.0, kToolbarHeight * 2.5);
-          const end = Offset.zero;
-          const curve = Curves.easeInOut;
-
-          var tween = Tween(
-            begin: begin,
-            end: end,
-          ).chain(CurveTween(curve: curve));
-          var offsetAnimation = animation.drive(tween);
-
-          return SlideTransition(position: offsetAnimation, child: child);
-        },
-        child:
-            !_showToolbar.value
-                ? nil
-                : Column(
+      () => AnimatedSlide(
+        duration: Duration(milliseconds: 300),
+        offset: _showToolbar.value ? Offset(0, 0) : Offset(0, 1),
+        curve: Curves.easeInOut,
+        child: AnimatedOpacity(
+          duration: Duration(milliseconds: 300),
+          opacity: _showToolbar.value ? 1.0 : 0.0,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Watch(
-                            () => Opacity(
-                              opacity: _prevChapter.value == null ? 0.8 : 1.0,
-                              child: GFIconButton(
-                                icon: Iconify(
-                                  Mdi.skip_previous,
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                ),
-                                shape: GFIconButtonShape.circle,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surface.withValues(alpha: 0.9),
-                                onPressed:
-                                    _prevChapter.value == null
-                                        ? null
-                                        : () {
-                                          context.pushReplacement(
-                                            "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${_prevChapter.value!.chapterId}",
-                                            extra: {'comic': widget.comic},
-                                          );
-                                        },
-                              ),
-                            ),
+                    Watch(
+                      () => Opacity(
+                        opacity: _prevChapter.value == null ? 0.8 : 1.0,
+                        child: GFIconButton(
+                          icon: Iconify(
+                            Mdi.skip_previous,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 6.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: Material(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.surface.withValues(alpha: 0.9),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16.0,
-                                      vertical: 15.0,
-                                    ),
-                                    child: _buildProgressControl(),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Watch(
-                            () => Opacity(
-                              opacity: _nextChapter.value == null ? 0.8 : 1.0,
-                              child: GFIconButton(
-                                icon: Iconify(
-                                  Mdi.skip_next,
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                ),
-                                shape: GFIconButtonShape.circle,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surface.withValues(alpha: 0.9),
-                                onPressed:
-                                    _nextChapter.value == null
-                                        ? null
-                                        : () {
-                                          context.pushReplacement(
-                                            "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${_nextChapter.value!.chapterId}",
-                                            extra: {'comic': widget.comic},
-                                          );
-                                        },
-                              ),
-                            ),
-                          ),
-                        ],
+                          shape: GFIconButtonShape.circle,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.surface.withValues(alpha: 0.9),
+                          onPressed:
+                              _prevChapter.value == null
+                                  ? null
+                                  : () {
+                                    context.pushReplacement(
+                                      "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${_prevChapter.value!.chapterId}",
+                                      extra: {'comic': widget.comic},
+                                    );
+                                  },
+                        ),
                       ),
                     ),
-                    SizedBox(height: 8.0),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                      ).add(EdgeInsets.only(bottom: 8.0)),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 6.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
                           child: Material(
                             color: Theme.of(
                               context,
-                            ).scaffoldBackgroundColor.withValues(alpha: 0.8),
+                            ).colorScheme.surface.withValues(alpha: 0.9),
                             child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 12.0,
-                                vertical: 8.0,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                                vertical: 15.0,
                               ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: ButtonInset(
-                                      icon: Eva.heart_outline,
-                                      text: 'Like',
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: ButtonInset(
-                                      icon: Eva.message_square_outline,
-                                      text: 'Comments',
-                                      disabled:
-                                          widget.service is! ComicCommentMixin,
-                                      onPressed: _showPanelComments,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Watch(
-                                      () => ButtonInset(
-                                        icon: Eva.list_outline,
-                                        text:
-                                            '${_realCurrentPage.value.toInt() + 1} / ${_realLength.value}',
-                                        onPressed: _showPanelListChapters,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: ButtonInset(
-                                      icon: Eva.settings_2_outline,
-                                      text: 'Settings',
-                                      onPressed: _showPanelSettings,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: ButtonInset(
-                                      icon: Ion.arrow_forward,
-                                      text: 'Skip',
-                                      onPressed: _showPanelSkipPages,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              child: _buildProgressControl(),
                             ),
                           ),
                         ),
                       ),
                     ),
+                    Watch(
+                      () => Opacity(
+                        opacity: _nextChapter.value == null ? 0.8 : 1.0,
+                        child: GFIconButton(
+                          icon: Iconify(
+                            Mdi.skip_next,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                          shape: GFIconButtonShape.circle,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.surface.withValues(alpha: 0.9),
+                          onPressed:
+                              _nextChapter.value == null
+                                  ? null
+                                  : () {
+                                    context.pushReplacement(
+                                      "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${_nextChapter.value!.chapterId}",
+                                      extra: {'comic': widget.comic},
+                                    );
+                                  },
+                        ),
+                      ),
+                    ),
                   ],
                 ),
+              ),
+              SizedBox(height: 8.0),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                ).add(EdgeInsets.only(bottom: 8.0)),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    child: Material(
+                      color: Theme.of(
+                        context,
+                      ).scaffoldBackgroundColor.withValues(alpha: 0.8),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 8.0,
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: ButtonInset(
+                                icon: Eva.heart_outline,
+                                text: 'Like',
+                                onPressed: () {},
+                              ),
+                            ),
+                            Expanded(
+                              child: ButtonInset(
+                                icon: Eva.message_square_outline,
+                                text: 'Comments',
+                                disabled: widget.service is! ComicCommentMixin,
+                                onPressed: _showPanelComments,
+                              ),
+                            ),
+                            Expanded(
+                              child: Watch(
+                                () => ButtonInset(
+                                  icon: Eva.list_outline,
+                                  text:
+                                      '${_realCurrentPage.value.toInt() + 1} / ${_realLength.value}',
+                                  onPressed: _showPanelListChapters,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: ButtonInset(
+                                icon: Eva.settings_2_outline,
+                                text: 'Settings',
+                                onPressed: _showPanelSettings,
+                              ),
+                            ),
+                            Expanded(
+                              child: ButtonInset(
+                                icon: Ion.arrow_forward,
+                                text: 'Skip',
+                                onPressed: _showPanelSkipPages,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
