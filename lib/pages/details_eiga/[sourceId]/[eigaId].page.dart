@@ -6,7 +6,6 @@ import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:contentsize_tabbarview/contentsize_tabbarview.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart' hide TimeOfDay;
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/bottom_sheet_no_scrim.dart';
@@ -27,6 +26,7 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WatchTimeDataEvent {
   final WatchTimeData watchTimeData;
@@ -1059,7 +1059,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     final size = query.size;
     final heightPlayer =
         size.height -
-        (XPlatform.isAndroid || XPlatform.isIOS ? query.padding.top : 0) -
+        (XPlatform.isAndroid || XPlatform.isIOS ? query.viewPadding.top : 0) -
         (size.width * 1 / _aspectRatio!);
 
     _initialBottomSheet = max(0.5, heightPlayer / size.height);
@@ -1172,13 +1172,23 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                               ),
                             ),
                           ),
-                          AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: InAppWebView(
-                              initialUrlRequest: URLRequest(
-                                url: WebUri.uri(Uri.parse(metaEiga.trailer!)),
+                          Row(
+                            children: [
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  if (metaEiga.trailer != null) {
+                                    /// open url
+
+                                    launchUrl(
+                                      Uri.parse(metaEiga.trailer!),
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  }
+                                },
+                                icon: Iconify(Ion.play, size: 16.0),
+                                label: Text('Watch Trailer'),
                               ),
-                            ),
+                            ],
                           ),
                         ],
                       ),
@@ -1248,7 +1258,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
     final size = query.size;
     final heightPlayer =
         100.h(context) -
-        (XPlatform.isAndroid || XPlatform.isIOS ? query.padding.top : 0) -
+        (XPlatform.isAndroid || XPlatform.isIOS ? query.viewPadding.top : 0) -
         (size.width * 1 / _aspectRatio!);
 
     _initialBottomSheet = max(0.5, heightPlayer / size.height);
