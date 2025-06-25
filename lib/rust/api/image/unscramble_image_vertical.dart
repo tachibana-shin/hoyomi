@@ -12,19 +12,23 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 Future<Uint8List> unscrambleImageRows({
   required List<int> imageData,
   required List<RowBlock> blocks,
+  required bool autoTrim,
 }) => RustLib.instance.api
     .crateApiImageUnscrambleImageVerticalUnscrambleImageRows(
       imageData: imageData,
       blocks: blocks,
+      autoTrim: autoTrim,
     );
 
 Uint8List unscrambleImageRowsSync({
   required List<int> imageData,
   required List<RowBlock> blocks,
+  required bool autoTrim,
 }) => RustLib.instance.api
     .crateApiImageUnscrambleImageVerticalUnscrambleImageRowsSync(
       imageData: imageData,
       blocks: blocks,
+      autoTrim: autoTrim,
     );
 
 class RowBlock {

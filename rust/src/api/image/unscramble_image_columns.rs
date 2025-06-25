@@ -2,6 +2,8 @@ use flutter_rust_bridge::frb;
 use image::{DynamicImage, GenericImage, GenericImageView, ImageFormat};
 use std::io::Cursor;
 
+use crate::api::image::{auto_trim_image::trim_image, utils::load_image};
+
 #[derive(Debug, Clone)]
 pub struct ColumnBlock {
     pub dx: u32,
@@ -11,9 +13,9 @@ pub struct ColumnBlock {
 fn do_unscramble_image_columns(
     image_data: Vec<u8>,
     blocks: Vec<ColumnBlock>,
+    auto_trim: bool,
 ) -> Result<Vec<u8>, String> {
-    let reader = image::ImageReader::with_format(Cursor::new(&image_data), ImageFormat::Png);
-    let img = reader.decode().map_err(|e| e.to_string())?;
+    let img = load_image(image_data);
     let (img_width, img_height) = img.dimensions();
 
     let mut dst = DynamicImage::new_rgba8(img_width, img_height);
@@ -36,22 +38,30 @@ fn do_unscramble_image_columns(
         sx += width;
     }
 
+    let final_image = if auto_trim { trim_image(dst) } else { dst };
+
     let mut out = Vec::new();
-    dst.write_to(&mut Cursor::new(&mut out), ImageFormat::Png)
+    final_image
+        .write_to(&mut Cursor::new(&mut out), ImageFormat::Png)
         .map_err(|e| e.to_string())?;
 
     Ok(out)
 }
 
 #[frb]
-pub fn c(image_data: Vec<u8>, blocks: Vec<ColumnBlock>) -> Result<Vec<u8>, String> {
-    do_unscramble_image_columns(image_data, blocks)
+pub fn unscramble_image_columns(
+    image_data: Vec<u8>,
+    blocks: Vec<ColumnBlock>,
+    auto_trim: bool,
+) -> Result<Vec<u8>, String> {
+    do_unscramble_image_columns(image_data, blocks, auto_trim)
 }
 
 #[frb(sync)]
 pub fn unscramble_image_columns_sync(
     image_data: Vec<u8>,
     blocks: Vec<ColumnBlock>,
+    auto_trim: bool,
 ) -> Result<Vec<u8>, String> {
-    do_unscramble_image_columns(image_data, blocks)
+    do_unscramble_image_columns(image_data, blocks, auto_trim)
 }

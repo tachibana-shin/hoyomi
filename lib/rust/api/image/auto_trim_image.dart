@@ -6,7 +6,7 @@
 import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `crop_image`, `encode_png`
+// These functions are ignored because they are not marked as `pub`: `crop_image`, `encode_png`, `trim_image`
 
 Uint8List autoTrimImageSync({required List<int> image}) => RustLib.instance.api
     .crateApiImageAutoTrimImageAutoTrimImageSync(image: image);

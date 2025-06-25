@@ -66,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.10.0';
 
   @override
-  int get rustContentHash => 1432544076;
+  int get rustContentHash => -100822084;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -85,11 +85,6 @@ abstract class RustLibApi extends BaseApi {
     required List<int> image,
   });
 
-  Future<Uint8List> crateApiImageUnscrambleImageColumnsC({
-    required List<int> imageData,
-    required List<ColumnBlock> blocks,
-  });
-
   Future<(int, int)> crateApiImageGetImageSizeGetImageSize({
     required List<int> data,
   });
@@ -101,26 +96,37 @@ abstract class RustLibApi extends BaseApi {
   Future<Uint8List> crateApiImageUnscrambleImageUnscrambleImage({
     required List<int> imageData,
     required List<Block> blocks,
+    required bool autoTrim,
+  });
+
+  Future<Uint8List> crateApiImageUnscrambleImageColumnsUnscrambleImageColumns({
+    required List<int> imageData,
+    required List<ColumnBlock> blocks,
+    required bool autoTrim,
   });
 
   Uint8List crateApiImageUnscrambleImageColumnsUnscrambleImageColumnsSync({
     required List<int> imageData,
     required List<ColumnBlock> blocks,
+    required bool autoTrim,
   });
 
   Future<Uint8List> crateApiImageUnscrambleImageVerticalUnscrambleImageRows({
     required List<int> imageData,
     required List<RowBlock> blocks,
+    required bool autoTrim,
   });
 
   Uint8List crateApiImageUnscrambleImageVerticalUnscrambleImageRowsSync({
     required List<int> imageData,
     required List<RowBlock> blocks,
+    required bool autoTrim,
   });
 
   Uint8List crateApiImageUnscrambleImageUnscrambleImageSync({
     required List<int> imageData,
     required List<Block> blocks,
+    required bool autoTrim,
   });
 }
 
@@ -191,38 +197,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Uint8List> crateApiImageUnscrambleImageColumnsC({
-    required List<int> imageData,
-    required List<ColumnBlock> blocks,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_list_prim_u_8_loose(imageData, serializer);
-          sse_encode_list_column_block(blocks, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 3,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_prim_u_8_strict,
-          decodeErrorData: sse_decode_String,
-        ),
-        constMeta: kCrateApiImageUnscrambleImageColumnsCConstMeta,
-        argValues: [imageData, blocks],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiImageUnscrambleImageColumnsCConstMeta =>
-      const TaskConstMeta(debugName: "c", argNames: ["imageData", "blocks"]);
-
-  @override
   Future<(int, int)> crateApiImageGetImageSizeGetImageSize({
     required List<int> data,
   }) {
@@ -234,7 +208,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 4,
+            funcId: 3,
             port: port_,
           );
         },
@@ -261,7 +235,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_list_prim_u_8_loose(data, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_record_u_32_u_32,
@@ -281,6 +255,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Future<Uint8List> crateApiImageUnscrambleImageUnscrambleImage({
     required List<int> imageData,
     required List<Block> blocks,
+    required bool autoTrim,
   }) {
     return handler.executeNormal(
       NormalTask(
@@ -288,6 +263,44 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_list_prim_u_8_loose(imageData, serializer);
           sse_encode_list_block(blocks, serializer);
+          sse_encode_bool(autoTrim, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 5,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_u_8_strict,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiImageUnscrambleImageUnscrambleImageConstMeta,
+        argValues: [imageData, blocks, autoTrim],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiImageUnscrambleImageUnscrambleImageConstMeta =>
+      const TaskConstMeta(
+        debugName: "unscramble_image",
+        argNames: ["imageData", "blocks", "autoTrim"],
+      );
+
+  @override
+  Future<Uint8List> crateApiImageUnscrambleImageColumnsUnscrambleImageColumns({
+    required List<int> imageData,
+    required List<ColumnBlock> blocks,
+    required bool autoTrim,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_u_8_loose(imageData, serializer);
+          sse_encode_list_column_block(blocks, serializer);
+          sse_encode_bool(autoTrim, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -299,23 +312,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeSuccessData: sse_decode_list_prim_u_8_strict,
           decodeErrorData: sse_decode_String,
         ),
-        constMeta: kCrateApiImageUnscrambleImageUnscrambleImageConstMeta,
-        argValues: [imageData, blocks],
+        constMeta:
+            kCrateApiImageUnscrambleImageColumnsUnscrambleImageColumnsConstMeta,
+        argValues: [imageData, blocks, autoTrim],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiImageUnscrambleImageUnscrambleImageConstMeta =>
+  TaskConstMeta
+  get kCrateApiImageUnscrambleImageColumnsUnscrambleImageColumnsConstMeta =>
       const TaskConstMeta(
-        debugName: "unscramble_image",
-        argNames: ["imageData", "blocks"],
+        debugName: "unscramble_image_columns",
+        argNames: ["imageData", "blocks", "autoTrim"],
       );
 
   @override
   Uint8List crateApiImageUnscrambleImageColumnsUnscrambleImageColumnsSync({
     required List<int> imageData,
     required List<ColumnBlock> blocks,
+    required bool autoTrim,
   }) {
     return handler.executeSync(
       SyncTask(
@@ -323,6 +339,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_list_prim_u_8_loose(imageData, serializer);
           sse_encode_list_column_block(blocks, serializer);
+          sse_encode_bool(autoTrim, serializer);
           return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
         },
         codec: SseCodec(
@@ -331,7 +348,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         ),
         constMeta:
             kCrateApiImageUnscrambleImageColumnsUnscrambleImageColumnsSyncConstMeta,
-        argValues: [imageData, blocks],
+        argValues: [imageData, blocks, autoTrim],
         apiImpl: this,
       ),
     );
@@ -341,13 +358,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   get kCrateApiImageUnscrambleImageColumnsUnscrambleImageColumnsSyncConstMeta =>
       const TaskConstMeta(
         debugName: "unscramble_image_columns_sync",
-        argNames: ["imageData", "blocks"],
+        argNames: ["imageData", "blocks", "autoTrim"],
       );
 
   @override
   Future<Uint8List> crateApiImageUnscrambleImageVerticalUnscrambleImageRows({
     required List<int> imageData,
     required List<RowBlock> blocks,
+    required bool autoTrim,
   }) {
     return handler.executeNormal(
       NormalTask(
@@ -355,6 +373,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_list_prim_u_8_loose(imageData, serializer);
           sse_encode_list_row_block(blocks, serializer);
+          sse_encode_bool(autoTrim, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -368,7 +387,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         ),
         constMeta:
             kCrateApiImageUnscrambleImageVerticalUnscrambleImageRowsConstMeta,
-        argValues: [imageData, blocks],
+        argValues: [imageData, blocks, autoTrim],
         apiImpl: this,
       ),
     );
@@ -378,13 +397,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   get kCrateApiImageUnscrambleImageVerticalUnscrambleImageRowsConstMeta =>
       const TaskConstMeta(
         debugName: "unscramble_image_rows",
-        argNames: ["imageData", "blocks"],
+        argNames: ["imageData", "blocks", "autoTrim"],
       );
 
   @override
   Uint8List crateApiImageUnscrambleImageVerticalUnscrambleImageRowsSync({
     required List<int> imageData,
     required List<RowBlock> blocks,
+    required bool autoTrim,
   }) {
     return handler.executeSync(
       SyncTask(
@@ -392,6 +412,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_list_prim_u_8_loose(imageData, serializer);
           sse_encode_list_row_block(blocks, serializer);
+          sse_encode_bool(autoTrim, serializer);
           return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
         },
         codec: SseCodec(
@@ -400,7 +421,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         ),
         constMeta:
             kCrateApiImageUnscrambleImageVerticalUnscrambleImageRowsSyncConstMeta,
-        argValues: [imageData, blocks],
+        argValues: [imageData, blocks, autoTrim],
         apiImpl: this,
       ),
     );
@@ -410,13 +431,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   get kCrateApiImageUnscrambleImageVerticalUnscrambleImageRowsSyncConstMeta =>
       const TaskConstMeta(
         debugName: "unscramble_image_rows_sync",
-        argNames: ["imageData", "blocks"],
+        argNames: ["imageData", "blocks", "autoTrim"],
       );
 
   @override
   Uint8List crateApiImageUnscrambleImageUnscrambleImageSync({
     required List<int> imageData,
     required List<Block> blocks,
+    required bool autoTrim,
   }) {
     return handler.executeSync(
       SyncTask(
@@ -424,6 +446,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_list_prim_u_8_loose(imageData, serializer);
           sse_encode_list_block(blocks, serializer);
+          sse_encode_bool(autoTrim, serializer);
           return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
         },
         codec: SseCodec(
@@ -431,7 +454,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeErrorData: sse_decode_String,
         ),
         constMeta: kCrateApiImageUnscrambleImageUnscrambleImageSyncConstMeta,
-        argValues: [imageData, blocks],
+        argValues: [imageData, blocks, autoTrim],
         apiImpl: this,
       ),
     );
@@ -440,7 +463,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiImageUnscrambleImageUnscrambleImageSyncConstMeta =>
       const TaskConstMeta(
         debugName: "unscramble_image_sync",
-        argNames: ["imageData", "blocks"],
+        argNames: ["imageData", "blocks", "autoTrim"],
       );
 
   @protected
@@ -463,6 +486,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       width: dco_decode_u_32(arr[4]),
       height: dco_decode_u_32(arr[5]),
     );
+  }
+
+  @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
   }
 
   @protected
@@ -574,6 +603,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
   ColumnBlock sse_decode_column_block(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_dx = sse_decode_u_32(deserializer);
@@ -671,12 +706,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint8() != 0;
-  }
-
-  @protected
   void sse_encode_String(String self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
@@ -691,6 +720,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_u_32(self.dy, serializer);
     sse_encode_u_32(self.width, serializer);
     sse_encode_u_32(self.height, serializer);
+  }
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self ? 1 : 0);
   }
 
   @protected
@@ -790,11 +825,5 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_i_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
-  }
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint8(self ? 1 : 0);
   }
 }

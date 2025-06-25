@@ -2,15 +2,20 @@ use flutter_rust_bridge::frb;
 use image::{DynamicImage, GenericImage, GenericImageView, ImageFormat};
 use std::io::Cursor;
 
+use crate::api::image::{auto_trim_image::trim_image, utils::load_image};
+
 #[derive(Debug, Clone)]
 pub struct RowBlock {
     pub dy: u32,
     pub height: u32,
 }
 
-fn do_unscramble_image_rows(image_data: Vec<u8>, blocks: Vec<RowBlock>) -> Result<Vec<u8>, String> {
-    let reader = image::ImageReader::with_format(Cursor::new(&image_data), ImageFormat::Png);
-    let img = reader.decode().map_err(|e| e.to_string())?;
+fn do_unscramble_image_rows(
+    image_data: Vec<u8>,
+    blocks: Vec<RowBlock>,
+    auto_trim: bool,
+) -> Result<Vec<u8>, String> {
+    let img = load_image(image_data);
     let (img_width, img_height) = img.dimensions();
 
     let mut dst = DynamicImage::new_rgba8(img_width, img_height);
@@ -33,8 +38,11 @@ fn do_unscramble_image_rows(image_data: Vec<u8>, blocks: Vec<RowBlock>) -> Resul
         sy += height;
     }
 
+    let final_image = if auto_trim { trim_image(dst) } else { dst };
+
     let mut out = Vec::new();
-    dst.write_to(&mut Cursor::new(&mut out), ImageFormat::Png)
+    final_image
+        .write_to(&mut Cursor::new(&mut out), ImageFormat::Png)
         .map_err(|e| e.to_string())?;
 
     Ok(out)
@@ -44,14 +52,16 @@ fn do_unscramble_image_rows(image_data: Vec<u8>, blocks: Vec<RowBlock>) -> Resul
 pub fn unscramble_image_rows(
     image_data: Vec<u8>,
     blocks: Vec<RowBlock>,
+    auto_trim: bool,
 ) -> Result<Vec<u8>, String> {
-    do_unscramble_image_rows(image_data, blocks)
+    do_unscramble_image_rows(image_data, blocks, auto_trim)
 }
 
 #[frb(sync)]
 pub fn unscramble_image_rows_sync(
     image_data: Vec<u8>,
     blocks: Vec<RowBlock>,
+    auto_trim: bool,
 ) -> Result<Vec<u8>, String> {
-    do_unscramble_image_rows(image_data, blocks)
+    do_unscramble_image_rows(image_data, blocks, auto_trim)
 }

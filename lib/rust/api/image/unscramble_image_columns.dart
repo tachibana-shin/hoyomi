@@ -9,21 +9,26 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 // These functions are ignored because they are not marked as `pub`: `do_unscramble_image_columns`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `fmt`
 
-Future<Uint8List> c({
+Future<Uint8List> unscrambleImageColumns({
   required List<int> imageData,
   required List<ColumnBlock> blocks,
-}) => RustLib.instance.api.crateApiImageUnscrambleImageColumnsC(
-  imageData: imageData,
-  blocks: blocks,
-);
+  required bool autoTrim,
+}) => RustLib.instance.api
+    .crateApiImageUnscrambleImageColumnsUnscrambleImageColumns(
+      imageData: imageData,
+      blocks: blocks,
+      autoTrim: autoTrim,
+    );
 
 Uint8List unscrambleImageColumnsSync({
   required List<int> imageData,
   required List<ColumnBlock> blocks,
+  required bool autoTrim,
 }) => RustLib.instance.api
     .crateApiImageUnscrambleImageColumnsUnscrambleImageColumnsSync(
       imageData: imageData,
       blocks: blocks,
+      autoTrim: autoTrim,
     );
 
 class ColumnBlock {

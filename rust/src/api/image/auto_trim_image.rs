@@ -4,10 +4,7 @@ use flutter_rust_bridge::frb;
 use image::{DynamicImage, GenericImageView, Pixel};
 use std::io::Cursor;
 
-fn crop_image(image: Vec<u8>) -> DynamicImage {
-    let mut decoded_image =
-        image::load_from_memory(image.as_slice()).expect("Failed to load image");
-
+pub(crate) fn trim_image(mut decoded_image: DynamicImage) -> DynamicImage {
     let (width, height) = decoded_image.dimensions();
 
     let mut left = width;
@@ -64,6 +61,10 @@ fn crop_image(image: Vec<u8>) -> DynamicImage {
     decoded_image.crop(left, top, right - left + 1, bottom - top + 1)
 }
 
+fn crop_image(image: Vec<u8>) -> DynamicImage {
+    let decoded_image: DynamicImage = super::utils::load_image(image);
+    trim_image(decoded_image)
+}
 fn encode_png(image: DynamicImage) -> Vec<u8> {
     let mut output: Vec<u8> = Vec::new();
     image
