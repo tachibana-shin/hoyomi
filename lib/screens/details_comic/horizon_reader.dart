@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hoyomi/screens/home_comic/manga_reader.dart';
-import 'package:hoyomi/widgets/export.dart';
 import 'package:kaeru/kaeru.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 class HorizonReader extends StatefulWidget {
   final Ref<List<ImageWithGroup>> pages;
@@ -11,7 +11,7 @@ class HorizonReader extends StatefulWidget {
   itemBuilder;
   final Ref<double> currentPage;
 
-  final Future<Image> Function(int page, ValueKey key) builderImage;
+  final Future<RawImage> Function(int page, ValueKey key) builderImage;
   final bool rtl;
   final bool twoPage;
 
@@ -87,9 +87,11 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Watch(
-      () => PageView.builder(
-        controller: _controller,
+    return Watch(() {
+      return PhotoViewGallery.builder(
+        scrollPhysics: const BouncingScrollPhysics(),
+        wantKeepAlive: true,
+        pageController: _controller,
         reverse: widget.rtl,
         // allowImplicitScrolling: true,
         onPageChanged: (page) {
@@ -106,7 +108,9 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
           }
         },
         itemCount: _itemCount,
-        itemBuilder: (context, index) {
+        builder: (context, index) {
+          late final Widget child;
+
           if (widget.twoPage) {
             final children =
                 _mapPage[index]!.map((i) {
@@ -119,31 +123,26 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
                   );
                 }).toList();
 
-            return ZoomViewer(
-              panEnabled: true,
-              minScale: 1.0,
-              maxScale: 2.0,
-              trackpadScrollCausesScale: true,
-              child: Row(
-                children: widget.rtl ? children.reversed.toList() : children,
-              ),
+            child = Row(
+              children: widget.rtl ? children.reversed.toList() : children,
             );
-          }
-
-          return ZoomViewer(
-            panEnabled: true,
-            minScale: 1.0,
-            maxScale: 2.0,
-            trackpadScrollCausesScale: true,
-            child: widget.itemBuilder(
+          } else {
+            child = widget.itemBuilder(
               context,
               index,
               ValueKey(widget.pages.value.elementAt(index).image.src),
-            ),
+            );
+          }
+
+          return PhotoViewGalleryPageOptions.customChild(
+            child: child,
+            initialScale: 1.0,
+            minScale: 0.5,
+            maxScale: 2.5,
           );
         },
-      ),
-    );
+      );
+    });
   }
 
   bool _isImageVertical(int index) {
@@ -182,23 +181,26 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
         ValueKey(widget.pages.value.elementAt(index).image.src),
       );
 
-      final imageStream = image.image.resolve(const ImageConfiguration());
-      final completer = Completer<double>();
+      final imageStream = image; //.(const ImageConfiguration());
+      // final completer = Completer<double>();
 
-      imageStream.addListener(
-        ImageStreamListener((ImageInfo info, bool _) {
-          final width = info.image.width.toDouble();
-          final height = info.image.height.toDouble();
-          final ratio = width / height;
+      if (imageStream.image == null) return null;
+      // imageStream.addListener(
+      // ImageStreamListener((ImageInfo info, bool _) {
+      final width = imageStream.image!.width.toDouble();
+      final height = imageStream.image!.height.toDouble();
+      final ratio = width / height;
 
-          setState(() {
-            _aspectRatios[index] = ratio;
-          });
-          completer.complete(ratio);
-        }),
-      );
+      setState(() {
+        _aspectRatios[index] = ratio;
+      });
 
-      return completer.future;
+      return ratio;
+      // completer.complete(ratio);
+      //   }),
+      // );
+
+      // return completer.future;
     } catch (e) {
       return null;
     }

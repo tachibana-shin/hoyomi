@@ -1048,6 +1048,7 @@ class _MangaReaderState extends State<MangaReader>
             watchPageChapters: _watchPageChapters,
             lastReadChapter: null,
             replace: true,
+            reverse: true,
           ),
     );
   }
