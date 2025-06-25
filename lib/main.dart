@@ -10,6 +10,7 @@ import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/plugins/export.dart';
 import 'package:hoyomi/router/index.dart';
 
+import 'rust/frb_generated.dart';
 import 'stores.dart';
 
 // import 'package:go_transitions/go_transitions.dart';
@@ -27,6 +28,7 @@ Future<void> main() async {
   await initializeServices();
   await initializeFullscreen();
   await initializeStore();
+  await RustLib.init();
   // initializeService();
   initializeRouter();
 
