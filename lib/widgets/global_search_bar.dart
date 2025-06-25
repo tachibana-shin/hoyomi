@@ -14,6 +14,7 @@ import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/eiga/main.dart';
 import 'package:hoyomi/core_services/js_core/install_js_service.dart';
 import 'package:hoyomi/core_services/main.dart';
+import 'package:hoyomi/extensions/breakpoint_extension.dart';
 import 'package:hoyomi/router/index.dart';
 import 'package:hoyomi/utils/export.dart';
 import 'package:hoyomi/widgets/export.dart';
@@ -821,26 +822,34 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
             showServiceManagerDialog(
               context,
               actions: [
-                ElevatedButton.icon(
-                  icon: Iconify(Mdi.plus),
-                  label: Text(
-                    'Install Plugin',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
+                if (context.isGtSm)
+                  ElevatedButton.icon(
+                    icon: Iconify(Mdi.plus),
+                    label: Text(
+                      'Install Plugin',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                     ),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                        Theme.of(context).colorScheme.primary,
+                      ),
+                      iconColor: WidgetStateProperty.all(
+                        Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                    onPressed: () {
+                      showInstallJsServiceModal(context);
+                    },
+                  )
+                else
+                  IconButton(
+                    icon: Iconify(Mdi.plus),
+                    onPressed: () {
+                      showInstallJsServiceModal(context);
+                    },
                   ),
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(
-                      Theme.of(context).colorScheme.primary,
-                    ),
-                    iconColor: WidgetStateProperty.all(
-                      Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
-                  onPressed: () {
-                    showInstallJsServiceModal(context);
-                  },
-                ),
               ],
               items:
                   comicServices.value.map((service) {
@@ -866,26 +875,34 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
             showServiceManagerDialog(
               context,
               actions: [
-                ElevatedButton.icon(
-                  icon: Iconify(Mdi.plus),
-                  label: Text(
-                    'Install Plugin',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
+                if (context.isGtSm)
+                  ElevatedButton.icon(
+                    icon: Iconify(Mdi.plus),
+                    label: Text(
+                      'Install Plugin',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                     ),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                        Theme.of(context).colorScheme.primary,
+                      ),
+                      iconColor: WidgetStateProperty.all(
+                        Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                    onPressed: () {
+                      showInstallJsServiceModal(context);
+                    },
+                  )
+                else
+                  IconButton(
+                    icon: Iconify(Mdi.plus),
+                    onPressed: () {
+                      showInstallJsServiceModal(context);
+                    },
                   ),
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(
-                      Theme.of(context).colorScheme.primary,
-                    ),
-                    iconColor: WidgetStateProperty.all(
-                      Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
-                  onPressed: () {
-                    showInstallJsServiceModal(context);
-                  },
-                ),
               ],
               items:
                   eigaServices.value.map((service) {

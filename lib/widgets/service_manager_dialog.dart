@@ -85,7 +85,11 @@ void showServiceManagerDialog(
                                 .avatar, // AvatarService(dialogItems[i], radius: 10.0),
                         title: Row(
                           children: [
-                            Text(dialogItems[i].name),
+                            Text(
+                              dialogItems[i].name,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
                             if (dialogItems[i].writeWith != null &&
                                 dialogItems[i].writeWith != 'dart') ...[
                               const SizedBox(width: 6),
@@ -101,14 +105,11 @@ void showServiceManagerDialog(
                               children: [
                                 if (dialogItems[i].version != null)
                                   Text(
-                                    'v${dialogItems[i].version} | ',
+                                    'v${dialogItems[i].version} ',
                                   ).fontSize(12),
-
-                                Text(dialogItems[i].baseUrl).fontSize(12),
-
                                 if (dialogItems[i].language != null)
                                   Text(
-                                    ' | ${NaturalLanguage.codeShortMap[dialogItems[i].language!.toUpperCase()]?.name ?? dialogItems[i].language}',
+                                    ' ${NaturalLanguage.codeShortMap[dialogItems[i].language!.toUpperCase()]?.name ?? dialogItems[i].language}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color:
@@ -119,20 +120,21 @@ void showServiceManagerDialog(
                                   ),
                               ],
                             ),
+                            Text(dialogItems[i].baseUrl).fontSize(12),
 
-                            if (dialogItems[i].description != null)
-                              Text(
-                                dialogItems[i].description!,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color:
-                                      Theme.of(
-                                        context,
-                                      ).textTheme.bodySmall?.color,
-                                ),
-                              ),
+                            // if (dialogItems[i].description != null)
+                            //   Text(
+                            //     dialogItems[i].description!,
+                            //     maxLines: 2,
+                            //     overflow: TextOverflow.ellipsis,
+                            //     style: TextStyle(
+                            //       fontSize: 12,
+                            //       color:
+                            //           Theme.of(
+                            //             context,
+                            //           ).textTheme.bodySmall?.color,
+                            //     ),
+                            //   ),
                           ],
                         ),
 
