@@ -445,15 +445,23 @@ class _MangaReaderState extends State<MangaReader>
     });
 
     // preload page
-    watch([_pages], () async {
-      for (int i = 0; i < _pages.value.length; i++) {
+    watch([_currentPage, _pages], () async {
+      final maxLoad = _useTwoPage.value ? 40 : 20;
+
+      for (int i = _currentPage.value.floor(); i < _pages.value.length; i++) {
         if (!mounted) break;
         if (_pages.value.elementAt(i).image.src == OImage.fake) continue;
 
+        if (_progressCacheStore[_pages.value.elementAt(i).image] != null) {
+          continue;
+        }
+
+        if (i - _currentPage.value > maxLoad) break;
         debugPrint('[manga_reader]: preload image $i');
 
         final progress =
             _progressCacheStore[_pages.value.elementAt(i).image] ??= ref(-1.0);
+
         await Future.any([
           _fetchPage(i, false, progress: progress),
           Future.delayed(Duration(milliseconds: 500)),
