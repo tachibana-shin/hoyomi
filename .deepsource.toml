@@ -1,7 +1,10 @@
 version = 1
 
 [[analyzers]]
-name = "shell"
+name = "rust"
+
+  [analyzers.meta]
+  msrv = "stable"
 
 [[analyzers]]
 name = "swift"
@@ -12,3 +15,6 @@ name = "kotlin"
   [analyzers.meta]
   runtime_version = "1.8"
   language_version = "1.7"
+
+[[transformers]]
+name = "rustfmt"
