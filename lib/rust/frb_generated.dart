@@ -7,7 +7,7 @@ import 'api/image/auto_trim_image.dart';
 import 'api/image/get_image_size.dart';
 import 'api/image/unscramble_image.dart';
 import 'api/image/unscramble_image_columns.dart';
-import 'api/image/unscramble_image_vertical.dart';
+import 'api/image/unscramble_image_rows.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -66,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.10.0';
 
   @override
-  int get rustContentHash => -100822084;
+  int get rustContentHash => -469506377;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -111,13 +111,13 @@ abstract class RustLibApi extends BaseApi {
     required bool autoTrim,
   });
 
-  Future<Uint8List> crateApiImageUnscrambleImageVerticalUnscrambleImageRows({
+  Future<Uint8List> crateApiImageUnscrambleImageRowsUnscrambleImageRows({
     required List<int> imageData,
     required List<RowBlock> blocks,
     required bool autoTrim,
   });
 
-  Uint8List crateApiImageUnscrambleImageVerticalUnscrambleImageRowsSync({
+  Uint8List crateApiImageUnscrambleImageRowsUnscrambleImageRowsSync({
     required List<int> imageData,
     required List<RowBlock> blocks,
     required bool autoTrim,
@@ -362,7 +362,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Uint8List> crateApiImageUnscrambleImageVerticalUnscrambleImageRows({
+  Future<Uint8List> crateApiImageUnscrambleImageRowsUnscrambleImageRows({
     required List<int> imageData,
     required List<RowBlock> blocks,
     required bool autoTrim,
@@ -386,7 +386,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeErrorData: sse_decode_String,
         ),
         constMeta:
-            kCrateApiImageUnscrambleImageVerticalUnscrambleImageRowsConstMeta,
+            kCrateApiImageUnscrambleImageRowsUnscrambleImageRowsConstMeta,
         argValues: [imageData, blocks, autoTrim],
         apiImpl: this,
       ),
@@ -394,14 +394,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   TaskConstMeta
-  get kCrateApiImageUnscrambleImageVerticalUnscrambleImageRowsConstMeta =>
+  get kCrateApiImageUnscrambleImageRowsUnscrambleImageRowsConstMeta =>
       const TaskConstMeta(
         debugName: "unscramble_image_rows",
         argNames: ["imageData", "blocks", "autoTrim"],
       );
 
   @override
-  Uint8List crateApiImageUnscrambleImageVerticalUnscrambleImageRowsSync({
+  Uint8List crateApiImageUnscrambleImageRowsUnscrambleImageRowsSync({
     required List<int> imageData,
     required List<RowBlock> blocks,
     required bool autoTrim,
@@ -420,7 +420,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeErrorData: sse_decode_String,
         ),
         constMeta:
-            kCrateApiImageUnscrambleImageVerticalUnscrambleImageRowsSyncConstMeta,
+            kCrateApiImageUnscrambleImageRowsUnscrambleImageRowsSyncConstMeta,
         argValues: [imageData, blocks, autoTrim],
         apiImpl: this,
       ),
@@ -428,7 +428,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   TaskConstMeta
-  get kCrateApiImageUnscrambleImageVerticalUnscrambleImageRowsSyncConstMeta =>
+  get kCrateApiImageUnscrambleImageRowsUnscrambleImageRowsSyncConstMeta =>
       const TaskConstMeta(
         debugName: "unscramble_image_rows_sync",
         argNames: ["imageData", "blocks", "autoTrim"],

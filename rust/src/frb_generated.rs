@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.10.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -100822084;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -469506377;
 
 // Section: executor
 
@@ -298,7 +298,7 @@ fn wire__crate__api__image__unscramble_image_columns__unscramble_image_columns_s
         },
     )
 }
-fn wire__crate__api__image__unscramble_image_vertical__unscramble_image_rows_impl(
+fn wire__crate__api__image__unscramble_image_rows__unscramble_image_rows_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -321,16 +321,15 @@ fn wire__crate__api__image__unscramble_image_vertical__unscramble_image_rows_imp
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_image_data = <Vec<u8>>::sse_decode(&mut deserializer);
-            let api_blocks =
-                <Vec<crate::api::image::unscramble_image_vertical::RowBlock>>::sse_decode(
-                    &mut deserializer,
-                );
+            let api_blocks = <Vec<crate::api::image::unscramble_image_rows::RowBlock>>::sse_decode(
+                &mut deserializer,
+            );
             let api_auto_trim = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, String>((move || {
                     let output_ok =
-                        crate::api::image::unscramble_image_vertical::unscramble_image_rows(
+                        crate::api::image::unscramble_image_rows::unscramble_image_rows(
                             api_image_data,
                             api_blocks,
                             api_auto_trim,
@@ -341,7 +340,7 @@ fn wire__crate__api__image__unscramble_image_vertical__unscramble_image_rows_imp
         },
     )
 }
-fn wire__crate__api__image__unscramble_image_vertical__unscramble_image_rows_sync_impl(
+fn wire__crate__api__image__unscramble_image_rows__unscramble_image_rows_sync_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
@@ -363,15 +362,14 @@ fn wire__crate__api__image__unscramble_image_vertical__unscramble_image_rows_syn
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_image_data = <Vec<u8>>::sse_decode(&mut deserializer);
-            let api_blocks =
-                <Vec<crate::api::image::unscramble_image_vertical::RowBlock>>::sse_decode(
-                    &mut deserializer,
-                );
+            let api_blocks = <Vec<crate::api::image::unscramble_image_rows::RowBlock>>::sse_decode(
+                &mut deserializer,
+            );
             let api_auto_trim = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, String>((move || {
                 let output_ok =
-                    crate::api::image::unscramble_image_vertical::unscramble_image_rows_sync(
+                    crate::api::image::unscramble_image_rows::unscramble_image_rows_sync(
                         api_image_data,
                         api_blocks,
                         api_auto_trim,
@@ -510,14 +508,14 @@ impl SseDecode for Vec<u8> {
     }
 }
 
-impl SseDecode for Vec<crate::api::image::unscramble_image_vertical::RowBlock> {
+impl SseDecode for Vec<crate::api::image::unscramble_image_rows::RowBlock> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
             ans_.push(
-                <crate::api::image::unscramble_image_vertical::RowBlock>::sse_decode(deserializer),
+                <crate::api::image::unscramble_image_rows::RowBlock>::sse_decode(deserializer),
             );
         }
         return ans_;
@@ -533,12 +531,12 @@ impl SseDecode for (u32, u32) {
     }
 }
 
-impl SseDecode for crate::api::image::unscramble_image_vertical::RowBlock {
+impl SseDecode for crate::api::image::unscramble_image_rows::RowBlock {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_dy = <u32>::sse_decode(deserializer);
         let mut var_height = <u32>::sse_decode(deserializer);
-        return crate::api::image::unscramble_image_vertical::RowBlock {
+        return crate::api::image::unscramble_image_rows::RowBlock {
             dy: var_dy,
             height: var_height,
         };
@@ -604,7 +602,7 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__image__unscramble_image_vertical__unscramble_image_rows_impl(
+        8 => wire__crate__api__image__unscramble_image_rows__unscramble_image_rows_impl(
             port,
             ptr,
             rust_vec_len,
@@ -637,7 +635,7 @@ fn pde_ffi_dispatcher_sync_impl(
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__api__image__unscramble_image_vertical__unscramble_image_rows_sync_impl(
+        9 => wire__crate__api__image__unscramble_image_rows__unscramble_image_rows_sync_impl(
             ptr,
             rust_vec_len,
             data_len,
@@ -700,7 +698,7 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::image::unscramble_image_colum
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::api::image::unscramble_image_vertical::RowBlock {
+impl flutter_rust_bridge::IntoDart for crate::api::image::unscramble_image_rows::RowBlock {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.dy.into_into_dart().into_dart(),
@@ -710,13 +708,13 @@ impl flutter_rust_bridge::IntoDart for crate::api::image::unscramble_image_verti
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::image::unscramble_image_vertical::RowBlock
+    for crate::api::image::unscramble_image_rows::RowBlock
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::api::image::unscramble_image_vertical::RowBlock>
-    for crate::api::image::unscramble_image_vertical::RowBlock
+impl flutter_rust_bridge::IntoIntoDart<crate::api::image::unscramble_image_rows::RowBlock>
+    for crate::api::image::unscramble_image_rows::RowBlock
 {
-    fn into_into_dart(self) -> crate::api::image::unscramble_image_vertical::RowBlock {
+    fn into_into_dart(self) -> crate::api::image::unscramble_image_rows::RowBlock {
         self
     }
 }
@@ -787,12 +785,12 @@ impl SseEncode for Vec<u8> {
     }
 }
 
-impl SseEncode for Vec<crate::api::image::unscramble_image_vertical::RowBlock> {
+impl SseEncode for Vec<crate::api::image::unscramble_image_rows::RowBlock> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <crate::api::image::unscramble_image_vertical::RowBlock>::sse_encode(item, serializer);
+            <crate::api::image::unscramble_image_rows::RowBlock>::sse_encode(item, serializer);
         }
     }
 }
@@ -805,7 +803,7 @@ impl SseEncode for (u32, u32) {
     }
 }
 
-impl SseEncode for crate::api::image::unscramble_image_vertical::RowBlock {
+impl SseEncode for crate::api::image::unscramble_image_rows::RowBlock {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <u32>::sse_encode(self.dy, serializer);

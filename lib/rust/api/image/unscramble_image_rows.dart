@@ -13,19 +13,18 @@ Future<Uint8List> unscrambleImageRows({
   required List<int> imageData,
   required List<RowBlock> blocks,
   required bool autoTrim,
-}) => RustLib.instance.api
-    .crateApiImageUnscrambleImageVerticalUnscrambleImageRows(
-      imageData: imageData,
-      blocks: blocks,
-      autoTrim: autoTrim,
-    );
+}) => RustLib.instance.api.crateApiImageUnscrambleImageRowsUnscrambleImageRows(
+  imageData: imageData,
+  blocks: blocks,
+  autoTrim: autoTrim,
+);
 
 Uint8List unscrambleImageRowsSync({
   required List<int> imageData,
   required List<RowBlock> blocks,
   required bool autoTrim,
 }) => RustLib.instance.api
-    .crateApiImageUnscrambleImageVerticalUnscrambleImageRowsSync(
+    .crateApiImageUnscrambleImageRowsUnscrambleImageRowsSync(
       imageData: imageData,
       blocks: blocks,
       autoTrim: autoTrim,

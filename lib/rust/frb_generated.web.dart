@@ -10,7 +10,7 @@ import 'api/image/auto_trim_image.dart';
 import 'api/image/get_image_size.dart';
 import 'api/image/unscramble_image.dart';
 import 'api/image/unscramble_image_columns.dart';
-import 'api/image/unscramble_image_vertical.dart';
+import 'api/image/unscramble_image_rows.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
