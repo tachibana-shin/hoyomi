@@ -633,7 +633,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     });
 
     /// ================== /Brightness and volume system ===================
-    
+
     /// ================== check show controls re-update field ============
     watch([_showControls], () {
       if (_showControls.value) _onPlayerValueChanged(true);
