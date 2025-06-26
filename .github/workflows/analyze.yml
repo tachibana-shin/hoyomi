@@ -28,7 +28,7 @@ jobs:
         run: echo -e "${{ secrets.ENV_WEB_CONTENT }}" > .env.web
 
       - name: Install dependencies
-        run: flutter pub get
+        run: flutter pub get && cd rust_* && flutter pub get && cd ..
 
       - name: Build runner
         run: sh build_bunner.sh
