@@ -81,23 +81,7 @@ as Map<String, List<String>>,
 
 class _UrlSearchParams implements UrlSearchParams {
   const _UrlSearchParams({final  Map<String, List<String>> params = const {}}): _params = params;
-  factory _UrlSearchParams.fromJson(Map<String, dynamic> json) =>
-      _$UrlSearchParamsFromJson(
-        json.containsKey('params')
-            ? json
-            : {
-              'params': Map.fromEntries(
-                json.entries.map(
-                  (entry) => MapEntry(
-                    entry.key,
-                    entry.value is List
-                        ? entry.value
-                        : [entry.value.toString()],
-                  ),
-                ),
-              ),
-            },
-      );
+  factory _UrlSearchParams.fromJson(Map<String, dynamic> json) => _$UrlSearchParamsFromJson(json);
 
  final  Map<String, List<String>> _params;
 @override@JsonKey() Map<String, List<String>> get params {

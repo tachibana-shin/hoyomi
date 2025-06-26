@@ -12,10 +12,13 @@ import 'package:flutter/services.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/constraints/arc_icons.dart';
 import 'package:hoyomi/constraints/fluent.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
+import 'package:hoyomi/rust/api/image/auto_trim_image.dart';
 import 'package:hoyomi/screens/export.dart';
+import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/utils/export.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/eva.dart';
@@ -666,14 +669,16 @@ class _MangaReaderState extends State<MangaReader>
             .then((buffer) async {
               if (_serviceSupportFetchPage[widget.service] != false) {
                 try {
-                  return _decodeWithDescriptor(
-                    await widget.service.fetchPage(buffer, item.image),
-                  );
+                  buffer = await widget.service.fetchPage(buffer, item.image);
                 } on UnimplementedError {
                   _serviceSupportFetchPage[widget.service] = false;
-
-                  return _decodeWithDescriptor(buffer);
                 }
+
+                if (comicAutoTrimImage.value) {
+                  buffer = await autoTrimImage(image: buffer);
+                }
+
+                return _decodeWithDescriptor(buffer);
               }
 
               return _decodeWithDescriptor(buffer);
@@ -933,15 +938,12 @@ class _MangaReaderState extends State<MangaReader>
                               Text('Use Two Page'),
                             ],
                           ),
-                          Transform.scale(
-                            scale: 0.8,
-                            child: Watch(
-                              () => Switch(
-                                value: _useTwoPage.value,
-                                onChanged: (value) {
-                                  _useTwoPage.value = value;
-                                },
-                              ),
+                          Watch(
+                            () => Switch(
+                              value: _useTwoPage.value,
+                              onChanged: (value) {
+                                _useTwoPage.value = value;
+                              },
                             ),
                           ),
                         ],
@@ -972,18 +974,49 @@ class _MangaReaderState extends State<MangaReader>
                               Text('Auto Scroll'),
                             ],
                           ),
-                          Transform.scale(
-                            scale: 0.8,
-                            child: Switch(
-                              value: autoScroll,
-                              onChanged: (value) {
-                                setState(() {
-                                  autoScroll = value;
-                                });
-                              },
-                            ),
+                          Switch(
+                            value: autoScroll,
+                            onChanged: (value) {
+                              setState(() {
+                                autoScroll = value;
+                              });
+                            },
                           ),
                         ],
+                      ),
+                    ),
+                  ),
+
+                  // switch auto trim image
+                  InkWell(
+                    customBorder: const StadiumBorder(),
+                    onTap:
+                        () =>
+                            comicAutoTrimImage.value =
+                                !comicAutoTrimImage.value,
+                    child: Watch(
+                      () => Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8.0,
+                          horizontal: 12.0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: const [
+                                Iconify(ArcIcons.cacheCleaner),
+                                SizedBox(width: 16.0),
+                                Text('Auto trim page'),
+                              ],
+                            ),
+                            Switch(
+                              value: comicAutoTrimImage.value,
+                              onChanged:
+                                  (value) => comicAutoTrimImage.value = value,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
