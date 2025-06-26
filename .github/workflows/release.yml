@@ -118,9 +118,6 @@ jobs:
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
         if: ${{ failure() }}
-        run: |
-          tmux new-session -d -s debug || true
-          tmux attach -t debug || bash
         with:
           wait-timeout-minutes: 5
 
