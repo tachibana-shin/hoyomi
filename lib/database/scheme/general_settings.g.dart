@@ -44,6 +44,7 @@ _GeneralSettings _$GeneralSettingsFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const ['anime'],
+      comicAutoTrimImage: json['comicAutoTrimImage'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$GeneralSettingsToJson(_GeneralSettings instance) =>
@@ -59,4 +60,5 @@ Map<String, dynamic> _$GeneralSettingsToJson(_GeneralSettings instance) =>
       'lastTabActiveApp': instance.lastTabActiveApp,
       'newsKeywordComic': instance.newsKeywordComic,
       'newsKeywordEiga': instance.newsKeywordEiga,
+      'comicAutoTrimImage': instance.comicAutoTrimImage,
     };

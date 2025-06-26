@@ -8,6 +8,7 @@ final lastTabActiveApp = Ref<String?>(null);
 final newsKeywordComic = Ref<List<String>>([]);
 final newsKeywordEiga = Ref<List<String>>([]);
 final sortLibraryService = Ref<List<String>>([]);
+final comicAutoTrimImage = Ref(false);
 
 Future<void> initializeStore() async {
   final settings =
@@ -17,6 +18,7 @@ Future<void> initializeStore() async {
   newsKeywordComic.value = settings.newsKeywordComic;
   newsKeywordEiga.value = settings.newsKeywordEiga;
   sortLibraryService.value = settings.sortLibraryService ?? <String>[];
+  comicAutoTrimImage.value = settings.comicAutoTrimImage;
 
   watch$(
     [
@@ -25,6 +27,7 @@ Future<void> initializeStore() async {
       newsKeywordComic,
       newsKeywordEiga,
       sortLibraryService,
+      comicAutoTrimImage,
     ],
     () {
       GeneralSettingsController.instance.save(
@@ -34,6 +37,7 @@ Future<void> initializeStore() async {
           newsKeywordComic: newsKeywordComic.value,
           newsKeywordEiga: newsKeywordEiga.value,
           sortLibraryService: sortLibraryService.value,
+          comicAutoTrimImage: comicAutoTrimImage.value,
         ),
       );
     },

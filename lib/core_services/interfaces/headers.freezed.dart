@@ -81,20 +81,7 @@ as Map<String, List<String>>,
 
 class _Headers implements Headers {
   const _Headers({@JsonKey() final  Map<String, List<String>> headers = const {}}): _headers = headers;
-  factory _Headers.fromJson(Map<String, dynamic> json) => _$HeadersFromJson(
-    json.containsKey('headers')
-        ? json
-        : {
-          'headers': Map.fromEntries(
-            json.entries.map(
-              (entry) => MapEntry(
-                entry.key,
-                entry.value is List ? entry.value : [entry.value.toString()],
-              ),
-            ),
-          ),
-        },
-  );
+  factory _Headers.fromJson(Map<String, dynamic> json) => _$HeadersFromJson(json);
 
  final  Map<String, List<String>> _headers;
 @override@JsonKey() Map<String, List<String>> get headers {

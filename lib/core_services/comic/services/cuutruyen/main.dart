@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/env.dart';
@@ -696,10 +694,10 @@ sealed class Manga with _$Manga {
 sealed class Page with _$Page {
   const factory Page({
     required int id,
-    required int order,
-    required int width,
-    required int height,
-    required String status,
+    required int? order,
+    required int? width,
+    required int? height,
+    required String? status,
     @JsonKey(name: 'image_url') required String imageUrl,
     @JsonKey(name: 'image_path') required String imagePath,
     @JsonKey(name: 'image_url_size') int? imageUrlSize,
@@ -787,7 +785,7 @@ Uint8List _decodeXor(Uint8List data, String key) {
 }
 
 // Decode DRM string
-Future<List<Map<String, int>>> _decodeDrm(
+Future<List<RowBlock>> _decodeDrm(
   String drmBase64,
   String decryptionKey,
 ) async {
@@ -800,62 +798,16 @@ Future<List<Map<String, int>>> _decodeDrm(
   }
 
   final parts = decodedStr.split('|').sublist(1);
-  final blocks = <Map<String, int>>[];
+  final blocks = <RowBlock>[];
 
   for (final part in parts) {
     final values = part.split('-');
-    blocks.add({'dy': int.parse(values[0]), 'height': int.parse(values[1])});
+    blocks.add(
+      RowBlock(dy: int.parse(values[0]), height: int.parse(values[1])),
+    );
   }
 
   return blocks;
-}
-
-// Load image from URL as ui.Image
-Future<ui.Image> _loadImageFromBuffer(Uint8List buffer) async {
-  final completer = Completer<ui.Image>();
-  ui.decodeImageFromList(buffer, completer.complete);
-  return completer.future;
-}
-
-// Copy region from one image to another
-Future<ui.Image> _unscrambleImage(
-  ui.Image srcImg,
-  List<Map<String, int>> blocks,
-) async {
-  final recorder = ui.PictureRecorder();
-  final canvas = Canvas(recorder);
-  final paint = Paint();
-
-  int sy = 0;
-  for (final block in blocks) {
-    final dy = block['dy']!;
-    final height = block['height']!;
-
-    final srcRect = Rect.fromLTWH(
-      0,
-      sy.toDouble(),
-      srcImg.width.toDouble(),
-      height.toDouble(),
-    );
-    final dstRect = Rect.fromLTWH(
-      0,
-      dy.toDouble(),
-      srcImg.width.toDouble(),
-      height.toDouble(),
-    );
-
-    canvas.drawImageRect(srcImg, srcRect, dstRect, paint);
-    sy += height;
-  }
-
-  final picture = recorder.endRecording();
-  return await picture.toImage(srcImg.width, srcImg.height);
-}
-
-// Convert ui.Image to Widget
-Future<Uint8List> _imageFromUiImage(ui.Image uiImage) async {
-  final byteData = await uiImage.toByteData(format: ui.ImageByteFormat.png);
-  return byteData!.buffer.asUint8List();
 }
 
 // Main function to call
@@ -866,9 +818,11 @@ Future<Uint8List> _decodeAndBuildImage(Uint8List buffer, String drmData) async {
   );
 
   final blocks = await _decodeDrm(drmData.trim(), key);
-  final srcImage = await _loadImageFromBuffer(buffer);
-  final decodedImage = await _unscrambleImage(srcImage, blocks);
-  return await _imageFromUiImage(decodedImage);
+  return unscrambleImageRows(
+    imageData: buffer,
+    blocks: blocks,
+    autoTrim: false,
+  );
 }
 
 @freezed

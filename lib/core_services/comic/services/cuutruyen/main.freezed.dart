@@ -2368,7 +2368,7 @@ as String?,
 /// @nodoc
 mixin _$Page {
 
- int get id; int get order; int get width; int get height; String get status;@JsonKey(name: 'image_url') String get imageUrl;@JsonKey(name: 'image_path') String get imagePath;@JsonKey(name: 'image_url_size') int? get imageUrlSize;@JsonKey(name: 'drm_data') String? get drmData;
+ int get id; int? get order; int? get width; int? get height; String? get status;@JsonKey(name: 'image_url') String get imageUrl;@JsonKey(name: 'image_path') String get imagePath;@JsonKey(name: 'image_url_size') int? get imageUrlSize;@JsonKey(name: 'drm_data') String? get drmData;
 /// Create a copy of Page
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2401,7 +2401,7 @@ abstract mixin class $PageCopyWith<$Res>  {
   factory $PageCopyWith(Page value, $Res Function(Page) _then) = _$PageCopyWithImpl;
 @useResult
 $Res call({
- int id, int order, int width, int height, String status,@JsonKey(name: 'image_url') String imageUrl,@JsonKey(name: 'image_path') String imagePath,@JsonKey(name: 'image_url_size') int? imageUrlSize,@JsonKey(name: 'drm_data') String? drmData
+ int id, int? order, int? width, int? height, String? status,@JsonKey(name: 'image_url') String imageUrl,@JsonKey(name: 'image_path') String imagePath,@JsonKey(name: 'image_url_size') int? imageUrlSize,@JsonKey(name: 'drm_data') String? drmData
 });
 
 
@@ -2418,14 +2418,14 @@ class _$PageCopyWithImpl<$Res>
 
 /// Create a copy of Page
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? order = null,Object? width = null,Object? height = null,Object? status = null,Object? imageUrl = null,Object? imagePath = null,Object? imageUrlSize = freezed,Object? drmData = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? order = freezed,Object? width = freezed,Object? height = freezed,Object? status = freezed,Object? imageUrl = null,Object? imagePath = null,Object? imageUrlSize = freezed,Object? drmData = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
-as int,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
-as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
-as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String,imageUrl: null == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
+as int,order: freezed == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
+as int?,width: freezed == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
+as int?,height: freezed == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
+as int?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String?,imageUrl: null == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String,imagePath: null == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
 as String,imageUrlSize: freezed == imageUrlSize ? _self.imageUrlSize : imageUrlSize // ignore: cast_nullable_to_non_nullable
 as int?,drmData: freezed == drmData ? _self.drmData : drmData // ignore: cast_nullable_to_non_nullable
@@ -2444,10 +2444,10 @@ class _Page implements Page {
   factory _Page.fromJson(Map<String, dynamic> json) => _$PageFromJson(json);
 
 @override final  int id;
-@override final  int order;
-@override final  int width;
-@override final  int height;
-@override final  String status;
+@override final  int? order;
+@override final  int? width;
+@override final  int? height;
+@override final  String? status;
 @override@JsonKey(name: 'image_url') final  String imageUrl;
 @override@JsonKey(name: 'image_path') final  String imagePath;
 @override@JsonKey(name: 'image_url_size') final  int? imageUrlSize;
@@ -2486,7 +2486,7 @@ abstract mixin class _$PageCopyWith<$Res> implements $PageCopyWith<$Res> {
   factory _$PageCopyWith(_Page value, $Res Function(_Page) _then) = __$PageCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int order, int width, int height, String status,@JsonKey(name: 'image_url') String imageUrl,@JsonKey(name: 'image_path') String imagePath,@JsonKey(name: 'image_url_size') int? imageUrlSize,@JsonKey(name: 'drm_data') String? drmData
+ int id, int? order, int? width, int? height, String? status,@JsonKey(name: 'image_url') String imageUrl,@JsonKey(name: 'image_path') String imagePath,@JsonKey(name: 'image_url_size') int? imageUrlSize,@JsonKey(name: 'drm_data') String? drmData
 });
 
 
@@ -2503,14 +2503,14 @@ class __$PageCopyWithImpl<$Res>
 
 /// Create a copy of Page
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? order = null,Object? width = null,Object? height = null,Object? status = null,Object? imageUrl = null,Object? imagePath = null,Object? imageUrlSize = freezed,Object? drmData = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? order = freezed,Object? width = freezed,Object? height = freezed,Object? status = freezed,Object? imageUrl = null,Object? imagePath = null,Object? imageUrlSize = freezed,Object? drmData = freezed,}) {
   return _then(_Page(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
-as int,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
-as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
-as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String,imageUrl: null == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
+as int,order: freezed == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
+as int?,width: freezed == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
+as int?,height: freezed == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
+as int?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String?,imageUrl: null == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String,imagePath: null == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
 as String,imageUrlSize: freezed == imageUrlSize ? _self.imageUrlSize : imageUrlSize // ignore: cast_nullable_to_non_nullable
 as int?,drmData: freezed == drmData ? _self.drmData : drmData // ignore: cast_nullable_to_non_nullable

@@ -17,6 +17,7 @@ sealed class GeneralSettings with _$GeneralSettings {
     @Default(null) String? lastTabActiveApp,
     @Default(['manga']) List<String> newsKeywordComic,
     @Default(['anime']) List<String> newsKeywordEiga,
+    @Default(true) bool comicAutoTrimImage,
   }) = _GeneralSettings;
 
   factory GeneralSettings.fromJson(Map<String, Object?> json) =>

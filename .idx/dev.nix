@@ -3,6 +3,14 @@
   packages = [
     pkgs.jdk19
     pkgs.unzip
+    pkgs.rustup
+    pkgs.cargo-expand
+    pkgs.pkg-config
+    pkgs.clang
+    pkgs.libclang
+    pkgs.cmake
+    pkgs.protobuf
+    pkgs.unzip
   ];
   idx.extensions = [
     pkgs.gh

@@ -1,3 +1,6 @@
+import "./polyfill/rust_api/unscramble_image"
+import "./polyfill/rust_api/unscramble_image_columns"
+import "./polyfill/rust_api/unscramble_image_rows"
 import "./polyfill/base64_coder"
 import "./polyfill/base64"
 import "./polyfill/dart_send_message"
