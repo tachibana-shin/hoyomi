@@ -355,10 +355,10 @@ Map<String, dynamic> _$MangaToJson(_Manga instance) => <String, dynamic>{
 
 _Page _$PageFromJson(Map<String, dynamic> json) => _Page(
   id: (json['id'] as num).toInt(),
-  order: (json['order'] as num).toInt(),
-  width: (json['width'] as num).toInt(),
-  height: (json['height'] as num).toInt(),
-  status: json['status'] as String,
+  order: (json['order'] as num?)?.toInt(),
+  width: (json['width'] as num?)?.toInt(),
+  height: (json['height'] as num?)?.toInt(),
+  status: json['status'] as String?,
   imageUrl: json['image_url'] as String,
   imagePath: json['image_path'] as String,
   imageUrlSize: (json['image_url_size'] as num?)?.toInt(),

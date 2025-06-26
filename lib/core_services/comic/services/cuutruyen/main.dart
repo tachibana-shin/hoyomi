@@ -694,10 +694,10 @@ sealed class Manga with _$Manga {
 sealed class Page with _$Page {
   const factory Page({
     required int id,
-    required int order,
-    required int width,
-    required int height,
-    required String status,
+    required int? order,
+    required int? width,
+    required int? height,
+    required String? status,
     @JsonKey(name: 'image_url') required String imageUrl,
     @JsonKey(name: 'image_path') required String imagePath,
     @JsonKey(name: 'image_url_size') int? imageUrlSize,
