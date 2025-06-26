@@ -1157,7 +1157,7 @@ class _MangaReaderState extends State<MangaReader>
         width: 20.0,
         height: 20.0,
         child: CircularProgressIndicator(
-          value: progress == null || progress < 0 ? null : progress,
+          value: progress == null || progress <= 0 ? null : progress,
         ),
       ),
     );
