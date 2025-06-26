@@ -2,5 +2,6 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - lib/**.g.dart
+    - rust_builder/**
   errors:
     invalid_annotation_target: ignore
