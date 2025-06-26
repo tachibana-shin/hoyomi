@@ -633,6 +633,11 @@ class _PlayerEigaState extends State<PlayerEiga>
     });
 
     /// ================== /Brightness and volume system ===================
+    
+    /// ================== check show controls re-update field ============
+    watch([_showControls], () {
+      if (_showControls.value) _onPlayerValueChanged(true);
+    });
   }
 
   Future<void> _seekTo(
@@ -779,7 +784,9 @@ class _PlayerEigaState extends State<PlayerEiga>
   }
 
   DateTime _activeTime = DateTime.now();
-  void _onPlayerValueChanged() {
+  void _onPlayerValueChanged([bool forceUpdate = false]) {
+    if (_fullscreen.value && !_showControls.value && !forceUpdate) return;
+
     final controller = _controller.value;
 
     if (_initializeStore[controller] != true) return;
