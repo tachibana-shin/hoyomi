@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/js_runtime/extensions/rust_api.dart';
 import 'package:hoyomi/js_runtime/js_runtime.dart';
 
 import 'js_comic_service.dart';
@@ -48,6 +49,7 @@ Future<Service> createJsService(String jsCode) async {
   });
 
   await runtime.activateFetch();
+  await runtime.activateRustApi();
 
   await runtime.evalAsync('__plugin._baseUrl = ${jsonEncode(service.baseUrl)}');
 

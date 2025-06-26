@@ -30,6 +30,10 @@ import 'base_service.dart';
 
 export 'service_init.dart';
 
+export 'package:hoyomi/rust/api/image/unscramble_image.dart';
+export 'package:hoyomi/rust/api/image/unscramble_image_columns.dart';
+export 'package:hoyomi/rust/api/image/unscramble_image_rows.dart';
+
 Future<Dio> _createDioClientCache({
   String baseUrl = '',
   bool headless = false,

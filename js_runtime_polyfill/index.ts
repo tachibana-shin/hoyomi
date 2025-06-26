@@ -1,3 +1,6 @@
+export * from "./polyfill/rust_api/unscramble_image"
+export * from "./polyfill/rust_api/unscramble_image_columns"
+export * from "./polyfill/rust_api/unscramble_image_rows"
 export * from "./polyfill/base64_coder"
 export * from "./polyfill/base64"
 export * from "./polyfill/dart_send_message"
