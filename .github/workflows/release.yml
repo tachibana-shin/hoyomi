@@ -80,6 +80,8 @@ jobs:
         with:
           toolchain: stable
 
+      - run: rustup target add aarch64-apple-ios
+
       - uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
@@ -103,7 +105,8 @@ jobs:
         run: sh build_bunner.sh
 
       - run: flutter build ios --release --no-codesign
-
+      - env:
+          RUSTUP_NO_AUTO_UPDATE: '1'
       - run: mkdir Payload
         working-directory: build/ios/iphoneos
 
@@ -117,6 +120,9 @@ jobs:
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
         if: ${{ failure() }}
+        run: |
+          tmux new-session -d -s debug || true
+          tmux attach -t debug || bash
         with:
           wait-timeout-minutes: 5
 
