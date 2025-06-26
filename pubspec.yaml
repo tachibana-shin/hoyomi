@@ -1,7 +1,7 @@
 name: hoyomi
 description: "The application for watch anime and read manga for Android, iOS, MacOS, Windows, Linux and Web."
 publish_to: 'none'
-version: 0.3.58+96
+version: 0.3.59+97
 
 environment:
   sdk: ^3.7.2
