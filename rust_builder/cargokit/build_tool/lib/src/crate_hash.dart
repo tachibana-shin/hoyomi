@@ -24,10 +24,7 @@ class CrateHash {
     )._compute();
   }
 
-  CrateHash._({
-    required this.manifestDir,
-    required this.tempStorage,
-  });
+  CrateHash._({required this.manifestDir, required this.tempStorage});
 
   String _compute() {
     final files = getFiles();
@@ -100,10 +97,11 @@ class CrateHash {
 
   List<File> getFiles() {
     final src = Directory(path.join(manifestDir, 'src'));
-    final files = src
-        .listSync(recursive: true, followLinks: false)
-        .whereType<File>()
-        .toList();
+    final files =
+        src
+            .listSync(recursive: true, followLinks: false)
+            .whereType<File>()
+            .toList();
     files.sortBy((element) => element.path);
     void addFile(String relative) {
       final file = File(path.join(manifestDir, relative));

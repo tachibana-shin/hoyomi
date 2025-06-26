@@ -818,7 +818,11 @@ Future<Uint8List> _decodeAndBuildImage(Uint8List buffer, String drmData) async {
   );
 
   final blocks = await _decodeDrm(drmData.trim(), key);
-  return unscrambleImageRows(imageData: buffer, blocks: blocks, autoTrim: false);
+  return unscrambleImageRows(
+    imageData: buffer,
+    blocks: blocks,
+    autoTrim: false,
+  );
 }
 
 @freezed
