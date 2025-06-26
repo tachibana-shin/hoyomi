@@ -4,6 +4,7 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
 import 'api/image/auto_trim_image.dart';
+import 'api/image/decode_image_rgba.dart';
 import 'api/image/get_image_size.dart';
 import 'api/image/unscramble_image.dart';
 import 'api/image/unscramble_image_columns.dart';
@@ -33,6 +34,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ColumnBlock dco_decode_column_block(dynamic raw);
+
+  @protected
+  DecodedImage dco_decode_decoded_image(dynamic raw);
 
   @protected
   List<Block> dco_decode_list_block(dynamic raw);
@@ -75,6 +79,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ColumnBlock sse_decode_column_block(SseDeserializer deserializer);
+
+  @protected
+  DecodedImage sse_decode_decoded_image(SseDeserializer deserializer);
 
   @protected
   List<Block> sse_decode_list_block(SseDeserializer deserializer);
@@ -120,6 +127,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_column_block(ColumnBlock self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_decoded_image(DecodedImage self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_block(List<Block> self, SseSerializer serializer);

@@ -4,6 +4,7 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
 import 'api/image/auto_trim_image.dart';
+import 'api/image/decode_image_rgba.dart';
 import 'api/image/get_image_size.dart';
 import 'api/image/unscramble_image.dart';
 import 'api/image/unscramble_image_columns.dart';
@@ -66,7 +67,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.10.0';
 
   @override
-  int get rustContentHash => -469506377;
+  int get rustContentHash => 676892523;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -83,6 +84,10 @@ abstract class RustLibApi extends BaseApi {
 
   Uint8List crateApiImageAutoTrimImageAutoTrimImageSync({
     required List<int> image,
+  });
+
+  Future<DecodedImage> crateApiImageDecodeImageRgbaDecodeImageRgba({
+    required List<int> imageData,
   });
 
   Future<(int, int)> crateApiImageGetImageSizeGetImageSize({
@@ -197,6 +202,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<DecodedImage> crateApiImageDecodeImageRgbaDecodeImageRgba({
+    required List<int> imageData,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_u_8_loose(imageData, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 3,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_decoded_image,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiImageDecodeImageRgbaDecodeImageRgbaConstMeta,
+        argValues: [imageData],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiImageDecodeImageRgbaDecodeImageRgbaConstMeta =>
+      const TaskConstMeta(
+        debugName: "decode_image_rgba",
+        argNames: ["imageData"],
+      );
+
+  @override
   Future<(int, int)> crateApiImageGetImageSizeGetImageSize({
     required List<int> data,
   }) {
@@ -208,7 +246,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 3,
+            funcId: 4,
             port: port_,
           );
         },
@@ -235,7 +273,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_list_prim_u_8_loose(data, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_record_u_32_u_32,
@@ -267,7 +305,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 5,
+            funcId: 6,
             port: port_,
           );
         },
@@ -304,7 +342,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 6,
+            funcId: 7,
             port: port_,
           );
         },
@@ -340,7 +378,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_list_prim_u_8_loose(imageData, serializer);
           sse_encode_list_column_block(blocks, serializer);
           sse_encode_bool(autoTrim, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -377,7 +415,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 8,
+            funcId: 9,
             port: port_,
           );
         },
@@ -413,7 +451,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_list_prim_u_8_loose(imageData, serializer);
           sse_encode_list_row_block(blocks, serializer);
           sse_encode_bool(autoTrim, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -447,7 +485,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_list_prim_u_8_loose(imageData, serializer);
           sse_encode_list_block(blocks, serializer);
           sse_encode_bool(autoTrim, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -503,6 +541,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return ColumnBlock(
       dx: dco_decode_u_32(arr[0]),
       width: dco_decode_u_32(arr[1]),
+    );
+  }
+
+  @protected
+  DecodedImage dco_decode_decoded_image(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return DecodedImage(
+      pixels: dco_decode_list_prim_u_8_strict(arr[0]),
+      width: dco_decode_u_32(arr[1]),
+      height: dco_decode_u_32(arr[2]),
     );
   }
 
@@ -614,6 +665,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_dx = sse_decode_u_32(deserializer);
     var var_width = sse_decode_u_32(deserializer);
     return ColumnBlock(dx: var_dx, width: var_width);
+  }
+
+  @protected
+  DecodedImage sse_decode_decoded_image(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_pixels = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_width = sse_decode_u_32(deserializer);
+    var var_height = sse_decode_u_32(deserializer);
+    return DecodedImage(
+      pixels: var_pixels,
+      width: var_width,
+      height: var_height,
+    );
   }
 
   @protected
@@ -733,6 +797,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_u_32(self.dx, serializer);
     sse_encode_u_32(self.width, serializer);
+  }
+
+  @protected
+  void sse_encode_decoded_image(DecodedImage self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.pixels, serializer);
+    sse_encode_u_32(self.width, serializer);
+    sse_encode_u_32(self.height, serializer);
   }
 
   @protected

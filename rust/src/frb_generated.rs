@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.10.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -469506377;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 676892523;
 
 // Section: executor
 
@@ -109,6 +109,40 @@ fn wire__crate__api__image__auto_trim_image__auto_trim_image_sync_impl(
                 )?;
                 Ok(output_ok)
             })())
+        },
+    )
+}
+fn wire__crate__api__image__decode_image_rgba__decode_image_rgba_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "decode_image_rgba",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_image_data = <Vec<u8>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok =
+                        crate::api::image::decode_image_rgba::decode_image_rgba(api_image_data)?;
+                    Ok(output_ok)
+                })())
+            }
         },
     )
 }
@@ -466,6 +500,20 @@ impl SseDecode for crate::api::image::unscramble_image_columns::ColumnBlock {
     }
 }
 
+impl SseDecode for crate::api::image::decode_image_rgba::DecodedImage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_pixels = <Vec<u8>>::sse_decode(deserializer);
+        let mut var_width = <u32>::sse_decode(deserializer);
+        let mut var_height = <u32>::sse_decode(deserializer);
+        return crate::api::image::decode_image_rgba::DecodedImage {
+            pixels: var_pixels,
+            width: var_width,
+            height: var_height,
+        };
+    }
+}
+
 impl SseDecode for Vec<crate::api::image::unscramble_image::Block> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -584,25 +632,31 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        3 => wire__crate__api__image__get_image_size__get_image_size_impl(
+        3 => wire__crate__api__image__decode_image_rgba__decode_image_rgba_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        5 => wire__crate__api__image__unscramble_image__unscramble_image_impl(
+        4 => wire__crate__api__image__get_image_size__get_image_size_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        6 => wire__crate__api__image__unscramble_image_columns__unscramble_image_columns_impl(
+        6 => wire__crate__api__image__unscramble_image__unscramble_image_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__image__unscramble_image_rows__unscramble_image_rows_impl(
+        7 => wire__crate__api__image__unscramble_image_columns__unscramble_image_columns_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        9 => wire__crate__api__image__unscramble_image_rows__unscramble_image_rows_impl(
             port,
             ptr,
             rust_vec_len,
@@ -625,22 +679,22 @@ fn pde_ffi_dispatcher_sync_impl(
             rust_vec_len,
             data_len,
         ),
-        4 => wire__crate__api__image__get_image_size__get_image_size_sync_impl(
+        5 => wire__crate__api__image__get_image_size__get_image_size_sync_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        7 => wire__crate__api__image__unscramble_image_columns__unscramble_image_columns_sync_impl(
+        8 => wire__crate__api__image__unscramble_image_columns__unscramble_image_columns_sync_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__api__image__unscramble_image_rows__unscramble_image_rows_sync_impl(
+        10 => wire__crate__api__image__unscramble_image_rows__unscramble_image_rows_sync_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__api__image__unscramble_image__unscramble_image_sync_impl(
+        11 => wire__crate__api__image__unscramble_image__unscramble_image_sync_impl(
             ptr,
             rust_vec_len,
             data_len,
@@ -698,6 +752,28 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::image::unscramble_image_colum
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::image::decode_image_rgba::DecodedImage {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.pixels.into_into_dart().into_dart(),
+            self.width.into_into_dart().into_dart(),
+            self.height.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::image::decode_image_rgba::DecodedImage
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::image::decode_image_rgba::DecodedImage>
+    for crate::api::image::decode_image_rgba::DecodedImage
+{
+    fn into_into_dart(self) -> crate::api::image::decode_image_rgba::DecodedImage {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::image::unscramble_image_rows::RowBlock {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -750,6 +826,15 @@ impl SseEncode for crate::api::image::unscramble_image_columns::ColumnBlock {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <u32>::sse_encode(self.dx, serializer);
         <u32>::sse_encode(self.width, serializer);
+    }
+}
+
+impl SseEncode for crate::api::image::decode_image_rgba::DecodedImage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<u8>>::sse_encode(self.pixels, serializer);
+        <u32>::sse_encode(self.width, serializer);
+        <u32>::sse_encode(self.height, serializer);
     }
 }
 
