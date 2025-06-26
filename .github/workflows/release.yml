@@ -78,6 +78,7 @@ jobs:
         with:
           toolchain: stable
 
+      - name: Install rust target
       - run: rustup target add aarch64-apple-ios
 
       - uses: flutter-actions/setup-flutter@v4
@@ -118,6 +119,9 @@ jobs:
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
         if: ${{ failure() }}
+        run: |
+          tmux new-session -d -s debug || true
+          tmux attach -t debug || bash
         with:
           wait-timeout-minutes: 5
 
