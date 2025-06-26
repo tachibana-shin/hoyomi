@@ -79,7 +79,7 @@ jobs:
           toolchain: stable
 
       - name: Install rust target
-      - run: rustup target add aarch64-apple-ios
+        run: rustup target add aarch64-apple-ios
 
       - uses: flutter-actions/setup-flutter@v4
         with:
@@ -104,7 +104,7 @@ jobs:
         run: sh build_bunner.sh
 
       - run: flutter build ios --release --no-codesign
-      - env:
+        env:
           RUSTUP_NO_AUTO_UPDATE: '1'
       - run: mkdir Payload
         working-directory: build/ios/iphoneos
