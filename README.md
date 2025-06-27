@@ -1,22 +1,21 @@
 ## 📱 Hoyomi — Your Ultimate Anime & Manga Companion
+<p align="center">
+ <img width=200px height=200px src="https://github.com/user-attachments/assets/93daccd8-7ad3-408e-b184-178738219430"/>
+</p>
+
+<h1 align="center"> Hoyomi </h1>
 
 **Hoyomi** is a modern, open-source app to **watch anime** and **read manga** in one seamless experience. Designed to be **lightweight**, **fast**, and **fully cross-platform**, Hoyomi runs smoothly on Android, iOS, Linux, macOS, Windows, and even on the web.
 
 > [!WARNING]
 > App is development
 
-> [!TIP]
-> Multi-source, multi-platform manga reading and anime viewing application for free
->
-> `English` / `Multiple` support by `HiAnime`
+Multiple service support. Please check this:
 
-> [!TIP]
-> Multiple service support. Please check this:
-> 
-> - [lib/core_services/comic/services](lib/core_services/comic/services) - Service for comic, manga...
-> - [lib/core_services/eiga/services](lib/core_services/eiga/services) - Service for eiga, film...
->
-> *Load service online comming soon*
+- [lib/core_services/comic/services](lib/core_services/comic/services) - Service for comic, manga...
+- [lib/core_services/eiga/services](lib/core_services/eiga/services) - Service for eiga, film...
+
+3rd party services are now supported with the power of `typescript`. Check out the example here [hoyomi_bridge_ts/example](./hoyomi_bridge_ts/example) or [hoyomi-plugin-animehay](https://github.com/tachibana-shin/hoyomi-plugin-animhay)
 
 ---
 
@@ -29,6 +28,37 @@
 - 💬 **Offline support**: Cache and view anime/manga offline `(development)`
 - 🧩 **Plugin-friendly**: Extend functionality with community-built integrations
 - 🔐 **Privacy first**: No tracking, no ads, no data collection
+
+---
+
+### 🍃 Download
+Get the app from our [releases page](./release).
+
+### iOS Sideloading Sources
+<a href="https://intradeus.github.io/http-protocol-redirector=altstore://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+  <img src="https://github.com/user-attachments/assets/90cde9d0-2ebe-49de-9366-2fa3fc293df9" width="150" />
+</a> <!-- alt -->
+&nbsp;
+<a href="https://intradeus.github.io/http-protocol-redirector=feather://install/https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+  <img src="https://github.com/user-attachments/assets/4539a50c-efe3-4ada-844a-f2fece1033b1" width="150" />
+</a> <!-- feather -->
+&nbsp;
+<a href="https://intradeus.github.io/http-protocol-redirector=sidestore://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+  <img src="https://github.com/user-attachments/assets/7f78ef63-7814-40ac-a2e6-c47405b61bdf" width="150" />
+</a> <!-- sidestore -->
+&nbsp;
+<a href="https://intradeus.github.io/http-protocol-redirector=apple-magnifier://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+  <img src="https://github.com/user-attachments/assets/221174a2-905a-423b-b909-8719ba392202" width="150" />
+</a> <!-- troll store -->
+&nbsp;
+<a href="https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+  <img src="https://github.com/user-attachments/assets/126b9a18-2baf-4b7d-bc9c-411e104b5dd1" width="150" />
+</a> <!-- direct url -->
+&nbsp;
+
+If your device runs `iOS 14.0 beta 2 – 16.6.1, 16.7 RC (20H18)`, or `17.0`, you’re eligible to be a first-class citizen of [TrollStore](https://github.com/opa334/TrollStore) 🚀.
+Install it for free, then enjoy Hoyomi with permanent installation — no resigning, no revokes, forever free.
+
 
 ---
 
