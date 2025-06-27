@@ -47,8 +47,8 @@ Get the app from our [releases page](https://github.com/tachibana-shin/hoyomi/re
   <img src="https://github.com/user-attachments/assets/7f78ef63-7814-40ac-a2e6-c47405b61bdf" width="150" />
 </a> <!-- sidestore -->
 &nbsp;
-<a href="https://intradeus.github.io/http-protocol-redirector?r=apple-magnifier://install?r=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
-  <img src="https://github.com/user-attachments/assets/221174a2-905a-423b-b909-8719ba392202" width="150" />
+<a href="https://intradeus.github.io/http-protocol-redirector?r=apple-magnifier://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+  <img src="https://github.com/user-attachments/assets/fc298252-8bf8-4290-8541-aebb990cb0e0" width="150" />
 </a> <!-- troll store -->
 &nbsp;
 <a href="https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
