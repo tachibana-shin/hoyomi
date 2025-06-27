@@ -467,7 +467,8 @@ sealed class MangaItem with _$MangaItem {
     required int id,
     required String name,
     @JsonKey(name: 'cover_url') required String coverUrl,
-    @JsonKey(name: 'newest_chapter_number') required String? newestChapterNumber,
+    @JsonKey(name: 'newest_chapter_number')
+    required String? newestChapterNumber,
     @JsonKey(name: 'newest_chapter_id') required int? newestChapterId,
     @JsonKey(name: 'newest_chapter_created_at')
     required String? newestChapterCreatedAt,
@@ -504,10 +505,7 @@ sealed class Author with _$Author {
 
 @freezed
 sealed class Tag with _$Tag {
-  const factory Tag({
-    required String name,
-    required String slug,
-  }) = _Tag;
+  const factory Tag({required String name, required String slug}) = _Tag;
 
   factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
 }
@@ -549,9 +547,7 @@ sealed class ChaptersResponse with _$ChaptersResponse {
 
 @freezed
 sealed class ChapterResponse with _$ChapterResponse {
-  const factory ChapterResponse({
-    required List<Page> pages,
-  }) = _ChapterResponse;
+  const factory ChapterResponse({required List<Page> pages}) = _ChapterResponse;
 
   factory ChapterResponse.fromJson(Map<String, dynamic> json) =>
       _$ChapterResponseFromJson(json);
@@ -573,7 +569,8 @@ sealed class SearchResultManga with _$SearchResultManga {
     required int id,
     required String name,
     @JsonKey(name: 'cover_url') required String coverUrl,
-    @JsonKey(name: 'newest_chapter_number') required String? newestChapterNumber,
+    @JsonKey(name: 'newest_chapter_number')
+    required String? newestChapterNumber,
     @JsonKey(name: 'newest_chapter_id') required int? newestChapterId,
     @JsonKey(name: 'newest_chapter_created_at')
     required DateTime? newestChapterCreatedAt,
@@ -618,10 +615,8 @@ sealed class MangaTagResponse with _$MangaTagResponse {
 
 @freezed
 sealed class MangaListData with _$MangaListData {
-  const factory MangaListData({
-    required List<Manga> mangas,
-    required Tag tag,
-  }) = _MangaListData;
+  const factory MangaListData({required List<Manga> mangas, required Tag tag}) =
+      _MangaListData;
 
   factory MangaListData.fromJson(Map<String, dynamic> json) =>
       _$MangaListDataFromJson(json);
@@ -666,9 +661,8 @@ sealed class CommentUser with _$CommentUser {
 
 @freezed
 sealed class CommentsResponse with _$CommentsResponse {
-  const factory CommentsResponse({
-    required List<Comment> data,
-  }) = _CommentsResponse;
+  const factory CommentsResponse({required List<Comment> data}) =
+      _CommentsResponse;
 
   factory CommentsResponse.fromJson(Map<String, dynamic> json) =>
       _$CommentsResponseFromJson(json);
