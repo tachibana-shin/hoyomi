@@ -32,7 +32,7 @@ Multiple service support. Please check this:
 ---
 
 ### 🍃 Download
-Get the app from our [releases page](./release).
+Get the app from our [releases page](https://github.com/tachibana-shin/hoyomi/releases).
 
 ### iOS Sideloading Sources
 <a href="https://intradeus.github.io/http-protocol-redirector=altstore://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
