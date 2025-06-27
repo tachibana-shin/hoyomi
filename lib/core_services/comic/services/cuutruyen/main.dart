@@ -414,9 +414,9 @@ class CuuTruyenService extends ABComicService with ComicCommentMixin {
 sealed class HomeMangaResponse with _$HomeMangaResponse {
   factory HomeMangaResponse({
     @JsonKey(name: 'spotlight_mangas')
-    required List<_SpotlightManga> spotlightMangas,
+    required List<SpotlightManga> spotlightMangas,
     @JsonKey(name: 'new_chapter_mangas')
-    required List<_NewChapterManga> newChapterMangas,
+    required List<NewChapterManga> newChapterMangas,
   }) = _HomeMangaResponse;
 
   factory HomeMangaResponse.fromJson(Map<String, dynamic> json) =>
