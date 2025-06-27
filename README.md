@@ -35,19 +35,19 @@ Multiple service support. Please check this:
 Get the app from our [releases page](https://github.com/tachibana-shin/hoyomi/releases).
 
 ### iOS Sideloading Sources
-<a href="https://intradeus.github.io/http-protocol-redirector=altstore://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+<a href="https://intradeus.github.io/http-protocol-redirector?url=altstore://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
   <img src="https://github.com/user-attachments/assets/90cde9d0-2ebe-49de-9366-2fa3fc293df9" width="150" />
 </a> <!-- alt -->
 &nbsp;
-<a href="https://intradeus.github.io/http-protocol-redirector=feather://install/https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+<a href="https://intradeus.github.io/http-protocol-redirector?url=feather://install/https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
   <img src="https://github.com/user-attachments/assets/4539a50c-efe3-4ada-844a-f2fece1033b1" width="150" />
 </a> <!-- feather -->
 &nbsp;
-<a href="https://intradeus.github.io/http-protocol-redirector=sidestore://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+<a href="https://intradeus.github.io/http-protocol-redirector?url=sidestore://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
   <img src="https://github.com/user-attachments/assets/7f78ef63-7814-40ac-a2e6-c47405b61bdf" width="150" />
 </a> <!-- sidestore -->
 &nbsp;
-<a href="https://intradeus.github.io/http-protocol-redirector=apple-magnifier://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+<a href="https://intradeus.github.io/http-protocol-redirector?url=apple-magnifier://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
   <img src="https://github.com/user-attachments/assets/221174a2-905a-423b-b909-8719ba392202" width="150" />
 </a> <!-- troll store -->
 &nbsp;
