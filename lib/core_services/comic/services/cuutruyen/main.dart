@@ -424,21 +424,21 @@ sealed class HomeMangaResponse with _$HomeMangaResponse {
 }
 
 @freezed
-sealed class _SpotlightManga with _$SpotlightManga {
-  const factory _SpotlightManga({
+sealed class SpotlightManga with _$SpotlightManga {
+  const factory SpotlightManga({
     required int id,
     required String name,
     @JsonKey(name: 'panorama_url') required String panoramaUrl,
     required String description,
-  }) = __SpotlightManga;
+  }) = _SpotlightManga;
 
-  factory _SpotlightManga.fromJson(Map<String, dynamic> json) =>
+  factory SpotlightManga.fromJson(Map<String, dynamic> json) =>
       _$SpotlightMangaFromJson(json);
 }
 
 @freezed
-sealed class _NewChapterManga with _$NewChapterManga {
-  const factory _NewChapterManga({
+sealed class NewChapterManga with _$NewChapterManga {
+  const factory NewChapterManga({
     required int id,
     required String name,
     @JsonKey(name: 'cover_url') required String coverUrl,
@@ -446,9 +446,9 @@ sealed class _NewChapterManga with _$NewChapterManga {
     @JsonKey(name: 'newest_chapter_id') required int newestChapterId,
     @JsonKey(name: 'newest_chapter_created_at')
     required DateTime newestChapterCreatedAt,
-  }) = __NewChapterManga;
+  }) = _NewChapterManga;
 
-  factory _NewChapterManga.fromJson(Map<String, dynamic> json) =>
+  factory NewChapterManga.fromJson(Map<String, dynamic> json) =>
       _$NewChapterMangaFromJson(json);
 }
 
@@ -631,41 +631,6 @@ sealed class Manga with _$Manga {
   }) = _Manga;
 
   factory Manga.fromJson(Map<String, dynamic> json) => _$MangaFromJson(json);
-}
-
-@freezed
-sealed class Comment with _$Comment {
-  const factory Comment({
-    required int id,
-    required CommentUser user,
-    @JsonKey(name: 'processed_content') required String processedContent,
-    @JsonKey(name: 'created_at') required DateTime createdAt,
-    @JsonKey(name: 'replied_ids') required List<int> repliedIds,
-  }) = _Comment;
-
-  factory Comment.fromJson(Map<String, dynamic> json) =>
-      _$CommentFromJson(json);
-}
-
-@freezed
-sealed class CommentUser with _$CommentUser {
-  const factory CommentUser({
-    required int id,
-    required String username,
-    required List<dynamic> teams,
-  }) = _CommentUser;
-
-  factory CommentUser.fromJson(Map<String, dynamic> json) =>
-      _$CommentUserFromJson(json);
-}
-
-@freezed
-sealed class CommentsResponse with _$CommentsResponse {
-  const factory CommentsResponse({required List<Comment> data}) =
-      _CommentsResponse;
-
-  factory CommentsResponse.fromJson(Map<String, dynamic> json) =>
-      _$CommentsResponseFromJson(json);
 }
 
 /// =============== utils ===================
