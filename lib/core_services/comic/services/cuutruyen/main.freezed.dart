@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HomeMangaResponse {
 
-@JsonKey(name: 'spotlight_mangas') List<_SpotlightManga> get spotlightMangas;@JsonKey(name: 'new_chapter_mangas') List<_NewChapterManga> get newChapterMangas;
+@JsonKey(name: 'spotlight_mangas') List<SpotlightManga> get spotlightMangas;@JsonKey(name: 'new_chapter_mangas') List<NewChapterManga> get newChapterMangas;
 /// Create a copy of HomeMangaResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $HomeMangaResponseCopyWith<$Res>  {
   factory $HomeMangaResponseCopyWith(HomeMangaResponse value, $Res Function(HomeMangaResponse) _then) = _$HomeMangaResponseCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'spotlight_mangas') List<_SpotlightManga> spotlightMangas,@JsonKey(name: 'new_chapter_mangas') List<_NewChapterManga> newChapterMangas
+@JsonKey(name: 'spotlight_mangas') List<SpotlightManga> spotlightMangas,@JsonKey(name: 'new_chapter_mangas') List<NewChapterManga> newChapterMangas
 });
 
 
@@ -69,8 +69,8 @@ class _$HomeMangaResponseCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? spotlightMangas = null,Object? newChapterMangas = null,}) {
   return _then(_self.copyWith(
 spotlightMangas: null == spotlightMangas ? _self.spotlightMangas : spotlightMangas // ignore: cast_nullable_to_non_nullable
-as List<_SpotlightManga>,newChapterMangas: null == newChapterMangas ? _self.newChapterMangas : newChapterMangas // ignore: cast_nullable_to_non_nullable
-as List<_NewChapterManga>,
+as List<SpotlightManga>,newChapterMangas: null == newChapterMangas ? _self.newChapterMangas : newChapterMangas // ignore: cast_nullable_to_non_nullable
+as List<NewChapterManga>,
   ));
 }
 
@@ -81,18 +81,18 @@ as List<_NewChapterManga>,
 @JsonSerializable()
 
 class _HomeMangaResponse implements HomeMangaResponse {
-   _HomeMangaResponse({@JsonKey(name: 'spotlight_mangas') required final  List<_SpotlightManga> spotlightMangas, @JsonKey(name: 'new_chapter_mangas') required final  List<_NewChapterManga> newChapterMangas}): _spotlightMangas = spotlightMangas,_newChapterMangas = newChapterMangas;
+   _HomeMangaResponse({@JsonKey(name: 'spotlight_mangas') required final  List<SpotlightManga> spotlightMangas, @JsonKey(name: 'new_chapter_mangas') required final  List<NewChapterManga> newChapterMangas}): _spotlightMangas = spotlightMangas,_newChapterMangas = newChapterMangas;
   factory _HomeMangaResponse.fromJson(Map<String, dynamic> json) => _$HomeMangaResponseFromJson(json);
 
- final  List<_SpotlightManga> _spotlightMangas;
-@override@JsonKey(name: 'spotlight_mangas') List<_SpotlightManga> get spotlightMangas {
+ final  List<SpotlightManga> _spotlightMangas;
+@override@JsonKey(name: 'spotlight_mangas') List<SpotlightManga> get spotlightMangas {
   if (_spotlightMangas is EqualUnmodifiableListView) return _spotlightMangas;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_spotlightMangas);
 }
 
- final  List<_NewChapterManga> _newChapterMangas;
-@override@JsonKey(name: 'new_chapter_mangas') List<_NewChapterManga> get newChapterMangas {
+ final  List<NewChapterManga> _newChapterMangas;
+@override@JsonKey(name: 'new_chapter_mangas') List<NewChapterManga> get newChapterMangas {
   if (_newChapterMangas is EqualUnmodifiableListView) return _newChapterMangas;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_newChapterMangas);
@@ -132,7 +132,7 @@ abstract mixin class _$HomeMangaResponseCopyWith<$Res> implements $HomeMangaResp
   factory _$HomeMangaResponseCopyWith(_HomeMangaResponse value, $Res Function(_HomeMangaResponse) _then) = __$HomeMangaResponseCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'spotlight_mangas') List<_SpotlightManga> spotlightMangas,@JsonKey(name: 'new_chapter_mangas') List<_NewChapterManga> newChapterMangas
+@JsonKey(name: 'spotlight_mangas') List<SpotlightManga> spotlightMangas,@JsonKey(name: 'new_chapter_mangas') List<NewChapterManga> newChapterMangas
 });
 
 
@@ -152,39 +152,32 @@ class __$HomeMangaResponseCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? spotlightMangas = null,Object? newChapterMangas = null,}) {
   return _then(_HomeMangaResponse(
 spotlightMangas: null == spotlightMangas ? _self._spotlightMangas : spotlightMangas // ignore: cast_nullable_to_non_nullable
-as List<_SpotlightManga>,newChapterMangas: null == newChapterMangas ? _self._newChapterMangas : newChapterMangas // ignore: cast_nullable_to_non_nullable
-as List<_NewChapterManga>,
+as List<SpotlightManga>,newChapterMangas: null == newChapterMangas ? _self._newChapterMangas : newChapterMangas // ignore: cast_nullable_to_non_nullable
+as List<NewChapterManga>,
   ));
 }
 
 
 }
 
-_SpotlightManga _$SpotlightMangaFromJson(
-  Map<String, dynamic> json
-) {
-    return __SpotlightManga.fromJson(
-      json
-    );
-}
 
 /// @nodoc
 mixin _$SpotlightManga {
 
  int get id; String get name;@JsonKey(name: 'panorama_url') String get panoramaUrl; String get description;
-/// Create a copy of _SpotlightManga
+/// Create a copy of SpotlightManga
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$SpotlightMangaCopyWith<_SpotlightManga> get copyWith => __$SpotlightMangaCopyWithImpl<_SpotlightManga>(this as _SpotlightManga, _$identity);
+$SpotlightMangaCopyWith<SpotlightManga> get copyWith => _$SpotlightMangaCopyWithImpl<SpotlightManga>(this as SpotlightManga, _$identity);
 
-  /// Serializes this _SpotlightManga to a JSON map.
+  /// Serializes this SpotlightManga to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SpotlightManga&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.panoramaUrl, panoramaUrl) || other.panoramaUrl == panoramaUrl)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SpotlightManga&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.panoramaUrl, panoramaUrl) || other.panoramaUrl == panoramaUrl)&&(identical(other.description, description) || other.description == description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -193,15 +186,15 @@ int get hashCode => Object.hash(runtimeType,id,name,panoramaUrl,description);
 
 @override
 String toString() {
-  return '_SpotlightManga(id: $id, name: $name, panoramaUrl: $panoramaUrl, description: $description)';
+  return 'SpotlightManga(id: $id, name: $name, panoramaUrl: $panoramaUrl, description: $description)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$SpotlightMangaCopyWith<$Res>  {
-  factory _$SpotlightMangaCopyWith(_SpotlightManga value, $Res Function(_SpotlightManga) _then) = __$SpotlightMangaCopyWithImpl;
+abstract mixin class $SpotlightMangaCopyWith<$Res>  {
+  factory $SpotlightMangaCopyWith(SpotlightManga value, $Res Function(SpotlightManga) _then) = _$SpotlightMangaCopyWithImpl;
 @useResult
 $Res call({
  int id, String name,@JsonKey(name: 'panorama_url') String panoramaUrl, String description
@@ -212,14 +205,14 @@ $Res call({
 
 }
 /// @nodoc
-class __$SpotlightMangaCopyWithImpl<$Res>
-    implements _$SpotlightMangaCopyWith<$Res> {
-  __$SpotlightMangaCopyWithImpl(this._self, this._then);
+class _$SpotlightMangaCopyWithImpl<$Res>
+    implements $SpotlightMangaCopyWith<$Res> {
+  _$SpotlightMangaCopyWithImpl(this._self, this._then);
 
-  final _SpotlightManga _self;
-  final $Res Function(_SpotlightManga) _then;
+  final SpotlightManga _self;
+  final $Res Function(SpotlightManga) _then;
 
-/// Create a copy of _SpotlightManga
+/// Create a copy of SpotlightManga
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? panoramaUrl = null,Object? description = null,}) {
   return _then(_self.copyWith(
@@ -237,29 +230,29 @@ as String,
 /// @nodoc
 @JsonSerializable()
 
-class __SpotlightManga implements _SpotlightManga {
-  const __SpotlightManga({required this.id, required this.name, @JsonKey(name: 'panorama_url') required this.panoramaUrl, required this.description});
-  factory __SpotlightManga.fromJson(Map<String, dynamic> json) => _$_SpotlightMangaFromJson(json);
+class _SpotlightManga implements SpotlightManga {
+  const _SpotlightManga({required this.id, required this.name, @JsonKey(name: 'panorama_url') required this.panoramaUrl, required this.description});
+  factory _SpotlightManga.fromJson(Map<String, dynamic> json) => _$SpotlightMangaFromJson(json);
 
 @override final  int id;
 @override final  String name;
 @override@JsonKey(name: 'panorama_url') final  String panoramaUrl;
 @override final  String description;
 
-/// Create a copy of _SpotlightManga
+/// Create a copy of SpotlightManga
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$_SpotlightMangaCopyWith<__SpotlightManga> get copyWith => __$_SpotlightMangaCopyWithImpl<__SpotlightManga>(this, _$identity);
+_$SpotlightMangaCopyWith<_SpotlightManga> get copyWith => __$SpotlightMangaCopyWithImpl<_SpotlightManga>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$_SpotlightMangaToJson(this, );
+  return _$SpotlightMangaToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is __SpotlightManga&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.panoramaUrl, panoramaUrl) || other.panoramaUrl == panoramaUrl)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SpotlightManga&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.panoramaUrl, panoramaUrl) || other.panoramaUrl == panoramaUrl)&&(identical(other.description, description) || other.description == description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -268,15 +261,15 @@ int get hashCode => Object.hash(runtimeType,id,name,panoramaUrl,description);
 
 @override
 String toString() {
-  return '_SpotlightManga(id: $id, name: $name, panoramaUrl: $panoramaUrl, description: $description)';
+  return 'SpotlightManga(id: $id, name: $name, panoramaUrl: $panoramaUrl, description: $description)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$_SpotlightMangaCopyWith<$Res> implements _$SpotlightMangaCopyWith<$Res> {
-  factory _$_SpotlightMangaCopyWith(__SpotlightManga value, $Res Function(__SpotlightManga) _then) = __$_SpotlightMangaCopyWithImpl;
+abstract mixin class _$SpotlightMangaCopyWith<$Res> implements $SpotlightMangaCopyWith<$Res> {
+  factory _$SpotlightMangaCopyWith(_SpotlightManga value, $Res Function(_SpotlightManga) _then) = __$SpotlightMangaCopyWithImpl;
 @override @useResult
 $Res call({
  int id, String name,@JsonKey(name: 'panorama_url') String panoramaUrl, String description
@@ -287,17 +280,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$_SpotlightMangaCopyWithImpl<$Res>
-    implements _$_SpotlightMangaCopyWith<$Res> {
-  __$_SpotlightMangaCopyWithImpl(this._self, this._then);
+class __$SpotlightMangaCopyWithImpl<$Res>
+    implements _$SpotlightMangaCopyWith<$Res> {
+  __$SpotlightMangaCopyWithImpl(this._self, this._then);
 
-  final __SpotlightManga _self;
-  final $Res Function(__SpotlightManga) _then;
+  final _SpotlightManga _self;
+  final $Res Function(_SpotlightManga) _then;
 
-/// Create a copy of _SpotlightManga
+/// Create a copy of SpotlightManga
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? panoramaUrl = null,Object? description = null,}) {
-  return _then(__SpotlightManga(
+  return _then(_SpotlightManga(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,panoramaUrl: null == panoramaUrl ? _self.panoramaUrl : panoramaUrl // ignore: cast_nullable_to_non_nullable
@@ -309,31 +302,24 @@ as String,
 
 }
 
-_NewChapterManga _$NewChapterMangaFromJson(
-  Map<String, dynamic> json
-) {
-    return __NewChapterManga.fromJson(
-      json
-    );
-}
 
 /// @nodoc
 mixin _$NewChapterManga {
 
  int get id; String get name;@JsonKey(name: 'cover_url') String get coverUrl;@JsonKey(name: 'newest_chapter_number') String get newestChapterNumber;@JsonKey(name: 'newest_chapter_id') int get newestChapterId;@JsonKey(name: 'newest_chapter_created_at') DateTime get newestChapterCreatedAt;
-/// Create a copy of _NewChapterManga
+/// Create a copy of NewChapterManga
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$NewChapterMangaCopyWith<_NewChapterManga> get copyWith => __$NewChapterMangaCopyWithImpl<_NewChapterManga>(this as _NewChapterManga, _$identity);
+$NewChapterMangaCopyWith<NewChapterManga> get copyWith => _$NewChapterMangaCopyWithImpl<NewChapterManga>(this as NewChapterManga, _$identity);
 
-  /// Serializes this _NewChapterManga to a JSON map.
+  /// Serializes this NewChapterManga to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewChapterManga&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.coverUrl, coverUrl) || other.coverUrl == coverUrl)&&(identical(other.newestChapterNumber, newestChapterNumber) || other.newestChapterNumber == newestChapterNumber)&&(identical(other.newestChapterId, newestChapterId) || other.newestChapterId == newestChapterId)&&(identical(other.newestChapterCreatedAt, newestChapterCreatedAt) || other.newestChapterCreatedAt == newestChapterCreatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewChapterManga&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.coverUrl, coverUrl) || other.coverUrl == coverUrl)&&(identical(other.newestChapterNumber, newestChapterNumber) || other.newestChapterNumber == newestChapterNumber)&&(identical(other.newestChapterId, newestChapterId) || other.newestChapterId == newestChapterId)&&(identical(other.newestChapterCreatedAt, newestChapterCreatedAt) || other.newestChapterCreatedAt == newestChapterCreatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -342,15 +328,15 @@ int get hashCode => Object.hash(runtimeType,id,name,coverUrl,newestChapterNumber
 
 @override
 String toString() {
-  return '_NewChapterManga(id: $id, name: $name, coverUrl: $coverUrl, newestChapterNumber: $newestChapterNumber, newestChapterId: $newestChapterId, newestChapterCreatedAt: $newestChapterCreatedAt)';
+  return 'NewChapterManga(id: $id, name: $name, coverUrl: $coverUrl, newestChapterNumber: $newestChapterNumber, newestChapterId: $newestChapterId, newestChapterCreatedAt: $newestChapterCreatedAt)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$NewChapterMangaCopyWith<$Res>  {
-  factory _$NewChapterMangaCopyWith(_NewChapterManga value, $Res Function(_NewChapterManga) _then) = __$NewChapterMangaCopyWithImpl;
+abstract mixin class $NewChapterMangaCopyWith<$Res>  {
+  factory $NewChapterMangaCopyWith(NewChapterManga value, $Res Function(NewChapterManga) _then) = _$NewChapterMangaCopyWithImpl;
 @useResult
 $Res call({
  int id, String name,@JsonKey(name: 'cover_url') String coverUrl,@JsonKey(name: 'newest_chapter_number') String newestChapterNumber,@JsonKey(name: 'newest_chapter_id') int newestChapterId,@JsonKey(name: 'newest_chapter_created_at') DateTime newestChapterCreatedAt
@@ -361,14 +347,14 @@ $Res call({
 
 }
 /// @nodoc
-class __$NewChapterMangaCopyWithImpl<$Res>
-    implements _$NewChapterMangaCopyWith<$Res> {
-  __$NewChapterMangaCopyWithImpl(this._self, this._then);
+class _$NewChapterMangaCopyWithImpl<$Res>
+    implements $NewChapterMangaCopyWith<$Res> {
+  _$NewChapterMangaCopyWithImpl(this._self, this._then);
 
-  final _NewChapterManga _self;
-  final $Res Function(_NewChapterManga) _then;
+  final NewChapterManga _self;
+  final $Res Function(NewChapterManga) _then;
 
-/// Create a copy of _NewChapterManga
+/// Create a copy of NewChapterManga
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? coverUrl = null,Object? newestChapterNumber = null,Object? newestChapterId = null,Object? newestChapterCreatedAt = null,}) {
   return _then(_self.copyWith(
@@ -388,9 +374,9 @@ as DateTime,
 /// @nodoc
 @JsonSerializable()
 
-class __NewChapterManga implements _NewChapterManga {
-  const __NewChapterManga({required this.id, required this.name, @JsonKey(name: 'cover_url') required this.coverUrl, @JsonKey(name: 'newest_chapter_number') required this.newestChapterNumber, @JsonKey(name: 'newest_chapter_id') required this.newestChapterId, @JsonKey(name: 'newest_chapter_created_at') required this.newestChapterCreatedAt});
-  factory __NewChapterManga.fromJson(Map<String, dynamic> json) => _$_NewChapterMangaFromJson(json);
+class _NewChapterManga implements NewChapterManga {
+  const _NewChapterManga({required this.id, required this.name, @JsonKey(name: 'cover_url') required this.coverUrl, @JsonKey(name: 'newest_chapter_number') required this.newestChapterNumber, @JsonKey(name: 'newest_chapter_id') required this.newestChapterId, @JsonKey(name: 'newest_chapter_created_at') required this.newestChapterCreatedAt});
+  factory _NewChapterManga.fromJson(Map<String, dynamic> json) => _$NewChapterMangaFromJson(json);
 
 @override final  int id;
 @override final  String name;
@@ -399,20 +385,20 @@ class __NewChapterManga implements _NewChapterManga {
 @override@JsonKey(name: 'newest_chapter_id') final  int newestChapterId;
 @override@JsonKey(name: 'newest_chapter_created_at') final  DateTime newestChapterCreatedAt;
 
-/// Create a copy of _NewChapterManga
+/// Create a copy of NewChapterManga
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$_NewChapterMangaCopyWith<__NewChapterManga> get copyWith => __$_NewChapterMangaCopyWithImpl<__NewChapterManga>(this, _$identity);
+_$NewChapterMangaCopyWith<_NewChapterManga> get copyWith => __$NewChapterMangaCopyWithImpl<_NewChapterManga>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$_NewChapterMangaToJson(this, );
+  return _$NewChapterMangaToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is __NewChapterManga&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.coverUrl, coverUrl) || other.coverUrl == coverUrl)&&(identical(other.newestChapterNumber, newestChapterNumber) || other.newestChapterNumber == newestChapterNumber)&&(identical(other.newestChapterId, newestChapterId) || other.newestChapterId == newestChapterId)&&(identical(other.newestChapterCreatedAt, newestChapterCreatedAt) || other.newestChapterCreatedAt == newestChapterCreatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewChapterManga&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.coverUrl, coverUrl) || other.coverUrl == coverUrl)&&(identical(other.newestChapterNumber, newestChapterNumber) || other.newestChapterNumber == newestChapterNumber)&&(identical(other.newestChapterId, newestChapterId) || other.newestChapterId == newestChapterId)&&(identical(other.newestChapterCreatedAt, newestChapterCreatedAt) || other.newestChapterCreatedAt == newestChapterCreatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -421,15 +407,15 @@ int get hashCode => Object.hash(runtimeType,id,name,coverUrl,newestChapterNumber
 
 @override
 String toString() {
-  return '_NewChapterManga(id: $id, name: $name, coverUrl: $coverUrl, newestChapterNumber: $newestChapterNumber, newestChapterId: $newestChapterId, newestChapterCreatedAt: $newestChapterCreatedAt)';
+  return 'NewChapterManga(id: $id, name: $name, coverUrl: $coverUrl, newestChapterNumber: $newestChapterNumber, newestChapterId: $newestChapterId, newestChapterCreatedAt: $newestChapterCreatedAt)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$_NewChapterMangaCopyWith<$Res> implements _$NewChapterMangaCopyWith<$Res> {
-  factory _$_NewChapterMangaCopyWith(__NewChapterManga value, $Res Function(__NewChapterManga) _then) = __$_NewChapterMangaCopyWithImpl;
+abstract mixin class _$NewChapterMangaCopyWith<$Res> implements $NewChapterMangaCopyWith<$Res> {
+  factory _$NewChapterMangaCopyWith(_NewChapterManga value, $Res Function(_NewChapterManga) _then) = __$NewChapterMangaCopyWithImpl;
 @override @useResult
 $Res call({
  int id, String name,@JsonKey(name: 'cover_url') String coverUrl,@JsonKey(name: 'newest_chapter_number') String newestChapterNumber,@JsonKey(name: 'newest_chapter_id') int newestChapterId,@JsonKey(name: 'newest_chapter_created_at') DateTime newestChapterCreatedAt
@@ -440,17 +426,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$_NewChapterMangaCopyWithImpl<$Res>
-    implements _$_NewChapterMangaCopyWith<$Res> {
-  __$_NewChapterMangaCopyWithImpl(this._self, this._then);
+class __$NewChapterMangaCopyWithImpl<$Res>
+    implements _$NewChapterMangaCopyWith<$Res> {
+  __$NewChapterMangaCopyWithImpl(this._self, this._then);
 
-  final __NewChapterManga _self;
-  final $Res Function(__NewChapterManga) _then;
+  final _NewChapterManga _self;
+  final $Res Function(_NewChapterManga) _then;
 
-/// Create a copy of _NewChapterManga
+/// Create a copy of NewChapterManga
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? coverUrl = null,Object? newestChapterNumber = null,Object? newestChapterId = null,Object? newestChapterCreatedAt = null,}) {
-  return _then(__NewChapterManga(
+  return _then(_NewChapterManga(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,coverUrl: null == coverUrl ? _self.coverUrl : coverUrl // ignore: cast_nullable_to_non_nullable

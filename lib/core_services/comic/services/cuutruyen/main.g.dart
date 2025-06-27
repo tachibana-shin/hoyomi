@@ -10,11 +10,11 @@ _HomeMangaResponse _$HomeMangaResponseFromJson(Map<String, dynamic> json) =>
     _HomeMangaResponse(
       spotlightMangas:
           (json['spotlight_mangas'] as List<dynamic>)
-              .map((e) => _SpotlightManga.fromJson(e as Map<String, dynamic>))
+              .map((e) => SpotlightManga.fromJson(e as Map<String, dynamic>))
               .toList(),
       newChapterMangas:
           (json['new_chapter_mangas'] as List<dynamic>)
-              .map((e) => _NewChapterManga.fromJson(e as Map<String, dynamic>))
+              .map((e) => NewChapterManga.fromJson(e as Map<String, dynamic>))
               .toList(),
     );
 
@@ -24,15 +24,15 @@ Map<String, dynamic> _$HomeMangaResponseToJson(_HomeMangaResponse instance) =>
       'new_chapter_mangas': instance.newChapterMangas,
     };
 
-__SpotlightManga _$SpotlightMangaFromJson(Map<String, dynamic> json) =>
-    __SpotlightManga(
+_SpotlightManga _$SpotlightMangaFromJson(Map<String, dynamic> json) =>
+    _SpotlightManga(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       panoramaUrl: json['panorama_url'] as String,
       description: json['description'] as String,
     );
 
-Map<String, dynamic> _$SpotlightMangaToJson(__SpotlightManga instance) =>
+Map<String, dynamic> _$SpotlightMangaToJson(_SpotlightManga instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
@@ -40,8 +40,8 @@ Map<String, dynamic> _$SpotlightMangaToJson(__SpotlightManga instance) =>
       'description': instance.description,
     };
 
-__NewChapterManga _$NewChapterMangaFromJson(Map<String, dynamic> json) =>
-    __NewChapterManga(
+_NewChapterManga _$NewChapterMangaFromJson(Map<String, dynamic> json) =>
+    _NewChapterManga(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       coverUrl: json['cover_url'] as String,
@@ -52,7 +52,7 @@ __NewChapterManga _$NewChapterMangaFromJson(Map<String, dynamic> json) =>
       ),
     );
 
-Map<String, dynamic> _$NewChapterMangaToJson(__NewChapterManga instance) =>
+Map<String, dynamic> _$NewChapterMangaToJson(_NewChapterManga instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
