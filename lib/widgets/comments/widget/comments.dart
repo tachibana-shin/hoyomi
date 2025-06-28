@@ -122,7 +122,8 @@ class _CommentsState extends State<Comments> {
     return PullRefreshPage<ComicComments>(
       onLoadData: () => widget.getComments!(page: page, parent: widget.parent),
       onLoadFake: () => ComicComments.createFakeData(),
-      builder: (data, _) => _buildFullComments(data),
+      builder:
+          (data, _) => SingleChildScrollView(child: _buildFullComments(data)),
     );
   }
 

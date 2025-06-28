@@ -225,7 +225,7 @@ class _CommentState extends State<Comment> with KaeruMixin {
                     deleteComment: widget.deleteComment,
                     setLikeComment: widget.setLikeComment,
                   )
-                  : nil,
+                  : SizedBox.shrink(),
         ),
       ],
     );

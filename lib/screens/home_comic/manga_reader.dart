@@ -1063,6 +1063,7 @@ class _MangaReaderState extends State<MangaReader>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       builder:
           (context) => CommentsSheet(
             comicId: widget.comicId,
