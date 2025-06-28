@@ -35,16 +35,33 @@ class _VerticalReaderState extends State<VerticalReader> with KaeruListenMixin {
 
     listen(widget.currentPage, () {
       if (_controller.position.isScrollingNotifier.value) return;
-      _jumping = true;
 
-      _controller.animateToPage(
-        widget.currentPage.value.toInt(),
-        duration: Duration(milliseconds: 200),
-        curve: Curves.easeInOut,
-      );
-      Timer(Duration(milliseconds: 50), () {
-        _jumping = false;
-      });
+      final hf =
+          (_controller.page ?? _controller.initialPage) -
+          widget.currentPage.value;
+      if (hf.abs() > 1) {
+        _jumping = true;
+        _controller.jumpToPage(
+          widget.currentPage.value.toInt(),
+          // duration: Duration(milliseconds: 200),
+          // curve: Curves.easeInOut,
+        );
+        Timer(Duration(milliseconds: 50), () {
+          _jumping = false;
+        });
+      } else {
+        if (hf > 0) {
+          _controller.previousPage(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.linear,
+          );
+        } else {
+          _controller.nextPage(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.linear,
+          );
+        }
+      }
     });
   }
 
@@ -53,6 +70,7 @@ class _VerticalReaderState extends State<VerticalReader> with KaeruListenMixin {
     return Watch(
       () => PhotoViewGallery.builder(
         scrollPhysics: const BouncingScrollPhysics(),
+        backgroundDecoration: const BoxDecoration(color: Colors.transparent),
         wantKeepAlive: true,
         pageController: _controller,
         scrollDirection: Axis.vertical,
