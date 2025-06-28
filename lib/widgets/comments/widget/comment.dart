@@ -1,4 +1,3 @@
-import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comments.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comment.dart';
@@ -206,7 +205,7 @@ class _CommentState extends State<Comment> with KaeruMixin {
                       );
                     }
 
-                    return nil;
+                    return SizedBox.shrink();
                   }),
                 ],
               ),

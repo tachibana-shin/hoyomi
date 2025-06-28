@@ -5,7 +5,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart' show Response;
 import 'package:flutter/foundation.dart';
@@ -1092,7 +1091,7 @@ class _PlayerEigaState extends State<PlayerEiga>
           }),
         ),
         Watch(() {
-          if (_trailerAvailable.value) return nil;
+          if (_trailerAvailable.value) return SizedBox.shrink();
 
           final child = GestureDetector(
             onTap: _onTapToggleControls,
@@ -1125,7 +1124,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         _buildError(),
         _buildIndicator(),
         Watch(() {
-          if (_trailerAvailable.value) return nil;
+          if (_trailerAvailable.value) return SizedBox.shrink();
 
           return _fullscreen.value
               ? _buildMobileSliderProgress()
@@ -1367,7 +1366,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   Widget _buildIndicator() {
     return Watch(() {
-      if (_trailerAvailable.value) return nil;
+      if (_trailerAvailable.value) return SizedBox.shrink();
 
       if (!_loading.value ||
           widget.episode.value?.episodeId == EigaEpisode.trailerId) {
@@ -1396,7 +1395,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   Widget _buildError() {
     return Watch(() {
-      if (_trailerAvailable.value) return nil;
+      if (_trailerAvailable.value) return SizedBox.shrink();
 
       final error = _error.value;
       if (error == null) return SizedBox.shrink();
@@ -1511,7 +1510,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   Widget _buildUISwipeView() {
     return Watch(() {
-      if (_trailerAvailable.value) return nil;
+      if (_trailerAvailable.value) return SizedBox.shrink();
 
       return LayoutBuilder(
         builder:
@@ -1574,7 +1573,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   Widget _buildUIDoubleTapView() {
     return Watch(() {
-      if (_trailerAvailable.value) return nil;
+      if (_trailerAvailable.value) return SizedBox.shrink();
 
       return LayoutBuilder(
         builder:
@@ -1734,7 +1733,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   Widget _buildPopupOpeningEnding() {
     return Watch(() {
-      if (_trailerAvailable.value) return nil;
+      if (_trailerAvailable.value) return SizedBox.shrink();
 
       if (_openingEnding.value == null || _controller.value == null) {
         return SizedBox.shrink();

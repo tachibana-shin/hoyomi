@@ -1,4 +1,3 @@
-import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
 import 'package:hoyomi/core_services/service.dart';
@@ -78,7 +77,7 @@ class VerticalEigaList extends StatelessWidget {
         }
 
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return nil;
+          return SizedBox.shrink();
         }
 
         return VerticalList<EigaExtend>(

@@ -1368,7 +1368,7 @@ class _MangaReaderState extends State<MangaReader>
   Widget _buildTinyStatus() {
     return Watch(() {
       final currChapter = _currChapter.value;
-      if (currChapter == null) return nil;
+      if (currChapter == null) return SizedBox.shrink();
 
       _use24h = context.alwaysUse24HourFormat;
       // ShaderMask(

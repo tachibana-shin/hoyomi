@@ -241,6 +241,14 @@ class _LibraryPageState extends State<LibraryPage>
           children:
               _services.value.map((service) => _TabView(service)).toList(),
         ),
+        floatingActionButton: FloatingActionButton(
+  onPressed: () {
+    context.pushNamed('explorer', pathParameters: {'sourceId': '' });
+  },
+  child: Icon(Icons.explore),
+  tooltip: 'Explorer',
+)
+
       );
     });
   }

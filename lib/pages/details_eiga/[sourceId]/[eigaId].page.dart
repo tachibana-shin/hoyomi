@@ -404,7 +404,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                             Watch(
                               () =>
                                   _fullscreen.value
-                                      ? nil
+                                      ? SizedBox.shrink()
                                       : LayoutBuilder(
                                         builder:
                                             (context, constraints) => SizedBox(
@@ -1639,7 +1639,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             }
 
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return nil;
+              return SizedBox.shrink();
             }
 
             final data =

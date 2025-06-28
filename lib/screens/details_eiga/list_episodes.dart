@@ -287,7 +287,7 @@ class _ListEpisodesState extends State<ListEpisodes>
           //     tabController.animateTo(index);
           //   }
 
-          //   return nil;
+          //   return SizedBox.shrink();
           // });
 
           return switch (isVertical) {
