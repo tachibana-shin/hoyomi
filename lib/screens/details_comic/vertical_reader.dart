@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hoyomi/screens/home_comic/manga_reader.dart';
 import 'package:kaeru/kaeru.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class VerticalReader extends StatefulWidget {
@@ -82,10 +83,9 @@ class _VerticalReaderState extends State<VerticalReader> with KaeruListenMixin {
         itemCount: widget.pages.value.length,
         builder:
             (context, index) => PhotoViewGalleryPageOptions.customChild(
-              initialScale: 1.0,
-              minScale: 0.5,
-              maxScale: 2.5,
-
+              initialScale: PhotoViewComputedScale.contained * 1.0,
+              minScale: PhotoViewComputedScale.contained * 0.5,
+              maxScale: PhotoViewComputedScale.contained * 2.5,
               child: widget.itemBuilder(
                 context,
                 index,
