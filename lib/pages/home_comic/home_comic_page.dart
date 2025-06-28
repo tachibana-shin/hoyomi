@@ -59,6 +59,7 @@ class _HomeComicPageState extends State<HomeComicPage>
             controller: _tabController,
             isScrollable: true,
             splashBorderRadius: BorderRadius.circular(35.0),
+            tabAlignment: TabAlignment.start,
             tabs:
                 comicServices.value
                     .map((service) => Tab(text: service.name))

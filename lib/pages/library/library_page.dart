@@ -229,6 +229,7 @@ class _LibraryPageState extends State<LibraryPage>
           bottom: TabBar(
             controller: _tabController,
             isScrollable: true,
+            tabAlignment: TabAlignment.start,
             splashBorderRadius: BorderRadius.circular(35.0),
             tabs:
                 _services.value

@@ -62,6 +62,7 @@ class _HomeEigaPageState extends State<HomeEigaPage>
             controller: _tabController,
             isScrollable: true,
             splashBorderRadius: BorderRadius.circular(35.0),
+              tabAlignment: TabAlignment.start,
             tabs:
                 eigaServices.value
                     .map((service) => Tab(text: service.name))
