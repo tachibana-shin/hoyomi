@@ -47,16 +47,16 @@ final List<Filter> globalFilters = [
   ),
 ];
 
-class TruyenGGService extends ABComicService
+class FoxTruyenService extends ABComicService
     with ComicAuthMixin, ComicCommentMixin, ComicFollowMixin {
   @override
   bool? get $isAuth => true;
 
   @override
   final init = ServiceInit(
-    name: 'TruyenGGP',
+    name: 'FoxTruyen',
     faviconUrl: OImage(src: '/favicon.ico'),
-    rootUrl: 'https://truyengg.net',
+    rootUrl: 'https://foxtruyen.net',
     customCookie: 'type_comic=1; {OLD_COOKIE}',
   );
 
@@ -570,6 +570,18 @@ class TruyenGGService extends ABComicService
       totalItems: data.length * maxPage,
       totalPages: maxPage,
       filters: globalFilters,
+    );
+  }
+
+  @override
+  getExplorer({
+    required page,
+    required filters,
+  }) async {
+    return getCategory(
+      categoryId: 'tim-kiem-nang-cao',
+      page: page,
+      filters: filters,
     );
   }
 

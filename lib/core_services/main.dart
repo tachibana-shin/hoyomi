@@ -13,7 +13,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'comic/services/cuutruyen/main.dart';
 import 'comic/services/nettruyen/main.dart';
-import 'comic/services/truyengg/main.dart';
+import 'comic/services/foxtruyen/main.dart';
 import 'comic/services/truyenqq/main.dart';
 import 'eiga/services/animevietsub/main.dart';
 import 'eiga/services/hianime/main.dart';
@@ -37,7 +37,7 @@ final allComicServices = Map.fromEntries(
   <ABComicService>[
     CuuTruyenService(),
     NetTruyenService(),
-    TruyenGGService(),
+    FoxTruyenService(),
     TruyenQQService(),
   ].map((service) => MapEntry(service.uid, service)),
 );

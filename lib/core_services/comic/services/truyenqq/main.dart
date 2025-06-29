@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:hoyomi/core_services/comic/services/truyengg/main.dart';
+import 'package:hoyomi/core_services/comic/services/foxtruyen/main.dart';
 import 'package:hoyomi/utils/d_query.dart';
 import 'package:hoyomi/utils/time_utils.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +17,7 @@ String _generateRandomHex(int length) {
   ).join();
 }
 
-class TruyenQQService extends TruyenGGService {
+class TruyenQQService extends FoxTruyenService {
   @override
   // ignore: overridden_fields
   final init = ServiceInit(

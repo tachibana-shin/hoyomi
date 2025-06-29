@@ -311,6 +311,11 @@ class CuuTruyenService extends ABComicService with ComicCommentMixin {
   }
 
   @override
+  getExplorer({required page, required filters}) {
+    return getCategory(categoryId: 'recently_updated', page: page, filters: filters);
+  }
+
+  @override
   getURL(String comicId, {String? chapterId}) async {
     if (chapterId == null) return '$baseUrl/mangas/$comicId';
     return '$baseUrl/mangas/$comicId/chapters/$chapterId';

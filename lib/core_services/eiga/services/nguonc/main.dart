@@ -216,6 +216,18 @@ class NguonCService extends ABEigaService {
     );
   }
 
+  @override
+  getExplorer({
+    required page,
+    required filters,
+  }) async {
+    return getCategory(
+      categoryId: 'danh-sach-phim',
+      page: page,
+      filters: filters,
+    );
+  }
+
   _CategoryGroup? _findGroup(_Movie movie, String groupName) {
     for (var categoryGroup in movie.category.values) {
       if (categoryGroup.group.name == groupName) {

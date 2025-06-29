@@ -226,6 +226,18 @@ class HiAnimeService extends ABEigaService {
   }
 
   @override
+  getExplorer({
+    required page,
+    required filters,
+  }) async {
+    return getCategory(
+      categoryId: 'filter',
+      page: page,
+      filters: filters,
+    );
+  }
+
+  @override
   getDetails(String eigaId) async {
     final $ = await (_cacheDetails[eigaId] = fetch$('$baseUrl/$eigaId'));
 

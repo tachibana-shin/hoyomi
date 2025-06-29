@@ -465,6 +465,18 @@ class AnimeVietsubService extends ABEigaService
     );
   }
 
+  @override
+  getExplorer({
+    required page,
+    required filters,
+  }) async {
+    return getCategory(
+      categoryId: 'danh-sach/all/1/all/all/'.replaceAll(r'/', '_'),
+      page: page,
+      filters: filters,
+    );
+  }
+
   DQuery? _findInfo(DQuery elements, String label) {
     return elements.findOne(
       (element) =>

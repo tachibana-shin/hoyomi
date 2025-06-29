@@ -249,6 +249,18 @@ class OPhimService extends ABEigaService {
   }
 
   @override
+  getExplorer({
+    required page,
+    required filters,
+  }) async {
+    return getCategory(
+      categoryId: 'danh-sach_phim-moi',
+      page: page,
+      filters: filters,
+    );
+  }
+
+  @override
   getDetails(String eigaId) async {
     final index = max(0, eigaId.indexOf('@'));
     final eigaIdRaw = index == 0 ? eigaId : eigaId.substring(0, index);
