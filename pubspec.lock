@@ -1451,6 +1451,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.1"
+  number_paginator:
+    dependency: "direct main"
+    description:
+      name: number_paginator
+      sha256: "95802df0111d3d8eaced5fc574a46c30cff2588d3c79c0df5826fff0d03a60db"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   octo_image:
     dependency: transitive
     description:
@@ -1675,6 +1683,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  responsive_grid:
+    dependency: "direct main"
+    description:
+      name: responsive_grid
+      sha256: "852b4d46ae4a530e0d54a1dc59964f3d2cd8d6ca1f6fc4e5790cc0580e367e24"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.4"
   responsive_grid_list:
     dependency: "direct main"
     description:

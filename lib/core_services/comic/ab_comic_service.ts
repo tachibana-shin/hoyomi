@@ -21,6 +21,13 @@ export abstract class ABComicService extends BaseService {
     filters: { [key: string]: string[] | null }
   }): Promise<ComicCategory>
 
+  getExplorer(
+    page: number,
+    filters?: { [key: string]: string[] | null }
+  ): Promise<ComicCategory> {
+    throw new UnimplementedError()
+  }
+
   abstract getDetails(comicId: string): Promise<MetaComic>
   abstract getPages(manga: string, chap: string): Promise<OImage[]>
 

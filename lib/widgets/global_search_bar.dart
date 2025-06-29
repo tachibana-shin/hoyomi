@@ -853,22 +853,13 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
               ],
               items:
                   comicServices.value.map((service) {
-                    return ServiceManagerItem(
-                      uid: service.uid,
-                      name: service.name,
-                      baseUrl: service.baseUrl,
-                      avatar: AvatarService(service, radius: 10.0),
-                      writeWith: service.writeWith,
-                      version: service.init.version,
-                      description: service.init.description,
-                      language: service.init.language,
-                    );
+                    return ServiceManagerItem(service: service);
                   }).toList(),
               onDone:
                   (newValue) =>
                       comicServices.value =
                           newValue
-                              .map((item) => getComicService(item.uid))
+                              .map((item) => getComicService(item.service!.uid))
                               .toList(),
             );
           } else {
@@ -906,22 +897,13 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
               ],
               items:
                   eigaServices.value.map((service) {
-                    return ServiceManagerItem(
-                      uid: service.uid,
-                      name: service.name,
-                      baseUrl: service.baseUrl,
-                      avatar: AvatarService(service, radius: 10.0),
-                      writeWith: service.writeWith,
-                      version: service.init.version,
-                      description: service.init.description,
-                      language: service.init.language,
-                    );
+                    return ServiceManagerItem(service: service);
                   }).toList(),
               onDone:
                   (newValue) =>
                       eigaServices.value =
                           newValue
-                              .map((item) => getEigaService(item.uid))
+                              .map((item) => getEigaService(item.service!.uid))
                               .toList(),
             );
           }

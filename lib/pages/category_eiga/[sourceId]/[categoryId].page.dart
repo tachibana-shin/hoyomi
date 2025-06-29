@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:drop_down_list/drop_down_list.dart';
@@ -10,6 +11,7 @@ import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:kaeru/kaeru.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class CategoryEigaPage extends StatefulWidget {
@@ -39,7 +41,9 @@ class CategoryEigaPage extends StatefulWidget {
 class _CategoryEigaPageState extends State<CategoryEigaPage> with KaeruMixin {
   late final ABEigaService _service;
   int _pageKey = 2;
+  bool _noResetPage = false;
 
+  late final _refresh = ref(1);
   late final _title = ref<String?>(null);
   late final _url = ref<String?>(null);
   // String? _description;
@@ -80,24 +84,71 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> with KaeruMixin {
 
   @override
   Widget build(BuildContext context) {
-    return PullRefreshPage(
-      onLoadData: () => _fetchEigas(1),
-      onLoadFake:
-          () => (
-            data: List.generate(30, (_) => Eiga.createFakeData()),
-            isLastPage: true,
+    return Watch(
+      () => Stack(
+        children: [
+          PullRefreshPage(
+            key: ValueKey(_refresh.value),
+            onLoadData: () {
+              final out = _fetchEigas(
+                _noResetPage ? _pageKey++ : ((_pageKey = 2) - 1),
+              );
+              _noResetPage = false;
+              return out;
+            },
+            onLoadFake:
+                () => (
+                  data: List.generate(30, (_) => Eiga.createFakeData()),
+                  isLastPage: true,
+                ),
+            builderError:
+                (body) => Watch(
+                  () => Scaffold(appBar: _buildAppBar(() async {}), body: body),
+                ),
+            builder:
+                (data, param) => Watch(
+                  () => Scaffold(
+                    appBar: _buildAppBar(param.refresh),
+                    body: _buildBody(data),
+                  ),
+                ),
           ),
-      builderError:
-          (body) => Watch(
-            () => Scaffold(appBar: _buildAppBar(() async {}), body: body),
-          ),
-      builder:
-          (data, param) => Watch(
-            () => Scaffold(
-              appBar: _buildAppBar(param.refresh),
-              body: _buildBody(data),
+
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              color: Theme.of(context).colorScheme.surface,
+              child: NumberPaginator(
+                key: ValueKey(_currentPage.value ?? 1),
+                numberPages: _totalPages.value ?? _currentPage.value ?? 1,
+                onPageChange: (page) {
+                  _noResetPage = true;
+                  _pageKey = page + 1;
+                  _refresh.value++;
+                },
+                initialPage:
+                    min(
+                      _totalPages.value ?? _currentPage.value ?? 1,
+                      _currentPage.value ?? 1,
+                    ) -
+                    1,
+                child: SizedBox(
+                  height: 48,
+                  child: Row(
+                    children: [
+                      PrevButton(),
+                      const Expanded(child: NumberContent()),
+                      NextButton(),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
+        ],
+      ),
     );
   }
 
@@ -107,8 +158,8 @@ class _CategoryEigaPageState extends State<CategoryEigaPage> with KaeruMixin {
       scrolledUnderElevation: 0.0,
       automaticallyImplyLeading: false,
       leading: HBackButton().showIf(widget.title == null),
-      flexibleSpace: SizedBox.shrink(),
-      titleSpacing: 0,
+      flexibleSpace: SizedBox.shrink().showIf(widget.title == null),
+      titleSpacing: widget.title != null ? 0 : null,
       title:
           widget.title ??
           Watch(

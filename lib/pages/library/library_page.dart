@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/constraints/fluent.dart';
@@ -10,6 +11,7 @@ import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:kaeru/kaeru.dart';
+import 'package:responsive_grid/responsive_grid.dart';
 
 typedef FNService =
     ({
@@ -155,7 +157,7 @@ class _LibraryPageState extends State<LibraryPage>
       if (_tabController?.length != _services.value.length) {
         _tabController?.dispose();
         _tabController = TabController(
-          length: _services.value.length,
+          length: _services.value.length + 1,
           vsync: this,
         );
       }
@@ -180,22 +182,12 @@ class _LibraryPageState extends State<LibraryPage>
                             true => ServiceManagerItem(
                               uid: '\$\$comic\$\$',
                               name: 'General Comic',
-                              baseUrl: '',
                               avatar: Iconify(Fluent.extension20),
-                              writeWith: null,
-                              version: null,
-                              description: null,
-                              language: null,
                             ),
                             false => ServiceManagerItem(
                               uid: '\$\$eiga\$\$',
                               name: 'General Eiga',
-                              baseUrl: '',
                               avatar: Iconify(Fluent.extension20),
-                              writeWith: null,
-                              version: null,
-                              description: null,
-                              language: null,
                             ),
                           };
                         }
@@ -205,17 +197,14 @@ class _LibraryPageState extends State<LibraryPage>
                         return ServiceManagerItem(
                           uid: serviceA.uid,
                           name: serviceA.name,
-                          baseUrl: serviceA.baseUrl,
-                          avatar: AvatarService(serviceA, radius: 10.0),
-                          writeWith: serviceA.writeWith,
-                          version: serviceA.init.version,
-                          description: serviceA.init.description,
-                          language: serviceA.init.language,
+                          service: serviceA,
                         );
                       }).toList(),
                   onDone: (newValue) {
                     sortLibraryService.value =
-                        newValue.map((item) => item.uid).toList();
+                        newValue
+                            .map((item) => item.uid ?? item.service!.uid)
+                            .toList();
                   },
                 );
               },
@@ -231,27 +220,66 @@ class _LibraryPageState extends State<LibraryPage>
             isScrollable: true,
             tabAlignment: TabAlignment.start,
             splashBorderRadius: BorderRadius.circular(35.0),
-            tabs:
-                _services.value
-                    .map((service) => Tab(text: service.name))
-                    .toList(),
+            tabs: [
+              Tab(icon: Iconify(Fluent.extension24Filled)),
+              ..._services.value.map((service) => Tab(text: service.name)),
+            ],
           ),
         ),
         body: TabBarView(
           controller: _tabController,
-          children:
-              _services.value.map((service) => _TabView(service)).toList(),
+          children: [
+            _buildTabExplorer(),
+            ..._services.value.map((service) => _TabView(service)),
+          ],
         ),
         floatingActionButton: FloatingActionButton(
-  onPressed: () {
-    context.pushNamed('explorer', pathParameters: {'sourceId': '' });
-  },
-  child: Icon(Icons.explore),
-  tooltip: 'Explorer',
-)
-
+          onPressed: () => _tabController?.animateTo(0),
+          tooltip: 'Explorer',
+          child: Iconify(Fluent.extension24Filled),
+        ),
       );
     });
+  }
+
+  Widget _buildTabExplorer() {
+    return SingleChildScrollView(
+      child: ResponsiveGridRow(
+        children: [
+          ResponsiveGridCol(child: Text('Comic')),
+          for (final service in comicServices.value)
+            ResponsiveGridCol(
+              sm: 6,
+              md: 4,
+              child: ItemServiceManager((
+                service: service,
+                onTap:
+                    () => context.pushNamed(
+                      'library_explorer',
+                      pathParameters: {'sourceId': service.uid},
+                    ),
+              )),
+            ),
+
+          ResponsiveGridCol(child: 10.heightBox),
+
+          ResponsiveGridCol(child: Text('Eiga')),
+          for (final service in eigaServices.value)
+            ResponsiveGridCol(
+              sm: 6,
+              md: 4,
+              child: ItemServiceManager((
+                service: service,
+                onTap:
+                    () => context.pushNamed(
+                      'library_explorer',
+                      pathParameters: {'sourceId': service.uid},
+                    ),
+              )),
+            ),
+        ],
+      ),
+    );
   }
 }
 

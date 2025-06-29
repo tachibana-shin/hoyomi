@@ -18,6 +18,13 @@ abstract class ABEigaService extends Service
     required Map<String, List<String>?> filters,
   });
 
+  Future<EigaCategory> getExplorer({
+    required int page,
+    required Map<String, List<String>?> filters,
+  }) {
+    throw UnimplementedError();
+  }
+
   Future<MetaEiga> getDetails(String eigaId);
 
   Future<EigaEpisodes> getEpisodes(String eigaId);

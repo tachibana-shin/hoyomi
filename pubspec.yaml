@@ -80,6 +80,7 @@ dependencies:
   media_kit_libs_linux: ^1.2.1
   media_kit_libs_windows_video: ^1.0.11
   mediaquery_sizer: ^1.1.1
+  number_paginator: ^1.1.0
   package_info_plus: ^8.3.0
   path: ^1.9.0
   path_provider: ^2.1.5
@@ -87,6 +88,7 @@ dependencies:
   pointycastle: ^4.0.0
   pool: ^1.5.1
   provider: ^6.1.4
+  responsive_grid: ^2.4.4
   responsive_grid_list: ^1.4.0
   retry: ^3.1.2
   rhttp_plus: ^0.11.7

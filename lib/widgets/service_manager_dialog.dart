@@ -5,32 +5,18 @@ import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/utils/get_lang_icon.dart';
 import 'package:iconify_flutter/icons/ic.dart';
+import 'package:kaeru/kaeru.dart';
 import 'package:sealed_languages/sealed_languages.dart';
 
 import 'iconify.dart';
 
 class ServiceManagerItem {
-  final String uid;
-  final String name;
-  final String baseUrl;
-  final Widget avatar;
-  final String? writeWith;
-  final String? version;
-  final String? description;
+  final String? uid;
+  final String? name;
+  final Widget? avatar;
+  final Service? service;
 
-  /// Code language support
-  final String? language;
-
-  const ServiceManagerItem({
-    required this.uid,
-    required this.name,
-    required this.baseUrl,
-    required this.avatar,
-    required this.writeWith,
-    required this.version,
-    required this.description,
-    required this.language,
-  });
+  const ServiceManagerItem({this.uid, this.name, this.avatar, this.service});
 }
 
 void showServiceManagerDialog(
@@ -79,70 +65,28 @@ void showServiceManagerDialog(
                     ReorderableDelayedDragStartListener(
                       key: ValueKey(dialogItems[i]),
                       index: i,
-                      child: ListTile(
-                        leading:
-                            dialogItems[i]
-                                .avatar, // AvatarService(dialogItems[i], radius: 10.0),
-                        title: Row(
-                          children: [
-                            Text(
-                              dialogItems[i].name,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            ),
-                            if (dialogItems[i].writeWith != null &&
-                                dialogItems[i].writeWith != 'dart') ...[
-                              const SizedBox(width: 6),
-                              getLangIcon(context, dialogItems[i].writeWith!)!,
-                            ],
-                          ],
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              children: [
-                                if (dialogItems[i].version != null)
-                                  Text(
-                                    'v${dialogItems[i].version} ',
-                                  ).fontSize(12),
-                                if (dialogItems[i].language != null)
-                                  Text(
-                                    ' ${NaturalLanguage.codeShortMap[dialogItems[i].language!.toUpperCase()]?.name ?? dialogItems[i].language}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.bodySmall?.color,
+                      child:
+                          dialogItems[i].service != null
+                              ? ItemServiceManager((
+                                service: dialogItems[i].service!,
+                                onTap: null,
+                              ))
+                              : ListTile(
+                                leading: dialogItems[i].avatar,
+                                title: Row(
+                                  children: [
+                                    Text(
+                                      dialogItems[i].name!,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
                                     ),
-                                  ),
-                              ],
-                            ),
-                            Text(dialogItems[i].baseUrl).fontSize(12),
-
-                            // if (dialogItems[i].description != null)
-                            //   Text(
-                            //     dialogItems[i].description!,
-                            //     maxLines: 2,
-                            //     overflow: TextOverflow.ellipsis,
-                            //     style: TextStyle(
-                            //       fontSize: 12,
-                            //       color:
-                            //           Theme.of(
-                            //             context,
-                            //           ).textTheme.bodySmall?.color,
-                            //     ),
-                            //   ),
-                          ],
-                        ),
-
-                        trailing: const Iconify(
-                          Ic.sharp_drag_indicator,
-                          size: 20,
-                        ),
-                      ),
+                                  ],
+                                ),
+                                trailing: const Iconify(
+                                  Ic.sharp_drag_indicator,
+                                  size: 20,
+                                ),
+                              ),
                     ),
                 ],
               ),
@@ -159,7 +103,10 @@ void showServiceManagerDialog(
                   if (!listEquals(dialogItems, items)) {
                     await initializeServices(
                       dialogItems
-                          .map((item) => getServiceOrNull(item.uid))
+                          .map(
+                            (item) =>
+                                getServiceOrNull(item.uid ?? item.service!.uid),
+                          )
                           .whereType<Service>()
                           .toList(),
                     );
@@ -191,3 +138,59 @@ void showServiceManagerDialog(
     },
   );
 }
+
+typedef ItemServiceManagerProps = ({Service service, VoidCallback? onTap});
+// ignore: non_constant_identifier_names
+final ItemServiceManager = defineWidget((ItemServiceManagerProps props) {
+  final service = props.service;
+
+  return (ctx) => ListTile(
+    onTap: props.onTap,
+    leading: AvatarService(service, radius: 10.0),
+    title: Row(
+      children: [
+        Text(service.name, overflow: TextOverflow.ellipsis, maxLines: 1),
+        if (service.writeWith != 'dart') ...[
+          const SizedBox(width: 6),
+          getLangIcon(ctx, service.writeWith)!,
+        ],
+      ],
+    ),
+    subtitle: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            if (service.init.version != null)
+              Text('v${service.init.version} ').fontSize(12),
+            if (service.init.language != null)
+              Text(
+                ' ${NaturalLanguage.codeShortMap[service.init.language!.toUpperCase()]?.name ?? service.init.language}',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(ctx).textTheme.bodySmall?.color,
+                ),
+              ),
+          ],
+        ),
+        Text(service.baseUrl).fontSize(12),
+
+        // if (service.description != null)
+        //   Text(
+        //     service.description!,
+        //     maxLines: 2,
+        //     overflow: TextOverflow.ellipsis,
+        //     style: TextStyle(
+        //       fontSize: 12,
+        //       color:
+        //           Theme.of(
+        //             context,
+        //           ).textTheme.bodySmall?.color,
+        //     ),
+        //   ),
+      ],
+    ),
+    trailing: const Iconify(Ic.sharp_drag_indicator, size: 20),
+  );
+});

@@ -11,7 +11,7 @@ import {
   type Subtitle,
   type Vtt,
   type OpeningEnding,
-  type Eiga,
+  type Eiga
 } from "../main"
 
 export interface EigaSourceContext {
@@ -34,6 +34,13 @@ export abstract class ABEigaService extends BaseService {
     page: number
     filters: { [key: string]: string[] | null }
   }): Promise<EigaCategory>
+
+  getExplorer(
+    page: number,
+    filters?: { [key: string]: string[] | null }
+  ): Promise<EigaCategory> {
+    throw new UnimplementedError()
+  }
 
   abstract getDetails(eigaId: string): Promise<MetaEiga>
   abstract getEpisodes(eigaId: string): Promise<EigaEpisodes>

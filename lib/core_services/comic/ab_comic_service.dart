@@ -16,6 +16,13 @@ abstract class ABComicService extends Service
     required Map<String, List<String>?> filters,
   });
 
+  Future<ComicCategory> getExplorer({
+    required int page,
+    required Map<String, List<String>?> filters,
+  }) {
+    throw UnimplementedError();
+  }
+
   // Utils
   ComicModes getComicModes(MetaComic comic) {
     throw UnimplementedError();
