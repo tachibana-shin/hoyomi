@@ -466,14 +466,20 @@ class PersistentScaffold extends StatelessWidget {
   Widget _buildBottomNavigationBar() {
     return Scaffold(
       body: navigationShell, // This area will have transition animations.
-      bottomNavigationBar:
-          showToolbar
-              ? NavigationApp(
-                selectedIndex: navigationShell.currentIndex,
-                rail: false,
-                onDestinationSelected: _onDestinationSelected,
-              )
-              : null,
+      bottomNavigationBar: AnimatedSlide(
+        duration: Duration(milliseconds: 300),
+        offset: showToolbar ? Offset(0, 0) : Offset(0, 1),
+        curve: Curves.easeInOut,
+        child: AnimatedOpacity(
+          duration: Duration(milliseconds: 300),
+          opacity: showToolbar ? 1.0 : 0.0,
+          child: NavigationApp(
+            selectedIndex: navigationShell.currentIndex,
+            rail: false,
+            onDestinationSelected: _onDestinationSelected,
+          ),
+        ),
+      ),
     );
   }
 }
