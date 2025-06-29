@@ -2,6 +2,7 @@ import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/constraints/fluent.dart';
+import 'package:hoyomi/constraints/huge_icons.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/eiga/main.dart';
 import 'package:hoyomi/core_services/main.dart';
@@ -246,7 +247,9 @@ class _LibraryPageState extends State<LibraryPage>
     return SingleChildScrollView(
       child: ResponsiveGridRow(
         children: [
-          ResponsiveGridCol(child: Text('Comic')),
+          ResponsiveGridCol(
+            child: Text('Comic').paddingSymmetric(horizontal: 8.0),
+          ),
           for (final service in comicServices.value)
             ResponsiveGridCol(
               sm: 6,
@@ -258,12 +261,15 @@ class _LibraryPageState extends State<LibraryPage>
                       'library_explorer',
                       pathParameters: {'sourceId': service.uid},
                     ),
+                trailing: Iconify(Hg.safari),
               )),
             ),
 
           ResponsiveGridCol(child: 10.heightBox),
 
-          ResponsiveGridCol(child: Text('Eiga')),
+          ResponsiveGridCol(
+            child: Text('Eiga').paddingSymmetric(horizontal: 8.0),
+          ),
           for (final service in eigaServices.value)
             ResponsiveGridCol(
               sm: 6,
@@ -275,6 +281,7 @@ class _LibraryPageState extends State<LibraryPage>
                       'library_explorer',
                       pathParameters: {'sourceId': service.uid},
                     ),
+                trailing: Iconify(Hg.safari),
               )),
             ),
         ],

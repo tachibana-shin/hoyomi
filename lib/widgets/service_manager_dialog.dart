@@ -70,6 +70,7 @@ void showServiceManagerDialog(
                               ? ItemServiceManager((
                                 service: dialogItems[i].service!,
                                 onTap: null,
+                                trailing: null,
                               ))
                               : ListTile(
                                 leading: dialogItems[i].avatar,
@@ -139,7 +140,7 @@ void showServiceManagerDialog(
   );
 }
 
-typedef ItemServiceManagerProps = ({Service service, VoidCallback? onTap});
+typedef ItemServiceManagerProps = ({Service service, VoidCallback? onTap, Widget? trailing});
 // ignore: non_constant_identifier_names
 final ItemServiceManager = defineWidget((ItemServiceManagerProps props) {
   final service = props.service;
@@ -191,6 +192,6 @@ final ItemServiceManager = defineWidget((ItemServiceManagerProps props) {
         //   ),
       ],
     ),
-    trailing: const Iconify(Ic.sharp_drag_indicator, size: 20),
+    trailing: props.trailing ?? const Iconify(Ic.sharp_drag_indicator, size: 20),
   );
 });
