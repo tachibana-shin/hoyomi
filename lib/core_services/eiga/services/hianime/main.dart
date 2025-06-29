@@ -226,15 +226,8 @@ class HiAnimeService extends ABEigaService {
   }
 
   @override
-  getExplorer({
-    required page,
-    required filters,
-  }) async {
-    return getCategory(
-      categoryId: 'filter',
-      page: page,
-      filters: filters,
-    );
+  getExplorer({required page, required filters}) async {
+    return getCategory(categoryId: 'filter', page: page, filters: filters);
   }
 
   @override

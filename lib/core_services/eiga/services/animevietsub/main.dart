@@ -466,10 +466,7 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  getExplorer({
-    required page,
-    required filters,
-  }) async {
+  getExplorer({required page, required filters}) async {
     return getCategory(
       categoryId: 'danh-sach/all/1/all/all/'.replaceAll(r'/', '_'),
       page: page,

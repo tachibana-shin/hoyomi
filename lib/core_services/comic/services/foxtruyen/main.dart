@@ -574,10 +574,7 @@ class FoxTruyenService extends ABComicService
   }
 
   @override
-  getExplorer({
-    required page,
-    required filters,
-  }) async {
+  getExplorer({required page, required filters}) async {
     return getCategory(
       categoryId: 'tim-kiem-nang-cao',
       page: page,

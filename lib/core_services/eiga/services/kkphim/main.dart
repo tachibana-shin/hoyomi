@@ -242,10 +242,7 @@ class KKPhimService extends ABEigaService {
   }
 
   @override
-  getExplorer({
-    required page,
-    required filters,
-  }) async {
+  getExplorer({required page, required filters}) async {
     return getCategory(
       categoryId: 'danh-sach/phim-moi-cap-nhat-v3'.replaceAll(r'/', '_'),
       page: page,

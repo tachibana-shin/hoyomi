@@ -217,10 +217,7 @@ class NguonCService extends ABEigaService {
   }
 
   @override
-  getExplorer({
-    required page,
-    required filters,
-  }) async {
+  getExplorer({required page, required filters}) async {
     return getCategory(
       categoryId: 'danh-sach-phim',
       page: page,

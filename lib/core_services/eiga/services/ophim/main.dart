@@ -249,10 +249,7 @@ class OPhimService extends ABEigaService {
   }
 
   @override
-  getExplorer({
-    required page,
-    required filters,
-  }) async {
+  getExplorer({required page, required filters}) async {
     return getCategory(
       categoryId: 'danh-sach_phim-moi',
       page: page,

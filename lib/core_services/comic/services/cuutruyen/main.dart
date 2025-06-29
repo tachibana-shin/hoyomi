@@ -312,7 +312,11 @@ class CuuTruyenService extends ABComicService with ComicCommentMixin {
 
   @override
   getExplorer({required page, required filters}) {
-    return getCategory(categoryId: 'recently_updated', page: page, filters: filters);
+    return getCategory(
+      categoryId: 'recently_updated',
+      page: page,
+      filters: filters,
+    );
   }
 
   @override

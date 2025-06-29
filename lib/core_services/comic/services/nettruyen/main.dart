@@ -396,14 +396,7 @@ class NetTruyenService extends ABComicService {
   }
 
   @override
-  getExplorer({
-    required page,
-    required filters,
-  }) async {
-    return getCategory(
-      categoryId: 'tim-truyen',
-      page: page,
-      filters: filters,
-    );
+  getExplorer({required page, required filters}) async {
+    return getCategory(categoryId: 'tim-truyen', page: page, filters: filters);
   }
 }
