@@ -1,6 +1,6 @@
 {
   "name": "@hoyomi/bridge_ts",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "module": "index.js",
   "types": "index.d.ts",
   "type": "module",
