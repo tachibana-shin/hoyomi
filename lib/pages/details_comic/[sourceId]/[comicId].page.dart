@@ -251,10 +251,10 @@ class _DetailsComicState extends State<DetailsComic>
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
-                if (comic.originalName != null) ...[
+                if (comic.originalName case final originalName?) ...[
                   SizedBox(height: 4.0),
                   Text(
-                    comic.originalName!,
+                    originalName,
                     style: TextStyle(
                       fontSize: 14.0,
                       color: Theme.of(context).colorScheme.secondary,
@@ -265,7 +265,7 @@ class _DetailsComicState extends State<DetailsComic>
                   ),
                 ],
                 const SizedBox(height: 8.0),
-                if (comic.author != null)
+                if (comic.author case final author?)
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -273,7 +273,7 @@ class _DetailsComicState extends State<DetailsComic>
                       SizedBox(width: 8.0),
                       Expanded(
                         child: Text(
-                          comic.author!,
+                          author,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 14.0,
@@ -283,7 +283,7 @@ class _DetailsComicState extends State<DetailsComic>
                       ),
                     ],
                   ),
-                if (comic.translator != null)
+                if (comic.translator case final translator?)
                   Padding(
                     padding: EdgeInsets.only(top: 8.0),
                     child: Row(
@@ -292,7 +292,7 @@ class _DetailsComicState extends State<DetailsComic>
                         const Iconify(Mdi.translate_variant, size: 18.0),
                         SizedBox(width: 8.0),
                         Text(
-                          comic.translator!,
+                          translator,
                           style: const TextStyle(fontSize: 14.0),
                         ),
                       ],
@@ -464,30 +464,30 @@ class _DetailsComicState extends State<DetailsComic>
                   ),
                   // if (comic.author != null)
                   //   _buildTableRow('Author', comic.author!),
-                  if (comic.translator != null)
-                    _buildTableRow('Translate', comic.translator!),
-                  if (comic.rate != null)
+                  if (comic.translator case final translator?)
+                    _buildTableRow('Translate', translator),
+                  if (comic.rate case final rate?)
                     _buildTableRow(
                       'Rate',
                       null,
                       Row(
                         children: [
                           ...List.generate(
-                            comic.rate!.value.floor(),
+                            rate.value.floor(),
                             (index) => Icon(
                               Icons.star,
                               size: 16.0,
                               color: Colors.blue.shade200,
                             ),
                           ),
-                          if (comic.rate!.value % 1 != 0)
+                          if (rate.value % 1 != 0)
                             Icon(
                               Icons.star_half,
                               size: 16.0,
                               color: Colors.blue.shade200,
                             ),
                           ...List.generate(
-                            (comic.rate!.best - comic.rate!.value).floor(),
+                            (rate.best - rate.value).floor(),
                             (index) => Icon(
                               Icons.star,
                               size: 16.0,
@@ -499,7 +499,7 @@ class _DetailsComicState extends State<DetailsComic>
                           ),
                           const SizedBox(width: 4.0),
                           Text(
-                            "(${comic.rate!.count})",
+                            "(${rate.count})",
                             style: TextStyle(
                               fontSize: 14.0,
                               color:
@@ -519,8 +519,8 @@ class _DetailsComicState extends State<DetailsComic>
                   //       StatusEnum.onHiatus => "On hiatus",
                   //       StatusEnum.publishingFinished => "Publishing finished",
                   //     }),
-                  if (comic.views != null)
-                    _buildTableRow('Views', formatNumber(comic.views!)),
+                  if (comic.views case final views?)
+                    _buildTableRow('Views', formatNumber(views)),
                   _buildTableRow(
                     'Last Updated',
                     formatTimeAgo(comic.lastModified),
@@ -1036,8 +1036,8 @@ class _AvatarUserState extends State<_AvatarUser> with KaeruMixin {
     _userData = widget.service.getUserData();
 
     watch([_userData.error], () {
-      if (_userData.error.value != null) {
-        showSnackBar(Text('Sign in failed: ${_userData.error.value}'));
+      if (_userData.error.value case final error?) {
+        showSnackBar(Text('Sign in failed: $error'));
       }
     });
   }

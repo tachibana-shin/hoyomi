@@ -22,8 +22,8 @@ class SimilarPage extends StatefulWidget {
 
 class _SimilarPageState extends State<SimilarPage> {
   Future<String> _getKeyword() {
-    if (widget.comic != null) {
-      return Future.value(widget.comic!.name);
+    if (widget.comic case final comic?) {
+      return Future.value(comic.name);
     }
 
     return getComicService(

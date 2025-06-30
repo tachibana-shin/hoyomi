@@ -228,12 +228,13 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                             title: Watch(() {
                               return Text(
                                 <String>[
-                                  if (widget.chapter.value != null)
-                                    widget.chapter.value!.name,
-                                  if (widget.chapter.value?.fullName != null)
-                                    widget.chapter.value!.fullName!,
-                                  if (widget.comic.value?.name != null)
-                                    widget.comic.value!.name,
+                                  if (widget.chapter.value case final chapter?)
+                                    chapter.name,
+                                  if (widget.chapter.value?.fullName
+                                      case final fullName?)
+                                    if (fullName.isNotEmpty) fullName,
+                                  if (widget.comic.value case final comic?)
+                                    comic.name,
                                 ].join(' - '),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,

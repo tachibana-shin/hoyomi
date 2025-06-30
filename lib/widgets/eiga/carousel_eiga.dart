@@ -47,7 +47,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
         itemBuilder: (BuildContext context, int index) {
           final item = widget.items.elementAt(index);
           final List<List<Widget>> headers = [
-            if (item.rate != null)
+            if (item.rate case final rate?)
               [
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -58,7 +58,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                       color: Colors.white,
                     ),
                     Text(
-                      ' ${item.rate}',
+                      ' $rate',
                       style: const TextStyle(
                         fontSize: 12.0,
                         color: Colors.white,
@@ -67,7 +67,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                   ],
                 ),
               ],
-            if (item.type != null)
+            if (item.type case final type?)
               [
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -78,7 +78,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                       color: Colors.white,
                     ),
                     Text(
-                      ' ${item.type}',
+                      ' $type',
                       style: const TextStyle(
                         fontSize: 12.0,
                         color: Colors.white,
@@ -87,7 +87,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                   ],
                 ),
               ],
-            if (item.episodeDuration != null)
+            if (item.episodeDuration case final duration?)
               [
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -98,7 +98,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                       color: Colors.white,
                     ),
                     Text(
-                      ' ${item.episodeDuration}',
+                      ' $duration',
                       style: const TextStyle(
                         fontSize: 12.0,
                         color: Colors.white,
@@ -107,7 +107,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                   ],
                 ),
               ],
-            if ((item.updatedAt ?? item.year) != null)
+            if ((item.updatedAt ?? item.year) case final date?)
               [
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -118,7 +118,7 @@ class _CarouselEigaState extends State<CarouselEiga> {
                       color: Colors.white,
                     ),
                     Text(
-                      ' ${item.updatedAt != null ? DateFormat('MMM d, y').format(item.updatedAt!) : item.year!}',
+                      ' ${item.updatedAt != null ? DateFormat('MMM d, y').format(item.updatedAt!) : date}',
                       style: const TextStyle(
                         fontSize: 12.0,
                         color: Colors.white,
@@ -127,20 +127,20 @@ class _CarouselEigaState extends State<CarouselEiga> {
                   ],
                 ),
               ],
-            if (item.quality != null)
+            if (item.quality case final quality?)
               [
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       decoration: BoxDecoration(
                         color: Colors.greenAccent.shade400,
                         borderRadius: BorderRadius.circular(4.0),
                       ),
                       child: Center(
                         child: Text(
-                          item.quality!,
+                          quality,
                           style: Theme.of(
                             context,
                           ).textTheme.bodyMedium?.copyWith(
@@ -154,13 +154,13 @@ class _CarouselEigaState extends State<CarouselEiga> {
                   ],
                 ),
               ],
-            if (item.countSub != null)
+            if (item.countSub case final sub?)
               [
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       decoration: BoxDecoration(
                         color: const Color.fromRGBO(176, 227, 175, 1.0),
                         borderRadius: BorderRadius.circular(4.0),
@@ -169,13 +169,13 @@ class _CarouselEigaState extends State<CarouselEiga> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Iconify(
+                            const Iconify(
                               Bi.badge_cc_fill,
                               color: Colors.black,
                               size: 12.0,
                             ),
                             Text(
-                              ' ${item.countSub}',
+                              ' $sub',
                               style: Theme.of(
                                 context,
                               ).textTheme.bodyMedium?.copyWith(
@@ -191,13 +191,13 @@ class _CarouselEigaState extends State<CarouselEiga> {
                   ],
                 ),
               ],
-            if (item.countDub != null)
+            if (item.countDub case final dub?)
               [
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       decoration: BoxDecoration(
                         color: const Color.fromRGBO(185, 231, 255, 1.0),
                         borderRadius: BorderRadius.circular(4.0),
@@ -206,13 +206,13 @@ class _CarouselEigaState extends State<CarouselEiga> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Iconify(
+                            const Iconify(
                               Eva.mic_fill,
                               color: Colors.black,
                               size: 12.0,
                             ),
                             Text(
-                              ' ${item.countDub}',
+                              ' $dub',
                               style: Theme.of(
                                 context,
                               ).textTheme.bodyMedium?.copyWith(
@@ -228,31 +228,31 @@ class _CarouselEigaState extends State<CarouselEiga> {
                   ],
                 ),
               ],
-            if (item.notice != null)
+            if (item.notice case final notice?)
               [
                 Text(
-                  item.notice!,
+                  notice,
                   style: const TextStyle(fontSize: 12.0, color: Colors.white),
                 ),
               ],
-            if (item.studio != null)
+            if (item.studio case final studio?)
               [
                 Text(
-                  item.studio!,
+                  studio,
                   style: const TextStyle(fontSize: 12.0, color: Colors.white),
                 ),
               ],
-            if (item.duration != null)
+            if (item.duration case final dur?)
               [
                 Text(
-                  item.duration!,
+                  dur,
                   style: const TextStyle(fontSize: 12.0, color: Colors.white),
                 ),
               ],
-            if (item.language != null)
+            if (item.language case final lang?)
               [
                 Text(
-                  item.language!,
+                  lang,
                   style: const TextStyle(fontSize: 12.0, color: Colors.white),
                 ),
               ],

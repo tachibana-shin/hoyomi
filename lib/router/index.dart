@@ -6,7 +6,6 @@ import 'package:go_transitions/go_transitions.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/controller/update_available.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
-import 'package:hoyomi/pages/library/explorer/%5BsourceId%5D.dart';
 
 import 'package:hoyomi/plugins/export.dart';
 import 'package:hoyomi/stores.dart';
