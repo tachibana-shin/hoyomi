@@ -1,17 +1,52 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:hoyomi/logic/normalize_plugin_url.dart';
+import 'package:hoyomi/core_services/comic/export.dart';
+import 'package:hoyomi/core_services/eiga/export.dart';
+import 'package:hoyomi/core_services/js_core/fetch_and_create_js_service.dart';
+import 'package:hoyomi/plugins/export.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sealed_languages/sealed_languages.dart';
 import 'package:text_field_validation/text_field_validation.dart';
-import 'package:hoyomi/core_services/js_core/create_js_service.dart';
-import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
-import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:hoyomi/core_services/main.dart';
 
-final Dio _dio = Dio();
+Future<bool> installJsService(Service service, String jsCode) async {
+  final supportDir = await getApplicationSupportDirectory();
+  final uid = service.uid;
+  late final String subDir;
+  bool alreadyExists;
+
+  if (service is ABEigaService) {
+    subDir = 'eiga';
+    allEigaServices[uid] = service;
+
+    final updated = [
+      for (final s in eigaServices.value)
+        if (s.uid == uid) service else s,
+    ];
+    if (!updated.contains(service)) updated.add(service);
+    eigaServices.value = updated;
+  } else if (service is ABComicService) {
+    subDir = 'comic';
+    allComicServices[uid] = service;
+
+    final updated = [
+      for (final s in comicServices.value)
+        if (s.uid == uid) service else s,
+    ];
+    if (!updated.contains(service)) updated.add(service);
+    comicServices.value = updated;
+  } else {
+    throw Exception('Unsupported service type');
+  }
+
+  final file = File('${supportDir.path}/$subDir/$uid.js');
+  alreadyExists = await file.exists();
+
+  await file.create(recursive: true);
+  await file.writeAsString(jsCode);
+
+  return alreadyExists;
+}
 
 Future<void> showInstallJsServiceModal(BuildContext context) async {
   final controller = TextEditingController();
@@ -32,7 +67,6 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
           Future<void> onInstallPressed() async {
             if (!(formKey.currentState?.validate() ?? false)) return;
 
-            final url = normalizePluginUrl(controller.text.trim());
             setState(() {
               isLoading = true;
               error = null;
@@ -41,84 +75,40 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
             });
 
             try {
-              final response = await _dio.get<String>(url);
-              jsCode = response.data;
-              if (jsCode == null || jsCode!.trim().isEmpty) {
-                throw Exception('Empty JS content from $url');
-              }
-
-              service = await createJsService(jsCode!);
+              final (createdService, code) = await fetchAndCreateJsService(
+                controller.text,
+              );
+              jsCode = code;
+              service = createdService;
 
               final supportDir = await getApplicationSupportDirectory();
               final uid = service!.uid;
-              late final String subDir;
-
-              if (service is ABEigaService) {
-                subDir = 'eiga';
-              } else if (service is ABComicService) {
-                subDir = 'comic';
-              } else {
-                throw Exception('Unsupported service type');
-              }
+              final subDir = switch (service) {
+                ABEigaService _ => 'eiga',
+                ABComicService _ => 'comic',
+                _ => throw Exception('Unsupported service type'),
+              };
 
               final file = File('${supportDir.path}/$subDir/$uid.js');
               alreadyExists = await file.exists();
-
-              setState(() {
-                isLoading = false;
-              });
             } catch (e) {
-              setState(() {
-                isLoading = false;
-                error = 'Failed to fetch or parse plugin: $e';
-              });
+              error = 'Failed to fetch or parse plugin: $e';
             }
+
+            setState(() {
+              isLoading = false;
+            });
           }
 
           Future<void> confirmAndInstall() async {
-            final uid = service!.uid;
-            final supportDir = await getApplicationSupportDirectory();
-            late final String subDir;
-
-            if (service is ABEigaService) {
-              subDir = 'eiga';
-              allEigaServices[uid] = service! as ABEigaService;
-
-              final newEigaServices = [
-                for (final s in eigaServices.value)
-                  if (s.uid == uid) service! as ABEigaService else s,
-              ];
-              if (!newEigaServices.contains(service)) {
-                newEigaServices.add(service as ABEigaService);
-              }
-
-              eigaServices.value = newEigaServices;
-            } else if (service is ABComicService) {
-              subDir = 'comic';
-              allComicServices[uid] = service as ABComicService;
-
-              final newComicServices = [
-                for (final s in comicServices.value)
-                  if (s.uid == uid) service! as ABComicService else s,
-              ];
-              if (!newComicServices.contains(service)) {
-                newComicServices.add(service as ABComicService);
-              }
-
-              comicServices.value = newComicServices;
-            }
-
-            final file = File('${supportDir.path}/$subDir/$uid.js');
-            await file.create(recursive: true);
-            await file.writeAsString(jsCode!);
-
+            final ok = await installJsService(service!, jsCode!);
             if (!ctx.mounted) return;
 
-            Navigator.of(ctx).pop(); // close dialog
+            Navigator.of(ctx).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  '${alreadyExists! ? "Updated" : "Installed"} plugin "$uid"',
+                  '${ok ? "Updated" : "Installed"} plugin "${service!.uid}"',
                 ),
               ),
             );
@@ -129,7 +119,7 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
             content: SizedBox(
               width: 400,
               child: AnimatedSwitcher(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 child: switch (isLoading) {
                   true => const Center(child: CircularProgressIndicator()),
                   _ => switch (error != null) {
@@ -146,23 +136,10 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
                           decoration: const InputDecoration(
                             labelText: 'Plugin URL',
                             hintText:
-                                'https://example.com/plugin.js or https://github.com/{user}/{repo}',
+                                'https://example.com/plugin.js or GitHub URL',
                           ),
                           keyboardType: TextInputType.url,
-                          validator: (value) {
-                            return TextFieldValidation.url(value);
-                            // final url = value?.trim() ?? '';
-                            // if (url.isEmpty) return 'Please enter a URL';
-                            // final uri = Uri.tryParse(url);
-
-                            // if (uri == null || !uri.hasAbsolutePath) {
-                            //   return 'Invalid URL';
-                            // }
-                            // if (!url.startsWith('http')) {
-                            //   return 'URL must start with http/https';
-                            // }
-                            // return null;
-                          },
+                          validator: TextFieldValidation.url,
                         ),
                       ),
                       _ => Column(
@@ -183,17 +160,17 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
                           ),
                           const SizedBox(height: 8),
                           Text('UID: ${service!.uid}'),
-                          if (service!.init.version != null)
-                            Text('Version: ${service!.init.version}'),
+                          if (service!.init.version case final v?)
+                            Text('Version: $v'),
                           Text('Base URL: ${service!.init.rootUrl}'),
-                          if (service!.init.language != null)
+                          if (service!.init.language case final lang?) ...[
                             Text(
-                              'Language: ${NaturalLanguage.codeShortMap[service!.init.language!.toUpperCase()]?.name ?? service!.init.language!.toUpperCase()}',
+                              'Language: ${NaturalLanguage.codeShortMap[lang.toUpperCase()]?.name ?? lang.toUpperCase()}',
                             ),
-
-                          if (service!.init.description != null) ...[
+                          ],
+                          if (service!.init.description case final desc?) ...[
                             const SizedBox(height: 8),
-                            Text(service!.init.description!),
+                            Text(desc),
                           ],
                           const SizedBox(height: 8),
                           Text(
@@ -216,11 +193,6 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
               ),
               if (!isLoading)
                 ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(
-                      Theme.of(ctx).colorScheme.primary,
-                    ),
-                  ),
                   onPressed: () {
                     if (service == null) {
                       onInstallPressed();
@@ -228,6 +200,11 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
                       confirmAndInstall();
                     }
                   },
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Theme.of(ctx).colorScheme.primary,
+                    ),
+                  ),
                   child: Text(
                     service == null
                         ? 'Next'
@@ -245,4 +222,42 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
       );
     },
   );
+}
+
+/// Update existing JS plugin by UID.
+/// This will fetch the latest plugin JS from its rootUrl and overwrite the local file.
+Future<void> updateJsServiceByUid(String uid) async {
+  final supportDir = await getApplicationSupportDirectory();
+  final Service? oldService = allEigaServices[uid] ?? allComicServices[uid];
+
+  final subDir = switch (oldService) {
+    ABEigaService _ => 'eiga',
+    ABComicService _ => 'comic',
+    _ => throw Exception('Unsupported service type'),
+  };
+
+  final fileJs = File('${supportDir.path}/$subDir/$uid.js');
+  if (!await fileJs.exists()) {
+    throw Exception('Service "$uid" not found in installed services');
+  }
+
+  // install_url save in fileJs with format @install_url = <url>
+  final installUrl = await fileJs.readAsString().then((content) {
+    final match = RegExp(r'// @install_url\s*=\s*(.+)').firstMatch(content);
+    return match?.group(1)?.trim();
+  });
+
+  if (installUrl == null || installUrl.isEmpty) {
+    throw Exception('Service "$uid" does not have a valid install URL');
+  }
+
+  final (newService, jsCode) = await fetchAndCreateJsService(installUrl);
+
+  if (newService.uid != uid) {
+    throw Exception(
+      'Plugin UID mismatch: expected "$uid", got "${newService.uid}"',
+    );
+  }
+
+  await installJsService(newService, jsCode);
 }
