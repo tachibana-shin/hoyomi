@@ -47,216 +47,175 @@ class _CarouselEigaState extends State<CarouselEiga> {
         itemBuilder: (BuildContext context, int index) {
           final item = widget.items.elementAt(index);
           final List<List<Widget>> headers = [
-            if (item.rate != null)
-              [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Iconify(
-                      Eva.star_fill,
-                      size: 14.0,
-                      color: Colors.white,
+  if (item.rate case final rate?)
+    [
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Iconify(Eva.star_fill, size: 14.0, color: Colors.white),
+          Text(
+            ' $rate',
+            style: const TextStyle(fontSize: 12.0, color: Colors.white),
+          ),
+        ],
+      ),
+    ],
+  if (item.type case final type?)
+    [
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Iconify(Eva.play_circle_fill, size: 14.0, color: Colors.white),
+          Text(
+            ' $type',
+            style: const TextStyle(fontSize: 12.0, color: Colors.white),
+          ),
+        ],
+      ),
+    ],
+  if (item.episodeDuration case final duration?)
+    [
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Iconify(Eva.clock_fill, size: 14.0, color: Colors.white),
+          Text(
+            ' $duration',
+            style: const TextStyle(fontSize: 12.0, color: Colors.white),
+          ),
+        ],
+      ),
+    ],
+  if ((item.updatedAt ?? item.year) case final date?)
+    [
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Iconify(Eva.calendar_fill, size: 14.0, color: Colors.white),
+          Text(
+            ' ${item.updatedAt != null ? DateFormat('MMM d, y').format(item.updatedAt!) : date}',
+            style: const TextStyle(fontSize: 12.0, color: Colors.white),
+          ),
+        ],
+      ),
+    ],
+  if (item.quality case final quality?)
+    [
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            decoration: BoxDecoration(
+              color: Colors.greenAccent.shade400,
+              borderRadius: BorderRadius.circular(4.0),
+            ),
+            child: Center(
+              child: Text(
+                quality,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 12.0,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
                     ),
-                    Text(
-                      ' ${item.rate}',
-                      style: const TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            if (item.type != null)
-              [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Iconify(
-                      Eva.play_circle_fill,
-                      size: 14.0,
-                      color: Colors.white,
-                    ),
-                    Text(
-                      ' ${item.type}',
-                      style: const TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            if (item.episodeDuration != null)
-              [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Iconify(
-                      Eva.clock_fill,
-                      size: 14.0,
-                      color: Colors.white,
-                    ),
-                    Text(
-                      ' ${item.episodeDuration}',
-                      style: const TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            if ((item.updatedAt ?? item.year) != null)
-              [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Iconify(
-                      Eva.calendar_fill,
-                      size: 14.0,
-                      color: Colors.white,
-                    ),
-                    Text(
-                      ' ${item.updatedAt != null ? DateFormat('MMM d, y').format(item.updatedAt!) : item.year!}',
-                      style: const TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            if (item.quality != null)
-              [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4.0),
-                      decoration: BoxDecoration(
-                        color: Colors.greenAccent.shade400,
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: Center(
-                        child: Text(
-                          item.quality!,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(
-                            fontSize: 12.0,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                          ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ],
+  if (item.countSub case final sub?)
+    [
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            decoration: BoxDecoration(
+              color: const Color.fromRGBO(176, 227, 175, 1.0),
+              borderRadius: BorderRadius.circular(4.0),
+            ),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Iconify(Bi.badge_cc_fill, color: Colors.black, size: 12.0),
+                  Text(
+                    ' $sub',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontSize: 12.0,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            if (item.countSub != null)
-              [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4.0),
-                      decoration: BoxDecoration(
-                        color: const Color.fromRGBO(176, 227, 175, 1.0),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: Center(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Iconify(
-                              Bi.badge_cc_fill,
-                              color: Colors.black,
-                              size: 12.0,
-                            ),
-                            Text(
-                              ' ${item.countSub}',
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodyMedium?.copyWith(
-                                fontSize: 12.0,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ],
+  if (item.countDub case final dub?)
+    [
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            decoration: BoxDecoration(
+              color: const Color.fromRGBO(185, 231, 255, 1.0),
+              borderRadius: BorderRadius.circular(4.0),
+            ),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Iconify(Eva.mic_fill, color: Colors.black, size: 12.0),
+                  Text(
+                    ' $dub',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontSize: 12.0,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            if (item.countDub != null)
-              [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4.0),
-                      decoration: BoxDecoration(
-                        color: const Color.fromRGBO(185, 231, 255, 1.0),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: Center(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Iconify(
-                              Eva.mic_fill,
-                              color: Colors.black,
-                              size: 12.0,
-                            ),
-                            Text(
-                              ' ${item.countDub}',
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodyMedium?.copyWith(
-                                fontSize: 12.0,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            if (item.notice != null)
-              [
-                Text(
-                  item.notice!,
-                  style: const TextStyle(fontSize: 12.0, color: Colors.white),
-                ),
-              ],
-            if (item.studio != null)
-              [
-                Text(
-                  item.studio!,
-                  style: const TextStyle(fontSize: 12.0, color: Colors.white),
-                ),
-              ],
-            if (item.duration != null)
-              [
-                Text(
-                  item.duration!,
-                  style: const TextStyle(fontSize: 12.0, color: Colors.white),
-                ),
-              ],
-            if (item.language != null)
-              [
-                Text(
-                  item.language!,
-                  style: const TextStyle(fontSize: 12.0, color: Colors.white),
-                ),
-              ],
-          ];
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ],
+  if (item.notice case final notice?)
+    [
+      Text(
+        notice,
+        style: const TextStyle(fontSize: 12.0, color: Colors.white),
+      ),
+    ],
+  if (item.studio case final studio?)
+    [
+      Text(
+        studio,
+        style: const TextStyle(fontSize: 12.0, color: Colors.white),
+      ),
+    ],
+  if (item.duration case final dur?)
+    [
+      Text(
+        dur,
+        style: const TextStyle(fontSize: 12.0, color: Colors.white),
+      ),
+    ],
+  if (item.language case final lang?)
+    [
+      Text(
+        lang,
+        style: const TextStyle(fontSize: 12.0, color: Colors.white),
+      ),
+    ],
+];
+
 
           return GestureDetector(
             onTap: () {

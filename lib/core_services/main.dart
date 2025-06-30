@@ -184,9 +184,9 @@ Future<void> _setupServices() async {
   // comic services
   final settings = await GeneralSettingsController.instance.get();
 
-  if (settings?.sortComicService != null) {
+  if (settings?.sortComicService case final services?) {
     final services =
-        Set.from(settings!.sortComicService!)
+        Set.from(services)
             .map((id) {
               final service = allComicServices[id];
               if (service == null) {
@@ -205,9 +205,9 @@ Future<void> _setupServices() async {
     comicServices.value = services;
   }
   // eiga services
-  if (settings?.sortEigaService != null) {
+  if (settings?.sortEigaService case final services?) {
     final services =
-        Set.from(settings!.sortEigaService!)
+        Set.from(services)
             .map((id) {
               final service = allEigaServices[id];
               if (service == null) {

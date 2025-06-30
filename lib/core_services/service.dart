@@ -391,8 +391,8 @@ abstract class Service extends BaseService
         print('Status = ${error.response?.statusCode}');
         print('Response = ${error.response?.data.toString()}');
       }
-      if (error.response != null &&
-          CaptchaResolverMixin.responseIsCaptchaResolve(error.response!)) {
+      if (error.response case final response? &&
+          CaptchaResolverMixin.responseIsCaptchaResolve(response)) {
         // return Future.error(response);
         if (!headlessMode) {
           _tempHeadless = true;

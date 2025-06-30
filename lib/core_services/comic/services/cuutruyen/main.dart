@@ -360,8 +360,8 @@ class CuuTruyenService extends ABComicService with ComicCommentMixin {
             userId: entry.value.user.id.toString(),
             photoUrl: null,
             name:
-                entry.value.user.teams.firstOrNull != null
-                    ? 'Team ${entry.value.user.teams.firstOrNull['name']}'
+                entry.value.user.teams.firstOrNull case final first?
+                    ? 'Team ${first['name']}'
                     : entry.value.user.username,
             content: entry.value.processedContent,
             timeAgo: entry.value.createdAt,

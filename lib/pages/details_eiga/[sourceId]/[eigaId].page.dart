@@ -517,9 +517,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (metaEiga.views != null)
+                    if (metaEiga.views case final views?)
                       Text(
-                        '${formatNumber(metaEiga.views!)} views',
+                        '${formatNumber(view)} views',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: colorScheme.secondary,
                           fontSize: 14.0,
@@ -648,7 +648,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           /////
           Wrap(
             children: [
-              if (metaEiga.quality != null)
+              if (metaEiga.quality case final quality?)
                 [
                   Row(
                     mainAxisSize: MainAxisSize.min,
@@ -661,7 +661,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         ),
                         child: Center(
                           child: Text(
-                            metaEiga.quality!,
+                           quality,
                             style: Theme.of(
                               context,
                             ).textTheme.bodyMedium?.copyWith(
@@ -675,7 +675,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     ],
                   ),
                 ],
-              if (metaEiga.countDub != null)
+              if (metaEiga.countDub case final countDub?)
                 [
                   Row(
                     mainAxisSize: MainAxisSize.min,
@@ -696,7 +696,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                 size: 12.0,
                               ),
                               Text(
-                                ' ${metaEiga.countSub}',
+                                ' ${countDub}',
                                 style: Theme.of(
                                   context,
                                 ).textTheme.bodyMedium?.copyWith(
@@ -712,7 +712,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     ],
                   ),
                 ],
-              if (metaEiga.countDub != null)
+              if (metaEiga.countSub case final countSub?)
                 [
                   Row(
                     mainAxisSize: MainAxisSize.min,
@@ -733,7 +733,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                 size: 12.0,
                               ),
                               Text(
-                                ' ${metaEiga.countDub}',
+                                ' ${countSub}',
                                 style: Theme.of(
                                   context,
                                 ).textTheme.bodyMedium?.copyWith(
@@ -749,19 +749,19 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                     ],
                   ),
                 ],
-              if (metaEiga.yearOf != null)
+              if (metaEiga.yearOf case final year?)
                 [
                   Text(
-                    metaEiga.yearOf.toString(),
+                  year.toString(),
                     style: Theme.of(
                       context,
                     ).textTheme.bodyMedium?.copyWith(fontSize: 14.0),
                   ),
                 ],
-              if (metaEiga.duration != null)
+              if (metaEiga.duration case final duration?)
                 [
                   Text(
-                    'Updated to ${metaEiga.duration}',
+                    'Updated to $duration',
                     style: Theme.of(
                       context,
                     ).textTheme.bodyMedium?.copyWith(fontSize: 14.0),
@@ -804,7 +804,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
           Row(
             children: [
-              if (metaEiga.rate != null)
+              if (metaEiga.rate case final rate?)
                 [
                   Row(
                     children: [
@@ -814,16 +814,16 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         size: 14.0,
                       ),
                       Text(
-                        ' ${metaEiga.rate}',
+                        ' ${rate}',
                         style: const TextStyle(fontSize: 14.0),
                       ),
                     ],
                   ),
                 ],
-              if (metaEiga.countRate != null)
+              if (metaEiga.countRate case final cRate?)
                 [
                   Text(
-                    '${metaEiga.countRate} people rated',
+                    '${cRate} people rated',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: colorScheme.secondary,
                       fontSize: 14.0,

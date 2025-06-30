@@ -22,8 +22,8 @@ mixin SettingsMixin on BaseService {
 
   void _initSettings() {
     // init settings appear
-    if (init.settings != null) {
-      for (final field in init.settings!) {
+    if (init.settings case final settings?) {
+      for (final field in settings) {
         if (field is FieldInput && field.appear) {
           if (getSetting(key: field.key) == null) {
             setSetting(
@@ -57,7 +57,7 @@ mixin SettingsMixin on BaseService {
     try {
       record = record.copyWith(
         settings: {
-          if (record.settings != null) ...record.settings!,
+          if (record.settings case final settings?) ...settings,
           name: value,
         },
       );
