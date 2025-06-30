@@ -335,7 +335,7 @@ class NetTruyenService extends ABComicService {
   @override
   getCategory({required categoryId, required page, required filters}) async {
     if (filters['category']?.firstOrNull case final firstC?) {
-      categoryId = 'tim-truyen/${firstC}';
+      categoryId = 'tim-truyen/$firstC';
     }
 
     final url =

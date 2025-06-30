@@ -519,7 +519,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                   children: [
                     if (metaEiga.views case final views?)
                       Text(
-                        '${formatNumber(view)} views',
+                        '${formatNumber(views)} views',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: colorScheme.secondary,
                           fontSize: 14.0,
@@ -661,7 +661,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         ),
                         child: Center(
                           child: Text(
-                           quality,
+                            quality,
                             style: Theme.of(
                               context,
                             ).textTheme.bodyMedium?.copyWith(
@@ -696,7 +696,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                 size: 12.0,
                               ),
                               Text(
-                                ' ${countDub}',
+                                ' $countDub',
                                 style: Theme.of(
                                   context,
                                 ).textTheme.bodyMedium?.copyWith(
@@ -733,7 +733,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                                 size: 12.0,
                               ),
                               Text(
-                                ' ${countSub}',
+                                ' $countSub',
                                 style: Theme.of(
                                   context,
                                 ).textTheme.bodyMedium?.copyWith(
@@ -752,7 +752,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
               if (metaEiga.yearOf case final year?)
                 [
                   Text(
-                  year.toString(),
+                    year.toString(),
                     style: Theme.of(
                       context,
                     ).textTheme.bodyMedium?.copyWith(fontSize: 14.0),
@@ -813,17 +813,14 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         color: Colors.blue.shade200,
                         size: 14.0,
                       ),
-                      Text(
-                        ' ${rate}',
-                        style: const TextStyle(fontSize: 14.0),
-                      ),
+                      Text(' $rate', style: const TextStyle(fontSize: 14.0)),
                     ],
                   ),
                 ],
               if (metaEiga.countRate case final cRate?)
                 [
                   Text(
-                    '${cRate} people rated',
+                    '$cRate people rated',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: colorScheme.secondary,
                       fontSize: 14.0,

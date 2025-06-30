@@ -273,7 +273,7 @@ class _DetailsComicState extends State<DetailsComic>
                       SizedBox(width: 8.0),
                       Expanded(
                         child: Text(
-                        author,
+                          author,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 14.0,
