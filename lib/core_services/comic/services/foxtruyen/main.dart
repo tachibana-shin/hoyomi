@@ -56,7 +56,7 @@ class FoxTruyenService extends ABComicService
   final init = ServiceInit(
     name: 'FoxTruyen',
     faviconUrl: OImage(src: '/favicon.ico'),
-    rootUrl: 'https://foxtruyen.net',
+    rootUrl: 'https://foxtruyen.com',
     customCookie: 'type_comic=1; {OLD_COOKIE}',
   );
 
