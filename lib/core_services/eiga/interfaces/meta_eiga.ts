@@ -30,5 +30,6 @@ export interface MetaEiga {
   status: StatusEnum
   movieSeason?: Genre
   trailer?: string
+  extra?: string
   fake?: boolean
 }

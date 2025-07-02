@@ -152,7 +152,7 @@ as String,
 /// @nodoc
 mixin _$MetaEiga {
 
- String get name; String? get originalName; OImage get image; OImage? get poster; String get description; double? get rate; int? get countRate; int? get countSub; int? get countDub; String? get duration; int? get yearOf; int? get views; List<Season> get seasons; List<Genre> get genres; String? get quality; List<Genre>? get authors; List<Genre>? get countries; String? get language; List<Genre>? get studios; StatusEnum get status; Genre? get movieSeason; String? get trailer; bool get fake;
+ String get name; String? get originalName; OImage get image; OImage? get poster; String get description; double? get rate; int? get countRate; int? get countSub; int? get countDub; String? get duration; int? get yearOf; int? get views; List<Season> get seasons; List<Genre> get genres; String? get quality; List<Genre>? get authors; List<Genre>? get countries; String? get language; List<Genre>? get studios; StatusEnum get status; Genre? get movieSeason; String? get trailer; String? get extra; bool get fake;
 /// Create a copy of MetaEiga
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -165,16 +165,16 @@ $MetaEigaCopyWith<MetaEiga> get copyWith => _$MetaEigaCopyWithImpl<MetaEiga>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MetaEiga&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.image, image) || other.image == image)&&(identical(other.poster, poster) || other.poster == poster)&&(identical(other.description, description) || other.description == description)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.countRate, countRate) || other.countRate == countRate)&&(identical(other.countSub, countSub) || other.countSub == countSub)&&(identical(other.countDub, countDub) || other.countDub == countDub)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.yearOf, yearOf) || other.yearOf == yearOf)&&(identical(other.views, views) || other.views == views)&&const DeepCollectionEquality().equals(other.seasons, seasons)&&const DeepCollectionEquality().equals(other.genres, genres)&&(identical(other.quality, quality) || other.quality == quality)&&const DeepCollectionEquality().equals(other.authors, authors)&&const DeepCollectionEquality().equals(other.countries, countries)&&(identical(other.language, language) || other.language == language)&&const DeepCollectionEquality().equals(other.studios, studios)&&(identical(other.status, status) || other.status == status)&&(identical(other.movieSeason, movieSeason) || other.movieSeason == movieSeason)&&(identical(other.trailer, trailer) || other.trailer == trailer)&&(identical(other.fake, fake) || other.fake == fake));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MetaEiga&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.image, image) || other.image == image)&&(identical(other.poster, poster) || other.poster == poster)&&(identical(other.description, description) || other.description == description)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.countRate, countRate) || other.countRate == countRate)&&(identical(other.countSub, countSub) || other.countSub == countSub)&&(identical(other.countDub, countDub) || other.countDub == countDub)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.yearOf, yearOf) || other.yearOf == yearOf)&&(identical(other.views, views) || other.views == views)&&const DeepCollectionEquality().equals(other.seasons, seasons)&&const DeepCollectionEquality().equals(other.genres, genres)&&(identical(other.quality, quality) || other.quality == quality)&&const DeepCollectionEquality().equals(other.authors, authors)&&const DeepCollectionEquality().equals(other.countries, countries)&&(identical(other.language, language) || other.language == language)&&const DeepCollectionEquality().equals(other.studios, studios)&&(identical(other.status, status) || other.status == status)&&(identical(other.movieSeason, movieSeason) || other.movieSeason == movieSeason)&&(identical(other.trailer, trailer) || other.trailer == trailer)&&(identical(other.extra, extra) || other.extra == extra)&&(identical(other.fake, fake) || other.fake == fake));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,name,originalName,image,poster,description,rate,countRate,countSub,countDub,duration,yearOf,views,const DeepCollectionEquality().hash(seasons),const DeepCollectionEquality().hash(genres),quality,const DeepCollectionEquality().hash(authors),const DeepCollectionEquality().hash(countries),language,const DeepCollectionEquality().hash(studios),status,movieSeason,trailer,fake]);
+int get hashCode => Object.hashAll([runtimeType,name,originalName,image,poster,description,rate,countRate,countSub,countDub,duration,yearOf,views,const DeepCollectionEquality().hash(seasons),const DeepCollectionEquality().hash(genres),quality,const DeepCollectionEquality().hash(authors),const DeepCollectionEquality().hash(countries),language,const DeepCollectionEquality().hash(studios),status,movieSeason,trailer,extra,fake]);
 
 @override
 String toString() {
-  return 'MetaEiga(name: $name, originalName: $originalName, image: $image, poster: $poster, description: $description, rate: $rate, countRate: $countRate, countSub: $countSub, countDub: $countDub, duration: $duration, yearOf: $yearOf, views: $views, seasons: $seasons, genres: $genres, quality: $quality, authors: $authors, countries: $countries, language: $language, studios: $studios, status: $status, movieSeason: $movieSeason, trailer: $trailer, fake: $fake)';
+  return 'MetaEiga(name: $name, originalName: $originalName, image: $image, poster: $poster, description: $description, rate: $rate, countRate: $countRate, countSub: $countSub, countDub: $countDub, duration: $duration, yearOf: $yearOf, views: $views, seasons: $seasons, genres: $genres, quality: $quality, authors: $authors, countries: $countries, language: $language, studios: $studios, status: $status, movieSeason: $movieSeason, trailer: $trailer, extra: $extra, fake: $fake)';
 }
 
 
@@ -185,7 +185,7 @@ abstract mixin class $MetaEigaCopyWith<$Res>  {
   factory $MetaEigaCopyWith(MetaEiga value, $Res Function(MetaEiga) _then) = _$MetaEigaCopyWithImpl;
 @useResult
 $Res call({
- String name, String? originalName, OImage image, OImage? poster, String description, double? rate, int? countRate, int? countSub, int? countDub, String? duration, int? yearOf, int? views, List<Season> seasons, List<Genre> genres, String? quality, List<Genre>? authors, List<Genre>? countries, String? language, List<Genre>? studios, StatusEnum status, Genre? movieSeason, String? trailer, bool fake
+ String name, String? originalName, OImage image, OImage? poster, String description, double? rate, int? countRate, int? countSub, int? countDub, String? duration, int? yearOf, int? views, List<Season> seasons, List<Genre> genres, String? quality, List<Genre>? authors, List<Genre>? countries, String? language, List<Genre>? studios, StatusEnum status, Genre? movieSeason, String? trailer, String? extra, bool fake
 });
 
 
@@ -202,7 +202,7 @@ class _$MetaEigaCopyWithImpl<$Res>
 
 /// Create a copy of MetaEiga
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? originalName = freezed,Object? image = null,Object? poster = freezed,Object? description = null,Object? rate = freezed,Object? countRate = freezed,Object? countSub = freezed,Object? countDub = freezed,Object? duration = freezed,Object? yearOf = freezed,Object? views = freezed,Object? seasons = null,Object? genres = null,Object? quality = freezed,Object? authors = freezed,Object? countries = freezed,Object? language = freezed,Object? studios = freezed,Object? status = null,Object? movieSeason = freezed,Object? trailer = freezed,Object? fake = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? originalName = freezed,Object? image = null,Object? poster = freezed,Object? description = null,Object? rate = freezed,Object? countRate = freezed,Object? countSub = freezed,Object? countDub = freezed,Object? duration = freezed,Object? yearOf = freezed,Object? views = freezed,Object? seasons = null,Object? genres = null,Object? quality = freezed,Object? authors = freezed,Object? countries = freezed,Object? language = freezed,Object? studios = freezed,Object? status = null,Object? movieSeason = freezed,Object? trailer = freezed,Object? extra = freezed,Object? fake = null,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,originalName: freezed == originalName ? _self.originalName : originalName // ignore: cast_nullable_to_non_nullable
@@ -226,6 +226,7 @@ as String?,studios: freezed == studios ? _self.studios : studios // ignore: cast
 as List<Genre>?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as StatusEnum,movieSeason: freezed == movieSeason ? _self.movieSeason : movieSeason // ignore: cast_nullable_to_non_nullable
 as Genre?,trailer: freezed == trailer ? _self.trailer : trailer // ignore: cast_nullable_to_non_nullable
+as String?,extra: freezed == extra ? _self.extra : extra // ignore: cast_nullable_to_non_nullable
 as String?,fake: null == fake ? _self.fake : fake // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -271,7 +272,7 @@ $GenreCopyWith<$Res>? get movieSeason {
 @JsonSerializable()
 
 class _MetaEiga implements MetaEiga {
-  const _MetaEiga({required this.name, this.originalName, required this.image, this.poster, required this.description, this.rate, this.countRate, this.countSub, this.countDub, this.duration, this.yearOf, this.views, required final  List<Season> seasons, required final  List<Genre> genres, this.quality, final  List<Genre>? authors, final  List<Genre>? countries, this.language, final  List<Genre>? studios, required this.status, this.movieSeason, this.trailer, this.fake = false}): _seasons = seasons,_genres = genres,_authors = authors,_countries = countries,_studios = studios;
+  const _MetaEiga({required this.name, this.originalName, required this.image, this.poster, required this.description, this.rate, this.countRate, this.countSub, this.countDub, this.duration, this.yearOf, this.views, required final  List<Season> seasons, required final  List<Genre> genres, this.quality, final  List<Genre>? authors, final  List<Genre>? countries, this.language, final  List<Genre>? studios, required this.status, this.movieSeason, this.trailer, this.extra, this.fake = false}): _seasons = seasons,_genres = genres,_authors = authors,_countries = countries,_studios = studios;
   factory _MetaEiga.fromJson(Map<String, dynamic> json) => _$MetaEigaFromJson(json);
 
 @override final  String name;
@@ -332,6 +333,7 @@ class _MetaEiga implements MetaEiga {
 @override final  StatusEnum status;
 @override final  Genre? movieSeason;
 @override final  String? trailer;
+@override final  String? extra;
 @override@JsonKey() final  bool fake;
 
 /// Create a copy of MetaEiga
@@ -347,16 +349,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MetaEiga&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.image, image) || other.image == image)&&(identical(other.poster, poster) || other.poster == poster)&&(identical(other.description, description) || other.description == description)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.countRate, countRate) || other.countRate == countRate)&&(identical(other.countSub, countSub) || other.countSub == countSub)&&(identical(other.countDub, countDub) || other.countDub == countDub)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.yearOf, yearOf) || other.yearOf == yearOf)&&(identical(other.views, views) || other.views == views)&&const DeepCollectionEquality().equals(other._seasons, _seasons)&&const DeepCollectionEquality().equals(other._genres, _genres)&&(identical(other.quality, quality) || other.quality == quality)&&const DeepCollectionEquality().equals(other._authors, _authors)&&const DeepCollectionEquality().equals(other._countries, _countries)&&(identical(other.language, language) || other.language == language)&&const DeepCollectionEquality().equals(other._studios, _studios)&&(identical(other.status, status) || other.status == status)&&(identical(other.movieSeason, movieSeason) || other.movieSeason == movieSeason)&&(identical(other.trailer, trailer) || other.trailer == trailer)&&(identical(other.fake, fake) || other.fake == fake));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MetaEiga&&(identical(other.name, name) || other.name == name)&&(identical(other.originalName, originalName) || other.originalName == originalName)&&(identical(other.image, image) || other.image == image)&&(identical(other.poster, poster) || other.poster == poster)&&(identical(other.description, description) || other.description == description)&&(identical(other.rate, rate) || other.rate == rate)&&(identical(other.countRate, countRate) || other.countRate == countRate)&&(identical(other.countSub, countSub) || other.countSub == countSub)&&(identical(other.countDub, countDub) || other.countDub == countDub)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.yearOf, yearOf) || other.yearOf == yearOf)&&(identical(other.views, views) || other.views == views)&&const DeepCollectionEquality().equals(other._seasons, _seasons)&&const DeepCollectionEquality().equals(other._genres, _genres)&&(identical(other.quality, quality) || other.quality == quality)&&const DeepCollectionEquality().equals(other._authors, _authors)&&const DeepCollectionEquality().equals(other._countries, _countries)&&(identical(other.language, language) || other.language == language)&&const DeepCollectionEquality().equals(other._studios, _studios)&&(identical(other.status, status) || other.status == status)&&(identical(other.movieSeason, movieSeason) || other.movieSeason == movieSeason)&&(identical(other.trailer, trailer) || other.trailer == trailer)&&(identical(other.extra, extra) || other.extra == extra)&&(identical(other.fake, fake) || other.fake == fake));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,name,originalName,image,poster,description,rate,countRate,countSub,countDub,duration,yearOf,views,const DeepCollectionEquality().hash(_seasons),const DeepCollectionEquality().hash(_genres),quality,const DeepCollectionEquality().hash(_authors),const DeepCollectionEquality().hash(_countries),language,const DeepCollectionEquality().hash(_studios),status,movieSeason,trailer,fake]);
+int get hashCode => Object.hashAll([runtimeType,name,originalName,image,poster,description,rate,countRate,countSub,countDub,duration,yearOf,views,const DeepCollectionEquality().hash(_seasons),const DeepCollectionEquality().hash(_genres),quality,const DeepCollectionEquality().hash(_authors),const DeepCollectionEquality().hash(_countries),language,const DeepCollectionEquality().hash(_studios),status,movieSeason,trailer,extra,fake]);
 
 @override
 String toString() {
-  return 'MetaEiga(name: $name, originalName: $originalName, image: $image, poster: $poster, description: $description, rate: $rate, countRate: $countRate, countSub: $countSub, countDub: $countDub, duration: $duration, yearOf: $yearOf, views: $views, seasons: $seasons, genres: $genres, quality: $quality, authors: $authors, countries: $countries, language: $language, studios: $studios, status: $status, movieSeason: $movieSeason, trailer: $trailer, fake: $fake)';
+  return 'MetaEiga(name: $name, originalName: $originalName, image: $image, poster: $poster, description: $description, rate: $rate, countRate: $countRate, countSub: $countSub, countDub: $countDub, duration: $duration, yearOf: $yearOf, views: $views, seasons: $seasons, genres: $genres, quality: $quality, authors: $authors, countries: $countries, language: $language, studios: $studios, status: $status, movieSeason: $movieSeason, trailer: $trailer, extra: $extra, fake: $fake)';
 }
 
 
@@ -367,7 +369,7 @@ abstract mixin class _$MetaEigaCopyWith<$Res> implements $MetaEigaCopyWith<$Res>
   factory _$MetaEigaCopyWith(_MetaEiga value, $Res Function(_MetaEiga) _then) = __$MetaEigaCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String? originalName, OImage image, OImage? poster, String description, double? rate, int? countRate, int? countSub, int? countDub, String? duration, int? yearOf, int? views, List<Season> seasons, List<Genre> genres, String? quality, List<Genre>? authors, List<Genre>? countries, String? language, List<Genre>? studios, StatusEnum status, Genre? movieSeason, String? trailer, bool fake
+ String name, String? originalName, OImage image, OImage? poster, String description, double? rate, int? countRate, int? countSub, int? countDub, String? duration, int? yearOf, int? views, List<Season> seasons, List<Genre> genres, String? quality, List<Genre>? authors, List<Genre>? countries, String? language, List<Genre>? studios, StatusEnum status, Genre? movieSeason, String? trailer, String? extra, bool fake
 });
 
 
@@ -384,7 +386,7 @@ class __$MetaEigaCopyWithImpl<$Res>
 
 /// Create a copy of MetaEiga
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? originalName = freezed,Object? image = null,Object? poster = freezed,Object? description = null,Object? rate = freezed,Object? countRate = freezed,Object? countSub = freezed,Object? countDub = freezed,Object? duration = freezed,Object? yearOf = freezed,Object? views = freezed,Object? seasons = null,Object? genres = null,Object? quality = freezed,Object? authors = freezed,Object? countries = freezed,Object? language = freezed,Object? studios = freezed,Object? status = null,Object? movieSeason = freezed,Object? trailer = freezed,Object? fake = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? originalName = freezed,Object? image = null,Object? poster = freezed,Object? description = null,Object? rate = freezed,Object? countRate = freezed,Object? countSub = freezed,Object? countDub = freezed,Object? duration = freezed,Object? yearOf = freezed,Object? views = freezed,Object? seasons = null,Object? genres = null,Object? quality = freezed,Object? authors = freezed,Object? countries = freezed,Object? language = freezed,Object? studios = freezed,Object? status = null,Object? movieSeason = freezed,Object? trailer = freezed,Object? extra = freezed,Object? fake = null,}) {
   return _then(_MetaEiga(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,originalName: freezed == originalName ? _self.originalName : originalName // ignore: cast_nullable_to_non_nullable
@@ -408,6 +410,7 @@ as String?,studios: freezed == studios ? _self._studios : studios // ignore: cas
 as List<Genre>?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as StatusEnum,movieSeason: freezed == movieSeason ? _self.movieSeason : movieSeason // ignore: cast_nullable_to_non_nullable
 as Genre?,trailer: freezed == trailer ? _self.trailer : trailer // ignore: cast_nullable_to_non_nullable
+as String?,extra: freezed == extra ? _self.extra : extra // ignore: cast_nullable_to_non_nullable
 as String?,fake: null == fake ? _self.fake : fake // ignore: cast_nullable_to_non_nullable
 as bool,
   ));

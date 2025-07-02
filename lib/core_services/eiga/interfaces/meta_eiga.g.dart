@@ -58,6 +58,7 @@ _MetaEiga _$MetaEigaFromJson(Map<String, dynamic> json) => _MetaEiga(
           ? null
           : Genre.fromJson(json['movieSeason'] as Map<String, dynamic>),
   trailer: json['trailer'] as String?,
+  extra: json['extra'] as String?,
   fake: json['fake'] as bool? ?? false,
 );
 
@@ -84,6 +85,7 @@ Map<String, dynamic> _$MetaEigaToJson(_MetaEiga instance) => <String, dynamic>{
   'status': _$StatusEnumEnumMap[instance.status]!,
   'movieSeason': instance.movieSeason,
   'trailer': instance.trailer,
+  'extra': instance.extra,
   'fake': instance.fake,
 };
 

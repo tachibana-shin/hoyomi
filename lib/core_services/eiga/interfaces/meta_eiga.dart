@@ -37,6 +37,7 @@ sealed class MetaEiga with _$MetaEiga {
     required StatusEnum status,
     Genre? movieSeason,
     String? trailer,
+    String? extra,
     @Default(false) bool fake,
   }) = _MetaEiga;
 
