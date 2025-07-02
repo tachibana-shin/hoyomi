@@ -59,7 +59,10 @@ class _DetailsComicState extends State<DetailsComic>
     }
 
     try {
-      return await _service.getSuggest(metaComic: _comic.value, comicId: widget.comicId);
+      return await _service.getSuggest(
+        metaComic: _comic.value,
+        comicId: widget.comicId,
+      );
     } on UnimplementedError {
       return null;
     }
