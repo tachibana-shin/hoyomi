@@ -35,7 +35,11 @@ export abstract class ABComicService extends BaseService {
     throw new UnimplementedError()
   }
 
-  getSuggest(comic: MetaComic, page?: number): Promise<Comic[]> {
+  getSuggest(params: {
+    metaComic: MetaComic,
+    comicId: string
+    page?: number
+  }): Promise<Comic[]> {
     throw new UnimplementedError()
   }
 

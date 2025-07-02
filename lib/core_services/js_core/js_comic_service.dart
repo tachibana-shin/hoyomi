@@ -73,9 +73,15 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
   }
 
   @override
-  Future<List<Comic>> getSuggest(MetaComic comic, {int? page}) async {
+  Future<List<Comic>> getSuggest({
+    required MetaComic metaComic,
+    required String comicId,
+    int? page,
+  }) async {
     return List.from(
-      await _runtime.evalFn('__plugin.getSuggest', [comic, page]),
+      await _runtime.evalFn('__plugin.getSuggest', [
+        {'metaComic': metaComic, 'comicId': comicId, 'page': page},
+      ]),
     ).map((element) => Comic.fromJson(element)).toList();
   }
 

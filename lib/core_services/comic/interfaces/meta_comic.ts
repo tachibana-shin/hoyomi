@@ -20,4 +20,5 @@ export interface MetaComic {
   lastModified: Date
   fake?: boolean
   offlineMode?: boolean
+  extra?: string
 }

@@ -30,7 +30,12 @@ abstract class ABComicService extends Service
 
   Future<MetaComic> getDetails(String comicId);
   Future<List<OImage>> getPages(String manga, String chap);
-  Future<List<Comic>> getSuggest(MetaComic comic, {int? page}) {
+
+  Future<List<Comic>> getSuggest({
+    required MetaComic metaComic,
+    required String comicId,
+    int? page,
+  }) {
     throw UnimplementedError();
   }
 
