@@ -301,9 +301,9 @@ class NetTruyenService extends ABComicService {
   }
 
   @override
-  getSuggest(comic, {page = 1}) async {
+  getSuggest({required metaComic, required comicId, page = 1}) async {
     final metaSlugs =
-        comic.genres
+        metaComic.genres
             .map((c) => c.genreId.replaceFirst('tim-truyen_', ''))
             .toSet();
 

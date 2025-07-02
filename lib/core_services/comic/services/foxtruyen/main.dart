@@ -479,13 +479,13 @@ class FoxTruyenService extends ABComicService
   }
 
   @override
-  getSuggest(comic, {page = 1}) async {
+  getSuggest({required metaComic, required comicId, page = 1}) async {
     return (await getCategory(
       categoryId: 'tim-kiem-nang-cao',
       page: page!,
       filters: {
         'category':
-            comic.genres
+            metaComic.genres
                 .toList()
                 .sublist(0, min(3, comic.genres.length))
                 .map((e) => RegExp(r'\d+').allMatches(e.genreId).last.group(0)!)

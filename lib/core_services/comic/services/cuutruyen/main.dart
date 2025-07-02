@@ -216,9 +216,9 @@ class CuuTruyenService extends ABComicService with ComicCommentMixin {
   }
 
   @override
-  getSuggest(comic, {page = 1}) async {
+  getSuggest({required metaComic, required comicId, page = 1}) async {
     return (await getCategory(
-      categoryId: comic.genres.first.genreId,
+      categoryId: metaComic.genres.first.genreId,
       page: page!,
       filters: {},
     )).items;
