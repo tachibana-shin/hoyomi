@@ -487,7 +487,7 @@ class FoxTruyenService extends ABComicService
         'category':
             metaComic.genres
                 .toList()
-                .sublist(0, min(3, comic.genres.length))
+                .sublist(0, min(3, metaComic.genres.length))
                 .map((e) => RegExp(r'\d+').allMatches(e.genreId).last.group(0)!)
                 .toList(),
       },
