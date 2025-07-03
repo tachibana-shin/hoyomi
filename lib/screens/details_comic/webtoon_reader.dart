@@ -8,7 +8,7 @@ import 'package:kaeru/kaeru.dart';
 class WebToonReader extends StatefulWidget {
   // final int itemCount;
   final Ref<List<ImageWithGroup>> pages;
-  final Widget Function(BuildContext context, int index, ValueKey key)
+  final Widget Function(BuildContext context, int index, ValueKey? key)
   itemBuilder;
   final Ref<double> currentPage;
 
@@ -31,19 +31,19 @@ class _WebToonReaderState extends State<WebToonReader>
 
   late final _scrollController = ref(JkItemController());
 
-  final Map<int, GlobalKey> _itemKeys = {};
+  // final Map<int, GlobalKey> _itemKeys = {};
   int? _lastReportedPage;
 
-  GlobalKey _getKey(int index) {
-    return _itemKeys.putIfAbsent(index, () => GlobalKey());
-  }
+  // GlobalKey _getKey(int index) {
+  //   return _itemKeys.putIfAbsent(index, () => GlobalKey());
+  // }
 
   @override
   void initState() {
     super.initState();
     // _scrollController.addListener(_onScroll);
 
-    watch([widget.pages], () => _itemKeys.clear());
+    // watch([widget.pages], () => _itemKeys.clear());
 
     watch([widget.currentPage], () async {
       final pageIndex = widget.currentPage.value.toInt();
@@ -118,10 +118,9 @@ class _WebToonReaderState extends State<WebToonReader>
           cacheExtent: 3,
           addRepaintBoundaries: false,
           itemBuilder: (context, index) {
-            final key = widget.pages.value.elementAt(index).image.src;
             return Container(
-              key: _getKey(index),
-              child: widget.itemBuilder(context, index, ValueKey(key)),
+              // key: _getKey(index),
+              child: widget.itemBuilder(context, index, null),
             );
           },
         ),
