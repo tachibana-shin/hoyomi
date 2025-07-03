@@ -260,7 +260,7 @@ Future<void> updateJsServiceByUid(String uid) async {
   final (newService, jsCode) = await fetchAndCreateJsService(installUrl);
 
   if (newService.uid != uid) {
-  throw Exception(
+    throw Exception(
       'Plugin UID mismatch: expected "$uid", got "${newService.uid}"',
     );
   }

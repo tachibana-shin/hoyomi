@@ -45,9 +45,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
   // Utils
   @override
   Future<ComicModes> getComicModes(MetaComic comic) async {
-    final out =
-       await _runtime
-            .evalFn('__plugin.getComicModes', [comic]);
+    final out = await _runtime.evalFn('__plugin.getComicModes', [comic]);
 
     return ComicModes.values.firstWhere(
       (mode) => mode.name == out,
