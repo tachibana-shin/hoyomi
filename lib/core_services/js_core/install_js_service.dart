@@ -51,7 +51,7 @@ Future<bool> installJsService(Service service, String jsCode) async {
 }
 
 Future<void> showInstallJsServiceModal(BuildContext context) async {
-  final controller = TextEditingController();
+  final controller = TextEditingController(text: 'https://');
   final formKey = GlobalKey<FormState>();
 
   String? error;
