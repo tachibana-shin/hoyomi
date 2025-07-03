@@ -17,6 +17,7 @@ Future<bool> installJsService(Service service, String jsCode) async {
 
   if (service is ABEigaService) {
     subDir = 'eiga';
+    allEigaServices[uid]?.dispose();
     allEigaServices[uid] = service;
 
     final updated = [
@@ -27,6 +28,7 @@ Future<bool> installJsService(Service service, String jsCode) async {
     eigaServices.value = updated;
   } else if (service is ABComicService) {
     subDir = 'comic';
+    allComicServices[uid]?.dispose();
     allComicServices[uid] = service;
 
     final updated = [
@@ -92,6 +94,7 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
               final file = File('${supportDir.path}/$subDir/$uid.js');
               alreadyExists = await file.exists();
             } catch (e) {
+              service?.dispose();
               error = 'Failed to fetch or parse plugin: $e';
             }
 
@@ -188,7 +191,10 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.of(ctx).pop(),
+                onPressed: () {
+                  service?.dispose();
+                  Navigator.of(ctx).pop();
+                },
                 child: const Text('Cancel'),
               ),
               if (!isLoading)
@@ -254,7 +260,7 @@ Future<void> updateJsServiceByUid(String uid) async {
   final (newService, jsCode) = await fetchAndCreateJsService(installUrl);
 
   if (newService.uid != uid) {
-    throw Exception(
+  throw Exception(
       'Plugin UID mismatch: expected "$uid", got "${newService.uid}"',
     );
   }

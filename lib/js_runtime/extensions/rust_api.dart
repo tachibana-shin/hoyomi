@@ -1,14 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_js/flutter_js.dart';
 import 'package:hoyomi/rust/api/image/unscramble_image.dart';
 import 'package:hoyomi/rust/api/image/unscramble_image_columns.dart';
 import 'package:hoyomi/rust/api/image/unscramble_image_rows.dart';
 
-import 'fetch.dart';
+import '../js_runtime.dart';
 
-extension RustApiJavascriptRuntimeExtension on JavascriptRuntime {
+extension RustApiJavascriptRuntimeExtension on JsRuntime {
   Future<void> activateRustApi() async {
     onMessage('dart_rust_unscramble_image_columns', (dynamic args) async {
       final requestId = args['id'] as String;

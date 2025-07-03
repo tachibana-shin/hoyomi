@@ -1,112 +1,17 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_js/flutter_js.dart';
 
+import '../js_runtime.dart';
 import '../embed.dart';
 
 final _dioStore = Expando<Dio>('dio store');
 
-bool _isUnimplementedError(String msg) {
-  return msg.startsWith('UnimplementedError') ||
-      msg.startsWith('Error: UnimplementedError') ||
-      msg.contains('Method not implemented.');
-}
-
-void _printBlockError(List<String> lines) {
-  debugPrint('================================');
-  debugPrint(lines.join('\n'));
-  debugPrint('================================');
-}
-
-extension FetchJavascriptRuntimeExtension on JavascriptRuntime {
-  Future<JsEvalResult> evalAsync(String code, [String? msg]) async {
-    try {
-      final output = await evaluateAsync(code);
-
-      if (output.isError || output.stringResult.contains('SyntaxError')) {
-        if (_isUnimplementedError(output.stringResult)) {
-          throw UnimplementedError(msg);
-        }
-
-        _printBlockError([
-          '[JS Runtime]: Error in run "$code"',
-          '[JS Runtime]: Output = $output',
-        ]);
-
-        throw output;
-      }
-      if (output.isPromise ||
-          output.stringResult.contains('Instance of \'Future')) {
-        return await handlePromise(output);
-      }
-
-      return output;
-    } catch (error) {
-      if (error is JSError && _isUnimplementedError(error.message)) {
-        throw UnimplementedError(msg);
-      }
-
-      _printBlockError([
-        '[JS Runtime]: Error in run "$code"',
-        '[JS Runtime]: Output = $error',
-      ]);
-
-      rethrow;
-    }
-  }
-
-  Future<dynamic> evalAsyncJson(String code, [String? msg]) async {
-    final json = await evalAsync('''
-      (() => {
-        const out = $code;
-
-        if (out instanceof Promise || typeof out?.then === 'function')
-          return out.then(e => JSON.stringify(e))
-
-        return JSON.stringify(out)
-      })()
-    ''', msg);
-
-    return jsonDecode(json.stringResult);
-  }
-
-  /// Calls a JavaScript function with the given arguments.
-  ///
-  /// The [arguments] will be automatically JSON-encoded before being passed into JS.
-  /// Do not pre-encode them manually.
-  ///
-  /// If [base64] is true, the result will be encoded in base64 using `base64Encode(...)` inside JS.
-  Future<dynamic> evalFn(
-    String functionName,
-    List<dynamic> arguments, {
-    bool base64 = false,
-  }) async {
-    final data = await evalAsyncJson('''
-      (() => {
-        if (typeof $functionName === 'function') return ${base64 ? 'base64Encode(' : ''} $functionName(${arguments.map((arg) => arg is Uint8List ? 'base64Decode(${jsonEncode(base64Encode(arg))})' : jsonEncode(arg)).join(', ')}) ${base64 ? ')' : ''}
-        throw new UnimplementedError('$functionName')
-      })()
-    ''', functionName);
-
-    if (base64) return base64Decode(data);
-    return data;
-  }
-
-  Future<dynamic> evalAsyncJsonOrNull(String code) async {
-    return evalAsyncJson(code);
-  }
-
-  Future<void> dartSendMessage(String event, String data) async {
-    // final jsonStr = jsonEncode(data);
-
-    await evalAsync('__\$\$DART_SEND_MESSAGE\$\$__("$event", $data)');
-  }
-
+extension FetchJavascriptRuntimeExtension on JsRuntime {
   void setDio(Dio dio) => _dioStore[this] = dio;
 
   Future<void> activateFetch() async {
-    await evalAsync(jsRuntimePolyfill);
+    await evaluateAsync(jsRuntimePolyfill);
 
     final dio = _dioStore[this];
     if (dio == null) throw Exception('No dio found');

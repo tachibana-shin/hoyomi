@@ -26,7 +26,7 @@ Future<Service> createJsService(String jsCode) async {
   final writeWith =
       await runtime.evalAsyncJson('__plugin.writeWith') as String?;
 
-  final service = switch (type.stringResult) {
+  final service = switch (type) {
     == 'comic' => JSComicService(
       runtime,
       init,

@@ -1,9 +1,8 @@
-import 'package:flutter_js/flutter_js.dart';
 import 'package:hoyomi/core_services/eiga/export.dart';
 import 'package:hoyomi/js_runtime/js_runtime.dart';
 
 class JSEigaService extends ABEigaService {
-  final JavascriptRuntime _runtime;
+  final JsRuntime _runtime;
 
   @override
   late final ServiceInit init;
@@ -281,5 +280,11 @@ class JSEigaService extends ABEigaService {
       _supportSetWatchTime = false;
       return await super.setWatchTime(context, watchTime: watchTime);
     }
+  }
+  
+  @override
+  void dispose() {
+    _runtime.dispose();
+    super.dispose();
   }
 }

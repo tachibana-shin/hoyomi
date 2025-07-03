@@ -1,12 +1,10 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:flutter_js/flutter_js.dart';
 import 'package:hoyomi/core_services/comic/export.dart';
 import 'package:hoyomi/js_runtime/js_runtime.dart';
 
 class JSComicService extends ABComicService implements ComicCommentMixin {
-  final JavascriptRuntime _runtime;
+  final JsRuntime _runtime;
 
   @override
   late final ServiceInit init;
@@ -46,11 +44,10 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
 
   // Utils
   @override
-  ComicModes getComicModes(MetaComic comic) {
+  Future<ComicModes> getComicModes(MetaComic comic) async {
     final out =
-        _runtime
-            .evaluate('__plugin.getComicModes(${jsonEncode(comic)})')
-            .stringResult;
+       await _runtime
+            .evalFn('__plugin.getComicModes', [comic]);
 
     return ComicModes.values.firstWhere(
       (mode) => mode.name == out,
@@ -317,5 +314,11 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
         watchPage: watchPage,
       );
     }
+  }
+
+  @override
+  void dispose() {
+    _runtime.dispose();
+    super.dispose();
   }
 }
