@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'main.dart';
@@ -24,7 +25,7 @@ abstract class ABComicService extends Service
   }
 
   // Utils
-  ComicModes getComicModes(MetaComic comic) {
+  FutureOr<ComicModes> getComicModes(MetaComic comic) {
     throw UnimplementedError();
   }
 

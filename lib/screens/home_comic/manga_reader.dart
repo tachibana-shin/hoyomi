@@ -176,7 +176,15 @@ class _MangaReaderState extends State<MangaReader>
 
     late final ComicModes mode;
     try {
-      mode = widget.service.getComicModes(widget.comic);
+      final out = widget.service.getComicModes(widget.comic);
+      if (out is! Future) {
+        mode = out;
+      } else {
+        Future.value(out).then((value) {
+          if (mounted) _mode.value = value;
+        });
+        throw Exception('Future');
+      }
     } catch (error) {
       mode = ComicModes.webToon;
     }
