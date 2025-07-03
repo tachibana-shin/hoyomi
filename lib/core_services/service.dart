@@ -730,6 +730,18 @@ abstract class Service extends BaseService
 
     return UserData(user: _user, error: _error, fetching: _fetching);
   }
+
+  final _beforeUnmountCb = <VoidCallback>{};
+  void onBeforeUnmount(VoidCallback cb) {
+    _beforeUnmountCb.add(cb);
+  }
+
+  void dispose() {
+    for (final cb in _beforeUnmountCb) {
+      cb();
+    }
+    _beforeUnmountCb.clear();
+  }
 }
 
 class UserData {

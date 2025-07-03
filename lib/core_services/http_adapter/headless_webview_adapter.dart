@@ -55,6 +55,8 @@ class HeadlessWebViewAdapter implements HttpClientAdapter {
     );
     headless.run();
 
+    _service.onBeforeUnmount(() => headless.dispose());
+
     return completer.future;
   }
 
