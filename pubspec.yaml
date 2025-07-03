@@ -11,6 +11,7 @@ dependencies:
   adaptive_theme: ^3.7.0
   analyzer: ^7.4.4
   animations: ^2.0.11
+  app_links: ^6.4.0
   archive: ^4.0.2
   awesome_extensions: ^2.0.21
   background_downloader: ^9.2.1

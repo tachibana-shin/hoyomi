@@ -45,6 +45,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- 🔒 Bypass local dev connection -->
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoadsForMedia</key>
@@ -70,8 +71,10 @@
 		<key>NSMicrophoneUsageDescription</key>
 		<true/>
 	</dict>
-	<!-- Put me in the [my_project]/ios/Runner/Info.plist file -->
-	<!-- Google Sign-In section -->
+
+	<key>FlutterDeepLinkingEnabled</key>
+	<false/>
+
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -82,6 +85,17 @@
 				<!-- TODO Replace this value: -->
 				<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
 				<string>com.googleusercontent.apps.972743069461-1oulppj3blpvvro8hl9pd6p8e8lgi1km</string>
+			</array>
+		</dict>
+		<!-- Custom scheme hoyomi://git.shin.hoyomi -->
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>git.shin.hoyomi</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>hoyomi</string>
 			</array>
 		</dict>
 	</array>
@@ -96,7 +110,10 @@
 	<array>
 			<string>dev.flutter.background.refresh</string>
 	</array>
-	<!-- End of the Background fetch section -->
+	<!-- 🔗 Universal links (applinks:hoyomi.github.io) -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:hoyomi.github.io</string>
+	</array>
 </dict>
-
 </plist>
