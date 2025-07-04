@@ -57,12 +57,16 @@ fn do_unscramble_image(
 }
 
 #[frb]
-pub fn unscramble_image(
+pub async fn unscramble_image(
     image_data: Vec<u8>,
     blocks: Vec<Block>,
     auto_trim: bool,
 ) -> Result<Vec<u8>, String> {
-    do_unscramble_image(image_data, blocks, auto_trim)
+    tokio::task::spawn_blocking(move || {
+        do_unscramble_image(image_data, blocks, auto_trim)
+    })
+    .await
+    .map_err(|e| format!("JoinError: {e}"))
 }
 
 #[frb(sync)]

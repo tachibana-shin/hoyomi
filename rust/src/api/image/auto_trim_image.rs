@@ -80,7 +80,12 @@ pub fn auto_trim_image_sync(image: Vec<u8>) -> Vec<u8> {
 }
 
 #[frb]
-pub fn auto_trim_image(image: Vec<u8>) -> Vec<u8> {
-    let trimmed = crop_image(image);
-    encode_png(trimmed)
+pub async fn auto_trim_image(image: Vec<u8>) -> Vec<u8> {
+    // spawn_blocking を使って CPU 負荷の高い処理を別スレッドで実行
+    tokio::task::spawn_blocking(move || {
+        let trimmed = crop_image(image);
+        encode_png(trimmed)
+    })
+    .await
+    .unwrap()
 }
