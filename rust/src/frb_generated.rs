@@ -51,7 +51,7 @@ fn wire__crate__api__image__auto_trim_image__auto_trim_image_impl(
     rust_vec_len_: i32,
     data_len_: i32,
 ) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "auto_trim_image",
             port: Some(port_),
@@ -69,13 +69,16 @@ fn wire__crate__api__image__auto_trim_image__auto_trim_image_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_image = <Vec<u8>>::sse_decode(&mut deserializer);
             deserializer.end();
-            move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(
-                        crate::api::image::auto_trim_image::auto_trim_image(api_image),
-                    )?;
-                    Ok(output_ok)
-                })())
+            move |context| async move {
+                transform_result_sse::<_, ()>(
+                    (move || async move {
+                        let output_ok = Result::<_, ()>::Ok(
+                            crate::api::image::auto_trim_image::auto_trim_image(api_image).await,
+                        )?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
             }
         },
     )
@@ -215,7 +218,7 @@ fn wire__crate__api__image__unscramble_image__unscramble_image_impl(
     rust_vec_len_: i32,
     data_len_: i32,
 ) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "unscramble_image",
             port: Some(port_),
@@ -236,15 +239,19 @@ fn wire__crate__api__image__unscramble_image__unscramble_image_impl(
                 <Vec<crate::api::image::unscramble_image::Block>>::sse_decode(&mut deserializer);
             let api_auto_trim = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
-            move |context| {
-                transform_result_sse::<_, String>((move || {
-                    let output_ok = crate::api::image::unscramble_image::unscramble_image(
-                        api_image_data,
-                        api_blocks,
-                        api_auto_trim,
-                    )?;
-                    Ok(output_ok)
-                })())
+            move |context| async move {
+                transform_result_sse::<_, String>(
+                    (move || async move {
+                        let output_ok = crate::api::image::unscramble_image::unscramble_image(
+                            api_image_data,
+                            api_blocks,
+                            api_auto_trim,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
             }
         },
     )
@@ -255,7 +262,7 @@ fn wire__crate__api__image__unscramble_image_columns__unscramble_image_columns_i
     rust_vec_len_: i32,
     data_len_: i32,
 ) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "unscramble_image_columns",
             port: Some(port_),
@@ -278,16 +285,20 @@ fn wire__crate__api__image__unscramble_image_columns__unscramble_image_columns_i
                 );
             let api_auto_trim = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
-            move |context| {
-                transform_result_sse::<_, String>((move || {
-                    let output_ok =
-                        crate::api::image::unscramble_image_columns::unscramble_image_columns(
-                            api_image_data,
-                            api_blocks,
-                            api_auto_trim,
-                        )?;
-                    Ok(output_ok)
-                })())
+            move |context| async move {
+                transform_result_sse::<_, String>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::image::unscramble_image_columns::unscramble_image_columns(
+                                api_image_data,
+                                api_blocks,
+                                api_auto_trim,
+                            )
+                            .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
             }
         },
     )
@@ -338,7 +349,7 @@ fn wire__crate__api__image__unscramble_image_rows__unscramble_image_rows_impl(
     rust_vec_len_: i32,
     data_len_: i32,
 ) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "unscramble_image_rows",
             port: Some(port_),
@@ -360,16 +371,20 @@ fn wire__crate__api__image__unscramble_image_rows__unscramble_image_rows_impl(
             );
             let api_auto_trim = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
-            move |context| {
-                transform_result_sse::<_, String>((move || {
-                    let output_ok =
-                        crate::api::image::unscramble_image_rows::unscramble_image_rows(
-                            api_image_data,
-                            api_blocks,
-                            api_auto_trim,
-                        )?;
-                    Ok(output_ok)
-                })())
+            move |context| async move {
+                transform_result_sse::<_, String>(
+                    (move || async move {
+                        let output_ok =
+                            crate::api::image::unscramble_image_rows::unscramble_image_rows(
+                                api_image_data,
+                                api_blocks,
+                                api_auto_trim,
+                            )
+                            .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
             }
         },
     )
