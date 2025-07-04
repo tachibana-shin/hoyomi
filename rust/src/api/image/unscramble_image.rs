@@ -66,7 +66,7 @@ pub async fn unscramble_image(
         do_unscramble_image(image_data, blocks, auto_trim)
     })
     .await
-    .map_err(|e| format!("JoinError: {e}"))
+    .map_err(|e| format!("JoinError: {e}"))?
 }
 
 #[frb(sync)]
