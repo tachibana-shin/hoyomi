@@ -35,7 +35,7 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>git.shin.hoyomi</string>
+			<string>add-repo</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>hoyomi</string>

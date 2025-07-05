@@ -87,12 +87,12 @@
 				<string>com.googleusercontent.apps.972743069461-1oulppj3blpvvro8hl9pd6p8e8lgi1km</string>
 			</array>
 		</dict>
-		<!-- Custom scheme hoyomi://git.shin.hoyomi -->
+		<!-- Custom scheme hoyomi://add-repo -->
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>git.shin.hoyomi</string>
+			<string>add-repo</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>hoyomi</string>
