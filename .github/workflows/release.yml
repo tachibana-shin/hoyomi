@@ -30,6 +30,14 @@ jobs:
 
       - run: flutter pub get
 
+      - name: Install CMake 3.18.1 via sdkmanager
+        run: |
+          yes | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --sdk_root="${ANDROID_SDK_ROOT}" --install "cmake;3.18.1"
+  
+      - name: Set cmake.dir in local.properties
+        run: |
+          echo "cmake.dir=$ANDROID_SDK_ROOT/cmake/3.18.1" >> android/local.properties
+
       - name: Decode and save keystore file
         run: |
           echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > android/app/keystore.jks
