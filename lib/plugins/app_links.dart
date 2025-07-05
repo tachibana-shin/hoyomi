@@ -7,15 +7,9 @@ Future<void> initializeAppLinks() async {
     final appPath = Platform.resolvedExecutable;
 
     final protocolRegKey = 'Software\\Classes\\hoyomi';
-    final protocolRegValue = RegistryValue.string(
-      'URL Protocol',
-      '',
-    );
+    final protocolRegValue = RegistryValue.string('URL Protocol', '');
     final protocolCmdRegKey = 'shell\\open\\command';
-    final protocolCmdRegValue = RegistryValue.string(
-      '',
-      '"$appPath" "%1"',
-    );
+    final protocolCmdRegValue = RegistryValue.string('', '"$appPath" "%1"');
 
     final regKey = Registry.currentUser.createKey(protocolRegKey);
     regKey.createValue(protocolRegValue);
