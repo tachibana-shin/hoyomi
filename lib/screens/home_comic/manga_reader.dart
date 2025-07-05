@@ -432,12 +432,15 @@ class _MangaReaderState extends State<MangaReader>
     });
 
     // status state manager
-    onBeforeUnmount(
-      () => SystemChrome.setEnabledSystemUIMode(
+    onBeforeUnmount(() {
+      SystemChrome.setEnabledSystemUIMode(
         SystemUiMode.manual,
         overlays: SystemUiOverlay.values,
-      ),
-    );
+      );
+      SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.black),
+      );
+    });
     watch([_showToolbar], () async {
       if (_showToolbar.value) {
         await SystemChrome.setEnabledSystemUIMode(
