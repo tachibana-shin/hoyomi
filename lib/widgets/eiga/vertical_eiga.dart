@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/eiga.dart';
+import 'package:hoyomi/router/extensions/to_router.dart';
 import 'package:hoyomi/widgets/card_item.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/bi.dart';
@@ -42,6 +43,17 @@ class VerticalEiga extends StatelessWidget {
       title: eiga.name,
       subtitle: eiga.lastEpisode?.name,
       lastUpdate: eiga.lastUpdate,
+      toDouble:
+          eiga.lastEpisode != null
+              ? ToRoute(
+                name: 'details_eiga',
+                pathParameters: {
+                  'sourceId': sourceId ?? '',
+                  'eigaId': eiga.eigaId,
+                },
+                queryParameters: {'episodeId': eiga.lastEpisode!.episodeId},
+              )
+              : null,
       extend: [
         if (eiga.countSub != null)
           Row(
