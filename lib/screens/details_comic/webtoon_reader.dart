@@ -107,8 +107,10 @@ class _WebToonReaderState extends State<WebToonReader>
 
     return Watch(() {
       return ZoomViewer(
-        minScale: 0.5,
-        child: JkFastListView(
+        minScale: 1,
+        maxScale: 4,
+        heroAnimationTag: 'tag',
+        zoomWidget: JkFastListView(
           key: ValueKey(_scrollController.value),
           itemController: _scrollController.value,
           onScrollPosition: (index, _) {
