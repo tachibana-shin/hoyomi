@@ -224,6 +224,7 @@ class _AppBarState extends State<_AppBar> with KaeruMixin {
                           ),
                           child: AppBar(
                             backgroundColor: Colors.transparent,
+                            scrolledUnderElevation: 0.0,
                             leading: HBackButton(),
                             title: Watch(() {
                               return Text(
