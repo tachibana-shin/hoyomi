@@ -33,10 +33,20 @@ mkdir -p "$OUT_DIR/usr/share/applications"
 cat > "$OUT_DIR/usr/share/applications/${APP_NAME}.desktop" <<EOF
 [Desktop Entry]
 Name=$APP_NAME
-Exec=/usr/share/$APP_NAME/$APP_NAME
+Exec=/usr/share/$APP_NAME/$APP_NAME "%u"
 Icon=/usr/share/$APP_NAME/app.png
 Type=Application
 Categories=Utility;
+MimeType=x-scheme-handler/hoyomi;
 EOF
+
+cat > "$OUT_DIR/DEBIAN/postinst" <<EOF
+#!/bin/bash
+set -e
+update-desktop-database
+xdg-mime default ${APP_NAME}.desktop x-scheme-handler/hoyomi
+EOF
+
+chmod 755 "$OUT_DIR/DEBIAN/postinst"
 
 dpkg-deb --build "$OUT_DIR" "app-linux-${ARCH}-release.deb"

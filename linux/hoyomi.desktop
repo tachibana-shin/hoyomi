@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Hoyomi
+Comment=Hoyomi App
+Exec=/usr/share/hoyomi/hoyomi "%u"
+Icon=/usr/share/hoyomi/app.png
+Terminal=false
+Type=Application
+Categories=Utility;
+MimeType=x-scheme-handler/hoyomi;
