@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ZoomViewer extends StatefulWidget {
@@ -7,14 +6,15 @@ class ZoomViewer extends StatefulWidget {
   final double maxScale;
   final Object heroAnimationTag;
   final double? fullScreenDoubleTapZoomScale;
+
   const ZoomViewer({
-    Key? key,
+    super.key,
     required this.zoomWidget,
     required this.minScale,
     required this.maxScale,
     required this.heroAnimationTag,
     this.fullScreenDoubleTapZoomScale,
-  }) : super(key: key);
+  });
 
   @override
   State<ZoomViewer> createState() => _ImageZoomFullscreenState();
