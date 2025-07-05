@@ -51,7 +51,10 @@ Future<bool> installJsService(Service service, String jsCode) async {
   return alreadyExists;
 }
 
-Future<void> showInstallJsServiceModal(BuildContext? context, [String? url]) async {
+Future<void> showInstallJsServiceModal(
+  BuildContext? context, [
+  String? url,
+]) async {
   final controller = TextEditingController(text: url ?? 'https://');
   final formKey = GlobalKey<FormState>();
 
@@ -109,7 +112,9 @@ Future<void> showInstallJsServiceModal(BuildContext? context, [String? url]) asy
             if (!ctx.mounted) return;
 
             Navigator.of(ctx).pop();
-            ScaffoldMessenger.of(context ?? rootNavigatorKey.currentContext!).showSnackBar(
+            ScaffoldMessenger.of(
+              context ?? rootNavigatorKey.currentContext!,
+            ).showSnackBar(
               SnackBar(
                 content: Text(
                   '${ok ? "Updated" : "Installed"} plugin "${service!.uid}"',
