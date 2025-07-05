@@ -3,7 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  flutter_js
+  flutter_qjs
   flutter_volume_controller
   gtk
   media_kit_libs_linux

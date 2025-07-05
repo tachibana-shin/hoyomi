@@ -11,7 +11,7 @@
 #include <firebase_auth/firebase_auth_plugin_c_api.h>
 #include <firebase_core/firebase_core_plugin_c_api.h>
 #include <flutter_inappwebview_windows/flutter_inappwebview_windows_plugin_c_api.h>
-#include <flutter_js/flutter_js_plugin.h>
+#include <flutter_qjs/flutter_qjs_plugin.h>
 #include <flutter_volume_controller/flutter_volume_controller_plugin_c_api.h>
 #include <fullscreen_window/fullscreen_window_plugin_c_api.h>
 #include <media_kit_libs_windows_video/media_kit_libs_windows_video_plugin_c_api.h>
@@ -35,8 +35,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("FirebaseCorePluginCApi"));
   FlutterInappwebviewWindowsPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterInappwebviewWindowsPluginCApi"));
-  FlutterJsPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("FlutterJsPlugin"));
+  FlutterQjsPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("FlutterQjsPlugin"));
   FlutterVolumeControllerPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterVolumeControllerPluginCApi"));
   FullscreenWindowPluginCApiRegisterWithRegistrar(

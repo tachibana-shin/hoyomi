@@ -180,9 +180,11 @@ class _MangaReaderState extends State<MangaReader>
       if (out is! Future) {
         mode = out;
       } else {
-        Future.value(out).then((value) {
-          if (mounted) _mode.value = value;
-        });
+        Future.value(out)
+            .then((value) {
+              if (mounted) _mode.value = value;
+            })
+            .catchError((err) {});
         throw Exception('Future');
       }
     } catch (error) {

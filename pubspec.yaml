@@ -52,7 +52,9 @@ dependencies:
       url: https://github.com/tachibana-shin/flutter_inappwebview
       ref: master
       path: flutter_inappwebview
-  flutter_js: ^0.8.5
+  flutter_qjs:
+    git:
+      url: https://github.com/tachibana-shin/flutter_qjs
   flutter_localizations:
     sdk: flutter
   flutter_package_installer: ^0.0.1

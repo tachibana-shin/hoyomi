@@ -834,14 +834,6 @@ packages:
       url: "https://github.com/tachibana-shin/flutter_inappwebview"
     source: git
     version: "0.7.0-beta.3"
-  flutter_js:
-    dependency: "direct main"
-    description:
-      name: flutter_js
-      sha256: a04966b102967891ee4947d6e52b450676f16204876ba936e394008ca26db04b
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.8.5"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -879,6 +871,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.28"
+  flutter_qjs:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "16866407dca338032496505221e791ea37e1259f"
+      url: "https://github.com/tachibana-shin/flutter_qjs"
+    source: git
+    version: "0.0.1"
   flutter_rust_bridge:
     dependency: "direct main"
     description:

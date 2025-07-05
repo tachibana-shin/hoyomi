@@ -3,17 +3,14 @@ import 'dart:convert';
 import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_js/flutter_js.dart';
+import 'package:flutter_qjs/flutter_qjs.dart';
 
 export 'extensions/fetch.dart';
 
 void _jsIsolateEntry(SendPort mainSendPort) async {
-  final jsRuntime = getJavascriptRuntime(
-    forceJavascriptCoreOnAndroid: false,
-    xhr: false,
-  );
+  final jsRuntime = getJavascriptRuntime();
 
-  await jsRuntime.enableHandlePromises();
+  // await jsRuntime.enableHandlePromises();
 
   final port = ReceivePort();
   mainSendPort.send(port.sendPort);

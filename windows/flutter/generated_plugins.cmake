@@ -8,7 +8,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   firebase_auth
   firebase_core
   flutter_inappwebview_windows
-  flutter_js
+  flutter_qjs
   flutter_volume_controller
   fullscreen_window
   media_kit_libs_windows_video
