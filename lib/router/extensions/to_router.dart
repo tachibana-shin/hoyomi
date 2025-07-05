@@ -14,7 +14,7 @@ class ToRoute {
 }
 
 extension ToRouterExtension on BuildContext {
-  pushRoute(ToRoute to) {
+  void pushRoute(ToRoute to) {
     GoRouter.of(this).pushNamed(
       to.name,
       pathParameters: to.pathParameters,
@@ -22,7 +22,7 @@ extension ToRouterExtension on BuildContext {
     );
   }
 
-  goRoute(ToRoute to) {
+  void goRoute(ToRoute to) {
     GoRouter.of(this).goNamed(
       to.name,
       pathParameters: to.pathParameters,
@@ -30,7 +30,7 @@ extension ToRouterExtension on BuildContext {
     );
   }
 
-  replaceRoute(ToRoute to) {
+ void replaceRoute(ToRoute to) {
     GoRouter.of(this).replaceNamed(
       to.name,
       pathParameters: to.pathParameters,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic.dart';
+import 'package:hoyomi/router/extensions/to_router.dart';
 import 'package:hoyomi/widgets/card_item.dart';
 
 class VerticalComic extends StatelessWidget {
@@ -38,6 +39,17 @@ class VerticalComic extends StatelessWidget {
       preRelease: comic.preRelease,
       title: comic.name,
       subtitle: comic.lastChap?.name,
+      toDouble:
+          comic.lastChap != null
+              ? ToRoute(
+                name: 'details_comic_reader',
+                pathParameters: {
+                  'sourceId': sourceId ?? '',
+                  'comicId': comic.comicId,
+                },
+                queryParameters: {'chap': comic.lastChap!.chapterId},
+              )
+              : null,
       lastUpdate: comic.lastUpdate,
       extend: const <Widget>[],
     );

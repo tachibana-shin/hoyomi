@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/core_services/interfaces/o_image.dart';
+import 'package:hoyomi/router/extensions/to_router.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:hoyomi/widgets/iconify.dart';
 import 'package:iconify_flutter/icons/eva.dart';
@@ -10,6 +11,7 @@ import 'circular_progress.dart';
 
 class CardItem extends StatelessWidget {
   final String to;
+  final ToRoute? toDouble;
   final bool replace;
 
   final String sourceId;
@@ -28,6 +30,7 @@ class CardItem extends StatelessWidget {
   const CardItem({
     super.key,
     required this.to,
+    this.toDouble,
     required this.replace,
     required this.sourceId,
     required this.rate,
@@ -69,6 +72,13 @@ class CardItem extends StatelessWidget {
           context.push(to);
         }
       },
+      onDoubleTap: toDouble != null ? () {
+        if (replace) {
+          context.replaceRoute(toDouble!);
+        } else {
+          context.pushRoute(toDouble!);
+        }
+      } : null,
       splashColor: Colors.white70.withValues(alpha: 0.3),
       highlightColor: Colors.white70.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(8.0),
