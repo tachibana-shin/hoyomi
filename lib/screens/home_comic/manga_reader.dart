@@ -667,8 +667,12 @@ class _MangaReaderState extends State<MangaReader>
       return cache;
     }
 
+    if (!mounted) throw Exception('Break by unmounted');
+
     _pageMemoryCacheStore[item.image] = FutureCache(
       ComicDownloader.getPage(item.image).then((buffer) {
+        if (!mounted) throw Exception('Break by unmounted');
+
         if (buffer != null) return _decodeWithDescriptor(buffer);
         return widget.service.dioCache
             .get(
@@ -683,6 +687,8 @@ class _MangaReaderState extends State<MangaReader>
             )
             .then((res) => Uint8List.fromList(res.data))
             .then((buffer) async {
+              if (!mounted) throw Exception('Break by unmounted');
+
               if (_serviceSupportFetchPage[widget.service] != false) {
                 try {
                   buffer = await widget.service.fetchPage(buffer, item.image);
@@ -690,6 +696,8 @@ class _MangaReaderState extends State<MangaReader>
                   _serviceSupportFetchPage[widget.service] = false;
                 }
               }
+
+              if (!mounted) throw Exception('Break by unmounted');
 
               if (comicAutoTrimImage.value) {
                 buffer = await autoTrimImage(image: buffer);
