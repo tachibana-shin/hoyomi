@@ -30,7 +30,7 @@ extension ToRouterExtension on BuildContext {
     );
   }
 
- void replaceRoute(ToRoute to) {
+  void replaceRoute(ToRoute to) {
     GoRouter.of(this).replaceNamed(
       to.name,
       pathParameters: to.pathParameters,

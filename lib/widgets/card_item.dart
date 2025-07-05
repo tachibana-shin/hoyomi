@@ -72,13 +72,16 @@ class CardItem extends StatelessWidget {
           context.push(to);
         }
       },
-      onDoubleTap: toDouble != null ? () {
-        if (replace) {
-          context.replaceRoute(toDouble!);
-        } else {
-          context.pushRoute(toDouble!);
-        }
-      } : null,
+      onDoubleTap:
+          toDouble != null
+              ? () {
+                if (replace) {
+                  context.replaceRoute(toDouble!);
+                } else {
+                  context.pushRoute(toDouble!);
+                }
+              }
+              : null,
       splashColor: Colors.white70.withValues(alpha: 0.3),
       highlightColor: Colors.white70.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(8.0),

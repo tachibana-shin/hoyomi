@@ -192,8 +192,8 @@ class _DetailsComicState extends State<DetailsComic>
                 top: 16.0,
                 left: 16.0,
                 right: 16.0,
-                bottom: 28.h(context)
-              ) ,
+                bottom: 28.h(context),
+              ),
               controller: _scrollController,
               child: _buildContainer(comic),
             ),
