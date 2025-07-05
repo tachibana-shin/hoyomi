@@ -470,10 +470,10 @@ class _MangaReaderState extends State<MangaReader>
         final progress =
             _progressCacheStore[_pages.value.elementAt(i).image] ??= ref(-1.0);
 
-        await Future.any([
-          _fetchPage(i, false, progress: progress),
-          Future.delayed(Duration(milliseconds: 500)),
-        ]);
+        // await Future.any([
+        _fetchPage(i, false, progress: progress);
+        // Future.delayed(Duration(milliseconds: 500)),
+        // ]);
       }
     }, immediate: true);
     super.initState();
@@ -689,12 +689,10 @@ class _MangaReaderState extends State<MangaReader>
                 } on UnimplementedError {
                   _serviceSupportFetchPage[widget.service] = false;
                 }
+              }
 
-                if (comicAutoTrimImage.value) {
-                  buffer = await autoTrimImage(image: buffer);
-                }
-
-                return _decodeWithDescriptor(buffer);
+              if (comicAutoTrimImage.value) {
+                buffer = await autoTrimImage(image: buffer);
               }
 
               return _decodeWithDescriptor(buffer);
