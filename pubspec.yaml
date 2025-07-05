@@ -120,6 +120,7 @@ dependencies:
   web: ^1.1.1
   webview_flutter: ^4.10.0
   youtube_player_flutter: ^9.1.1
+  win32_registry: ^2.1.0
 
 dependency_overrides:
   flutter_inappwebview:
