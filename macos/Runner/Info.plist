@@ -35,7 +35,7 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>add-repo</string>
+			<string>add-plugin</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>hoyomi</string>

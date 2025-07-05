@@ -26,7 +26,7 @@ const branches = [
 ];
 
 /// 日本語のコメント: ルートナビゲーターのためのグローバルキー。
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 final pageBuilder =
     (!XPlatform.isAndroid && !XPlatform.isIOS) ||
             (androidSdkInt != null && androidSdkInt! < 29)
@@ -220,7 +220,7 @@ final routes = [
     path: '/details_comic/:sourceId/:comicId',
     name: 'details_comic',
     pageBuilder: pageBuilder,
-    parentNavigatorKey: _rootNavigatorKey,
+    parentNavigatorKey: rootNavigatorKey,
     builder:
         (context, state) => DetailsComic(
           sourceId: state.pathParameters['sourceId']!,
@@ -235,7 +235,7 @@ final routes = [
         path: 'view',
         name: 'details_comic_reader',
         pageBuilder: pageBuilder,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final chapterId = state.uri.queryParameters['chap']!;
           return DetailsComicReader(
@@ -254,7 +254,7 @@ final routes = [
         path: 'similar',
         name: 'similar_comic',
         pageBuilder: pageBuilder,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder:
             (context, state) => SimilarPage(
               sourceId: state.pathParameters['sourceId']!,
@@ -274,7 +274,7 @@ final routes = [
     path: '/details_eiga/:sourceId/:eigaId',
     name: 'details_eiga',
     pageBuilder: pageBuilder,
-    parentNavigatorKey: _rootNavigatorKey,
+    parentNavigatorKey: rootNavigatorKey,
     builder: (context, state) {
       final sourceId = state.pathParameters['sourceId']!;
       final eigaId = state.pathParameters['eigaId']!;
@@ -294,7 +294,7 @@ final routes = [
     path: '/sign_in/main',
     name: 'sign_in_main',
     pageBuilder: pageBuilder,
-    parentNavigatorKey: _rootNavigatorKey,
+    parentNavigatorKey: rootNavigatorKey,
     builder: (context, state) => SignInMainPage(),
   ),
 
@@ -303,7 +303,7 @@ final routes = [
     path: '/webview/:sourceId',
     name: 'webview',
     pageBuilder: pageBuilder,
-    parentNavigatorKey: _rootNavigatorKey,
+    parentNavigatorKey: rootNavigatorKey,
     builder:
         (context, state) => WebviewPage(
           sourceId: state.pathParameters['sourceId']!,
@@ -316,7 +316,7 @@ final routes = [
     path: '/category_comic/:sourceId/:categoryId',
     name: 'category_comic',
     pageBuilder: pageBuilder,
-    parentNavigatorKey: _rootNavigatorKey,
+    parentNavigatorKey: rootNavigatorKey,
     builder:
         (context, state) => CategoryComicPage(
           sourceId: state.pathParameters['sourceId']!,
@@ -329,7 +329,7 @@ final routes = [
     path: '/category_eiga/:sourceId/:categoryId',
     name: 'category_eiga',
     pageBuilder: pageBuilder,
-    parentNavigatorKey: _rootNavigatorKey,
+    parentNavigatorKey: rootNavigatorKey,
     builder:
         (context, state) => CategoryEigaPage(
           sourceId: state.pathParameters['sourceId']!,
@@ -342,7 +342,7 @@ final routes = [
     path: '/service_settings/:sourceId',
     name: 'service_settings',
     pageBuilder: pageBuilder,
-    parentNavigatorKey: _rootNavigatorKey,
+    parentNavigatorKey: rootNavigatorKey,
     builder:
         (context, state) =>
             ServiceSettingsPage(sourceId: state.pathParameters['sourceId']!),
@@ -353,7 +353,7 @@ late final GoRouter router;
 void initializeRouter() {
   router = GoRouter(
     restorationScopeId: 'router',
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     initialLocation: lastTabActiveApp.value ?? '/home_eiga',
     observers: [GoTransition.observer],
     routes: routes,

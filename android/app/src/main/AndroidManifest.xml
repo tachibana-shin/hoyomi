@@ -61,7 +61,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="hoyomi" android:host="add-repo" />
+                <data android:scheme="hoyomi" android:host="add-plugin" />
             </intent-filter>
         </activity>
 

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:app_links/app_links.dart';
+import 'package:hoyomi/core_services/js_core/install_js_service.dart';
 import 'package:win32_registry/win32_registry.dart';
 
 Future<void> initializeAppLinks() async {
@@ -15,4 +17,13 @@ Future<void> initializeAppLinks() async {
     regKey.createValue(protocolRegValue);
     regKey.createKey(protocolCmdRegKey).createValue(protocolCmdRegValue);
   }
+
+  AppLinks().uriLinkStream.listen((uri) {
+    if (uri.pathSegments.firstOrNull == 'add-plugin') {
+      final url = uri.queryParameters['url'];
+      if (url?.isNotEmpty == true) {
+        showInstallJsServiceModal(null, url);
+      }
+    }
+  });
 }

@@ -45,6 +45,7 @@ Future<void> main() async {
   // }
 }
 
+final navigatorKey = GlobalKey<NavigatorState>();
 class MainApp extends StatelessWidget {
   final AdaptiveThemeMode? theme;
 

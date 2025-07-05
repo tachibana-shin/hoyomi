@@ -5,6 +5,7 @@ import 'package:hoyomi/core_services/comic/export.dart';
 import 'package:hoyomi/core_services/eiga/export.dart';
 import 'package:hoyomi/core_services/js_core/fetch_and_create_js_service.dart';
 import 'package:hoyomi/plugins/export.dart';
+import 'package:hoyomi/router/index.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sealed_languages/sealed_languages.dart';
 import 'package:text_field_validation/text_field_validation.dart';
@@ -50,8 +51,8 @@ Future<bool> installJsService(Service service, String jsCode) async {
   return alreadyExists;
 }
 
-Future<void> showInstallJsServiceModal(BuildContext context) async {
-  final controller = TextEditingController(text: 'https://');
+Future<void> showInstallJsServiceModal(BuildContext? context, [String? url]) async {
+  final controller = TextEditingController(text: url ?? 'https://');
   final formKey = GlobalKey<FormState>();
 
   String? error;
@@ -61,7 +62,7 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
   bool? alreadyExists;
 
   await showDialog(
-    context: context,
+    context: context ?? rootNavigatorKey.currentContext!,
     barrierDismissible: false,
     builder: (ctx) {
       return StatefulBuilder(
@@ -108,7 +109,7 @@ Future<void> showInstallJsServiceModal(BuildContext context) async {
             if (!ctx.mounted) return;
 
             Navigator.of(ctx).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
+            ScaffoldMessenger.of(context ?? rootNavigatorKey.currentContext!).showSnackBar(
               SnackBar(
                 content: Text(
                   '${ok ? "Updated" : "Installed"} plugin "${service!.uid}"',
