@@ -188,9 +188,12 @@ class _DetailsComicState extends State<DetailsComic>
               ],
             ),
             body: SingleChildScrollView(
-              padding: EdgeInsets.all(
-                16.0,
-              ).add(EdgeInsets.only(bottom: 15.h(context))),
+              padding: EdgeInsets.only(
+                top: 16.0,
+                left: 16.0,
+                right: 16.0,
+                bottom: 28.h(context)
+              ) ,
               controller: _scrollController,
               child: _buildContainer(comic),
             ),
