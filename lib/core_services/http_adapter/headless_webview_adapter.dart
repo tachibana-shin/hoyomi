@@ -13,7 +13,7 @@ class HeadlessWebViewAdapter implements HttpClientAdapter {
 
   HeadlessWebViewAdapter(this._service);
 
-  Future<InAppWebViewController> _$initHeadless(Uri uri) {
+  Future<InAppWebViewController> _$initHeadless(Uri uri, String userAgent) {
     final completer = Completer<InAppWebViewController>();
 
     final headless = HeadlessInAppWebView(
@@ -25,6 +25,7 @@ class HeadlessWebViewAdapter implements HttpClientAdapter {
         geolocationEnabled: true,
         supportMultipleWindows: true,
         sharedCookiesEnabled: true,
+        // userAgent: userAgent,
       ),
       initialUserScripts: UnmodifiableListView([
         UserScript(
@@ -58,9 +59,12 @@ class HeadlessWebViewAdapter implements HttpClientAdapter {
     return completer.future;
   }
 
-  Future<InAppWebViewController> _initHeadless(Uri uri) async {
+  Future<InAppWebViewController> _initHeadless(
+    Uri uri,
+    String userAgent,
+  ) async {
     try {
-      _initHeadlessFuture[uri.origin] ??= _$initHeadless(uri);
+      _initHeadlessFuture[uri.origin] ??= _$initHeadless(uri, userAgent);
       return await _initHeadlessFuture[uri.origin]!;
     } catch (error) {
       _initHeadlessFuture[uri.origin] = null;
@@ -97,7 +101,17 @@ class HeadlessWebViewAdapter implements HttpClientAdapter {
       );
 
       debugPrint('webview.....');
-      final controller = await _initHeadless(options.uri);
+      late final InAppWebViewController controller;
+      try {
+        controller = await _initHeadless(
+          options.uri,
+          options.headers['user-agent'] ?? '',
+        );
+      } catch (error, stack) {
+        debugPrint('Error: $error ($stack)');
+
+        return ResponseBody.fromString('WebRequest Error', 503);
+      }
 
       final result = await controller.callAsyncJavaScript(
         functionBody: '''

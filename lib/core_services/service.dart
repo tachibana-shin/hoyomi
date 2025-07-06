@@ -300,8 +300,7 @@ abstract class Service extends BaseService
 
     if (!url.contains('://') && !url.startsWith('/')) url = '/$url';
 
-    final record = await ServiceSettingsController.instance.get(uid);
-    String? cookiesText = cookie ?? record?.settings?['cookie'] as String?;
+    String? cookiesText = cookie ?? getSetting(key: 'cookie');
 
     cookiesText =
         init.customCookie?.replaceFirst('{OLD_COOKIE}', cookiesText ?? '') ??
@@ -321,7 +320,7 @@ abstract class Service extends BaseService
 
       // 'upgrade-insecure-requests': '1',
       'user-agent':
-          record?.settings?['user_agent'] as String? ??
+          getSetting(key: 'user_agent') ??
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       if (headers != null) ...headers.toMap(),
     });
