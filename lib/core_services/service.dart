@@ -385,13 +385,7 @@ abstract class Service extends BaseService
           print('📥 Response Cookie: ${response.headers['set-cookie']}');
         }
       }
-    } on DioException catch (error, trace) {
-      if (kDebugMode) {
-        print('URL = ${error.response?.realUri.toString()}');
-        print('Status = ${error.response?.statusCode}');
-        print('Response = ${error.response?.data.toString()}');
-      }
-
+    } catch (error, trace) {
       if (!headlessMode) {
         _tempHeadless = true;
         bus.fire(HeadlessModeChanged());
@@ -410,35 +404,33 @@ abstract class Service extends BaseService
         }
       }
 
-      if (error.response != null &&
-          CaptchaResolverMixin.responseIsCaptchaResolve(error.response!)) {
-        // return Future.error(response);
-        final captchaError = CaptchaRequiredException(getService(uid));
-
-        // // required captcha resolve
-        if (notify) {
-          CaptchaResolverMixin.showSnackCaptcha(
-            null,
-            url: url,
-            error: captchaError,
-            trace: trace,
-          );
+      if (error is DioException) {
+        if (kDebugMode) {
+          print('URL = ${error.response?.realUri.toString()}');
+          print('Status = ${error.response?.statusCode}');
+          print('Response = ${error.response?.data.toString()}');
         }
-        // try {
-        //   final start = DateTime.now();
-        //   final data = await createWebView(uri)
-        //       .fetch(url: url, headers: headers, body: body);
 
-        //   debugPrint(
-        //       'Future completed in ${DateTime.now().difference(start).inMilliseconds} milliseconds');
-        //   return data;
-        // } catch (err) {
-        //   debugPrint('Error: $err');
-        return Future.error(error);
-        // }
+        if (error.response != null &&
+            CaptchaResolverMixin.responseIsCaptchaResolve(error.response!)) {
+          // return Future.error(response);
+          final captchaError = CaptchaRequiredException(getService(uid));
+
+          // // required captcha resolve
+          if (notify) {
+            CaptchaResolverMixin.showSnackCaptcha(
+              null,
+              url: url,
+              error: captchaError,
+              trace: trace,
+            );
+          }
+          
+          throw captchaError;
+        }
+        rethrow;
       }
-      rethrow;
-    } catch (error) {
+
       if (kDebugMode) {
         print('❌ [HTTP] Request Failed');
         print('⚠️ Error: $error');

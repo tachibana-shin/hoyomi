@@ -152,7 +152,7 @@ return await fetch(url, {
 
       final Map response = result.value;
 
-      final int statusCode = response['statusCode'] ?? 200;
+      final int statusCode = (response['statusCode'] as num?)?.toInt() ?? 200;
       final String base64data = response['data'];
       final Map<String, dynamic> rawHeaders = Map<String, dynamic>.from(
         response['headers'],
