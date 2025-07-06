@@ -179,13 +179,18 @@ class JSEigaService extends ABEigaService {
   }
 
   @override
-  Future<int> getFollowsCount(String eigaId) async {
-    if (!_supportGetFollowsCount) return await super.getFollowsCount(eigaId);
+  Future<int> getFollowsCount(eigaId, metaEiga) async {
+    if (!_supportGetFollowsCount) {
+      return await super.getFollowsCount(eigaId, metaEiga);
+    }
     try {
-      return await _runtime.evalFn('__plugin.getFollowsCount', [eigaId]);
+      return await _runtime.evalFn('__plugin.getFollowsCount', [
+        eigaId,
+        metaEiga,
+      ]);
     } on UnimplementedError {
       _supportGetFollowsCount = false;
-      return await super.getFollowsCount(eigaId);
+      return await super.getFollowsCount(eigaId, metaEiga);
     }
   }
 

@@ -109,7 +109,7 @@ mixin EigaFollowGeneralMixin on Service implements EigaFollowMixin {
   }
 
   @override
-  getFollowsCount(eigaId) {
+  getFollowsCount(_, _) {
     throw UnimplementedError();
   }
 

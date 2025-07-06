@@ -89,9 +89,6 @@ class AnimeVietsubService extends ABEigaService
 
   final String _apiThumb = 'https://sk-hianime.animevsub.eu.org';
 
-  final Map<String, Completer<Map<String, _ParamsEpisode>>>
-  _paramsEpisodeStore = {};
-  final Map<String, Future<DollarFunction>> _docEigaStore = {};
   final Map<String, String> _uidUserStore = {};
 
   @override
@@ -171,26 +168,8 @@ class AnimeVietsubService extends ABEigaService
   }
 
   @override
-  getFollowsCount(eigaId) async {
-    final $ =
-        await (_docEigaStore[eigaId] ??= fetch$(
-          '$baseUrl/phim/$eigaId',
-        ).catchError((error) {
-          _docEigaStore.remove(eigaId);
-          throw error;
-        }));
-
-    final infoListLeft = $('.mvici-left > .InfoList > .AAIco-adjust');
-
-    final followCount = int.parse(
-      _findInfo(
-            infoListLeft,
-            'số người theo dõi',
-          )?.text().split(':')[1].replaceAll(',', '') ??
-          '0',
-    );
-
-    return followCount;
+  getFollowsCount(eigaId, metaEiga) async {
+    return jsonDecode(metaEiga.extra!)['follow'];
   }
 
   EigaParam _parseURL(String url) {
@@ -492,13 +471,7 @@ class AnimeVietsubService extends ABEigaService
 
   @override
   getDetails(String eigaId) async {
-    final $ =
-        await (_docEigaStore[eigaId] ??= fetch$(
-          '$baseUrl/phim/$eigaId',
-        ).catchError((error) {
-          _docEigaStore.remove(eigaId);
-          throw error;
-        }));
+    final $ = await fetch$('$baseUrl/phim/$eigaId');
 
     final name = $('.Title', single: true).text();
     final originalName = $('.SubTitle', single: true).text();
@@ -543,11 +516,11 @@ class AnimeVietsubService extends ABEigaService
             eigaId: Uri.parse(item.attr('href')).path.split('/').elementAt(2),
           );
         }).toList();
-    final $genresAnchor = $('.breadcrumb > li > a');
     final genres =
-        $genresAnchor
-            .skip(1)
-            .take($genresAnchor.length - 2)
+        $('.AAIco-adjust > strong')
+            .contains("Thể loại:")
+            .parent()
+            .query("a")
             .map((item) => _getInfoAnchor(item))
             .toList();
     final quality = $('.Qlty', single: true).text();
@@ -617,67 +590,43 @@ class AnimeVietsubService extends ABEigaService
       movieSeason: movieSeason,
       trailer: trailer,
       status: status,
+      extra: jsonEncode({
+        'suggest':
+            $(
+              '.MovieListRelated .TPostMv',
+            ).map((item) => _parseItem(item)).toList(),
+        'follow': int.parse(
+          _findInfo(
+                infoListLeft,
+                'số người theo dõi',
+              )?.text().split(':')[1].replaceAll(',', '') ??
+              '0',
+        ),
+      }),
     );
-  }
-
-  Future<(List<EigaEpisode>, DollarFunction)> __fetchHtmlEpisodes(
-    String eigaId,
-  ) {
-    late final List<EigaEpisode> episodes;
-    if (_paramsEpisodeStore[eigaId] == null ||
-        _paramsEpisodeStore[eigaId]!.isCompleted) {
-      _paramsEpisodeStore[eigaId] = Completer<Map<String, _ParamsEpisode>>();
-    }
-
-    return fetch$('$baseUrl/phim/$eigaId/xem-phim.html')
-        .then(($) {
-          final Map<String, _ParamsEpisode> map = {};
-
-          episodes =
-              $('#list-server .list-episode .episode a').map((item) {
-                final episodeId = Uri.parse(
-                  item.attr('href'),
-                ).path.split('/').elementAt(3).replaceFirst('.html', '');
-
-                final params = _ParamsEpisode(
-                  id: item.attr('data-id'),
-                  play: item.attr('data-play'),
-                  hash: item.attr('data-hash'),
-                  backuplinks: item.attrRaw('data-backuplinks') ?? '1',
-                );
-
-                map[episodeId] = params;
-
-                return EigaEpisode(name: item.text(), episodeId: episodeId);
-              }).toList();
-
-          _paramsEpisodeStore[eigaId]?.complete(map);
-
-          return (episodes, $);
-        })
-        .catchError((error) {
-          _paramsEpisodeStore[eigaId]?.completeError(error);
-          throw error;
-        });
-  }
-
-  final Map<String, Future<(List<EigaEpisode>, DollarFunction)>>
-  _fetchHtmlEpisodesStore = {};
-  Future<(List<EigaEpisode>, DollarFunction)> _fetchHtmlEpisodes(
-    String eigaId,
-  ) {
-    return _fetchHtmlEpisodesStore[eigaId] ??= __fetchHtmlEpisodes(
-      eigaId,
-    ).catchError((error) {
-      _fetchHtmlEpisodesStore.remove(eigaId);
-
-      throw error;
-    });
   }
 
   @override
   getEpisodes(String eigaId) async {
-    final (episodes, $) = await _fetchHtmlEpisodes(eigaId);
+    final $ = await fetch$('$baseUrl/phim/$eigaId/xem-phim.html');
+
+    final episodes =
+        $('#list-server .list-episode .episode a').map((item) {
+          final episodeId = Uri.parse(
+            item.attr('href'),
+          ).path.split('/').elementAt(3).replaceFirst('.html', '');
+
+          return EigaEpisode(
+            name: item.text(),
+            episodeId: episodeId,
+            extra: jsonEncode({
+              'id': item.attr('data-id'),
+              'play': item.attr('data-play'),
+              'hash': item.attr('data-hash'),
+              'backuplinks': item.attrRaw('data-backuplinks') ?? '1',
+            }),
+          );
+        }).toList();
 
     final scheduleText =
         $('.schedule-title-main > h4 > strong').last().textRaw();
@@ -742,14 +691,10 @@ class AnimeVietsubService extends ABEigaService
 
   @override
   getSource({required eigaId, required episode, server}) async {
-    await _fetchHtmlEpisodes(eigaId);
-
-    final text = (await fetch(
+    final text = await fetch(
       '$baseUrl/ajax/player?v=2019a',
-      body:
-          (await _paramsEpisodeStore[eigaId]!.future)[episode.episodeId]!
-              .toMap(),
-    ));
+      body: jsonDecode(episode.extra!),
+    );
 
     final json = jsonDecode(text);
     return SourceVideo(
@@ -857,12 +802,7 @@ class AnimeVietsubService extends ABEigaService
 
   @override
   getSuggest({required metaEiga, required eigaId, page}) async {
-    final items =
-        (await _docEigaStore[eigaId]!)('.MovieListRelated .TPostMv')
-            .map((item) => _parseItem(item))
-            .toList();
-
-    return items;
+    return jsonDecode(metaEiga.extra!)['suggest'];
   }
 
   @override
@@ -1023,24 +963,6 @@ class AnimeVietsubService extends ABEigaService
       totalPages: category.totalPages,
       totalItems: category.totalItems,
     );
-  }
-}
-
-class _ParamsEpisode {
-  final String id;
-  final String play;
-  final String hash;
-  final String backuplinks;
-
-  _ParamsEpisode({
-    required this.id,
-    required this.play,
-    required this.hash,
-    required this.backuplinks,
-  });
-
-  Map<String, String> toMap() {
-    return {'id': id, 'play': play, 'link': hash, 'backuplinks': backuplinks};
   }
 }
 
