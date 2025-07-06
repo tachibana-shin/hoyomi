@@ -5,8 +5,6 @@ import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hoyomi/core_services/interfaces/headers.dart';
-import 'package:hoyomi/core_services/exception/captcha_required_exception.dart';
-import 'package:hoyomi/core_services/mixin/export.dart';
 import 'package:hoyomi/core_services/service.dart';
 
 class HeadlessWebViewAdapter implements HttpClientAdapter {
@@ -98,6 +96,7 @@ class HeadlessWebViewAdapter implements HttpClientAdapter {
         ),
       );
 
+      debugPrint('webview.....');
       final controller = await _initHeadless(options.uri);
 
       final result = await controller.callAsyncJavaScript(
@@ -159,16 +158,16 @@ return await fetch(url, {
         response['headers'],
       );
 
-      if ([429, 503, 403].contains(statusCode)) {
-        final error = CaptchaRequiredException(_service);
-        CaptchaResolverMixin.showSnackCaptcha(
-          null,
-          url: options.uri.toString(),
-          error: error,
-          trace: StackTrace.current,
-        );
-        throw error;
-      }
+      // if ([429, 503, 403].contains(statusCode)) {
+      //   final error = CaptchaRequiredException(_service);
+      //   CaptchaResolverMixin.showSnackCaptcha(
+      //     null,
+      //     url: options.uri.toString(),
+      //     error: error,
+      //     trace: StackTrace.current,
+      //   );
+      //   throw error;
+      // }
 
       final bytes = base64Decode(base64data);
 

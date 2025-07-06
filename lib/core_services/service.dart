@@ -177,7 +177,7 @@ abstract class Service extends BaseService
   Dio? _dioHeadless;
   Future<Dio>? _dioHeadlessFuture;
 
-  Dio get dioCache => _tempHeadless ? _dioHeadless! : _dioCache!;
+  Dio get dioCache => headlessMode ? _dioHeadless! : _dioCache!;
 
   Future<Dio> getDioHeadless() {
     if (_dioHeadless != null) return Future.value(_dioHeadless);
@@ -391,26 +391,28 @@ abstract class Service extends BaseService
         print('Status = ${error.response?.statusCode}');
         print('Response = ${error.response?.data.toString()}');
       }
+
+      if (!headlessMode) {
+        _tempHeadless = true;
+        bus.fire(HeadlessModeChanged());
+
+        if (!kIsWeb && !headless) {
+          return fetch(
+            url,
+            cookie: cookie,
+            query: query,
+            body: body,
+            headers: headers,
+            notify: notify,
+            headless: headless,
+            cache: cache,
+          );
+        }
+      }
+
       if (error.response != null &&
           CaptchaResolverMixin.responseIsCaptchaResolve(error.response!)) {
         // return Future.error(response);
-        if (!headlessMode) {
-          _tempHeadless = true;
-          bus.fire(HeadlessModeChanged());
-
-          if (!kIsWeb && !headless) {
-            return fetch(
-              url,
-              cookie: cookie,
-              query: query,
-              body: body,
-              headers: headers,
-              notify: notify,
-              headless: headless,
-              cache: cache,
-            );
-          }
-        }
         final captchaError = CaptchaRequiredException(getService(uid));
 
         // // required captcha resolve
