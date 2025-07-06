@@ -425,7 +425,7 @@ abstract class Service extends BaseService
               trace: trace,
             );
           }
-          
+
           throw captchaError;
         }
         rethrow;
