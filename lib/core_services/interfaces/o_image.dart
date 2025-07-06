@@ -88,14 +88,14 @@ sealed class OImage with _$OImage {
         != null when service.headlessMode => _FutureMemoryImage(
           service.getDioHeadless().then(
             (dio) => dio
-                .fetch<Uint8List>(
+                .fetch(
                   RequestOptions(
                     path: src,
                     headers: headers?.toMap(),
                     responseType: ResponseType.bytes,
                   ),
                 )
-                .then((res) => res.data!),
+                .then((res) => Uint8List.fromList(res.data! as List<int>)),
           ),
         ),
         _ => CachedNetworkImageProvider(
