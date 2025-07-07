@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Get a File instance for the given cache key.
@@ -26,7 +27,7 @@ Future<T> cacheRemember<T>(
 }) async {
   final directory = await getTemporaryDirectory();
 
-  final file = _getCacheFile(directory, key);
+  final file = _getCacheFile(Directory(join(directory.path, 'v2')), key);
 
   if (await file.exists()) {
     debugPrint('[cache_remember]: Cache hit for $key');
