@@ -1,14 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Get a File instance for the given cache key.
 /// Here, we use the hashCode of the key to form a safe file name.
 File _getCacheFile(Directory cacheDir, String key) {
-  final fileName = 'cache_${key.hashCode}.cache';
+  final fileName = 'cache_${sha256.convert(utf8.encode(key)).toString()}.cache';
   return File('${cacheDir.path}/$fileName');
 }
 
@@ -17,7 +18,7 @@ File _getCacheFile(Directory cacheDir, String key) {
 /// in the background, emitting the new value when available.
 ///
 /// The optional [fromCache] and [toCache] functions can be provided to handle serialization.
-/// By default, if not provided, the value is assumed to be a String.
+/// By default, if not provided, tPhe value is assumed to be a String.
 Future<T> cacheRemember<T>(
   String key, {
   required Future<T> Function() get,
@@ -27,7 +28,7 @@ Future<T> cacheRemember<T>(
 }) async {
   final directory = await getTemporaryDirectory();
 
-  final file = _getCacheFile(Directory(join(directory.path, 'v2')), key);
+  final file = _getCacheFile(directory, key);
 
   if (await file.exists()) {
     debugPrint('[cache_remember]: Cache hit for $key');

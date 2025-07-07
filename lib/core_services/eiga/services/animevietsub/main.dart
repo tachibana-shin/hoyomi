@@ -384,10 +384,7 @@ class AnimeVietsubService extends ABEigaService
         ).query('.TPostMv').map((item) => _parseItem(item)).toList(),
     };
 
-    final $pageNavi = $(
-      '.larger:last-child, .wp-pagenavi > *:last-child',
-      single: true,
-    );
+    final $pageNavi = $('.wp-pagenavi > .page.larger').last();
     final totalPages = int.parse(
       $pageNavi.attrRaw('data') ?? $pageNavi.attrRaw('title') ?? '1',
     );
@@ -591,10 +588,7 @@ class AnimeVietsubService extends ABEigaService
       trailer: trailer,
       status: status,
       extra: jsonEncode({
-        'suggest':
-            $(
-              '.MovieListRelated .TPostMv',
-            ).map((item) => _parseItem(item)).toList(),
+        'suggest': $('.TPostMv').map((item) => _parseItem(item)).toList(),
         'follow': int.parse(
           _findInfo(
                 infoListLeft,
