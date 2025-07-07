@@ -691,9 +691,13 @@ class AnimeVietsubService extends ABEigaService
 
   @override
   getSource({required eigaId, required episode, server}) async {
+    final extra =  jsonDecode(episode.extra!);
     final text = await fetch(
       '$baseUrl/ajax/player?v=2019a',
-      body: jsonDecode(episode.extra!),
+      body: {
+        'link': extra['hash'],
+        'id': extra['id']
+      },
     );
 
     final json = jsonDecode(text);
@@ -802,7 +806,9 @@ class AnimeVietsubService extends ABEigaService
 
   @override
   getSuggest({required metaEiga, required eigaId, page}) async {
-    return jsonDecode(metaEiga.extra!)['suggest'];
+    return (jsonDecode(metaEiga.extra!)['suggest'] as List)
+        .map((item) => Eiga.fromJson(item))
+        .toList();
   }
 
   @override
