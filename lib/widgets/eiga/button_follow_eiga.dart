@@ -39,8 +39,8 @@ class _ButtonFollowEigaState extends State<ButtonFollowEiga>
   void initState() {
     super.initState();
 
-    watch([widget.eigaId], () async {
-      if (!_supportAuth) return;
+    watch([widget.eigaId, widget.metaEiga], () async {
+      if (!_supportAuth || widget.metaEiga.value.fake) return;
       final service = widget.service as EigaFollowMixin;
 
       _loading.value = true;
