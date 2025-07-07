@@ -304,7 +304,8 @@ abstract class Service extends BaseService
 
     cookiesText =
         init.customCookie?.replaceFirst('{OLD_COOKIE}', cookiesText ?? '') ??
-        cookiesText;
+        cookiesText ??
+        '';
 
     // final host = Uri.tryParse(url)?.host ?? Uri.tryParse(_fetchBaseUrl)?.host;
     // print('Host = $host');
@@ -313,7 +314,7 @@ abstract class Service extends BaseService
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
       // 'accept-language': 'vi',
       'cache-control': 'max-age=0',
-      'cookie': cookiesText,
+      if (cookiesText.isNotEmpty) 'cookie': cookiesText,
       // 'pragma': 'no-cache',
       // 'priority': 'u=0, i',
       // if (host != null) 'host': host,
