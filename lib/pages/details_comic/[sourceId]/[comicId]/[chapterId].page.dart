@@ -9,6 +9,7 @@ import 'package:hoyomi/screens/export.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/ion.dart';
 import 'package:kaeru/kaeru.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../downloader/comic_downloader.dart';
 
@@ -34,6 +35,8 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
     with KaeruMixin {
   late Future<List<OImage>> _pagesFuture;
   late Future<MetaComic> _metaComicFuture;
+  late Future<ComicModes> _modeFuture;
+
   late final _metaComic = ref<MetaComic?>(null);
   late final ABComicService _service;
   late final _chapter = ref<ComicChapter?>(null);
@@ -76,6 +79,28 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
 
       _metaComic.value = comic;
     });
+
+    final asyncPrefs = SharedPreferencesAsync();
+    _modeFuture = asyncPrefs
+        .getString('comic_mode_${widget.comicId}')
+        .then((value) {
+          if (value == null) throw Exception('not found');
+
+          return ComicModes.values.firstWhere(
+            (element) => element.name == value,
+          );
+        })
+        .catchError(
+          (error) => _metaComicFuture.then((comic) {
+            try {
+              final out = _service.getComicModes(comic);
+
+              return out;
+            } catch (error) {
+              return ComicModes.webToon;
+            }
+          }),
+        );
 
     super.initState();
   }
@@ -122,7 +147,7 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
         children: [
           FutureBuilder<List<dynamic>>(
             key: Key(widget.comicId),
-            future: Future.wait([_pagesFuture, _metaComicFuture]),
+            future: Future.wait([_pagesFuture, _metaComicFuture, _modeFuture]),
             builder: (context2, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -144,14 +169,18 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
                 return const Center(child: Text('No data available.'));
               }
 
-              final [pages as List<OImage>, metaComic as MetaComic] =
-                  snapshot.data!; //comic] = snapshot.data!;
+              final [
+                pages as List<OImage>,
+                metaComic as MetaComic,
+                mode as ComicModes,
+              ] = snapshot.data!; //comic] = snapshot.data!;
 
               return MangaReader(
                 pages: pages.toList(),
                 service: _service,
                 comicId: widget.comicId,
                 comic: metaComic,
+                mode: mode,
                 chapterId: widget.chapterId,
                 getPages:
                     (String chap) => _service.getPages(widget.comicId, chap),

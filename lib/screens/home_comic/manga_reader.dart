@@ -28,6 +28,7 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:intl/intl.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../downloader/comic_downloader.dart';
 
@@ -49,6 +50,7 @@ class MangaReader extends StatefulWidget {
 
   final List<OImage> pages;
   final MetaComic comic;
+  final ComicModes mode;
   final String chapterId;
   final Future<List<OImage>> Function(String chapterId) getPages;
 
@@ -61,6 +63,7 @@ class MangaReader extends StatefulWidget {
     required this.comicId,
     required this.pages,
     required this.comic,
+    required this.mode,
     required this.chapterId,
     required this.getPages,
     required this.onChangeChap,
@@ -174,24 +177,12 @@ class _MangaReaderState extends State<MangaReader>
       );
     });
 
-    late final ComicModes mode;
-    try {
-      final out = widget.service.getComicModes(widget.comic);
-      if (out is! Future) {
-        mode = out;
-      } else {
-        Future.value(out)
-            .then((value) {
-              if (mounted) _mode.value = value;
-            })
-            .catchError((err) {});
-        throw Exception('Future');
-      }
-    } catch (error) {
-      mode = ComicModes.webToon;
-    }
+    _mode = ref(widget.mode);
+    final asyncPrefs = SharedPreferencesAsync();
+    watch([_mode], () {
+      asyncPrefs.setString('comic_mode_${widget.comicId}', _mode.value.name);
+    });
 
-    _mode = ref(mode);
     _realCurrentPage = computed(() {
       final pages = _pages.value;
       final currentPage = _currentPage.value.round();
