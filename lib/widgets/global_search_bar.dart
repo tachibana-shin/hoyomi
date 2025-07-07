@@ -220,6 +220,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
     super.initState();
 
     _controller = TextEditingController(text: globalKeyword.value);
+    watch([globalKeyword], () => _controller.text = globalKeyword.value);
   }
 
   void _showSearchLayer() async {
@@ -405,7 +406,7 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                           .map(
                             (text) => GestureDetector(
                               onTap: () {
-                                _controller.text = globalKeyword.value = text;
+                                globalKeyword.value = text;
                               },
                               child: Chip(
                                 label: Text(text),
@@ -628,138 +629,145 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
               focusing ? BorderRadius.zero : BorderRadius.circular(30.0),
         ),
         clipBehavior: Clip.antiAlias,
-        child: Row(
-          children: [
-            if (!focusing && globalKeyword.value.isNotEmpty)
-              IconButton(
-                icon: Iconify(Mdi.arrow_back),
-                onPressed: () {
-                  final route = GoRouter.of(context).state;
+        child: Watch(
+          () => Row(
+            children: [
+              if (!focusing &&
+                  globalKeyword.value.isNotEmpty &&
+                  widget.pageIsSearch)
+                IconButton(
+                  icon: Iconify(Mdi.arrow_back),
+                  onPressed: () {
+                    final route = GoRouter.of(context).state;
 
-                  globalKeyword.value = '';
+                    globalKeyword.value = '';
 
-                  if (route.name == 'search') {
-                    context.replace('/search');
+                    if (route.name == 'search') {
+                      context.replace('/search');
 
-                    return;
-                  }
-                  if (context.canPop()) return context.pop();
+                      return;
+                    }
+                    if (context.canPop()) return context.pop();
 
-                  goBranch(context, 'search');
-                  context.pushReplacement('/search');
-                },
-              ),
-            if (widget.showExtension)
-              _buildServiceSelector()
-            else if (globalKeyword.value.isEmpty)
-              IconButton(
-                icon: Iconify(Mdi.magnify),
-                onPressed: () => _showSearchLayer(),
-              ),
-            const SizedBox(width: 8),
-            Expanded(
-              child:
-                  focusing
-                      ? TextField(
-                        // autofocus: focusing,
-                        enabled: focusing,
-                        autofocus: true,
-                        controller: _controller,
-                        // readOnly: _readonly,
-                        decoration: InputDecoration(
-                          hintText: "Search...",
-                          border: InputBorder.none,
-                        ),
-                        onChanged: (value) {
-                          _setKeyword(value);
-                        },
-                        onSubmitted: _onSubmitted,
-                      )
-                      : GestureDetector(
-                        onTap: () => _showSearchLayer(),
-                        child: Container(
-                          height: 45,
-                          color: theme.colorScheme.surfaceContainerHigh,
-                          child:
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Watch(
-                                    () => Text(
-                                      globalKeyword.value.isNotEmpty
-                                          ? globalKeyword.value
-                                          : 'Search',
-                                    ).fontSize(16.0).paddingAll(4.0),
-                                  ),
-                                ],
-                              ).toCenter(),
-                        ),
-                      ),
-            ),
-            Watch(
-              () => AnimatedSwitcher(
-                duration: Duration(milliseconds: 300),
-                transitionBuilder:
-                    (child, animation) =>
-                        ScaleTransition(scale: animation, child: child),
+                    goBranch(context, 'search');
+                    context.pushReplacement('/search');
+                  },
+                ),
+              if (widget.showExtension)
+                _buildServiceSelector()
+              else if (globalKeyword.value.isEmpty)
+                IconButton(
+                  icon: Iconify(Mdi.magnify),
+                  onPressed: () => _showSearchLayer(),
+                ),
+              const SizedBox(width: 8),
+              Expanded(
                 child:
-                    (globalKeyword.value.isEmpty || !focusing)
-                        ? (!XPlatform.isLinux && !XPlatform.isWindows)
-                            ? IconButton(
-                              icon: Iconify(Mdi.microphone),
-                              onPressed: () async {
-                                final completer = Completer();
+                    focusing
+                        ? Watch(() {
+                          globalKeyword.value;
 
-                                if (XPlatform.isAndroid) {
-                                  final isServiceAvailable =
-                                      await SpeechToTextGoogleDialog.getInstance()
-                                          .showGoogleDialog(
-                                            onTextReceived: (data) {
-                                              completer.complete(data);
-                                            },
-                                          );
-                                  if (!isServiceAvailable) {
-                                    completer.completeError(
-                                      Exception('Platform not support API'),
+                          return TextField(
+                            // autofocus: focusing,
+                            enabled: focusing,
+                            autofocus: true,
+                            controller: _controller,
+                            // readOnly: _readonly,
+                            decoration: InputDecoration(
+                              hintText: "Search...",
+                              border: InputBorder.none,
+                            ),
+                            onChanged: (value) {
+                              _setKeyword(value);
+                            },
+                            onSubmitted: _onSubmitted,
+                          );
+                        })
+                        : GestureDetector(
+                          onTap: () => _showSearchLayer(),
+                          child: Container(
+                            height: 45,
+                            color: theme.colorScheme.surfaceContainerHigh,
+                            child:
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Watch(
+                                      () => Text(
+                                        globalKeyword.value.isNotEmpty
+                                            ? globalKeyword.value
+                                            : 'Search',
+                                      ).fontSize(16.0).paddingAll(4.0),
+                                    ),
+                                  ],
+                                ).toCenter(),
+                          ),
+                        ),
+              ),
+              Watch(
+                () => AnimatedSwitcher(
+                  duration: Duration(milliseconds: 300),
+                  transitionBuilder:
+                      (child, animation) =>
+                          ScaleTransition(scale: animation, child: child),
+                  child:
+                      (globalKeyword.value.isEmpty || !focusing)
+                          ? (!XPlatform.isLinux && !XPlatform.isWindows)
+                              ? IconButton(
+                                icon: Iconify(Mdi.microphone),
+                                onPressed: () async {
+                                  final completer = Completer();
+
+                                  if (XPlatform.isAndroid) {
+                                    final isServiceAvailable =
+                                        await SpeechToTextGoogleDialog.getInstance()
+                                            .showGoogleDialog(
+                                              onTextReceived: (data) {
+                                                completer.complete(data);
+                                              },
+                                            );
+                                    if (!isServiceAvailable) {
+                                      completer.completeError(
+                                        Exception('Platform not support API'),
+                                      );
+                                    }
+                                  } else {
+                                    await showDialog(
+                                      context: context,
+                                      builder:
+                                          (context) => SpeechToText(
+                                            onChanged:
+                                                (text) =>
+                                                    completer.complete(text),
+                                            onError:
+                                                (error) => completer
+                                                    .completeError(error),
+                                          ),
                                     );
                                   }
-                                } else {
-                                  await showDialog(
-                                    context: context,
-                                    builder:
-                                        (context) => SpeechToText(
-                                          onChanged:
-                                              (text) =>
-                                                  completer.complete(text),
-                                          onError:
-                                              (error) => completer
-                                                  .completeError(error),
-                                        ),
-                                  );
-                                }
 
-                                try {
-                                  final text = await completer.future;
-                                  globalKeyword.value = _controller.text = text;
+                                  try {
+                                    final text = await completer.future;
+                                    globalKeyword.value = text;
 
-                                  _showSearchLayer();
-                                } catch (error) {
-                                  showSnackError('speech voice', error);
-                                }
-                              },
-                            )
-                            : null
-                        : IconButton(
-                          icon: Icon(Icons.clear),
-                          onPressed: () {
-                            _controller.clear();
-                            globalKeyword.value = '';
-                          },
-                        ),
+                                    _showSearchLayer();
+                                  } catch (error) {
+                                    showSnackError('speech voice', error);
+                                  }
+                                },
+                              )
+                              : null
+                          : IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              globalKeyword.value = '';
+                            },
+                          ),
+                ),
               ),
-            ),
-            if (!focusing && widget.showExtension) ..._buildButtonsMore(),
-          ],
+              if (!focusing && widget.showExtension) ..._buildButtonsMore(),
+            ],
+          ),
         ),
       ),
     );

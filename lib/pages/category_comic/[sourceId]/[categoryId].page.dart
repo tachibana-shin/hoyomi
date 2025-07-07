@@ -199,7 +199,7 @@ class _CategoryComicPageState extends State<CategoryComicPage> with KaeruMixin {
               ? null
               : PreferredSize(
                 preferredSize: Size.fromHeight(
-                  48.0 + (widget.title != null ? (14.0 * 1.5 + 3.0) : 0),
+                  56.0 + (widget.title != null ? (14.0 * 1.5 + 3.0) : 0),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(

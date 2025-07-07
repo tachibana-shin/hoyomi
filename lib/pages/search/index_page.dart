@@ -52,7 +52,7 @@ class _SearchPageState extends State<SearchPage>
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         scrolledUnderElevation: 0.0,
-        title: GlobalSearchBar(pageIsSearch: true),
+        title: const GlobalSearchBar(pageIsSearch: true),
         titleSpacing: 0,
         automaticallyImplyLeading: false,
         centerTitle: true,
