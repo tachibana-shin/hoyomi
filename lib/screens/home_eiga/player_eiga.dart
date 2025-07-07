@@ -637,6 +637,19 @@ class _PlayerEigaState extends State<PlayerEiga>
     watch([_showControls], () {
       if (_showControls.value) _onPlayerValueChanged(true);
     });
+
+    watch([_playing], () {
+      if (_playing.value) {
+        WakelockPlus.enable();
+      } else {
+        WakelockPlus.disable();
+      }
+    });
+    onBeforeUnmount(() {
+      _controller.value?.dispose();
+      _resetAppBrightness();
+      WakelockPlus.disable();
+    });
   }
 
   Future<void> _seekTo(
@@ -812,16 +825,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       });
       _loading.value =
           controller.value.isInitialized != true || getIsBuffering(controller);
-      final playing = controller.value.isPlaying;
-      if (_playing.value != playing) {
-        _playing.value = playing;
-
-        if (_playing.value) {
-          WakelockPlus.enable();
-        } else {
-          WakelockPlus.disable();
-        }
-      }
+      _playing.value = controller.value.isPlaying;
       _aspectRatio.value = controller.value.aspectRatio;
       if (controller.value.isCompleted) {
         controller.removeListener(_onPlayerValueChanged);
@@ -2255,13 +2259,4 @@ class _PlayerEigaState extends State<PlayerEiga>
   }
 
   /// ============= /system brightness and volume ===========
-
-  @override
-  void dispose() {
-    _controller.value?.dispose();
-    _resetAppBrightness();
-    WakelockPlus.disable();
-
-    super.dispose();
-  }
 }
