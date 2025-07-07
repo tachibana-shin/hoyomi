@@ -691,13 +691,10 @@ class AnimeVietsubService extends ABEigaService
 
   @override
   getSource({required eigaId, required episode, server}) async {
-    final extra =  jsonDecode(episode.extra!);
+    final extra = jsonDecode(episode.extra!);
     final text = await fetch(
       '$baseUrl/ajax/player?v=2019a',
-      body: {
-        'link': extra['hash'],
-        'id': extra['id']
-      },
+      body: {'link': extra['hash'], 'id': extra['id']},
     );
 
     final json = jsonDecode(text);
