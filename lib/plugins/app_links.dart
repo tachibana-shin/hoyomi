@@ -19,7 +19,7 @@ Future<void> initializeAppLinks() async {
   }
 
   AppLinks().uriLinkStream.listen((uri) {
-    if (uri.pathSegments.firstOrNull == 'add-plugin') {
+    if (uri.host == 'add-plugin') {
       final url = uri.queryParameters['url'];
       if (url?.isNotEmpty == true) {
         showInstallJsServiceModal(null, url);
