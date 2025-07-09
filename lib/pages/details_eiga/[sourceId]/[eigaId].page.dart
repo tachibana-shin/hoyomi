@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:awesome_extensions/awesome_extensions.dart' hide NavigatorExt;
@@ -163,52 +162,18 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   Future<MetaEiga> _getDetails(String eigaId) async {
-    final data = await cacheRemember<MetaEiga>(
-      'details_eiga/${_service.uid}/$eigaId',
-      get: () => _service.getDetails(eigaId),
-      fromCache: (value) => MetaEiga.fromJson(jsonDecode(value)),
-      toCache: (value) => jsonEncode(value.toJson()),
-      onUpdate: (newValue) => _metaEiga.value = newValue,
-    );
+    return _metaEiga.value = await _service.getDetails(eigaId);
+    // final data = await cacheRemember<MetaEiga>(
+    //   'details_eiga/${_service.uid}/$eigaId',
+    //   get: () => _service.getDetails(eigaId),
+    //   fromCache: (value) => MetaEiga.fromJson(jsonDecode(value)),
+    //   toCache: (value) => jsonEncode(value.toJson()),
+    //   onUpdate: (newValue) => _metaEiga.value = newValue,
+    // );
 
-    if (mounted) _metaEiga.value = data;
+    // if (mounted) _metaEiga.value = data;
 
-    return data;
-  }
-
-  Future<EigaEpisodes> _getEpisodes(
-    String eigaId,
-    void Function(EigaEpisodes newValue) update,
-  ) async {
-    return await cacheRemember<EigaEpisodes>(
-      'episodes_eiga/${_service.uid}/$eigaId',
-      get:
-          () => _service.getEpisodes(eigaId).then((data) {
-            final episodes = data.copyWith(
-              episodes:
-                  data.episodes.indexed
-                      .map((entry) => entry.$2.copyWith(order: entry.$1))
-                      .toList(),
-            );
-
-            if (episodes.episodes.isEmpty) {
-              return data.copyWith(
-                episodes: [
-                  EigaEpisode(
-                    name: 'Trailer',
-                    episodeId: EigaEpisode.trailerId,
-                    order: -1,
-                  ),
-                ],
-              );
-            }
-
-            return episodes;
-          }),
-      fromCache: (value) => EigaEpisodes.fromJson(jsonDecode(value)),
-      toCache: (value) => jsonEncode(value.toJson()),
-      onUpdate: update,
-    );
+    // return data;
   }
 
   @override
@@ -1439,18 +1404,15 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
       if (metaEiga.seasons.isEmpty || metaEiga.seasons.length == 1) {
         final season = Season(eigaId: _eigaId.value, name: 'Episodes');
         return ListEpisodes(
+          service: _service,
           season: season,
+          metaEiga: _metaEiga,
           thumbnail: metaEiga.poster ?? metaEiga.image,
           sourceId: widget.sourceId,
           eigaId: _eigaId,
           episodeId: _episodeId,
           eventBus: _eventBus,
-          getData:
-              (update) async =>
-                  _cacheEpisodesStore[_eigaId.value] ??= await _getEpisodes(
-                    _eigaId.value,
-                    update,
-                  ),
+          cacheEpisodesStore: _cacheEpisodesStore,
           getWatchTimeEpisodes:
               (episodesEiga) async =>
                   _cacheWatchTimeStore[_eigaId.value] ??= await _service
@@ -1505,16 +1467,15 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                       final index = entry.key;
 
                       final child = ListEpisodes(
+                        service: _service,
                         season: season,
+                        metaEiga: _metaEiga,
                         sourceId: widget.sourceId,
                         thumbnail: metaEiga.poster ?? metaEiga.image,
                         eigaId: _eigaId,
                         episodeId: _episodeId,
                         eventBus: _eventBus,
-                        getData:
-                            (update) async =>
-                                _cacheEpisodesStore[season.eigaId] ??=
-                                    await _getEpisodes(season.eigaId, update),
+                        cacheEpisodesStore: _cacheEpisodesStore,
                         getWatchTimeEpisodes:
                             (episodesEiga) async =>
                                 _cacheWatchTimeStore[season.eigaId] ??=
