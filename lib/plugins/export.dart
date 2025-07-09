@@ -4,7 +4,6 @@
 export 'inflate_raw.dart';
 export 'analytics.dart';
 export 'init_services.dart';
-export 'create_dio_client.dart';
 export 'fullscreen.dart';
 export 'application_document_directory.dart';
 export 'video_polyfill.dart';

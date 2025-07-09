@@ -16,12 +16,14 @@ targets:
           - lib/general_api/**/*.dart
           - lib/database/**/*.dart
           - lib/downloader/*.dart
+          - lib/rust/**/*.dart
       json_serializable:
         generate_for:
           - lib/core_services/*.dart
           - lib/core_services/**/*.dart
           - lib/general_api/**/*.dart
           - lib/database/**/*.dart
+          - lib/rust/**/*.dart
       retrofit_generator:
         generate_for:
           - lib/general_api/**/*.dart

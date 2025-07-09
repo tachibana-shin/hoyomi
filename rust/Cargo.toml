@@ -7,10 +7,29 @@ edition = "2021"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-flutter_rust_bridge = "=2.10.0"
+anyhow = "1.0.98"
+chrono = "0.4.41"
+flutter_rust_bridge = {version = "=2.11.1", features = ["chrono"] }
+futures-util = "0.3.31"
 image = "0.25.6"
-tokio = "1.46.0"
-wreq = "5.1.0"
+serde = "1.0.219"
+tokio = "1.46.1"
+wreq-util = "2.2.5"
+
+[dependencies.wreq]
+version = "5.1.0"
+default-features = false
+features = [
+    "charset",
+    "cookies",
+    "stream",
+    "multipart",
+    "socks",
+
+    # Compression
+    "brotli",
+    "gzip",
+]
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }

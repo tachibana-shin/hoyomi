@@ -23,7 +23,6 @@ Future<void> main() async {
   await androidSdkIntInit();
   await initializeApplicationDocumentDirectory();
   await initializeCert();
-  await initializeDioClient();
   await initializeFirebase();
   await initializeAnalytics();
   await initializeServices();

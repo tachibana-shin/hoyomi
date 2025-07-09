@@ -1,9 +1,9 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:dio/dio.dart' show BaseOptions, Dio, ResponseType;
 import 'package:flutter/material.dart';
+import 'package:hoyomi/core_services/http_adapter/wreq_adapter.dart';
 import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
-import 'package:hoyomi/plugins/export.dart';
 import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/utils/export.dart';
 import 'package:hoyomi/widgets/export.dart';
@@ -64,10 +64,9 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
   Future<Dio> _createClient() async {
     if (_dio != null) return _dio!;
 
-    return _dio = await createDioClient(
-      BaseOptions(followRedirects: true, responseType: ResponseType.plain),
-      followRedirects: true,
-    );
+    return _dio = Dio(
+      BaseOptions(responseType: ResponseType.plain, followRedirects: true),
+    )..httpClientAdapter = WReqAdapter();
   }
 
   Future<List<_RssItem>> _fetchAndParseFeeds(
