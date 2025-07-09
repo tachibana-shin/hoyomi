@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
 import 'package:hoyomi/rust/api/image/unscramble_image.dart';
 import 'package:hoyomi/rust/api/image/unscramble_image_columns.dart';
 import 'package:hoyomi/rust/api/image/unscramble_image_rows.dart';
+import 'package:hoyomi/rust/frb_generated.dart';
 
 import '../js_runtime.dart';
 
@@ -22,11 +24,19 @@ extension RustApiJavascriptRuntimeExtension on JsRuntime {
                 .toList();
         final autoTrim = args['autoTrim'] as bool;
 
-        final result = await unscrambleImageColumns(
-          imageData: imageData,
-          blocks: blocks,
-          autoTrim: autoTrim,
-        );
+        final result = await Isolate.run(() async {
+          await RustLib.init();
+
+          final output = unscrambleImageColumnsSync(
+            imageData: imageData,
+            blocks: blocks,
+            autoTrim: autoTrim,
+          );
+
+          RustLib.dispose();
+
+          return output;
+        });
 
         dartSendMessage(
           'unscrambleImageColumnsResponse:$requestId',
