@@ -8,6 +8,7 @@ import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:hoyomi/controller/service_settings_controller.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/main.dart';
@@ -375,7 +376,15 @@ abstract class Service extends BaseService
         }
       }
     } catch (error, trace) {
-      if (!headlessMode) {
+      if (kDebugMode) {
+        print('❌ [HTTP] Request Failed');
+        print('⚠️ Error: $error');
+      }
+
+      if (!headlessMode &&
+          !(error is DioException &&
+              (error.error is AnyhowException ||
+                  error.toString().contains('No such host is known.')))) {
         _tempHeadless = true;
         bus.fire(HeadlessModeChanged());
 
@@ -418,11 +427,6 @@ abstract class Service extends BaseService
           throw captchaError;
         }
         rethrow;
-      }
-
-      if (kDebugMode) {
-        print('❌ [HTTP] Request Failed');
-        print('⚠️ Error: $error');
       }
 
       rethrow;
