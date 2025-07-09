@@ -27,11 +27,42 @@ const branches = [
 
 /// 日本語のコメント: ルートナビゲーターのためのグローバルキー。
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
-final pageBuilder =
-    (!XPlatform.isAndroid && !XPlatform.isIOS) ||
-            (androidSdkInt != null && androidSdkInt! < 29)
-        ? GoTransitions.zoom.call
-        : null;
+
+class _PageBuilder extends GoTransition {
+  static int _id = 0;
+
+  final id = _id++;
+
+  _PageBuilder();
+
+  @override
+  PageRouteTransitionsBuilder get builder {
+    Widget builder<T>(
+      PageRoute<T> route,
+      BuildContext context,
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child,
+    ) {
+      if ((!XPlatform.isAndroid && !XPlatform.isIOS) ||
+          (androidSdkInt != null && androidSdkInt! < 29)) {
+        return ZoomPageTransitionsBuilder().buildTransitions(
+          route,
+          context,
+          animation,
+          secondaryAnimation,
+          MaterialPage(restorationId: 'router.$id', child: child).child,
+        );
+      }
+
+      return MaterialPage(restorationId: 'router.$id', child: child).child;
+    }
+
+    return builder;
+  }
+}
+
+final pageBuilder = _PageBuilder().call;
 
 final routes = [
   // --- Shell route cho bottom navigation (5 items) ---
