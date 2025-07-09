@@ -51,9 +51,16 @@ class WReqAdapter implements HttpClientAdapter {
 
       final headers = Headers.fromMap(
         Map.fromEntries(
-          options.headers.entries.map(
-            (entry) => MapEntry(entry.key, entry.value is List ? entry.value.join(', ') : entry.value.toString()),
-          ),
+          options.headers.entries
+              .where((entry) => entry.value != null)
+              .map(
+                (entry) => MapEntry(
+                  entry.key,
+                  entry.value is List
+                      ? entry.value.join(', ')
+                      : entry.value.toString(),
+                ),
+              ),
         ),
       );
 
@@ -70,7 +77,7 @@ class WReqAdapter implements HttpClientAdapter {
         bodyBytes: rawBytes,
         redirectSettings:
             options.followRedirects
-                ? RedirectSettings.limitedRedirects(5)
+                ? RedirectSettings.limitedRedirects(options.maxRedirects)
                 : null,
         userAgent: headers.get('user-agent'),
       );
