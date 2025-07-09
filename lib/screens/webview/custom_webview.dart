@@ -159,6 +159,12 @@ class _CustomWebViewState extends State<CustomWebView> {
           Expanded(
             child: InAppWebView(
               initialUrlRequest: URLRequest(url: WebUri(_initialUrl)),
+              initialSettings: InAppWebViewSettings(
+                incognito: false,
+                supportMultipleWindows: true,
+                sharedCookiesEnabled: true,
+                // userAgent: userAgent,
+              ),
               onWebViewCreated: (controller) {
                 _webViewController =
                     controller; //..loadUrl(urlRequest: URLRequest());
