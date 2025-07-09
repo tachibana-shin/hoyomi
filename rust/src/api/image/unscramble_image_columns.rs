@@ -54,11 +54,9 @@ pub async fn unscramble_image_columns(
     blocks: Vec<ColumnBlock>,
     auto_trim: bool,
 ) -> Result<Vec<u8>, String> {
-    tokio::task::spawn_blocking(move || {
-        do_unscramble_image_columns(image_data, blocks, auto_trim)
-    })
-    .await
-    .map_err(|e| format!("JoinError: {}", e))? // unwrap lỗi từ spawn_blocking
+    tokio::task::spawn_blocking(move || do_unscramble_image_columns(image_data, blocks, auto_trim))
+        .await
+        .map_err(|e| format!("JoinError: {}", e))? // unwrap lỗi từ spawn_blocking
 }
 
 #[frb(sync)]

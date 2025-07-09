@@ -8,13 +8,13 @@ import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:hoyomi/controller/service_settings_controller.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/export.dart';
 import 'package:hoyomi/database/scheme/service_settings.dart';
 import 'package:hoyomi/core_services/exception/captcha_required_exception.dart';
-import 'package:hoyomi/plugins/create_dio_client.dart';
 import 'package:hoyomi/utils/d_query.dart';
 import 'package:html/parser.dart';
 
@@ -25,6 +25,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'http_adapter/headless_webview_adapter.dart';
+import 'http_adapter/wreq_adapter.dart';
 import 'interfaces/export.dart';
 import 'base_service.dart';
 
@@ -74,18 +75,6 @@ Future<Dio> _createDioClientCache({
     allowPostMethod: false,
   );
 
-  if (!headless) {
-    return await createDioClient(
-        BaseOptions(
-          baseUrl: baseUrl,
-          responseType: ResponseType.plain,
-          followRedirects: followRedirects,
-        ), // only followRedirects for web
-        followRedirects: followRedirects, // this skip followRedirects in io
-      )
-      ..interceptors.add(DioCacheInterceptor(options: options));
-  }
-
   final dio =
       Dio(
           BaseOptions(
@@ -94,7 +83,8 @@ Future<Dio> _createDioClientCache({
             followRedirects: followRedirects,
           ),
         )
-        ..httpClientAdapter = HeadlessWebViewAdapter(fromService)
+        ..httpClientAdapter =
+            headless ? HeadlessWebViewAdapter(fromService) : WReqAdapter()
         ..interceptors.add(DioCacheInterceptor(options: options));
 
   return dio;
@@ -386,7 +376,15 @@ abstract class Service extends BaseService
         }
       }
     } catch (error, trace) {
-      if (!headlessMode) {
+      if (kDebugMode) {
+        print('❌ [HTTP] Request Failed');
+        print('⚠️ Error: $error');
+      }
+
+      if (!headlessMode &&
+          !(error is DioException &&
+              (error.error is AnyhowException ||
+                  error.toString().contains('No such host is known.')))) {
         _tempHeadless = true;
         bus.fire(HeadlessModeChanged());
 
@@ -429,11 +427,6 @@ abstract class Service extends BaseService
           throw captchaError;
         }
         rethrow;
-      }
-
-      if (kDebugMode) {
-        print('❌ [HTTP] Request Failed');
-        print('⚠️ Error: $error');
       }
 
       rethrow;

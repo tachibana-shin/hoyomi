@@ -884,10 +884,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_rust_bridge
-      sha256: b416ff56002789e636244fb4cc449f587656eff995e5a7169457eb0593fcaddb
+      sha256: "37ef40bc6f863652e865f0b2563ea07f0d3c58d8efad803cc01933a4b2ee067e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.10.0"
+    version: "2.11.1"
   flutter_screenutil:
     dependency: "direct main"
     description:
@@ -1231,14 +1231,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
-  http_profile:
-    dependency: transitive
-    description:
-      name: http_profile
-      sha256: "7e679e355b09aaee2ab5010915c932cce3f2d1c11c3b2dc177891687014ffa78"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
   iconify_flutter:
     dependency: "direct main"
     description:
@@ -1764,14 +1756,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
-  rhttp_plus:
-    dependency: "direct main"
-    description:
-      name: rhttp_plus
-      sha256: "89b35c401be8f696a31d5c3a78f5d7e6c10221ef094f3272b6e553dc46540ae9"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.11.7"
   rust_lib_hoyomi:
     dependency: "direct main"
     description:

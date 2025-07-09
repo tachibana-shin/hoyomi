@@ -58,7 +58,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_package_installer: ^0.0.1
-  flutter_rust_bridge: 2.10.0
+  flutter_rust_bridge: ^2.11.1
   flutter_screenutil: ^5.9.3
   flutter_spinkit: ^5.2.1
   flutter_svg: ^2.0.17
@@ -94,7 +94,6 @@ dependencies:
   responsive_grid: ^2.4.4
   responsive_grid_list: ^1.4.0
   retry: ^3.1.2
-  rhttp_plus: ^0.11.7
   rust_lib_hoyomi:
     path: rust_builder
   screen_brightness: ^2.1.2
