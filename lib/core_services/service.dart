@@ -384,7 +384,9 @@ abstract class Service extends BaseService
       if (!headlessMode &&
           !(error is DioException &&
               (error.error is AnyhowException ||
-                  error.toString().contains('No such host is known.')))) {
+                  error.toString().contains('No such host is known.') ||
+                  (error.response != null &&
+                      (error.response!.statusCode ?? 0) <= 499)))) {
         _tempHeadless = true;
         bus.fire(HeadlessModeChanged());
 

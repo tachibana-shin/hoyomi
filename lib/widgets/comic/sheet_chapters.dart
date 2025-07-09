@@ -201,8 +201,7 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                     return Watch(() {
                       final watchPage =
                           usePick(
-                            _watchPageChapters,
-                            (value) => value?[chapter.chapterId],
+                            () => _watchPageChapters.value?[chapter.chapterId],
                           ).value;
 
                       return Container(

@@ -240,7 +240,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     /// Server
     _server = computed(() {
       if (metaIsFake.value ||
-          usePick(widget.episode, (value) => value == null).value) {
+          usePick(() => widget.episode.value == null).value) {
         return null;
       }
 
@@ -1256,10 +1256,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                 // icon subtitle
                 Watch(() {
                   final isEnabled =
-                      usePick(
-                        _subtitles,
-                        (value) => value?.isNotEmpty == true,
-                      ).value;
+                      usePick(() => _subtitles.value?.isNotEmpty == true).value;
                   return Disabled(
                     disabled: !isEnabled,
                     child: IconButton(
