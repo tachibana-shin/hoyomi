@@ -7,6 +7,7 @@ import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
 import 'package:kaeru/kaeru.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 import 'package:subtitle/subtitle.dart';
 
 import 'package:hoyomi/utils/format_duration.dart';
@@ -289,6 +290,7 @@ class _SliderEigaState extends State<SliderEiga>
           final opening = openingEnding?.opening;
           final ending = openingEnding?.ending;
 
+return MaterialPlayOrPauseButton();
           return CustomPaint(
             size: Size(parentSize.width, _barHeightAnimation.value),
             painter: _ProgressBarPainter(

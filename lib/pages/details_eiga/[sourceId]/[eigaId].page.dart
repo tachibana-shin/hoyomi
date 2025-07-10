@@ -82,8 +82,96 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     return null;
   });
-  late final _onPrevNotifier = ref<VoidCallback?>(null);
-  late final _onNextNotifier = ref<VoidCallback?>(null);
+  late final _currentEpisode = computed(() {
+    return _episodes.value?.episodes.firstWhereOrNull(
+      (e) => e.episodeId == _episodeId.value,
+    );
+  });
+  late final _onPrev = computed<VoidCallback?>(() {
+    final currentSeason = _currentSeason.value;
+    final metaEiga = _metaEiga.value;
+    final currentEpisode = _currentEpisode.value;
+    final episodes = _episodes.value;
+
+    if (!(currentSeason != null &&
+        metaEiga.fake &&
+        currentEpisode != null &&
+        episodes != null)) {
+      return null;
+    }
+
+    final prevEpisode = episodes.episodes.elementAtOrNull(
+      max(
+        episodes.episodes.length,
+        episodes.episodes.indexOf(currentEpisode) - 1,
+      ),
+    );
+
+    if (prevEpisode != null) {
+      return () => _onChangeEpisode(
+        episodeId: prevEpisode.episodeId,
+        episodesEiga: _episodes.value!,
+        season: currentSeason,
+      );
+    } else {
+      final prevSeason = metaEiga.seasons.elementAtOrNull(
+        max(
+          metaEiga.seasons.length,
+          metaEiga.seasons.indexOf(currentSeason) - 1,
+        ),
+      );
+
+      if (prevSeason == null) return null;
+
+      return () {
+        _eigaId.value = prevSeason.eigaId;
+        _episodeId.value = null;
+        _schedule.value = null;
+        _episodes.value = null;
+      };
+    }
+  });
+  late final _onNext = computed<VoidCallback?>(() {
+    final currentSeason = _currentSeason.value;
+    final metaEiga = _metaEiga.value;
+    final currentEpisode = _currentEpisode.value;
+    final episodes = _episodes.value;
+
+    if (!(currentSeason != null &&
+        metaEiga.fake &&
+        currentEpisode != null &&
+        episodes != null)) {
+      return null;
+    }
+
+    final nextEpisode = episodes.episodes.elementAtOrNull(
+      (episodes.episodes.indexOf(currentEpisode) >>> 0) + 1,
+    );
+
+    if (nextEpisode != null) {
+      return () => _onChangeEpisode(
+        episodeId: nextEpisode.episodeId,
+        episodesEiga: _episodes.value!,
+        season: currentSeason,
+      );
+    } else {
+      final prevSeason = metaEiga.seasons.elementAtOrNull(
+        max(
+          metaEiga.seasons.length,
+          (metaEiga.seasons.indexOf(currentSeason) >>> 0) + 1,
+        ),
+      );
+
+      if (prevSeason == null) return null;
+
+      return () {
+        _eigaId.value = prevSeason.eigaId;
+        _episodeId.value = null;
+        _schedule.value = null;
+        _episodes.value = null;
+      };
+    }
+  });
 
   /// ================= player expose =================
   late final _serversFuture = computed<Future<List<ServerSource>?>?>(() async {
@@ -109,8 +197,18 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   late final Ref<String> _eigaId;
   late final _episodeId = ref<String?>(null);
   late final _schedule = ref<DateTime?>(null);
-  late final _episode = ref<EigaEpisode?>(null);
-  late final _currentSeason = ref<Season?>(null);
+  late final _episode = computed<EigaEpisode?>(() {
+    return _episodes.value?.episodes.firstWhereOrNull(
+      (e) => e.episodeId == _episodeId.value,
+    );
+  });
+  late final _currentSeason = computed<Season?>(() {
+    if (_metaIsFake.value) return null;
+
+    return _metaEiga.value.seasons.firstWhereOrNull(
+      (season) => season.eigaId == _eigaId.value,
+    );
+  });
   late final _episodes = ref<EigaEpisodes?>(null);
   late final _suggest = computed<Future<List<Eiga>?>>(() async {
     if (_metaIsFake.value) {
@@ -142,6 +240,21 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
     _eigaId = ref(widget.eigaId);
     _episodeId.value = widget.episodeId;
+
+    watch([_eigaId], () => _getDetails(_eigaId.value));
+
+    watchEffect(() {
+      if (_episodeId.value case final episodeId?) {
+        context.replaceNamed(
+          'details_eiga',
+          pathParameters: {
+            'sourceId': widget.sourceId,
+            'eigaId': widget.eigaId,
+          },
+          queryParameters: {'episodeId': episodeId},
+        );
+      }
+    });
 
     listenAll([_metaEiga, _eigaId], () {
       final metaEiga = _metaEiga.value;
@@ -446,8 +559,8 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
         };
       },
       aspectRatio: _aspectRatio!,
-      onPrev: _onPrevNotifier,
-      onNext: _onNextNotifier,
+      onPrev: _onPrev,
+      onNext: _onNext,
 
       /// ===============
       serversFuture: _serversFuture,
@@ -1285,58 +1398,15 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
   }
 
   void _onChangeEpisode({
-    required int indexEpisode,
-    required int indexSeason,
+    required String episodeId,
     required EigaEpisodes episodesEiga,
-    required List<Season> seasons,
+    required Season season,
   }) {
-    final seasonChanged = _eigaId.value != seasons[indexSeason].eigaId;
-    final currentEpisode = episodesEiga.episodes[indexEpisode];
-
-    if (seasonChanged) {
-      _eigaId.value = seasons[indexSeason].eigaId;
-    }
-
-    _episodeId.value = currentEpisode.episodeId;
-    _episode.value = currentEpisode;
-
-    _currentSeason.value = seasons[indexSeason];
+    _eigaId.value = season.eigaId;
     _episodes.value = episodesEiga;
-
-    final currentIndex = episodesEiga.episodes.indexWhere(
-      (e) => e.episodeId == _episodeId.value,
-    );
-    _onPrevNotifier.value =
-        currentIndex > 0
-            ? () => _onChangeEpisode(
-              indexEpisode: currentIndex - 1,
-              indexSeason: indexSeason,
-              episodesEiga: episodesEiga,
-              seasons: seasons,
-            )
-            : null;
-
-    _onNextNotifier.value =
-        currentIndex < episodesEiga.episodes.length - 1
-            ? () => _onChangeEpisode(
-              indexEpisode: currentIndex + 1,
-              indexSeason: indexSeason,
-              episodesEiga: episodesEiga,
-              seasons: seasons,
-            )
-            : null;
+    _episodeId.value = episodeId;
 
     _updateImageAndSchedule(episodes: episodesEiga);
-
-    if (seasonChanged) {
-      _getDetails(_eigaId.value);
-    }
-
-    context.replaceNamed(
-      'details_eiga',
-      pathParameters: {'sourceId': widget.sourceId, 'eigaId': widget.eigaId},
-      queryParameters: {'episodeId': _episodeId.value!},
-    );
   }
 
   Widget _buildServers() {
@@ -1423,14 +1493,13 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
           eager: !metaEiga.fake,
           scrollDirection: scrollDirection,
           controller: controller,
-          onTapEpisode: ({required episodesEiga, required indexEpisode}) {
+          onTapEpisode: ({required episodesEiga, required episodeId}) {
             if (metaEiga.fake) return;
 
             _onChangeEpisode(
-              indexEpisode: indexEpisode,
-              indexSeason: 0,
+              episodeId: episodeId,
               episodesEiga: episodesEiga,
-              seasons: [season],
+              season: season,
             );
           },
         );
@@ -1446,9 +1515,14 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             (season) => season.eigaId == _eigaId.value,
           ),
         ),
-        child: Builder(
+        child: KaeruBuilder(
           builder: (context) {
-            final tabController = DefaultTabController.of(context);
+            final tabController = DefaultTabController.of(context.context);
+            final tabActive = context.ref(0);
+
+tabController.addListener(() {
+    tabActive.value = tabController.index;
+});
 
             _eigaId.addListener(() {
               final index = metaEiga.seasons.indexWhere(
@@ -1462,10 +1536,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             final children = [
               (double? height) {
                 final children =
-                    metaEiga.seasons.asMap().entries.map((entry) {
-                      final season = entry.value;
-                      final index = entry.key;
-
+                    metaEiga.seasons.map((season) {
                       final child = ListEpisodes(
                         service: _service,
                         season: season,
@@ -1486,17 +1557,17 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                         eager: !metaEiga.fake,
                         scrollDirection: scrollDirection,
                         controller: controller,
+                        needLoad: tabActive.value == metaEiga.seasons.indexOf(season) || inModal,
                         onTapEpisode: ({
                           required episodesEiga,
-                          required indexEpisode,
+                          required episodeId,
                         }) {
                           if (metaEiga.fake) return;
 
                           _onChangeEpisode(
-                            indexEpisode: indexEpisode,
-                            indexSeason: index,
+                            episodeId: episodeId,
                             episodesEiga: episodesEiga,
-                            seasons: metaEiga.seasons,
+                            season: season,
                           );
                         },
                       );
@@ -1508,7 +1579,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
 
                 return inModal
                     ? TabBarView(children: children)
-                    : ContentSizeTabBarView(children: children);
+                    : ContentSizeTabBarView(controller: tabController,children: children);
               },
               (void _) => TabBar(
                 isScrollable: true,
@@ -1519,7 +1590,7 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
                 ),
                 splashBorderRadius: BorderRadius.circular(10.0),
                 labelStyle: TextStyle(fontSize: 13.0),
-                indicatorColor: Theme.of(context).colorScheme.secondary,
+                indicatorColor: Theme.of(context.context).colorScheme.secondary,
                 tabAlignment: TabAlignment.start,
                 dividerHeight: 0,
                 tabs:

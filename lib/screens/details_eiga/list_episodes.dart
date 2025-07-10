@@ -5,6 +5,7 @@ import 'package:awesome_extensions/awesome_extensions_flutter.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hoyomi/core_services/eiga/export.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/pages/details_eiga/[sourceId]/[eigaId].page.dart';
@@ -27,8 +28,9 @@ class ListEpisodes extends StatefulWidget {
   final Axis scrollDirection;
   final ScrollController? controller;
   final Map<String, EigaEpisodes> cacheEpisodesStore;
+  final bool needLoad;
   final void Function({
-    required int indexEpisode,
+    required String episodeId,
     required EigaEpisodes episodesEiga,
   })
   onTapEpisode;
@@ -50,6 +52,7 @@ class ListEpisodes extends StatefulWidget {
     required this.episodeId,
     required this.onTapEpisode,
     required this.cacheEpisodesStore,
+    this.needLoad = true,
     required this.getWatchTimeEpisodes,
     required this.eager,
     required this.eventBus,
@@ -72,13 +75,13 @@ class _ListEpisodesState extends State<ListEpisodes>
 
   late final _episodesEiga = computed<Future<EigaEpisodes?>>(() async {
     final isFake = usePick(() => widget.metaEiga.value.fake);
-    if (isFake.value) null;
+    if (isFake.value || !widget.needLoad) null;
 
     try {
       final episodes =
-          widget.cacheEpisodesStore[widget.eigaId.value] ??= await widget
+          widget.cacheEpisodesStore[widget.season.eigaId] ??= await widget
               .service
-              .getEpisodes(widget.eigaId.value)
+              .getEpisodes(widget.season.eigaId)
               .then((data) {
                 final episodes = data.copyWith(
                   episodes:
@@ -116,12 +119,12 @@ class _ListEpisodesState extends State<ListEpisodes>
           });
 
       if (widget.eager) {
-        final indexActive = episodes.episodes.indexWhere(
+        final currentEpisode = episodes.episodes.firstWhereOrNull(
           (episode) => _checkEpisodeActive(episode, episodes),
         );
-        if (indexActive != -1) {
+        if (currentEpisode != null) {
           widget.onTapEpisode(
-            indexEpisode: indexActive,
+            episodeId: currentEpisode.episodeId,
             episodesEiga: episodes,
           );
         }
@@ -138,6 +141,7 @@ class _ListEpisodesState extends State<ListEpisodes>
 
   @override
   void initState() {
+    print('list episode ================================================');
     super.initState();
     onBeforeUnmount(
       widget.eventBus.on<WatchTimeDataEvent>().listen((
@@ -431,7 +435,7 @@ class _ListEpisodesState extends State<ListEpisodes>
             borderRadius: BorderRadius.circular(7),
             onTap:
                 () => widget.onTapEpisode(
-                  indexEpisode: index,
+                  episodeId: episode.episodeId,
                   episodesEiga: episodesEiga,
                 ),
             child: Container(
@@ -566,7 +570,7 @@ class _ListEpisodesState extends State<ListEpisodes>
             borderRadius: BorderRadius.circular(7),
             onTap:
                 () => widget.onTapEpisode(
-                  indexEpisode: index,
+                  episodeId: episode.episodeId,
                   episodesEiga: episodesEiga,
                 ),
             child: Container(
