@@ -178,7 +178,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   late final _progressIsHovering = ref(false);
   late final _autoPlay = ref(true);
   late final _subtitleCode = ref<String?>(null);
-  late final _playbackSpeed = ref(1.0);
+  late final _playbackRate = ref(1.0);
   late final _qualityCode = ref<String?>(null);
   late final _fullscreen = widget.fullscreen;
 
@@ -236,6 +236,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     _binding(_buffered, _controller.player.stream.buffer);
     _binding(_loading, _controller.player.stream.buffering);
     _binding(_playing, _controller.player.stream.playing);
+    _binding(_playbackRate, _controller.player.stream.rate);
 
     _controller.player.stream.completed.listen((value) {
       if (value) widget.onNext.value?.call();
@@ -274,9 +275,9 @@ class _PlayerEigaState extends State<PlayerEiga>
       // _initializeStore.remove(_controller);
       // _controller= null;
 
-      _position.value = Duration.zero;
-      _duration.value = Duration.zero;
-      _buffered.value = Duration.zero;
+      // _position.value = Duration.zero;
+      // _duration.value = Duration.zero;
+      // _buffered.value = Duration.zero;
     });
 
     /// Servers
@@ -1955,13 +1956,13 @@ class _PlayerEigaState extends State<PlayerEiga>
 
               return ListTile(
                 leading:
-                    _playbackSpeed.value == item.value
+                    _playbackRate.value == item.value
                         ? Icon(Icons.check)
                         : Text(''),
                 title: Text(item.label),
                 onTap: () {
                   Navigator.pop(context);
-                  _playbackSpeed.value = item.value;
+                  _controller.player.setRate(item.value);
                 },
               );
             },
@@ -2101,7 +2102,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                 title: Text('Playback Speed', style: TextStyle(fontSize: 14.0)),
                 trailing: Text(
                   _playbackList.firstWhere((item) {
-                    return item.value == _playbackSpeed.value;
+                    return item.value == _playbackRate.value;
                   }).label,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.secondary,
