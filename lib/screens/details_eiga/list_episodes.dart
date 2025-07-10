@@ -141,7 +141,6 @@ class _ListEpisodesState extends State<ListEpisodes>
 
   @override
   void initState() {
-    print('list episode ================================================');
     super.initState();
     onBeforeUnmount(
       widget.eventBus.on<WatchTimeDataEvent>().listen((
