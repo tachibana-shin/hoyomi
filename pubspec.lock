@@ -1461,7 +1461,7 @@ packages:
     source: hosted
     version: "1.0.11"
   media_kit_video:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: media_kit_video
       sha256: a656a9463298c1adc64c57f2d012874f7f2900f0c614d9545a3e7b8bb9e2137b

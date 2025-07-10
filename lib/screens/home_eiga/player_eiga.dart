@@ -27,11 +27,13 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:mediaquery_sizer/mediaquery_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:video_player/video_player.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 
 import 'package:hoyomi/core_services/eiga/interfaces/subtitle.dart' as type;
 import 'package:wakelock_plus/wakelock_plus.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart'
+    hide PlayerState;
 
 import 'widget/subtitle_settings_sheet.dart';
 import 'widget/animated_icon_forward.dart';
@@ -54,9 +56,9 @@ class PlayerEiga extends StatefulWidget {
   final Ref<MetaEiga> metaEiga;
 
   final Ref<String?> episodeId;
-  final Ref<EigaEpisode?> episode;
 
-  final Ref<Season?> season;
+  final Computed<EigaEpisode?> episode;
+  final Computed<Season?> season;
 
   final Ref<bool> fullscreen;
 
@@ -67,8 +69,8 @@ class PlayerEiga extends StatefulWidget {
   final double aspectRatio;
 
   final void Function(BuildContext context, bool isFullscreen) onTapPlaylist;
-  final Ref<void Function()?> onNext;
-  final Ref<void Function()?> onPrev;
+  final Computed<void Function()?> onNext;
+  final Computed<void Function()?> onPrev;
 
   final Function(WatchTimeData data) onWatchTimeChanged;
 
@@ -124,12 +126,16 @@ enum _StateOpeningEnding { opening, ending, none, skip }
 // video player
 // djangoflow_video_player
 class _PlayerEigaState extends State<PlayerEiga>
-    with KaeruMixin, KaeruListenMixin, KaeruLifeMixin {
+    with
+        SingleTickerProviderStateMixin,
+        KaeruMixin,
+        KaeruListenMixin,
+        KaeruLifeMixin {
   ///  control player
-  //  final ShararaVideoPlayerController controller;
+  //  final ShararaVideoController controller;
   //   @override
   //   void initState() {
-  //     controller = ShararaVideoPlayerController.networkUrl(Uri.parse("https://sample-files-online.com/samples/countdownload/535"));
+  //     controller = ShararaVideoController.networkUrl(Uri.parse("https://sample-files-online.com/samples/countdownload/535"));
   //     super.initState();
   //   }
   //   @override
@@ -149,7 +155,8 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   ///
   late final _controllerId = ref<String?>(null);
-  late final _controller = ref<VideoPlayerController?>(null);
+  late final _player = Player();
+  late final _controller = VideoController(_player);
 
   final _durationAnimate = const Duration(milliseconds: 300);
   final _teenSeconds = const Duration(seconds: 10);
@@ -171,7 +178,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   late final _progressIsHovering = ref(false);
   late final _autoPlay = ref(true);
   late final _subtitleCode = ref<String?>(null);
-  late final _playbackSpeed = ref(1.0);
+  late final _playbackRate = ref(1.0);
   late final _qualityCode = ref<String?>(null);
   late final _fullscreen = widget.fullscreen;
 
@@ -181,7 +188,6 @@ class _PlayerEigaState extends State<PlayerEiga>
   late final _buffered = ref(Duration());
   late final _loading = ref(true);
   late final _playing = ref(true);
-  late final _aspectRatio = ref<double>(1.0);
 
   late final _doubleTapToRewind = ref(0);
   late final _doubleTapToForward = ref(0);
@@ -203,8 +209,6 @@ class _PlayerEigaState extends State<PlayerEiga>
   late final Computed<_StateOpeningEnding> _stateOpeningEnding;
   late final Computed<bool> _visibleTooltipSkipOE;
 
-  late final Map<VideoPlayerController, bool> _initializeStore = {};
-
   String get uid => '${widget.episodeId.value}@${widget.eigaId.value}';
 
   bool _acceptVerticalDrag = false;
@@ -213,9 +217,51 @@ class _PlayerEigaState extends State<PlayerEiga>
     if (!mounted) return;
   }
 
+  DateTime _activeTime = DateTime.now();
+
+  // ========== animation ============
+  late final _animationPlayButton = AnimationController(
+    vsync: this,
+    value: _playing.value ? 1 : 0,
+    duration: const Duration(milliseconds: 200),
+  );
+
   @override
   void initState() {
     super.initState();
+
+    _binding(_error, _controller.player.stream.error);
+    _binding(_position, _controller.player.stream.position);
+    _binding(_duration, _controller.player.stream.duration);
+    _binding(_buffered, _controller.player.stream.buffer);
+    _binding(_loading, _controller.player.stream.buffering);
+    _binding(_playing, _controller.player.stream.playing);
+    _binding(_playbackRate, _controller.player.stream.rate);
+
+    _controller.player.stream.completed.listen((value) {
+      if (value) widget.onNext.value?.call();
+    });
+    _controller.player.stream.position.listen((value) {
+      _emitWatchTimeUpdate();
+    });
+
+    watch([_position], () {
+      if (_pauseAutoHideControls.value) {
+        _activeTime = DateTime.now();
+      }
+
+      if (_activeTime.difference(DateTime.now()).inSeconds.abs() > 3) {
+        _showControls.value = false;
+      }
+    });
+
+    _controller.player.stream.playing.listen((event) {
+      if (event) {
+        _animationPlayButton.forward();
+      } else {
+        _animationPlayButton.reverse();
+      }
+    });
 
     /// =================== Core data ====================
     final metaIsFake = computed(() => widget.metaEiga.value.fake);
@@ -223,13 +269,15 @@ class _PlayerEigaState extends State<PlayerEiga>
     watch([metaIsFake, widget.episodeId, widget.eigaId], () {
       if (metaIsFake.value) return;
 
-      _controller.value?.dispose();
-      _initializeStore.remove(_controller.value);
-      _controller.value = null;
+      _controllerId.value = null;
+      _player.remove(0);
+      // _controller?.dispose();
+      // _initializeStore.remove(_controller);
+      // _controller= null;
 
-      _position.value = Duration.zero;
-      _duration.value = Duration.zero;
-      _buffered.value = Duration.zero;
+      // _position.value = Duration.zero;
+      // _duration.value = Duration.zero;
+      // _buffered.value = Duration.zero;
     });
 
     /// Servers
@@ -509,14 +557,10 @@ class _PlayerEigaState extends State<PlayerEiga>
       }
     }, immediate: true);
 
-    int loopIdAutoIncrement = -1;
-    onBeforeUnmount(() => loopIdAutoIncrement = -1);
-    watch([_watchTimeData, _controller, _controllerId], () async {
+    watch([_watchTimeData, _controllerId], () async {
       final watchTime = _watchTimeData.value?.watchTime;
-      final controller = _controller.value;
-      if (watchTime == null ||
-          controller == null ||
-          _controllerId.value != uid) {
+      final controller = _controller;
+      if (watchTime == null || _controllerId.value != uid) {
         return;
       }
 
@@ -524,24 +568,14 @@ class _PlayerEigaState extends State<PlayerEiga>
         print(watchTime);
       }
 
-      final loopId = ++loopIdAutoIncrement;
-      while (!controller.value.isInitialized && loopIdAutoIncrement == loopId) {
-        if (!mounted) return;
-        await Future.delayed(Duration(milliseconds: 300));
-      }
-
-      if (!mounted) return;
-
-      /// Free memory
-      if (loopIdAutoIncrement != loopId) return;
+      await controller.waitUntilFirstFrameRendered;
 
       if (_progressIsHovering.value) return;
-      await controller.pause();
       _position.value = watchTime.position;
 
       await _seekTo(controller, watchTime.position);
 
-      if (!controller.value.isPlaying) controller.play();
+      if (!controller.player.state.playing) controller.player.play();
 
       showSnackBar(
         Text('Watching time restored ${formatDuration(watchTime.position)}'),
@@ -633,30 +667,19 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     /// ================== /Brightness and volume system ===================
 
-    /// ================== check show controls re-update field ============
-    watch([_showControls], () {
-      if (_showControls.value) _onPlayerValueChanged(true);
-    });
-
-    watch([_playing], () {
-      if (_playing.value) {
-        WakelockPlus.enable();
-      } else {
-        WakelockPlus.disable();
-      }
-    });
     onBeforeUnmount(() {
-      _controller.value?.dispose();
+      _controller.player.dispose();
       _resetAppBrightness();
       WakelockPlus.disable();
     });
   }
 
-  Future<void> _seekTo(
-    VideoPlayerController controller,
-    Duration position,
-  ) async {
-    await controller.seekTo(position);
+  void _binding<T>(Ref<T> ref, Stream<T> stream) {
+    stream.listen((value) => ref.value = value);
+  }
+
+  Future<void> _seekTo(VideoController controller, Duration position) async {
+    await controller.player.seek(position);
     Future.microtask(_resetPositionChangedByUser);
   }
 
@@ -689,8 +712,8 @@ class _PlayerEigaState extends State<PlayerEiga>
     if (watchTimeData.eigaId != eigaId ||
         watchTimeData.episodeId != episodeId ||
         _duration.value == Duration.zero ||
-        _controller.value == null ||
-        _controller.value!.value.position == Duration.zero) {
+        _controllerId.value != uid ||
+        _controller.player.state.position == Duration.zero) {
       return;
     }
 
@@ -763,92 +786,14 @@ class _PlayerEigaState extends State<PlayerEiga>
       }
     }
 
-    _controller.value?.dispose();
-    _initializeStore.remove(_controller.value);
     _controllerId.value = id;
 
-    _controller.value =
-        VideoPlayerController.networkUrl(
-            url,
-            httpHeaders: source.headers?.toMap() ?? const <String, String>{},
-            videoPlayerOptions: VideoPlayerOptions(
-              allowBackgroundPlayback: true,
-            ),
-          )
-          ..initialize()
-              .then((_) {
-                final position = _position.value;
-                final controller = _controller.value;
-
-                if (controller == null) return;
-                _initializeStore[controller] = true;
-
-                if (uid != id) return;
-
-                if (position > Duration.zero) controller.seekTo(position);
-                controller.play();
-              })
-              .catchError((err, stack) {
-                debugPrint('Error: $err ($stack)');
-                _error.value = '$err';
-              })
-          ..addListener(_onPlayerValueChanged);
-  }
-
-  DateTime _activeTime = DateTime.now();
-  void _onPlayerValueChanged([bool forceUpdate = false]) {
-    if (_fullscreen.value && !_showControls.value && !forceUpdate) return;
-
-    final controller = _controller.value;
-
-    if (_initializeStore[controller] != true) return;
-
-    if (controller?.value.hasError == true) {
-      WakelockPlus.disable();
-      debugPrint(
-        "[video_player]: ${_error.value = controller!.value.errorDescription}",
-      );
-    } else {
-      _error.value = null;
-    }
-
-    if (controller != null && controller.value.isInitialized) {
-      if (!_progressIsHovering.value) {
-        _position.value = controller.value.position;
-      }
-      _duration.value = controller.value.duration;
-      _buffered.value = controller.value.buffered.fold(Duration.zero, (
-        max,
-        range,
-      ) {
-        return range.end > max ? range.end : max;
-      });
-      _loading.value =
-          controller.value.isInitialized != true || getIsBuffering(controller);
-      _playing.value = controller.value.isPlaying;
-      _aspectRatio.value = controller.value.aspectRatio;
-      if (controller.value.isCompleted) {
-        controller.removeListener(_onPlayerValueChanged);
-        widget.onNext.value?.call();
-      }
-
-      _emitWatchTimeUpdate();
-    }
-
-    // if (_controller.value?.isBlank == true ||
-    //    _loading.value) {
-    //   _activeTime = DateTime.now();
-    //   _onCanPlay = true;
-    // } else {
-    //   _onCanPlay = false;
-    // }
-    if (_pauseAutoHideControls.value) {
-      _activeTime = DateTime.now();
-    }
-
-    if (_activeTime.difference(DateTime.now()).inSeconds.abs() > 3) {
-      _showControls.value = false;
-    }
+    _controller.player.open(
+      Media(
+        url.toString(),
+        httpHeaders: source.headers?.toMap() ?? const <String, String>{},
+      ),
+    );
   }
 
   void _onTapToggleControls() {
@@ -861,8 +806,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   }
 
   void _onDoubleTapPlayer(TapDownDetails details) {
-    final controller = _controller.value;
-    if (controller == null) return;
+    final controller = _controller;
 
     final localOffset = details.localPosition;
     final dxRatio = localOffset.dx / 100.w(context); // Normalize x coordinate
@@ -1022,78 +966,6 @@ class _PlayerEigaState extends State<PlayerEiga>
   Widget _buildStack(BuildContext context, {required bool isFullscreen}) {
     final stack = Stack(
       children: [
-        GestureDetector(
-          onTap: _onTapToggleControls,
-          onDoubleTapDown: _onDoubleTapPlayer,
-          onVerticalDragStart: _onVerticalDragStartPlayer,
-          onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
-          onVerticalDragEnd: (_) => _hideAllSlider(),
-          onVerticalDragCancel: _hideAllSlider,
-          onHorizontalDragStart: _onHorizontalDragStart,
-          onHorizontalDragUpdate: _onHorizontalDragUpdate,
-          onHorizontalDragEnd: _onHorizontalDragEnd,
-          // HELP: delayed widget for fix size not correct if fullscreen change
-          child: Watch(() {
-            final controller = _controller.value;
-            if (controller == null) {
-              if (_trailerAvailable.value) {
-                return YoutubePlayer(
-                  controller: YoutubePlayerController(
-                    initialVideoId:
-                        YoutubePlayer.convertUrlToId(widget.trailerUrl.value!)!,
-                    flags: YoutubePlayerFlags(autoPlay: true, mute: true),
-                  ),
-                  showVideoProgressIndicator: true,
-                  topActions: [BackButton()],
-                );
-              }
-
-              return Skeleton.replace(
-                replacement: SizedBox.shrink(),
-                child: Center(
-                  child: OImage.oNetwork(
-                    widget.metaEiga.value.poster ?? widget.metaEiga.value.image,
-                    sourceId: widget.service.uid,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              );
-            }
-
-            // final videoChild =
-            //     OrientationBuilder(builder: (context, orientation) {
-            //   final isPortrait = orientation == Orientation.portrait;
-            //   return Center(
-            //     child: Stack(
-            //       //This will help to expand video in Horizontal mode till last pixel of screen
-            //       fit: isPortrait ? StackFit.loose : StackFit.expand,
-            //       children: [
-            //         AspectRatio(
-            //           aspectRatio: _aspectRatio.value,
-            //           child: VideoPlayer(controller),
-            //         ),
-            //       ],
-            //     ),
-            //   );
-            // });
-
-            // Thanks for @Nandakishor Dhanaji Valakunde
-            // https://stackoverflow.com/a/67961757
-            final videoChild = Center(
-              child: AspectRatio(
-                aspectRatio: _aspectRatio.value,
-                child: VideoPlayer(controller),
-              ),
-            );
-
-            return HtmlSubtitleWrapper(
-              service: widget.service,
-              subtitle: _subtitle,
-              videoController: controller,
-              child: videoChild,
-            );
-          }),
-        ),
         Watch(() {
           if (_trailerAvailable.value) return SizedBox.shrink();
 
@@ -1168,14 +1040,82 @@ class _PlayerEigaState extends State<PlayerEiga>
     return GestureDetector(
       onTap: _onTapToggleControls,
       onDoubleTapDown: _onDoubleTapPlayer,
+      onVerticalDragStart: _onVerticalDragStartPlayer,
       onVerticalDragUpdate: _onVerticalDragUpdatePlayer,
       onVerticalDragEnd: (_) => _hideAllSlider(),
       onVerticalDragCancel: _hideAllSlider,
       onHorizontalDragStart: _onHorizontalDragStart,
       onHorizontalDragUpdate: _onHorizontalDragUpdate,
       onHorizontalDragEnd: _onHorizontalDragEnd,
-      onHorizontalDragCancel: _hideAllSlider,
-      child: Container(color: Colors.black, child: stack),
+      // HELP: delayed widget for fix size not correct if fullscreen change
+      child: Watch(() {
+        final controller = _controller;
+        if (_controllerId.value == null) {
+          return Stack(
+            children: [
+              if (_trailerAvailable.value)
+                YoutubePlayer(
+                  controller: YoutubePlayerController(
+                    initialVideoId:
+                        YoutubePlayer.convertUrlToId(widget.trailerUrl.value!)!,
+                    flags: YoutubePlayerFlags(autoPlay: true, mute: true),
+                  ),
+                  showVideoProgressIndicator: true,
+                  topActions: [BackButton()],
+                )
+              else
+                Skeleton.replace(
+                  replacement: SizedBox.shrink(),
+                  child: Center(
+                    child: OImage.oNetwork(
+                      widget.metaEiga.value.poster ??
+                          widget.metaEiga.value.image,
+                      sourceId: widget.service.uid,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              stack,
+            ],
+          );
+        }
+
+        // final videoChild =
+        //     OrientationBuilder(builder: (context, orientation) {
+        //   final isPortrait = orientation == Orientation.portrait;
+        //   return Center(
+        //     child: Stack(
+        //       //This will help to expand video in Horizontal mode till last pixel of screen
+        //       fit: isPortrait ? StackFit.loose : StackFit.expand,
+        //       children: [
+        //         AspectRatio(
+        //           aspectRatio: _aspectRatio.value,
+        //           child: VideoPlayer(controller),
+        //         ),
+        //       ],
+        //     ),
+        //   );
+        // });
+
+        // Thanks for @Nandakishor Dhanaji Valakunde
+        // https://stackoverflow.com/a/67961757
+        final videoChild = Center(
+          child: Video(
+            controller: controller,
+            controls: (state) {
+              return stack;
+            },
+          ),
+        );
+
+        return videoChild;
+        // return HtmlSubtitleWrapper(
+        //   service: widget.service,
+        //   subtitle: _subtitle,
+        //   videoController: controller,
+        //   child: videoChild,
+        // );
+      }),
     );
   }
 
@@ -1206,7 +1146,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                       if (_fullscreen.value) {
                         _setFullscreen(false);
                       } else {
-                        context.pop();
+                        GoRouter.of(context).pop();
                       }
                     },
                   ),
@@ -1330,10 +1270,13 @@ class _PlayerEigaState extends State<PlayerEiga>
                   backgroundColor: Colors.grey.shade300.withAlpha(20),
                   shadowColor: Colors.transparent,
                 ),
-                child: Icon(
-                  _playing.value ? Icons.pause : Icons.play_arrow,
-                  color: Colors.white,
-                  size: 42.0,
+                child: IgnorePointer(
+                  child: AnimatedIcon(
+                    progress: _animationPlayButton,
+                    icon: AnimatedIcons.play_pause,
+                    size: 42,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -1384,9 +1327,18 @@ class _PlayerEigaState extends State<PlayerEiga>
             onTap: () {
               _setPlaying(!_playing.value);
             },
-            child: CircularProgressIndicator(
-              strokeWidth: 5.0,
-              color: Colors.white,
+            child: TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 0.0, end: _loading.value ? 1.0 : 0.0),
+              duration: const Duration(milliseconds: 200),
+              builder: (context, value, child) {
+                // Only mount the buffering indicator if the opacity is greater than 0.0.
+                // This has been done to prevent redundant resource usage in [CircularProgressIndicator].
+                if (value > 0.0) {
+                  return Opacity(opacity: value, child: child!);
+                }
+                return const SizedBox.shrink();
+              },
+              child: const CircularProgressIndicator(color: Color(0xFFFFFFFF)),
             ),
           ),
         ),
@@ -1496,11 +1448,7 @@ class _PlayerEigaState extends State<PlayerEiga>
               vttThumbnail: _thumbnailVtt,
               openingEnding: _openingEnding,
               onSeek: (duration) {
-                final seek = _position.value = duration;
-
-                if (_controller.value != null) {
-                  _seekTo(_controller.value!, seek);
-                }
+                _seekTo(_controller, _position.value = duration);
               },
             ),
           ),
@@ -1593,12 +1541,10 @@ class _PlayerEigaState extends State<PlayerEiga>
                               onTap: () {
                                 _doubleTapToRewind.value++;
 
-                                if (_controller.value != null) {
-                                  _seekTo(
-                                    _controller.value!,
-                                    _position.value - Duration(seconds: 10),
-                                  );
-                                }
+                                _seekTo(
+                                  _controller,
+                                  _position.value - Duration(seconds: 10),
+                                );
                               },
                               child: Stack(
                                 children: [
@@ -1665,12 +1611,10 @@ class _PlayerEigaState extends State<PlayerEiga>
                               onTap: () {
                                 _doubleTapToForward.value++;
 
-                                if (_controller.value != null) {
-                                  _seekTo(
-                                    _controller.value!,
-                                    _position.value + Duration(seconds: 10),
-                                  );
-                                }
+                                _seekTo(
+                                  _controller,
+                                  _position.value + Duration(seconds: 10),
+                                );
                               },
                               child: Stack(
                                 children: [
@@ -1736,7 +1680,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     return Watch(() {
       if (_trailerAvailable.value) return SizedBox.shrink();
 
-      if (_openingEnding.value == null || _controller.value == null) {
+      if (_openingEnding.value == null) {
         return SizedBox.shrink();
       }
 
@@ -1810,19 +1754,12 @@ class _PlayerEigaState extends State<PlayerEiga>
                     onPressed: () {
                       if (_stateOpeningEnding.value ==
                           _StateOpeningEnding.opening) {
-                        if (_controller.value != null) {
-                          _seekTo(
-                            _controller.value!,
-                            _openingEnding.value!.opening!.end,
-                          );
-                        }
+                        _seekTo(
+                          _controller,
+                          _openingEnding.value!.opening!.end,
+                        );
                       } else {
-                        if (_controller.value != null) {
-                          _seekTo(
-                            _controller.value!,
-                            _openingEnding.value!.ending!.end,
-                          );
-                        }
+                        _seekTo(_controller, _openingEnding.value!.ending!.end);
                       }
                     },
                     child: Column(
@@ -1910,9 +1847,9 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   void _setPlaying(bool value) {
     if (value) {
-      _controller.value?.play();
+      _controller.player.play();
     } else {
-      _controller.value?.pause();
+      _controller.player.pause();
     }
   }
 
@@ -2019,13 +1956,13 @@ class _PlayerEigaState extends State<PlayerEiga>
 
               return ListTile(
                 leading:
-                    _playbackSpeed.value == item.value
+                    _playbackRate.value == item.value
                         ? Icon(Icons.check)
                         : Text(''),
                 title: Text(item.label),
                 onTap: () {
                   Navigator.pop(context);
-                  _playbackSpeed.value = item.value;
+                  _controller.player.setRate(item.value);
                 },
               );
             },
@@ -2165,7 +2102,7 @@ class _PlayerEigaState extends State<PlayerEiga>
                 title: Text('Playback Speed', style: TextStyle(fontSize: 14.0)),
                 trailing: Text(
                   _playbackList.firstWhere((item) {
-                    return item.value == _playbackSpeed.value;
+                    return item.value == _playbackRate.value;
                   }).label,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.secondary,
