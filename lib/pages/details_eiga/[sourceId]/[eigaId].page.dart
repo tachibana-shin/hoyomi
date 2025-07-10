@@ -1520,9 +1520,9 @@ class _DetailsEigaPageState extends State<DetailsEigaPage>
             final tabController = DefaultTabController.of(context.context);
             final tabActive = context.ref(0);
 
-tabController.addListener(() {
-    tabActive.value = tabController.index;
-});
+            tabController.addListener(() {
+              tabActive.value = tabController.index;
+            });
 
             _eigaId.addListener(() {
               final index = metaEiga.seasons.indexWhere(
@@ -1557,7 +1557,10 @@ tabController.addListener(() {
                         eager: !metaEiga.fake,
                         scrollDirection: scrollDirection,
                         controller: controller,
-                        needLoad: tabActive.value == metaEiga.seasons.indexOf(season) || inModal,
+                        needLoad:
+                            tabActive.value ==
+                                metaEiga.seasons.indexOf(season) ||
+                            inModal,
                         onTapEpisode: ({
                           required episodesEiga,
                           required episodeId,
@@ -1579,7 +1582,10 @@ tabController.addListener(() {
 
                 return inModal
                     ? TabBarView(children: children)
-                    : ContentSizeTabBarView(controller: tabController,children: children);
+                    : ContentSizeTabBarView(
+                      controller: tabController,
+                      children: children,
+                    );
               },
               (void _) => TabBar(
                 isScrollable: true,
