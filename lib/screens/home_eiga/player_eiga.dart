@@ -126,7 +126,11 @@ enum _StateOpeningEnding { opening, ending, none, skip }
 // video player
 // djangoflow_video_player
 class _PlayerEigaState extends State<PlayerEiga>
-    with KaeruMixin, KaeruListenMixin, KaeruLifeMixin {
+    with
+        SingleTickerProviderStateMixin,
+        KaeruMixin,
+        KaeruListenMixin,
+        KaeruLifeMixin {
   ///  control player
   //  final ShararaVideoController controller;
   //   @override
@@ -215,6 +219,13 @@ class _PlayerEigaState extends State<PlayerEiga>
 
   DateTime _activeTime = DateTime.now();
 
+  // ========== animation ============
+  late final _animationPlayButton = AnimationController(
+    vsync: this,
+    value: _playing.value ? 1 : 0,
+    duration: const Duration(milliseconds: 200),
+  );
+
   @override
   void initState() {
     super.initState();
@@ -240,6 +251,14 @@ class _PlayerEigaState extends State<PlayerEiga>
 
       if (_activeTime.difference(DateTime.now()).inSeconds.abs() > 3) {
         _showControls.value = false;
+      }
+    });
+
+    _controller.player.stream.playing.listen((event) {
+      if (event) {
+        _animationPlayButton.forward();
+      } else {
+        _animationPlayButton.reverse();
       }
     });
 
@@ -1250,10 +1269,13 @@ class _PlayerEigaState extends State<PlayerEiga>
                   backgroundColor: Colors.grey.shade300.withAlpha(20),
                   shadowColor: Colors.transparent,
                 ),
-                child: Icon(
-                  _playing.value ? Icons.pause : Icons.play_arrow,
-                  color: Colors.white,
-                  size: 42.0,
+                child: IgnorePointer(
+                  child: AnimatedIcon(
+                    progress: _animationPlayButton,
+                    icon: AnimatedIcons.play_pause,
+                    size: 42,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
