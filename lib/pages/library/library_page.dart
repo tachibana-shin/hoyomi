@@ -268,7 +268,7 @@ class _LibraryPageState extends State<LibraryPage>
                 trailing: switch (service) {
                   JSComicService _ => IconButton(
                     icon: const Iconify(Mdi.refresh),
-                    onPressed: () => updateJsService(service),
+                    onPressed: () => updateJsService(service, true),
                   ),
                   _ => Iconify(Hg.safari),
                 },
@@ -294,7 +294,7 @@ class _LibraryPageState extends State<LibraryPage>
                 trailing: switch (service) {
                   JSEigaService _ => IconButton(
                     icon: const Iconify(Mdi.refresh),
-                    onPressed: () => updateJsService(service),
+                    onPressed: () => updateJsService(service, true),
                   ),
                   _ => Iconify(Hg.safari),
                 },

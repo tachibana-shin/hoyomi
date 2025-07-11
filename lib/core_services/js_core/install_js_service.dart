@@ -307,7 +307,7 @@ const _checkCooldown = Duration(hours: 6);
 /// - If `supportPkgJson` is set, fetch <installUrlDir>/<supportPkgJson>.json
 /// - Else fetch <installUrlDir>/package.json
 /// - Compare remote version vs local, skip if same
-Future<void> updateJsService(Service service) async {
+Future<void> updateJsService(Service service, [bool force = false]) async {
   final fileJs = await getFileJsService(service);
   final uid = service.uid;
 
@@ -317,7 +317,7 @@ Future<void> updateJsService(Service service) async {
   final cacheKey = 'js_check:$uid';
 
   final lastChecked = prefs.getInt(cacheKey);
-  if (lastChecked != null &&
+  if (!force && lastChecked != null &&
       now - lastChecked < _checkCooldown.inMilliseconds) {
     debugPrint(
       'Skip check for $uid, last checked ${DateTime.fromMillisecondsSinceEpoch(lastChecked)}',
