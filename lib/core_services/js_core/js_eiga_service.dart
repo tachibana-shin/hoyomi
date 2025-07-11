@@ -1,8 +1,14 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:hoyomi/core_services/eiga/export.dart';
+import 'package:hoyomi/js_runtime/extensions/rust_api.dart';
 import 'package:hoyomi/js_runtime/js_runtime.dart';
 
 class JSEigaService extends ABEigaService {
-  final JsRuntime _runtime;
+  final Future<JsRuntime> Function() _getRuntime;
+  JsRuntime? _runtime;
+  FutureOr<JsRuntime> get runtime => _runtime ?? _setupRuntime();
 
   @override
   late final ServiceInit init;
@@ -13,18 +19,47 @@ class JSEigaService extends ABEigaService {
   late final String writeWith;
 
   JSEigaService(
-    this._runtime,
+    this._getRuntime,
     this.init,
     this.$isAuth, {
     this.writeWith = 'js',
   });
+
+  Future<JsRuntime>? _setupRuntimePending;
+  Future<JsRuntime> _setupRuntime() {
+    return _setupRuntimePending ??= __setupRuntime()
+        .then((runtime) {
+          _setupRuntimePending = null;
+          return runtime;
+        })
+        .catchError((error) {
+          _setupRuntimePending = null;
+          throw error;
+        });
+  }
+
+  Future<JsRuntime> __setupRuntime() async {
+    final runtime = await _getRuntime();
+
+    runtime.setDio(dioCache);
+    bus.on<HeadlessModeChanged>().listen((event) {
+      runtime.setDio(dioCache);
+    });
+
+    await runtime.activateFetch();
+    await runtime.activateRustApi();
+
+    await runtime.evalAsync('__plugin._baseUrl = ${jsonEncode(baseUrl)}');
+
+    return runtime;
+  }
 
   @override
   Future<SourceContent> fetchSourceContent({
     required SourceVideo source,
   }) async {
     return SourceContent.fromJson(
-      await _runtime.evalFn('__plugin.fetchSourceContent', [source]),
+      await (await runtime).evalFn('__plugin.fetchSourceContent', [source]),
     );
   }
 
@@ -35,7 +70,7 @@ class JSEigaService extends ABEigaService {
     required Map<String, List<String>?> filters,
   }) async {
     return EigaCategory.fromJson(
-      await _runtime.evalFn('__plugin.getCategory', [
+      await (await runtime).evalFn('__plugin.getCategory', [
         {'categoryId': categoryId, 'page': page, 'filters': filters},
       ]),
     );
@@ -44,20 +79,22 @@ class JSEigaService extends ABEigaService {
   @override
   Future<MetaEiga> getDetails(String eigaId) async {
     return MetaEiga.fromJson(
-      await _runtime.evalFn('__plugin.getDetails', [eigaId]),
+      await (await runtime).evalFn('__plugin.getDetails', [eigaId]),
     );
   }
 
   @override
   Future<EigaEpisodes> getEpisodes(String eigaId) async {
     return EigaEpisodes.fromJson(
-      await _runtime.evalFn('__plugin.getEpisodes', [eigaId]),
+      await (await runtime).evalFn('__plugin.getEpisodes', [eigaId]),
     );
   }
 
   @override
   Future<OpeningEnding?> getOpeningEnding(EigaSourceContext context) async {
-    final data = await _runtime.evalFn('__plugin.getOpeningEnding', [context]);
+    final data = await (await runtime).evalFn('__plugin.getOpeningEnding', [
+      context,
+    ]);
     if (data == null) return null;
 
     return OpeningEnding.fromJson(data);
@@ -65,7 +102,9 @@ class JSEigaService extends ABEigaService {
 
   @override
   Future<Vtt?> getSeekThumbnail(EigaSourceContext context) async {
-    final data = await _runtime.evalFn('__plugin.getSeekThumbnail', [context]);
+    final data = await (await runtime).evalFn('__plugin.getSeekThumbnail', [
+      context,
+    ]);
     if (data == null) return null;
 
     return Vtt.fromJson(data);
@@ -77,7 +116,7 @@ class JSEigaService extends ABEigaService {
     required EigaEpisode episode,
   }) async {
     return List.from(
-      await _runtime.evalFn('__plugin.getServers', [
+      await (await runtime).evalFn('__plugin.getServers', [
         {'eigaId': eigaId, 'episode': episode},
       ]),
     ).map((element) => ServerSource.fromJson(element)).toList();
@@ -90,7 +129,7 @@ class JSEigaService extends ABEigaService {
     ServerSource? server,
   }) async {
     return SourceVideo.fromJson(
-      await _runtime.evalFn('__plugin.getSource', [
+      await (await runtime).evalFn('__plugin.getSource', [
         {'eigaId': eigaId, 'episode': episode, 'server': server},
       ]),
     );
@@ -103,7 +142,7 @@ class JSEigaService extends ABEigaService {
     required SourceVideo source,
   }) async {
     return List.from(
-      await _runtime.evalFn('__plugin.getSubtitles', [
+      await (await runtime).evalFn('__plugin.getSubtitles', [
         {'eigaId': eigaId, 'episode': episode, 'source': source},
       ]),
     ).map((element) => Subtitle.fromJson(element)).toList();
@@ -116,7 +155,7 @@ class JSEigaService extends ABEigaService {
     int? page,
   }) async {
     return List.from(
-      await _runtime.evalFn('__plugin.getSuggest', [
+      await (await runtime).evalFn('__plugin.getSuggest', [
         {'metaEiga': metaEiga, 'eigaId': eigaId, 'page': page},
       ]),
     ).map((element) => Eiga.fromJson(element)).toList();
@@ -124,12 +163,14 @@ class JSEigaService extends ABEigaService {
 
   @override
   Future<String> getURL(String eigaId, {String? episodeId}) async {
-    return await _runtime.evalFn('__plugin.getURL', [eigaId, episodeId]);
+    return await (await runtime).evalFn('__plugin.getURL', [eigaId, episodeId]);
   }
 
   @override
   Future<EigaHome> home() async {
-    return EigaHome.fromJson(await _runtime.evalFn('__plugin.home', const []));
+    return EigaHome.fromJson(
+      await (await runtime).evalFn('__plugin.home', const []),
+    );
   }
 
   @override
@@ -140,7 +181,7 @@ class JSEigaService extends ABEigaService {
     required bool quick,
   }) async {
     return EigaCategory.fromJson(
-      await _runtime.evalFn('__plugin.search', [
+      await (await runtime).evalFn('__plugin.search', [
         {'keyword': keyword, 'page': page, 'filters': filters, 'quick': quick},
       ]),
     );
@@ -162,7 +203,7 @@ class JSEigaService extends ABEigaService {
   Future<Paginate<EigaFollow>> getFollows({required int page}) async {
     if (!_supportGetFollows) return await super.getFollows(page: page);
     try {
-      final json = await _runtime.evalFn('__plugin.getFollows', [page]);
+      final json = await (await runtime).evalFn('__plugin.getFollows', [page]);
       return Paginate(
         items:
             List.from(
@@ -184,7 +225,7 @@ class JSEigaService extends ABEigaService {
       return await super.getFollowsCount(eigaId, metaEiga);
     }
     try {
-      return await _runtime.evalFn('__plugin.getFollowsCount', [
+      return await (await runtime).evalFn('__plugin.getFollowsCount', [
         eigaId,
         metaEiga,
       ]);
@@ -198,7 +239,7 @@ class JSEigaService extends ABEigaService {
   Future<bool> isFollow(String eigaId) async {
     if (!_supportIsFollow) return await super.isFollow(eigaId);
     try {
-      return await _runtime.evalFn('__plugin.isFollow', [eigaId]);
+      return await (await runtime).evalFn('__plugin.isFollow', [eigaId]);
     } on UnimplementedError {
       _supportIsFollow = false;
       return await super.isFollow(eigaId);
@@ -209,7 +250,7 @@ class JSEigaService extends ABEigaService {
   Future<void> setFollow(EigaContextWithEpisodes context, bool value) async {
     if (!_supportSetFollow) return await super.setFollow(context, value);
     try {
-      await _runtime.evalFn('__plugin.setFollow', [context, value]);
+      await (await runtime).evalFn('__plugin.setFollow', [context, value]);
     } on UnimplementedError {
       _supportSetFollow = false;
       return await super.setFollow(context, value);
@@ -223,7 +264,7 @@ class JSEigaService extends ABEigaService {
     }
     try {
       return List.from(
-        await _runtime.evalFn('__plugin.getWatchHistory', [page]),
+        await (await runtime).evalFn('__plugin.getWatchHistory', [page]),
       ).map((element) => EigaHistory.fromJson(element)).toList();
     } on UnimplementedError {
       _supportGetWatchHistory = false;
@@ -236,7 +277,7 @@ class JSEigaService extends ABEigaService {
     if (!_supportGetWatchTime) return await super.getWatchTime(context);
     try {
       return WatchTime.fromJson(
-        await _runtime.evalFn('__plugin.getWatchTime', [context]),
+        await (await runtime).evalFn('__plugin.getWatchTime', [context]),
       );
     } on UnimplementedError {
       _supportGetWatchTime = false;
@@ -256,7 +297,7 @@ class JSEigaService extends ABEigaService {
       );
     }
     try {
-      return await _runtime.evalFn('__plugin.getWatchTimeEpisodes', [
+      return await (await runtime).evalFn('__plugin.getWatchTimeEpisodes', [
         {'eigaId': eigaId, 'episodes': episodes},
       ]);
     } on UnimplementedError {
@@ -277,7 +318,7 @@ class JSEigaService extends ABEigaService {
       return await super.setWatchTime(context, watchTime: watchTime);
     }
     try {
-      await _runtime.evalFn('__plugin.setWatchTime', [
+      await (await runtime).evalFn('__plugin.setWatchTime', [
         context,
         {'watchTime': watchTime},
       ]);
@@ -289,7 +330,8 @@ class JSEigaService extends ABEigaService {
 
   @override
   void dispose() {
-    _runtime.dispose();
+    _runtime?.dispose();
+    _setupRuntimePending?.then((runtime) => runtime.dispose());
     super.dispose();
   }
 }
