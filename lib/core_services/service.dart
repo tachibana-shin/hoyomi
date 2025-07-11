@@ -24,8 +24,8 @@ import 'package:kaeru/kaeru.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'http_adapter/headless_webview_adapter.dart';
-import 'http_adapter/wreq_adapter.dart';
+import 'package:hoyomi/http_adapter/headless_webview_adapter.dart';
+import 'package:hoyomi/http_adapter/wreq_adapter.dart';
 import 'interfaces/export.dart';
 import 'base_service.dart';
 

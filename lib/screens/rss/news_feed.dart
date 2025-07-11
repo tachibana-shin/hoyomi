@@ -1,7 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:dio/dio.dart' show BaseOptions, Dio, ResponseType;
 import 'package:flutter/material.dart';
-import 'package:hoyomi/core_services/http_adapter/wreq_adapter.dart';
+import 'package:hoyomi/http_adapter/wreq_adapter.dart';
 import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/stores.dart';
