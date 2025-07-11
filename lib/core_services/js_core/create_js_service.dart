@@ -43,9 +43,11 @@ Future<JsServiceMeta> _loadServiceMeta(File file) async {
   final runtime = await _getRuntime(await file.readAsString());
   final meta = await _getMetaFromRuntime(runtime);
 
-  await initFile.writeAsString(jsonEncode(meta));
-
-  runtime.dispose();
+  try {
+    await initFile.writeAsString(jsonEncode(meta));
+  } finally {
+    runtime.dispose();
+  }
 
   return meta;
 }
