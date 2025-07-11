@@ -25,44 +25,34 @@ const branches = [
   '/manager',
 ];
 
-/// 日本語のコメント: ルートナビゲーターのためのグローバルキー。
-final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
-
-class _PageBuilder extends GoTransition {
-  static int _id = 0;
-
-  final id = _id++;
-
-  _PageBuilder();
+class _RestorableGoRoute extends GoRoute {
+  _RestorableGoRoute({
+    required super.path,
+    super.builder,
+    super.name,
+    super.pageBuilder,
+    super.parentNavigatorKey,
+    super.redirect,
+    super.routes,
+  });
 
   @override
-  PageRouteTransitionsBuilder get builder {
-    Widget builder<T>(
-      PageRoute<T> route,
-      BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,
-      Widget child,
-    ) {
-      if ((!XPlatform.isAndroid && !XPlatform.isIOS) ||
-          (androidSdkInt != null && androidSdkInt! < 29)) {
-        return ZoomPageTransitionsBuilder().buildTransitions(
-          route,
-          context,
-          animation,
-          secondaryAnimation,
-          MaterialPage(restorationId: 'router.$id', child: child).child,
-        );
-      }
+  int get hashCode => path.hashCode;
 
-      return MaterialPage(restorationId: 'router.$id', child: child).child;
-    }
-
-    return builder;
+  @override
+  bool operator ==(Object other) {
+    return super == other ||
+        (other is _RestorableGoRoute && hashCode == other.hashCode);
   }
 }
 
-final pageBuilder = _PageBuilder().call;
+/// 日本語のコメント: ルートナビゲーターのためのグローバルキー。
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+final pageBuilder =
+    (!XPlatform.isAndroid && !XPlatform.isIOS) ||
+            (androidSdkInt != null && androidSdkInt! < 29)
+        ? GoTransitions.zoom.call
+        : null;
 
 final routes = [
   // --- Shell route cho bottom navigation (5 items) ---
@@ -82,7 +72,7 @@ final routes = [
       StatefulShellBranch(
         restorationScopeId: 'home_comic',
         routes: [
-          GoRoute(
+          _RestorableGoRoute(
             path: '/home_comic',
             name: 'home_comic',
             pageBuilder: pageBuilder,
@@ -97,7 +87,7 @@ final routes = [
       StatefulShellBranch(
         restorationScopeId: 'home_eiga',
         routes: [
-          GoRoute(
+          _RestorableGoRoute(
             path: '/home_eiga',
             name: 'home_eiga',
             pageBuilder: pageBuilder,
@@ -111,7 +101,7 @@ final routes = [
       StatefulShellBranch(
         restorationScopeId: 'search',
         routes: [
-          GoRoute(
+          _RestorableGoRoute(
             path: '/search',
             name: 'search',
             pageBuilder: pageBuilder,
@@ -119,7 +109,7 @@ final routes = [
                 (context, state) =>
                     SearchPage(from: state.uri.queryParameters['from']),
             routes: [
-              GoRoute(
+              _RestorableGoRoute(
                 path: 'comic/:sourceId',
                 name: 'search_comic',
                 pageBuilder: pageBuilder,
@@ -134,7 +124,7 @@ final routes = [
                   );
                 },
               ),
-              GoRoute(
+              _RestorableGoRoute(
                 path: 'eiga/:sourceId',
                 name: 'search_eiga',
                 pageBuilder: pageBuilder,
@@ -157,13 +147,13 @@ final routes = [
       StatefulShellBranch(
         restorationScopeId: 'library',
         routes: [
-          GoRoute(
+          _RestorableGoRoute(
             path: '/library',
             name: 'library',
             pageBuilder: pageBuilder,
             builder: (context, state) => LibraryPage(),
             routes: [
-              GoRoute(
+              _RestorableGoRoute(
                 path: 'history/comic/:sourceId',
                 name: 'history_comic',
                 pageBuilder: pageBuilder,
@@ -172,7 +162,7 @@ final routes = [
                       sourceId: state.pathParameters['sourceId']!,
                     ),
               ),
-              GoRoute(
+              _RestorableGoRoute(
                 path: 'follow/comic/:sourceId',
                 name: 'follow_comic',
                 pageBuilder: pageBuilder,
@@ -181,7 +171,7 @@ final routes = [
                       sourceId: state.pathParameters['sourceId']!,
                     ),
               ),
-              GoRoute(
+              _RestorableGoRoute(
                 path: 'history/eiga/:sourceId',
                 name: 'history_eiga',
                 pageBuilder: pageBuilder,
@@ -190,7 +180,7 @@ final routes = [
                       sourceId: state.pathParameters['sourceId']!,
                     ),
               ),
-              GoRoute(
+              _RestorableGoRoute(
                 path: 'follow/eiga/:sourceId',
                 name: 'follow_eiga',
                 pageBuilder: pageBuilder,
@@ -199,7 +189,7 @@ final routes = [
                       sourceId: state.pathParameters['sourceId']!,
                     ),
               ),
-              GoRoute(
+              _RestorableGoRoute(
                 path: 'downloader',
                 pageBuilder: pageBuilder,
                 builder: (context, state) {
@@ -207,7 +197,7 @@ final routes = [
                   return SizedBox.shrink();
                 },
                 routes: [
-                  GoRoute(
+                  _RestorableGoRoute(
                     path: 'comic',
                     name: 'downloader_comic',
                     pageBuilder: pageBuilder,
@@ -215,7 +205,7 @@ final routes = [
                   ),
                 ],
               ),
-              GoRoute(
+              _RestorableGoRoute(
                 path: '/explorer/:sourceId',
                 name: 'library_explorer',
                 pageBuilder: pageBuilder,
@@ -232,7 +222,7 @@ final routes = [
       StatefulShellBranch(
         restorationScopeId: 'manager',
         routes: [
-          GoRoute(
+          _RestorableGoRoute(
             path: '/manager',
             name: 'manager',
             pageBuilder: pageBuilder,
@@ -245,9 +235,13 @@ final routes = [
 
   // --- Top-level routes ---
   // Index Route
-  GoRoute(path: '/', name: 'home', redirect: (context, state) => '/home_eiga'),
+  _RestorableGoRoute(
+    path: '/',
+    name: 'home',
+    redirect: (context, state) => '/home_eiga',
+  ),
   // Details Comic Route
-  GoRoute(
+  _RestorableGoRoute(
     path: '/details_comic/:sourceId/:comicId',
     name: 'details_comic',
     pageBuilder: pageBuilder,
@@ -262,7 +256,7 @@ final routes = [
                   : null,
         ),
     routes: [
-      GoRoute(
+      _RestorableGoRoute(
         path: 'view',
         name: 'details_comic_reader',
         pageBuilder: pageBuilder,
@@ -281,7 +275,7 @@ final routes = [
           );
         },
       ),
-      GoRoute(
+      _RestorableGoRoute(
         path: 'similar',
         name: 'similar_comic',
         pageBuilder: pageBuilder,
@@ -301,7 +295,7 @@ final routes = [
   ),
 
   // Details Eiga Route
-  GoRoute(
+  _RestorableGoRoute(
     path: '/details_eiga/:sourceId/:eigaId',
     name: 'details_eiga',
     pageBuilder: pageBuilder,
@@ -321,7 +315,7 @@ final routes = [
   ),
 
   // Sign In Route
-  GoRoute(
+  _RestorableGoRoute(
     path: '/sign_in/main',
     name: 'sign_in_main',
     pageBuilder: pageBuilder,
@@ -330,7 +324,7 @@ final routes = [
   ),
 
   // Webview Route
-  GoRoute(
+  _RestorableGoRoute(
     path: '/webview/:sourceId',
     name: 'webview',
     pageBuilder: pageBuilder,
@@ -343,7 +337,7 @@ final routes = [
   ),
 
   // Category Comic Route
-  GoRoute(
+  _RestorableGoRoute(
     path: '/category_comic/:sourceId/:categoryId',
     name: 'category_comic',
     pageBuilder: pageBuilder,
@@ -356,7 +350,7 @@ final routes = [
   ),
 
   // Category Eiga Route
-  GoRoute(
+  _RestorableGoRoute(
     path: '/category_eiga/:sourceId/:categoryId',
     name: 'category_eiga',
     pageBuilder: pageBuilder,
@@ -369,7 +363,7 @@ final routes = [
   ),
 
   // Category Service Setting Route
-  GoRoute(
+  _RestorableGoRoute(
     path: '/service_settings/:sourceId',
     name: 'service_settings',
     pageBuilder: pageBuilder,
