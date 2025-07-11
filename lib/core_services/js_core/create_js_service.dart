@@ -84,7 +84,7 @@ Future<JsServiceMeta> _getMetaFromRuntime(JsRuntime runtime) async {
 }
 
 Future<Service> createJsService({String? jsCode, File? file}) async {
-  assert(jsCode != null || file != null, '\'jsCore\' or \'file\' is required');
+  assert(jsCode != null || file != null, '\'jsCode\' or \'file\' is required');
 
   late final JsServiceMeta meta;
 
