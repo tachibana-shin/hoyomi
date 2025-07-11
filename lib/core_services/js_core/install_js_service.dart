@@ -319,7 +319,9 @@ Future<void> updateJsService(Service service) async {
   final lastChecked = prefs.getInt(cacheKey);
   if (lastChecked != null &&
       now - lastChecked < _checkCooldown.inMilliseconds) {
-        debugPrint('Skip check for $uid, last checked ${DateTime.fromMillisecondsSinceEpoch(lastChecked)}');
+    debugPrint(
+      'Skip check for $uid, last checked ${DateTime.fromMillisecondsSinceEpoch(lastChecked)}',
+    );
     // Skip if checked within 6 hours
     return;
   }
