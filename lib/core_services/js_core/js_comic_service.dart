@@ -31,6 +31,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     return _setupRuntimePending ??= __setupRuntime()
         .then((runtime) {
           _setupRuntimePending = null;
+          _runtime = runtime;
           return runtime;
         })
         .catchError((error) {
