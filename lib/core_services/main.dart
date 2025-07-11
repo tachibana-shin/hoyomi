@@ -21,6 +21,7 @@ import 'eiga/services/kkphim/main.dart';
 import 'eiga/services/nguonc/main.dart';
 import 'eiga/services/ophim/main.dart';
 import 'js_core/create_js_service.dart';
+import 'js_core/install_js_service.dart';
 
 export 'widget/export.dart';
 
@@ -139,6 +140,11 @@ Future<void> _loadJsService() async {
 
     final futures = files.map((file) async {
       final service = await createJsService(file: file);
+
+      updateJsService(
+        service,
+      ).catchError((e) => debugPrint('Failed to update service: $e'));
+
       if (isExpectedType(service)) {
         onAccept(service);
         services.add(service);

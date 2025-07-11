@@ -12,8 +12,21 @@ Future<(Service, String)> fetchAndCreateJsService(String url) async {
     throw Exception('Empty JS content from $normalizedUrl');
   }
 
-  final jsCode = '''// @install_url = $url;\n${response.data}''';
+  final supportPkgJson = await _dio
+      .get(
+        '$normalizedUrl/../package.json',
+        options: Options(responseType: ResponseType.json),
+      )
+      .then(
+        (response) =>
+            response.data is Map && response.data['version'] is String,
+      )
+      .catchError((err) => false);
+
+  final jsCode = '''// @install_url = $url;
+// @support_pkg_json = $supportPkgJson
+${response.data}''';
 
   final service = await createJsService(jsCode: jsCode);
-  return (service, jsCode);
+  return (service, '// @version = ${service.init.version}\n$jsCode');
 }
