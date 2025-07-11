@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/js_runtime/js_runtime.dart';
-import 'package:path/path.dart';
 
+import 'install_js_service.dart';
 import 'js_comic_service.dart';
 import 'js_eiga_service.dart';
 
@@ -28,8 +28,7 @@ sealed class JsServiceMeta with _$JsServiceMeta {
 Future<JsServiceMeta> _loadServiceMeta(File file) async {
   if (!await file.exists()) throw Exception('File doesn\'t exist $file');
 
-  final jsPath = file.path;
-  final initFile = File(join(dirname(jsPath), '${basename(jsPath)}.init'));
+  final initFile = getInitFileJsService(file);
 
   // もし .init ファイルが存在すれば、それを読み込む
   if (await initFile.exists()) {
@@ -41,7 +40,7 @@ Future<JsServiceMeta> _loadServiceMeta(File file) async {
   }
 
   final runtime = await _getRuntime(await file.readAsString());
-  final meta = await _getMetaFromRuntime(runtime);
+  final meta = await getMetaFromRuntime(runtime);
 
   try {
     await initFile.writeAsString(jsonEncode(meta));
@@ -66,7 +65,7 @@ Future<JsRuntime> _getRuntime(String code) async {
   return runtime;
 }
 
-Future<JsServiceMeta> _getMetaFromRuntime(JsRuntime runtime) async {
+Future<JsServiceMeta> getMetaFromRuntime(JsRuntime runtime) async {
   final type = await runtime.evalAsync('__plugin.type');
   final init = ServiceInit.fromJson(
     await runtime.evalAsyncJson('__plugin.init'),
@@ -94,7 +93,11 @@ Future<Service> createJsService({String? jsCode, File? file}) async {
 
   if (jsCode != null) {
     final runtime = await _getRuntime(jsCode);
-    meta = await _getMetaFromRuntime(runtime);
+    try {
+      meta = await getMetaFromRuntime(runtime);
+    } finally {
+      runtime.dispose();
+    }
   } else {
     meta = await _loadServiceMeta(file!);
   }

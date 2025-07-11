@@ -5,12 +5,16 @@ import 'package:hoyomi/constraints/fluent.dart';
 import 'package:hoyomi/constraints/huge_icons.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/core_services/eiga/main.dart';
+import 'package:hoyomi/core_services/js_core/install_js_service.dart';
+import 'package:hoyomi/core_services/js_core/js_comic_service.dart';
+import 'package:hoyomi/core_services/js_core/js_eiga_service.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/export.dart';
 import 'package:hoyomi/router/extensions/to_router.dart';
 import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:iconify_flutter/icons/ion.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 
@@ -261,7 +265,13 @@ class _LibraryPageState extends State<LibraryPage>
                       'library_explorer',
                       pathParameters: {'sourceId': service.uid},
                     ),
-                trailing: Iconify(Hg.safari),
+                trailing: switch (service) {
+                  JSComicService _ => IconButton(
+                    icon: const Iconify(Mdi.refresh),
+                    onPressed: () => updateJsService(service, true),
+                  ),
+                  _ => Iconify(Hg.safari),
+                },
               )),
             ),
 
@@ -281,7 +291,13 @@ class _LibraryPageState extends State<LibraryPage>
                       'library_explorer',
                       pathParameters: {'sourceId': service.uid},
                     ),
-                trailing: Iconify(Hg.safari),
+                trailing: switch (service) {
+                  JSEigaService _ => IconButton(
+                    icon: const Iconify(Mdi.refresh),
+                    onPressed: () => updateJsService(service, true),
+                  ),
+                  _ => Iconify(Hg.safari),
+                },
               )),
             ),
         ],
