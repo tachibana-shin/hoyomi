@@ -26,7 +26,7 @@ sealed class JsServiceMeta with _$JsServiceMeta {
 }
 
 Future<JsServiceMeta> _loadServiceMeta(File file) async {
-  if (!await file.exists()) throw Exception('File do\'n exists $file');
+  if (!await file.exists()) throw Exception('File doesn\'t exist $file');
 
   final jsPath = file.path;
   final initFile = File(join(dirname(jsPath), '${basename(jsPath)}.init'));
