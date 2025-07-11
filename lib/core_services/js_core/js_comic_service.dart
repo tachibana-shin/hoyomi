@@ -1,10 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:hoyomi/core_services/comic/export.dart';
+import 'package:hoyomi/js_runtime/extensions/rust_api.dart';
 import 'package:hoyomi/js_runtime/js_runtime.dart';
 
 class JSComicService extends ABComicService implements ComicCommentMixin {
-  final JsRuntime _runtime;
+  final Future<JsRuntime> Function() _getRuntime;
+  JsRuntime? _runtime;
+  FutureOr<JsRuntime> get runtime => _runtime ?? _setupRuntime();
 
   @override
   late final ServiceInit init;
@@ -15,15 +20,44 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
   late final String writeWith;
 
   JSComicService(
-    this._runtime,
+    this._getRuntime,
     this.init,
     this.$isAuth, {
     this.writeWith = 'js',
   });
 
+  Future<JsRuntime>? _setupRuntimePending;
+  Future<JsRuntime> _setupRuntime() {
+    return _setupRuntimePending ??= __setupRuntime()
+        .then((runtime) {
+          _setupRuntimePending = null;
+          return runtime;
+        })
+        .catchError((error) {
+          _setupRuntimePending = null;
+          throw error;
+        });
+  }
+
+  Future<JsRuntime> __setupRuntime() async {
+    final runtime = await _getRuntime();
+
+    runtime.setDio(dioCache);
+    bus.on<HeadlessModeChanged>().listen((event) {
+      runtime.setDio(dioCache);
+    });
+
+    await runtime.activateFetch();
+    await runtime.activateRustApi();
+
+    await runtime.evalAsync('__plugin._baseUrl = ${jsonEncode(baseUrl)}');
+
+    return runtime;
+  }
+
   @override
   Future<Uint8List> fetchPage(Uint8List buffer, OImage source) async {
-    return await _runtime.evalFn('__plugin.fetchPage', [
+    return await (await runtime).evalFn('__plugin.fetchPage', [
       buffer,
       source,
     ], base64: true);
@@ -36,7 +70,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     required Map<String, List<String>?> filters,
   }) async {
     return ComicCategory.fromJson(
-      await _runtime.evalFn('__plugin.getCategory', [
+      await (await runtime).evalFn('__plugin.getCategory', [
         {'categoryId': categoryId, 'page': page, 'filters': filters},
       ]),
     );
@@ -45,7 +79,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
   // Utils
   @override
   Future<ComicModes> getComicModes(MetaComic comic) async {
-    final out = await _runtime.evalFn('__plugin.getComicModes', [comic]);
+    final out = await (await runtime).evalFn('__plugin.getComicModes', [comic]);
 
     return ComicModes.values.firstWhere(
       (mode) => mode.name == out,
@@ -56,14 +90,14 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
   @override
   Future<MetaComic> getDetails(String comicId) async {
     return MetaComic.fromJson(
-      await _runtime.evalFn('__plugin.getDetails', [comicId]),
+      await (await runtime).evalFn('__plugin.getDetails', [comicId]),
     );
   }
 
   @override
   Future<List<OImage>> getPages(String manga, String chap) async {
     return List.from(
-      await _runtime.evalFn('__plugin.getPages', [manga, chap]),
+      await (await runtime).evalFn('__plugin.getPages', [manga, chap]),
     ).map((element) => OImage.fromJson(element)).toList();
   }
 
@@ -74,7 +108,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     int? page,
   }) async {
     return List.from(
-      await _runtime.evalFn('__plugin.getSuggest', [
+      await (await runtime).evalFn('__plugin.getSuggest', [
         {'metaComic': metaComic, 'comicId': comicId, 'page': page},
       ]),
     ).map((element) => Comic.fromJson(element)).toList();
@@ -82,12 +116,17 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
 
   @override
   Future<String> getURL(String comicId, {String? chapterId}) async {
-    return await _runtime.evalFn('__plugin.getURL', [comicId, chapterId]);
+    return await (await runtime).evalFn('__plugin.getURL', [
+      comicId,
+      chapterId,
+    ]);
   }
 
   @override
   Future<ComicHome> home() async {
-    return ComicHome.fromJson(await _runtime.evalFn('__plugin.home', const []));
+    return ComicHome.fromJson(
+      await (await runtime).evalFn('__plugin.home', const []),
+    );
   }
 
   @override
@@ -98,7 +137,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     required bool quick,
   }) async {
     return ComicCategory.fromJson(
-      await _runtime.evalFn('__plugin.search', [
+      await (await runtime).evalFn('__plugin.search', [
         {'keyword': keyword, 'page': page, 'filters': filters, 'quick': quick},
       ]),
     );
@@ -111,7 +150,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     ComicCommentContext context, {
     required ComicComment comment,
   }) async {
-    await _runtime.evalFn('__plugin.deleteComment', [context, comment]);
+    await (await runtime).evalFn('__plugin.deleteComment', [context, comment]);
   }
 
   @override
@@ -120,7 +159,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     int? page,
   }) async {
     return ComicComments.fromJson(
-      await _runtime.evalFn('__plugin.getComments', [context, page]),
+      await (await runtime).evalFn('__plugin.getComments', [context, page]),
     );
   }
 
@@ -130,7 +169,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     required ComicComment comment,
     required bool value,
   }) async {
-    return await _runtime.evalFn('__plugin.setLikeComment', [
+    return await (await runtime).evalFn('__plugin.setLikeComment', [
       context,
       comment,
       value,
@@ -143,7 +182,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     if (!_supportGetFollows) return await super.getFollows(page: page);
 
     try {
-      final json = await _runtime.evalFn('__plugin.getFollows', [page]);
+      final json = await (await runtime).evalFn('__plugin.getFollows', [page]);
 
       return Paginate(
         items:
@@ -166,7 +205,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     if (!_supportIsFollow) return await super.isFollow(comicId: comicId);
 
     try {
-      return await _runtime.evalFn('__plugin.isFollow', [comicId]);
+      return await (await runtime).evalFn('__plugin.isFollow', [comicId]);
     } on UnimplementedError {
       _supportIsFollow = false;
       return await super.isFollow(comicId: comicId);
@@ -189,7 +228,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     }
 
     try {
-      await _runtime.evalFn('__plugin.setFollow', [
+      await (await runtime).evalFn('__plugin.setFollow', [
         {'comicId': comicId, 'metaComic': metaComic, 'value': value},
       ]);
     } on UnimplementedError {
@@ -211,7 +250,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
 
     try {
       return List.from(
-        await _runtime.evalFn('__plugin.getWatchHistory', [page]),
+        await (await runtime).evalFn('__plugin.getWatchHistory', [page]),
       ).map((element) => ComicHistory.fromJson(element)).toList();
     } on UnimplementedError {
       _supportGetWatchHistory = false;
@@ -236,7 +275,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
 
     try {
       return WatchPageUpdated.fromJson(
-        await _runtime.evalFn('__plugin.getWatchPage', [
+        await (await runtime).evalFn('__plugin.getWatchPage', [
           {'comicId': comicId, 'chapter': chapter, 'metaComic': metaComic},
         ]),
       );
@@ -265,7 +304,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     }
 
     try {
-      return await _runtime.evalFn('__plugin.getWatchPageEpisodes', [
+      return await (await runtime).evalFn('__plugin.getWatchPageEpisodes', [
         {'comicId': comicId, 'chapters': chapters},
       ]);
     } on UnimplementedError {
@@ -295,7 +334,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     }
 
     try {
-      await _runtime.evalFn('__plugin.setWatchPage', [
+      await (await runtime).evalFn('__plugin.setWatchPage', [
         {
           'comicId': comicId,
           'chapter': chapter,
@@ -316,7 +355,8 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
 
   @override
   void dispose() {
-    _runtime.dispose();
+    _runtime?.dispose();
+    _setupRuntimePending?.then((runtime) => runtime.dispose());
     super.dispose();
   }
 }

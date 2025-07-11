@@ -138,8 +138,7 @@ Future<void> _loadJsService() async {
             .toList();
 
     final futures = files.map((file) async {
-      final jsCode = await file.readAsString();
-      final service = await createJsService(jsCode);
+      final service = await createJsService(file: file);
       if (isExpectedType(service)) {
         onAccept(service);
         services.add(service);

@@ -14,6 +14,6 @@ Future<(Service, String)> fetchAndCreateJsService(String url) async {
 
   final jsCode = '''// @install_url = $url;\n${response.data}''';
 
-  final service = await createJsService(jsCode);
+  final service = await createJsService(jsCode: jsCode);
   return (service, jsCode);
 }
