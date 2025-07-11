@@ -357,7 +357,10 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
   @override
   void dispose() {
     _runtime?.dispose();
-    _setupRuntimePending?.then((runtime) => runtime.dispose());
+    _setupRuntimePending?.then(
+      (runtime) => runtime.dispose(),
+      onError: (_) {}, // Ignore errors during disposal
+    );
     super.dispose();
   }
 }
