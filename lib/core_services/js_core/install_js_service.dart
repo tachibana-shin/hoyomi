@@ -304,8 +304,8 @@ const _checkCooldown = Duration(hours: 6);
 /// Update existing JS plugin by UID.
 /// This will:
 /// - Load installUrl and version from JS file
-/// - If `supportPkgJson` is set, fetch <installUrlDir>/<supportPkgJson>.json
-/// - Else fetch <installUrlDir>/package.json
+/// - If `supportPkgJson` is set, fetch {installUrlDir}/{supportPkgJson}.json
+/// - Else fetch {installUrlDir}/package.json
 /// - Compare remote version vs local, skip if same
 Future<void> updateJsService(Service service, [bool force = false]) async {
   final fileJs = await getFileJsService(service);
