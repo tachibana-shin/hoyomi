@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hoyomi/http_adapter/wreq_adapter.dart';
 import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/plugins/logger.dart';
 import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/utils/export.dart';
 import 'package:hoyomi/widgets/export.dart';
@@ -95,8 +96,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
         items.addAll(feed);
       } catch (e, stack) {
         showSnackBar(Text('Error while parsing $keyword: $e'));
-        debugPrint("Error: $e");
-        debugPrint('$stack');
+        logger.e(e, stackTrace: stack);
       }
     }
 
@@ -158,8 +158,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
             DateTime.tryParse(pubDateString) ??
             DateFormat('dd-MM-yyyy').tryParse(pubDateString) ??
             convertTimeAgoToUtc(pubDateString);
-      } catch (e, stack) {
-        debugPrint("Error: $e ($stack)");
+      } catch (e, stack) {logger.e(e, stackTrace: stack);
       }
 
       return _RssItem(

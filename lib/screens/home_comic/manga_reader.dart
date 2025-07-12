@@ -16,6 +16,7 @@ import 'package:hoyomi/constraints/arc_icons.dart';
 import 'package:hoyomi/constraints/fluent.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
+import 'package:hoyomi/plugins/export.dart';
 import 'package:hoyomi/rust/api/image/auto_trim_image.dart';
 import 'package:hoyomi/screens/export.dart';
 import 'package:hoyomi/stores.dart';
@@ -392,7 +393,7 @@ class _MangaReaderState extends State<MangaReader>
     onBeforeUnmount(() {
       if ((_realCurrentPage.value - _realLength.value).abs() <= 1) {
         _forceUpdateWatchPage();
-        debugPrint('save watch page because exit reader');
+        logger.i('save watch page because exit reader');
       }
     });
 
@@ -405,10 +406,6 @@ class _MangaReaderState extends State<MangaReader>
             metaComic: widget.comic,
           );
 
-          if (kDebugMode) {
-            print(watchPage);
-          }
-
           // pages always ready
           _currentPage.value = watchPage.currentPage.toDouble();
           showSnackBar(
@@ -416,9 +413,9 @@ class _MangaReaderState extends State<MangaReader>
               'Read page restored ${((_currentPage.value + 1) / watchPage.totalPage * 100).round()}%',
             ),
           );
-        } catch (error) {
+        } catch (error, trace) {
           if (error is! UnimplementedError) {
-            debugPrint('Error: $error (${StackTrace.current})');
+            logger.e(error, stackTrace: trace);
           }
         }
       }
@@ -461,7 +458,7 @@ class _MangaReaderState extends State<MangaReader>
         }
 
         if (i - _currentPage.value > maxLoad) break;
-        debugPrint('[manga_reader]: preload image $i');
+        logger.i('[manga_reader]: preload image $i');
 
         final progress =
             _progressCacheStore[_pages.value.elementAt(i).image] ??= ref(-1.0);
@@ -487,7 +484,7 @@ class _MangaReaderState extends State<MangaReader>
       ),
       force: true,
     );
-    debugPrint('save watch page');
+    logger.i('save watch page');
   }
 
   Timer? _timer;
@@ -1476,7 +1473,7 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   void _onTapGrid(int row, int column) {
-    debugPrint("row = $row, column = $column");
+    logger.i("row = $row, column = $column");
 
     if (row == 1 && column == 1) {
       // center

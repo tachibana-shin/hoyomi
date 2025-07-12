@@ -7,7 +7,6 @@ import 'package:go_transitions/go_transitions.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 // import 'package:hoyomi/background_services/comic_changes.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
-import 'package:hoyomi/plugins/app_links.dart';
 import 'package:hoyomi/plugins/export.dart';
 import 'package:hoyomi/router/index.dart';
 

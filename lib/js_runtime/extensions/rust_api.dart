@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:isolate';
 
-import 'package:flutter/foundation.dart';
+import 'package:hoyomi/plugins/logger.dart';
 import 'package:hoyomi/rust/api/image/unscramble_image.dart';
 import 'package:hoyomi/rust/api/image/unscramble_image_columns.dart';
 import 'package:hoyomi/rust/api/image/unscramble_image_rows.dart';
@@ -43,7 +43,7 @@ extension RustApiJavascriptRuntimeExtension on JsRuntime {
           'base64Decode(${jsonEncode(base64Encode(result))})',
         );
       } catch (e, stack) {
-        debugPrint('Error: $e ($stack)');
+        logger.e(e, stackTrace: stack);
 
         dartSendMessage(
           'unscrambleImageColumnsResponse:$requestId',
@@ -76,7 +76,7 @@ extension RustApiJavascriptRuntimeExtension on JsRuntime {
           'base64Decode(${jsonEncode(base64Encode(result))})',
         );
       } catch (e, stack) {
-        debugPrint('Error: $e ($stack)');
+        logger.e(e, stackTrace: stack);
 
         dartSendMessage(
           'unscrambleImageRowsResponse:$requestId',
@@ -118,7 +118,7 @@ extension RustApiJavascriptRuntimeExtension on JsRuntime {
           'base64Decode(${jsonEncode(base64Encode(result))})',
         );
       } catch (e, stack) {
-        debugPrint('Error: $e ($stack)');
+        logger.e(e, stackTrace: stack);
 
         dartSendMessage(
           'unscrambleImageResponse:$requestId',

@@ -15,6 +15,7 @@ import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/mixin/export.dart';
 import 'package:hoyomi/database/scheme/service_settings.dart';
 import 'package:hoyomi/core_services/exception/captcha_required_exception.dart';
+import 'package:hoyomi/plugins/logger.dart';
 import 'package:hoyomi/utils/d_query.dart';
 import 'package:html/parser.dart';
 
@@ -220,8 +221,7 @@ abstract class Service extends BaseService
     required Widget Function(Object? error) orElse,
   }) {
     if (kDebugMode) {
-      print(error);
-      print(trace);
+      logger.e(error, stackTrace: trace);
     }
 
     if (error is CaptchaRequiredException) {
@@ -322,9 +322,9 @@ abstract class Service extends BaseService
 
     final DateTime? startTime = kDebugMode ? DateTime.now() : null;
     if (kDebugMode) {
-      print('🔵 [HTTP] Request Started');
-      print('➡️ URL: $url');
-      print('📩 Cookie: ${$headers.get('cookie')}');
+      logger.i('🔵 [HTTP] Request Started');
+      logger.i('➡️ URL: $url');
+      logger.i('📩 Cookie: ${$headers.get('cookie')}');
 
       if (body != null) {
         final filteredBody = Map.fromEntries(
@@ -338,7 +338,7 @@ abstract class Service extends BaseService
               ),
         );
 
-        print('📦 Body: $filteredBody');
+        logger.i('📦 Body: $filteredBody');
       }
     }
 
@@ -368,17 +368,17 @@ abstract class Service extends BaseService
           final DateTime endTime = DateTime.now();
           final Duration duration = endTime.difference(startTime);
 
-          print('✅ [HTTP] Response Received');
-          print('📜 Status Code: ${response.statusCode}');
-          print('⏳ Duration: ${duration.inMilliseconds} ms');
+          logger.d('✅ [HTTP] Response Received');
+          logger.d('📜 Status Code: ${response.statusCode}');
+          logger.d('⏳ Duration: ${duration.inMilliseconds} ms');
 
-          print('📥 Response Cookie: ${response.headers['set-cookie']}');
+          logger.d('📥 Response Cookie: ${response.headers['set-cookie']}');
         }
       }
     } catch (error, trace) {
       if (kDebugMode) {
-        print('❌ [HTTP] Request Failed');
-        print('⚠️ Error: $error');
+        logger.e('❌ [HTTP] Request Failed');
+        logger.e('⚠️ Error: $error');
       }
 
       if (!headlessMode &&
@@ -406,9 +406,9 @@ abstract class Service extends BaseService
 
       if (error is DioException) {
         if (kDebugMode) {
-          print('URL = ${error.response?.realUri.toString()}');
-          print('Status = ${error.response?.statusCode}');
-          print('Response = ${error.response?.data.toString()}');
+          logger.e('URL = ${error.response?.realUri.toString()}');
+          logger.e('Status = ${error.response?.statusCode}');
+          logger.e('Response = ${error.response?.data.toString()}');
         }
 
         if (error.response != null &&
@@ -689,9 +689,9 @@ abstract class Service extends BaseService
       _user.value = await fetchUser();
     } on UserNotFoundException {
       _user.value = null;
-    } catch (err) {
+    } catch (err, stack) {
       _error.value = '$err';
-      debugPrint('Error: $err (${StackTrace.current})');
+      logger.e(err, stackTrace: stack);
     } finally {
       _fetching.value = false;
     }

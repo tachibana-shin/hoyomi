@@ -8,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart' as g_native;
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/env.dart';
+import 'package:hoyomi/plugins/logger.dart';
 import 'package:kaeru/kaeru.dart';
 
 final _googleNativeSupport =
@@ -62,7 +63,7 @@ class Authentication {
       },
       onError: (error) {
         _user.value = null;
-        debugPrint('Error: $error');
+        logger.e(error);
       },
     );
   }
@@ -118,13 +119,13 @@ class Authentication {
       }
 
       return user;
-    } on FirebaseAuthException catch (err) {
+    } on FirebaseAuthException catch (err, stack) {
       firebaseError = true;
-      _catchFirebaseAuthException(err);
+      _catchFirebaseAuthException(err, stack);
 
       rethrow;
-    } catch (e) {
-      if (!firebaseError) _catchNormalException(e);
+    } catch (e, stack) {
+      if (!firebaseError) _catchNormalException(e, stack);
 
       rethrow;
     }
@@ -147,12 +148,12 @@ class Authentication {
       );
 
       return credential.user;
-    } on FirebaseAuthException catch (err) {
-      _catchFirebaseAuthException(err);
+    } on FirebaseAuthException catch (err, stack) {
+      _catchFirebaseAuthException(err, stack);
 
       rethrow;
-    } catch (e) {
-      _catchNormalException(e);
+    } catch (e, stack) {
+      _catchNormalException(e, stack);
 
       rethrow;
     }
@@ -185,12 +186,12 @@ class Authentication {
       showSnackBar(Text('Welcome, ${user.displayName ?? user.email}'));
 
       return user;
-    } on FirebaseAuthException catch (err) {
-      _catchFirebaseAuthException(err);
+    } on FirebaseAuthException catch (err, stack) {
+      _catchFirebaseAuthException(err, stack);
 
       rethrow;
-    } catch (e) {
-      _catchNormalException(e);
+    } catch (e, stack) {
+      _catchNormalException(e, stack);
 
       rethrow;
     }
@@ -203,8 +204,8 @@ class Authentication {
       await _auth.signOut();
 
       showSnackBar(Text('Signed out.'));
-    } catch (err) {
-      debugPrint('[google_sign_out]: Error $err');
+    } catch (err, stack) {
+      logger.e('[google_sign_out]: Error $err', stackTrace: stack);
 
       showSnackBar(Text('Error signing out. Try again.'));
     }
@@ -216,8 +217,8 @@ class Authentication {
     return _user.value;
   } // =================== utils ===================
 
-  void _catchFirebaseAuthException(FirebaseAuthException err) {
-    debugPrint('Error: $err (${StackTrace.current})');
+  void _catchFirebaseAuthException(FirebaseAuthException err, StackTrace trace) {
+    logger.e(err, stackTrace: trace);
     switch (err.code) {
       case 'account-exists-with-different-credential':
         showSnackBar(
@@ -235,8 +236,8 @@ class Authentication {
     }
   }
 
-  void _catchNormalException(dynamic err) {
-    debugPrint('Error: $err (${StackTrace.current})');
+  void _catchNormalException(dynamic err, StackTrace stack) {
+    logger.e(err, stackTrace: stack);
     showSnackBar(Text('Error occurred Auth: $err'));
   }
 }

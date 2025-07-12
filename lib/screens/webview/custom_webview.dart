@@ -7,6 +7,7 @@ import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/core_services/main.dart';
 import 'package:hoyomi/core_services/service.dart'; // Add this import
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/plugins/logger.dart';
 
 class CustomWebView extends StatefulWidget {
   final String sourceId;
@@ -75,9 +76,10 @@ class _CustomWebViewState extends State<CustomWebView> {
       }
     } on UnimplementedError catch (_) {
       /// pass
-    } catch (e) {
-      showSnackBar(Text('Error while collecting cookies: $e'));
-      debugPrint('Error: $e');
+    } catch (e, stack) {
+      showSnackBar(Text('Error while collecting cookies: $e'));    
+      logger.e(e, stackTrace: stack);
+
     }
   }
 

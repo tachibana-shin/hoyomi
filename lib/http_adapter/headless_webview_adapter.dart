@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hoyomi/core_services/interfaces/headers.dart';
 import 'package:hoyomi/core_services/service.dart';
+import 'package:hoyomi/plugins/logger.dart';
 
 class HeadlessWebViewAdapter implements HttpClientAdapter {
   final Service _service;
@@ -49,7 +50,7 @@ class HeadlessWebViewAdapter implements HttpClientAdapter {
         if (!completer.isCompleted) completer.completeError(error);
       },
       onConsoleMessage: (controller, consoleMessage) async {
-        debugPrint(consoleMessage.toString());
+        logger.e(consoleMessage.toString());
       },
     );
     headless.run();
@@ -100,7 +101,7 @@ class HeadlessWebViewAdapter implements HttpClientAdapter {
         ),
       );
 
-      debugPrint('webview.....');
+      logger.i('webview.....');
       late final InAppWebViewController controller;
       try {
         controller = await _initHeadless(
@@ -108,7 +109,7 @@ class HeadlessWebViewAdapter implements HttpClientAdapter {
           options.headers['user-agent'] ?? '',
         );
       } catch (error, stack) {
-        debugPrint('Error: $error ($stack)');
+        logger.e(error, stackTrace: stack);
 
         return ResponseBody.fromString('WebRequest Error', 503);
       }

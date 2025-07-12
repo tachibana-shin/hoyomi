@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/opening_ending.dart';
 import 'package:hoyomi/core_services/interfaces/vtt.dart';
+import 'package:hoyomi/plugins/export.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:subtitle/subtitle.dart';
 import 'package:hoyomi/utils/format_duration.dart';
@@ -83,8 +84,8 @@ class _SliderEigaState extends State<SliderEiga>
         var url = Uri.parse(vtt.src);
         SubtitleProvider provider = NetworkSubtitle(url);
         _subtitleController = SubtitleController(provider: provider)
-          ..initial().catchError((error) {
-            debugPrint('[thumbnail]: Error $error');
+          ..initial().catchError((error, stack) {
+            logger.i(error, stackTrace: stack);
           });
       } else {
         _subtitleController = null;
@@ -166,8 +167,8 @@ class _SliderEigaState extends State<SliderEiga>
           color: Colors.black,
         );
         _preview.value = loadPreviewMeta(spriteUrl, x, y, w, h);
-      } catch (e) {
-        debugPrint('[thumbnail]: sprite parse error: $e');
+      } catch (e, stack) {
+        logger.e(e, stackTrace: stack);
       }
     } else {
       _previewBlank.value = null;
@@ -184,7 +185,7 @@ class _SliderEigaState extends State<SliderEiga>
     final box = context.findRenderObject() as RenderBox;
     final position = (localPosition.dx / box.size.width).clamp(0.0, 1.0);
     widget.onSeek(widget.duration.value * position);
-    debugPrint('[video_player]: seek changed $position');
+    logger.i('[video_player]: seek changed $position');
   }
 
   @override

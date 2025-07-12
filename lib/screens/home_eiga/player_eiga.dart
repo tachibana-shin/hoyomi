@@ -378,7 +378,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         // detect user language
         final locale =
             PlatformDispatcher.instance.locale.languageCode.toUpperCase();
-        debugPrint('current lang=$locale');
+        logger.i('current lang=$locale');
         final subtitle =
             subtitles.firstWhereOrNull(
               (subtitle) => searchLanguage(subtitle.code)?.codeShort == locale,
@@ -437,7 +437,7 @@ class _PlayerEigaState extends State<PlayerEiga>
               )
               .catchError((error, stack) {
                 if (error is! UserNotFoundException) {
-                  debugPrint('Error: $error ($stack)');
+                  logger.e(error, stackTrace: stack);
                 }
 
                 return WatchTimeData(
@@ -452,8 +452,8 @@ class _PlayerEigaState extends State<PlayerEiga>
       onError:
           (error) =>
               (error is Response)
-                  ? debugPrint('[watch_time]: ${error.statusCode}')
-                  : debugPrint('[watch_time]: $error'),
+                  ? logger.e('[watch_time]: ${error.statusCode}')
+                  : logger.e('[watch_time]: $error'),
       beforeUpdate: () => null,
     );
 
@@ -481,8 +481,8 @@ class _PlayerEigaState extends State<PlayerEiga>
       onError:
           (error) =>
               (error is Response)
-                  ? debugPrint('[seek_thumb]: ${error.statusCode}')
-                  : debugPrint('[seek_thumb]: $error'),
+                  ? logger.e('[seek_thumb]: ${error.statusCode}')
+                  : logger.e('[seek_thumb]: $error'),
     );
 
     /// Position opening / ending
@@ -509,8 +509,8 @@ class _PlayerEigaState extends State<PlayerEiga>
       onError:
           (error) =>
               (error is Response)
-                  ? debugPrint('[opening_ending]: ${error.statusCode}')
-                  : debugPrint('[opening_ending]: $error'),
+                  ? logger.e('[opening_ending]: ${error.statusCode}')
+                  : logger.e('[opening_ending]: $error'),
     );
 
     bool firstRun = true;
@@ -562,10 +562,6 @@ class _PlayerEigaState extends State<PlayerEiga>
       final controller = _controller;
       if (watchTime == null || _controllerId.value != uid) {
         return;
-      }
-
-      if (kDebugMode) {
-        print(watchTime);
       }
 
       await controller.waitUntilFirstFrameRendered;
@@ -704,7 +700,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     final watchTimeData = _watchTimeData.value;
     if (watchTimeData == null) {
-      return debugPrint(
+      return logger.i(
         'Skip saving watch time because watch time data loading.',
       );
     }
@@ -737,7 +733,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         )
         .catchError((error, stack) {
           if (error is! UserNotFoundException) {
-            debugPrint('Error: $error ($stack)');
+            logger.e(error, stackTrace : stack);
           }
         });
   }
@@ -810,7 +806,7 @@ class _PlayerEigaState extends State<PlayerEiga>
 
     // Process only if tap is within left 1/3 or right 1/3 of the widget.
     if (dxRatio < 1 / 2) {
-      debugPrint('tap left');
+      logger.i('tap left');
       _doubleTapToRewind.value++;
 
       _seekTo(
@@ -823,7 +819,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       return;
     }
     if (dxRatio > 1 / 2) {
-      debugPrint('tap right');
+      logger.i('tap right');
       _doubleTapToForward.value++;
 
       _seekTo(
@@ -877,12 +873,12 @@ class _PlayerEigaState extends State<PlayerEiga>
         _appBrightness.value = (_appBrightness.value -
                 details.primaryDelta! / 100)
             .clamp(0.0, 1.0);
-        debugPrint('swipe to change brightness = ${_appBrightness.value}');
+        logger.i('swipe to change brightness = ${_appBrightness.value}');
       } else {
         _showVolume.value = true;
         _systemVolume.value =
             (_systemVolume.value - details.primaryDelta! / 100).clamp(0.0, 1.0);
-        debugPrint('swipe to change volume = ${_systemVolume.value}');
+        logger.i('swipe to change volume = ${_systemVolume.value}');
       }
     }
   }
@@ -907,7 +903,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       // master m3u8 file
       // no action
       for (var variant in playlist.variants) {
-        debugPrint("[initialize_hls]: variant: ${variant.url}");
+        logger.i("[initialize_hls]: variant: ${variant.url}");
       }
 
       if (playlist.variants.isEmpty) return false;
@@ -931,7 +927,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       return true;
     } else if (playlist is HlsMediaPlaylist) {
       // media m3u8 file
-      debugPrint("[initialize_hls]: no action because is media playlist");
+      logger.i("[initialize_hls]: no action because is media playlist");
     }
 
     return false;
@@ -2197,8 +2193,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   Future<void> _resetAppBrightness() async {
     try {
       await resetApplicationScreenBrightness();
-    } catch (e) {
-      debugPrint(e.toString());
+    } catch (_) {
     }
   }
 

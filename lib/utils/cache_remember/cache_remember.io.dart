@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
-import 'package:flutter/material.dart';
+import 'package:hoyomi/plugins/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Get a File instance for the given cache key.
@@ -31,7 +31,7 @@ Future<T> cacheRemember<T>(
   final file = _getCacheFile(directory, key);
 
   if (await file.exists()) {
-    debugPrint('[cache_remember]: Cache hit for $key');
+    logger.i('[cache_remember]: Cache hit for $key');
 
     try {
       final content = await file.readAsString();
@@ -43,14 +43,14 @@ Future<T> cacheRemember<T>(
         if (content == newContent) return;
 
         onUpdate(newValue);
-        debugPrint('[cache_remember]: Cache updated for $key');
+        logger.i('[cache_remember]: Cache updated for $key');
 
         await file.writeAsString(newContent);
       });
 
       return cachedValue;
-    } catch (err) {
-      debugPrint('[cache_remember]: Error reading cache for $key: $err');
+    } catch (err, trace) {
+      logger.e(err, stackTrace: trace);
     }
   }
 

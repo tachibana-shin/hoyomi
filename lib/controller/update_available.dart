@@ -9,6 +9,7 @@ import 'package:hoyomi/database/scheme/general_settings.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_package_installer/flutter_package_installer.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:hoyomi/plugins/logger.dart';
 import 'package:hoyomi/widgets/export.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:markdown/markdown.dart' as markdown;
@@ -251,7 +252,7 @@ class UpdateAvailableController {
           _pauseUpdate();
         }
       } else {
-        debugPrint('[update_available]: Not support this platform');
+        logger.i('[update_available]: Not support this platform');
       }
     } catch (err) {
       showSnackBar(Text('Error: $err'));
@@ -348,7 +349,7 @@ class UpdateAvailableController {
         );
       }
 
-      debugPrint('Download completed: $filePath');
+      logger.i('Download completed: $filePath');
       onProgress(1.0);
       return File(filePath);
     } catch (e) {

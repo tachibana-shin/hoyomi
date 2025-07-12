@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:hoyomi/plugins/logger.dart';
 
 final GlobalKey<ScaffoldMessengerState> snackbarKey =
     GlobalKey<ScaffoldMessengerState>();
@@ -21,9 +22,9 @@ void showSnackBar(Widget content, {SnackBarAction? action}) {
 
 void showSnackError(String source, Object error) {
   if (error is Response) {
-    debugPrint('[$source]: ${error.data}');
+    logger.e('[$source]: ${error.data}');
   } else {
-    debugPrint('[$source]: $error (${StackTrace.current})');
+    logger.e('[$source]: $error');
   }
 
   showSnackBar(

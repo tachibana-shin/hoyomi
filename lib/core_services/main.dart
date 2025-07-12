@@ -8,6 +8,7 @@ import 'package:hoyomi/core_services/comic/ab_comic_service.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/interfaces/main.dart';
 import 'package:hoyomi/plugins/install_web_rules.dart';
+import 'package:hoyomi/plugins/logger.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -143,7 +144,7 @@ Future<void> _loadJsService() async {
 
       updateJsService(
         service,
-      ).catchError((e) => debugPrint('Failed to update service: $e'));
+      ).catchError((e, stack) => logger.e('Failed to update service: $e', stackTrace: stack));
 
       if (isExpectedType(service)) {
         onAccept(service);

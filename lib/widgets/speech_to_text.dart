@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hoyomi/plugins/logger.dart';
 import 'package:speech_to_text/speech_to_text.dart' as st;
 
 class SpeechToText extends StatefulWidget {
@@ -38,11 +39,11 @@ class _SpeechToTextState extends State<SpeechToText>
 
   Future<void> _startListening() async {
     bool available = await _speech.initialize(
-      onStatus: (status) => debugPrint("Status: $status"),
+      onStatus: (status) => logger.i("Status: $status"),
       onError: (error) {
         widget.onError(error);
         Navigator.of(context).pop();
-        debugPrint("Error: $error");
+        logger.e(error);
       },
     );
 

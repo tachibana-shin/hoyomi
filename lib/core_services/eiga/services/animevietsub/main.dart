@@ -145,7 +145,6 @@ class AnimeVietsubService extends ABEigaService
     final id = RegExp(r'(\d+)\/?$').firstMatch(eigaId)?.group(1);
 
     if (id == null) {
-      debugPrint('Error eigaId = $eigaId');
       return false;
     }
 

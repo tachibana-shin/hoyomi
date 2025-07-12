@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:hoyomi/plugins/logger.dart';
 
 final Map<String, String> _cache = {};
 
@@ -20,7 +20,7 @@ Future<T> cacheRemember<T>(
   final file = _cache[key];
 
   if (file != null) {
-    debugPrint('[cache_remember]: Cache hit for $key');
+    logger.i('[cache_remember]: Cache hit for $key');
 
     try {
       final content = file;
@@ -30,14 +30,14 @@ Future<T> cacheRemember<T>(
       get().then((newValue) async {
         final content = toCache(newValue);
         onUpdate(newValue);
-        debugPrint('[cache_remember]: Cache updated for $key');
+        logger.i('[cache_remember]: Cache updated for $key');
 
         _cache[key] = content;
       });
 
       return cachedValue;
-    } catch (err) {
-      debugPrint('[cache_remember]: Error reading cache for $key: $err');
+    } catch (err, stack) {
+      logger.e(err, stackTrace: stack);
     }
   }
 

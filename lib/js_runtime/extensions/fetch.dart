@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:hoyomi/plugins/logger.dart';
 
 import '../js_runtime.dart';
 import '../embed.dart';
@@ -61,7 +61,7 @@ extension FetchJavascriptRuntimeExtension on JsRuntime {
           '__body': "${responseMap['__body']}"
         }''');
       } catch (e, stack) {
-        debugPrint('Error: $e ($stack)');
+        logger.e(e, stackTrace: stack);
 
         final requestId = req['id'];
         await dartSendMessage('response:$requestId', '''{

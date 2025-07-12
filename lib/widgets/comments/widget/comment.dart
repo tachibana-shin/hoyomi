@@ -3,6 +3,7 @@ import 'package:hoyomi/core_services/comic/interfaces/comic_comments.dart';
 import 'package:hoyomi/core_services/comic/interfaces/comic_comment.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
 import 'package:hoyomi/core_services/interfaces/main.dart';
+import 'package:hoyomi/plugins/logger.dart';
 import 'package:hoyomi/utils/format_time_ago.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:hoyomi/widgets/comments/widget/comments.dart';
@@ -255,12 +256,12 @@ class _CommentState extends State<Comment> with KaeruMixin {
         parent: widget.parent,
         value: value,
       );
-    } catch (err) {
+    } catch (err, stack) {
       setState(() {
         widget.onCommentChanged(widget.comment.copyWith(like: old));
       });
       showSnackError('like', err);
-      debugPrint('Error: $err (${StackTrace.current})');
+      logger.i(err, stackTrace: stack);
     }
   }
 

@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:hoyomi/core_services/eiga/export.dart';
 import 'package:hoyomi/core_services/exception/user_not_found_exception.dart';
 import 'package:hoyomi/pages/details_eiga/[sourceId]/[eigaId].page.dart';
+import 'package:hoyomi/plugins/logger.dart';
 import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/utils/format_duration.dart';
 import 'package:hoyomi/widgets/iconify.dart';
@@ -112,9 +113,9 @@ class _ListEpisodesState extends State<ListEpisodes>
           .then((watchTimes) {
             if (mounted) _watchTimeEpisodes.value = watchTimes;
           })
-          .catchError((error) {
+          .catchError((error, stack) {
             if (error is! UserNotFoundException) {
-              debugPrint('Error: $error (${StackTrace.current})');
+              logger.e(error, stackTrace: stack);
             }
           });
 

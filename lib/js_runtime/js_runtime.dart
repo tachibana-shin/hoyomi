@@ -4,6 +4,7 @@ import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_qjs/flutter_qjs.dart';
+import 'package:hoyomi/plugins/logger.dart';
 
 export 'extensions/fetch.dart';
 
@@ -54,10 +55,8 @@ void _jsIsolateEntry(SendPort mainSendPort) async {
           'id': id,
           'result': {'type': 'ok', 'data': output.stringResult},
         });
-      } catch (error) {
-        debugPrint('================================');
-        debugPrint(error.toString());
-        debugPrint('================================');
+      } catch (error, stack) {
+        logger.e(error, stackTrace: stack);
 
         mainSendPort.send({
           'type': 'eval_result',

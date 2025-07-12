@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:hoyomi/env.dart';
+import 'package:hoyomi/plugins/export.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ProxyCache {
@@ -32,7 +32,7 @@ class ProxyCache {
     final String cachePath = directory.path;
 
     _server = await HttpServer.bind(InternetAddress.loopbackIPv4, _port);
-    debugPrint('ProxyCache started on http://localhost:$_port/');
+    logger.i('ProxyCache started on http://localhost:$_port/');
 
     _server!.listen((HttpRequest request) async {
       final String fileName = request.uri.path.substring(1);
@@ -59,6 +59,6 @@ class ProxyCache {
   Future<void> stop() async {
     await _server?.close();
     _server = null;
-    debugPrint('ProxyCache stopped.');
+    logger.i('ProxyCache stopped.');
   }
 }
