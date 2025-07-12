@@ -9,7 +9,6 @@ part 'source_video.g.dart';
 sealed class SourceVideo with _$SourceVideo {
   const factory SourceVideo({
     required String src,
-    required Uri url,
     required String type,
     Headers? headers,
     String? extra,

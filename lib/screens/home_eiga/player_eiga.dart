@@ -759,10 +759,7 @@ class _PlayerEigaState extends State<PlayerEiga>
       );
       content = sourceContent.content;
     } on UnimplementedError {
-      content = await widget.service.fetch(
-        source.url.toString(),
-        headers: source.headers,
-      );
+      content = await widget.service.fetch(source.src, headers: source.headers);
     }
 
     final fileCache = await ProxyCache.instance.saveFile(
@@ -778,7 +775,7 @@ class _PlayerEigaState extends State<PlayerEiga>
     if (parseQuality && source.type == 'hls') {
       final isMediaPlaylist = await _initializeHls(
         content: content,
-        url: url,
+        url: Uri.parse(source.src),
         headers: source.headers,
       );
       if (isMediaPlaylist) {
@@ -2000,7 +1997,6 @@ class _PlayerEigaState extends State<PlayerEiga>
         src: resolution.variant.url.toString(),
         type: 'hls',
         headers: resolution.headers,
-        url: resolution.variant.url,
       ),
       _controllerId.value ?? uid,
       parseQuality: false,

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SourceVideo {
 
- String get src; Uri get url; String get type; Headers? get headers; String? get extra;
+ String get src; String get type; Headers? get headers; String? get extra;
 /// Create a copy of SourceVideo
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $SourceVideoCopyWith<SourceVideo> get copyWith => _$SourceVideoCopyWithImpl<Sour
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SourceVideo&&(identical(other.src, src) || other.src == src)&&(identical(other.url, url) || other.url == url)&&(identical(other.type, type) || other.type == type)&&(identical(other.headers, headers) || other.headers == headers)&&(identical(other.extra, extra) || other.extra == extra));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SourceVideo&&(identical(other.src, src) || other.src == src)&&(identical(other.type, type) || other.type == type)&&(identical(other.headers, headers) || other.headers == headers)&&(identical(other.extra, extra) || other.extra == extra));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,src,url,type,headers,extra);
+int get hashCode => Object.hash(runtimeType,src,type,headers,extra);
 
 @override
 String toString() {
-  return 'SourceVideo(src: $src, url: $url, type: $type, headers: $headers, extra: $extra)';
+  return 'SourceVideo(src: $src, type: $type, headers: $headers, extra: $extra)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $SourceVideoCopyWith<$Res>  {
   factory $SourceVideoCopyWith(SourceVideo value, $Res Function(SourceVideo) _then) = _$SourceVideoCopyWithImpl;
 @useResult
 $Res call({
- String src, Uri url, String type, Headers? headers, String? extra
+ String src, String type, Headers? headers, String? extra
 });
 
 
@@ -66,11 +66,10 @@ class _$SourceVideoCopyWithImpl<$Res>
 
 /// Create a copy of SourceVideo
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? src = null,Object? url = null,Object? type = null,Object? headers = freezed,Object? extra = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? src = null,Object? type = null,Object? headers = freezed,Object? extra = freezed,}) {
   return _then(_self.copyWith(
 src: null == src ? _self.src : src // ignore: cast_nullable_to_non_nullable
-as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as Uri,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,headers: freezed == headers ? _self.headers : headers // ignore: cast_nullable_to_non_nullable
 as Headers?,extra: freezed == extra ? _self.extra : extra // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -96,11 +95,10 @@ $HeadersCopyWith<$Res>? get headers {
 @JsonSerializable()
 
 class _SourceVideo implements SourceVideo {
-  const _SourceVideo({required this.src, required this.url, required this.type, this.headers, this.extra});
+  const _SourceVideo({required this.src, required this.type, this.headers, this.extra});
   factory _SourceVideo.fromJson(Map<String, dynamic> json) => _$SourceVideoFromJson(json);
 
 @override final  String src;
-@override final  Uri url;
 @override final  String type;
 @override final  Headers? headers;
 @override final  String? extra;
@@ -118,16 +116,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SourceVideo&&(identical(other.src, src) || other.src == src)&&(identical(other.url, url) || other.url == url)&&(identical(other.type, type) || other.type == type)&&(identical(other.headers, headers) || other.headers == headers)&&(identical(other.extra, extra) || other.extra == extra));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SourceVideo&&(identical(other.src, src) || other.src == src)&&(identical(other.type, type) || other.type == type)&&(identical(other.headers, headers) || other.headers == headers)&&(identical(other.extra, extra) || other.extra == extra));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,src,url,type,headers,extra);
+int get hashCode => Object.hash(runtimeType,src,type,headers,extra);
 
 @override
 String toString() {
-  return 'SourceVideo(src: $src, url: $url, type: $type, headers: $headers, extra: $extra)';
+  return 'SourceVideo(src: $src, type: $type, headers: $headers, extra: $extra)';
 }
 
 
@@ -138,7 +136,7 @@ abstract mixin class _$SourceVideoCopyWith<$Res> implements $SourceVideoCopyWith
   factory _$SourceVideoCopyWith(_SourceVideo value, $Res Function(_SourceVideo) _then) = __$SourceVideoCopyWithImpl;
 @override @useResult
 $Res call({
- String src, Uri url, String type, Headers? headers, String? extra
+ String src, String type, Headers? headers, String? extra
 });
 
 
@@ -155,11 +153,10 @@ class __$SourceVideoCopyWithImpl<$Res>
 
 /// Create a copy of SourceVideo
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? src = null,Object? url = null,Object? type = null,Object? headers = freezed,Object? extra = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? src = null,Object? type = null,Object? headers = freezed,Object? extra = freezed,}) {
   return _then(_SourceVideo(
 src: null == src ? _self.src : src // ignore: cast_nullable_to_non_nullable
-as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as Uri,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,headers: freezed == headers ? _self.headers : headers // ignore: cast_nullable_to_non_nullable
 as Headers?,extra: freezed == extra ? _self.extra : extra // ignore: cast_nullable_to_non_nullable
 as String?,

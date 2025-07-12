@@ -382,7 +382,6 @@ class NguonCService extends ABEigaService {
 
     return SourceVideo(
       src: source.embed,
-      url: Uri.parse(source.embed),
       type: 'hls',
       headers: Headers({'referer': baseUrl}),
     );

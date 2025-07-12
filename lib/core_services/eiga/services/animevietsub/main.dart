@@ -694,7 +694,7 @@ class AnimeVietsubService extends ABEigaService
     final json = jsonDecode(text);
     return SourceVideo(
       src: json['link'][0]['file'],
-      url: Uri.parse(baseUrl),
+      extra: baseUrl,
       type: json['playTech'] == 'api' ? 'hls' : 'embed',
       headers: Headers({'Referer': baseUrl}),
     );
@@ -704,7 +704,7 @@ class AnimeVietsubService extends ABEigaService
   fetchSourceContent({required source}) async {
     return SourceContent(
       content: jsonDecode(_decryptM3u8(source.src)),
-      url: source.url,
+      url: Uri.parse(source.extra!),
       headers: source.headers,
     );
   }

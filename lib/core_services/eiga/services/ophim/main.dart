@@ -414,7 +414,6 @@ class OPhimService extends ABEigaService {
 
     return SourceVideo(
       src: source.linkM3u8,
-      url: Uri.parse(source.linkM3u8),
       type: 'hls',
       headers: Headers({'referer': baseUrl}),
     );
@@ -422,12 +421,12 @@ class OPhimService extends ABEigaService {
 
   @override
   fetchSourceContent({required source}) async {
-    final master = await fetch(source.url.toString(), headers: source.headers);
+    final master = await fetch(source.src, headers: source.headers);
     final m3u8 = master
         .split('\n')
         .firstWhere((line) => line.contains('.m3u8'));
 
-    final urlMediaPlaylist = source.url.resolve(m3u8);
+    final urlMediaPlaylist = Uri.parse(source.src).resolve(m3u8);
     final content = await fetch(
       urlMediaPlaylist.toString(),
       headers: source.headers,
