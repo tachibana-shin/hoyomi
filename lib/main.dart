@@ -21,6 +21,7 @@ Future<void> main() async {
   initializeVideoPolyfill();
 
   await androidSdkIntInit();
+  await initializeLogger();
   await initializeApplicationDocumentDirectory();
   await initializeCert();
   await initializeFirebase();
