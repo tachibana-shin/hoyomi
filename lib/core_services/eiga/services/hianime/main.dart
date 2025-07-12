@@ -12,7 +12,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:hoyomi/core_services/eiga/ab_eiga_service.dart';
 import 'package:hoyomi/core_services/eiga/interfaces/main.dart';
-import 'package:hoyomi/env.dart';
+import 'package:hoyomi/crypto/decrypt_ase.dart';
 import 'package:hoyomi/utils/d_query.dart';
 import 'package:intl/intl.dart';
 
@@ -382,58 +382,61 @@ class HiAnimeService extends ABEigaService {
     final $ = parse$(html);
 
     return $('.server-item[data-id]').map(($item) {
-      final name = $item.text();
-      // val serverlist = listOf("vidstreaming", "vidcloud")
-      final server = name.contains('HD-1') ? 'vidstreaming' : 'vidcloud';
+      final id = $item.data('id');
       final type = $item.data('type');
+      final name = $item.text().trim();
 
-      return ServerSource(
-        name: '${type.toUpperCase()} ${$item.text()}',
-        serverId: '$type&server=$server',
-      );
+      return ServerSource(name: name, serverId: id, extra: type);
     });
+  }
+
+  Future<String> _getConfServer(String serverId) async {
+    final json = await fetch('/ajax/v2/episode/sources?id=$serverId');
+
+    return jsonDecode(json)['link'] as String;
   }
 
   @override
   getSource({required eigaId, required episode, server}) async {
-    for (var attempt = 0; attempt < 3; attempt++) {
-      try {
-        final json = await fetch(
-          '${Env.twoApi}?episodeId=$eigaId\$episode\$${episode.episodeId}\$${server!.serverId}',
-        );
-        final data = jsonDecode(json);
+    if (server == null) throw UnimplementedError();
 
-        final sources = data['sources'] as List<dynamic>;
-        final source = sources.firstWhereOrNull(
-          (source) =>
-              source['type'] == 'hls' ||
-              source['isM3U8'] == true ||
-              source['url'].toString().endsWith('.m3u8'),
-        );
+    final link = await _getConfServer(server.serverId);
 
-        if (source != null) {
-          return SourceVideo(
-            src: source['url'] + '#megacloud',
-            url: Uri.parse(source['url'] + '#megacloud'),
-            type: source['type'] ?? 'hls',
-            headers: Headers({
-              'referer': 'https://megacloud.club/',
-              'origin': 'https://megacloud.club/',
-            }),
-            extra: json,
-          );
-        }
-      } catch (e) {
-        // optional: debug log
+    final idRaw = link.substring((link.lastIndexOf("/") >>> 0) + 1);
+    final serverId = idRaw.substring(0, idRaw.indexOf("?") >>> 0);
 
-        // ignore: avoid_print
-        print('❌ Attempt ${attempt + 1} failed: $e');
-      }
+    final rawSourceData = jsonDecode(
+      await fetch(
+        'https://megacloud.blog/embed-2/v2/e-1/getSources?id=$serverId',
+      ),
+    );
+    final encryptedBase64 = rawSourceData?['sources'];
 
-      await Future.delayed(const Duration(milliseconds: 300));
+    if (encryptedBase64.isEmpty) {
+      throw Exception('Encrypted source missing in response');
     }
 
-    throw Exception('No source found');
+    /// https://github.com/yahyaMomin/hianime-API/blob/main/src/parsers/decryptor/megacloud_v1.js
+    ///
+    final key = await fetch(
+      'https://raw.githubusercontent.com/itzzzme/megacloud-keys/refs/heads/main/key.txt',
+    );
+
+    final source = decryptAes(
+      base64.decode(encryptedBase64),
+      keyOrPassphrase: key,
+    );
+    final json = jsonDecode(utf8.decode(source));
+
+    return SourceVideo(
+      src: json[0]['file'],
+      type: json[0]['type'],
+      headers: Headers({
+        'referer': 'https://megacloud.blog/',
+        'origin': 'https://megacloud.blog/',
+      }),
+      extra: jsonEncode(rawSourceData),
+    );
   }
 
   @override
@@ -443,8 +446,11 @@ class HiAnimeService extends ABEigaService {
     final content = await fetch(source.src, headers: source.headers);
 
     return SourceContent(
-      content: kIsWeb ? _processM3U8StreamUrls(content, source.url) : content,
-      url: source.url,
+      content:
+          kIsWeb
+              ? _processM3U8StreamUrls(content, Uri.parse(source.src))
+              : content,
+      url: Uri.parse(source.src),
       headers: source.headers,
     );
   }
@@ -476,18 +482,18 @@ class HiAnimeService extends ABEigaService {
   getSubtitles({required eigaId, required episode, required source}) async {
     final data = jsonDecode(source.extra!);
 
-    final subtitles = data['subtitles'] as List;
+    final subtitles = data['tracks'] as List;
     // is {url: string, lang: string}[] ! lang=thumbnails is preview thumbnail
 
-    return subtitles.where((subtitle) => subtitle['lang'] != 'thumbnails').map((
+    return subtitles.where((subtitle) => subtitle['kind'] != 'thumbnails').map((
       subtitle,
     ) {
       return Subtitle(
-        url: subtitle['url'],
-        language: subtitle['lang'],
-        code: subtitle['lang'],
+        url: subtitle['file'],
+        language: subtitle['label'],
+        code: subtitle['label'],
         type:
-            subtitle['url'].endsWith('srt')
+            subtitle['file'].endsWith('srt')
                 ? SubtitleType.srt
                 : SubtitleType.vtt,
       );
