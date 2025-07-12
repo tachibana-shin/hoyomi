@@ -23,7 +23,7 @@ Future<(Service, String)> fetchAndCreateJsService(String url) async {
       )
       .catchError((err) => false);
 
-  final jsCode = '''// @install_url = $url;
+  final jsCode = '''// @install_url = $url
 // @support_pkg_json = $supportPkgJson
 ${response.data}''';
 

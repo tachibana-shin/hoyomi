@@ -39,7 +39,7 @@ String getInstallUrlJsService(String content, String uid) {
   // install_url save in fileJs with format @install_url = <url>
 
   final match = RegExp(r'// @install_url\s*=\s*(.+)').firstMatch(content);
-  final installUrl = match?.group(1)?.trim();
+  final installUrl = match?.group(1)?.trim().replaceFirst(RegExp(r';$'), '');
 
   if (installUrl == null || installUrl.isEmpty) {
     throw Exception('Service "$uid" does not have a valid install URL');
@@ -106,7 +106,7 @@ Future<bool> installJsService(Service service, String jsCode) async {
     throw Exception('Unsupported service type');
   }
 
-  final meta = await getMetaFromRuntime((service as dynamic).runtime);
+  final meta = await getMetaFromRuntime(await (service as dynamic).runtime);
   final initFile = getInitFileJsService(file);
 
   await initFile.writeAsString(jsonEncode(meta));
@@ -313,12 +313,11 @@ Future<void> updateJsService(Service service, [bool force = false]) async {
 
   final dio = Dio();
   final now = DateTime.now().millisecondsSinceEpoch;
-  final prefs = await SharedPreferences.getInstance();
+  final asyncPrefs = SharedPreferencesAsync();
   final cacheKey = 'js_check:$uid';
 
-  final lastChecked = prefs.getInt(cacheKey);
-  if (!force &&
-      lastChecked != null &&
+  final lastChecked = force ? null : await asyncPrefs.getInt(cacheKey);
+  if (lastChecked != null &&
       now - lastChecked < _checkCooldown.inMilliseconds) {
     logger.i(
       'Skip check for $uid, last checked ${DateTime.fromMillisecondsSinceEpoch(lastChecked)}',
@@ -352,13 +351,21 @@ Future<void> updateJsService(Service service, [bool force = false]) async {
     }
 
     if (remoteVersion == currentVersion) {
-      await prefs.setInt(cacheKey, now);
+      await asyncPrefs.setInt(cacheKey, now);
+
+      if (force) showSnackBar(Text('No update available for $uid'));
 
       return;
     }
   }
 
   final (newService, jsCode) = await fetchAndCreateJsService(installUrl);
+  if (newService.init.version == currentVersion) {
+    if (force) showSnackBar(Text('No update available for $uid'));
+    newService.dispose();
+
+    return;
+  }
 
   if (newService.uid != uid) {
     throw Exception(
@@ -369,7 +376,7 @@ Future<void> updateJsService(Service service, [bool force = false]) async {
   await installJsService(newService, jsCode);
   showSnackBar(Text('Updated plugin "${newService.uid}"'));
 
-  await prefs.setInt(cacheKey, now);
+  await asyncPrefs.setInt(cacheKey, now);
 }
 
 String _getSubDirJsService(Service service) {
