@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart' show Response;
 import 'package:flutter/foundation.dart';
@@ -966,6 +967,20 @@ class _PlayerEigaState extends State<PlayerEiga>
   Widget _buildStack(BuildContext context, {required bool isFullscreen}) {
     final stack = Stack(
       children: [
+        Watch(() {
+          return Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+
+            child: HtmlSubtitleWrapper(
+              service: widget.service,
+              subtitle: _subtitle,
+              videoController: _controller,
+            ),
+          );
+        }),
         Watch(() {
           if (_trailerAvailable.value) return SizedBox.shrink();
 
