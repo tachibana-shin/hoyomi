@@ -29,6 +29,7 @@ class JSEigaService extends ABEigaService {
   Future<JsRuntime> _setupRuntime() {
     return _setupRuntimePending ??= __setupRuntime()
         .then((runtime) {
+          _runtime = runtime;
           _setupRuntimePending = null;
           return runtime;
         })
