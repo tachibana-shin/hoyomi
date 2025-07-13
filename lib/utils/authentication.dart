@@ -217,7 +217,10 @@ class Authentication {
     return _user.value;
   } // =================== utils ===================
 
-  void _catchFirebaseAuthException(FirebaseAuthException err, StackTrace trace) {
+  void _catchFirebaseAuthException(
+    FirebaseAuthException err,
+    StackTrace trace,
+  ) {
     logger.e(err, stackTrace: trace);
     switch (err.code) {
       case 'account-exists-with-different-credential':

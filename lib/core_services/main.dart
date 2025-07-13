@@ -142,9 +142,10 @@ Future<void> _loadJsService() async {
     final futures = files.map((file) async {
       final service = await createJsService(file: file);
 
-      updateJsService(
-        service,
-      ).catchError((e, stack) => logger.e('Failed to update service: $e', stackTrace: stack));
+      updateJsService(service).catchError(
+        (e, stack) =>
+            logger.e('Failed to update service: $e', stackTrace: stack),
+      );
 
       if (isExpectedType(service)) {
         onAccept(service);

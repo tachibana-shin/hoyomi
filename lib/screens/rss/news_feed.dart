@@ -158,7 +158,8 @@ class _NewsFeedScreenState extends State<NewsFeedScreen>
             DateTime.tryParse(pubDateString) ??
             DateFormat('dd-MM-yyyy').tryParse(pubDateString) ??
             convertTimeAgoToUtc(pubDateString);
-      } catch (e, stack) {logger.e(e, stackTrace: stack);
+      } catch (e, stack) {
+        logger.e(e, stackTrace: stack);
       }
 
       return _RssItem(

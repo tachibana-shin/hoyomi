@@ -77,9 +77,8 @@ class _CustomWebViewState extends State<CustomWebView> {
     } on UnimplementedError catch (_) {
       /// pass
     } catch (e, stack) {
-      showSnackBar(Text('Error while collecting cookies: $e'));    
+      showSnackBar(Text('Error while collecting cookies: $e'));
       logger.e(e, stackTrace: stack);
-
     }
   }
 

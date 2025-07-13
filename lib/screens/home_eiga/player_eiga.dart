@@ -733,7 +733,7 @@ class _PlayerEigaState extends State<PlayerEiga>
         )
         .catchError((error, stack) {
           if (error is! UserNotFoundException) {
-            logger.e(error, stackTrace : stack);
+            logger.e(error, stackTrace: stack);
           }
         });
   }
@@ -2193,8 +2193,7 @@ class _PlayerEigaState extends State<PlayerEiga>
   Future<void> _resetAppBrightness() async {
     try {
       await resetApplicationScreenBrightness();
-    } catch (_) {
-    }
+    } catch (_) {}
   }
 
   /// ============= /system brightness and volume ===========
