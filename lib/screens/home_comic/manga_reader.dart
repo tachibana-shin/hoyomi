@@ -17,7 +17,7 @@ import 'package:hoyomi/constraints/fluent.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/plugins/export.dart';
-import 'package:hoyomi/rust/api/image/auto_trim_image.dart';
+import 'package:hoyomi/rust_isolate/auto_trim_image_isolate.dart';
 import 'package:hoyomi/screens/export.dart';
 import 'package:hoyomi/stores.dart';
 import 'package:hoyomi/utils/export.dart';
@@ -693,7 +693,7 @@ class _MangaReaderState extends State<MangaReader>
               if (!mounted) throw Exception('Break by unmounted');
 
               if (comicAutoTrimImage.value) {
-                buffer = await autoTrimImage(image: buffer);
+                buffer = await autoTrimImageIsolate(image: buffer);
               }
 
               return _decodeWithDescriptor(buffer);

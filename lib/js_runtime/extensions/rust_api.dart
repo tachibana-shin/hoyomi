@@ -1,11 +1,9 @@
 import 'dart:convert';
-import 'dart:isolate';
 
 import 'package:hoyomi/plugins/logger.dart';
-import 'package:hoyomi/rust/api/image/unscramble_image.dart';
-import 'package:hoyomi/rust/api/image/unscramble_image_columns.dart';
-import 'package:hoyomi/rust/api/image/unscramble_image_rows.dart';
-import 'package:hoyomi/rust/frb_generated.dart';
+import 'package:hoyomi/rust_isolate/unscramble_image_columns_isolate.dart';
+import 'package:hoyomi/rust_isolate/unscramble_image_isolate.dart';
+import 'package:hoyomi/rust_isolate/unscramble_image_rows_isolate.dart';
 
 import '../js_runtime.dart';
 
@@ -24,19 +22,11 @@ extension RustApiJavascriptRuntimeExtension on JsRuntime {
                 .toList();
         final autoTrim = args['autoTrim'] as bool;
 
-        final result = await Isolate.run(() async {
-          await RustLib.init();
-
-          final output = unscrambleImageColumnsSync(
-            imageData: imageData,
-            blocks: blocks,
-            autoTrim: autoTrim,
-          );
-
-          RustLib.dispose();
-
-          return output;
-        });
+        final result = await unscrambleImageColumnsIsolate(
+          imageData: imageData,
+          blocks: blocks,
+          autoTrim: autoTrim,
+        );
 
         dartSendMessage(
           'unscrambleImageColumnsResponse:$requestId',
@@ -65,7 +55,7 @@ extension RustApiJavascriptRuntimeExtension on JsRuntime {
                 .toList();
         final autoTrim = args['autoTrim'] as bool;
 
-        final result = await unscrambleImageRows(
+        final result = await unscrambleImageRowsIsolate(
           imageData: imageData,
           blocks: blocks,
           autoTrim: autoTrim,
@@ -107,7 +97,7 @@ extension RustApiJavascriptRuntimeExtension on JsRuntime {
                 .toList();
         final autoTrim = args['autoTrim'] as bool;
 
-        final result = await unscrambleImage(
+        final result = await unscrambleImageIsolate(
           imageData: imageData,
           blocks: blocks,
           autoTrim: autoTrim,

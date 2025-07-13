@@ -36,6 +36,10 @@ export 'package:hoyomi/rust/api/image/unscramble_image.dart';
 export 'package:hoyomi/rust/api/image/unscramble_image_columns.dart';
 export 'package:hoyomi/rust/api/image/unscramble_image_rows.dart';
 
+export 'package:hoyomi/rust_isolate/unscramble_image_isolate.dart';
+export 'package:hoyomi/rust_isolate/unscramble_image_columns_isolate.dart';
+export 'package:hoyomi/rust_isolate/unscramble_image_rows_isolate.dart';
+
 Future<Dio> _createDioClientCache({
   String baseUrl = '',
   bool headless = false,

@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/comic/main.dart';
 import 'package:hoyomi/env.dart';
-import 'package:hoyomi/rust/frb_generated.dart';
 
 part 'main.freezed.dart';
 part 'main.g.dart';
@@ -689,19 +687,11 @@ Future<Uint8List> _decodeAndBuildImage(Uint8List buffer, String drmData) async {
   );
 
   final blocks = await _decodeDrm(drmData.trim(), key);
-  return Isolate.run(() async {
-    await RustLib.init();
-
-    final output = unscrambleImageRowsSync(
-      imageData: buffer,
-      blocks: blocks,
-      autoTrim: false,
-    );
-
-    RustLib.dispose();
-
-    return output;
-  });
+  return unscrambleImageRowsIsolate(
+    imageData: buffer,
+    blocks: blocks,
+    autoTrim: false,
+  );
 }
 
 @freezed
