@@ -91,9 +91,9 @@ class _DetailsComicReaderState extends State<DetailsComicReader>
           );
         })
         .catchError(
-          (error) => _metaComicFuture.then((comic) {
+          (error) => _metaComicFuture.then((comic) async {
             try {
-              final out = _service.getComicModes(comic);
+              final out = await _service.getComicModes(comic);
 
               return out;
             } catch (error) {
