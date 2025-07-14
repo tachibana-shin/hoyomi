@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hoyomi/apis/show_snack_bar.dart';
+import 'package:hoyomi/constraints/oct_ion.dart';
 import 'package:hoyomi/constraints/x_platform.dart';
 
 import 'package:hoyomi/core_services/main.dart';
@@ -19,7 +20,7 @@ import 'package:iconify_flutter/icons/ic.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../controller/update_available.dart';
+import '../../controller/update_available.dart';
 
 class ManagerPage extends StatelessWidget {
   const ManagerPage({super.key});
@@ -161,6 +162,13 @@ class ManagerPage extends StatelessWidget {
               useRootNavigator: true,
             );
           },
+        ),
+
+        /// Logger button
+        ListTile(
+          leading: Iconify(OctIcon.log24),
+          title: const Text('Logs'),
+          onTap: () => context.pushNamed('manager_logger'),
         ),
 
         /// About button

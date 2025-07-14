@@ -228,6 +228,12 @@ final routes = [
             pageBuilder: pageBuilder,
             builder: (context, state) => ManagerPage(),
           ),
+          _RestorableGoRoute(
+            path: '/manager/logger',
+            name: 'manager_logger',
+            pageBuilder: pageBuilder,
+            builder: (context, state) => LoggerPage(),
+          ),
         ],
       ),
     ],
