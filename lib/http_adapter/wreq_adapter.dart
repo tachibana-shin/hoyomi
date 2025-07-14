@@ -78,8 +78,6 @@ class WReqAdapter implements HttpClientAdapter {
         bodyBytes: rawBytes,
       );
 
-      await Isolate.spawn(_handleRequestInIsolate, data);
-
       receivePort.listen((message) {
         if (message is ResponseBody) {
           completer.complete(message);
@@ -88,6 +86,8 @@ class WReqAdapter implements HttpClientAdapter {
         }
         receivePort.close();
       });
+
+      await Isolate.spawn(_handleRequestInIsolate, data);
 
       return completer.future;
     } else {
