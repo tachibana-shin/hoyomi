@@ -63,7 +63,7 @@ class _LoggerPageState extends State<LoggerPage> with KaeruMixin {
   }
 
   Future<void> _openLog(File file) async {
-    final result = await OpenFile.open(file.path);
+    final result = await OpenFile.open(file.path, type: 'text/plain');
     debugPrint('Open result: ${result.message}');
   }
 
