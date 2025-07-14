@@ -52,8 +52,10 @@ class WReqAdapter implements HttpClientAdapter {
         if (contentType != null &&
             contentType.contains('application/x-www-form-urlencoded')) {
           final formEncoded = (options.data as Map<String, dynamic>).entries
-              .map((e) =>
-                  '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(e.value.toString())}')
+              .map(
+                (e) =>
+                    '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(e.value.toString())}',
+              )
               .join('&');
           rawBytes = utf8.encode(formEncoded);
         } else {
@@ -94,18 +96,23 @@ class WReqAdapter implements HttpClientAdapter {
   }
 
   // 実際に Rust と通信する処理
-  Future<ResponseBody> _doFetch(RequestOptions options, Uint8List? rawBytes) async {
+  Future<ResponseBody> _doFetch(
+    RequestOptions options,
+    Uint8List? rawBytes,
+  ) async {
     try {
       final headers = Headers.fromMap(
         Map.fromEntries(
           options.headers.entries
               .where((entry) => entry.value != null)
-              .map((entry) => MapEntry(
-                    entry.key,
-                    entry.value is List
-                        ? entry.value.join(', ')
-                        : entry.value.toString(),
-                  )),
+              .map(
+                (entry) => MapEntry(
+                  entry.key,
+                  entry.value is List
+                      ? entry.value.join(', ')
+                      : entry.value.toString(),
+                ),
+              ),
         ),
       );
 
@@ -113,12 +120,12 @@ class WReqAdapter implements HttpClientAdapter {
         emulation: Emulation.chrome136,
         method: options.method,
         url: options.uri.toString(),
-        headers:
-            headers.toMap().entries.map((e) => (e.key, e.value)).toList(),
+        headers: headers.toMap().entries.map((e) => (e.key, e.value)).toList(),
         bodyBytes: rawBytes,
-        redirectSettings: options.followRedirects
-            ? RedirectSettings.limitedRedirects(options.maxRedirects)
-            : null,
+        redirectSettings:
+            options.followRedirects
+                ? RedirectSettings.limitedRedirects(options.maxRedirects)
+                : null,
         userAgent: headers.get('user-agent'),
       );
 
@@ -141,18 +148,25 @@ class WReqAdapter implements HttpClientAdapter {
   }
 
   // isolate で fetch 実行
-  static Future<void> _handleRequestInIsolate(_IsolateHttpRequestData data) async {
+  static Future<void> _handleRequestInIsolate(
+    _IsolateHttpRequestData data,
+  ) async {
     await RustLib.init();
 
     try {
-      final response = await WReqAdapter()._doFetch(data.options, data.bodyBytes);
+      final response = await WReqAdapter()._doFetch(
+        data.options,
+        data.bodyBytes,
+      );
       data.sendPort.send(response);
     } catch (e) {
-      data.sendPort.send(DioException(
-        requestOptions: data.options,
-        error: e,
-        type: DioExceptionType.unknown,
-      ));
+      data.sendPort.send(
+        DioException(
+          requestOptions: data.options,
+          error: e,
+          type: DioExceptionType.unknown,
+        ),
+      );
     }
   }
 
