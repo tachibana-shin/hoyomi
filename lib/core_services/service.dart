@@ -262,18 +262,44 @@ abstract class Service extends BaseService
       );
     }
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        orElse(error),
-        // button refresh page
-        // ElevatedButton(
-        //   child: Text('Refresh'),
-        //   onPressed: () => router.refresh(),
-        // ),
-        Opacity(opacity: 0.8, child: Text('Pull to refresh').fontSize(14)),
-        Opacity(opacity: 0.8, child: Text('$trace', maxLines: 2).fontSize(12)),
-      ],
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context ?? rootNavigatorKey.currentContext!,
+          builder:
+              (context) => AlertDialog(
+                title: const Text('Error Details'),
+                content: SingleChildScrollView(
+                  child: SelectableText(
+                    trace.toString(),
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Close'),
+                  ),
+                ],
+              ),
+        );
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          orElse(error),
+          // ボタンを使ってリフレッシュするコード（コメントアウト済み）
+          // ElevatedButton(
+          //   child: Text('Refresh'),
+          //   onPressed: () => router.refresh(),
+          // ),
+          Opacity(opacity: 0.8, child: Text('Pull to refresh').fontSize(14)),
+          Opacity(
+            opacity: 0.8,
+            child: Text('$trace', maxLines: 2).fontSize(12),
+          ),
+        ],
+      ),
     );
   }
 
