@@ -78,7 +78,6 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
       maxChildSize: 0.9,
       builder: (context2, scrollController) {
         return Watch(() {
-          final activeKey = GlobalKey();
           bool notSelected = true;
 
           final lastReadChapter = _lastReadChapter.value;
@@ -86,18 +85,7 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
           final currentChapterId =
               widget.currentChapterId ??
               lastReadChapter?.chapter.chapterId ??
-              widget.comic.chapters.sortAsc.first.chapterId;
-
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            Timer(Duration(milliseconds: 70), () {
-              if (activeKey.currentContext != null) {
-                Scrollable.ensureVisible(
-                  activeKey.currentContext!,
-                  duration: Duration(milliseconds: 200),
-                );
-              }
-            });
-          });
+              widget.comic.chapters.sortAsc.firstOrNull?.chapterId;
 
           final chapters = widget.comic.chapters.sortAsc.reversed;
 
@@ -115,17 +103,20 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
                             : lastReadChapter.chapter.name,
                       ).fontSize(20.0),
                       GFButton(
-                        onPressed: () {
-                          final url =
-                              "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${lastReadChapter?.chapter.chapterId ?? widget.comic.chapters.sortAsc.first.chapterId}";
-                          final extra = {'comic': widget.comic};
+                        onPressed:
+                            widget.comic.chapters.isNotEmpty
+                                ? () {
+                                  final url =
+                                      "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${lastReadChapter?.chapter.chapterId ?? widget.comic.chapters.sortAsc.first.chapterId}";
+                                  final extra = {'comic': widget.comic};
 
-                          if (widget.replace) {
-                            context.pushReplacement(url, extra: extra);
-                          } else {
-                            context.push(url, extra: extra);
-                          }
-                        },
+                                  if (widget.replace) {
+                                    context.pushReplacement(url, extra: extra);
+                                  } else {
+                                    context.push(url, extra: extra);
+                                  }
+                                }
+                                : null,
                         text: lastReadChapter == null ? 'Start' : 'Continue',
                         shape: GFButtonShape.pills,
                         textStyle: TextStyle(
@@ -177,272 +168,335 @@ class _SheetChaptersState extends State<SheetChapters> with KaeruMixin {
               // Chapters List
               FractionallySizedBox(
                 heightFactor: 1.0,
-                child: ListView.builder(
-                  controller: scrollController,
-                  addRepaintBoundaries: false,
-                  // reverse
-                  itemCount: chapters.length,
-                  itemBuilder: (context2, index) {
-                    final chapter = chapters.elementAt(
-                      widget.reverse ? index : (chapters.length - 1 - index),
-                    ); //[index];
-                    final bool selected = chapter.chapterId == currentChapterId;
-                    if (selected && notSelected) {
-                      notSelected = false;
-                    }
+                child:
+                    chapters.isEmpty
+                        ? Center(child: Text('No chapters').paddingAll(16.0))
+                        : ListView.builder(
+                          controller: scrollController,
+                          addRepaintBoundaries: false,
+                          // reverse
+                          itemCount: chapters.length,
+                          itemBuilder: (context2, index) {
+                            final chapter = chapters.elementAt(
+                              widget.reverse
+                                  ? index
+                                  : (chapters.length - 1 - index),
+                            ); //[index];
+                            final bool selected =
+                                chapter.chapterId == currentChapterId;
+                            if (selected && notSelected) {
+                              notSelected = false;
+                            }
 
-                    final downloadedChapter = ComicDownloader.instance
-                        .getDownloadedChapter(
-                          service: widget.service,
-                          comicId: widget.comicId,
-                          chapterId: chapter.chapterId,
-                        );
+                            final downloadedChapter = ComicDownloader.instance
+                                .getDownloadedChapter(
+                                  service: widget.service,
+                                  comicId: widget.comicId,
+                                  chapterId: chapter.chapterId,
+                                );
 
-                    return Watch(() {
-                      final watchPage =
-                          usePick(
-                            () => _watchPageChapters.value?[chapter.chapterId],
-                          ).value;
+                            return Watch(dependencies: [chapter, selected, downloadedChapter], () {
+                              final watchPage =
+                                  usePick(
+                                    () =>
+                                        _watchPageChapters.value?[chapter
+                                            .chapterId],
+                                  ).value;
 
-                      return Container(
-                        key: selected && notSelected ? activeKey : null,
-                        color:
-                            _itemSelected.value.contains(chapter.chapterId)
-                                ? context.theme.colorScheme.onSurface
-                                    .withValues(alpha: 0.2)
-                                : null,
-                        child: InkWell(
-                          enableFeedback: true,
-                          autofocus: selected,
+                              final activeKey = GlobalKey();
+                              WidgetsBinding.instance.addPostFrameCallback((
+                                timeStamp,
+                              ) {
+                                Timer(Duration(milliseconds: 70), () {
+                                  if (activeKey.currentContext != null) {
+                                    Scrollable.ensureVisible(
+                                      activeKey.currentContext!,
+                                      duration: Duration(milliseconds: 200),
+                                    );
+                                  }
+                                });
+                              });
 
-                          focusColor: Colors.transparent,
-                          child: Row(
-                            children: [
-                              if (selected)
-                                Iconify(
-                                  Ion.play,
-                                  size: 20,
-                                  color: Colors.green.shade500,
-                                ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    chapter.name,
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight:
-                                          selected ? FontWeight.w500 : null,
-                                      color:
-                                          selected
-                                              ? Theme.of(
-                                                context,
-                                              ).colorScheme.tertiary
-                                              : Theme.of(
-                                                context,
-                                              ).colorScheme.onSurface,
-                                    ),
-                                  ),
-                                  if (chapter.fullName != null)
-                                    Text(
-                                      chapter.fullName!,
-                                      style: TextStyle(
-                                        fontSize: 13.0,
-                                        fontWeight:
-                                            selected ? FontWeight.w500 : null,
-                                        color:
-                                            selected
-                                                ? Theme.of(
-                                                  context,
-                                                ).colorScheme.secondary
-                                                : Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary
-                                                    .withValues(alpha: 0.7),
-                                      ),
-                                    ),
-                                  if (chapter.time != null)
-                                    Text(
-                                      formatTimeAgo(chapter.time!),
-                                      style: TextStyle(
-                                        color:
-                                            selected
-                                                ? Theme.of(
-                                                  context,
-                                                ).colorScheme.secondary
-                                                : Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary
-                                                    .withValues(alpha: 0.85),
-                                        fontSize: 12.0,
-                                      ),
-                                    ),
-                                ],
-                              ).expanded(),
+                              return Container(
+                                key: selected && notSelected ? activeKey : null,
+                                color:
+                                    _itemSelected.value.contains(
+                                          chapter.chapterId,
+                                        )
+                                        ? context.theme.colorScheme.onSurface
+                                            .withValues(alpha: 0.2)
+                                        : null,
+                                child: InkWell(
+                                  enableFeedback: true,
+                                  autofocus: selected,
 
-                              ConstrainedBox(
-                                constraints: BoxConstraints(maxWidth: 200),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (watchPage != null)
-                                      SizedBox(
-                                        width: 30,
-                                        height: 30,
-                                        child: DashedCircularProgressBar.aspectRatio(
-                                          aspectRatio: 1,
-                                          progress:
-                                              (watchPage.currentPage + 1) /
-                                              watchPage.totalPage *
-                                              100,
-                                          startAngle: 225,
-                                          sweepAngle: 270,
-                                          foregroundColor: Colors.green,
-                                          backgroundColor: const Color(
-                                            0xffeeeeee,
-                                          ),
-                                          foregroundStrokeWidth: 3,
-                                          backgroundStrokeWidth: 3,
-                                          animation: true,
-                                          seekSize: 3,
-                                          seekColor: const Color(0xffeeeeee),
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  '${((watchPage.currentPage + 1) / watchPage.totalPage * 100).toInt()}',
-                                                ).fontSize(12.0),
-                                              ],
+                                  focusColor: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      if (selected)
+                                        Iconify(
+                                          Ion.play,
+                                          size: 20,
+                                          color: Colors.green.shade500,
+                                        ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            chapter.name,
+                                            style: TextStyle(
+                                              fontSize: 14.0,
+                                              fontWeight:
+                                                  selected
+                                                      ? FontWeight.w500
+                                                      : null,
+                                              color:
+                                                  selected
+                                                      ? Theme.of(
+                                                        context,
+                                                      ).colorScheme.tertiary
+                                                      : Theme.of(
+                                                        context,
+                                                      ).colorScheme.onSurface,
                                             ),
                                           ),
+                                          if (chapter.fullName != null)
+                                            Text(
+                                              chapter.fullName!,
+                                              style: TextStyle(
+                                                fontSize: 13.0,
+                                                fontWeight:
+                                                    selected
+                                                        ? FontWeight.w500
+                                                        : null,
+                                                color:
+                                                    selected
+                                                        ? Theme.of(
+                                                          context,
+                                                        ).colorScheme.secondary
+                                                        : Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                              ),
+                                            ),
+                                          if (chapter.time != null)
+                                            Text(
+                                              formatTimeAgo(chapter.time!),
+                                              style: TextStyle(
+                                                color:
+                                                    selected
+                                                        ? Theme.of(
+                                                          context,
+                                                        ).colorScheme.secondary
+                                                        : Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary
+                                                            .withValues(
+                                                              alpha: 0.85,
+                                                            ),
+                                                fontSize: 12.0,
+                                              ),
+                                            ),
+                                        ],
+                                      ).expanded(),
+
+                                      ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          maxWidth: 200,
                                         ),
-                                      ),
-
-                                    FutureBuilder(
-                                      future: downloadedChapter,
-                                      builder:
-                                          (context, snapshot) => snapshot.when(
-                                            error:
-                                                (error, _) =>
-                                                    Text(
-                                                      '$error',
-                                                      maxLines: 1,
-                                                    ).expanded(),
-                                            loading:
-                                                () => SizedBox(
-                                                  width: 4,
-                                                  height: 4,
-                                                ),
-                                            data: (downloadedChapter, _) {
-                                              if (downloadedChapter != null &&
-                                                  downloadedChapter.doneAt >
-                                                      0) {
-                                                return Iconify(Fluent.save24);
-                                              }
-
-                                              return Watch(() {
-                                                final downloadState =
-                                                    ComicDownloader.instance
-                                                        .getDownloaderState(
-                                                          service:
-                                                              widget.service,
-                                                          comicId:
-                                                              widget.comicId,
-                                                          chapterId:
-                                                              chapter.chapterId,
-                                                        );
-                                                if (downloadState != null) {
-                                                  return Watch(() {
-                                                    if (downloadState
-                                                            .value
-                                                            .done ==
-                                                        true) {
-                                                      return Iconify(
-                                                        Fluent.save24,
-                                                      );
-                                                    }
-                                                    return Text(
-                                                      'DL.${(downloadState.value.progress * 100).round()}%',
-                                                    );
-                                                  });
-                                                }
-
-                                                return IconButton(
-                                                  icon: Row(
-                                                    children: [
-                                                      if (downloadedChapter !=
-                                                          null)
-                                                        Text(
-                                                          '${(downloadedChapter.count / downloadedChapter.pageCount) * 100}%',
-                                                          maxLines: 1,
-                                                        ),
-                                                      Iconify(Ion.download),
-                                                    ],
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            if (watchPage != null)
+                                              SizedBox(
+                                                width: 30,
+                                                height: 30,
+                                                child: DashedCircularProgressBar.aspectRatio(
+                                                  aspectRatio: 1,
+                                                  progress:
+                                                      (watchPage.currentPage +
+                                                          1) /
+                                                      watchPage.totalPage *
+                                                      100,
+                                                  startAngle: 225,
+                                                  sweepAngle: 270,
+                                                  foregroundColor: Colors.green,
+                                                  backgroundColor: const Color(
+                                                    0xffeeeeee,
                                                   ),
-                                                  onPressed: () async {
-                                                    try {
-                                                      await ComicDownloader
-                                                          .instance
-                                                          .downloadChapter(
-                                                            service:
-                                                                widget.service,
-                                                            comicId:
-                                                                widget.comicId,
-                                                            metaComic:
-                                                                widget.comic,
-                                                            chapterId:
-                                                                chapter
-                                                                    .chapterId,
-                                                            chapter: chapter,
-                                                            pages: await widget
-                                                                .service
-                                                                .getPages(
+                                                  foregroundStrokeWidth: 3,
+                                                  backgroundStrokeWidth: 3,
+                                                  animation: true,
+                                                  seekSize: 3,
+                                                  seekColor: const Color(
+                                                    0xffeeeeee,
+                                                  ),
+                                                  child: Center(
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Text(
+                                                          '${((watchPage.currentPage + 1) / watchPage.totalPage * 100).toInt()}',
+                                                        ).fontSize(12.0),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+
+                                            FutureBuilder(
+                                              future: downloadedChapter,
+                                              builder:
+                                                  (
+                                                    context,
+                                                    snapshot,
+                                                  ) => snapshot.when(
+                                                    error:
+                                                        (error, _) =>
+                                                            Text(
+                                                              '$error',
+                                                              maxLines: 1,
+                                                            ).expanded(),
+                                                    loading:
+                                                        () => SizedBox(
+                                                          width: 4,
+                                                          height: 4,
+                                                        ),
+                                                    data: (
+                                                      downloadedChapter,
+                                                      _,
+                                                    ) {
+                                                      if (downloadedChapter !=
+                                                              null &&
+                                                          downloadedChapter
+                                                                  .doneAt >
+                                                              0) {
+                                                        return Iconify(
+                                                          Fluent.save24,
+                                                        );
+                                                      }
+
+                                                      return Watch(() {
+                                                        final downloadState = ComicDownloader
+                                                            .instance
+                                                            .getDownloaderState(
+                                                              service:
+                                                                  widget
+                                                                      .service,
+                                                              comicId:
                                                                   widget
                                                                       .comicId,
+                                                              chapterId:
                                                                   chapter
                                                                       .chapterId,
+                                                            );
+                                                        if (downloadState !=
+                                                            null) {
+                                                          return Watch(() {
+                                                            if (downloadState
+                                                                    .value
+                                                                    .done ==
+                                                                true) {
+                                                              return Iconify(
+                                                                Fluent.save24,
+                                                              );
+                                                            }
+                                                            return Text(
+                                                              'DL.${(downloadState.value.progress * 100).round()}%',
+                                                            );
+                                                          });
+                                                        }
+
+                                                        return IconButton(
+                                                          icon: Row(
+                                                            children: [
+                                                              if (downloadedChapter !=
+                                                                  null)
+                                                                Text(
+                                                                  '${(downloadedChapter.count / downloadedChapter.pageCount) * 100}%',
+                                                                  maxLines: 1,
                                                                 ),
-                                                          );
-                                                    } catch (error) {
-                                                      showSnackBar(
-                                                        Text(
-                                                          'Download error: $error',
-                                                        ),
-                                                      );
-                                                    }
-                                                  },
-                                                );
-                                              });
-                                            },
-                                          ),
-                                    ),
-                                  ],
+                                                              Iconify(
+                                                                Ion.download,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          onPressed: () async {
+                                                            try {
+                                                              await ComicDownloader.instance.downloadChapter(
+                                                                service:
+                                                                    widget
+                                                                        .service,
+                                                                comicId:
+                                                                    widget
+                                                                        .comicId,
+                                                                metaComic:
+                                                                    widget
+                                                                        .comic,
+                                                                chapterId:
+                                                                    chapter
+                                                                        .chapterId,
+                                                                chapter:
+                                                                    chapter,
+                                                                pages: await widget
+                                                                    .service
+                                                                    .getPages(
+                                                                      widget
+                                                                          .comicId,
+                                                                      chapter
+                                                                          .chapterId,
+                                                                    ),
+                                                              );
+                                                            } catch (error) {
+                                                              showSnackBar(
+                                                                Text(
+                                                                  'Download error: $error',
+                                                                ),
+                                                              );
+                                                            }
+                                                          },
+                                                        );
+                                                      });
+                                                    },
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ).paddingSymmetric(
+                                    vertical: 16.0,
+                                    horizontal: 16.0,
+                                  ),
+                                  onTap: () {
+                                    if (_itemSelected.value.isNotEmpty) {
+                                      return _toggleSelect(chapter);
+                                    }
+
+                                    final url =
+                                        "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${chapter.chapterId}";
+                                    final extra = {'comic': widget.comic};
+
+                                    if (widget.replace) {
+                                      context.pushReplacement(
+                                        url,
+                                        extra: extra,
+                                      );
+                                    } else {
+                                      context.push(url, extra: extra);
+                                    }
+                                  },
+                                  onLongPress: () => _toggleSelect(chapter),
                                 ),
-                              ),
-                            ],
-                          ).paddingSymmetric(vertical: 16.0, horizontal: 16.0),
-                          onTap: () {
-                            if (_itemSelected.value.isNotEmpty) {
-                              return _toggleSelect(chapter);
-                            }
-
-                            final url =
-                                "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${chapter.chapterId}";
-                            final extra = {'comic': widget.comic};
-
-                            if (widget.replace) {
-                              context.pushReplacement(url, extra: extra);
-                            } else {
-                              context.push(url, extra: extra);
-                            }
+                              );
+                            });
                           },
-                          onLongPress: () => _toggleSelect(chapter),
                         ),
-                      );
-                    });
-                  },
-                ),
               ).expanded(),
             ],
           );

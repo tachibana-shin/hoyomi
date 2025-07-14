@@ -228,6 +228,8 @@ abstract class Service extends BaseService
       logger.e(error, stackTrace: trace);
     }
 
+    if (error is UnimplementedError) return SizedBox.shrink();
+
     if (error is CaptchaRequiredException) {
       return CaptchaResolverMixin.buildWidget(context, error: error, url: url);
     }
