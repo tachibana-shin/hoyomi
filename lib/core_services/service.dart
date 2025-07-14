@@ -89,7 +89,7 @@ Future<Dio> _createDioClientCache({
           ),
         )
         ..httpClientAdapter =
-            headless ? HeadlessWebViewAdapter(fromService) : WReqAdapter()
+            headless ? HeadlessWebViewAdapter(fromService) : WReqAdapter(useIsolate: true)
         ..interceptors.add(DioCacheInterceptor(options: options));
 
   return dio;
