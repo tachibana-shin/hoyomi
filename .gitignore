@@ -58,3 +58,4 @@ app.*.map.json
 
 node_modules
 .env
+*.exe
