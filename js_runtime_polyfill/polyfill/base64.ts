@@ -8,6 +8,12 @@ declare global {
 if (!globalThis.btoa) register({ btoa })
 if (!globalThis.atob) register({ atob })
 
+/**
+ * Encodes a string into its Base64 representation.
+ *
+ * @param str - The input string to encode
+ * @returns The Base64-encoded version of the input string
+ */
 export function btoa(str: string): string {
   return __b64Encode(str)
 }

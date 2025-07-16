@@ -43,7 +43,15 @@ export class URL {
 }
 if (!globalThis.URL) register({ URL })
 
-// ===== Helper: resolve relative URLs =====
+/**
+ * Resolves a relative URL against a base URL, returning the absolute URL as a string.
+ *
+ * If the input URL is already absolute or no base is provided, returns the URL unchanged. Otherwise, performs a simple concatenation to resolve the relative path.
+ *
+ * @param url - The URL to resolve, which may be relative or absolute
+ * @param base - The base URL to resolve against, if the input URL is relative
+ * @returns The resolved absolute URL as a string
+ */
 function resolveUrl(url: string, base?: string): string {
   if (!base || /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url)) {
     return url
