@@ -54,4 +54,4 @@ export class URLSearchParams {
   }
 }
 
-register({ URLSearchParams })
+if (!globalThis.URLSearchParams) register({ URLSearchParams })

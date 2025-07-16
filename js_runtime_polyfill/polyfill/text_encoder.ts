@@ -37,4 +37,4 @@ class TextEncoder {
   }
 }
 
-register({ TextEncoder })
+if (!globalThis.TextEncoder) register({ TextEncoder })

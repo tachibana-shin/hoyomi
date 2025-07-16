@@ -41,7 +41,7 @@ export class URL {
     return this.href
   }
 }
-register({ URL })
+if (!globalThis.URL) register({ URL })
 
 // ===== Helper: resolve relative URLs =====
 function resolveUrl(url: string, base?: string): string {

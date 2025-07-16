@@ -10,6 +10,10 @@ declare global {
 
 const messageListeners = new Map<string, Set<(data: any) => void>>()
 
+const {
+  addEventListener: addEventListenerOrigin,
+  removeEventListener: removeEventListenerOrigin
+} = globalThis
 export function addEventListener(event: string, callback: (data: any) => void) {
   let list = messageListeners.get(event)
   if (!list) {
@@ -17,6 +21,7 @@ export function addEventListener(event: string, callback: (data: any) => void) {
     messageListeners.set(event, list)
   }
   list.add(callback)
+  addEventListenerOrigin.call(globalThis, event, callback)
 }
 
 export function removeEventListener(
@@ -24,6 +29,7 @@ export function removeEventListener(
   callback: (data: any) => void
 ) {
   messageListeners.get(event)?.delete(callback)
+  removeEventListenerOrigin.call(globalThis, event, callback)
 }
 
 function __$$DART_SEND_MESSAGE$$__(event: string, data: any) {
