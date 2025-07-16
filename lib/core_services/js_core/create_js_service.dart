@@ -54,7 +54,7 @@ Future<JsServiceMeta> _loadServiceMeta(File file) async {
 Future<JsRuntime> _getRuntime(String code) async {
   final runtime = await getJsRuntime();
 
-  await runtime.evalAsync('''!(() => {$code;
+  await runtime.evalAsync('''(() => {$code;
       if (!globalThis.__\$HOYOMI_PLUGIN\$__) {
         throw Exception('No plugin found');
       }
@@ -66,13 +66,13 @@ Future<JsRuntime> _getRuntime(String code) async {
 }
 
 Future<JsServiceMeta> getMetaFromRuntime(JsRuntime runtime) async {
-  final type = await runtime.evalAsync('__plugin.type');
+  final type = await runtime.evalAsync('return __plugin.type');
   final init = ServiceInit.fromJson(
-    await runtime.evalAsyncJson('__plugin.init'),
+    await runtime.evalAsyncJson('return __plugin.init'),
   );
-  final $isAuth = await runtime.evalAsyncJson('__plugin.\$isAuth') ?? false;
+  final $isAuth = await runtime.evalAsyncJson('return __plugin.\$isAuth') ?? false;
   final writeWith =
-      await runtime.evalAsyncJson('__plugin.writeWith') as String?;
+      await runtime.evalAsyncJson('return __plugin.writeWith') as String?;
 
   final meta = JsServiceMeta(
     type: type,
