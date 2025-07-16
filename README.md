@@ -88,18 +88,6 @@ Hoyomi is an open-source project and welcomes contributions!
     -   [hoyomi_bridge_ts/example](./hoyomi_bridge_ts/example) - Example TypeScript plugin.
     -   [hoyomi-plugin-animehay](https://github.com/tachibana-shin/hoyomi-plugin-animhay) - An example anime plugin.
 
-#### Creating New Plugins
-
-Hoyomi's architecture allows for easy extension through custom plugins written in TypeScript. You can create new comic or eiga services by following these general steps:
-
-1.  **Define your service interface**: Create a TypeScript file that defines the methods and data structures for your comic or eiga service, adhering to the `hoyomi_bridge_ts` conventions.
-2.  **Implement the service logic**: Write the actual logic for fetching data, parsing content, and handling interactions within your TypeScript service.
-3.  **Register your plugin**: Use the `hoyomi_bridge_ts` to register your implemented service, making it available to the Hoyomi application.
-
-Refer to the existing examples for detailed implementation patterns:
--   [hoyomi_bridge_ts/example](./hoyomi_bridge_ts/example)
--   [hoyomi-plugin-animehay](https://github.com/tachibana-shin/hoyomi-plugin-animhay)
-
 ---
 
 ### 📦 Available On
@@ -130,6 +118,260 @@ Refer to the existing examples for detailed implementation patterns:
 <img src="https://github.com/user-attachments/assets/d0b7c834-797f-41c1-b253-8cfe753429eb" width="120px">
 <img src="https://github.com/user-attachments/assets/0fc95982-e8c8-4dd2-8c58-9c5069152075" width="120px">
 
+---
+
+
+#### Creating New Plugins
+
+Hoyomi's architecture allows for easy extension through custom plugins written in TypeScript. You can create new comic or eiga services by following these general steps:
+
+1.  **Define your service interface**: Create a TypeScript file that defines the methods and data structures for your comic or eiga service, adhering to the `hoyomi_bridge_ts` conventions.
+2.  **Implement the service logic**: Write the actual logic for fetching data, parsing content, and handling interactions within your TypeScript service.
+3.  **Register your plugin**: Use the `hoyomi_bridge_ts` to register your implemented service, making it available to the Hoyomi application.
+
+Refer to the existing examples for detailed implementation patterns:
+-   [hoyomi_bridge_ts/example](./hoyomi_bridge_ts/example)
+-   [hoyomi-plugin-animehay](https://github.com/tachibana-shin/hoyomi-plugin-animhay)
+
+Here's a simplified example of an Eiga plugin:
+
+```typescript
+// example_eiga_plugin.ts
+import {
+  ABEigaService,
+  createOImage,
+  registerPlugin,
+  StatusEnum,
+  type EigaCategory,
+  type EigaEpisode,
+  type EigaEpisodes,
+  type EigaHome,
+  type MetaEiga,
+  type ServerSource,
+  type ServiceInit,
+  type SourceVideo
+} from "hoyomi_bridge_ts";
+
+class MyCustomEigaService extends ABEigaService {
+  override init: ServiceInit = {
+    name: "My Custom Eiga",
+    faviconUrl: createOImage("https://example.com/favicon.ico"),
+    rootUrl: "https://example.com"
+  };
+
+  async getURL(eigaId: string, chapterId?: string): Promise<string> {
+    // Logic to get the URL for a specific eiga or episode
+    return `https://example.com/eiga/${eigaId}`;
+  }
+
+  async home(): Promise<EigaHome> {
+    // Logic to fetch home page data (categories, popular eiga, etc.)
+    return {
+      categories: [
+        {
+          name: "Popular Eiga",
+          items: [
+            {
+              name: "Example Eiga 1",
+              eigaId: "example-1",
+              image: createOImage("https://example.com/image1.jpg")
+            }
+          ]
+        }
+      ]
+    };
+  }
+
+  async getCategory(params: {
+    categoryId: string;
+    page: number;
+    filters: { [key: string]: string[] | null };
+  }): Promise<EigaCategory> {
+    // Logic to fetch eiga within a specific category
+    return {
+      name: "Category Name",
+      url: "",
+      items: [],
+      page: params.page,
+      totalItems: 0,
+      totalPages: 0
+    };
+  }
+
+  async getDetails(eigaId: string): Promise<MetaEiga> {
+    // Logic to fetch detailed information about an eiga
+    return {
+      name: "Example Eiga Details",
+      image: createOImage("https://example.com/details.jpg"),
+      status: StatusEnum.Ongoing,
+      genres: ["Action", "Adventure"],
+      description: "A brief description of the eiga.",
+      seasons: []
+    };
+  }
+
+  async getEpisodes(eigaId: string): Promise<EigaEpisodes> {
+    // Logic to fetch episodes for an eiga
+    return {
+      episodes: [
+        {
+          name: "Episode 1",
+          episodeId: "ep-1"
+        }
+      ]
+    };
+  }
+
+  async getSource(params: {
+    eigaId: string;
+    episode: EigaEpisode;
+    server?: ServerSource;
+  }): Promise<SourceVideo> {
+    // Logic to get video source for an episode
+    return {
+      src: "https://example.com/video.mp4",
+      url: "https://example.com/video.mp4",
+      type: "video/mp4"
+    };
+  }
+
+  async search(params: {
+    keyword: string;
+    page: number;
+    filters: { [key: string]: string[] | null };
+    quick: boolean;
+  }): Promise<EigaCategory> {
+    // Logic to search for eiga
+    return {
+      name: `Search results for "${params.keyword}"`,
+      url: "",
+      items: [],
+      page: params.page,
+      totalItems: 0,
+      totalPages: 0
+    };
+  }
+}
+
+registerPlugin(MyCustomEigaService);
+```
+
+Here's a simplified example of a Comic plugin:
+
+```typescript
+// example_comic_plugin.ts
+import {
+  ABComicService,
+  ComicModes,
+  createOImage,
+  registerPlugin,
+  StatusEnum,
+  type ComicCategory,
+  type ComicHome,
+  type MetaComic,
+  type OImage,
+  type ServiceInit
+} from "hoyomi_bridge_ts";
+
+class MyCustomComicService extends ABComicService {
+  override init: ServiceInit = {
+    name: "My Custom Comic",
+    faviconUrl: createOImage("https://example.com/comic-favicon.ico"),
+    rootUrl: "https://example.com/comic"
+  };
+
+  async getURL(comicId: string, chapterId?: string): Promise<string> {
+    // Logic to get the URL for a specific comic or chapter
+    return `https://example.com/comic/${comicId}`;
+  }
+
+  async home(): Promise<ComicHome> {
+    // Logic to fetch home page data (categories, popular comics, etc.)
+    return {
+      categories: [
+        {
+          name: "Popular Comics",
+          items: [
+            {
+              name: "Example Comic 1",
+              comicId: "comic-1",
+              image: createOImage("https://example.com/comic1.jpg")
+            }
+          ]
+        }
+      ]
+    };
+  }
+
+  async getCategory(params: {
+    categoryId: string;
+    page: number;
+    filters: { [key: string]: string[] | null };
+  }): Promise<ComicCategory> {
+    // Logic to fetch comics within a specific category
+    return {
+      name: "Comic Category Name",
+      url: "",
+      items: [],
+      page: params.page,
+      totalItems: 0,
+      totalPages: 0
+    };
+  }
+
+  async getDetails(comicId: string): Promise<MetaComic> {
+    // Logic to fetch detailed information about a comic
+    return {
+      name: "Example Comic Details",
+      image: createOImage("https://example.com/comic-details.jpg"),
+      status: StatusEnum.Ongoing,
+      genres: ["Fantasy", "Adventure"],
+      description: "A brief description of the comic.",
+      chapters: [
+        {
+          name: "Chapter 1",
+          chapterId: "ch-1",
+          time: new Date(),
+          order: 1,
+        }
+      ],
+      lastModified: new Date()
+    };
+  }
+
+  async getPages(comicId: string, chapterId: string): Promise<OImage[]> {
+    // Logic to get image pages for a specific chapter
+    return [
+      createOImage("https://example.com/comic/page1.jpg"),
+      createOImage("https://example.com/comic/page2.jpg"),
+    ];
+  }
+
+  async search(params: {
+    keyword: string;
+    page: number;
+    filters: { [key: string]: string[] | null };
+    quick: boolean;
+  }): Promise<ComicCategory> {
+    // Logic to search for comics
+    return {
+      name: `Search results for "${params.keyword}"`,
+      url: "",
+      items: [],
+      page: params.page,
+      totalItems: 0,
+      totalPages: 0
+    };
+  }
+
+  getComicModes(comic: MetaComic): ComicModes {
+    // Define how the comic should be read (e.g., leftToRight, rightToLeft, webtoon)
+    return ComicModes.leftToRight;
+  }
+}
+
+registerPlugin(MyCustomComicService);
+```
 ---
 
 ### 🗺️ Roadmap (Todo)
