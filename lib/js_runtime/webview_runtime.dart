@@ -66,13 +66,10 @@ class WebviewRuntime implements JsRuntime {
 
     if (data == null) return null;
     if (data.error != null) {
-      late final Map<String, String> map;
       try {
-        map = jsonDecode(data.error!);
-      } catch (err) {
-        throw Exception(data.error!);
-      }
-      if (map['name'] == 'UnimplementedError') throw UnimplementedError(name);
+        final map = jsonDecode(data.error!);
+        if (map['name'] == 'UnimplementedError') throw UnimplementedError(name);
+      } catch (_) {}
 
       throw Exception(data.error!);
     }
