@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:hoyomi/core_services/eiga/export.dart';
-import 'package:hoyomi/js_runtime/extensions/rust_api.dart';
 import 'package:hoyomi/js_runtime/js_runtime.dart';
 
 class JSEigaService extends ABEigaService {

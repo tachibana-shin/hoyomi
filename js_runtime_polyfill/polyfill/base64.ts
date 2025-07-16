@@ -5,7 +5,8 @@ declare global {
   function atob(base64: string): string
 }
 
-register({ btoa, atob })
+if (!globalThis.btoa) register({ btoa })
+if (!globalThis.atob) register({ atob })
 
 export function btoa(str: string): string {
   return __b64Encode(str)

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/js_runtime/js_runtime.dart';
+import 'package:hoyomi/js_runtime/webview_runtime.dart';
 
 import 'install_js_service.dart';
 import 'js_comic_service.dart';
@@ -52,9 +53,11 @@ Future<JsServiceMeta> _loadServiceMeta(File file) async {
 }
 
 Future<JsRuntime> _getRuntime(String code) async {
-  final runtime = await getJsRuntime();
+  final runtime = WebviewRuntime();
 
-  await runtime.evalAsync('''!(() => {$code;
+  await runtime.init();
+
+  await runtime.evalAsync('''(() => {$code;
       if (!globalThis.__\$HOYOMI_PLUGIN\$__) {
         throw Exception('No plugin found');
       }
@@ -66,13 +69,14 @@ Future<JsRuntime> _getRuntime(String code) async {
 }
 
 Future<JsServiceMeta> getMetaFromRuntime(JsRuntime runtime) async {
-  final type = await runtime.evalAsync('__plugin.type');
+  final type = await runtime.evalAsync('return __plugin.type');
   final init = ServiceInit.fromJson(
-    await runtime.evalAsyncJson('__plugin.init'),
+    await runtime.evalAsyncJson('return __plugin.init'),
   );
-  final $isAuth = await runtime.evalAsyncJson('__plugin.\$isAuth') ?? false;
+  final $isAuth =
+      await runtime.evalAsyncJson('return __plugin.\$isAuth') ?? false;
   final writeWith =
-      await runtime.evalAsyncJson('__plugin.writeWith') as String?;
+      await runtime.evalAsyncJson('return __plugin.writeWith') as String?;
 
   final meta = JsServiceMeta(
     type: type,

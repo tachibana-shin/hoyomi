@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:hoyomi/core_services/comic/export.dart';
-import 'package:hoyomi/js_runtime/extensions/rust_api.dart';
 import 'package:hoyomi/js_runtime/js_runtime.dart';
 
 class JSComicService extends ABComicService implements ComicCommentMixin {

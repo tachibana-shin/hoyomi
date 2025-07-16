@@ -56,4 +56,4 @@ class TextDecoder {
   }
 }
 
-register({ TextDecoder })
+if (!globalThis.TextDecoder) register({ TextDecoder })
