@@ -33,9 +33,7 @@ class WebviewRuntime implements JsRuntime {
         </script></body></html>
       ''',
       ),
-      initialSettings: InAppWebViewSettings(
-        blockNetworkImage: true,
-      ),
+      initialSettings: InAppWebViewSettings(blockNetworkImage: true),
       onWebViewCreated: (controller) async {
         _controller = controller;
         completer.complete();
@@ -70,12 +68,12 @@ class WebviewRuntime implements JsRuntime {
     if (data.error != null) {
       late final Map<String, String> map;
       try {
-       map = jsonDecode(data.error!);
+        map = jsonDecode(data.error!);
       } catch (err) {
         throw Exception(data.error!);
       }
       if (map['name'] == 'UnimplementedError') throw UnimplementedError(name);
-      
+
       throw Exception(data.error!);
     }
 

@@ -1,4 +1,3 @@
-
 export 'extensions/fetch.dart';
 export 'extensions/rust_api.dart';
 
@@ -14,9 +13,9 @@ class JsRuntimeError implements Exception {
 }
 
 abstract class JsRuntime {
-  Future<void> init() ;
+  Future<void> init();
   Future<dynamic> evalAsync(String code);
-  Future<dynamic> evaluateAsync(String code, [String? name]) ;
+  Future<dynamic> evaluateAsync(String code, [String? name]);
   Future<dynamic> evalAsyncJson(String code, [String? msg]);
   Future<dynamic> evalFn(
     String functionName,
@@ -24,9 +23,6 @@ abstract class JsRuntime {
     bool base64 = false,
   });
   Future<void> dartSendMessage(String name, String data);
-  Future<void> onMessage(
-    String name,
-    void Function(dynamic args) callback,
-  );
+  Future<void> onMessage(String name, void Function(dynamic args) callback);
   void dispose();
 }

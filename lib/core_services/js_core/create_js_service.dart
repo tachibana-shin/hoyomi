@@ -73,7 +73,8 @@ Future<JsServiceMeta> getMetaFromRuntime(JsRuntime runtime) async {
   final init = ServiceInit.fromJson(
     await runtime.evalAsyncJson('return __plugin.init'),
   );
-  final $isAuth = await runtime.evalAsyncJson('return __plugin.\$isAuth') ?? false;
+  final $isAuth =
+      await runtime.evalAsyncJson('return __plugin.\$isAuth') ?? false;
   final writeWith =
       await runtime.evalAsyncJson('return __plugin.writeWith') as String?;
 
