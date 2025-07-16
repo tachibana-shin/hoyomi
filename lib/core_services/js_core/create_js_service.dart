@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hoyomi/core_services/service.dart';
 import 'package:hoyomi/js_runtime/js_runtime.dart';
+import 'package:hoyomi/js_runtime/webview_runtime.dart';
 
 import 'install_js_service.dart';
 import 'js_comic_service.dart';
@@ -52,7 +53,9 @@ Future<JsServiceMeta> _loadServiceMeta(File file) async {
 }
 
 Future<JsRuntime> _getRuntime(String code) async {
-  final runtime = await getJsRuntime();
+  final runtime = WebviewRuntime();
+
+  await runtime.init();
 
   await runtime.evalAsync('''(() => {$code;
       if (!globalThis.__\$HOYOMI_PLUGIN\$__) {

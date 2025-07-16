@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:hoyomi/plugins/logger.dart';
 
 import '../js_runtime.dart';
-import '../embed.dart';
 
 final _dioStore = Expando<Dio>('dio store');
 
@@ -11,8 +10,6 @@ extension FetchJavascriptRuntimeExtension on JsRuntime {
   void setDio(Dio dio) => _dioStore[this] = dio;
 
   Future<void> activateFetch() async {
-    await evaluateAsync(jsRuntimePolyfill);
-
     final dio = _dioStore[this];
     if (dio == null) throw Exception('No dio found');
 
