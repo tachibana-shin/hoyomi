@@ -1,108 +1,95 @@
 ## 📱 Hoyomi — Your Ultimate Anime & Manga Companion
-
 <p align="center">
  <img width=200px height=200px src="https://github.com/user-attachments/assets/93daccd8-7ad3-408e-b184-178738219430"/>
 </p>
 
 <h1 align="center"> Hoyomi </h1>
 
-**Hoyomi** is a modern, open-source application designed to provide a seamless experience for **watching anime** and **reading manga**. It's built to be **lightweight**, **fast**, and **fully cross-platform**, running smoothly on Android, iOS, Linux, macOS, Windows, and the web.
+**Hoyomi** is a modern, open-source app to **watch anime** and **read manga** in one seamless experience. Designed to be **lightweight**, **fast**, and **fully cross-platform**, Hoyomi runs smoothly on Android, iOS, Linux, macOS, Windows, and even on the web.
 
 > [!WARNING]
-> This application is currently under active development.
+> App is development
+
+Multiple service support. Please check this:
+
+- [lib/core_services/comic/services](lib/core_services/comic/services) - Service for comic, manga...
+- [lib/core_services/eiga/services](lib/core_services/eiga/services) - Service for eiga, film...
+
+3rd party services are now supported with the power of `typescript`. Check out the example here [hoyomi_bridge_ts/example](./hoyomi_bridge_ts/example) or [hoyomi-plugin-animehay](https://github.com/tachibana-shin/hoyomi-plugin-animhay)
 
 ---
 
 ### ✨ Features
 
-- 🎥 **Stream anime** with advanced subtitle support (custom fonts, colors, styles).
-- 📚 **Read manga** from diverse sources with a clean, scrollable reader.
-- 🌐 **Multi-platform**: Enjoy content on mobile, desktop, and web.
-- 🎨 **Highly customizable UI**: Personalize your experience with dark/light themes, font settings, and subtitle styles.
-- 💬 **Offline support**: Cache and view anime/manga offline (feature in development).
-- 🧩 **Plugin-friendly**: Extend functionality with community-built integrations using TypeScript.
-- 🔐 **Privacy-first**: No tracking, no ads, and no personal data collection.
+- 🎥 **Stream anime** with subtitle support (custom fonts, colors, styles)
+- 📚 **Read manga** from multiple sources in a clean, scrollable reader
+- 🌐 **Multi-platform**: Mobile, desktop & web support out of the box
+- 🎨 **Highly customizable UI**: Dark/light themes, font settings, subtitle styles
+- 💬 **Offline support**: Cache and view anime/manga offline `(development)`
+- 🧩 **Plugin-friendly**: Extend functionality with community-built integrations
+- 🔐 **Privacy first**: No tracking, no ads, no data collection
 
 ---
 
-### ⬇️ Download & Installation
+### 🍃 Download
+Get the app from our [releases page](https://github.com/tachibana-shin/hoyomi/releases).
 
-Get the latest version of Hoyomi from our [releases page](https://github.com/tachibana-shin/hoyomi/releases).
+### iOS Sideloading Sources
+<a href="https://intradeus.github.io/http-protocol-redirector?r=altstore://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+  <img src="https://github.com/user-attachments/assets/90cde9d0-2ebe-49de-9366-2fa3fc293df9" width="150" />
+</a> <!-- alt -->
+&nbsp;
+<a href="https://intradeus.github.io/http-protocol-redirector?r=feather://install/https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+  <img src="https://github.com/user-attachments/assets/4539a50c-efe3-4ada-844a-f2fece1033b1" width="150" />
+</a> <!-- feather -->
+&nbsp;
+<a href="https://intradeus.github.io/http-protocol-redirector?r=sidestore://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+  <img src="https://github.com/user-attachments/assets/7f78ef63-7814-40ac-a2e6-c47405b61bdf" width="150" />
+</a> <!-- sidestore -->
+&nbsp;
+<a href="https://intradeus.github.io/http-protocol-redirector?r=apple-magnifier://install?url=https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+  <img src="https://github.com/user-attachments/assets/fc298252-8bf8-4290-8541-aebb990cb0e0" width="150" />
+</a> <!-- troll store -->
+&nbsp;
+<a href="https://github.com/tachibana-shin/hoyomi/releases/latest/download/app-iphoneos-release-unsigned.ipa">
+  <img src="https://github.com/user-attachments/assets/126b9a18-2baf-4b7d-bc9c-411e104b5dd1" width="150" />
+</a> <!-- direct url -->
+&nbsp;
 
-**iOS Sideloading:**
-For iOS users, Hoyomi supports sideloading via various tools like AltStore, SideStore, and TrollStore. You can find direct installation links and more details on the [releases page](https://github.com/tachibana-shin/hoyomi/releases).
+If your device runs `iOS 14.0 beta 2 – 16.6.1, 16.7 RC (20H18)`, or `17.0`, you’re eligible to be a first-class citizen of [TrollStore](https://github.com/opa334/TrollStore) 🚀.
+Install it for free, then enjoy Hoyomi with permanent installation — no resigning, no revokes, forever free.
 
----
-
-### 🛠️ Development Setup
-
-To set up Hoyomi for development, follow these steps:
-
-#### Prerequisites
-
--   **Flutter SDK**: Ensure you have Flutter installed and configured.
--   **Firebase CLI**: Required for Firebase project setup.
--   **Deno**: Required for deploying serverless functions.
-
-#### Step 1: Firebase Project Configuration
-
-1.  Create a new project in the [Firebase console](https://console.firebase.google.com/).
-2.  Enable `Google` sign-in under `Authentication` -> `Sign-in Method`.
-3.  Configure OAuth client credentials in Google Cloud Console:
-    *   Choose `Web application`.
-    *   Set `Authorized redirect URIs` and `Authorized JavaScript origin` to `http://localhost`.
-4.  Generate a Firebase Admin SDK private key (`service-account-key.json`) from `Project Settings` -> `Service accounts`. Place this file in `serverless/service-account-key.json`.
-
-#### Step 2: Database Configuration
-
-Hoyomi's serverless functions require a PostgreSQL database.
-1.  Navigate to the `serverless` directory: `cd serverless`.
-2.  Add your `DATABASE_URL` to a `.env` file within the `serverless` directory.
-
-#### Step 3: Application Environment Variables
-
-Create a `.env` file in the project root and set the following variables:
-
-```env
-GOOGLE_CLIENT_ID=<Your Google OAuth Client ID>
-GOOGLE_CLIENT_SECRET=<Your Google OAuth Client Secret>
-BASE_API_GENERAL=<URL of your deployed serverless API>
-```
-
-#### Step 4: FlutterFire Configuration (Mobile Platforms)
-
-Run `flutterfire configure` to generate platform-specific Firebase configuration files:
--   `/android/app/google-services.json` (for Android)
--   `/ios/Runner/GoogleService-Info.plist` (for iOS)
-
-> **Note for iOS Development:** If developing for iOS, you may need to edit `CFBundleURLSchemes` in `ios/Runner/Info.plist`.
 
 ---
 
-### 🤝 Contributing
+### 🛡️ Open Source & Community Driven
 
-Hoyomi is an open-source project and welcomes contributions!
--   **Service Development**: Explore examples for creating 3rd-party services using TypeScript:
-    -   [lib/core_services/comic/services](lib/core_services/comic/services) - Services for comics, manga, etc.
-    -   [lib/core_services/eiga/services](lib/core_services/eiga/services) - Services for eiga (films), etc.
-    -   [hoyomi_bridge_ts/example](./hoyomi_bridge_ts/example) - Example TypeScript plugin.
-    -   [hoyomi-plugin-animehay](https://github.com/tachibana-shin/hoyomi-plugin-animhay) - An example anime plugin.
+Hoyomi is fully open-source, actively maintained by the community. We welcome contributions and ideas. You’re not just a user — you’re part of the project.
+
+- GitHub: [https://github.com/tachibana-shin/hoyomi](https://github.com/tachibana-shin/hoyomi)
 
 ---
 
 ### 📦 Available On
 
--   ✅ Android
--   ✅ iOS
--   ✅ Windows (.exe)
--   ✅ Linux (.deb, .AppImage)
--   ✅ macOS (.dmg)
--   ✅ Web (PWA)
+- ✅ Android
+- ✅ iOS
+- ✅ Windows (.exe)
+- ✅ Linux (.deb, .AppImage)
+- ✅ macOS (.dmg)
+- ✅ Web (PWA)
 
 ---
 
-### 📸 Screenshot Preview
+### 📝 Privacy & EULA
 
+Hoyomi does **not collect**, **store**, or **share** your personal data. Your activity stays on your device. See our full [Privacy Policy](https://github.com/tachibana-shin/hoyomi/blob/main/privacy-policy.md) and [EULA](https://github.com/tachibana-shin/hoyomi/blob/main/EULA.md) for details.
+
+---
+
+### ❤️ Built with Flutter. Made with love in Japan-inspired spirit.
+
+## Screenshot preview
 <img src="https://github.com/user-attachments/assets/bc0df2fb-91d7-4a49-bfcc-23c576fc9c61" width="120px">
 <img src="https://github.com/user-attachments/assets/31e19481-b8c2-423c-be62-1e7322605c50" width="120px">
 <img src="https://github.com/user-attachments/assets/3a91eac8-fa1f-403e-b3af-1ba2a83b4ff5" width="120px">
@@ -118,8 +105,12 @@ Hoyomi is an open-source project and welcomes contributions!
 <img src="https://github.com/user-attachments/assets/d0b7c834-797f-41c1-b253-8cfe753429eb" width="120px">
 <img src="https://github.com/user-attachments/assets/0fc95982-e8c8-4dd2-8c58-9c5069152075" width="120px">
 
----
 
+## Support platform
+- [x] Android
+- [x] Isar for android SDK <= 23
+- [x] iOS side via TrollStore
+- [x] iOS side by other methods
 
 #### Creating New Plugins
 
@@ -372,39 +363,116 @@ class MyCustomComicService extends ABComicService {
 
 registerPlugin(MyCustomComicService);
 ```
----
 
-### 🗺️ Roadmap (Todo)
+## Todo
+- [ ] Add background image for `details_comic`
+- [ ] Add information `book` for reader
+- [ ] Fix logic fake page
 
--   [ ] Add background image for `details_comic`
--   [ ] Add information `book` for reader
--   [ ] Fix logic fake page
--   [ ] Page eiga details
--   [ ] Fix zoomer read manga
--   [ ] Responsive for video player
--   [ ] AppBar all page
--   [ ] API comment for eiga
--   [ ] API follow anime
--   [ ] API notification
--   [ ] A11y manga reader
--   [ ] API playlist
--   [ ] API playlist online
--   [ ] Search icon for all section
--   [ ] Bottom sheet show all options
--   [ ] Add multiple server in eiga
+- [ ] Page eiga details
 
----
+- [ ] Fix zoomer read manga
 
-### 🛡️ Privacy & EULA
+- [ ] Responsive for video player
+- [ ] AppBar all page
 
-Hoyomi does **not collect**, **store**, or **share** your personal data. Your activity stays on your device. See our full [Privacy Policy](https://github.com/tachibana-shin/hoyomi/blob/main/privacy-policy.md) and [EULA](https://github.com/tachibana-shin/hoyomi/blob/main/EULA.md) for details.
+- [ ] API comment for eiga
+- [ ] API follow anime
+- [ ] API notification
 
----
+- [ ] A11y manga reader
+- [ ] API playlist
+- [ ] API playlist online
 
-### 📄 License
+- [ ] Search icon for all section
+- [ ] Bottom sheet show all options
 
-Hoyomi is released under the [MIT License](LICENSE).
+- [ ] Add multiple server in eiga
+<!-- provider or mobx -->
 
----
+## Development
 
-### ❤️ Built with Flutter. Made with love in Japan-inspired spirit.
+### Prerequisites
+#### Step 1: Set up the Firebase project
+The first step is to set up the Firebase project and enable Google sign-in. if you already have a flutter project, you can skip this step.
+
+1. Go to the [Firebase console](https://console.firebase.google.com/) and create a new project.
+2. Click on the `Authentication` link in the left-hand menu, then click on the `Sign-in Method` tab.
+3. Enable the `Google` sign-in method.
+
+
+#### Step 2: Configure the OAuth client
+You need your application's client ID and Secret from Google Cloud Console to enable Google sign-in. If you’ve it already then skip this step.
+
+- To get the client ID and secret, follow the steps from the given [link](https://support.google.com/cloud/answer/6158849?hl=en).
+- Choose `a web application`.
+- In the `Authorized redirect URIs` and `Authorized JavaScript origin`, enter the URL `http://localhost`
+
+-----
+### Setup Serverless
+To deploy the serverless application, you need to set up a serverless provider. Here are the steps to set up Deno:
+
+#### Step 1: Configure the Firebase Admin
+Please goto `Project Settings`
+![image](https://github.com/user-attachments/assets/620edb61-7ce8-43f4-ab6b-01de9b558d01)
+
+1. Click to `Generate new private key`
+2. Paste file download to `serverless/service-account-key.json`
+
+#### Step 2: Configre the Postgres database
+The server required database for working
+1. Run `cd serverless`
+3. Add `DATABASE_URL` from `setting project` to `.env`
+
+-----
+### Setup Application
+
+#### Step 1 (Required in mobile platform)
+> [!TIP]
+>
+> This project depends Firebase. Please first run
+> ```bash
+> flutterfire configure
+> ```
+> 
+> and configuring file `/android/app/google-services.json`, `/ios/Runner/GoogleService-Info.plist` (two file auto create by `flutterfire`)
+
+- `/android/app/google-services.json` required for Android
+- `/ios/Runner/GoogleService-Info.plist` required for iOS
+
+> [!TIP]
+> 
+> **NOTE** (If you development for iOS)
+>
+> Please edit `CFBundleURLSchemes` in `ios/Runner/Info.plist`
+
+#### Step 2 (Required in desktop platform)
+Goto https://console.cloud.google.com/apis/credentials and get `Client ID` and `Client secret` from `OAuth 2.0 Client IDs` (Use `Web application`)
+
+Set to `.env`
+```env
+GOOGLE_CLIENT_ID=<Client ID>
+GOOGLE_CLIENT_SECRET=<Client secret>
+```
+#### Step 3
+Set to `.env`
+```env
+BASE_API_GENERAL=<URL base API general serverless>
+```
+
+### GitHub Actions
+
+To release the application, the following `secrets` must be provided:
+### General
+- `ENV_CONTENT` - Content of the `.env` file. (not encode base64)
+
+### **For Android**
+- `KEYSTORE_CONTENT` - Base64-encoded content of the `keystore.jks` file.
+- `KEYSTORE_PASSWORD` - Password used to sign the `keystore.jks` file.
+- `KEYSTORE_ALIAS` - Alias used to sign the `keystore.jks` file.
+- `GOOGLE_SERVICES_JSON` - Base64-encoded content of the `google-services.json` file (automatically generated by `flutterfire`).
+
+### **For iOS**
+- `GOOGLE_SERVICE_INFO_PLIST` - Base64-encoded content of the `GoogleService-Info.plist` file (automatically generated by `flutterfire`).
+
+> **Note**: The `google-services.json` (for Android) and `GoogleService-Info.plist` (for iOS) files are automatically created when you run the `flutterfire configure` command during Firebase setup.
