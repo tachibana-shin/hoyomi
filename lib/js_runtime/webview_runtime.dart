@@ -66,7 +66,8 @@ class WebviewRuntime implements JsRuntime {
 
     if (data == null) return null;
     if (data.error != null) {
-      if (data.error!.contains('UnimplementedError'))  throw UnimplementedError(name);
+      if (data.error!.contains('UnimplementedError'))
+        throw UnimplementedError(name);
 
       throw Exception(data.error!);
     }
