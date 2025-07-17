@@ -66,10 +66,7 @@ class WebviewRuntime implements JsRuntime {
 
     if (data == null) return null;
     if (data.error != null) {
-      try {
-        final map = jsonDecode(data.error!);
-        if (map['name'] == 'UnimplementedError') throw UnimplementedError(name);
-      } catch (_) {}
+      if (data.error!.contains('UnimplementedError'))  throw UnimplementedError(name);
 
       throw Exception(data.error!);
     }
@@ -117,7 +114,7 @@ class WebviewRuntime implements JsRuntime {
           ${base64 ? 'return btoa(out);' : 'return out;'}
       ''';
 
-      final result = await evaluateAsync(code, functionName);
+      final result = await evalAsyncJson(code, functionName);
       return base64 ? base64Decode(result) : result;
     } finally {
       logger.d(
