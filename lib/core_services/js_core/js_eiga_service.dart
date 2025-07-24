@@ -77,6 +77,18 @@ class JSEigaService extends ABEigaService {
   }
 
   @override
+  Future<EigaCategory> getExplorer({
+    required int page,
+    required Map<String, List<String>?> filters,
+  }) async {
+    return EigaCategory.fromJson(
+      await (await runtime).evalFn('__plugin.getExplorer', [
+        {'page': page, 'filters': filters},
+      ]),
+    );
+  }
+
+  @override
   Future<MetaEiga> getDetails(String eigaId) async {
     return MetaEiga.fromJson(
       await (await runtime).evalFn('__plugin.getDetails', [eigaId]),

@@ -49,9 +49,7 @@ class WebviewRuntime implements JsRuntime {
   }
 
   Future<dynamic> _evaluateJavascript({required String source}) {
-    return _controller.evaluateJavascript(
-      source: source,
-    );
+    return _controller.evaluateJavascript(source: source);
   }
 
   @override
@@ -81,10 +79,7 @@ class WebviewRuntime implements JsRuntime {
 
   @override
   Future<dynamic> evaluateAsync(String code, [String? name]) async {
-    code = transformWithPatterns(code);
-    final data = await _controller.callAsyncJavaScript(
-      functionBody: code,
-    );
+    final data = await _controller.callAsyncJavaScript(functionBody: code);
 
     if (data == null) return null;
     if (data.error != null) {

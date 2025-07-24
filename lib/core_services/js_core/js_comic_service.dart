@@ -76,6 +76,18 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     );
   }
 
+  @override
+  Future<ComicCategory> getExplorer({
+    required int page,
+    required Map<String, List<String>?> filters,
+  }) async {
+    final out = await (await runtime).evalFn('__plugin.getExplorer', [
+      {'page': page, 'filters': filters},
+    ]);
+
+    return ComicCategory.fromJson(out);
+  }
+
   // Utils
   @override
   Future<ComicModes> getComicModes(MetaComic comic) async {
