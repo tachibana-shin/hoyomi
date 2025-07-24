@@ -61,7 +61,7 @@ class AnimeVietsubService extends ABEigaService
   @override
   bool? get $isAuth => true;
 
-  final hostCUrl = 'animevietsub.lol';
+  final hostCUrl = 'animevietsub.cam';
   @override
   late final init = ServiceInit(
     name: 'AnimeVietsub',
@@ -69,7 +69,7 @@ class AnimeVietsubService extends ABEigaService
     rootUrl: 'https://$hostCUrl',
     webRules: [
       WebRule(
-        shortRegexFilter: 'animevietsub\\.lol',
+        shortRegexFilter: 'animevietsub\\.cam',
         referer: 'https://$hostCUrl',
       ),
       WebRule(
