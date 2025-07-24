@@ -49,7 +49,9 @@ class WebviewRuntime implements JsRuntime {
   }
 
   Future<dynamic> _evaluateJavascript({required String source}) {
-    return _controller.evaluateJavascript(source: source);
+    return _controller.evaluateJavascript(
+      source: source,
+    );
   }
 
   @override
@@ -57,17 +59,38 @@ class WebviewRuntime implements JsRuntime {
     return evaluateAsync(code);
   }
 
+  String transformWithPatterns(String code) {
+    final objectIdentifiers = <String>['__plugin'];
+
+    final functionIdentifiers = <String>['base64Encode', 'base64Decode'];
+
+    // Replace object references (e.g., __plugin → window.__plugin)
+    for (final keyword in objectIdentifiers) {
+      final pattern = RegExp(r'(?<![\w.])' + RegExp.escape(keyword));
+      code = code.replaceAllMapped(pattern, (m) => 'window.$keyword');
+    }
+
+    // Replace function calls (e.g., base64Encode(...) → window.base64Encode(...))
+    for (final keyword in functionIdentifiers) {
+      final pattern = RegExp(r'(?<![\w.])' + RegExp.escape(keyword));
+      code = code.replaceAllMapped(pattern, (m) => 'window.$keyword');
+    }
+
+    return code;
+  }
+
   @override
   Future<dynamic> evaluateAsync(String code, [String? name]) async {
+    code = transformWithPatterns(code);
     final data = await _controller.callAsyncJavaScript(
       functionBody: code,
-      // contentWorld: ContentWorld.
     );
 
     if (data == null) return null;
     if (data.error != null) {
-      if (data.error!.contains('UnimplementedError'))
+      if (data.error!.contains('UnimplementedError')) {
         throw UnimplementedError(name);
+      }
 
       throw Exception(data.error!);
     }
