@@ -82,7 +82,8 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
     required Map<String, List<String>?> filters,
   }) async {
     final out = await (await runtime).evalFn('__plugin.getExplorer', [
-      {'page': page, 'filters': filters},
+      page,
+      filters
     ]);
 
     return ComicCategory.fromJson(out);
