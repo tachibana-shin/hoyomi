@@ -82,10 +82,7 @@ class JSEigaService extends ABEigaService {
     required Map<String, List<String>?> filters,
   }) async {
     return EigaCategory.fromJson(
-      await (await runtime).evalFn('__plugin.getExplorer', [
-        page,
-        filters,
-      ]),
+      await (await runtime).evalFn('__plugin.getExplorer', [page, filters]),
     );
   }
 

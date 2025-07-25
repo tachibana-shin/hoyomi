@@ -83,7 +83,7 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
   }) async {
     final out = await (await runtime).evalFn('__plugin.getExplorer', [
       page,
-      filters
+      filters,
     ]);
 
     return ComicCategory.fromJson(out);
