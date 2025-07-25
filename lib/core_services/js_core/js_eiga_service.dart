@@ -83,7 +83,8 @@ class JSEigaService extends ABEigaService {
   }) async {
     return EigaCategory.fromJson(
       await (await runtime).evalFn('__plugin.getExplorer', [
-        {'page': page, 'filters': filters},
+        page,
+        filters,
       ]),
     );
   }
