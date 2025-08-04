@@ -1,25 +1,18 @@
 plugins {
-    id "com.android.application"
+    id("com.android.application")
     // START: FlutterFire Configuration
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     // END: FlutterFire Configuration
-    id "kotlin-android"
+    id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
-    id "dev.flutter.flutter-gradle-plugin"
-}
-
-def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('key.properties')
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
     namespace = "git.shin.hoyomi"
     compileSdk = flutter.compileSdkVersion
-    // ndkVersion = flutter.ndkVersion
-	ndkVersion = "25.1.8937393"
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_18
@@ -27,7 +20,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_18
+        jvmTarget = JavaVersion.VERSION_18.toString()
     }
 
     defaultConfig {
@@ -35,11 +28,10 @@ android {
         applicationId = "git.shin.hoyomi"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 23 // flutter.minSdkVersion
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-		multiDexEnabled true
     }
 
     signingConfigs {
@@ -55,13 +47,9 @@ android {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.release
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
-	
-	dependencies {
-		implementation 'com.android.support:multidex:2.0.1'
-	}
 }
 
 flutter {
