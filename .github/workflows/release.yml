@@ -97,12 +97,6 @@ jobs:
       - name: Select Xcode 15.3
         run: sudo xcode-select -s /Applications/Xcode_15.3.app
       
-      - name: Clean CocoaPods cache
-        run: |
-          rm -rf ios/Pods ios/Podfile.lock
-          pod cache clean --all
-          pod install --repo-update
-      
       - run: flutter pub get
 
       - run: pod repo update
