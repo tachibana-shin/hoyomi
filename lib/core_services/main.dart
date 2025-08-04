@@ -132,12 +132,11 @@ Future<void> _loadJsService() async {
   ) async {
     if (!await dir.exists()) return;
 
-    final files =
-        await dir
-            .list()
-            .where((f) => f is File && f.path.endsWith('.js'))
-            .cast<File>()
-            .toList();
+    final files = await dir
+        .list()
+        .where((f) => f is File && f.path.endsWith('.js'))
+        .cast<File>()
+        .toList();
 
     final futures = files.map((file) async {
       final service = await createJsService(file: file);
@@ -192,18 +191,17 @@ Future<void> _setupServices() async {
   final settings = await GeneralSettingsController.instance.get();
 
   if (settings?.sortComicService case final cServices?) {
-    final services =
-        Set.from(cServices)
-            .map((id) {
-              final service = allComicServices[id];
-              if (service == null) {
-                showSnackBar(Text('Service $id not install.'));
-              }
+    final services = Set.from(cServices)
+        .map((id) {
+          final service = allComicServices[id];
+          if (service == null) {
+            showSnackBar(Text('Service $id not install.'));
+          }
 
-              return service;
-            })
-            .whereType<ABComicService>()
-            .toList();
+          return service;
+        })
+        .whereType<ABComicService>()
+        .toList();
 
     for (final service in allComicServices.values) {
       if (!services.contains(service)) services.add(service);
@@ -213,18 +211,17 @@ Future<void> _setupServices() async {
   }
   // eiga services
   if (settings?.sortEigaService case final eServices?) {
-    final services =
-        Set.from(eServices)
-            .map((id) {
-              final service = allEigaServices[id];
-              if (service == null) {
-                showSnackBar(Text('Service $id not install.'));
-              }
+    final services = Set.from(eServices)
+        .map((id) {
+          final service = allEigaServices[id];
+          if (service == null) {
+            showSnackBar(Text('Service $id not install.'));
+          }
 
-              return service;
-            })
-            .whereType<ABEigaService>()
-            .toList();
+          return service;
+        })
+        .whereType<ABEigaService>()
+        .toList();
 
     for (final service in allEigaServices.values) {
       if (!services.contains(service)) services.add(service);
@@ -237,16 +234,18 @@ Future<void> _setupServices() async {
   watch$([comicServices], () {
     GeneralSettingsController.instance.save(
       (settings) => settings.copyWith(
-        sortComicService:
-            comicServices.value.map((service) => service.uid).toList(),
+        sortComicService: comicServices.value
+            .map((service) => service.uid)
+            .toList(),
       ),
     );
   });
   watch$([eigaServices], () {
     GeneralSettingsController.instance.save(
       (settings) => settings.copyWith(
-        sortEigaService:
-            eigaServices.value.map((service) => service.uid).toList(),
+        sortEigaService: eigaServices.value
+            .map((service) => service.uid)
+            .toList(),
       ),
     );
   });

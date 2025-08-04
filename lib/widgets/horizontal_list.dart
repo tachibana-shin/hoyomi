@@ -47,24 +47,22 @@ class HorizontalList<T> extends StatelessWidget {
           // color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
-      subtitle:
-          subtitle != null
-              ? Text(
-                subtitle,
-                style: TextStyle(fontSize: 14, color: Colors.white70),
-              )
-              : null,
-      trailing:
-          more != null
-              ? ElevatedButton(
-                onPressed: () {
-                  if (more.name == '/search') goBranch(context, 'search');
+      subtitle: subtitle != null
+          ? Text(
+              subtitle,
+              style: TextStyle(fontSize: 14, color: Colors.white70),
+            )
+          : null,
+      trailing: more != null
+          ? ElevatedButton(
+              onPressed: () {
+                if (more.name == '/search') goBranch(context, 'search');
 
-                  context.pushRoute(more);
-                },
-                child: Text('More'),
-              )
-              : null,
+                context.pushRoute(more);
+              },
+              child: Text('More'),
+            )
+          : null,
     );
     final main = LayoutBuilder(
       builder: (context, constraints) {
@@ -125,22 +123,21 @@ class HorizontalList<T> extends StatelessWidget {
       titleLength: titleLength,
       itemSubtitle: itemSubtitle,
       itemTimeAgo: itemTimeAgo,
-      builder:
-          (viewportFraction) =>
-              child ??
-              PageView.builder(
-                itemCount: items!.length,
-                scrollDirection: Axis.horizontal,
-                allowImplicitScrolling: true,
-                padEnds: false,
-                controller: PageController(
-                  viewportFraction: viewportFraction,
-                  initialPage: 0,
-                ),
-                itemBuilder: (context, index) {
-                  return builder(context, items!.elementAt(index), index);
-                },
-              ),
+      builder: (viewportFraction) =>
+          child ??
+          PageView.builder(
+            itemCount: items!.length,
+            scrollDirection: Axis.horizontal,
+            allowImplicitScrolling: true,
+            padEnds: false,
+            controller: PageController(
+              viewportFraction: viewportFraction,
+              initialPage: 0,
+            ),
+            itemBuilder: (context, index) {
+              return builder(context, items!.elementAt(index), index);
+            },
+          ),
     );
   }
 }

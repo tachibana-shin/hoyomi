@@ -8,10 +8,9 @@ part of 'eiga_carousel.dart';
 
 _EigaCarousel _$EigaCarouselFromJson(Map<String, dynamic> json) =>
     _EigaCarousel(
-      items:
-          (json['items'] as List<dynamic>)
-              .map((e) => EigaCarouselItem.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      items: (json['items'] as List<dynamic>)
+          .map((e) => EigaCarouselItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
       aspectRatio: (json['aspectRatio'] as num).toDouble(),
       maxHeightBuilder: (json['maxHeightBuilder'] as num).toDouble(),
     );

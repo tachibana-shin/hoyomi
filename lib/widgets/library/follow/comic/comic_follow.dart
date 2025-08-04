@@ -120,37 +120,34 @@ class _ComicFollowState extends State<ComicFollow> {
 
     return InkWell(
       borderRadius: BorderRadius.circular(7),
-      onTap:
-          () => context.pushNamed(
-            'details_comic',
-            pathParameters: {
-              'sourceId': widget.follow.sourceId,
-              'comicId': widget.follow.item.comicId,
-            },
-          ),
+      onTap: () => context.pushNamed(
+        'details_comic',
+        pathParameters: {
+          'sourceId': widget.follow.sourceId,
+          'comicId': widget.follow.item.comicId,
+        },
+      ),
       child: Container(
         decoration: BoxDecoration(
           color: null,
           borderRadius: BorderRadius.circular(7.0),
         ),
-        padding:
-            isVertical
-                ? EdgeInsets.symmetric(horizontal: 5.0)
-                : EdgeInsets.symmetric(vertical: 7.0),
-        child:
-            widget.direction == Axis.horizontal
-                ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    poster,
-                    SizedBox(width: 7.0),
-                    Expanded(child: titleAndSubtitle),
-                  ],
-                )
-                : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [poster, titleAndSubtitle],
-                ),
+        padding: isVertical
+            ? EdgeInsets.symmetric(horizontal: 5.0)
+            : EdgeInsets.symmetric(vertical: 7.0),
+        child: widget.direction == Axis.horizontal
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  poster,
+                  SizedBox(width: 7.0),
+                  Expanded(child: titleAndSubtitle),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [poster, titleAndSubtitle],
+              ),
       ),
     );
   }

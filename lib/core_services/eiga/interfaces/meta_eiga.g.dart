@@ -18,10 +18,9 @@ _MetaEiga _$MetaEigaFromJson(Map<String, dynamic> json) => _MetaEiga(
   name: json['name'] as String,
   originalName: json['originalName'] as String?,
   image: OImage.fromJson(json['image'] as Map<String, dynamic>),
-  poster:
-      json['poster'] == null
-          ? null
-          : OImage.fromJson(json['poster'] as Map<String, dynamic>),
+  poster: json['poster'] == null
+      ? null
+      : OImage.fromJson(json['poster'] as Map<String, dynamic>),
   description: json['description'] as String,
   rate: (json['rate'] as num?)?.toDouble(),
   countRate: (json['countRate'] as num?)?.toInt(),
@@ -30,33 +29,27 @@ _MetaEiga _$MetaEigaFromJson(Map<String, dynamic> json) => _MetaEiga(
   duration: json['duration'] as String?,
   yearOf: (json['yearOf'] as num?)?.toInt(),
   views: (json['views'] as num?)?.toInt(),
-  seasons:
-      (json['seasons'] as List<dynamic>)
-          .map((e) => Season.fromJson(e as Map<String, dynamic>))
-          .toList(),
-  genres:
-      (json['genres'] as List<dynamic>)
-          .map((e) => Genre.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  seasons: (json['seasons'] as List<dynamic>)
+      .map((e) => Season.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  genres: (json['genres'] as List<dynamic>)
+      .map((e) => Genre.fromJson(e as Map<String, dynamic>))
+      .toList(),
   quality: json['quality'] as String?,
-  authors:
-      (json['authors'] as List<dynamic>?)
-          ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
-          .toList(),
-  countries:
-      (json['countries'] as List<dynamic>?)
-          ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  authors: (json['authors'] as List<dynamic>?)
+      ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  countries: (json['countries'] as List<dynamic>?)
+      ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
+      .toList(),
   language: json['language'] as String?,
-  studios:
-      (json['studios'] as List<dynamic>?)
-          ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  studios: (json['studios'] as List<dynamic>?)
+      ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
+      .toList(),
   status: $enumDecode(_$StatusEnumEnumMap, json['status']),
-  movieSeason:
-      json['movieSeason'] == null
-          ? null
-          : Genre.fromJson(json['movieSeason'] as Map<String, dynamic>),
+  movieSeason: json['movieSeason'] == null
+      ? null
+      : Genre.fromJson(json['movieSeason'] as Map<String, dynamic>),
   trailer: json['trailer'] as String?,
   extra: json['extra'] as String?,
   fake: json['fake'] as bool? ?? false,

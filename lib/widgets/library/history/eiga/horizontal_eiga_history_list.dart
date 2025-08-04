@@ -60,13 +60,12 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
           // color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
-      subtitle:
-          subtitle.isNotEmpty
-              ? Text(
-                subtitle,
-                style: TextStyle(fontSize: 14, color: Colors.white70),
-              )
-              : null,
+      subtitle: subtitle.isNotEmpty
+          ? Text(
+              subtitle,
+              style: TextStyle(fontSize: 14, color: Colors.white70),
+            )
+          : null,
       trailing: ElevatedButton(
         onPressed: () {
           context.push(more);
@@ -123,16 +122,15 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
             title: title,
             subtitle: '',
             more: more,
-            builder:
-                (viewFraction) => Center(
-                  child: Service.errorWidgetBuilder(
-                    context,
-                    error: snapshot.error,
-                    trace: snapshot.stackTrace,
-                    service: _service as Service,
-                    orElse: (error) => Text('Error: $error'),
-                  ),
-                ),
+            builder: (viewFraction) => Center(
+              child: Service.errorWidgetBuilder(
+                context,
+                error: snapshot.error,
+                trace: snapshot.stackTrace,
+                service: _service as Service,
+                orElse: (error) => Text('Error: $error'),
+              ),
+            ),
             needSubtitle: false,
             needTimeAgo: false,
           );
@@ -151,15 +149,13 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
           );
         }
 
-        final data =
-            loading
-                ? List.generate(30, (_) => types.EigaHistory.createFakeData())
-                : snapshot.data!;
+        final data = loading
+            ? List.generate(30, (_) => types.EigaHistory.createFakeData())
+            : snapshot.data!;
 
-        final subtitle =
-            data.isEmpty
-                ? ''
-                : formatWatchUpdatedAt(data.first.watchUpdatedAt, null);
+        final subtitle = data.isEmpty
+            ? ''
+            : formatWatchUpdatedAt(data.first.watchUpdatedAt, null);
         final items = data;
         final needSubtitle =
             data.firstWhereOrNull(
@@ -180,24 +176,22 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaHistoryList> {
                 more: more,
                 needSubtitle: needSubtitle,
                 needTimeAgo: widget.isGeneral,
-                builder:
-                    (viewportFraction) => PageView.builder(
-                      itemCount: items.length,
-                      allowImplicitScrolling: true,
-                      padEnds: false,
-                      controller: PageController(
-                        viewportFraction: viewportFraction,
-                        initialPage: 0,
-                      ),
-                      itemBuilder:
-                          (context, index) => EigaHistory(
-                            sourceId: items.elementAt(index).sourceId,
-                            history: items.elementAt(index),
-                            width: 100.w(context) / 1 / viewportFraction,
-                            direction: Axis.vertical,
-                            showService: widget.isGeneral,
-                          ),
-                    ),
+                builder: (viewportFraction) => PageView.builder(
+                  itemCount: items.length,
+                  allowImplicitScrolling: true,
+                  padEnds: false,
+                  controller: PageController(
+                    viewportFraction: viewportFraction,
+                    initialPage: 0,
+                  ),
+                  itemBuilder: (context, index) => EigaHistory(
+                    sourceId: items.elementAt(index).sourceId,
+                    history: items.elementAt(index),
+                    width: 100.w(context) / 1 / viewportFraction,
+                    direction: Axis.vertical,
+                    showService: widget.isGeneral,
+                  ),
+                ),
               ),
             ],
           ),

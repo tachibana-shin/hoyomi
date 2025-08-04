@@ -81,17 +81,16 @@ class _VerticalReaderState extends State<VerticalReader> with KaeruListenMixin {
           widget.currentPage.value = page.toDouble();
         },
         itemCount: widget.pages.value.length,
-        builder:
-            (context, index) => PhotoViewGalleryPageOptions.customChild(
-              initialScale: PhotoViewComputedScale.contained * 1.0,
-              minScale: PhotoViewComputedScale.contained * 0.5,
-              maxScale: PhotoViewComputedScale.contained * 2.5,
-              child: widget.itemBuilder(
-                context,
-                index,
-                ValueKey(widget.pages.value.elementAt(index).image.src),
-              ),
-            ),
+        builder: (context, index) => PhotoViewGalleryPageOptions.customChild(
+          initialScale: PhotoViewComputedScale.contained * 1.0,
+          minScale: PhotoViewComputedScale.contained * 0.5,
+          maxScale: PhotoViewComputedScale.contained * 2.5,
+          child: widget.itemBuilder(
+            context,
+            index,
+            ValueKey(widget.pages.value.elementAt(index).image.src),
+          ),
+        ),
       ),
     );
   }

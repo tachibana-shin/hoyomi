@@ -13,11 +13,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqlite_async/sqlite_async.dart';
 
 class _ComicFollowCache {
-  final migrations =
-      SqliteMigrations()..add(
-        SqliteMigration(1, (tx) async {
-          // comics table
-          await tx.execute('''
+  final migrations = SqliteMigrations()
+    ..add(
+      SqliteMigration(1, (tx) async {
+        // comics table
+        await tx.execute('''
             CREATE TABLE IF NOT EXISTS comics (
               sourceId TEXT NOT NULL,
               comic_text_id TEXT NOT NULL,
@@ -29,8 +29,8 @@ class _ComicFollowCache {
               PRIMARY KEY (sourceId, comic_text_id)
             )
           ''');
-        }),
-      );
+      }),
+    );
 
   late final SqliteDatabase _db;
 

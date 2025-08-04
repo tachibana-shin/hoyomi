@@ -63,21 +63,19 @@ class _HomeEigaPageState extends State<HomeEigaPage>
             isScrollable: true,
             splashBorderRadius: BorderRadius.circular(35.0),
             tabAlignment: TabAlignment.start,
-            tabs:
-                eigaServices.value
-                    .map((service) => Tab(text: service.name))
-                    .toList(),
+            tabs: eigaServices.value
+                .map((service) => Tab(text: service.name))
+                .toList(),
           ),
         ),
         body: TabBarView(
           controller: _tabController,
-          children:
-              eigaServices.value
-                  .map(
-                    (service) =>
-                        TabViewEiga(key: Key(service.uid), service: service),
-                  )
-                  .toList(),
+          children: eigaServices.value
+              .map(
+                (service) =>
+                    TabViewEiga(key: Key(service.uid), service: service),
+              )
+              .toList(),
         ),
       );
     });

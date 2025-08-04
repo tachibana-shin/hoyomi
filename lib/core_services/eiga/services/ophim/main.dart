@@ -62,15 +62,12 @@ class OPhimService extends ABEigaService {
     final year = item.year?.toString();
     final description = item.originName;
     final studio = null;
-    final genres =
-        item.category
-            .map(
-              (category) => Genre(
-                name: category.name,
-                genreId: 'the-loai_${category.slug}',
-              ),
-            )
-            .toList();
+    final genres = item.category
+        .map(
+          (category) =>
+              Genre(name: category.name, genreId: 'the-loai_${category.slug}'),
+        )
+        .toList();
     final duration = item.time;
     //     final actors = item.querySelectorAll('.Cast a').map((anchor) {
     //       final href = anchor.attributes['href']!.split('/');
@@ -118,32 +115,26 @@ class OPhimService extends ABEigaService {
     ]);
 
     final carouselPage = responses.first;
-    final carouselItems =
-        carouselPage.data.items
-            .map(
-              (item) =>
-                  _parseCarousel(carouselPage.data.appDomainCdnImage, item),
-            )
-            .toList();
+    final carouselItems = carouselPage.data.items
+        .map(
+          (item) => _parseCarousel(carouselPage.data.appDomainCdnImage, item),
+        )
+        .toList();
 
     final categoryPages = responses.skip(1).toList();
-    final categories =
-        categoryUrls.entries.map((entry) {
-          final name = entry.key;
-          final slug = entry.value;
-          final page = categoryPages[categoryUrls.keys.toList().indexOf(name)];
+    final categories = categoryUrls.entries.map((entry) {
+      final name = entry.key;
+      final slug = entry.value;
+      final page = categoryPages[categoryUrls.keys.toList().indexOf(name)];
 
-          return HomeEigaCategory(
-            name: name,
-            categoryId: 'danh-sach_$slug',
-            items:
-                page.data.items
-                    .map(
-                      (item) => _parseItem(page.data.appDomainCdnImage, item),
-                    )
-                    .toList(),
-          );
-        }).toList();
+      return HomeEigaCategory(
+        name: name,
+        categoryId: 'danh-sach_$slug',
+        items: page.data.items
+            .map((item) => _parseItem(page.data.appDomainCdnImage, item))
+            .toList(),
+      );
+    }).toList();
 
     return EigaHome(
       carousel: EigaCarousel(
@@ -161,20 +152,19 @@ class OPhimService extends ABEigaService {
     return $('#form-filter select').map((select) {
       final key = select.attr('name');
       final multiple = ['category', 'country', 'year'].contains(key);
-      final items =
-          select
-              .query('option')
-              .skip(1)
-              .toList()
-              .indexed
-              .map(
-                (entry) => Option(
-                  name: entry.$2.text(),
-                  value: entry.$2.attr('value'),
-                  selected: entry.$1 == 0,
-                ),
-              )
-              .toList();
+      final items = select
+          .query('option')
+          .skip(1)
+          .toList()
+          .indexed
+          .map(
+            (entry) => Option(
+              name: entry.$2.text(),
+              value: entry.$2.attr('value'),
+              selected: entry.$1 == 0,
+            ),
+          )
+          .toList();
       final name = items.first.name;
 
       return Filter(name: name, key: key, multiple: multiple, options: items);
@@ -228,10 +218,9 @@ class OPhimService extends ABEigaService {
     final pageData = await _get(url);
 
     final name = pageData.data.seoOnPage.titleHead;
-    final items =
-        pageData.data.items
-            .map((item) => _parseItem(pageData.data.appDomainCdnImage, item))
-            .toList();
+    final items = pageData.data.items
+        .map((item) => _parseItem(pageData.data.appDomainCdnImage, item))
+        .toList();
     final totalPages = pageData.data.params.pagination.pageRanges;
     final totalItems = pageData.data.params.pagination.totalItems;
 
@@ -269,10 +258,9 @@ class OPhimService extends ABEigaService {
     final $uri = Uri.parse(pageData.data.seoOnPage.image!);
     final $cdn = '${$uri.scheme}://${$uri.host}';
     final image = _getImage(cdn: $cdn, src: pageData.data.item.thumbUrl);
-    final poster =
-        pageData.data.item.posterUrl == null
-            ? null
-            : _getImage(cdn: $cdn, src: pageData.data.item.posterUrl!);
+    final poster = pageData.data.item.posterUrl == null
+        ? null
+        : _getImage(cdn: $cdn, src: pageData.data.item.posterUrl!);
     final description = pageData.data.item.content;
 
     final rate = pageData.data.item.tmdb?.voteAverage;
@@ -280,39 +268,32 @@ class OPhimService extends ABEigaService {
     final duration = pageData.data.item.episodeTotal;
     final yearOf = pageData.data.item.year;
     final views = pageData.data.item.view;
-    final seasons =
-        pageData.data.item.episodes.indexed.map((entry) {
-          final index = entry.$1;
-          final item = entry.$2;
-          return Season(
-            name: item.serverName,
-            eigaId: index == 0 ? eigaIdRaw : '$eigaIdRaw@${item.serverName}',
-          );
-        }).toList();
-    final genres =
-        pageData.data.item.category
-            .map(
-              (category) => Genre(
-                name: category.name,
-                genreId: 'the-loai_${category.slug}',
-              ),
-            )
-            .toList();
+    final seasons = pageData.data.item.episodes.indexed.map((entry) {
+      final index = entry.$1;
+      final item = entry.$2;
+      return Season(
+        name: item.serverName,
+        eigaId: index == 0 ? eigaIdRaw : '$eigaIdRaw@${item.serverName}',
+      );
+    }).toList();
+    final genres = pageData.data.item.category
+        .map(
+          (category) =>
+              Genre(name: category.name, genreId: 'the-loai_${category.slug}'),
+        )
+        .toList();
     final quality = pageData.data.item.quality;
 
     // final status = pageData.data.item.status;
     final authors = [
       Genre(name: pageData.data.item.director.first, genreId: Genre.noId),
     ];
-    final countries =
-        pageData.data.item.country
-            .map(
-              (country) => Genre(
-                name: country.name,
-                genreId: 'quoc-gia_${country.slug}',
-              ),
-            )
-            .toList();
+    final countries = pageData.data.item.country
+        .map(
+          (country) =>
+              Genre(name: country.name, genreId: 'quoc-gia_${country.slug}'),
+        )
+        .toList();
     final language = pageData.data.item.lang;
     final studio = null;
     final trailer = pageData.data.item.trailerUrl;
@@ -320,11 +301,11 @@ class OPhimService extends ABEigaService {
 
     final status =
         int.tryParse(duration.split(' ').firstOrNull ?? '') ==
-                pageData.data.item.episodes
-                    .map((episodes) => episodes.serverData.length)
-                    .fold(0, (prev, len) => len > prev ? len : prev)
-            ? StatusEnum.completed
-            : StatusEnum.ongoing;
+            pageData.data.item.episodes
+                .map((episodes) => episodes.serverData.length)
+                .fold(0, (prev, len) => len > prev ? len : prev)
+        ? StatusEnum.completed
+        : StatusEnum.ongoing;
 
     return MetaEiga(
       name: name,
@@ -343,8 +324,9 @@ class OPhimService extends ABEigaService {
       authors: authors,
       countries: countries,
       language: language,
-      studios:
-          studio == null ? null : [Genre(name: studio, genreId: Genre.noId)],
+      studios: studio == null
+          ? null
+          : [Genre(name: studio, genreId: Genre.noId)],
       movieSeason: movieSeason,
       trailer: trailer,
       status: status,
@@ -356,27 +338,25 @@ class OPhimService extends ABEigaService {
     final index = max(0, eigaId.indexOf('@'));
 
     final eigaIdRaw = index == 0 ? eigaId : eigaId.substring(0, index);
-    final seasonName =
-        eigaIdRaw.length + 1 < eigaId.length
-            ? eigaId.substring(eigaIdRaw.length + 1)
-            : '';
+    final seasonName = eigaIdRaw.length + 1 < eigaId.length
+        ? eigaId.substring(eigaIdRaw.length + 1)
+        : '';
 
     final pageData = await _getDetails(eigaIdRaw);
 
-    final episodes =
-        pageData.data.item.episodes
-            .firstWhereOrNull(
-              (server) => seasonName.isEmpty || server.serverName == seasonName,
-            )
-            ?.serverData
-            .map(
-              (episode) => EigaEpisode(
-                name: episode.name,
-                episodeId: episode.slug,
-                extra: jsonEncode(episode.toJson()),
-              ),
-            )
-            .toList();
+    final episodes = pageData.data.item.episodes
+        .firstWhereOrNull(
+          (server) => seasonName.isEmpty || server.serverName == seasonName,
+        )
+        ?.serverData
+        .map(
+          (episode) => EigaEpisode(
+            name: episode.name,
+            episodeId: episode.slug,
+            extra: jsonEncode(episode.toJson()),
+          ),
+        )
+        .toList();
     if (episodes == null) throw Exception('Episode not found');
 
     final $uri = Uri.parse(pageData.data.seoOnPage.image!);
@@ -458,22 +438,19 @@ class OPhimService extends ABEigaService {
       'danh-sach/phim-moi.json?slug=phim-moi&sort_field=modified.time&category=${metaEiga.genres.map((genre) => genre.genreId.replaceFirst('the-loai_', '')).join(',')}&country=${metaEiga.countries?.map((genre) => genre.genreId.replaceFirst('quoc-gia_', '')).join(',') ?? ''}',
     );
 
-    final metaSlugs =
-        metaEiga.genres
-            .map((c) => c.genreId.replaceFirst('the-loai_', ''))
-            .toSet();
+    final metaSlugs = metaEiga.genres
+        .map((c) => c.genreId.replaceFirst('the-loai_', ''))
+        .toSet();
 
-    final scoredItems =
-        pageData.data.items
-            .map<({_Item item, int matchCount})>((item) {
-              final matchCount =
-                  item.category
-                      .where((cat) => metaSlugs.contains(cat.slug))
-                      .length;
-              return (item: item, matchCount: matchCount);
-            })
-            .where((entry) => entry.matchCount > 0)
-            .toList();
+    final scoredItems = pageData.data.items
+        .map<({_Item item, int matchCount})>((item) {
+          final matchCount = item.category
+              .where((cat) => metaSlugs.contains(cat.slug))
+              .length;
+          return (item: item, matchCount: matchCount);
+        })
+        .where((entry) => entry.matchCount > 0)
+        .toList();
 
     scoredItems.sort((a, b) => b.matchCount - a.matchCount);
 

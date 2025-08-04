@@ -22,10 +22,9 @@ extension FetchJavascriptRuntimeExtension on JsRuntime {
         final method = (options?['method'] ?? 'GET').toUpperCase();
         final headers = Map<String, dynamic>.from(options?['headers'] ?? {});
         final body = options?['body'];
-        final data =
-            body != null && body is String && body.isNotEmpty
-                ? jsonDecode(body)
-                : null;
+        final data = body != null && body is String && body.isNotEmpty
+            ? jsonDecode(body)
+            : null;
 
         final response = await dio.request(
           url,

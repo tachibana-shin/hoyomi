@@ -131,16 +131,15 @@ class _HorizonReaderState extends State<HorizonReader> with KaeruListenMixin {
           late final Widget child;
 
           if (widget.twoPage) {
-            final children =
-                _mapPage[index]!.map((i) {
-                  return Expanded(
-                    child: widget.itemBuilder(
-                      context,
-                      i,
-                      ValueKey(widget.pages.value.elementAt(i).image.src),
-                    ),
-                  );
-                }).toList();
+            final children = _mapPage[index]!.map((i) {
+              return Expanded(
+                child: widget.itemBuilder(
+                  context,
+                  i,
+                  ValueKey(widget.pages.value.elementAt(i).image.src),
+                ),
+              );
+            }).toList();
 
             child = Row(
               children: widget.rtl ? children.reversed.toList() : children,

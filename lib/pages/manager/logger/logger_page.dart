@@ -45,8 +45,10 @@ class _LoggerPageState extends State<LoggerPage> with KaeruMixin {
       (a, b) => b.statSync().modified.compareTo(a.statSync().modified),
     ); // sort descending
 
-    final newItems =
-        allFiles.skip(_loadedCount.value).take(_loadBatchSize).toList();
+    final newItems = allFiles
+        .skip(_loadedCount.value)
+        .take(_loadBatchSize)
+        .toList();
 
     _logFiles.value = [..._logFiles.value, ...newItems];
     _loadedCount.value += newItems.length;

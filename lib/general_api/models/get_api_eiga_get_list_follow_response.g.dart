@@ -9,10 +9,9 @@ part of 'get_api_eiga_get_list_follow_response.dart';
 _GetApiEigaGetListFollowResponse _$GetApiEigaGetListFollowResponseFromJson(
   Map<String, dynamic> json,
 ) => _GetApiEigaGetListFollowResponse(
-  items:
-      (json['items'] as List<dynamic>)
-          .map((e) => Items2.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  items: (json['items'] as List<dynamic>)
+      .map((e) => Items2.fromJson(e as Map<String, dynamic>))
+      .toList(),
   totalItems: (json['totalItems'] as num).toInt(),
   page: (json['page'] as num).toInt(),
   totalPages: (json['totalPages'] as num).toInt(),

@@ -34,10 +34,9 @@ void showServiceManagerDialog(
         builder: (context, setStateDialog) {
           return AlertDialog(
             title: Row(
-              mainAxisAlignment:
-                  actions == null
-                      ? MainAxisAlignment.start
-                      : MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: actions == null
+                  ? MainAxisAlignment.start
+                  : MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Service Manager"),
 
@@ -65,29 +64,28 @@ void showServiceManagerDialog(
                     ReorderableDelayedDragStartListener(
                       key: ValueKey(dialogItems[i]),
                       index: i,
-                      child:
-                          dialogItems[i].service != null
-                              ? ItemServiceManager((
-                                service: dialogItems[i].service!,
-                                onTap: null,
-                                trailing: null,
-                              ))
-                              : ListTile(
-                                leading: dialogItems[i].avatar,
-                                title: Row(
-                                  children: [
-                                    Text(
-                                      dialogItems[i].name!,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
-                                  ],
-                                ),
-                                trailing: const Iconify(
-                                  Ic.sharp_drag_indicator,
-                                  size: 20,
-                                ),
+                      child: dialogItems[i].service != null
+                          ? ItemServiceManager((
+                              service: dialogItems[i].service!,
+                              onTap: null,
+                              trailing: null,
+                            ))
+                          : ListTile(
+                              leading: dialogItems[i].avatar,
+                              title: Row(
+                                children: [
+                                  Text(
+                                    dialogItems[i].name!,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ],
                               ),
+                              trailing: const Iconify(
+                                Ic.sharp_drag_indicator,
+                                size: 20,
+                              ),
+                            ),
                     ),
                 ],
               ),
@@ -140,8 +138,11 @@ void showServiceManagerDialog(
   );
 }
 
-typedef ItemServiceManagerProps =
-    ({Service service, VoidCallback? onTap, Widget? trailing});
+typedef ItemServiceManagerProps = ({
+  Service service,
+  VoidCallback? onTap,
+  Widget? trailing,
+});
 // ignore: non_constant_identifier_names
 final ItemServiceManager = defineWidget((ItemServiceManagerProps props) {
   final service = props.service;

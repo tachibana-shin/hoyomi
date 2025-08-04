@@ -8,10 +8,9 @@ part of 'list_watch_time_schema.dart';
 
 _ListWatchTimeSchema _$ListWatchTimeSchemaFromJson(Map<String, dynamic> json) =>
     _ListWatchTimeSchema(
-      data:
-          (json['data'] as List<dynamic>)
-              .map((e) => Data5.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      data: (json['data'] as List<dynamic>)
+          .map((e) => Data5.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ListWatchTimeSchemaToJson(

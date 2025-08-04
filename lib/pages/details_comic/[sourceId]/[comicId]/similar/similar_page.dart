@@ -37,11 +37,8 @@ class _SimilarPageState extends State<SimilarPage> {
       onLoadData: () => _getKeyword(),
       onLoadFake: () => 'Keyword search',
       builderError: (body) => Scaffold(appBar: _buildAppBar(''), body: body),
-      builder:
-          (keyword, param) => Scaffold(
-            appBar: _buildAppBar(keyword),
-            body: _buildBody(keyword),
-          ),
+      builder: (keyword, param) =>
+          Scaffold(appBar: _buildAppBar(keyword), body: _buildBody(keyword)),
     );
   }
 

@@ -16,17 +16,17 @@ sealed class UrlSearchParams with _$UrlSearchParams {
         json.containsKey('params')
             ? json
             : {
-              'params': Map.fromEntries(
-                json.entries.map(
-                  (entry) => MapEntry(
-                    entry.key,
-                    entry.value is List
-                        ? entry.value
-                        : [entry.value.toString()],
+                'params': Map.fromEntries(
+                  json.entries.map(
+                    (entry) => MapEntry(
+                      entry.key,
+                      entry.value is List
+                          ? entry.value
+                          : [entry.value.toString()],
+                    ),
                   ),
                 ),
-              ),
-            },
+              },
       );
 
   /// Parse from raw query string
@@ -37,10 +37,9 @@ sealed class UrlSearchParams with _$UrlSearchParams {
       if (part.isEmpty) continue;
       final split = part.split('=');
       final key = Uri.decodeQueryComponent(split[0]);
-      final value =
-          split.length > 1
-              ? Uri.decodeQueryComponent(split.sublist(1).join('='))
-              : '';
+      final value = split.length > 1
+          ? Uri.decodeQueryComponent(split.sublist(1).join('='))
+          : '';
 
       parsed.putIfAbsent(key, () => []).add(value);
     }

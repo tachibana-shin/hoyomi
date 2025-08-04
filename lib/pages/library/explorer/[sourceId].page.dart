@@ -24,25 +24,19 @@ class _ExplorerPageState extends State<ExplorerPage> {
       return CategoryComicPage(
         sourceId: widget.sourceId,
         categoryId: '',
-        getCategory: ({
-          required filters,
-          required page,
-          required categoryId,
-        }) async {
-          return service.getExplorer(filters: filters, page: page);
-        },
+        getCategory:
+            ({required filters, required page, required categoryId}) async {
+              return service.getExplorer(filters: filters, page: page);
+            },
       );
     } else if (service is ABEigaService) {
       return CategoryEigaPage(
         sourceId: widget.sourceId,
         categoryId: '',
-        getCategory: ({
-          required filters,
-          required page,
-          required categoryId,
-        }) async {
-          return service.getExplorer(filters: filters, page: page);
-        },
+        getCategory:
+            ({required filters, required page, required categoryId}) async {
+              return service.getExplorer(filters: filters, page: page);
+            },
       );
     }
 

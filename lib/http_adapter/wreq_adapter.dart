@@ -46,8 +46,9 @@ class WReqAdapter implements HttpClientAdapter {
       } else if (options.data is String) {
         rawBytes = utf8.encode(options.data as String);
       } else if (options.data is Map<String, dynamic>) {
-        final contentType =
-            options.headers['content-type']?.toString().toLowerCase();
+        final contentType = options.headers['content-type']
+            ?.toString()
+            .toLowerCase();
 
         if (contentType != null &&
             contentType.contains('application/x-www-form-urlencoded')) {
@@ -122,10 +123,9 @@ class WReqAdapter implements HttpClientAdapter {
         url: options.uri.toString(),
         headers: headers.toMap().entries.map((e) => (e.key, e.value)).toList(),
         bodyBytes: rawBytes,
-        redirectSettings:
-            options.followRedirects
-                ? RedirectSettings.limitedRedirects(options.maxRedirects)
-                : null,
+        redirectSettings: options.followRedirects
+            ? RedirectSettings.limitedRedirects(options.maxRedirects)
+            : null,
         userAgent: headers.get('user-agent'),
       );
 

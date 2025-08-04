@@ -9,10 +9,9 @@ part of 'eiga_episode.dart';
 _EigaEpisode _$EigaEpisodeFromJson(Map<String, dynamic> json) => _EigaEpisode(
   name: json['name'] as String,
   episodeId: json['episodeId'] as String,
-  image:
-      json['image'] == null
-          ? null
-          : OImage.fromJson(json['image'] as Map<String, dynamic>),
+  image: json['image'] == null
+      ? null
+      : OImage.fromJson(json['image'] as Map<String, dynamic>),
   description: json['description'] as String?,
   extra: json['extra'] as String?,
   order: (json['order'] as num?)?.toInt() ?? -1,

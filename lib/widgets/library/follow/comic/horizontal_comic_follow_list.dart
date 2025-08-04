@@ -58,16 +58,15 @@ class _HorizontalComicHistoryState extends State<HorizontalComicFollowList> {
             title: title,
             subtitle: subtitle,
             more: more,
-            builder:
-                (viewFraction) => Center(
-                  child: Service.errorWidgetBuilder(
-                    context,
-                    error: snapshot.error,
-                    trace: snapshot.stackTrace,
-                    service: _service as Service,
-                    orElse: (error) => Text('Error: $error'),
-                  ),
-                ),
+            builder: (viewFraction) => Center(
+              child: Service.errorWidgetBuilder(
+                context,
+                error: snapshot.error,
+                trace: snapshot.stackTrace,
+                service: _service as Service,
+                orElse: (error) => Text('Error: $error'),
+              ),
+            ),
             titleLength: 1,
             itemSubtitle: false,
             itemTimeAgo: false,
@@ -88,10 +87,9 @@ class _HorizontalComicHistoryState extends State<HorizontalComicFollowList> {
           );
         }
 
-        final data =
-            loading
-                ? List.generate(30, (_) => types.ComicFollow.createFakeData())
-                : snapshot.data!;
+        final data = loading
+            ? List.generate(30, (_) => types.ComicFollow.createFakeData())
+            : snapshot.data!;
 
         final items = data;
         final needSubtitle =
@@ -116,24 +114,22 @@ class _HorizontalComicHistoryState extends State<HorizontalComicFollowList> {
                 more: more,
                 itemSubtitle: needSubtitle,
                 itemTimeAgo: widget.isGeneral,
-                builder:
-                    (viewportFraction) => PageView.builder(
-                      itemCount: items.length,
-                      allowImplicitScrolling: true,
-                      padEnds: false,
-                      controller: PageController(
-                        viewportFraction: viewportFraction,
-                        initialPage: 0,
-                      ),
-                      itemBuilder:
-                          (context, index) => ComicFollow(
-                            sourceId: items.elementAt(index).sourceId,
-                            follow: items.elementAt(index),
-                            width: 100.w(context) / 1 / viewportFraction,
-                            direction: Axis.vertical,
-                            showService: widget.isGeneral,
-                          ),
-                    ),
+                builder: (viewportFraction) => PageView.builder(
+                  itemCount: items.length,
+                  allowImplicitScrolling: true,
+                  padEnds: false,
+                  controller: PageController(
+                    viewportFraction: viewportFraction,
+                    initialPage: 0,
+                  ),
+                  itemBuilder: (context, index) => ComicFollow(
+                    sourceId: items.elementAt(index).sourceId,
+                    follow: items.elementAt(index),
+                    width: 100.w(context) / 1 / viewportFraction,
+                    direction: Axis.vertical,
+                    showService: widget.isGeneral,
+                  ),
+                ),
               ),
             ],
           ),

@@ -9,10 +9,9 @@ part of 'general_settings.dart';
 _GeneralSettings _$GeneralSettingsFromJson(Map<String, dynamic> json) =>
     _GeneralSettings(
       mangaReadLazyPage: json['mangaReadLazyPage'] as bool? ?? false,
-      lastCheckUpdateApp:
-          json['lastCheckUpdateApp'] == null
-              ? null
-              : DateTime.parse(json['lastCheckUpdateApp'] as String),
+      lastCheckUpdateApp: json['lastCheckUpdateApp'] == null
+          ? null
+          : DateTime.parse(json['lastCheckUpdateApp'] as String),
       brightnessApp: (json['brightnessApp'] as num?)?.toDouble() ?? null,
       pollingIntervalComic:
           (json['pollingIntervalComic'] as num?)?.toInt() ?? 60 * 60 * 3,

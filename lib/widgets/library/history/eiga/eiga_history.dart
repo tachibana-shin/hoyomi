@@ -159,40 +159,35 @@ class _EigaHistoryState extends State<EigaHistory> {
 
     return InkWell(
       borderRadius: BorderRadius.circular(7),
-      onTap:
-          () => context.pushNamed(
-            'details_eiga',
-            pathParameters: {
-              'sourceId': widget.history.sourceId,
-              'eigaId': widget.history.item.eigaId,
-            },
-            queryParameters: {
-              'episodeId': widget.history.lastEpisode.episodeId,
-            },
-          ),
+      onTap: () => context.pushNamed(
+        'details_eiga',
+        pathParameters: {
+          'sourceId': widget.history.sourceId,
+          'eigaId': widget.history.item.eigaId,
+        },
+        queryParameters: {'episodeId': widget.history.lastEpisode.episodeId},
+      ),
       child: Container(
         decoration: BoxDecoration(
           color: null,
           borderRadius: BorderRadius.circular(7.0),
         ),
-        padding:
-            isVertical
-                ? EdgeInsets.symmetric(horizontal: 5.0)
-                : EdgeInsets.symmetric(vertical: 7.0),
-        child:
-            widget.direction == Axis.horizontal
-                ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    poster,
-                    SizedBox(width: 7.0),
-                    Expanded(child: titleAndSubtitle),
-                  ],
-                )
-                : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [poster, titleAndSubtitle],
-                ),
+        padding: isVertical
+            ? EdgeInsets.symmetric(horizontal: 5.0)
+            : EdgeInsets.symmetric(vertical: 7.0),
+        child: widget.direction == Axis.horizontal
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  poster,
+                  SizedBox(width: 7.0),
+                  Expanded(child: titleAndSubtitle),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [poster, titleAndSubtitle],
+              ),
       ),
     );
   }

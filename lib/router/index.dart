@@ -50,9 +50,9 @@ class _RestorableGoRoute extends GoRoute {
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 final pageBuilder =
     (!XPlatform.isAndroid && !XPlatform.isIOS) ||
-            (androidSdkInt != null && androidSdkInt! < 29)
-        ? GoTransitions.zoom.call
-        : null;
+        (androidSdkInt != null && androidSdkInt! < 29)
+    ? GoTransitions.zoom.call
+    : null;
 
 final routes = [
   // --- Shell route cho bottom navigation (5 items) ---
@@ -76,10 +76,8 @@ final routes = [
             path: '/home_comic',
             name: 'home_comic',
             pageBuilder: pageBuilder,
-            builder:
-                (context, state) => HomeComicPage(
-                  service: state.uri.queryParameters['service'],
-                ),
+            builder: (context, state) =>
+                HomeComicPage(service: state.uri.queryParameters['service']),
           ),
         ],
       ),
@@ -91,9 +89,8 @@ final routes = [
             path: '/home_eiga',
             name: 'home_eiga',
             pageBuilder: pageBuilder,
-            builder:
-                (context, state) =>
-                    HomeEigaPage(service: state.uri.queryParameters['service']),
+            builder: (context, state) =>
+                HomeEigaPage(service: state.uri.queryParameters['service']),
           ),
         ],
       ),
@@ -105,9 +102,8 @@ final routes = [
             path: '/search',
             name: 'search',
             pageBuilder: pageBuilder,
-            builder:
-                (context, state) =>
-                    SearchPage(from: state.uri.queryParameters['from']),
+            builder: (context, state) =>
+                SearchPage(from: state.uri.queryParameters['from']),
             routes: [
               _RestorableGoRoute(
                 path: 'comic/:sourceId',
@@ -157,37 +153,33 @@ final routes = [
                 path: 'history/comic/:sourceId',
                 name: 'history_comic',
                 pageBuilder: pageBuilder,
-                builder:
-                    (context, state) => HistoryComicPage(
-                      sourceId: state.pathParameters['sourceId']!,
-                    ),
+                builder: (context, state) => HistoryComicPage(
+                  sourceId: state.pathParameters['sourceId']!,
+                ),
               ),
               _RestorableGoRoute(
                 path: 'follow/comic/:sourceId',
                 name: 'follow_comic',
                 pageBuilder: pageBuilder,
-                builder:
-                    (context, state) => FollowsComicPage(
-                      sourceId: state.pathParameters['sourceId']!,
-                    ),
+                builder: (context, state) => FollowsComicPage(
+                  sourceId: state.pathParameters['sourceId']!,
+                ),
               ),
               _RestorableGoRoute(
                 path: 'history/eiga/:sourceId',
                 name: 'history_eiga',
                 pageBuilder: pageBuilder,
-                builder:
-                    (context, state) => HistoryEigaPage(
-                      sourceId: state.pathParameters['sourceId']!,
-                    ),
+                builder: (context, state) => HistoryEigaPage(
+                  sourceId: state.pathParameters['sourceId']!,
+                ),
               ),
               _RestorableGoRoute(
                 path: 'follow/eiga/:sourceId',
                 name: 'follow_eiga',
                 pageBuilder: pageBuilder,
-                builder:
-                    (context, state) => FollowsEigaPage(
-                      sourceId: state.pathParameters['sourceId']!,
-                    ),
+                builder: (context, state) => FollowsEigaPage(
+                  sourceId: state.pathParameters['sourceId']!,
+                ),
               ),
               _RestorableGoRoute(
                 path: 'downloader',
@@ -209,10 +201,8 @@ final routes = [
                 path: '/explorer/:sourceId',
                 name: 'library_explorer',
                 pageBuilder: pageBuilder,
-                builder:
-                    (context, state) => ExplorerPage(
-                      sourceId: state.pathParameters['sourceId']!,
-                    ),
+                builder: (context, state) =>
+                    ExplorerPage(sourceId: state.pathParameters['sourceId']!),
               ),
             ],
           ),
@@ -252,15 +242,13 @@ final routes = [
     name: 'details_comic',
     pageBuilder: pageBuilder,
     parentNavigatorKey: rootNavigatorKey,
-    builder:
-        (context, state) => DetailsComic(
-          sourceId: state.pathParameters['sourceId']!,
-          comicId: state.pathParameters['comicId']!,
-          comic:
-              state.extra != null
-                  ? (state.extra as Map)['comic'] as MetaComic
-                  : null,
-        ),
+    builder: (context, state) => DetailsComic(
+      sourceId: state.pathParameters['sourceId']!,
+      comicId: state.pathParameters['comicId']!,
+      comic: state.extra != null
+          ? (state.extra as Map)['comic'] as MetaComic
+          : null,
+    ),
     routes: [
       _RestorableGoRoute(
         path: 'view',
@@ -274,10 +262,9 @@ final routes = [
             sourceId: state.pathParameters['sourceId']!,
             comicId: state.pathParameters['comicId']!,
             chapterId: chapterId,
-            comic:
-                state.extra != null
-                    ? (state.extra as Map)['comic'] as MetaComic
-                    : null,
+            comic: state.extra != null
+                ? (state.extra as Map)['comic'] as MetaComic
+                : null,
           );
         },
       ),
@@ -286,16 +273,14 @@ final routes = [
         name: 'similar_comic',
         pageBuilder: pageBuilder,
         parentNavigatorKey: rootNavigatorKey,
-        builder:
-            (context, state) => SimilarPage(
-              sourceId: state.pathParameters['sourceId']!,
-              comicId: state.pathParameters['comicId']!,
-              comic:
-                  (state.extra is Map &&
-                          (state.extra as Map).containsKey('comic'))
-                      ? (state.extra as Map)['comic']
-                      : null,
-            ),
+        builder: (context, state) => SimilarPage(
+          sourceId: state.pathParameters['sourceId']!,
+          comicId: state.pathParameters['comicId']!,
+          comic:
+              (state.extra is Map && (state.extra as Map).containsKey('comic'))
+              ? (state.extra as Map)['comic']
+              : null,
+        ),
       ),
     ],
   ),
@@ -335,11 +320,10 @@ final routes = [
     name: 'webview',
     pageBuilder: pageBuilder,
     parentNavigatorKey: rootNavigatorKey,
-    builder:
-        (context, state) => WebviewPage(
-          sourceId: state.pathParameters['sourceId']!,
-          logout: state.uri.queryParameters['logout'] == 'true',
-        ),
+    builder: (context, state) => WebviewPage(
+      sourceId: state.pathParameters['sourceId']!,
+      logout: state.uri.queryParameters['logout'] == 'true',
+    ),
   ),
 
   // Category Comic Route
@@ -348,11 +332,10 @@ final routes = [
     name: 'category_comic',
     pageBuilder: pageBuilder,
     parentNavigatorKey: rootNavigatorKey,
-    builder:
-        (context, state) => CategoryComicPage(
-          sourceId: state.pathParameters['sourceId']!,
-          categoryId: state.pathParameters['categoryId']!,
-        ),
+    builder: (context, state) => CategoryComicPage(
+      sourceId: state.pathParameters['sourceId']!,
+      categoryId: state.pathParameters['categoryId']!,
+    ),
   ),
 
   // Category Eiga Route
@@ -361,11 +344,10 @@ final routes = [
     name: 'category_eiga',
     pageBuilder: pageBuilder,
     parentNavigatorKey: rootNavigatorKey,
-    builder:
-        (context, state) => CategoryEigaPage(
-          sourceId: state.pathParameters['sourceId']!,
-          categoryId: state.pathParameters['categoryId']!,
-        ),
+    builder: (context, state) => CategoryEigaPage(
+      sourceId: state.pathParameters['sourceId']!,
+      categoryId: state.pathParameters['categoryId']!,
+    ),
   ),
 
   // Category Service Setting Route
@@ -374,9 +356,8 @@ final routes = [
     name: 'service_settings',
     pageBuilder: pageBuilder,
     parentNavigatorKey: rootNavigatorKey,
-    builder:
-        (context, state) =>
-            ServiceSettingsPage(sourceId: state.pathParameters['sourceId']!),
+    builder: (context, state) =>
+        ServiceSettingsPage(sourceId: state.pathParameters['sourceId']!),
   ),
 ];
 
@@ -496,14 +477,13 @@ class PersistentScaffold extends StatelessWidget {
   Widget _buildBottomNavigationBar() {
     return Scaffold(
       body: navigationShell, // This area will have transition animations.
-      bottomNavigationBar:
-          showToolbar
-              ? NavigationApp(
-                selectedIndex: navigationShell.currentIndex,
-                rail: false,
-                onDestinationSelected: _onDestinationSelected,
-              )
-              : null,
+      bottomNavigationBar: showToolbar
+          ? NavigationApp(
+              selectedIndex: navigationShell.currentIndex,
+              rail: false,
+              onDestinationSelected: _onDestinationSelected,
+            )
+          : null,
     );
   }
 }

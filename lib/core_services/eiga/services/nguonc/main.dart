@@ -58,11 +58,10 @@ class NguonCService extends ABEigaService {
     final description = item.originalName;
     final studio = null;
     final genres = null;
-    final actors =
-        item.casts
-            ?.split(',')
-            .map((item) => Genre(name: item, genreId: Genre.noId))
-            .toList();
+    final actors = item.casts
+        ?.split(',')
+        .map((item) => Genre(name: item, genreId: Genre.noId))
+        .toList();
     final duration = item.totalEpisodes.toString();
     final language = item.language;
     //     final actors = item.querySelectorAll('.Cast a').map((anchor) {
@@ -102,10 +101,9 @@ class NguonCService extends ABEigaService {
     };
 
     final carouselPage$ = _get('phim-moi-cap-nhat');
-    final categoryPages$ =
-        categoryUrls.values
-            .map((slug) => _get(slug.startsWith('/') ? slug : '$slug?page=1'))
-            .toList();
+    final categoryPages$ = categoryUrls.values
+        .map((slug) => _get(slug.startsWith('/') ? slug : '$slug?page=1'))
+        .toList();
 
     await Future.wait([carouselPage$, ...categoryPages$]);
 
@@ -113,18 +111,17 @@ class NguonCService extends ABEigaService {
     final categoryPages = await Future.wait(categoryPages$);
 
     final carouselItems = carouselPage.items.map(_parseCarousel).toList();
-    final categories =
-        categoryUrls.entries.map((entry) {
-          final name = entry.key;
-          final slug = entry.value;
-          final page = categoryPages[categoryUrls.keys.toList().indexOf(name)];
+    final categories = categoryUrls.entries.map((entry) {
+      final name = entry.key;
+      final slug = entry.value;
+      final page = categoryPages[categoryUrls.keys.toList().indexOf(name)];
 
-          return HomeEigaCategory(
-            name: name,
-            categoryId: 'danh-sach_$slug',
-            items: page.items.map((item) => _parseItem(item)).toList(),
-          );
-        }).toList();
+      return HomeEigaCategory(
+        name: name,
+        categoryId: 'danh-sach_$slug',
+        items: page.items.map((item) => _parseItem(item)).toList(),
+      );
+    }).toList();
 
     return EigaHome(
       carousel: EigaCarousel(
@@ -142,20 +139,19 @@ class NguonCService extends ABEigaService {
     return $('#form-filter select').map((select) {
       final key = select.attr('name');
       final multiple = false;
-      final items =
-          select
-              .query('option')
-              .skip(1)
-              .toList()
-              .indexed
-              .map(
-                (entry) => Option(
-                  name: entry.$2.text(),
-                  value: entry.$2.attr('value'),
-                  selected: entry.$1 == 0,
-                ),
-              )
-              .toList();
+      final items = select
+          .query('option')
+          .skip(1)
+          .toList()
+          .indexed
+          .map(
+            (entry) => Option(
+              name: entry.$2.text(),
+              value: entry.$2.attr('value'),
+              selected: entry.$1 == 0,
+            ),
+          )
+          .toList();
       final name = items.first.name;
 
       return Filter(name: name, key: key, multiple: multiple, options: items);
@@ -209,10 +205,9 @@ class NguonCService extends ABEigaService {
       page: page,
       totalItems: totalItems,
       totalPages: totalPages,
-      filters:
-          isListMode
-              ? iFilters
-              : iFilters.where((filter) => filter.key != 'type').toList(),
+      filters: isListMode
+          ? iFilters
+          : iFilters.where((filter) => filter.key != 'type').toList(),
     );
   }
 
@@ -255,15 +250,14 @@ class NguonCService extends ABEigaService {
       _findGroup(movie, 'Năm')?.list.firstOrNull?.name ?? '',
     );
     final views = 0;
-    final seasons =
-        movie.episodes.indexed.map((entry) {
-          final index = entry.$1;
-          final item = entry.$2;
-          return Season(
-            name: item.serverName,
-            eigaId: index == 0 ? eigaIdRaw : '$eigaIdRaw@${item.serverName}',
-          );
-        }).toList();
+    final seasons = movie.episodes.indexed.map((entry) {
+      final index = entry.$1;
+      final item = entry.$2;
+      return Season(
+        name: item.serverName,
+        eigaId: index == 0 ? eigaIdRaw : '$eigaIdRaw@${item.serverName}',
+      );
+    }).toList();
     final genres =
         _findGroup(movie, 'Thể loại')?.list
             .map(
@@ -278,20 +272,18 @@ class NguonCService extends ABEigaService {
     final quality = movie.quality;
 
     // final status = movie.status;
-    final authors =
-        movie.director == null
-            ? null
-            : [Genre(name: movie.director!, genreId: Genre.noId)];
-    final countries =
-        _findGroup(movie, 'Quốc gia')?.list
-            .map(
-              (country) => Genre(
-                name: country.name,
-                genreId:
-                    'quoc-gia_${_removeDiacritics(country.name).toLowerCase().replaceAll(RegExp(r'\s'), '-')}',
-              ),
-            )
-            .toList();
+    final authors = movie.director == null
+        ? null
+        : [Genre(name: movie.director!, genreId: Genre.noId)];
+    final countries = _findGroup(movie, 'Quốc gia')?.list
+        .map(
+          (country) => Genre(
+            name: country.name,
+            genreId:
+                'quoc-gia_${_removeDiacritics(country.name).toLowerCase().replaceAll(RegExp(r'\s'), '-')}',
+          ),
+        )
+        .toList();
     final language = movie.language;
     final studio = null;
     final trailer = null;
@@ -299,11 +291,11 @@ class NguonCService extends ABEigaService {
 
     final status =
         movie.totalEpisodes ==
-                pageData.movie.episodes
-                    .map((episodes) => episodes.items.length)
-                    .fold(0, (prev, len) => len > prev ? len : prev)
-            ? StatusEnum.completed
-            : StatusEnum.ongoing;
+            pageData.movie.episodes
+                .map((episodes) => episodes.items.length)
+                .fold(0, (prev, len) => len > prev ? len : prev)
+        ? StatusEnum.completed
+        : StatusEnum.ongoing;
 
     return MetaEiga(
       name: name,
@@ -322,8 +314,9 @@ class NguonCService extends ABEigaService {
       authors: authors,
       countries: countries,
       language: language,
-      studios:
-          studio == null ? null : [Genre(name: studio, genreId: Genre.noId)],
+      studios: studio == null
+          ? null
+          : [Genre(name: studio, genreId: Genre.noId)],
       movieSeason: movieSeason,
       trailer: trailer,
       status: status,
@@ -335,28 +328,26 @@ class NguonCService extends ABEigaService {
     final index = max(0, eigaId.indexOf('@'));
 
     final eigaIdRaw = index == 0 ? eigaId : eigaId.substring(0, index);
-    final seasonName =
-        eigaIdRaw.length + 1 < eigaId.length
-            ? eigaId.substring(eigaIdRaw.length + 1)
-            : '';
+    final seasonName = eigaIdRaw.length + 1 < eigaId.length
+        ? eigaId.substring(eigaIdRaw.length + 1)
+        : '';
 
     final pageData = await _getDetails(eigaIdRaw);
     final movie = pageData.movie;
 
-    final episodes =
-        movie.episodes
-            .firstWhereOrNull(
-              (server) => seasonName.isEmpty || server.serverName == seasonName,
-            )
-            ?.items
-            .map(
-              (episode) => EigaEpisode(
-                name: episode.name,
-                episodeId: episode.slug,
-                extra: jsonEncode(episode.toJson()),
-              ),
-            )
-            .toList();
+    final episodes = movie.episodes
+        .firstWhereOrNull(
+          (server) => seasonName.isEmpty || server.serverName == seasonName,
+        )
+        ?.items
+        .map(
+          (episode) => EigaEpisode(
+            name: episode.name,
+            episodeId: episode.slug,
+            extra: jsonEncode(episode.toJson()),
+          ),
+        )
+        .toList();
     if (episodes == null) throw Exception('Episode not found');
 
     final image = _getImage(src: movie.thumbUrl);
@@ -461,10 +452,9 @@ class _MovieResponse {
       status: json['status'],
       paginate: _Paginate.fromJson(json['paginate']),
       cat: json['cat'] != null ? _Cat.fromJson(json['cat']) : null,
-      items:
-          (json['items'] as List)
-              .map((item) => _MovieItem.fromJson(item))
-              .toList(),
+      items: (json['items'] as List)
+          .map((item) => _MovieItem.fromJson(item))
+          .toList(),
     );
   }
 
@@ -687,10 +677,9 @@ class _Movie {
       director: json['director'],
       casts: json['casts'],
       category: catMap,
-      episodes:
-          (json['episodes'] as List)
-              .map((e) => _EpisodeGroup.fromJson(e))
-              .toList(),
+      episodes: (json['episodes'] as List)
+          .map((e) => _EpisodeGroup.fromJson(e))
+          .toList(),
     );
   }
 
@@ -733,10 +722,9 @@ class _CategoryGroup {
   factory _CategoryGroup.fromJson(Map<String, dynamic> json) {
     return _CategoryGroup(
       group: _Group.fromJson(json['group']),
-      list:
-          (json['list'] as List)
-              .map((item) => _CategoryItem.fromJson(item))
-              .toList(),
+      list: (json['list'] as List)
+          .map((item) => _CategoryItem.fromJson(item))
+          .toList(),
     );
   }
 
@@ -787,10 +775,9 @@ class _EpisodeGroup {
   factory _EpisodeGroup.fromJson(Map<String, dynamic> json) {
     return _EpisodeGroup(
       serverName: json['server_name'],
-      items:
-          (json['items'] as List)
-              .map((item) => _EpisodeItem.fromJson(item))
-              .toList(),
+      items: (json['items'] as List)
+          .map((item) => _EpisodeItem.fromJson(item))
+          .toList(),
     );
   }
 

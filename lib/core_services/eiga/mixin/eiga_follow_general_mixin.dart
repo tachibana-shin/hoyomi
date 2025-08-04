@@ -41,24 +41,23 @@ mixin EigaFollowGeneralMixin on Service implements EigaFollowMixin {
       sourceId: '',
     );
 
-    final items =
-        body.items.map((item) {
-          return EigaFollow(
-            sourceId: item.sourceId,
-            item: Eiga(
-              name: item.name,
-              eigaId: item.eigaTextId,
-              originalName: item.originalName,
-              image: OImage(src: item.poster),
-            ),
-            lastEpisode: EigaEpisode(
-              name: item.episodeName,
-              episodeId: item.episodeId,
-              order: -1,
-            ),
-            updatedAt: DateTime.parse(item.createdAt),
-          );
-        }).toList();
+    final items = body.items.map((item) {
+      return EigaFollow(
+        sourceId: item.sourceId,
+        item: Eiga(
+          name: item.name,
+          eigaId: item.eigaTextId,
+          originalName: item.originalName,
+          image: OImage(src: item.poster),
+        ),
+        lastEpisode: EigaEpisode(
+          name: item.episodeName,
+          episodeId: item.episodeId,
+          order: -1,
+        ),
+        updatedAt: DateTime.parse(item.createdAt),
+      );
+    }).toList();
 
     return Paginate(
       items: items,
@@ -82,26 +81,25 @@ mixin EigaFollowGeneralMixin on Service implements EigaFollowMixin {
     );
 
     return Paginate(
-      items:
-          body.items
-              .map(
-                (item) => EigaFollow(
-                  sourceId: item.sourceId,
-                  item: Eiga(
-                    eigaId: item.eigaTextId,
-                    name: item.name,
-                    originalName: item.originalName,
-                    image: OImage.from(item.poster),
-                  ),
-                  lastEpisode: EigaEpisode(
-                    name: item.episodeName,
-                    episodeId: item.episodeId,
-                    order: -1,
-                  ),
-                  updatedAt: DateTime.parse(item.createdAt),
-                ),
-              )
-              .toList(),
+      items: body.items
+          .map(
+            (item) => EigaFollow(
+              sourceId: item.sourceId,
+              item: Eiga(
+                eigaId: item.eigaTextId,
+                name: item.name,
+                originalName: item.originalName,
+                image: OImage.from(item.poster),
+              ),
+              lastEpisode: EigaEpisode(
+                name: item.episodeName,
+                episodeId: item.episodeId,
+                order: -1,
+              ),
+              updatedAt: DateTime.parse(item.createdAt),
+            ),
+          )
+          .toList(),
       page: body.page,
       totalItems: body.totalItems,
       totalPages: body.totalPages,

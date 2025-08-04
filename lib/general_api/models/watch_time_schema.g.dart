@@ -8,10 +8,9 @@ part of 'watch_time_schema.dart';
 
 _WatchTimeSchema _$WatchTimeSchemaFromJson(Map<String, dynamic> json) =>
     _WatchTimeSchema(
-      data:
-          json['data'] == null
-              ? null
-              : Data6.fromJson(json['data'] as Map<String, dynamic>),
+      data: json['data'] == null
+          ? null
+          : Data6.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$WatchTimeSchemaToJson(_WatchTimeSchema instance) =>

@@ -72,8 +72,8 @@ class _InfiniteGridState<T> extends State<InfiniteGrid<T>> {
         setState(() {});
 
         try {
-          final (isLastPage: isLastPage, data: items) =
-              await widget.fetchData();
+          final (isLastPage: isLastPage, data: items) = await widget
+              .fetchData();
 
           _data.addAll(items);
           _hasReachedMax = isLastPage;
@@ -84,34 +84,30 @@ class _InfiniteGridState<T> extends State<InfiniteGrid<T>> {
           setState(() {});
         }
       },
-      itemBuilder:
-          (context, index) => _GridRow(
-            columnIndex: index,
-            builder:
-                (context, index) =>
-                    widget.itemBuilder(context, _data.elementAt(index), index),
-            itemCount: _data.length,
-            crossAxisCount: widget.crossAxisCount,
-            crossAxisSpacing: widget.crossAxisSpacing,
-            mainAxisSpacing: widget.mainAxisSpacing,
-            crossAxisAlignment: widget.rowCrossAxisAlignment,
-          ),
-      loadingBuilder:
-          (context) => Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: SpinKitSpinningLines(
-              color: Theme.of(context).colorScheme.secondary,
-              size: 50.0,
-            ),
-          ),
-      errorBuilder:
-          (context) => Service.errorWidgetBuilder(
-            context,
-            error: _error,
-            trace: StackTrace.current,
-            service: null,
-            orElse: (error) => Text('Error: $error'),
-          ),
+      itemBuilder: (context, index) => _GridRow(
+        columnIndex: index,
+        builder: (context, index) =>
+            widget.itemBuilder(context, _data.elementAt(index), index),
+        itemCount: _data.length,
+        crossAxisCount: widget.crossAxisCount,
+        crossAxisSpacing: widget.crossAxisSpacing,
+        mainAxisSpacing: widget.mainAxisSpacing,
+        crossAxisAlignment: widget.rowCrossAxisAlignment,
+      ),
+      loadingBuilder: (context) => Padding(
+        padding: EdgeInsets.symmetric(vertical: 8.0),
+        child: SpinKitSpinningLines(
+          color: Theme.of(context).colorScheme.secondary,
+          size: 50.0,
+        ),
+      ),
+      errorBuilder: (context) => Service.errorWidgetBuilder(
+        context,
+        error: _error,
+        trace: StackTrace.current,
+        service: null,
+        orElse: (error) => Text('Error: $error'),
+      ),
     );
   }
 }

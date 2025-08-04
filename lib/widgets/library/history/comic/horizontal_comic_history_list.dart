@@ -57,16 +57,15 @@ class _HorizontalComicHistoryState extends State<HorizontalComicHistoryList> {
             title: title,
             subtitle: '',
             more: more,
-            builder:
-                (viewFraction) => Center(
-                  child: Service.errorWidgetBuilder(
-                    context,
-                    error: snapshot.error,
-                    trace: snapshot.stackTrace,
-                    service: getService(widget.sourceId),
-                    orElse: (error) => Text('Error: $error'),
-                  ),
-                ),
+            builder: (viewFraction) => Center(
+              child: Service.errorWidgetBuilder(
+                context,
+                error: snapshot.error,
+                trace: snapshot.stackTrace,
+                service: getService(widget.sourceId),
+                orElse: (error) => Text('Error: $error'),
+              ),
+            ),
             titleLength: 1,
             itemSubtitle: false,
             itemTimeAgo: false,
@@ -87,15 +86,13 @@ class _HorizontalComicHistoryState extends State<HorizontalComicHistoryList> {
           );
         }
 
-        final data =
-            loading
-                ? List.generate(30, (_) => types.ComicHistory.createFakeData())
-                : snapshot.data!;
+        final data = loading
+            ? List.generate(30, (_) => types.ComicHistory.createFakeData())
+            : snapshot.data!;
 
-        final subtitle =
-            data.isEmpty
-                ? ''
-                : formatWatchUpdatedAt(data.first.watchUpdatedAt, null);
+        final subtitle = data.isEmpty
+            ? ''
+            : formatWatchUpdatedAt(data.first.watchUpdatedAt, null);
         final items = data;
         final needSubtitle =
             data.firstWhereOrNull(
@@ -119,24 +116,22 @@ class _HorizontalComicHistoryState extends State<HorizontalComicHistoryList> {
                 more: more,
                 itemSubtitle: needSubtitle,
                 itemTimeAgo: widget.isGeneral,
-                builder:
-                    (viewportFraction) => PageView.builder(
-                      itemCount: items.length,
-                      allowImplicitScrolling: true,
-                      padEnds: false,
-                      controller: PageController(
-                        viewportFraction: viewportFraction,
-                        initialPage: 0,
-                      ),
-                      itemBuilder:
-                          (context, index) => ComicHistory(
-                            sourceId: items.elementAt(index).sourceId,
-                            history: items.elementAt(index),
-                            width: 100.w(context) / 1 / viewportFraction,
-                            direction: Axis.vertical,
-                            showService: widget.isGeneral,
-                          ),
-                    ),
+                builder: (viewportFraction) => PageView.builder(
+                  itemCount: items.length,
+                  allowImplicitScrolling: true,
+                  padEnds: false,
+                  controller: PageController(
+                    viewportFraction: viewportFraction,
+                    initialPage: 0,
+                  ),
+                  itemBuilder: (context, index) => ComicHistory(
+                    sourceId: items.elementAt(index).sourceId,
+                    history: items.elementAt(index),
+                    width: 100.w(context) / 1 / viewportFraction,
+                    direction: Axis.vertical,
+                    showService: widget.isGeneral,
+                  ),
+                ),
               ),
             ],
           ),

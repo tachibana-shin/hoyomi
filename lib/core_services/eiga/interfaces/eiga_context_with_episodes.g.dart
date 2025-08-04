@@ -11,14 +11,12 @@ _EigaContextWithEpisodes _$EigaContextWithEpisodesFromJson(
 ) => _EigaContextWithEpisodes(
   eigaId: json['eigaId'] as String,
   metaEiga: MetaEiga.fromJson(json['metaEiga'] as Map<String, dynamic>),
-  season:
-      json['season'] == null
-          ? null
-          : Season.fromJson(json['season'] as Map<String, dynamic>),
-  episodes:
-      (json['episodes'] as List<dynamic>)
-          .map((e) => EigaEpisode.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  season: json['season'] == null
+      ? null
+      : Season.fromJson(json['season'] as Map<String, dynamic>),
+  episodes: (json['episodes'] as List<dynamic>)
+      .map((e) => EigaEpisode.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$EigaContextWithEpisodesToJson(

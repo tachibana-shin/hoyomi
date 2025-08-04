@@ -29,12 +29,13 @@ class _SpeechToTextState extends State<SpeechToText>
     super.initState();
     _speech = st.SpeechToText();
     // マイク周りの波形エフェクト用のアニメーションコントローラーを初期化する。
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2000),
-    )..addListener(() {
-      setState(() {});
-    });
+    _animationController =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 2000),
+        )..addListener(() {
+          setState(() {});
+        });
   }
 
   Future<void> _startListening() async {
@@ -130,11 +131,10 @@ class CircleWavePainter extends CustomPainter {
       final value = ((progress + i / waveCount) % 1.0);
       final radius = (size.width / 2) * value;
       final opacity = (1.0 - value).clamp(0.0, 1.0);
-      final paint =
-          Paint()
-            ..color = Colors.blueAccent.withValues(alpha: opacity)
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2.0;
+      final paint = Paint()
+        ..color = Colors.blueAccent.withValues(alpha: opacity)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.0;
       canvas.drawCircle(center, radius, paint);
     }
   }

@@ -29,29 +29,26 @@ class SearchComicPage extends StatelessWidget {
         sourceId: sourceId,
         categoryId: $keyword,
         title: const GlobalSearchBar(pageIsSearch: true, showExtension: false),
-        getCategory: ({
-          required filters,
-          required page,
-          required categoryId,
-        }) async {
-          final data = await getComicService(sourceId).search(
-            filters: filters,
-            page: page,
-            keyword: categoryId,
-            quick: false,
-          );
+        getCategory:
+            ({required filters, required page, required categoryId}) async {
+              final data = await getComicService(sourceId).search(
+                filters: filters,
+                page: page,
+                keyword: categoryId,
+                quick: false,
+              );
 
-          return ComicCategory(
-            name: 'Search "$categoryId"',
-            url: data.url,
-            items: data.items,
-            page: data.page,
-            totalItems: data.totalItems,
-            totalPages: data.totalPages,
-            description: data.description,
-            filters: data.filters,
-          );
-        },
+              return ComicCategory(
+                name: 'Search "$categoryId"',
+                url: data.url,
+                items: data.items,
+                page: data.page,
+                totalItems: data.totalItems,
+                totalPages: data.totalPages,
+                description: data.description,
+                filters: data.filters,
+              );
+            },
       );
     });
   }

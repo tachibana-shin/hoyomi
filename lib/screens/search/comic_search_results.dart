@@ -31,10 +31,9 @@ class _ComicSearchResultsState extends State<ComicSearchResults>
       quick: false,
     );
     final itemsFuture = searchResult.then(
-      (data) =>
-          data.items
-              .map((item) => ComicExtend(comic: item, sourceId: service.uid))
-              .toList(),
+      (data) => data.items
+          .map((item) => ComicExtend(comic: item, sourceId: service.uid))
+          .toList(),
     );
 
     String subtitle = '';

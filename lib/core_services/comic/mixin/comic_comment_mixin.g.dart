@@ -11,14 +11,12 @@ _ComicCommentContext _$ComicCommentContextFromJson(Map<String, dynamic> json) =>
       comicId: json['comicId'] as String,
       metaComic: MetaComic.fromJson(json['metaComic'] as Map<String, dynamic>),
       chapterId: json['chapterId'] as String?,
-      chapter:
-          json['chapter'] == null
-              ? null
-              : ComicChapter.fromJson(json['chapter'] as Map<String, dynamic>),
-      parent:
-          json['parent'] == null
-              ? null
-              : ComicComment.fromJson(json['parent'] as Map<String, dynamic>),
+      chapter: json['chapter'] == null
+          ? null
+          : ComicChapter.fromJson(json['chapter'] as Map<String, dynamic>),
+      parent: json['parent'] == null
+          ? null
+          : ComicComment.fromJson(json['parent'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ComicCommentContextToJson(

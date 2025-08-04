@@ -18,10 +18,9 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
 
   @override
   void initState() {
-    _service =
-        widget.sourceId == 'general'
-            ? null
-            : getEigaService(widget.sourceId) as EigaFollowMixin;
+    _service = widget.sourceId == 'general'
+        ? null
+        : getEigaService(widget.sourceId) as EigaFollowMixin;
     super.initState();
   }
 
@@ -47,30 +46,26 @@ class _FollowsEigaPageState extends State<FollowsEigaPage> {
     return PullRefreshPage<Paginate<EigaFollow>>(
       onLoadData: () => _getData(1),
       onLoadFake: () => Paginate.createFakeData(EigaFollow.createFakeData()),
-      builder:
-          (data, param) => Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-            child: InfiniteGrid(
-              data: data.items,
-              hasReachedMax: data.page >= data.totalPages,
-              crossAxisCount: VerticalList.getCrossAxisCount(context),
-              crossAxisSpacing: 4.0,
-              mainAxisSpacing: 4.0,
-              fetchData: () async {
-                final result = await _getData(_pageKey);
-                _pageKey++;
+      builder: (data, param) => Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+        child: InfiniteGrid(
+          data: data.items,
+          hasReachedMax: data.page >= data.totalPages,
+          crossAxisCount: VerticalList.getCrossAxisCount(context),
+          crossAxisSpacing: 4.0,
+          mainAxisSpacing: 4.0,
+          fetchData: () async {
+            final result = await _getData(_pageKey);
+            _pageKey++;
 
-                final isLastPage = result.page >= result.totalPages;
-                return (isLastPage: isLastPage, data: result.items);
-              },
-              itemBuilder: (context, follow, index) {
-                return VerticalEiga(
-                  eiga: follow.item,
-                  sourceId: follow.sourceId,
-                );
-              },
-            ),
-          ),
+            final isLastPage = result.page >= result.totalPages;
+            return (isLastPage: isLastPage, data: result.items);
+          },
+          itemBuilder: (context, follow, index) {
+            return VerticalEiga(eiga: follow.item, sourceId: follow.sourceId);
+          },
+        ),
+      ),
     );
   }
 }

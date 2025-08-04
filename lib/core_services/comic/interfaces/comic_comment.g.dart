@@ -12,10 +12,9 @@ _ComicComment _$ComicCommentFromJson(Map<String, dynamic> json) =>
       chapterId: json['chapterId'] as String?,
       userId: json['userId'] as String,
       name: json['name'] as String,
-      photoUrl:
-          json['photoUrl'] == null
-              ? null
-              : OImage.fromJson(json['photoUrl'] as Map<String, dynamic>),
+      photoUrl: json['photoUrl'] == null
+          ? null
+          : OImage.fromJson(json['photoUrl'] as Map<String, dynamic>),
       content: json['content'] as String,
       timeAgo: DateTime.parse(json['timeAgo'] as String),
       countLike: (json['countLike'] as num?)?.toInt(),
@@ -23,10 +22,9 @@ _ComicComment _$ComicCommentFromJson(Map<String, dynamic> json) =>
       countReply: (json['countReply'] as num).toInt(),
       canDelete: json['canDelete'] as bool? ?? false,
       like: json['like'] as bool?,
-      replies:
-          (json['replies'] as List<dynamic>?)
-              ?.map((e) => ComicComment.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      replies: (json['replies'] as List<dynamic>?)
+          ?.map((e) => ComicComment.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ComicCommentToJson(_ComicComment instance) =>

@@ -159,8 +159,9 @@ class _SliderEigaState extends State<SliderEiga>
         final y = double.parse(coords[1]);
         final w = double.parse(coords[2]);
         final h = double.parse(coords[3]);
-        final spriteUrl =
-            Uri.parse(widget.vttThumbnail.value!.src).resolve(path).toString();
+        final spriteUrl = Uri.parse(
+          widget.vttThumbnail.value!.src,
+        ).resolve(path).toString();
         _previewBlank.value = Container(
           width: w,
           height: h,
@@ -328,10 +329,9 @@ class _SliderEigaState extends State<SliderEiga>
           final bool done = snapshot.connectionState != ConnectionState.waiting;
           double width =
               preview?.width ?? ((text.length * fontSize / 2) + paddingX * 2);
-          final left =
-              (_hoverPosition.value * parentSize.width - (width / 2))
-                  .clamp(3, parentSize.width - width - 3)
-                  .toDouble();
+          final left = (_hoverPosition.value * parentSize.width - (width / 2))
+              .clamp(3, parentSize.width - width - 3)
+              .toDouble();
           final timeText = Container(
             padding: EdgeInsets.symmetric(vertical: 3, horizontal: paddingX),
             decoration: BoxDecoration(
@@ -352,20 +352,19 @@ class _SliderEigaState extends State<SliderEiga>
           return Positioned(
             left: left,
             bottom: sliderHeightMax + thumbSize / 2 + 7,
-            child:
-                previewWidget != null
-                    ? Stack(
-                      children: [
-                        previewWidget,
-                        Positioned(
-                          bottom: 10,
-                          left: 0,
-                          right: 0,
-                          child: Center(child: timeText),
-                        ),
-                      ],
-                    )
-                    : Center(child: timeText),
+            child: previewWidget != null
+                ? Stack(
+                    children: [
+                      previewWidget,
+                      Positioned(
+                        bottom: 10,
+                        left: 0,
+                        right: 0,
+                        child: Center(child: timeText),
+                      ),
+                    ],
+                  )
+                : Center(child: timeText),
           );
         },
       );
@@ -376,13 +375,14 @@ class _SliderEigaState extends State<SliderEiga>
     final width = parentSize.width;
     return Watch(() {
       if (!widget.showThumb.value) return SizedBox.shrink();
-      final double left = ((widget.duration.value.inMilliseconds == 0
-                      ? 0
-                      : (widget.progress.value.inMilliseconds /
-                          widget.duration.value.inMilliseconds)) *
-                  width -
-              thumbSize / 2)
-          .clamp(thumbSize / 2, width - thumbSize);
+      final double left =
+          ((widget.duration.value.inMilliseconds == 0
+                          ? 0
+                          : (widget.progress.value.inMilliseconds /
+                                widget.duration.value.inMilliseconds)) *
+                      width -
+                  thumbSize / 2)
+              .clamp(thumbSize / 2, width - thumbSize);
       final double size = thumbSize;
       return Positioned(
         left: left,
@@ -422,25 +422,21 @@ class _ProgressBarPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final backgroundPaint =
-        Paint()
-          ..color = Colors.white.withValues(alpha: 0.3)
-          ..style = PaintingStyle.fill;
+    final backgroundPaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.3)
+      ..style = PaintingStyle.fill;
 
-    final progressPaint =
-        Paint()
-          ..color = Colors.red
-          ..style = PaintingStyle.fill;
+    final progressPaint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.fill;
 
-    final bufferedPaint =
-        Paint()
-          ..color = Colors.white.withValues(alpha: 0.3)
-          ..style = PaintingStyle.fill;
+    final bufferedPaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.3)
+      ..style = PaintingStyle.fill;
 
-    final rangePaint =
-        Paint()
-          ..color = Colors.blue
-          ..style = PaintingStyle.fill;
+    final rangePaint = Paint()
+      ..color = Colors.blue
+      ..style = PaintingStyle.fill;
 
     // Draw background
     canvas.drawRect(
@@ -497,10 +493,9 @@ class _ThumbPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final thumbPaint =
-        Paint()
-          ..color = Colors.red
-          ..style = PaintingStyle.fill;
+    final thumbPaint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.fill;
 
     canvas.drawCircle(
       Offset(size.width / 2, size.height),

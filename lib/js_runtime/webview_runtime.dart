@@ -20,7 +20,8 @@ class WebviewRuntime implements JsRuntime {
 
     _webView = HeadlessInAppWebView(
       initialData: InAppWebViewInitialData(
-        data: '''
+        data:
+            '''
         <html><body><script>
           if (!window.global) window.global = window
           if (!window.globalThis) window.globalThis = window
@@ -127,7 +128,8 @@ class WebviewRuntime implements JsRuntime {
           )
           .join(', ');
 
-      final code = '''
+      final code =
+          '''
           if (typeof $functionName !== 'function') throw new UnimplementedError('$functionName');
           const out = await $functionName($argString);
           ${base64 ? 'return btoa(out);' : 'return out;'}
@@ -157,10 +159,9 @@ class WebviewRuntime implements JsRuntime {
     _callbacks[name] = callback;
     _controller.addJavaScriptHandler(
       handlerName: name,
-      callback:
-          (args) => _callbacks[name]?.call(
-            args.first.isNotEmpty ? jsonDecode(args.first) : null,
-          ),
+      callback: (args) => _callbacks[name]?.call(
+        args.first.isNotEmpty ? jsonDecode(args.first) : null,
+      ),
     );
   }
 

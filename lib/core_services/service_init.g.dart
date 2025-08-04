@@ -14,14 +14,12 @@ _ServiceInit _$ServiceInitFromJson(Map<String, dynamic> json) => _ServiceInit(
   version: json['version'] as String?,
   description: json['description'] as String?,
   language: json['language'] as String?,
-  settings:
-      (json['settings'] as List<dynamic>?)
-          ?.map((e) => SettingField.fromJson(e as Map<String, dynamic>))
-          .toList(),
-  webRules:
-      (json['webRules'] as List<dynamic>?)
-          ?.map((e) => WebRule.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  settings: (json['settings'] as List<dynamic>?)
+      ?.map((e) => SettingField.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  webRules: (json['webRules'] as List<dynamic>?)
+      ?.map((e) => WebRule.fromJson(e as Map<String, dynamic>))
+      .toList(),
   fetchHeadless: json['fetchHeadless'] as bool? ?? false,
   fetchBaseUrl: json['fetchBaseUrl'] as String?,
   captchaUrl: json['captchaUrl'] as String?,

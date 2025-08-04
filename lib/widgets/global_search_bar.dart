@@ -56,10 +56,9 @@ void main() {
   });
 }
 
-final _setKeyword =
-    Debouncer(Duration(seconds: 1), (String keyword) {
-      globalKeyword.value = keyword;
-    }).run;
+final _setKeyword = Debouncer(Duration(seconds: 1), (String keyword) {
+  globalKeyword.value = keyword;
+}).run;
 
 class _AppBarExtended extends AppBar {
   final Widget child;
@@ -364,10 +363,9 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
       'https://suggestqueries.google.com/complete/search?client=chrome&q=$keyword',
     );
     return FutureBuilder(
-      future:
-          _storeGoogleSuggestCache[keyword] ??= response.then(
-            (response) => response.data[1],
-          ),
+      future: _storeGoogleSuggestCache[keyword] ??= response.then(
+        (response) => response.data[1],
+      ),
       builder: (context, snapshot) {
         if (snapshot.hasError) return SizedBox.shrink();
 
@@ -375,20 +373,19 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         final random = Random();
 
-        final data =
-            loading
-                ? List.generate(10, (_) {
-                  int length = random.nextInt(7) + 4;
-                  return String.fromCharCodes(
-                    List.generate(
-                      length,
-                      (_) => chars.codeUnitAt(random.nextInt(chars.length)),
-                    ),
-                  );
-                })
-                : snapshot.data is List
-                ? snapshot.data as List
-                : const <String>[];
+        final data = loading
+            ? List.generate(10, (_) {
+                int length = random.nextInt(7) + 4;
+                return String.fromCharCodes(
+                  List.generate(
+                    length,
+                    (_) => chars.codeUnitAt(random.nextInt(chars.length)),
+                  ),
+                );
+              })
+            : snapshot.data is List
+            ? snapshot.data as List
+            : const <String>[];
         if (!snapshot.hasData || data.isEmpty) return SizedBox.shrink();
 
         return Column(
@@ -401,20 +398,19 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                 child: Wrap(
                   spacing: 8.0,
                   runSpacing: 4.0,
-                  children:
-                      data
-                          .map(
-                            (text) => GestureDetector(
-                              onTap: () {
-                                globalKeyword.value = text;
-                              },
-                              child: Chip(
-                                label: Text(text),
-                                padding: EdgeInsets.zero,
-                              ),
-                            ),
-                          )
-                          .toList(),
+                  children: data
+                      .map(
+                        (text) => GestureDetector(
+                          onTap: () {
+                            globalKeyword.value = text;
+                          },
+                          child: Chip(
+                            label: Text(text),
+                            padding: EdgeInsets.zero,
+                          ),
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
             ),
@@ -461,10 +457,9 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
           }
 
           final loading = snapshot.connectionState == ConnectionState.waiting;
-          final data =
-              loading
-                  ? List.generate(10, (_) => Comic.createFakeData())
-                  : snapshot.data!.items;
+          final data = loading
+              ? List.generate(10, (_) => Comic.createFakeData())
+              : snapshot.data!.items;
 
           if (data.isEmpty) return SizedBox.shrink();
 
@@ -515,10 +510,9 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
           }
 
           final loading = snapshot.connectionState == ConnectionState.waiting;
-          final data =
-              loading
-                  ? List.generate(10, (_) => Eiga.createFakeData())
-                  : snapshot.data!.items;
+          final data = loading
+              ? List.generate(10, (_) => Eiga.createFakeData())
+              : snapshot.data!.items;
 
           if (data.isEmpty) return SizedBox.shrink();
 
@@ -572,38 +566,33 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         onSelected: (value) {
           serviceSelect.value = value;
         },
-        itemBuilder:
-            (BuildContext context) =>
-                services.map((service) {
-                  return PopupMenuItem<String>(
-                    value: service.uid,
-                    height: 40.0,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 2 * 12.0,
-                          height: 2 * 12.0,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: OImage.oNetwork(
-                              service.faviconUrl,
-                              sourceId: service.uid,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 12.0),
-                        Text(
-                          service.name,
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
+        itemBuilder: (BuildContext context) => services.map((service) {
+          return PopupMenuItem<String>(
+            value: service.uid,
+            height: 40.0,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 2 * 12.0,
+                  height: 2 * 12.0,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: OImage.oNetwork(
+                      service.faviconUrl,
+                      sourceId: service.uid,
+                      fit: BoxFit.cover,
                     ),
-                  );
-                }).toList(),
+                  ),
+                ),
+                SizedBox(width: 12.0),
+                Text(
+                  service.name,
+                  style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
       );
     });
   }
@@ -618,15 +607,16 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
         duration: const Duration(milliseconds: 280),
         curve: Curves.easeInOutCubic,
         padding: EdgeInsets.symmetric(horizontal: focusing ? 0.0 : 8.0),
-        margin:
-            widget.applyPadding ? EdgeInsets.symmetric(horizontal: 18.0) : null,
+        margin: widget.applyPadding
+            ? EdgeInsets.symmetric(horizontal: 18.0)
+            : null,
         decoration: BoxDecoration(
-          color:
-              focusing
-                  ? Colors.transparent
-                  : theme.colorScheme.surfaceContainerHigh,
-          borderRadius:
-              focusing ? BorderRadius.zero : BorderRadius.circular(30.0),
+          color: focusing
+              ? Colors.transparent
+              : theme.colorScheme.surfaceContainerHigh,
+          borderRadius: focusing
+              ? BorderRadius.zero
+              : BorderRadius.circular(30.0),
         ),
         clipBehavior: Clip.antiAlias,
         child: Watch(
@@ -662,58 +652,54 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                 ),
               const SizedBox(width: 8),
               Expanded(
-                child:
-                    focusing
-                        ? Watch(() {
-                          globalKeyword.value;
+                child: focusing
+                    ? Watch(() {
+                        globalKeyword.value;
 
-                          return TextField(
-                            // autofocus: focusing,
-                            enabled: focusing,
-                            autofocus: true,
-                            controller: _controller,
-                            // readOnly: _readonly,
-                            decoration: InputDecoration(
-                              hintText: "Search...",
-                              border: InputBorder.none,
-                            ),
-                            onChanged: (value) {
-                              _setKeyword(value);
-                            },
-                            onSubmitted: _onSubmitted,
-                          );
-                        })
-                        : GestureDetector(
-                          onTap: () => _showSearchLayer(),
-                          child: Container(
-                            height: 45,
-                            color: theme.colorScheme.surfaceContainerHigh,
-                            child:
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Watch(
-                                      () => Text(
-                                        globalKeyword.value.isNotEmpty
-                                            ? globalKeyword.value
-                                            : 'Search',
-                                      ).fontSize(16.0).paddingAll(4.0),
-                                    ),
-                                  ],
-                                ).toCenter(),
+                        return TextField(
+                          // autofocus: focusing,
+                          enabled: focusing,
+                          autofocus: true,
+                          controller: _controller,
+                          // readOnly: _readonly,
+                          decoration: InputDecoration(
+                            hintText: "Search...",
+                            border: InputBorder.none,
                           ),
+                          onChanged: (value) {
+                            _setKeyword(value);
+                          },
+                          onSubmitted: _onSubmitted,
+                        );
+                      })
+                    : GestureDetector(
+                        onTap: () => _showSearchLayer(),
+                        child: Container(
+                          height: 45,
+                          color: theme.colorScheme.surfaceContainerHigh,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Watch(
+                                () => Text(
+                                  globalKeyword.value.isNotEmpty
+                                      ? globalKeyword.value
+                                      : 'Search',
+                                ).fontSize(16.0).paddingAll(4.0),
+                              ),
+                            ],
+                          ).toCenter(),
                         ),
+                      ),
               ),
               Watch(
                 () => AnimatedSwitcher(
                   duration: Duration(milliseconds: 300),
-                  transitionBuilder:
-                      (child, animation) =>
-                          ScaleTransition(scale: animation, child: child),
-                  child:
-                      (globalKeyword.value.isEmpty || !focusing)
-                          ? (!XPlatform.isLinux && !XPlatform.isWindows)
-                              ? IconButton(
+                  transitionBuilder: (child, animation) =>
+                      ScaleTransition(scale: animation, child: child),
+                  child: (globalKeyword.value.isEmpty || !focusing)
+                      ? (!XPlatform.isLinux && !XPlatform.isWindows)
+                            ? IconButton(
                                 icon: Iconify(Mdi.microphone),
                                 onPressed: () async {
                                   final completer = Completer();
@@ -734,15 +720,12 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                                   } else {
                                     await showDialog(
                                       context: context,
-                                      builder:
-                                          (context) => SpeechToText(
-                                            onChanged:
-                                                (text) =>
-                                                    completer.complete(text),
-                                            onError:
-                                                (error) => completer
-                                                    .completeError(error),
-                                          ),
+                                      builder: (context) => SpeechToText(
+                                        onChanged: (text) =>
+                                            completer.complete(text),
+                                        onError: (error) =>
+                                            completer.completeError(error),
+                                      ),
                                     );
                                   }
 
@@ -756,13 +739,13 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                                   }
                                 },
                               )
-                              : null
-                          : IconButton(
-                            icon: Icon(Icons.clear),
-                            onPressed: () {
-                              globalKeyword.value = '';
-                            },
-                          ),
+                            : null
+                      : IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            globalKeyword.value = '';
+                          },
+                        ),
                 ),
               ),
               if (!focusing && widget.showExtension) ..._buildButtonsMore(),
@@ -859,16 +842,12 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                     },
                   ),
               ],
-              items:
-                  comicServices.value.map((service) {
-                    return ServiceManagerItem(service: service);
-                  }).toList(),
-              onDone:
-                  (newValue) =>
-                      comicServices.value =
-                          newValue
-                              .map((item) => getComicService(item.service!.uid))
-                              .toList(),
+              items: comicServices.value.map((service) {
+                return ServiceManagerItem(service: service);
+              }).toList(),
+              onDone: (newValue) => comicServices.value = newValue
+                  .map((item) => getComicService(item.service!.uid))
+                  .toList(),
             );
           } else {
             showServiceManagerDialog(
@@ -903,16 +882,12 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
                     },
                   ),
               ],
-              items:
-                  eigaServices.value.map((service) {
-                    return ServiceManagerItem(service: service);
-                  }).toList(),
-              onDone:
-                  (newValue) =>
-                      eigaServices.value =
-                          newValue
-                              .map((item) => getEigaService(item.service!.uid))
-                              .toList(),
+              items: eigaServices.value.map((service) {
+                return ServiceManagerItem(service: service);
+              }).toList(),
+              onDone: (newValue) => eigaServices.value = newValue
+                  .map((item) => getEigaService(item.service!.uid))
+                  .toList(),
             );
           }
         },
@@ -920,18 +895,17 @@ class _GlobalSearchBarState extends State<GlobalSearchBar> with KaeruMixin {
       ),
       PopupMenuButton<String>(
         icon: Iconify(Mdi.dots_vertical),
-        itemBuilder:
-            (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                value: 'clear_history',
-                child: Text("Clear History"),
-              ),
-              PopupMenuItem<String>(
-                value: 'settings',
-                child: const Text("Settings"),
-                onTap: () => {},
-              ),
-            ],
+        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+          const PopupMenuItem<String>(
+            value: 'clear_history',
+            child: Text("Clear History"),
+          ),
+          PopupMenuItem<String>(
+            value: 'settings',
+            child: const Text("Settings"),
+            onTap: () => {},
+          ),
+        ],
       ),
     ];
   }

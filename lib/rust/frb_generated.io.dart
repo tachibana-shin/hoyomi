@@ -27,8 +27,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   });
 
   CrossPlatformFinalizerArg
-  get rust_arc_decrement_strong_count_ArcFnStringDartFnFutureVecStringPtr =>
-      wire._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcdynFnStringDartFnFutureVecStringstaticSendSyncPtr;
+  get rust_arc_decrement_strong_count_ArcFnStringDartFnFutureVecStringPtr => wire
+      ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcdynFnStringDartFnFutureVecStringstaticSendSyncPtr;
 
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw);

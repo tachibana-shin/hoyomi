@@ -13,13 +13,11 @@ extension RustApiJavascriptRuntimeExtension on JsRuntime {
       final requestId = args['id'] as String;
       try {
         final imageData = base64Decode(args['imageData'] as String);
-        final blocks =
-            (args['blocks'] as List)
-                .map(
-                  (e) =>
-                      ColumnBlock(dx: e['dx'] as int, width: e['width'] as int),
-                )
-                .toList();
+        final blocks = (args['blocks'] as List)
+            .map(
+              (e) => ColumnBlock(dx: e['dx'] as int, width: e['width'] as int),
+            )
+            .toList();
         final autoTrim = args['autoTrim'] as bool;
 
         final result = await unscrambleImageColumnsIsolate(
@@ -46,13 +44,11 @@ extension RustApiJavascriptRuntimeExtension on JsRuntime {
       final requestId = args['id'] as String;
       try {
         final imageData = base64Decode(args['imageData'] as String);
-        final blocks =
-            (args['blocks'] as List)
-                .map(
-                  (e) =>
-                      RowBlock(dy: e['dy'] as int, height: e['height'] as int),
-                )
-                .toList();
+        final blocks = (args['blocks'] as List)
+            .map(
+              (e) => RowBlock(dy: e['dy'] as int, height: e['height'] as int),
+            )
+            .toList();
         final autoTrim = args['autoTrim'] as bool;
 
         final result = await unscrambleImageRowsIsolate(
@@ -82,19 +78,18 @@ extension RustApiJavascriptRuntimeExtension on JsRuntime {
       final requestId = args['id'] as String;
       try {
         final imageData = base64Decode(args['imageData'] as String);
-        final blocks =
-            (args['blocks'] as List)
-                .map(
-                  (e) => Block(
-                    sx: e['sx'] as int,
-                    sy: e['sy'] as int,
-                    dx: e['dx'] as int,
-                    dy: e['dy'] as int,
-                    width: e['width'] as int,
-                    height: e['height'] as int,
-                  ),
-                )
-                .toList();
+        final blocks = (args['blocks'] as List)
+            .map(
+              (e) => Block(
+                sx: e['sx'] as int,
+                sy: e['sy'] as int,
+                dx: e['dx'] as int,
+                dy: e['dy'] as int,
+                width: e['width'] as int,
+                height: e['height'] as int,
+              ),
+            )
+            .toList();
         final autoTrim = args['autoTrim'] as bool;
 
         final result = await unscrambleImageIsolate(

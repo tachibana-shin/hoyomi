@@ -8,10 +8,9 @@ part of 'comic_comments.dart';
 
 ComicComments _$ComicCommentsFromJson(Map<String, dynamic> json) =>
     ComicComments(
-      items:
-          (json['items'] as List<dynamic>)
-              .map((e) => ComicComment.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      items: (json['items'] as List<dynamic>)
+          .map((e) => ComicComment.fromJson(e as Map<String, dynamic>))
+          .toList(),
       page: (json['page'] as num).toInt(),
       totalItems: (json['totalItems'] as num).toInt(),
       totalPages: (json['totalPages'] as num).toInt(),

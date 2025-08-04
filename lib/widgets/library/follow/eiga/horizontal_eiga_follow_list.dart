@@ -55,16 +55,15 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
             title: title,
             subtitle: subtitle,
             more: more,
-            builder:
-                (viewFraction) => Center(
-                  child: Service.errorWidgetBuilder(
-                    context,
-                    error: snapshot.error,
-                    trace: snapshot.stackTrace,
-                    service: _service as Service,
-                    orElse: (error) => Text('Error: $error'),
-                  ),
-                ),
+            builder: (viewFraction) => Center(
+              child: Service.errorWidgetBuilder(
+                context,
+                error: snapshot.error,
+                trace: snapshot.stackTrace,
+                service: _service as Service,
+                orElse: (error) => Text('Error: $error'),
+              ),
+            ),
             titleLength: 1,
             itemSubtitle: false,
             itemTimeAgo: false,
@@ -85,20 +84,18 @@ class _HorizontalEigaHistoryState extends State<HorizontalEigaFollowList> {
           );
         }
 
-        final data =
-            loading
-                ? List.generate(30, (_) => EigaFollow.createFakeData())
-                : snapshot.data!;
+        final data = loading
+            ? List.generate(30, (_) => EigaFollow.createFakeData())
+            : snapshot.data!;
 
         return Skeletonizer(
           enabled: loading,
           enableSwitchAnimation: true,
           child: HorizontalList<EigaFollow>(
             title: title,
-            subtitle:
-                data.firstOrNull?.updatedAt == null
-                    ? ''
-                    : formatWatchUpdatedAt(data.first.updatedAt!, null),
+            subtitle: data.firstOrNull?.updatedAt == null
+                ? ''
+                : formatWatchUpdatedAt(data.first.updatedAt!, null),
             more: more,
             items: data,
             titleLength: data

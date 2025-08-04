@@ -56,16 +56,15 @@ class _TabViewComicState extends State<TabViewComic>
                       .toList(),
                 ),
                 title: category.name,
-                more:
-                    category.categoryId != null
-                        ? ToRoute(
-                          name: 'category_comic',
-                          pathParameters: {
-                            'sourceId': widget.service.uid,
-                            'categoryId': category.categoryId!,
-                          },
-                        )
-                        : null,
+                more: category.categoryId != null
+                    ? ToRoute(
+                        name: 'category_comic',
+                        pathParameters: {
+                          'sourceId': widget.service.uid,
+                          'categoryId': category.categoryId!,
+                        },
+                      )
+                    : null,
               );
             }
 
@@ -81,10 +80,9 @@ class _TabViewComicState extends State<TabViewComic>
                     .toList(),
               ),
               title: category.name,
-              more:
-                  category.categoryId != null
-                      ? '/category_comic/${widget.service.uid}/${category.categoryId}'
-                      : null,
+              more: category.categoryId != null
+                  ? '/category_comic/${widget.service.uid}/${category.categoryId}'
+                  : null,
               disableScroll: true,
             );
           },

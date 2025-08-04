@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -76,6 +75,130 @@ as String,
 
 }
 
+
+/// Adds pattern-matching-related methods to [Season].
+extension SeasonPatterns on Season {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Season value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Season() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Season value)  $default,){
+final _that = this;
+switch (_that) {
+case _Season():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Season value)?  $default,){
+final _that = this;
+switch (_that) {
+case _Season() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String eigaId)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Season() when $default != null:
+return $default(_that.name,_that.eigaId);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String eigaId)  $default,) {final _that = this;
+switch (_that) {
+case _Season():
+return $default(_that.name,_that.eigaId);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String eigaId)?  $default,) {final _that = this;
+switch (_that) {
+case _Season() when $default != null:
+return $default(_that.name,_that.eigaId);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 @JsonSerializable()
@@ -267,6 +390,130 @@ $GenreCopyWith<$Res>? get movieSeason {
 }
 }
 
+
+/// Adds pattern-matching-related methods to [MetaEiga].
+extension MetaEigaPatterns on MetaEiga {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _MetaEiga value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _MetaEiga() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _MetaEiga value)  $default,){
+final _that = this;
+switch (_that) {
+case _MetaEiga():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _MetaEiga value)?  $default,){
+final _that = this;
+switch (_that) {
+case _MetaEiga() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String? originalName,  OImage image,  OImage? poster,  String description,  double? rate,  int? countRate,  int? countSub,  int? countDub,  String? duration,  int? yearOf,  int? views,  List<Season> seasons,  List<Genre> genres,  String? quality,  List<Genre>? authors,  List<Genre>? countries,  String? language,  List<Genre>? studios,  StatusEnum status,  Genre? movieSeason,  String? trailer,  String? extra,  bool fake)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _MetaEiga() when $default != null:
+return $default(_that.name,_that.originalName,_that.image,_that.poster,_that.description,_that.rate,_that.countRate,_that.countSub,_that.countDub,_that.duration,_that.yearOf,_that.views,_that.seasons,_that.genres,_that.quality,_that.authors,_that.countries,_that.language,_that.studios,_that.status,_that.movieSeason,_that.trailer,_that.extra,_that.fake);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String? originalName,  OImage image,  OImage? poster,  String description,  double? rate,  int? countRate,  int? countSub,  int? countDub,  String? duration,  int? yearOf,  int? views,  List<Season> seasons,  List<Genre> genres,  String? quality,  List<Genre>? authors,  List<Genre>? countries,  String? language,  List<Genre>? studios,  StatusEnum status,  Genre? movieSeason,  String? trailer,  String? extra,  bool fake)  $default,) {final _that = this;
+switch (_that) {
+case _MetaEiga():
+return $default(_that.name,_that.originalName,_that.image,_that.poster,_that.description,_that.rate,_that.countRate,_that.countSub,_that.countDub,_that.duration,_that.yearOf,_that.views,_that.seasons,_that.genres,_that.quality,_that.authors,_that.countries,_that.language,_that.studios,_that.status,_that.movieSeason,_that.trailer,_that.extra,_that.fake);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String? originalName,  OImage image,  OImage? poster,  String description,  double? rate,  int? countRate,  int? countSub,  int? countDub,  String? duration,  int? yearOf,  int? views,  List<Season> seasons,  List<Genre> genres,  String? quality,  List<Genre>? authors,  List<Genre>? countries,  String? language,  List<Genre>? studios,  StatusEnum status,  Genre? movieSeason,  String? trailer,  String? extra,  bool fake)?  $default,) {final _that = this;
+switch (_that) {
+case _MetaEiga() when $default != null:
+return $default(_that.name,_that.originalName,_that.image,_that.poster,_that.description,_that.rate,_that.countRate,_that.countSub,_that.countDub,_that.duration,_that.yearOf,_that.views,_that.seasons,_that.genres,_that.quality,_that.authors,_that.countries,_that.language,_that.studios,_that.status,_that.movieSeason,_that.trailer,_that.extra,_that.fake);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 @JsonSerializable()

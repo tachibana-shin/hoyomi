@@ -56,16 +56,15 @@ class _TabViewEigaState extends State<TabViewEiga>
                       .toList(),
                 ),
                 title: category.name,
-                more:
-                    category.categoryId != null
-                        ? ToRoute(
-                          name: 'category_eiga',
-                          pathParameters: {
-                            'sourceId': widget.service.uid,
-                            'categoryId': category.categoryId!,
-                          },
-                        )
-                        : null,
+                more: category.categoryId != null
+                    ? ToRoute(
+                        name: 'category_eiga',
+                        pathParameters: {
+                          'sourceId': widget.service.uid,
+                          'categoryId': category.categoryId!,
+                        },
+                      )
+                    : null,
               );
             }
 
@@ -79,10 +78,9 @@ class _TabViewEigaState extends State<TabViewEiga>
                     .toList(),
               ),
               title: category.name,
-              more:
-                  category.categoryId != null
-                      ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
-                      : null,
+              more: category.categoryId != null
+                  ? '/category_eiga/${widget.service.uid}/${category.categoryId}'
+                  : null,
               disableScroll: true,
             );
           },

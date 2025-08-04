@@ -78,10 +78,9 @@ class _SignInMainPageState extends State<SignInMainPage> {
               autovalidateMode: AutovalidateMode.onUserInteraction,
               autofocus: true,
               focusNode: _emailFocusNode,
-              textInputAction:
-                  _isRecoveringPassword
-                      ? TextInputAction.done
-                      : TextInputAction.next,
+              textInputAction: _isRecoveringPassword
+                  ? TextInputAction.done
+                  : TextInputAction.next,
               validator: (value) {
                 if (value == null ||
                     value.isEmpty ||
@@ -105,13 +104,13 @@ class _SignInMainPageState extends State<SignInMainPage> {
             if (!_isRecoveringPassword) ...[
               SizedBox(height: 16),
               TextFormField(
-                autofillHints:
-                    _isSigningIn
-                        ? [AutofillHints.password]
-                        : [AutofillHints.newPassword],
+                autofillHints: _isSigningIn
+                    ? [AutofillHints.password]
+                    : [AutofillHints.newPassword],
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                textInputAction:
-                    !_isSigningIn ? TextInputAction.next : TextInputAction.done,
+                textInputAction: !_isSigningIn
+                    ? TextInputAction.next
+                    : TextInputAction.done,
                 validator: (value) {
                   if (value == null || value.isEmpty || value.length < 6) {
                     return 'Please enter a password that is at least 6 characters long';
@@ -147,17 +146,16 @@ class _SignInMainPageState extends State<SignInMainPage> {
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _signInSignUp,
-                child:
-                    _isLoading
-                        ? SizedBox(
-                          height: 16,
-                          width: 16,
-                          child: CircularProgressIndicator(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            strokeWidth: 1.5,
-                          ),
-                        )
-                        : Text(_isSigningIn ? 'Sign in' : 'Sign up'),
+                child: _isLoading
+                    ? SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          strokeWidth: 1.5,
+                        ),
+                      )
+                    : Text(_isSigningIn ? 'Sign in' : 'Sign up'),
               ),
               SizedBox(height: 16),
               if (_isSigningIn) ...[
@@ -293,9 +291,9 @@ class _SignInMainPageState extends State<SignInMainPage> {
     return widget.oauth2WithIcon
         ? Wrap(alignment: WrapAlignment.spaceEvenly, children: authButtons)
         : Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: authButtons,
-        );
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: authButtons,
+          );
   }
 }
 
@@ -378,19 +376,18 @@ Widget _generateButtonOAuth(
 
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-    child:
-        icon
-            ? Material(
-              shape: const CircleBorder(),
-              elevation: 2,
-              color: backgroundColor,
-              child: InkResponse(radius: 24, onTap: onTap, child: iconWidget),
-            )
-            : ElevatedButton.icon(
-              icon: iconWidget,
-              style: authButtonStyle,
-              onPressed: onTap,
-              label: Text(socialOAuth2.labelText),
-            ),
+    child: icon
+        ? Material(
+            shape: const CircleBorder(),
+            elevation: 2,
+            color: backgroundColor,
+            child: InkResponse(radius: 24, onTap: onTap, child: iconWidget),
+          )
+        : ElevatedButton.icon(
+            icon: iconWidget,
+            style: authButtonStyle,
+            onPressed: onTap,
+            label: Text(socialOAuth2.labelText),
+          ),
   );
 }

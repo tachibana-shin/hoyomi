@@ -92,28 +92,28 @@ class DQuery {
 
   /// Gets the immediate parent of each element in the current set, wrapped in a new DQuery object.
   DQuery parent() {
-    final parentElements =
-        _elements.map((e) => e.parentNode).whereType<Element>().toList();
+    final parentElements = _elements
+        .map((e) => e.parentNode)
+        .whereType<Element>()
+        .toList();
     return DQuery(parentElements);
   }
 
   /// Gets the immediately following sibling of each element in the set of matched elements.
   DQuery prev() {
-    final prevElements =
-        _elements
-            .map((e) => e.previousElementSibling)
-            .whereType<Element>()
-            .toList();
+    final prevElements = _elements
+        .map((e) => e.previousElementSibling)
+        .whereType<Element>()
+        .toList();
     return DQuery(prevElements);
   }
 
   /// Gets the immediately following sibling of each element in the set of matched elements.
   DQuery next() {
-    final nextElements =
-        _elements
-            .map((e) => e.nextElementSibling)
-            .whereType<Element>()
-            .toList();
+    final nextElements = _elements
+        .map((e) => e.nextElementSibling)
+        .whereType<Element>()
+        .toList();
     return DQuery(nextElements);
   }
 
@@ -151,8 +151,9 @@ class DQuery {
   /// Gets the descendants of each element in the current set of matched elements,
   /// filtered by a selector.
   DQuery query(String selector) {
-    final found =
-        _elements.expand((e) => e.querySelectorAll(selector)).toList();
+    final found = _elements
+        .expand((e) => e.querySelectorAll(selector))
+        .toList();
     return DQuery(found);
   }
 

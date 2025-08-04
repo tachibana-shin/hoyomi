@@ -6,7 +6,7 @@ part of 'client_client.dart';
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter
 
 class _ClientClient implements ClientClient {
   _ClientClient(this._dio, {this.baseUrl, this.errorLogger});
@@ -238,7 +238,7 @@ class _ClientClient implements ClientClient {
       r'page': page,
       r'limit': limit,
       r'sourceId': sourceId,
-      r'status': status?.name,
+      r'status': status,
       r'ignore': ignore,
     };
     queryParameters.removeWhere((k, v) => v == null);
@@ -487,7 +487,7 @@ class _ClientClient implements ClientClient {
       r'page': page,
       r'limit': limit,
       r'sourceId': sourceId,
-      r'status': status?.name,
+      r'status': status,
       r'ignore': ignore,
     };
     queryParameters.removeWhere((k, v) => v == null);

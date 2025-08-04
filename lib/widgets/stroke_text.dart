@@ -24,14 +24,16 @@ class StrokeText extends StatelessWidget {
           text,
           style: TextStyle(
             fontSize: fontSize,
-            foreground:
-                Paint()
-                  ..style = PaintingStyle.stroke
-                  ..strokeWidth = strokeWidth
-                  ..color = strokeColor,
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = strokeWidth
+              ..color = strokeColor,
           ),
         ),
-        Text(text, style: TextStyle(fontSize: fontSize, color: fillColor)),
+        Text(
+          text,
+          style: TextStyle(fontSize: fontSize, color: fillColor),
+        ),
       ],
     );
   }

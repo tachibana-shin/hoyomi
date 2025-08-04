@@ -43,17 +43,16 @@ class VerticalEiga extends StatelessWidget {
       title: eiga.name,
       subtitle: eiga.lastEpisode?.name,
       lastUpdate: eiga.lastUpdate,
-      toDouble:
-          eiga.lastEpisode != null
-              ? ToRoute(
-                name: 'details_eiga',
-                pathParameters: {
-                  'sourceId': sourceId ?? '',
-                  'eigaId': eiga.eigaId,
-                },
-                queryParameters: {'episodeId': eiga.lastEpisode!.episodeId},
-              )
-              : null,
+      toDouble: eiga.lastEpisode != null
+          ? ToRoute(
+              name: 'details_eiga',
+              pathParameters: {
+                'sourceId': sourceId ?? '',
+                'eigaId': eiga.eigaId,
+              },
+              queryParameters: {'episodeId': eiga.lastEpisode!.episodeId},
+            )
+          : null,
       extend: [
         if (eiga.countSub != null)
           Row(

@@ -103,15 +103,13 @@ class _ImageZoomFullscreenState extends State<ZoomViewer>
     final double x = -tapPosition.dx * (zoomScale - 1);
     final double y = -tapPosition.dy * (zoomScale - 1);
 
-    final Matrix4 zoomedMatrix =
-        Matrix4.identity()
-          ..translate(x, y)
-          ..scale(zoomScale);
+    final Matrix4 zoomedMatrix = Matrix4.identity()
+      ..translate(x, y)
+      ..scale(zoomScale);
 
-    final Matrix4 widgetMatrix =
-        _transformationController.value.isIdentity()
-            ? zoomedMatrix
-            : Matrix4.identity();
+    final Matrix4 widgetMatrix = _transformationController.value.isIdentity()
+        ? zoomedMatrix
+        : Matrix4.identity();
 
     _animation = Matrix4Tween(
       begin: _transformationController.value,
@@ -119,10 +117,9 @@ class _ImageZoomFullscreenState extends State<ZoomViewer>
     ).animate(CurveTween(curve: Curves.easeOut).animate(_animationController));
 
     _animationController.forward(from: 0);
-    _currentScale =
-        _transformationController.value.isIdentity()
-            ? zoomScale
-            : widget.minScale;
+    _currentScale = _transformationController.value.isIdentity()
+        ? zoomScale
+        : widget.minScale;
   }
 
   void _onInteractionStart(ScaleStartDetails details) {
@@ -153,8 +150,9 @@ class _ImageZoomFullscreenState extends State<ZoomViewer>
     if (details.pointerCount == 1 && _currentScale <= 1.05) {
       setState(() {
         _imagePosition += details.focalPointDelta.dy;
-        _opacity =
-            (1 - (_imagePosition / closingTreshold)).clamp(0, 1).toDouble();
+        _opacity = (1 - (_imagePosition / closingTreshold))
+            .clamp(0, 1)
+            .toDouble();
       });
     }
   }

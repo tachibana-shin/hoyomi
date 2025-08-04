@@ -18,42 +18,41 @@ import 'package:iconify_flutter/icons/mdi.dart';
 import 'package:kaeru/kaeru.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 
-typedef FNService =
-    ({
-      String name,
-      bool isComic,
-      bool isGeneral,
-      String sourceId,
-      Future<dynamic> Function({required int page})? history,
-      Future<dynamic> Function({required int page})? follow,
-    });
+typedef FNService = ({
+  String name,
+  bool isComic,
+  bool isGeneral,
+  String sourceId,
+  Future<dynamic> Function({required int page})? history,
+  Future<dynamic> Function({required int page})? follow,
+});
 
 FNService _serviceToFNService(Service comic) {
   return comic is ABComicService
       ? (
-        name: comic.name,
-        isComic: true,
-        isGeneral: false,
-        sourceId: comic.uid,
-        history: ({required int page}) {
-          return comic.getWatchHistory(page: page);
-        },
-        follow: ({required int page}) {
-          return comic.getFollows(page: page);
-        },
-      )
+          name: comic.name,
+          isComic: true,
+          isGeneral: false,
+          sourceId: comic.uid,
+          history: ({required int page}) {
+            return comic.getWatchHistory(page: page);
+          },
+          follow: ({required int page}) {
+            return comic.getFollows(page: page);
+          },
+        )
       : (
-        name: comic.name,
-        isComic: false,
-        isGeneral: false,
-        sourceId: comic.uid,
-        history: ({required int page}) {
-          return (comic as EigaWatchTimeMixin).getWatchHistory(page: page);
-        },
-        follow: ({required int page}) {
-          return (comic as EigaFollowMixin).getFollows(page: page);
-        },
-      );
+          name: comic.name,
+          isComic: false,
+          isGeneral: false,
+          sourceId: comic.uid,
+          history: ({required int page}) {
+            return (comic as EigaWatchTimeMixin).getWatchHistory(page: page);
+          },
+          follow: ({required int page}) {
+            return (comic as EigaFollowMixin).getFollows(page: page);
+          },
+        );
 }
 
 class LibraryPage extends StatefulWidget {
@@ -105,40 +104,35 @@ class _LibraryPageState extends State<LibraryPage>
       isComic: true,
       isGeneral: true,
       sourceId: generalComic.first.uid,
-      history:
-          ({required int page}) =>
-              ComicWatchPageGeneralMixin.getAllWatchHistory(page: page),
-      follow:
-          ({required int page}) =>
-              ComicFollowGeneralMixin.getAllListFollow(page: page),
+      history: ({required int page}) =>
+          ComicWatchPageGeneralMixin.getAllWatchHistory(page: page),
+      follow: ({required int page}) =>
+          ComicFollowGeneralMixin.getAllListFollow(page: page),
     );
     final FNService generalEigaService = (
       name: 'General Eiga',
       isComic: false,
       isGeneral: true,
       sourceId: generalEiga.first.uid,
-      history:
-          ({required int page}) =>
-              EigaWatchTimeGeneralMixin.getAllWatchHistory(page: page),
-      follow:
-          ({required int page}) =>
-              EigaFollowGeneralMixin.getAllListFollow(page: page),
+      history: ({required int page}) =>
+          EigaWatchTimeGeneralMixin.getAllWatchHistory(page: page),
+      follow: ({required int page}) =>
+          EigaFollowGeneralMixin.getAllListFollow(page: page),
     );
 
-    final List<FNService> normalService =
-        sortLibraryService.value
-            .map((id) {
-              return switch (id) {
-                == '\$\$comic\$\$' => generalComicService,
-                == '\$\$eiga\$\$' => generalEigaService,
-                _ =>
-                  allNormalService[id] != null
-                      ? _serviceToFNService(allNormalService[id]!)
-                      : null,
-              };
-            })
-            .whereType<FNService>()
-            .toList();
+    final List<FNService> normalService = sortLibraryService.value
+        .map((id) {
+          return switch (id) {
+            == '\$\$comic\$\$' => generalComicService,
+            == '\$\$eiga\$\$' => generalEigaService,
+            _ =>
+              allNormalService[id] != null
+                  ? _serviceToFNService(allNormalService[id]!)
+                  : null,
+          };
+        })
+        .whereType<FNService>()
+        .toList();
 
     for (final service in allNormalService.values) {
       if (!sortLibraryService.value.contains(service.uid)) {
@@ -180,36 +174,34 @@ class _LibraryPageState extends State<LibraryPage>
               onPressed: () {
                 showServiceManagerDialog(
                   context,
-                  items:
-                      _services.value.map((service) {
-                        if (service.isGeneral) {
-                          return switch (service.isComic) {
-                            true => ServiceManagerItem(
-                              uid: '\$\$comic\$\$',
-                              name: 'General Comic',
-                              avatar: Iconify(Fluent.extension20),
-                            ),
-                            false => ServiceManagerItem(
-                              uid: '\$\$eiga\$\$',
-                              name: 'General Eiga',
-                              avatar: Iconify(Fluent.extension20),
-                            ),
-                          };
-                        }
+                  items: _services.value.map((service) {
+                    if (service.isGeneral) {
+                      return switch (service.isComic) {
+                        true => ServiceManagerItem(
+                          uid: '\$\$comic\$\$',
+                          name: 'General Comic',
+                          avatar: Iconify(Fluent.extension20),
+                        ),
+                        false => ServiceManagerItem(
+                          uid: '\$\$eiga\$\$',
+                          name: 'General Eiga',
+                          avatar: Iconify(Fluent.extension20),
+                        ),
+                      };
+                    }
 
-                        final serviceA = getService(service.sourceId);
+                    final serviceA = getService(service.sourceId);
 
-                        return ServiceManagerItem(
-                          uid: serviceA.uid,
-                          name: serviceA.name,
-                          service: serviceA,
-                        );
-                      }).toList(),
+                    return ServiceManagerItem(
+                      uid: serviceA.uid,
+                      name: serviceA.name,
+                      service: serviceA,
+                    );
+                  }).toList(),
                   onDone: (newValue) {
-                    sortLibraryService.value =
-                        newValue
-                            .map((item) => item.uid ?? item.service!.uid)
-                            .toList();
+                    sortLibraryService.value = newValue
+                        .map((item) => item.uid ?? item.service!.uid)
+                        .toList();
                   },
                 );
               },
@@ -260,11 +252,10 @@ class _LibraryPageState extends State<LibraryPage>
               md: 4,
               child: ItemServiceManager((
                 service: service,
-                onTap:
-                    () => context.pushNamed(
-                      'library_explorer',
-                      pathParameters: {'sourceId': service.uid},
-                    ),
+                onTap: () => context.pushNamed(
+                  'library_explorer',
+                  pathParameters: {'sourceId': service.uid},
+                ),
                 trailing: switch (service) {
                   JSComicService _ => IconButton(
                     icon: const Iconify(Mdi.refresh),
@@ -286,11 +277,10 @@ class _LibraryPageState extends State<LibraryPage>
               md: 4,
               child: ItemServiceManager((
                 service: service,
-                onTap:
-                    () => context.pushNamed(
-                      'library_explorer',
-                      pathParameters: {'sourceId': service.uid},
-                    ),
+                onTap: () => context.pushNamed(
+                  'library_explorer',
+                  pathParameters: {'sourceId': service.uid},
+                ),
                 trailing: switch (service) {
                   JSEigaService _ => IconButton(
                     icon: const Iconify(Mdi.refresh),
@@ -340,49 +330,45 @@ class _TabViewState extends State<_TabView> with AutomaticKeepAliveClientMixin {
             if (widget.source.isComic && widget.source.history != null)
               HorizontalComicHistoryList(
                 sourceId: widget.source.sourceId,
-                more:
-                    !widget.source.isGeneral
-                        ? null
-                        : ToRoute(
-                          name: 'history_comic',
-                          pathParameters: {'sourceId': 'general'},
-                        ),
+                more: !widget.source.isGeneral
+                    ? null
+                    : ToRoute(
+                        name: 'history_comic',
+                        pathParameters: {'sourceId': 'general'},
+                      ),
                 fn: widget.source.history as dynamic,
                 isGeneral: widget.source.isGeneral,
               ),
             if (widget.source.isComic && widget.source.follow != null)
               HorizontalComicFollowList(
                 sourceId: widget.source.sourceId,
-                more:
-                    !widget.source.isGeneral
-                        ? null
-                        : ToRoute(
-                          name: 'follow_comic',
-                          pathParameters: {'sourceId': 'general'},
-                        ),
+                more: !widget.source.isGeneral
+                    ? null
+                    : ToRoute(
+                        name: 'follow_comic',
+                        pathParameters: {'sourceId': 'general'},
+                      ),
                 fn: widget.source.follow as dynamic,
                 isGeneral: widget.source.isGeneral,
               ),
             if (!widget.source.isComic && widget.source.history != null)
               HorizontalEigaHistoryList(
                 sourceId: widget.source.sourceId,
-                more:
-                    !widget.source.isGeneral
-                        ? null
-                        : '/library/history/eiga/general',
+                more: !widget.source.isGeneral
+                    ? null
+                    : '/library/history/eiga/general',
                 fn: widget.source.history as dynamic,
                 isGeneral: widget.source.isGeneral,
               ),
             if (!widget.source.isComic && widget.source.follow != null)
               HorizontalEigaFollowList(
                 sourceId: widget.source.sourceId,
-                more:
-                    !widget.source.isGeneral
-                        ? null
-                        : ToRoute(
-                          name: 'follow_eiga',
-                          pathParameters: {'sourceId': 'general'},
-                        ),
+                more: !widget.source.isGeneral
+                    ? null
+                    : ToRoute(
+                        name: 'follow_eiga',
+                        pathParameters: {'sourceId': 'general'},
+                      ),
                 fn: widget.source.follow as dynamic,
               ),
           ],

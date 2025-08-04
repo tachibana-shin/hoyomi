@@ -215,10 +215,9 @@ class JSEigaService extends ABEigaService {
     try {
       final json = await (await runtime).evalFn('__plugin.getFollows', [page]);
       return Paginate(
-        items:
-            List.from(
-              json['items'],
-            ).map((item) => EigaFollow.fromJson(item)).toList(),
+        items: List.from(
+          json['items'],
+        ).map((item) => EigaFollow.fromJson(item)).toList(),
         page: json['page'],
         totalItems: json['totalItems'],
         totalPages: json['totalPages'],

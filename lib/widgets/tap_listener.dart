@@ -54,10 +54,9 @@ class _GridPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = Colors.grey
-          ..strokeWidth = 1;
+    final paint = Paint()
+      ..color = Colors.grey
+      ..strokeWidth = 1;
 
     for (int i = 1; i < 3; i++) {
       canvas.drawLine(

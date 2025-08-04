@@ -528,11 +528,10 @@ class _MangaReaderState extends State<MangaReader>
   }
 
   void _updateRoute() {
-    final currentGroup =
-        _pages
-            .value[_currentPage.value.round()]
-            .chapter
-            .chapterId; // Get the group id of the current page
+    final currentGroup = _pages
+        .value[_currentPage.value.round()]
+        .chapter
+        .chapterId; // Get the group id of the current page
     if (_chapterId.value != currentGroup) {
       _forceUpdateWatchPage();
       _skipRestoreWatch.add(currentGroup);
@@ -761,16 +760,14 @@ class _MangaReaderState extends State<MangaReader>
       future: _fetchPage(index, false, progress: progress),
       builder: (context, snapshot) {
         return snapshot.when(
-          error:
-              (error, stack) => SizedBox(
-                height: 100.h(context),
-                child: Text('Error: $error ($stack)'),
-              ),
-          loading:
-              () => SizedBox(
-                height: 100.h(context),
-                child: Watch(() => _buildPageLoading(progress.value)),
-              ),
+          error: (error, stack) => SizedBox(
+            height: 100.h(context),
+            child: Text('Error: $error ($stack)'),
+          ),
+          loading: () => SizedBox(
+            height: 100.h(context),
+            child: Watch(() => _buildPageLoading(progress.value)),
+          ),
           data: (data, _) => RawImage(image: data.data!, fit: BoxFit.contain),
         );
       },
@@ -808,11 +805,10 @@ class _MangaReaderState extends State<MangaReader>
             rows: 3,
             columns: 3,
             onTap: _onTapGrid,
-            child:
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 900),
-                  child: _buildReader(),
-                ).alignAtTopCenter(),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 900),
+              child: _buildReader(),
+            ).alignAtTopCenter(),
           ),
           Positioned(left: 0, right: 0, bottom: 0, child: _buildTinyStatus()),
           Positioned(left: 0, right: 0, bottom: 0, child: _buildBottomBar()),
@@ -1005,10 +1001,8 @@ class _MangaReaderState extends State<MangaReader>
                   // switch auto trim image
                   InkWell(
                     customBorder: const StadiumBorder(),
-                    onTap:
-                        () =>
-                            comicAutoTrimImage.value =
-                                !comicAutoTrimImage.value,
+                    onTap: () =>
+                        comicAutoTrimImage.value = !comicAutoTrimImage.value,
                     child: Watch(
                       () => Padding(
                         padding: const EdgeInsets.symmetric(
@@ -1027,8 +1021,8 @@ class _MangaReaderState extends State<MangaReader>
                             ),
                             Switch(
                               value: comicAutoTrimImage.value,
-                              onChanged:
-                                  (value) => comicAutoTrimImage.value = value,
+                              onChanged: (value) =>
+                                  comicAutoTrimImage.value = value,
                             ),
                           ],
                         ),
@@ -1049,17 +1043,16 @@ class _MangaReaderState extends State<MangaReader>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder:
-          (context) => ImagePicker(
-            images: _pages.value.map((page) => page.image).toList(),
-            sourceId: widget.service.uid,
-            onChange: (selected) {
-              setState(() {
-                _skipImages.clear();
-                _skipImages.addAll(selected);
-              });
-            },
-          ),
+      builder: (context) => ImagePicker(
+        images: _pages.value.map((page) => page.image).toList(),
+        sourceId: widget.service.uid,
+        onChange: (selected) {
+          setState(() {
+            _skipImages.clear();
+            _skipImages.addAll(selected);
+          });
+        },
+      ),
     );
   }
 
@@ -1071,14 +1064,13 @@ class _MangaReaderState extends State<MangaReader>
       isScrollControlled: true,
       showDragHandle: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
-      builder:
-          (context) => CommentsSheet(
-            comicId: widget.comicId,
-            metaComic: widget.comic,
-            chapterId: _chapterId.value,
-            chapter: _currChapter.value!,
-            service: widget.service as ComicCommentMixin,
-          ),
+      builder: (context) => CommentsSheet(
+        comicId: widget.comicId,
+        metaComic: widget.comic,
+        chapterId: _chapterId.value,
+        chapter: _currChapter.value!,
+        service: widget.service as ComicCommentMixin,
+      ),
     );
   }
 
@@ -1087,18 +1079,17 @@ class _MangaReaderState extends State<MangaReader>
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder:
-          (context) => SheetChapters(
-            comic: widget.comic,
-            service: widget.service,
-            comicId: widget.comicId,
-            currentChapterId: _chapterId.value,
-            initialChildSize: 0.6,
-            watchPageChapters: _watchPageChapters,
-            lastReadChapter: null,
-            replace: true,
-            reverse: true,
-          ),
+      builder: (context) => SheetChapters(
+        comic: widget.comic,
+        service: widget.service,
+        comicId: widget.comicId,
+        currentChapterId: _chapterId.value,
+        initialChildSize: 0.6,
+        watchPageChapters: _watchPageChapters,
+        lastReadChapter: null,
+        replace: true,
+        reverse: true,
+      ),
     );
   }
 
@@ -1187,9 +1178,8 @@ class _MangaReaderState extends State<MangaReader>
             index,
             false,
             progress:
-                _progressCacheStore[_pages.value
-                    .elementAt(index)
-                    .image] ??= ref(-1.0),
+                _progressCacheStore[_pages.value.elementAt(index).image] ??=
+                    ref(-1.0),
           );
 
           return RawImage(image: data.data!, fit: BoxFit.contain);
@@ -1240,15 +1230,14 @@ class _MangaReaderState extends State<MangaReader>
                           color: Theme.of(
                             context,
                           ).colorScheme.surface.withValues(alpha: 0.9),
-                          onPressed:
-                              _prevChapter.value == null
-                                  ? null
-                                  : () {
-                                    context.pushReplacement(
-                                      "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${_prevChapter.value!.chapterId}",
-                                      extra: {'comic': widget.comic},
-                                    );
-                                  },
+                          onPressed: _prevChapter.value == null
+                              ? null
+                              : () {
+                                  context.pushReplacement(
+                                    "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${_prevChapter.value!.chapterId}",
+                                    extra: {'comic': widget.comic},
+                                  );
+                                },
                         ),
                       ),
                     ),
@@ -1284,15 +1273,14 @@ class _MangaReaderState extends State<MangaReader>
                           color: Theme.of(
                             context,
                           ).colorScheme.surface.withValues(alpha: 0.9),
-                          onPressed:
-                              _nextChapter.value == null
-                                  ? null
-                                  : () {
-                                    context.pushReplacement(
-                                      "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${_nextChapter.value!.chapterId}",
-                                      extra: {'comic': widget.comic},
-                                    );
-                                  },
+                          onPressed: _nextChapter.value == null
+                              ? null
+                              : () {
+                                  context.pushReplacement(
+                                    "/details_comic/${widget.service.uid}/${widget.comicId}/view?chap=${_nextChapter.value!.chapterId}",
+                                    extra: {'comic': widget.comic},
+                                  );
+                                },
                         ),
                       ),
                     ),

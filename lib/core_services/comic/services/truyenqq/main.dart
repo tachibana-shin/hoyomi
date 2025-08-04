@@ -62,7 +62,7 @@ class TruyenQQService extends FoxTruyenService {
     );
     final String name =
         (itemComic.queryOne('.book_name a').textRaw() ??
-            itemComic.queryOne('img').attr('alt'));
+        itemComic.queryOne('img').attr('alt'));
 
     final ComicChapter lastChap = ComicChapter(
       name: itemComic.queryOne('.last_chapter > a').text(),
@@ -77,15 +77,15 @@ class TruyenQQService extends FoxTruyenService {
     );
 
     final timeAgoElement = itemComic.queryOne('.time-ago');
-    final timeAgo =
-        timeAgoElement.isNotEmpty
-            ? convertTimeAgoToUtc(timeAgoElement.text())
-            : null;
+    final timeAgo = timeAgoElement.isNotEmpty
+        ? convertTimeAgoToUtc(timeAgoElement.text())
+        : null;
     final String? notice = itemComic.queryOne('.type-label').textRaw();
 
     final rateValueText = itemComic.queryOne('.rate-star').textRaw();
-    final double? rate =
-        rateValueText != null ? double.tryParse(rateValueText) : null;
+    final double? rate = rateValueText != null
+        ? double.tryParse(rateValueText)
+        : null;
 
     return Comic(
       image: image,
@@ -106,17 +106,15 @@ class TruyenQQService extends FoxTruyenService {
     return ComicHome(
       categories: [
         HomeComicCategory(
-          items:
-              $(
-                '#list_suggest > li',
-              ).map((element) => parseComic(element, baseUrl)).toList(),
+          items: $(
+            '#list_suggest > li',
+          ).map((element) => parseComic(element, baseUrl)).toList(),
           name: 'Truyện Hay',
         ),
         HomeComicCategory(
-          items:
-              $(
-                '#list_new > li',
-              ).map((element) => parseComic(element, baseUrl)).toList(),
+          items: $(
+            '#list_new > li',
+          ).map((element) => parseComic(element, baseUrl)).toList(),
           name: 'Truyện Mới Cập Nhật',
           categoryId: 'truyen-moi-cap-nhat',
         ),
@@ -142,12 +140,11 @@ class TruyenQQService extends FoxTruyenService {
     final status$ =
         _getInfoTale(tales, 'Tình trạng')?.textRaw()?.toLowerCase() ??
         'unknown';
-    final status =
-        status$ == 'đang cập nhật'
-            ? StatusEnum.ongoing
-            : status$ == 'unknown'
-            ? StatusEnum.unknown
-            : StatusEnum.completed;
+    final status = status$ == 'đang cập nhật'
+        ? StatusEnum.ongoing
+        : status$ == 'unknown'
+        ? StatusEnum.unknown
+        : StatusEnum.completed;
 
     final views = int.tryParse(
       _getInfoTale(tales, 'Lượt xem')?.textRaw()?.replaceAll(',', '') ?? '',
@@ -167,14 +164,13 @@ class TruyenQQService extends FoxTruyenService {
             )
             as Map<String, dynamic>;
 
-    final rate =
-        rate$.containsKey('aggregateRating')
-            ? RateValue(
-              best: int.parse('${rate$['aggregateRating']['bestRating']}'),
-              count: int.parse(rate$['aggregateRating']['ratingCount']),
-              value: double.parse(rate$['aggregateRating']['ratingValue']),
-            )
-            : null;
+    final rate = rate$.containsKey('aggregateRating')
+        ? RateValue(
+            best: int.parse('${rate$['aggregateRating']['bestRating']}'),
+            count: int.parse(rate$['aggregateRating']['ratingCount']),
+            value: double.parse(rate$['aggregateRating']['ratingValue']),
+          )
+        : null;
 
     final genres = $('.list01 a').map(
       (anchor) => Genre(
@@ -184,37 +180,38 @@ class TruyenQQService extends FoxTruyenService {
       ),
     );
     final description = $('.story-detail-info', single: true).text();
-    final chapters = $(
-      '.works-chapter-item',
-    ).toList().toList().reversed.indexed.map((entry) {
-      final (index, chap) = entry;
+    final chapters = $('.works-chapter-item')
+        .toList()
+        .toList()
+        .reversed
+        .indexed
+        .map((entry) {
+          final (index, chap) = entry;
 
-      final name = chap.queryOne('a').text();
-      final chapterId = chap
-          .queryOne('a')
-          .attr('href')
-          .split('/')
-          .last
-          .replaceFirst('$comicId-', '')
-          .replaceFirst('.html', '');
+          final name = chap.queryOne('a').text();
+          final chapterId = chap
+              .queryOne('a')
+              .attr('href')
+              .split('/')
+              .last
+              .replaceFirst('$comicId-', '')
+              .replaceFirst('.html', '');
 
-      final time$ = chap.queryOne('.time-chap').textRaw();
-      final time =
-          time$ != null ? DateFormat('dd/MM/yyyy').tryParse(time$) : null;
+          final time$ = chap.queryOne('.time-chap').textRaw();
+          final time = time$ != null
+              ? DateFormat('dd/MM/yyyy').tryParse(time$)
+              : null;
 
-      return ComicChapter(
-        name: name,
-        chapterId: chapterId,
-        time: time,
-        order: index,
-      );
-    });
-    final lastModified =
-        rate$.containsKey('dateModified')
-            ? DateTime.parse(rate$['dateModified'])
-            : DateFormat(
-              'dd/MM/yyyy',
-            ).parse($('.time-chap', single: true).text());
+          return ComicChapter(
+            name: name,
+            chapterId: chapterId,
+            time: time,
+            order: index,
+          );
+        });
+    final lastModified = rate$.containsKey('dateModified')
+        ? DateTime.parse(rate$['dateModified'])
+        : DateFormat('dd/MM/yyyy').parse($('.time-chap', single: true).text());
 
     return MetaComic(
       name: name,
@@ -268,16 +265,13 @@ class TruyenQQService extends FoxTruyenService {
     final lastPageLink = $('.page_redirect > a:last-child', single: true);
     final lastPageLinkText =
         lastPageLink.attrRaw('href') ?? lastPageLink.textRaw();
-    final maxPage =
-        lastPageLinkText?.isNotEmpty == true
-            ? int.parse(
-              !lastPageLinkText!.contains('javascript')
-                  ? RegExp(
-                    r'trang-(\d+)',
-                  ).firstMatch(lastPageLinkText)!.group(1)!
-                  : lastPageLink.textRaw() ?? '1',
-            )
-            : 1;
+    final maxPage = lastPageLinkText?.isNotEmpty == true
+        ? int.parse(
+            !lastPageLinkText!.contains('javascript')
+                ? RegExp(r'trang-(\d+)').firstMatch(lastPageLinkText)!.group(1)!
+                : lastPageLink.textRaw() ?? '1',
+          )
+        : 1;
 
     return ComicCategory(
       name: '',
@@ -304,12 +298,9 @@ class TruyenQQService extends FoxTruyenService {
       '.page_redirect > a:last-child',
       single: true,
     ).attrRaw('href');
-    final maxPage =
-        lastPageLink != null
-            ? int.parse(
-              RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!,
-            )
-            : 1;
+    final maxPage = lastPageLink != null
+        ? int.parse(RegExp(r'trang-(\d+)').firstMatch(lastPageLink)!.group(1)!)
+        : 1;
 
     return ComicCategory(
       name: $('.title_cate, .text_list_update', single: true).text(),

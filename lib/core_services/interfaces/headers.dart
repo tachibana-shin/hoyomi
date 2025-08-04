@@ -18,8 +18,8 @@ const _headersIgnoreWeb = [
   'origin',
 ];
 
-@freezed
-sealed class Headers with _$Headers {
+@Freezed(map: FreezedMapOptions.none, when: FreezedWhenOptions.none)
+abstract class Headers with _$Headers {
   const factory Headers._({
     @JsonKey() @Default({}) Map<String, List<String>> headers,
   }) = _Headers;
@@ -40,15 +40,15 @@ sealed class Headers with _$Headers {
     json.containsKey('headers')
         ? json
         : {
-          'headers': Map.fromEntries(
-            json.entries.map(
-              (entry) => MapEntry(
-                entry.key,
-                entry.value is List ? entry.value : [entry.value.toString()],
+            'headers': Map.fromEntries(
+              json.entries.map(
+                (entry) => MapEntry(
+                  entry.key,
+                  entry.value is List ? entry.value : [entry.value.toString()],
+                ),
               ),
             ),
-          ),
-        },
+          },
   );
 }
 

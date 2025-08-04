@@ -198,10 +198,9 @@ class JSComicService extends ABComicService implements ComicCommentMixin {
       final json = await (await runtime).evalFn('__plugin.getFollows', [page]);
 
       return Paginate(
-        items:
-            List.from(
-              json['items'],
-            ).map((item) => ComicFollow.fromJson(item)).toList(),
+        items: List.from(
+          json['items'],
+        ).map((item) => ComicFollow.fromJson(item)).toList(),
         page: json['page'],
         totalItems: json['totalItems'],
         totalPages: json['totalPages'],

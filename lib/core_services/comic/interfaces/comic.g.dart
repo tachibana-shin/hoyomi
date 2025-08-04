@@ -11,20 +11,17 @@ _Comic _$ComicFromJson(Map<String, dynamic> json) => _Comic(
   comicId: json['comicId'] as String,
   originalName: json['originalName'] as String?,
   image: OImage.fromJson(json['image'] as Map<String, dynamic>),
-  lastChap:
-      json['lastChap'] == null
-          ? null
-          : ComicChapter.fromJson(json['lastChap'] as Map<String, dynamic>),
-  lastUpdate:
-      json['lastUpdate'] == null
-          ? null
-          : DateTime.parse(json['lastUpdate'] as String),
+  lastChap: json['lastChap'] == null
+      ? null
+      : ComicChapter.fromJson(json['lastChap'] as Map<String, dynamic>),
+  lastUpdate: json['lastUpdate'] == null
+      ? null
+      : DateTime.parse(json['lastUpdate'] as String),
   notice: json['notice'] as String?,
   pending: json['pending'] as bool? ?? false,
-  preRelease:
-      json['preRelease'] == null
-          ? null
-          : DateTime.parse(json['preRelease'] as String),
+  preRelease: json['preRelease'] == null
+      ? null
+      : DateTime.parse(json['preRelease'] as String),
   rate: (json['rate'] as num?)?.toDouble(),
   description: json['description'] as String?,
 );

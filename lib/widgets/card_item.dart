@@ -72,16 +72,15 @@ class CardItem extends StatelessWidget {
           context.push(to);
         }
       },
-      onDoubleTap:
-          toDouble != null
-              ? () {
-                if (replace) {
-                  context.replaceRoute(toDouble!);
-                } else {
-                  context.pushRoute(toDouble!);
-                }
+      onDoubleTap: toDouble != null
+          ? () {
+              if (replace) {
+                context.replaceRoute(toDouble!);
+              } else {
+                context.pushRoute(toDouble!);
               }
-              : null,
+            }
+          : null,
       splashColor: Colors.white70.withValues(alpha: 0.3),
       highlightColor: Colors.white70.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(8.0),
@@ -132,10 +131,9 @@ class CardItem extends StatelessWidget {
                                 bottom: 4.0,
                               ),
                               decoration: BoxDecoration(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainer,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainer,
                                 borderRadius: BorderRadius.circular(14.0),
                               ),
                               child: Text(
@@ -233,8 +231,9 @@ class CardItem extends StatelessWidget {
                             bottom: 4.0,
                           ),
                           decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).colorScheme.surfaceContainer,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainer,
                             borderRadius: BorderRadius.circular(14.0),
                           ),
                           child: widgetStar,
@@ -260,8 +259,9 @@ class CardItem extends StatelessWidget {
                         Theme.of(context).colorScheme.onTertiaryFixed,
                       ),
                       backgroundBorder: Colors.transparent,
-                      backgroundColor:
-                          Theme.of(context).colorScheme.tertiaryFixedDim,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.tertiaryFixedDim,
                       size: 25,
                     ),
                   ),

@@ -22,10 +22,9 @@ _Filter _$FilterFromJson(Map<String, dynamic> json) => _Filter(
   name: json['name'] as String,
   key: json['key'] as String,
   multiple: json['multiple'] as bool,
-  options:
-      (json['options'] as List<dynamic>)
-          .map((e) => Option.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  options: (json['options'] as List<dynamic>)
+      .map((e) => Option.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$FilterToJson(_Filter instance) => <String, dynamic>{

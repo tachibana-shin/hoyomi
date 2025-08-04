@@ -553,12 +553,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_ArcFnStringDartFnFutureVecString =>
-      wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcdynFnStringDartFnFutureVecStringstaticSendSync;
+  get rust_arc_increment_strong_count_ArcFnStringDartFnFutureVecString => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcdynFnStringDartFnFutureVecStringstaticSendSync;
 
   RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_ArcFnStringDartFnFutureVecString =>
-      wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcdynFnStringDartFnFutureVecStringstaticSendSync;
+  get rust_arc_decrement_strong_count_ArcFnStringDartFnFutureVecString => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcdynFnStringDartFnFutureVecStringstaticSendSync;
 
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
@@ -861,8 +861,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return raw == null
         ? null
         : dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcdynFnStringDartFnFutureVecStringstaticSendSync(
-          raw,
-        );
+            raw,
+          );
   }
 
   @protected
@@ -2612,20 +2612,17 @@ class ArcFnStringDartFnFutureVecStringImpl extends RustOpaque
   ) : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
   static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib
-            .instance
-            .api
-            .rust_arc_increment_strong_count_ArcFnStringDartFnFutureVecString,
-    rustArcDecrementStrongCount:
-        RustLib
-            .instance
-            .api
-            .rust_arc_decrement_strong_count_ArcFnStringDartFnFutureVecString,
-    rustArcDecrementStrongCountPtr:
-        RustLib
-            .instance
-            .api
-            .rust_arc_decrement_strong_count_ArcFnStringDartFnFutureVecStringPtr,
+    rustArcIncrementStrongCount: RustLib
+        .instance
+        .api
+        .rust_arc_increment_strong_count_ArcFnStringDartFnFutureVecString,
+    rustArcDecrementStrongCount: RustLib
+        .instance
+        .api
+        .rust_arc_decrement_strong_count_ArcFnStringDartFnFutureVecString,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance
+        .api
+        .rust_arc_decrement_strong_count_ArcFnStringDartFnFutureVecStringPtr,
   );
 }

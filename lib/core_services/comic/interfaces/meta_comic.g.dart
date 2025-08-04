@@ -15,19 +15,16 @@ _MetaComic _$MetaComicFromJson(Map<String, dynamic> json) => _MetaComic(
   status: $enumDecode(_$StatusEnumEnumMap, json['status']),
   views: (json['views'] as num?)?.toInt(),
   likes: (json['likes'] as num?)?.toInt(),
-  rate:
-      json['rate'] == null
-          ? null
-          : RateValue.fromJson(json['rate'] as Map<String, dynamic>),
-  genres:
-      (json['genres'] as List<dynamic>)
-          .map((e) => Genre.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  rate: json['rate'] == null
+      ? null
+      : RateValue.fromJson(json['rate'] as Map<String, dynamic>),
+  genres: (json['genres'] as List<dynamic>)
+      .map((e) => Genre.fromJson(e as Map<String, dynamic>))
+      .toList(),
   description: json['description'] as String,
-  chapters:
-      (json['chapters'] as List<dynamic>)
-          .map((e) => ComicChapter.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  chapters: (json['chapters'] as List<dynamic>)
+      .map((e) => ComicChapter.fromJson(e as Map<String, dynamic>))
+      .toList(),
   lastModified: DateTime.parse(json['lastModified'] as String),
   fake: json['fake'] as bool? ?? false,
   offlineMode: json['offlineMode'] as bool? ?? false,

@@ -46,24 +46,23 @@ mixin ComicFollowGeneralMixin on Service implements ComicFollowMixin {
       sourceId: '',
     );
 
-    final items =
-        body.items.map((item) {
-          return ComicFollow(
-            sourceId: item.sourceId,
-            item: Comic(
-              name: item.name,
-              comicId: item.comicTextId,
-              originalName: item.originalName,
-              image: OImage(src: item.poster),
-            ),
-            updatedAt: DateTime.parse(item.createdAt),
-            lastChapter: ComicChapter(
-              name: item.chapterName,
-              chapterId: item.chapterId,
-              order: -1,
-            ),
-          );
-        }).toList();
+    final items = body.items.map((item) {
+      return ComicFollow(
+        sourceId: item.sourceId,
+        item: Comic(
+          name: item.name,
+          comicId: item.comicTextId,
+          originalName: item.originalName,
+          image: OImage(src: item.poster),
+        ),
+        updatedAt: DateTime.parse(item.createdAt),
+        lastChapter: ComicChapter(
+          name: item.chapterName,
+          chapterId: item.chapterId,
+          order: -1,
+        ),
+      );
+    }).toList();
 
     return Paginate(
       items: items,
@@ -87,26 +86,25 @@ mixin ComicFollowGeneralMixin on Service implements ComicFollowMixin {
     );
 
     return Paginate(
-      items:
-          body.items
-              .map(
-                (item) => ComicFollow(
-                  sourceId: item.sourceId,
-                  item: Comic(
-                    comicId: item.comicTextId,
-                    name: item.name,
-                    originalName: item.originalName,
-                    image: OImage.from(item.poster),
-                  ),
-                  updatedAt: DateTime.parse(item.createdAt),
-                  lastChapter: ComicChapter(
-                    name: item.chapterName,
-                    chapterId: item.chapterId,
-                    order: -1,
-                  ),
-                ),
-              )
-              .toList(),
+      items: body.items
+          .map(
+            (item) => ComicFollow(
+              sourceId: item.sourceId,
+              item: Comic(
+                comicId: item.comicTextId,
+                name: item.name,
+                originalName: item.originalName,
+                image: OImage.from(item.poster),
+              ),
+              updatedAt: DateTime.parse(item.createdAt),
+              lastChapter: ComicChapter(
+                name: item.chapterName,
+                chapterId: item.chapterId,
+                order: -1,
+              ),
+            ),
+          )
+          .toList(),
       page: body.page,
       totalItems: body.totalItems,
       totalPages: body.totalPages,
