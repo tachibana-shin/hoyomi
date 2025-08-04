@@ -2075,10 +2075,11 @@ packages:
   speech_to_text_google_dialog:
     dependency: "direct main"
     description:
-      name: speech_to_text_google_dialog
-      sha256: f156aaf3b39416161310fb27a33a4e4da1b4bfeecd643635f28d5cac405a00da
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: a9aeb2378f0b6b601e6602163cd0bb0988923fc4
+      url: "https://github.com/tachibana-shin/speech_to_text_google_dialog"
+    source: git
     version: "0.0.6"
   speech_to_text_platform_interface:
     dependency: transitive
