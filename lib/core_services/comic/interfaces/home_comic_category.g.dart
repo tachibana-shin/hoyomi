@@ -11,10 +11,9 @@ _HomeComicCategory _$HomeComicCategoryFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       categoryId: json['categoryId'] as String?,
       gridView: json['gridView'] as bool?,
-      items:
-          (json['items'] as List<dynamic>)
-              .map((e) => Comic.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      items: (json['items'] as List<dynamic>)
+          .map((e) => Comic.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$HomeComicCategoryToJson(_HomeComicCategory instance) =>

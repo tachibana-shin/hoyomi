@@ -9,10 +9,9 @@ part of 'get_api_comic_get_list_follow_response.dart';
 _GetApiComicGetListFollowResponse _$GetApiComicGetListFollowResponseFromJson(
   Map<String, dynamic> json,
 ) => _GetApiComicGetListFollowResponse(
-  items:
-      (json['items'] as List<dynamic>)
-          .map((e) => Items.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  items: (json['items'] as List<dynamic>)
+      .map((e) => Items.fromJson(e as Map<String, dynamic>))
+      .toList(),
   totalItems: (json['totalItems'] as num).toInt(),
   page: (json['page'] as num).toInt(),
   totalPages: (json['totalPages'] as num).toInt(),

@@ -8,10 +8,9 @@ part of 'watch_page_schema.dart';
 
 _WatchPageSchema _$WatchPageSchemaFromJson(Map<String, dynamic> json) =>
     _WatchPageSchema(
-      data:
-          json['data'] == null
-              ? null
-              : Data3.fromJson(json['data'] as Map<String, dynamic>),
+      data: json['data'] == null
+          ? null
+          : Data3.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$WatchPageSchemaToJson(_WatchPageSchema instance) =>

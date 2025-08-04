@@ -8,10 +8,9 @@ part of 'list_watch_history.dart';
 
 _ListWatchHistory _$ListWatchHistoryFromJson(Map<String, dynamic> json) =>
     _ListWatchHistory(
-      data:
-          (json['data'] as List<dynamic>)
-              .map((e) => Data.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      data: (json['data'] as List<dynamic>)
+          .map((e) => Data.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ListWatchHistoryToJson(_ListWatchHistory instance) =>

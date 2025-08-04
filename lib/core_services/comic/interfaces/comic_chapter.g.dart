@@ -11,8 +11,9 @@ _ComicChapter _$ComicChapterFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       fullName: json['fullName'] as String?,
       chapterId: json['chapterId'] as String,
-      time:
-          json['time'] == null ? null : DateTime.parse(json['time'] as String),
+      time: json['time'] == null
+          ? null
+          : DateTime.parse(json['time'] as String),
       extra: json['extra'] as String?,
       order: (json['order'] as num?)?.toInt() ?? -1,
     );

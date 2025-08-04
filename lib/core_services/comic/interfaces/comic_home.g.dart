@@ -7,14 +7,12 @@ part of 'comic_home.dart';
 // **************************************************************************
 
 _ComicHome _$ComicHomeFromJson(Map<String, dynamic> json) => _ComicHome(
-  carousel:
-      json['carousel'] == null
-          ? null
-          : ComicCarousel.fromJson(json['carousel'] as Map<String, dynamic>),
-  categories:
-      (json['categories'] as List<dynamic>)
-          .map((e) => HomeComicCategory.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  carousel: json['carousel'] == null
+      ? null
+      : ComicCarousel.fromJson(json['carousel'] as Map<String, dynamic>),
+  categories: (json['categories'] as List<dynamic>)
+      .map((e) => HomeComicCategory.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$ComicHomeToJson(_ComicHome instance) =>

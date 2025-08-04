@@ -20,14 +20,12 @@ Map<String, dynamic> _$DurationRangeToJson(_DurationRange instance) =>
 
 _OpeningEnding _$OpeningEndingFromJson(Map<String, dynamic> json) =>
     _OpeningEnding(
-      opening:
-          json['opening'] == null
-              ? null
-              : DurationRange.fromJson(json['opening'] as Map<String, dynamic>),
-      ending:
-          json['ending'] == null
-              ? null
-              : DurationRange.fromJson(json['ending'] as Map<String, dynamic>),
+      opening: json['opening'] == null
+          ? null
+          : DurationRange.fromJson(json['opening'] as Map<String, dynamic>),
+      ending: json['ending'] == null
+          ? null
+          : DurationRange.fromJson(json['ending'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$OpeningEndingToJson(_OpeningEnding instance) =>

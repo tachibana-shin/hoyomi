@@ -10,10 +10,9 @@ _WatchTimeData _$WatchTimeDataFromJson(Map<String, dynamic> json) =>
     _WatchTimeData(
       eigaId: json['eigaId'] as String,
       episodeId: json['episodeId'] as String,
-      watchTime:
-          json['watchTime'] == null
-              ? null
-              : WatchTime.fromJson(json['watchTime'] as Map<String, dynamic>),
+      watchTime: json['watchTime'] == null
+          ? null
+          : WatchTime.fromJson(json['watchTime'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$WatchTimeDataToJson(_WatchTimeData instance) =>

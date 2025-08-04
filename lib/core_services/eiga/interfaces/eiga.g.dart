@@ -11,23 +11,20 @@ _Eiga _$EigaFromJson(Map<String, dynamic> json) => _Eiga(
   eigaId: json['eigaId'] as String,
   originalName: json['originalName'] as String?,
   image: OImage.fromJson(json['image'] as Map<String, dynamic>),
-  lastEpisode:
-      json['lastEpisode'] == null
-          ? null
-          : EigaEpisode.fromJson(json['lastEpisode'] as Map<String, dynamic>),
-  lastUpdate:
-      json['lastUpdate'] == null
-          ? null
-          : DateTime.parse(json['lastUpdate'] as String),
+  lastEpisode: json['lastEpisode'] == null
+      ? null
+      : EigaEpisode.fromJson(json['lastEpisode'] as Map<String, dynamic>),
+  lastUpdate: json['lastUpdate'] == null
+      ? null
+      : DateTime.parse(json['lastUpdate'] as String),
   notice: json['notice'] as String?,
   countSub: (json['countSub'] as num?)?.toInt(),
   countDub: (json['countDub'] as num?)?.toInt(),
   rate: (json['rate'] as num?)?.toDouble(),
   pending: json['pending'] as bool? ?? false,
-  preRelease:
-      json['preRelease'] == null
-          ? null
-          : DateTime.parse(json['preRelease'] as String),
+  preRelease: json['preRelease'] == null
+      ? null
+      : DateTime.parse(json['preRelease'] as String),
   description: json['description'] as String?,
 );
 

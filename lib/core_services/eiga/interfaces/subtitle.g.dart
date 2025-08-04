@@ -11,10 +11,9 @@ _Subtitle _$SubtitleFromJson(Map<String, dynamic> json) => _Subtitle(
   code: json['code'] as String,
   type: $enumDecode(_$SubtitleTypeEnumMap, json['type']),
   url: json['url'] as String,
-  headers:
-      json['headers'] == null
-          ? null
-          : Headers.fromJson(json['headers'] as Map<String, dynamic>),
+  headers: json['headers'] == null
+      ? null
+      : Headers.fromJson(json['headers'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$SubtitleToJson(_Subtitle instance) => <String, dynamic>{

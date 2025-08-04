@@ -8,14 +8,12 @@ part of 'main.dart';
 
 _HomeMangaResponse _$HomeMangaResponseFromJson(Map<String, dynamic> json) =>
     _HomeMangaResponse(
-      spotlightMangas:
-          (json['spotlight_mangas'] as List<dynamic>)
-              .map((e) => SpotlightManga.fromJson(e as Map<String, dynamic>))
-              .toList(),
-      newChapterMangas:
-          (json['new_chapter_mangas'] as List<dynamic>)
-              .map((e) => NewChapterManga.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      spotlightMangas: (json['spotlight_mangas'] as List<dynamic>)
+          .map((e) => SpotlightManga.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      newChapterMangas: (json['new_chapter_mangas'] as List<dynamic>)
+          .map((e) => NewChapterManga.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$HomeMangaResponseToJson(_HomeMangaResponse instance) =>
@@ -59,16 +57,15 @@ Map<String, dynamic> _$NewChapterMangaToJson(_NewChapterManga instance) =>
       'cover_url': instance.coverUrl,
       'newest_chapter_number': instance.newestChapterNumber,
       'newest_chapter_id': instance.newestChapterId,
-      'newest_chapter_created_at':
-          instance.newestChapterCreatedAt.toIso8601String(),
+      'newest_chapter_created_at': instance.newestChapterCreatedAt
+          .toIso8601String(),
     };
 
 _MangaListResponse _$MangaListResponseFromJson(Map<String, dynamic> json) =>
     _MangaListResponse(
-      data:
-          (json['data'] as List<dynamic>)
-              .map((e) => MangaItem.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      data: (json['data'] as List<dynamic>)
+          .map((e) => MangaItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$MangaListResponseToJson(_MangaListResponse instance) =>
@@ -101,15 +98,13 @@ _MangaDetail _$MangaDetailFromJson(Map<String, dynamic> json) => _MangaDetail(
   description: json['description'] as String,
   fullDescription: json['full_description'] as String?,
   viewsCount: (json['views_count'] as num).toInt(),
-  tags:
-      (json['tags'] as List<dynamic>)
-          .map((e) => Tag.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  tags: (json['tags'] as List<dynamic>)
+      .map((e) => Tag.fromJson(e as Map<String, dynamic>))
+      .toList(),
   team: Team.fromJson(json['team'] as Map<String, dynamic>),
-  titles:
-      (json['titles'] as List<dynamic>)
-          .map((e) => Title.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  titles: (json['titles'] as List<dynamic>)
+      .map((e) => Title.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$MangaDetailToJson(_MangaDetail instance) =>
@@ -173,10 +168,9 @@ Map<String, dynamic> _$ChapterToJson(_Chapter instance) => <String, dynamic>{
 
 _ChaptersResponse _$ChaptersResponseFromJson(Map<String, dynamic> json) =>
     _ChaptersResponse(
-      data:
-          (json['data'] as List<dynamic>)
-              .map((e) => Chapter.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      data: (json['data'] as List<dynamic>)
+          .map((e) => Chapter.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ChaptersResponseToJson(_ChaptersResponse instance) =>
@@ -184,10 +178,9 @@ Map<String, dynamic> _$ChaptersResponseToJson(_ChaptersResponse instance) =>
 
 _ChapterResponse _$ChapterResponseFromJson(Map<String, dynamic> json) =>
     _ChapterResponse(
-      pages:
-          (json['pages'] as List<dynamic>)
-              .map((e) => Page.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      pages: (json['pages'] as List<dynamic>)
+          .map((e) => Page.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ChapterResponseToJson(_ChapterResponse instance) =>
@@ -210,10 +203,9 @@ _SearchResultManga _$SearchResultMangaFromJson(Map<String, dynamic> json) =>
       coverUrl: json['cover_url'] as String,
       newestChapterNumber: json['newest_chapter_number'] as String?,
       newestChapterId: (json['newest_chapter_id'] as num?)?.toInt(),
-      newestChapterCreatedAt:
-          json['newest_chapter_created_at'] == null
-              ? null
-              : DateTime.parse(json['newest_chapter_created_at'] as String),
+      newestChapterCreatedAt: json['newest_chapter_created_at'] == null
+          ? null
+          : DateTime.parse(json['newest_chapter_created_at'] as String),
     );
 
 Map<String, dynamic> _$SearchResultMangaToJson(_SearchResultManga instance) =>
@@ -223,8 +215,8 @@ Map<String, dynamic> _$SearchResultMangaToJson(_SearchResultManga instance) =>
       'cover_url': instance.coverUrl,
       'newest_chapter_number': instance.newestChapterNumber,
       'newest_chapter_id': instance.newestChapterId,
-      'newest_chapter_created_at':
-          instance.newestChapterCreatedAt?.toIso8601String(),
+      'newest_chapter_created_at': instance.newestChapterCreatedAt
+          ?.toIso8601String(),
     };
 
 _Metadata _$MetadataFromJson(Map<String, dynamic> json) => _Metadata(
@@ -240,10 +232,9 @@ Map<String, dynamic> _$MetadataToJson(_Metadata instance) => <String, dynamic>{
 _SearchResultResponse _$SearchResultResponseFromJson(
   Map<String, dynamic> json,
 ) => _SearchResultResponse(
-  data:
-      (json['data'] as List<dynamic>)
-          .map((e) => SearchResultManga.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  data: (json['data'] as List<dynamic>)
+      .map((e) => SearchResultManga.fromJson(e as Map<String, dynamic>))
+      .toList(),
   meta: Metadata.fromJson(json['_metadata'] as Map<String, dynamic>),
 );
 
@@ -262,10 +253,9 @@ Map<String, dynamic> _$MangaTagResponseToJson(_MangaTagResponse instance) =>
 
 _MangaListData _$MangaListDataFromJson(Map<String, dynamic> json) =>
     _MangaListData(
-      mangas:
-          (json['mangas'] as List<dynamic>)
-              .map((e) => Manga.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      mangas: (json['mangas'] as List<dynamic>)
+          .map((e) => Manga.fromJson(e as Map<String, dynamic>))
+          .toList(),
       tag: Tag.fromJson(json['tag'] as Map<String, dynamic>),
     );
 
@@ -290,10 +280,9 @@ _Comment _$CommentFromJson(Map<String, dynamic> json) => _Comment(
   processedContent: json['processed_content'] as String,
   isShadowRemoved: json['is_shadow_removed'] as bool,
   createdAt: DateTime.parse(json['created_at'] as String),
-  repliedIds:
-      (json['replied_ids'] as List<dynamic>)
-          .map((e) => (e as num).toInt())
-          .toList(),
+  repliedIds: (json['replied_ids'] as List<dynamic>)
+      .map((e) => (e as num).toInt())
+      .toList(),
 );
 
 Map<String, dynamic> _$CommentToJson(_Comment instance) => <String, dynamic>{
@@ -322,10 +311,9 @@ Map<String, dynamic> _$CommentUserToJson(_CommentUser instance) =>
 
 _CommentsResponse _$CommentsResponseFromJson(Map<String, dynamic> json) =>
     _CommentsResponse(
-      data:
-          (json['data'] as List<dynamic>)
-              .map((e) => Comment.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      data: (json['data'] as List<dynamic>)
+          .map((e) => Comment.fromJson(e as Map<String, dynamic>))
+          .toList(),
       total: (json['total'] as num?)?.toInt(),
       page: (json['page'] as num?)?.toInt(),
       pageSize: (json['page_size'] as num?)?.toInt(),

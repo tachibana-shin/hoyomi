@@ -8,10 +8,9 @@ part of 'o_image.dart';
 
 _OImage _$OImageFromJson(Map<String, dynamic> json) => _OImage(
   src: json['src'] as String,
-  headers:
-      json['headers'] == null
-          ? null
-          : Headers.fromJson(json['headers'] as Map<String, dynamic>),
+  headers: json['headers'] == null
+      ? null
+      : Headers.fromJson(json['headers'] as Map<String, dynamic>),
   extra: json['extra'] as String?,
 );
 

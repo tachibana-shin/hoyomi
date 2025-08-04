@@ -8,10 +8,9 @@ part of 'comic_carousel.dart';
 
 _ComicCarousel _$ComicCarouselFromJson(Map<String, dynamic> json) =>
     _ComicCarousel(
-      items:
-          (json['items'] as List<dynamic>)
-              .map((e) => ComicCarouselItem.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      items: (json['items'] as List<dynamic>)
+          .map((e) => ComicCarouselItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
       aspectRatio: (json['aspectRatio'] as num).toDouble(),
       maxHeightBuilder: (json['maxHeightBuilder'] as num).toDouble(),
     );
