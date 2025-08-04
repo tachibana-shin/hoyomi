@@ -1,6 +1,3 @@
-import { drizzle } from "drizzle-orm/node-postgres"
-import { Pool } from "pg"
-import assert from "node:assert"
 import {
   comic,
   comicFollows,
@@ -13,23 +10,19 @@ import {
   eigaHistoryChapters,
   users
 } from "./schema.ts"
-import { parsePostgresUrl } from "../logic/parse-postgresl-url.ts"
+
+import assert from "node:assert"
+import { drizzle } from "drizzle-orm/postgres-js"
+import postgres from "postgres"
 
 const DATABASE_URL = Deno.env.get("DATABASE_URL")
-const DATABASE_CA = Deno.env.get("DATABASE_CA")
 
 assert(DATABASE_URL, "DATABASE_URL is required")
 
-const pool = new Pool({
-  ...parsePostgresUrl(DATABASE_URL),
-  ssl: {
-    ca: DATABASE_CA,
-    rejectUnauthorized: false
-  }
-})
+const client = postgres(DATABASE_URL) as unknown as any;
 
 export const db = drizzle({
-  client: pool,
+  client,
   schema: {
     comic,
     comicFollows,
