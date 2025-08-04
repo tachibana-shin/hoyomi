@@ -184,9 +184,23 @@ jobs:
       - name: Enable Windows desktop
         run: flutter config --enable-windows-desktop
 
-      - name: Install Flutter dependencies
-        run: flutter pub get
-
+      - name: Force kill dart and pub processes
+        run: |
+          taskkill /F /IM dart.exe || echo "dart.exe not running"
+          taskkill /F /IM pub.exe || echo "pub.exe not running"
+          rmdir /S /Q .dart_tool || echo ".dart_tool not found"
+          rmdir /S /Q build || echo "build not found"
+          del pubspec.lock || echo "pubspec.lock not found"
+        shell: cmd
+  
+      - name: Retry flutter pub get
+        shell: pwsh
+        run: |
+          for ($i = 0; $i -lt 3; $i++) {
+            flutter pub get && break
+            Start-Sleep -Seconds 5
+          }
+  
       - name: Create .env file
         run: echo "${{ secrets.ENV_CONTENT }}" > .env
 
